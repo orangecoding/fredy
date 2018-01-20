@@ -1,0 +1,43 @@
+{
+  "name": "Fredy",
+  "version": "1.0.0",
+  "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
+  "scripts": {
+    "start": "node index.js",
+    "format": "prettier --write lib/**/*.js test/**/*.js *.js --single-quote --print-width 120",
+    "test": "mocha --timeout 8000"
+  },
+  "main": "index.js",
+  "author": "Christian Kellner",
+  "keywords": [
+    "flat",
+    "flatfinder",
+    "fredy",
+    "real estates",
+    "germany",
+    "apartment",
+    "house",
+    "rent",
+    "immoscout",
+    "immonet",
+    "immowelt",
+    "immobilienscout24"
+  ],
+  "bugs": {
+    "url": "https://github.com/orangecoding/fredy/issues"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "chai": "^4.1.2",
+    "lowdb": "^1.0.0",
+    "mocha": "^4.1.0",
+    "request-x-ray": "^0.1.4",
+    "rootpath": "^0.1.2",
+    "slack": "^10.0.0",
+    "x-ray": "^2.3.2"
+  },
+  "devDependencies": {
+    "prettier": "^1.0.0",
+    "proxyquire": "^1.8.0"
+  }
+}

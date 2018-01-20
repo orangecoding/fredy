@@ -1,0 +1,76 @@
+{
+  "interval": 10,
+  "enableStats": false,
+  "statsPort": 9875,
+  "notification": {
+    "slack": {
+      "token": "",
+      "channel": "test",
+      "enabled": false
+    },
+    "console": {
+      "enabled": true
+    }
+  },
+  "sources": {
+    "immoscout": {
+      "url": "https://www.immobilienscout24.de/Suche/S-2/Wohnung-Kauf/Nordrhein-Westfalen/Duesseldorf/-/-/-/-/false/-/3,6,7,8,40,113,117,118,127?enteredFrom=result_list",
+      "enabled": true
+    },
+    "immonet": {
+      "url": "https://www.immonet.de/immobiliensuche/sel.do?pageoffset=1&listsize=25&objecttype=1&locationname=D%C3%BCsseldorf&acid=&actype=&city=100207&ajaxIsRadiusActive=false&sortby=19&suchart=2&radius=0&pcatmtypes=1_1&pCatMTypeStoragefield=1_1&parentcat=1&marketingtype=1&fromprice=&toprice=&fromarea=&toarea=&fromplotarea=&toplotarea=&fromrooms=&torooms=&objectcat=225&objectcat=18&objectcat=17&objectcat=12&objectcat=16&objectcat=181&objectcat=14&objectcat=15&objectcat=226&objectcat=13&wbs=-1&fromyear=&toyear=&fulltext=&absenden=Ergebnisse+anzeigen",
+      "enabled": true
+    },
+    "immowelt": {
+      "url": "https://www.immowelt.de/liste/duesseldorf/wohnungen/kaufen?lat=51.22061&lon=6.80575&sort=createdate%2Bdesc",
+      "enabled": true
+    },
+    "kleinanzeigen": {
+      "url": "https://www.ebay-kleinanzeigen.de/s-wohnung-kaufen/duesseldorf/anzeige:angebote/wohnung/k0c196l2068r5",
+      "enabled": true
+    },
+    "kalaydo": {
+      "url": "https://www.kalaydo.de/immobilien/eigentumswohnung-kaufen/o/duesseldorf/4/",
+      "enabled": true
+    }
+  },
+  "blacklist": [
+    "swap",
+    "tausch",
+    "wg",
+    "Vermietete",
+    "Vermietet",
+    "vermietete",
+    "vermietet"
+  ],
+  "blacklistedDistrics": [
+    "Altstadt",
+    "Angermund",
+    "Carlstadt",
+    "Flehe",
+    "Friedrichstadt",
+    "Garath",
+    "Hafen",
+    "Hamm",
+    "Hassels",
+    "Heerdt",
+    "Hellerhof",
+    "Himmelgeist",
+    "Hubbelrath",
+    "Itter",
+    "Kaiserswerth",
+    "Kalkum",
+    "Lichtenbroich",
+    "Lohausen",
+    "Ludenberg",
+    "Niederkassel",
+    "Oberkassel",
+    "Stadtmittel",
+    "Stockum",
+    "Urdenbach",
+    "Vennhausen",
+    "Volmerswerth",
+    "Wittlaer"
+  ],
+  "userAgent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.85 Safari/537.36"
+}

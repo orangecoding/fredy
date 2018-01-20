@@ -1,0 +1,50 @@
+{
+  "interval": 10,
+  "enableStats": false,
+  "statsPort": 9875,
+  "notification": {
+    "slack": {
+      "token": "someToken",
+      "channel": "someChannel",
+      "enabled": false
+    },
+    "console": {
+      "enabled": true
+    }
+  },
+  "sources": {
+    "immoscout": {
+      "url": "https://www.immobilienscout24.de/...",
+      "enabled": true
+    },
+    "immonet": {
+      "url": "https://www.immonet.de/...",
+      "enabled": true
+    },
+    "immowelt": {
+      "url": "https://www.immowelt.de/...",
+      "enabled": true
+    },
+    "kleinanzeigen": {
+      "url": "https://www.ebay-kleinanzeigen.de/...",
+      "enabled": true
+    },
+    "kalaydo": {
+      "url": "https://www.kalaydo.de/...",
+      "enabled": true
+    }
+  },
+  "blacklist": [
+    "swap",
+    "tausch",
+    "wg",
+    "Vermietete",
+    "Vermietet",
+    "vermietete",
+    "vermietet"
+  ],
+  "blacklistedDistrics": [
+    "some District you don't want"
+  ],
+  "userAgent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.85 Safari/537.36"
+}
