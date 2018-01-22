@@ -101,3 +101,13 @@ whole words) are removed.
 Districts that are unwanted can be blacklisted here. 
 
 This makes sense for provider that only offer limited filter functions like Kalaydo/Ebay.
+
+## Stats
+To monitor, what _Fredy_ is internally doing, you might want to check the current stats. These includes the `config` that is currently being used. 
+Also it includes an array of filter results per provider.
+
+You can call the stats http endpoint like this:
+```
+curl http://localhost:9876
+```
+The ports is depending on what you've configured in your config file.
