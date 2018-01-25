@@ -22,26 +22,23 @@ describe('#einsAImmobilien testsuite()', () => {
 
                 expect(immonetDbContent.einsAImmobilien).to.be.a('array');
 
-                // const notificationObj = mockNotification.get();
-                // expect(notificationObj).to.be.a('object');
-                // expect(notificationObj.serviceName).to.equal('einsAImmobilien');
-                //
-                // /** check the actual structure **/
-                // expect(notificationObj.payload.id).to.be.a('number');
-                // expect(notificationObj.payload.price).to.be.a('string');
-                // expect(notificationObj.payload.size).to.be.a('string');
-                // expect(notificationObj.payload.title).to.be.a('string');
-                // expect(notificationObj.payload.link).to.be.a('string');
-                // expect(notificationObj.payload.address).to.be.a('string');
-                //
-                // /** check the values if possible **/
-                // expect(notificationObj.payload.id).to.equal(immonetDbContent.immonet[immonetDbContent.immonet.length - 1]);
-                // expect(notificationObj.payload.price).that.does.include('€');
-                // expect(notificationObj.payload.size).that.does.include('m²');
-                // expect(notificationObj.payload.title).to.be.not.empty;
-                // expect(notificationObj.payload.link).that.does.include('https://www.immonet.de');
-                // expect(notificationObj.payload.address).to.be.not.empty;
+                const notificationObj = mockNotification.get();
+                expect(notificationObj).to.be.a('object');
+                expect(notificationObj.serviceName).to.equal('einsAImmobilien');
 
+                /** check the actual structure **/
+                expect(notificationObj.payload.id).to.be.a('number');
+                expect(notificationObj.payload.price).to.be.a('string');
+                expect(notificationObj.payload.size).to.be.a('string');
+                expect(notificationObj.payload.title).to.be.a('string');
+                expect(notificationObj.payload.link).to.be.a('string');
+
+                /** check the values if possible **/
+                expect(notificationObj.payload.id).to.equal(immonetDbContent.einsAImmobilien[immonetDbContent.einsAImmobilien.length - 1]);
+                expect(notificationObj.payload.price).that.does.include('EUR');
+                expect(notificationObj.payload.size).that.does.include('m²');
+                expect(notificationObj.payload.title).to.be.not.empty;
+                expect(notificationObj.payload.link).that.does.include('https://www.1a-immobilienmarkt.de');
                 resolve();
             });
         });
