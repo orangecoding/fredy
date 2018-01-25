@@ -43,7 +43,9 @@ Adding new notification adapter is easy however. See [Contribution](https://gith
 
 Configure the providers like described below. To disable a provider just remove its entry from the configuration or set it to `false`.
 
-#### Ebay Kleinanzeigen, Immoscout, Immowelt, Immonet and Kalaydo
+#### Immoscout, Immonet and more
+
+These are the current provider that are already implemented within _Fredy_
 
 ```json
 "kleinanzeigen": {
@@ -66,6 +68,10 @@ Configure the providers like described below. To disable a provider just remove 
   "url": "http://www.kalaydo.de/...",
   "enabled": true
 },
+"einsAImmobilien": {
+  "url": "https://www.1a-immobilienmarkt.de/...",
+  "enabled": true
+}
 ```
 
 Go to the respective provider page and create your custom search queries by

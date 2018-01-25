@@ -32,6 +32,10 @@
     "kalaydo": {
       "url": "https://www.kalaydo.de/...",
       "enabled": true
+    },
+    "einsAImmobilien":{
+      "url": "https://www.1a-immobilienmarkt.de/...",
+      "enabled": true
     }
   },
   "blacklist": [
