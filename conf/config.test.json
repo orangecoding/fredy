@@ -8,6 +8,11 @@
       "channel": "test",
       "enabled": false
     },
+    "telegram": {
+      "chatId": "",
+      "token": "",
+      "enabled": false
+    },
     "console": {
       "enabled": true
     }
