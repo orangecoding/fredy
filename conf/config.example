@@ -10,7 +10,12 @@
     },
     "console": {
       "enabled": true
-    }
+    },
+    "telegram": {
+          "chatId": "",
+          "token": "",
+          "enabled": false
+        },
   },
   "sources": {
     "immoscout": {
