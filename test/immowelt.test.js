@@ -26,24 +26,26 @@ describe('#immowelt testsuite()', () => {
                 expect(notificationObj).to.be.a('object');
                 expect(notificationObj.serviceName).to.equal('immowelt');
 
-                /** check the actual structure **/
-                expect(notificationObj.payload.id).to.be.a('number');
-                expect(notificationObj.payload.price).to.be.a('string');
-                expect(notificationObj.payload.size).to.be.a('string');
-                expect(notificationObj.payload.title).to.be.a('string');
-                expect(notificationObj.payload.link).to.be.a('string');
-                expect(notificationObj.payload.address).to.be.a('string');
+                notificationObj.payload.forEach((notify, idx) => {
 
-                /** check the values if possible **/
-                expect(notificationObj.payload.id).to.equal(
-                    immoweltDbContent.immowelt[immoweltDbContent.immowelt.length - 1]
-                );
-                expect(notificationObj.payload.price).that.does.include('€');
-                expect(notificationObj.payload.size).that.does.include('m²');
-                expect(notificationObj.payload.title).to.be.not.empty;
-                expect(notificationObj.payload.link).that.does.include('https://www.immowelt.de');
-                expect(notificationObj.payload.address).to.be.not.empty;
+                    /** check the actual structure **/
+                    expect(notify.id).to.be.a('number');
+                    expect(notify.price).to.be.a('string');
+                    expect(notify.size).to.be.a('string');
+                    expect(notify.title).to.be.a('string');
+                    expect(notify.link).to.be.a('string');
+                    expect(notify.address).to.be.a('string');
 
+                    /** check the values if possible **/
+                    expect(notify.id).to.equal(
+                        immoweltDbContent.immowelt[idx]
+                    );
+                    expect(notify.price).that.does.include('€');
+                    expect(notify.size).that.does.include('m²');
+                    expect(notify.title).to.be.not.empty;
+                    expect(notify.link).that.does.include('https://www.immowelt.de');
+                    expect(notify.address).to.be.not.empty;
+                });
                 resolve();
             });
         });

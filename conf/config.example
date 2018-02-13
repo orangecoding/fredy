@@ -41,6 +41,9 @@
     "einsAImmobilien":{
       "url": "https://www.1a-immobilienmarkt.de/...",
       "enabled": true
+    },"neubauKompass": {
+       "url": "https://www.neubaukompass.de/...",
+       "enabled": true
     }
   },
   "blacklist": [

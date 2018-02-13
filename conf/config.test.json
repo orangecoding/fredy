@@ -41,6 +41,10 @@
     "einsAImmobilien":{
       "url": "https://www.1a-immobilienmarkt.de/suchen/duesseldorf/wohnung-kaufen.html?search=yes&cfid=98b39c7e-b403-4764-8f3c-57bf590923d0&data_hash=fcfa4ee1e6cfaf791051a6f342eec1f8&sort_type=newest",
       "enabled": true
+    },
+    "neubauKompass": {
+      "url": "https://www.neubaukompass.de/neubau-immobilien/duesseldorf-region/eigentumswohnung/",
+      "enabled": true
     }
   },
   "blacklist": [

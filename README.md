@@ -91,6 +91,10 @@ These are the current provider that are already implemented within _Fredy_
 "einsAImmobilien": {
   "url": "https://www.1a-immobilienmarkt.de/...",
   "enabled": true
+},
+"neubauKompass": {
+  "url": "https://www.neubaukompass.de/...",
+  "enabled": true
 }
 ```
 

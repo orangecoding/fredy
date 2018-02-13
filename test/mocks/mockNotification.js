@@ -3,6 +3,7 @@ module.exports = {
 
   send: (serviceName, payload) => {
     this._tmpStore = { serviceName, payload };
+    return [Promise.resolve()];
   },
 
   get: () => {
