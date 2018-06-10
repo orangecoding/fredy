@@ -29,16 +29,12 @@ describe('#neubauKompass testsuite()', () => {
 
                 /** check the actual structure **/
                 expect(notify.id).to.be.a('string');
-                expect(notify.price).to.be.a('string');
-                expect(notify.size).to.be.a('string');
                 expect(notify.title).to.be.a('string');
                 expect(notify.link).to.be.a('string');
                 expect(notify.address).to.be.a('string');
 
                 /** check the values if possible **/
                 expect(notify.id).to.equal(neubauKompassDbContent.neubauKompass[idx]);
-                expect(notify.price).to.be.not.empty;
-                expect(notify.size).to.be.not.empty;
                 expect(notify.title).to.be.not.empty;
                 expect(notify.link).that.does.include('https://www.neubaukompass.de');
                 expect(notify.address).to.be.not.empty;
