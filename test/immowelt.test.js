@@ -41,7 +41,9 @@ describe('#immowelt testsuite()', () => {
                         immoweltDbContent.immowelt[idx]
                     );
                     expect(notify.price).that.does.include('€');
-                    expect(notify.size).that.does.include('m²');
+                    if(notify.size.trim().toLowerCase() !== 'k.a.') {
+                        expect(notify.size).that.does.include('m²');
+                    }
                     expect(notify.title).to.be.not.empty;
                     expect(notify.link).that.does.include('https://www.immowelt.de');
                     expect(notify.address).to.be.not.empty;
