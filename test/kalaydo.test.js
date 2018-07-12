@@ -38,8 +38,6 @@ describe('#kalaydo testsuite()', () => {
 
                     /** check the values if possible **/
                     expect(notify.id).to.equal(kalaydoDbContent.kalaydo[idx]);
-                    expect(notify.price).that.does.include('€');
-                    expect(notify.size).that.does.include('m²');
                     expect(notify.title).to.be.not.empty;
                     expect(notify.link).that.does.include('https://www.kalaydo.de');
                 });
