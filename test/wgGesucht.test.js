@@ -5,7 +5,7 @@ const mockStats = require('./mocks/mockStats');
 const proxyquire = require('proxyquire').noCallThru();
 const expect = require('chai').expect;
 
-describe.only('#wgGesucht testsuite()', () => {
+describe('#wgGesucht testsuite()', () => {
 
     const wgGesucht = proxyquire('../lib/provider/wgGesucht', {
         '../../conf/config.json': mockConfig,
@@ -15,7 +15,7 @@ describe.only('#wgGesucht testsuite()', () => {
         })
     });
 
-    it.only('should test wgGesucht provider', async () => {
+    it('should test wgGesucht provider', async () => {
         return await new Promise(resolve => {
             wgGesucht.run(mockStats).then(() => {
                 const wgGesuchtDbContent = wgGesucht._getStore()._db;
