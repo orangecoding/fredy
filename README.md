@@ -95,6 +95,10 @@ These are the current provider that are already implemented within _Fredy_
 "neubauKompass": {
   "url": "https://www.neubaukompass.de/...",
   "enabled": true
+},
+"wgGesucht": {
+  "url": "https://www.wg-gesucht.de/...",
+  "enabled": true
 }
 ```
 
@@ -124,7 +128,7 @@ whole words) are removed.
 
 #### District blacklist
 ```json
-"blacklistedDistrics": [
+"blacklistedDistricts": [
   "Altstadt"
 ]
 ```

@@ -45,12 +45,13 @@
     "neubauKompass": {
       "url": "https://www.neubaukompass.de/neubau-immobilien/duesseldorf-region/eigentumswohnung/",
       "enabled": true
+    },
+    "wgGesucht": {
+      "url": "https://www.wg-gesucht.de/wg-zimmer-in-Duesseldorf.30.0.1.0.html?offer_filter=1&noDeact=1&city_id=30&category=0&rent_type=0&rMax=5000",
+      "enabled": true
     }
   },
   "blacklist": [
-    "swap",
-    "tausch",
-    "wg",
     "Vermietete",
     "Vermietet",
     "vermietete",

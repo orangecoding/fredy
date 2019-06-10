@@ -44,6 +44,10 @@
     },"neubauKompass": {
        "url": "https://www.neubaukompass.de/...",
        "enabled": true
+    },
+    "wgGesucht": {
+      "url": "https://www.wg-gesucht.de/...",
+      "enabled": true
     }
   },
   "blacklist": [
