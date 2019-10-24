@@ -1,11 +1,11 @@
 {
   "name": "Fredy",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
   "scripts": {
     "start": "node index.js",
     "format": "prettier --write lib/**/*.js test/**/*.js *.js --single-quote --print-width 120",
-    "test": "mocha --timeout 8000"
+    "test": "mocha --timeout 9000"
   },
   "main": "index.js",
   "author": "Christian Kellner",
@@ -31,12 +31,12 @@
     "chai": "4.2.0",
     "lowdb": "1.0.0",
     "request-x-ray": "0.1.4",
-    "slack": "10.1.1",
+    "slack": "11.0.2",
     "tg-yarl": "1.3.0",
-    "x-ray": "2.3.3"
+    "x-ray": "2.3.4"
   },
   "devDependencies": {
-    "mocha": "6.1.4",
+    "mocha": "6.2.2",
     "prettier": "1.18.2",
     "proxyquire": "1.8.0"
   }
