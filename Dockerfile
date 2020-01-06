@@ -11,6 +11,6 @@ COPY . .
 
 EXPOSE 9876
 
-VOLUME [ "/conf ]
+VOLUME [ "/conf" ]
 
 CMD [ "npm", "start" ]
