@@ -13,4 +13,5 @@ EXPOSE 9876
 
 VOLUME [ "/conf" ]
 
-CMD [ "npm", "start" ]
+RUN \
+npm start 
