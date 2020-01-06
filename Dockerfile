@@ -11,7 +11,7 @@ COPY . .
 
 EXPOSE 9876
 
-VOLUME [ "/conf" ]
+#VOLUME [ "/conf" ]
 
 RUN \
 npm start 
