@@ -13,4 +13,4 @@ EXPOSE 9876
 
 VOLUME [ "/conf" ]
 
-CMD node index.js
+CMD node /index.js --no-daemon
