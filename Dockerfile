@@ -13,5 +13,4 @@ EXPOSE 9876
 
 VOLUME [ "/conf" ]
 
-RUN \
-npm start 
+CMD node index.js
