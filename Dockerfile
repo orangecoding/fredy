@@ -1,16 +1,19 @@
-FROM node:10
-# Create app directory
+FROM alpine:latest
 
-WORKDIR /
+RUN mkdir -p /usr/src/
 
-COPY package*.json ./
+RUN apk add --update nodejs npm git
 
-RUN npm install
+RUN cd /usr/src && git clone https://github.com/orangecoding/fredy.git
 
-COPY . .
+RUN ln -s /usr/src/fredy/conf/ /conf
+
+RUN cd /usr/src/fredy/ && npm install
+
+WORKDIR  /usr/src/fredy
 
 EXPOSE 9876
 
 VOLUME [ "/conf" ]
 
-CMD node /index.js --no-daemon
+CMD node index.js --no-daemon
