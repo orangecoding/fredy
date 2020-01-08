@@ -1,13 +1,16 @@
-FROM node:10
-# Create app directory
+FROM alpine:latest
 
-WORKDIR /
+WORKDIR  /usr/src/
 
-COPY package*.json ./
+RUN cd /usr/src/
 
-RUN npm install
+RUN apk add --update nodejs npm git
 
-COPY . .
+RUN git clone https://github.com/orangecoding/fredy.git
+
+RUN ln -s /usr/src/fredy/conf/ /conf
+
+RUN cd /usr/src/fredy/ && npm install
 
 EXPOSE 9876
 
