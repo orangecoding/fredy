@@ -1244,10 +1244,10 @@ promise-polyfill@^1.1.6:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/promise-polyfill/-/promise-polyfill-1.1.6.tgz#cd04eff46f5c95c3a7d045591d79b5e3e01f12d7"
 
-proxyquire@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/proxyquire/-/proxyquire-2.0.0.tgz#9803bf37b64d538b7ab05c53e839d1ab315905e3"
-  integrity sha512-TO9TAIz0mpa+SKddXsgCFatoe/KmHvoNVj2jDMC1kXE6kKn7/4CRpxvQ+0wAK9sbMT2FVO89qItlvnZMcFbJ2Q==
+proxyquire@1.8.0:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/proxyquire/-/proxyquire-1.8.0.tgz#02d514a5bed986f04cbb2093af16741535f79edc"
+  integrity sha1-AtUUpb7ZhvBMuyCTrxZ0FTX3ntw=
   dependencies:
     fill-keys "^1.0.2"
     module-not-found-error "^1.0.0"
