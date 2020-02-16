@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node index.js",
     "format": "prettier --write lib/**/*.js test/**/*.js *.js --single-quote --print-width 120",
-    "test": "mocha --timeout 9000"
+    "test": "mocha --timeout 12000"
   },
   "main": "index.js",
   "author": "Christian Kellner",

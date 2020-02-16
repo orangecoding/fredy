@@ -25,7 +25,6 @@ describe('#immoscout testsuite()', () => {
                 expect(notificationObj).to.be.a('object');
                 expect(notificationObj.serviceName).to.equal('immoscout');
 
-
                 notificationObj.payload.forEach((notify, idx) => {
                     /** check the actual structure **/
                     expect(notify.id).to.be.a('number');
@@ -46,7 +45,7 @@ describe('#immoscout testsuite()', () => {
                     expect(notify.address).to.be.not.empty;
                 });
                 resolve();
-            }).catch(resolve);
+            });
         });
     });
 });

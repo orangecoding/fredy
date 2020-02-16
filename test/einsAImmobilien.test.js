@@ -38,7 +38,7 @@ describe('#einsAImmobilien testsuite()', () => {
                     /** check the values if possible **/
                     expect(notify.id).to.equal(immonetDbContent.einsAImmobilien[idx]);
                     expect(notify.price).that.does.include('EUR');
-                    expect(notify.size).that.does.include('m²');
+                    expect(notify.size).to.be.not.empty;
                     expect(notify.title).to.be.not.empty;
                     expect(notify.link).that.does.include('https://www.1a-immobilienmarkt.de');
                 });
