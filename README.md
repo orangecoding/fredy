@@ -145,3 +145,22 @@ You can call the stats http endpoint like this:
 curl http://localhost:9876
 ```
 The ports is depending on what you've configured in your config file.
+
+# Docker 
+
+Use the Dockerfile in this Repo to build a Image
+
+Ex: docker build -t fredy/fredy /path/to/your/Dockerfile
+
+## Create & Run a Container
+
+Put your config.json to /path/to/your/conf/
+
+Ex: docker create --name fredy -v /path/to/your/conf/:/conf -p 9876:9876 fredy/fredy
+
+## Logs
+
+You can browse Logs with
+
+docker logs fredy -f
+
