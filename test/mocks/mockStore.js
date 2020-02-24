@@ -17,8 +17,6 @@ class Store {
     });
   }
 
-  get bla() {}
-
   get knownListings() {
     return this._db[this._name] || [];
   }

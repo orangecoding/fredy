@@ -1,25 +1,24 @@
 const mockNotification = require('./mocks/mockNotification');
 const mockConfig = require('../conf/config.test');
-const mockStats = require('./mocks/mockStats');
 const mockStore = require('./mocks/mockStore');
 const proxyquire = require('proxyquire').noCallThru();
 const expect = require('chai').expect;
+const provider = require('../lib/provider/kleinanzeigen');
 
 describe('#kleinanzeigen testsuite()', () => {
 
     it('should test kleinanzeigen provider', async () => {
-
-        const kleinanzeigen = proxyquire('../lib/provider/kleinanzeigen', {
-            '../../conf/config.json': mockConfig,
-            '../lib/fredy': proxyquire('../lib/fredy', {
-                './services/store': mockStore,
-                './notification/notify': mockNotification
-            })
+        provider.init(mockConfig.jobs.test1.provider.kleinanzeigen, [], []);
+        const Fredy = proxyquire('../lib/FredyRuntime', {
+            './services/store': mockStore,
+            './notification/notify': mockNotification
         });
 
         return await new Promise(resolve => {
-            kleinanzeigen.run(mockStats).then(() => {
-                const kleinanzeigenDbContent = kleinanzeigen._getStore()._db;
+            const fredy = new Fredy(provider.config, null, provider.id(), 'test1');
+            fredy.execute().then(() => {
+
+                const kleinanzeigenDbContent = fredy._getStore()._db;
                 expect(kleinanzeigenDbContent.kleinanzeigen).to.be.a('array');
 
                 const notificationObj = mockNotification.get();

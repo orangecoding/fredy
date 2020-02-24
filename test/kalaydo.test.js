@@ -1,24 +1,23 @@
 const mockNotification = require('./mocks/mockNotification');
 const mockConfig = require('../conf/config.test');
 const mockStore = require('./mocks/mockStore');
-const mockStats = require('./mocks/mockStats');
 const proxyquire = require('proxyquire').noCallThru();
 const expect = require('chai').expect;
+const provider = require('../lib/provider/kalaydo');
 
 describe('#kalaydo testsuite()', () => {
 
-    const kalaydo = proxyquire('../lib/provider/kalaydo', {
-        '../../conf/config.json': mockConfig,
-        '../lib/fredy': proxyquire('../lib/fredy', {
-            './services/store': mockStore,
-            './notification/notify': mockNotification
-        })
+    provider.init(mockConfig.jobs.test1.provider.kalaydo, [], []);
+    const Fredy = proxyquire('../lib/FredyRuntime', {
+        './services/store': mockStore,
+        './notification/notify': mockNotification
     });
 
     it('should test kalaydo provider', async () => {
         return await new Promise(resolve => {
-            kalaydo.run(mockStats).then(() => {
-                const kalaydoDbContent = kalaydo._getStore()._db;
+            const fredy = new Fredy(provider.config, null, provider.id(), 'test1');
+            fredy.execute().then(() => {
+                const kalaydoDbContent = fredy._getStore()._db;
 
                 expect(kalaydoDbContent.kalaydo).to.be.a('array');
 

@@ -17,7 +17,7 @@
           "enabled": false
         },
   },
-  "sources": {
+  "provider": {
     "immoscout": {
       "url": "https://www.immobilienscout24.de/...",
       "enabled": true
@@ -59,7 +59,7 @@
     "vermietete",
     "vermietet"
   ],
-  "blacklistedDistrics": [
+  "blacklistedDistricts": [
     "some District you don't want"
   ],
   "userAgent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.85 Safari/537.36"

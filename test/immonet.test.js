@@ -1,24 +1,23 @@
 const mockNotification = require('./mocks/mockNotification');
 const mockConfig = require('../conf/config.test');
 const mockStore = require('./mocks/mockStore');
-const mockStats = require('./mocks/mockStats');
 const proxyquire = require('proxyquire').noCallThru();
 const expect = require('chai').expect;
+const provider = require('../lib/provider/immonet');
 
 describe('#immonet testsuite()', () => {
-
-    const immonet = proxyquire('../lib/provider/immonet', {
-        '../../conf/config.json': mockConfig,
-        '../lib/fredy': proxyquire('../lib/fredy', {
-            './services/store': mockStore,
-            './notification/notify': mockNotification
-        })
+    provider.init(mockConfig.jobs.test1.provider.immonet, [], []);
+    const Fredy = proxyquire('../lib/FredyRuntime', {
+        './services/store': mockStore,
+        './notification/notify': mockNotification
     });
 
     it('should test immonet provider', async () => {
         return await new Promise(resolve => {
-            immonet.run(mockStats).then(() => {
-                const immonetDbContent = immonet._getStore()._db;
+            const fredy = new Fredy(provider.config, null, provider.id(), 'test1');
+            fredy.execute().then(() => {
+
+                const immonetDbContent = fredy._getStore()._db;
 
                 expect(immonetDbContent.immonet).to.be.a('array');
 

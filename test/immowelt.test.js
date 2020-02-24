@@ -1,25 +1,23 @@
 const mockNotification = require('./mocks/mockNotification');
 const mockConfig = require('../conf/config.test');
-const mockStats = require('./mocks/mockStats');
 const mockStore = require('./mocks/mockStore');
 const proxyquire = require('proxyquire').noCallThru();
 const expect = require('chai').expect;
+const provider = require('../lib/provider/immowelt');
 
 describe('#immowelt testsuite()', () => {
 
     it('should test immowelt provider', async () => {
-
-        const immowelt = proxyquire('../lib/provider/immowelt', {
-            '../../conf/config.json': mockConfig,
-            '../lib/fredy': proxyquire('../lib/fredy', {
-                './services/store': mockStore,
-                './notification/notify': mockNotification
-            })
+        provider.init(mockConfig.jobs.test1.provider.immowelt, [], []);
+        const Fredy = proxyquire('../lib/FredyRuntime', {
+            './services/store': mockStore,
+            './notification/notify': mockNotification
         });
 
         return await new Promise(resolve => {
-            immowelt.run(mockStats).then(() => {
-                const immoweltDbContent = immowelt._getStore()._db;
+            const fredy = new Fredy(provider.config, null, provider.id(), 'test1');
+            fredy.execute().then(() => {
+                const immoweltDbContent = fredy._getStore()._db;
                 expect(immoweltDbContent.immowelt).to.be.a('array');
 
                 const notificationObj = mockNotification.get();

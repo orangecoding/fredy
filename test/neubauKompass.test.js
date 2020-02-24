@@ -1,24 +1,23 @@
 const mockNotification = require('./mocks/mockNotification');
 const mockConfig = require('../conf/config.test');
 const mockStore = require('./mocks/mockStore');
-const mockStats = require('./mocks/mockStats');
 const proxyquire = require('proxyquire').noCallThru();
 const expect = require('chai').expect;
+const provider = require('../lib/provider/neubauKompass');
 
 describe('#neubauKompass testsuite()', () => {
 
-    const neubauKompass = proxyquire('../lib/provider/neubauKompass', {
-        '../../conf/config.json': mockConfig,
-        '../lib/fredy': proxyquire('../lib/fredy', {
-            './services/store': mockStore,
-            './notification/notify': mockNotification
-        })
+    provider.init(mockConfig.jobs.test1.provider.neubauKompass, [], []);
+    const Fredy = proxyquire('../lib/FredyRuntime', {
+        './services/store': mockStore,
+        './notification/notify': mockNotification
     });
 
     it('should test neubauKompass provider', async () => {
         return await new Promise(resolve => {
-            neubauKompass.run(mockStats).then(() => {
-                const neubauKompassDbContent = neubauKompass._getStore()._db;
+            const fredy = new Fredy(provider.config, null, provider.id(), 'test1');
+            fredy.execute().then(() => {
+                const neubauKompassDbContent = fredy._getStore()._db;
                 expect(neubauKompassDbContent.neubauKompass).to.be.a('array');
 
                 const notificationObj = mockNotification.get();
