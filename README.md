@@ -136,16 +136,6 @@ Districts that are unwanted can be blacklisted here.
 
 This makes sense for provider that only offer limited filter functions like Kalaydo/Ebay.
 
-## Stats
-To monitor, what _Fredy_ is internally doing, you might want to check the current stats. These includes the `config` that is currently being used. 
-Also it includes an array of filter results per provider.
-
-You can call the stats http endpoint like this:
-```
-curl http://localhost:9876
-```
-The ports is depending on what you've configured in your config file.
-
 # Docker 
 
 Use the Dockerfile in this Repo to build a Image
@@ -165,7 +155,29 @@ You can browse Logs with
 docker logs fredy -f
 
 
-Breaking:
-
-Config changes
--> sources --> provider
+TODO:
+- document eslint in contribution
+- document new concurrent abl in readme and adapt config
+- moar and better logging
+- create api
+--> proposal: 
+/jobs -> list of all jobs
+/jobs/{name} -> {
+    lastExecution: xxx,
+    activeNotificationAdapter: [a,b,c],
+    activeProvider: [{
+        name: '',
+        url:''
+    }]
+    }
+/jobs/{name}/stats -> {
+    lastExecution: xxx,
+    findings: xxx,
+    activeNotificationAdapter: xxx,
+    provider: {
+        bla: {
+         foundListings: 10,
+         timeLastFinding: xxx
+        }
+    }
+}
