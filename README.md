@@ -60,10 +60,10 @@ See the example config...
 (...)
  "jobs": {
     "yourSearchJob": {
-     ...
+     (...)
     },
     "yourOtherSearchJob": {
-     ...
+     (...)
     }
 }
 (...)
@@ -113,7 +113,8 @@ See [Contribution](https://github.com/orangecoding/fredy/blob/master/CONTRIBUTIO
   
 ```json  
 "blacklist": [  
- "vermietet"]  
+ "vermietet"
+]  
 ```  
   
 Listings which contain at least on of the given terms (ignoring case, only  
@@ -122,7 +123,8 @@ whole words) are removed.
 #### District blacklist  
 ```json  
 "blacklistedDistricts": [  
- "Altstadt"]  
+ "Altstadt"
+]  
 ```  
 Districts that are unwanted can be blacklisted here.   
   
