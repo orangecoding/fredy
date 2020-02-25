@@ -149,9 +149,9 @@ Example: `docker build -t fredy/fredy /path/to/your/Dockerfile`
   
 ## Create & run a container  
   
-Put your config.json to /path/to/your/conf/  
+Put your config.json to `/path/to/your/conf/`  
   
-Example: docker create --name fredy -v /path/to/your/conf/:/conf -p 9876:9876 fredy/fredy  
+Example: `docker create --name fredy -v /path/to/your/conf/:/conf -p 9876:9876 fredy/fredy`
   
 ## Logs  
   
