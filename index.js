@@ -4,6 +4,9 @@ const provider = fs.readdirSync(path);
 const config = require('./conf/config.json');
 const FredyRuntime = require('./lib/FredyRuntime');
 
+//starting the api service
+require('./lib/api/api');
+
 setInterval(
   (function exec() {
     Object.keys(config.jobs).forEach(jobKey => {

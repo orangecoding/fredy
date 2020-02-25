@@ -1,13 +1,13 @@
-const mockNotification = require('./mocks/mockNotification');
-const mockConfig = require('../conf/config.test');
-const mockStore = require('./mocks/mockStore');
+const mockNotification = require('../mocks/mockNotification');
+const mockConfig = require('../../conf/forTesting/config.multi.test');
+const mockStore = require('../mocks/mockStore');
 const proxyquire = require('proxyquire').noCallThru();
 const expect = require('chai').expect;
-const provider = require('../lib/provider/wgGesucht');
+const provider = require('../../lib/provider/wgGesucht');
 
 describe('#wgGesucht testsuite()', () => {
   provider.init(mockConfig.jobs.test1.provider.wgGesucht, [], []);
-  const Fredy = proxyquire('../lib/FredyRuntime', {
+  const Fredy = proxyquire('../../lib/FredyRuntime', {
     './services/store': mockStore,
     './notification/notify': mockNotification
   });
