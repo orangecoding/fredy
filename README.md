@@ -61,10 +61,10 @@ See the example config...
 (...)
  "jobs": {
     "yourSearchJob": {
-     (...)
+      some:config
     },
     "yourOtherSearchJob": {
-     (...)
+     some:config
     }
 }
 (...)
