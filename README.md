@@ -155,7 +155,9 @@ You can browse Logs with
 docker logs fredy -f
 
 
+
 TODO:
+-make it only 1 nstance of store and update last execution
 - document eslint in contribution
 - document new concurrent abl in readme and adapt config
 - moar and better logging
