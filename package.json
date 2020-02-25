@@ -38,6 +38,10 @@
     "url": "https://github.com/orangecoding/fredy/issues"
   },
   "license": "MIT",
+  "engines": {
+    "node": ">=11.0.0",
+    "npm": ">=6.0.0"
+  },
   "dependencies": {
     "body-parser": "1.19.0",
     "lowdb": "1.0.0",

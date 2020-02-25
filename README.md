@@ -157,29 +157,5 @@ docker logs fredy -f
 
 
 TODO:
--make it only 1 nstance of store and update last execution
-- document eslint in contribution
 - document new concurrent abl in readme and adapt config
 - moar and better logging
-- create api
---> proposal: 
-/jobs -> list of all jobs
-/jobs/{name} -> {
-    lastExecution: xxx,
-    activeNotificationAdapter: [a,b,c],
-    activeProvider: [{
-        name: '',
-        url:''
-    }]
-    }
-/jobs/{name}/stats -> {
-    lastExecution: xxx,
-    findings: xxx,
-    activeNotificationAdapter: xxx,
-    provider: {
-        bla: {
-         foundListings: 10,
-         timeLastFinding: xxx
-        }
-    }
-}

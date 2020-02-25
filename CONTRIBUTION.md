@@ -19,10 +19,12 @@ If you've written a new provider you are an awesome person. You know it and I do
 
 To write tests for provider, you need to use Node 8 as the tests are using `async / await`
 
+#### Codestyle
+I'm using Eslint to maintain quote style and quality. Do not skip it...
+
 ##### To do before merging:
 
 - executed tests? (`npm run test`)
-- executed reformat? (`npm run format`)
 - sure the changes are useful for everybody? Or is it maybe a custom modification just for your case?
 
 _Thanks!_ :heart:
