@@ -7,6 +7,17 @@
     "format": "prettier --write lib/**/*.js test/**/*.js *.js --single-quote --print-width 120",
     "test": "mocha --timeout 12000"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint ./index.js ./lib/**/*.js ./test/**/*.js",
+      "prettier --single-quote --print-width 120 --write"
+    ]
+  },
   "main": "index.js",
   "author": "Christian Kellner",
   "keywords": [
@@ -35,9 +46,13 @@
     "x-ray": "2.3.4"
   },
   "devDependencies": {
+    "chai": "4.2.0",
+    "eslint": "6.8.0",
+    "husky": "4.2.3",
+    "eslint-config-prettier": "6.10.0",
+    "lint-staged": "10.0.7",
     "mocha": "7.0.1",
     "prettier": "1.19.1",
-    "proxyquire": "1.8.0",
-    "chai": "4.2.0"
+    "proxyquire": "1.8.0"
   }
 }

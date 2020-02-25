@@ -7,13 +7,13 @@
     "test1": {
       "notification": {
         "slack": {
-          "token": "xoxp-17090465792-17090465808-298525487859-bee712491d610d187cb7725b842efd50",
-          "channel": "test",
+          "token": "",
+          "channel": "",
           "enabled": false
         },
         "telegram": {
-          "chatId": "519812066",
-          "token": "496605132:AAHslp2AOtlFAtC1fR8TOPqFVw6BjDIzrZ0",
+          "chatId": "",
+          "token": "",
           "enabled": false
         },
         "console": {
