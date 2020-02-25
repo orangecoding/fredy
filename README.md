@@ -143,24 +143,17 @@ Should you ever need some health checks, this returns pong ;)
 Returns specific information about the job with the given name or `404` if the job could not be found.
 
 # Docker   
-Use the Dockerfile in this Repo to build a Image  
+Use the Dockerfile in this Repository to build an image.  
   
-Ex: docker build -t fredy/fredy /path/to/your/Dockerfile  
+Example: `docker build -t fredy/fredy /path/to/your/Dockerfile`  
   
-## Create & Run a Container  
+## Create & run a container  
   
 Put your config.json to /path/to/your/conf/  
   
-Ex: docker create --name fredy -v /path/to/your/conf/:/conf -p 9876:9876 fredy/fredy  
+Example: docker create --name fredy -v /path/to/your/conf/:/conf -p 9876:9876 fredy/fredy  
   
 ## Logs  
   
-You can browse Logs with  
+You can browse the logs with  `docker logs fredy -f`  
   
-docker logs fredy -f  
-  
-  
-  
-TODO:  
-- document new concurrent abl in readme and adapt config  
-- moar and better logging
