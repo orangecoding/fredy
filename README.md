@@ -32,7 +32,8 @@ You want to get notified when _Fredy_ found a new listing. Currently _Fredy_ sup
   
 Adding new notification adapter is easy however. See [Contribution](https://github.com/orangecoding/fredy/blob/master/CONTRIBUTION.md)  
   
-##### Slack ```json  
+##### Slack 
+```json  
 "slack": {  
  "channel": "someChannel", "token": "someToken", "enabled": true}  
 ```  
