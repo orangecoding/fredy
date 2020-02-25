@@ -10,11 +10,11 @@ If _Fredy_ found matching results, it will send them to via Slack. (More adapter
 
 ## Usage
 
-- Make sure to use Node 8 and above
-- Install the dependencies using `npm install`
+- Make sure to use Node 11 and above
+- Install the dependencies using `npm install` or `yarn`
 - create your configuration file. Use the example config for this. `cp conf/config.example conf/config.json`
 - configure the desired values
-- start _Fredy_ using `npm start`
+- start _Fredy_ using `npm start` or `yarn run start`
 
 
 ## Configuration
