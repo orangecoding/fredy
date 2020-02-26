@@ -14,5 +14,6 @@ The new format basically wraps the config in chunks.
 ```json
  "jobs": {
     "yourSearchJob": {
-    ...
+    "some":"stuff"
+  }
 ```
