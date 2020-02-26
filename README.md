@@ -16,6 +16,8 @@ If _Fredy_ found matching results, it will send them to via Slack. (More adapter
 - configure the desired values  
 - start _Fredy_ using `npm start` or `yarn run start`  
   
+## :point_up: Breaking Changes when updating from v1.x to v2
+See [Upgrade Guide](./doc/upgrade-from-1-to-2.md)
   
 ## Configuration  
   
@@ -61,10 +63,10 @@ See the example config...
 (...)
  "jobs": {
     "yourSearchJob": {
-      some:config
+      "some":"config"
     },
     "yourOtherSearchJob": {
-     some:config
+     "some":"config"
     }
 }
 (...)
