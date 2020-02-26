@@ -16,7 +16,7 @@ describe('#neubauKompass testsuite()', () => {
     return await new Promise(resolve => {
       const fredy = new Fredy(provider.config, null, provider.id(), 'test1');
       fredy.execute().then(() => {
-        const neubauKompassDbContent = fredy._getStore()._db;
+        const neubauKompassDbContent = fredy._getStore();
         expect(neubauKompassDbContent.neubauKompass).to.be.a('array');
 
         const notificationObj = mockNotification.get();

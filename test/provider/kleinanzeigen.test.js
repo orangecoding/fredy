@@ -16,7 +16,7 @@ describe('#kleinanzeigen testsuite()', () => {
     return await new Promise(resolve => {
       const fredy = new Fredy(provider.config, null, provider.id(), 'test1');
       fredy.execute().then(() => {
-        const kleinanzeigenDbContent = fredy._getStore()._db;
+        const kleinanzeigenDbContent = fredy._getStore();
         expect(kleinanzeigenDbContent.kleinanzeigen).to.be.a('array');
 
         const notificationObj = mockNotification.get();

@@ -16,7 +16,7 @@ describe('#immoscout testsuite()', () => {
     return await new Promise(resolve => {
       const fredy = new Fredy(provider.config, null, provider.id(), 'test1');
       fredy.execute().then(() => {
-        const immoscoutDbContent = fredy._getStore()._db;
+        const immoscoutDbContent = fredy._getStore();
         expect(immoscoutDbContent.immoscout).to.be.a('array');
 
         const notificationObj = mockNotification.get();

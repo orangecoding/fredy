@@ -16,7 +16,7 @@ describe('#kalaydo testsuite()', () => {
     return await new Promise(resolve => {
       const fredy = new Fredy(provider.config, null, provider.id(), 'test1');
       fredy.execute().then(() => {
-        const kalaydoDbContent = fredy._getStore()._db;
+        const kalaydoDbContent = fredy._getStore();
 
         expect(kalaydoDbContent.kalaydo).to.be.a('array');
 

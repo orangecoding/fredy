@@ -16,7 +16,7 @@ describe('#wgGesucht testsuite()', () => {
     return await new Promise(resolve => {
       const fredy = new Fredy(provider.config, null, provider.id(), 'test1');
       fredy.execute().then(() => {
-        const wgGesuchtDbContent = fredy._getStore()._db;
+        const wgGesuchtDbContent = fredy._getStore();
         expect(wgGesuchtDbContent.wgGesucht).to.be.a('array');
         const notificationObj = mockNotification.get();
         expect(notificationObj.serviceName).to.equal('wgGesucht');

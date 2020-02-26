@@ -16,7 +16,7 @@ describe('#einsAImmobilien testsuite()', () => {
     return await new Promise(resolve => {
       const fredy = new Fredy(provider.config, null, provider.id(), 'test1');
       fredy.execute().then(() => {
-        const immonetDbContent = fredy._getStore()._db;
+        const immonetDbContent = fredy._getStore();
         expect(immonetDbContent.einsAImmobilien).to.be.a('array');
 
         const notificationObj = mockNotification.get();
