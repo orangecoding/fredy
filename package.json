@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node index.js",
     "format": "prettier --write lib/**/*.js test/**/*.js *.js --single-quote --print-width 120",
-    "test": "mocha --timeout 12000 test/**/*.test.js"
+    "test": "mocha --timeout 15000 test/**/*.test.js"
   },
   "husky": {
     "hooks": {
@@ -56,9 +56,9 @@
     "eslint": "6.8.0",
     "eslint-config-prettier": "6.10.0",
     "husky": "4.2.3",
-    "lint-staged": "10.0.7",
-    "mocha": "7.0.1",
+    "lint-staged": "10.0.8",
+    "mocha": "7.1.0",
     "prettier": "1.19.1",
-    "proxyquire": "1.8.0"
+    "proxyquire": "2.1.3"
   }
 }
