@@ -134,7 +134,7 @@ Districts that are unwanted can be blacklisted here.
 This makes sense for provider that only offer limited filter functions like Kalaydo/Ebay.  
   
 # API   
-While Fredy is running, you can make use of the rest api provided on port `9988`.  
+While Fredy is running, you can make use of the rest api provided on port `9988` to get information about the current status of Fredy.  
 #### http://localhost:9988/
 Gives you an overview of running search jobs, their included enabled provider, last execution and the number of listings, found by each provider. 
 
