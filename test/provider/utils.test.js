@@ -1,4 +1,4 @@
-const utils = require('../lib/utils');
+const utils = require('../../lib/utils');
 const assert = require('assert');
 
 describe('utils', () => {
