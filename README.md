@@ -6,7 +6,7 @@ My wife and I wanted to buy an apartment in germany. As the prices are quite hig
   
 This however can get pretty frustrating. _Fredy_ will take this work away from you. It crawls the `provider`, mentioned below (Immonet, Immoscout...) every _x_ minutes. (The provider list can be extended easily...)     
   
-If _Fredy_ found matching results, it will send them to via Slack. (More adapter possible.) _Fredy_ is remembering what it already has found to not send stuff twice.  
+If _Fredy_ found matching results, it will send them to you via Slack. (More adapter possible.) _Fredy_ is remembering what it already has found to not send stuff twice.  
   
 ## Usage  
   
