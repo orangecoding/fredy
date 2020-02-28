@@ -80,7 +80,7 @@ See the example config...
   
 ### 3. Configure the providers  
   
-Configure the providers like described below. To disable a provider just remove its entry from the configuration or set it to `false`.  
+Configure the providers like described below. To disable a provider just set to `enabled:false` within the config.  
   
 #### Immoscout, Immonet and more  
   
@@ -105,8 +105,7 @@ These are the current provider that are already implemented within _Fredy_
  "url": "https://www.wg-gesucht.de/...", "enabled": true}  
 ```  
   
-Go to the respective provider page and create your custom search queries by  
-using the provided filter options. Then just copy and paste the whole URL of  
+Go to the respective provider page and create your custom search queries by using the provided filter options. Then just copy and paste the whole URL of  
 the resulting listings page.  
   
 **IMPORTANT:** Make sure to always sort by newest listings! This way _Fredy_ makes sure to not accidentally report stuff twice.  
@@ -126,8 +125,7 @@ See [Contribution](https://github.com/orangecoding/fredy/blob/master/CONTRIBUTIO
 ]  
 ```  
   
-Listings which contain at least on of the given terms (ignoring case, only  
-whole words) are removed.   
+Listings which contain at least on of the given terms (ignoring case, only whole words) are removed.   
   
 #### District blacklist  
 ```json  
