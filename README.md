@@ -37,13 +37,19 @@ Adding new notification adapter is easy however. See [Contribution](https://gith
 ##### Slack 
 ```json  
 "slack": {  
- "channel": "someChannel", "token": "someToken", "enabled": true}  
+    "channel": "someChannel", 
+    "token": "someToken", 
+    "enabled": true
+}  
 ```  
   
 ##### Telegram  
 ```json  
 "telegram": {  
- "chatId": "someChannel", "token": "someToken", "enabled": true}  
+    "chatId": "someChannel", 
+    "token": "someToken", 
+    "enabled": true
+}  
 ```  
   
 For Telegram, you need to create a Bot. This is pretty easy. Open [this](https://telegram.me/BotFather) url on your smartphone and follow the instructions.  
