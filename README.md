@@ -157,6 +157,7 @@ Ex: docker build -t fredy/fredy /path/to/your/Dockerfile
 Put your config.json to /path/to/your/conf/
 
 Ex: docker create --name fredy -v /path/to/your/conf/:/conf -p 9876:9876 fredy/fredy
+docker create --name fredy -v ~/docker/fredy/conf/:/conf -p 9876:9876 ruledogg/fredy
 
 ## Logs
 
@@ -164,3 +165,4 @@ You can browse Logs with
 
 docker logs fredy -f
 
+docker create --name fredyv2 -v ~/docker/fredyv2/conf:/conf ruledogg/fredyv2
