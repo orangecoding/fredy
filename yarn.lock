@@ -2391,10 +2391,10 @@ resolve@^1.11.1:
   dependencies:
     path-parse "^1.0.6"
 
-restana@4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/restana/-/restana-4.1.0.tgz#fb358e88176bff2e368f3536887982dee3f9d95c"
-  integrity sha512-XBohQ4Wdnsfa0iiw0zayaPgigJ+iMBkLwCybXVkR6EIbdUxdWD8TYTWSpe3IHuPvxBNPqOBX+p3kyXDZmjZkjQ==
+restana@4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/restana/-/restana-4.1.1.tgz#401b3d208a801da8bd439c5f95d5e85794412831"
+  integrity sha512-gflqyftdR+VKkx59ExwMJMwNEhZwjrPRxTrtu75+9Usi6Q62b6SI1UzbiepUxf/HECfK50YL/i/JxRebDkl8rg==
   dependencies:
     "0http" "^2.2.3"
 
