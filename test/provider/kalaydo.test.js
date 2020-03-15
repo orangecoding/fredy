@@ -12,7 +12,7 @@ describe('#kalaydo testsuite()', () => {
     './notification/notify': mockNotification
   });
 
-  it.only('should test kalaydo provider', async () => {
+  it('should test kalaydo provider', async () => {
     return await new Promise(resolve => {
       const fredy = new Fredy(provider.config, null, provider.id(), 'test1');
       fredy.execute().then(() => {
