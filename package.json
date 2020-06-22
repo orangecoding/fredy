@@ -53,11 +53,11 @@
   },
   "devDependencies": {
     "chai": "4.2.0",
-    "eslint": "7.2.0",
+    "eslint": "7.3.0",
     "eslint-config-prettier": "6.11.0",
     "husky": "4.2.5",
-    "lint-staged": "10.2.9",
-    "mocha": "7.2.0",
+    "lint-staged": "10.2.11",
+    "mocha": "8.0.1",
     "prettier": "2.0.5",
     "proxyquire": "2.1.3"
   }
