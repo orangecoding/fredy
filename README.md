@@ -59,7 +59,20 @@ After the user has send a message to your bot the first time, you can gather the
 curl -X GET https://api.telegram.org/bot{YOUR_TELEGRAM_TOKEN}/getUpdates  
 ```  
   
-A more detailed list of instructions can be found here [https://core.telegram.org/bots#botfather](https://core.telegram.org/bots#botfather)   
+A more detailed list of instructions can be found here [https://core.telegram.org/bots#botfather](https://core.telegram.org/bots#botfather)
+
+##### SendGrid 
+```json  
+"sendGrid": {
+  "apiKey": "",
+  "from": "",
+  "receiver": "",
+  "templateId": "",
+  "enabled": true
+}  
+```    
+If you don't use Slack, I'd personally recommend using Sendgrid. It's a free service (free as in "you cannot send more than 100 emails a day"), which is more than enough for Fredy.
+
   
 ### 2. Multiple search jobs 
 
