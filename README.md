@@ -71,8 +71,8 @@ A more detailed list of instructions can be found here [https://core.telegram.or
   "enabled": true
 }  
 ```    
-If you don't use Slack, I'd personally recommend using Sendgrid. It's a free email service (free as in "you cannot send more than 100 emails a day"), which is more than enough for Fredy.
-To use [SendGrid](https://https://sendgrid.com/), you need to create an account. You'll need to decided from which email you want this email to be send from. E.g. if you use yourGmailAccount@gmail.com, you have to add this to sendgrid and verify it as well. 
+If you don't use Slack, I'd personally recommend using Sendgrid. It's a free email service (free as in "you cannot send more than 100 emails a day"), which is more than enough for Fredy.   
+To use [SendGrid](https://sendgrid.com/), you need to create an account. You'll need to decided from which email you want this email to be send from. E.g. if you use yourGmailAccount@gmail.com, you have to add this to sendgrid and verify it as well.     
 Lastly you have to create an api-key and feed it into Fredy's config, as well as creating a new template. For this new template, I recommend copy and pasting the one I provided under `/docs/sendgrid-email-template.hbs`.
   
 ### 2. Multiple search jobs 
