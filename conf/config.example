@@ -13,6 +13,13 @@
           "token": "",
           "enabled": false
         },
+        "sendGrid": {
+          "apiKey": "",
+          "from": "",
+          "receiver": "",
+          "templateId": "",
+          "enabled": false
+        },
         "console": {
           "enabled": true
         }
