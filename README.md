@@ -154,7 +154,7 @@ This makes sense for provider that only offer limited filter functions like Kala
 # API   
 While Fredy is running, you can make use of the rest api provided on port `9998` to get information about the current status of Fredy.  
 #### http://localhost:9998/
-Gives you an overview of running search jobs, their included enabled provider, last execution and the number of listings, found by each provider. 
+Gives you an overview of running search jobs, their included enabled provider, last execution and the number of listings, found by each provider. You can disable the api by setting `infoApi: false` within the config. 
 
 #### http://localhost:9998/ping
 Should you ever need some health checks, this returns pong ;)

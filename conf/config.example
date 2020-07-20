@@ -1,5 +1,6 @@
 {
   "interval": 1,
+  "infoApi": true,
   "jobs": {
     "yourSearchJob": {
       "notification": {
