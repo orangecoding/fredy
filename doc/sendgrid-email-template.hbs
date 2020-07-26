@@ -148,11 +148,13 @@
                                                     <tr>
                                                         <td style="padding:50px 50px 10px 50px; line-height:22px; text-align:center; color:white" bgcolor="#000000" height="100%" valign="top">
                                                             <div>
-                                                                <span style="font-size: 12px; font-family: verdana,geneva,sans-serif"><b>{{this.title}}</b></span>
+                                                                <span style="font-size: 12px; font-family: verdana,geneva,sans-serif; color: white;"><b>{{this.title}}</b></span>
                                                                 <br/>
-                                                                <span style="font-size: 12px; font-family: verdana,geneva,sans-serif">Size: {{this.size}}</span>
+                                                                <span style="font-size: 12px; font-family: verdana,geneva,sans-serif">Size: {{#if this.size}}{{this.size}}{{else}}unknown{{/if}}</span>
                                                                 <br/>
-                                                                <span style="font-size: 12px; font-family: verdana,geneva,sans-serif">{{this.address}}</span>
+                                                                <span style="font-size: 12px; font-family: verdana,geneva,sans-serif">Price: {{#if this.price}}{{this.price}}{{else}}unknown{{/if}}</span>
+                                                                <br/>
+                                                                <span style="font-size: 12px; font-family: verdana,geneva,sans-serif">{{#if this.address}}{{this.address}}{{else}}unknown{{/if}}</span>
                                                                 <br/>
                                                                 <a href="{{this.link}}" target="_blank" style="color:#00dc73; font-size:13px">{{this.link}}</a>
                                                                 <br/>
