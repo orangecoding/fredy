@@ -1,6 +1,7 @@
 {
   "interval": 1,
   "infoApi": true,
+  "infoApiPort": 9998,
   "jobs": {
     "yourSearchJob": {
       "notification": {
