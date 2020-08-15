@@ -1,6 +1,7 @@
 # Fredy  
   
-**[F]ind [R]eal [E]states [D]amn Eas[y]** :heart:  [![Build Status](https://travis-ci.org/orangecoding/fredy.svg?branch=master)](https://travis-ci.org/orangecoding/fredy)
+<img src="https://raw.githubusercontent.com/orangecoding/fredy/logo/doc/logo.png" width="400">.      
+[![Build Status](https://travis-ci.org/orangecoding/fredy.svg?branch=master)](https://travis-ci.org/orangecoding/fredy)
   
 My wife and I wanted to buy an apartment in germany. As the prices are quite high and good deals are very rare, we searched the "big 4" every morning.     
   
