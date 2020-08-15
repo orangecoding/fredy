@@ -21,6 +21,13 @@
           "templateId": "",
           "enabled": false
         },
+        "mailJet": {
+          "apiPublicKey": "",
+          "apiPrivateKey": "",
+          "receiver": "",
+          "from": "",
+          "enabled": false
+        },
         "console": {
           "enabled": true
         }

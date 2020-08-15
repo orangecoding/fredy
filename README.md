@@ -71,9 +71,24 @@ A more detailed list of instructions can be found here [https://core.telegram.or
   "enabled": true
 }  
 ```    
-If you don't use Slack, I'd personally recommend using Sendgrid. It's a free email service (free as in "you cannot send more than 100 emails a day"), which is more than enough for Fredy.   
-To use [SendGrid](https://sendgrid.com/), you need to create an account. You'll need to decided from which email you want this email to be send from. E.g. if you use yourGmailAccount@gmail.com, you have to add this to sendgrid and verify it as well.     
-Lastly you have to create an api-key and feed it into Fredy's config, as well as creating a new template. For this new template, I recommend copy and pasting the one I provided under `/docs/sendgrid-email-template.hbs`.
+If you don't use Slack, I'd personally recommend using Sendgrid or Mailjet. Both are free email service (free as in "you cannot send more than 100(Sendgrid) and 200(Mailjet) emails a day"), which is more than enough for Fredy.
+   
+To use [SendGrid](https://sendgrid.com/), you need to create an account. You'll need to decided from which email address you want Fredy to send from. E.g. if you use yourGmailAccount@gmail.com, you have to add this to sendgrid and verify it as well.     
+Lastly you have to create an api-key and feed it into Fredy's config, as well as creating a new template. For this new template, I recommend copying and pasting the one I provided under `/lib/notification/emailTemplate/template.hbs`.
+
+##### MailJet 
+```json  
+"mailJet": {
+  "apiPublicKey": "",
+  "apiPrivateKey": "",
+  "receiver": "",
+  "from": "",
+  "enabled": false
+},
+``` 
+To use [MailJet](https://mailjet.com), you need to create an account. You'll need to decided from which email address you want Fredy to send from. E.g. if you use yourGmailAccount@gmail.com, you have to add this to MailJet and verify it as well.     
+Feed the given piublic/private api key into Fredy's config and enable the adapter. Fredy will use the same template, it is using for SendGrid.
+
   
 ### 2. Multiple search jobs 
 
