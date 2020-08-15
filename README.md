@@ -1,5 +1,3 @@
-# Fredy  
-  
 <img src="https://raw.githubusercontent.com/orangecoding/fredy/logo/doc/logo.png" width="400">.      
 [![Build Status](https://travis-ci.org/orangecoding/fredy.svg?branch=master)](https://travis-ci.org/orangecoding/fredy)
   
