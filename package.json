@@ -1,0 +1,113 @@
+{
+  "name": "fredy",
+  "version": "3.0.0",
+  "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "yarn && export BUILD_DEV='true' && export NODE_ENV='development' && webpack-dev-server --progress --colors --watch --config ./webpack.dev.js",
+    "prod": "export BUILD_DEV='false' && export NODE_ENV='production' && webpack --config ./webpack.prod.js",
+    "format": "prettier --write lib/**/*.js ui/src/**/*.js test/**/*.js *.js --single-quote --print-width 120",
+    "test": "mocha --timeout 20000 test/**/*.test.js"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint ./index.js ./lib/**/*.js ./test/**/*.js",
+      "prettier --single-quote --print-width 120 --write"
+    ]
+  },
+  "main": "index.js",
+  "author": "Christian Kellner",
+  "keywords": [
+    "flat",
+    "flatfinder",
+    "fredy",
+    "real estates",
+    "germany",
+    "apartment",
+    "house",
+    "rent",
+    "immoscout",
+    "immonet",
+    "immowelt",
+    "immobilienscout24"
+  ],
+  "bugs": {
+    "url": "https://github.com/orangecoding/fredy/issues"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=11.0.0",
+    "npm": ">=6.0.0"
+  },
+  "browserslist": [
+    "> 0.5%",
+    "not dead",
+    "not ie 6-11",
+    "Firefox ESR"
+  ],
+  "dependencies": {
+    "@rematch/core": "^1.4.0",
+    "@rematch/loading": "^1.2.1",
+    "@sendgrid/mail": "7.4.2",
+    "axios": "^0.21.1",
+    "body-parser": "1.19.0",
+    "cookie-session": "^1.4.0",
+    "handlebars": "4.7.6",
+    "highcharts": "^8.2.2",
+    "highcharts-react-official": "^3.0.0",
+    "lowdb": "1.0.0",
+    "markdown": "^0.5.0",
+    "nanoid": "^3.1.20",
+    "node-mailjet": "3.3.1",
+    "react": "17.0.1",
+    "react-dom": "17.0.1",
+    "react-redux": "7.2.2",
+    "react-router": "5.2.0",
+    "react-router-dom": "5.2.0",
+    "react-switch": "^6.0.0",
+    "redux": "4.0.5",
+    "redux-thunk": "2.3.0",
+    "request-x-ray": "0.1.4",
+    "restana": "4.8.1",
+    "semantic-ui-react": "2.0.2",
+    "serve-static": "^1.14.1",
+    "slack": "11.0.2",
+    "tg-yarl": "1.3.0",
+    "x-ray": "2.3.4"
+  },
+  "devDependencies": {
+    "@babel/core": "7.12.10",
+    "@babel/preset-env": "7.12.11",
+    "@babel/preset-react": "7.12.10",
+    "babel-eslint": "10.1.0",
+    "babel-loader": "8.2.2",
+    "chai": "4.2.0",
+    "clean-webpack-plugin": "3.0.0",
+    "copy-webpack-plugin": "6.3.0",
+    "css-loader": "5.0.1",
+    "eslint": "7.17.0",
+    "eslint-config-prettier": "7.1.0",
+    "eslint-plugin-react": "7.22.0",
+    "file-loader": "6.2.0",
+    "history": "5.0.0",
+    "husky": "4.3.8",
+    "less": "4.1.0",
+    "less-loader": "7.2.1",
+    "lint-staged": "10.5.3",
+    "mocha": "8.2.1",
+    "prettier": "2.2.1",
+    "proxyquire": "2.1.3",
+    "redux-logger": "3.0.6",
+    "style-loader": "2.0.0",
+    "url-loader": "4.1.1",
+    "webpack": "4.44.2",
+    "webpack-cli": "3.3.12",
+    "webpack-dev-server": "3.11.2",
+    "webpack-merge": "5.7.3"
+  }
+}
