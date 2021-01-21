@@ -1,29 +1,31 @@
 const mockNotification = require('../mocks/mockNotification');
-const mockConfig = require('../../conf/forTesting/config.multi.test');
+const providerConfig = require('./testProvider.json');
 const mockStore = require('../mocks/mockStore');
 const proxyquire = require('proxyquire').noCallThru();
 const expect = require('chai').expect;
 const provider = require('../../lib/provider/einsAImmobilien');
 
 describe('#einsAImmobilien testsuite()', () => {
-  provider.init(mockConfig.jobs.test1.provider.einsAImmobilien, [], []);
+  provider.init(providerConfig.einsAImmobilien, [], []);
+
   const Fredy = proxyquire('../../lib/FredyRuntime', {
-    './services/store': mockStore,
-    './notification/notify': mockNotification
+    './services/storage/listingsStorage': {
+      ...mockStore,
+    },
+    './notification/notify': mockNotification,
   });
 
   it('should test einsAImmobilien provider', async () => {
-    return await new Promise(resolve => {
-      const fredy = new Fredy(provider.config, null, provider.id(), 'test1');
-      fredy.execute().then(() => {
-        const immonetDbContent = fredy._getStore();
-        expect(immonetDbContent.einsAImmobilien).to.be.a('array');
+    return await new Promise((resolve) => {
+      const fredy = new Fredy(provider.config, null, provider.metaInformation.id, 'test1');
+      fredy.execute().then((listings) => {
+        expect(listings).to.be.a('array');
 
         const notificationObj = mockNotification.get();
         expect(notificationObj).to.be.a('object');
         expect(notificationObj.serviceName).to.equal('einsAImmobilien');
 
-        notificationObj.payload.forEach((notify, idx) => {
+        notificationObj.payload.forEach((notify) => {
           /** check the actual structure **/
           expect(notify.id).to.be.a('number');
           expect(notify.price).to.be.a('string');
@@ -32,7 +34,6 @@ describe('#einsAImmobilien testsuite()', () => {
           expect(notify.link).to.be.a('string');
 
           /** check the values if possible **/
-          expect(notify.id).to.equal(immonetDbContent.einsAImmobilien[idx]);
           expect(notify.price).that.does.include('EUR');
           expect(notify.size).to.be.not.empty;
           expect(notify.title).to.be.not.empty;

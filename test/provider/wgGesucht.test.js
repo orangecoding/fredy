@@ -1,26 +1,27 @@
 const mockNotification = require('../mocks/mockNotification');
-const mockConfig = require('../../conf/forTesting/config.multi.test');
+const providerConfig = require('./testProvider.json');
 const mockStore = require('../mocks/mockStore');
 const proxyquire = require('proxyquire').noCallThru();
 const expect = require('chai').expect;
 const provider = require('../../lib/provider/wgGesucht');
 
 describe('#wgGesucht testsuite()', () => {
-  provider.init(mockConfig.jobs.test1.provider.wgGesucht, [], []);
+  provider.init(providerConfig.wgGesucht, [], []);
   const Fredy = proxyquire('../../lib/FredyRuntime', {
-    './services/store': mockStore,
-    './notification/notify': mockNotification
+    './services/storage/listingsStorage': {
+      ...mockStore,
+    },
+    './notification/notify': mockNotification,
   });
 
   it('should test wgGesucht provider', async () => {
-    return await new Promise(resolve => {
-      const fredy = new Fredy(provider.config, null, provider.id(), 'test1');
-      fredy.execute().then(() => {
-        const wgGesuchtDbContent = fredy._getStore();
-        expect(wgGesuchtDbContent.wgGesucht).to.be.a('array');
+    return await new Promise((resolve) => {
+      const fredy = new Fredy(provider.config, null, provider.metaInformation.id, 'test1');
+      fredy.execute().then((listing) => {
+        expect(listing).to.be.a('array');
         const notificationObj = mockNotification.get();
         expect(notificationObj.serviceName).to.equal('wgGesucht');
-        notificationObj.payload.forEach(notify => {
+        notificationObj.payload.forEach((notify) => {
           expect(notify).to.be.a('object');
 
           /** check the actual structure **/

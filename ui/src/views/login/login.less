@@ -1,0 +1,31 @@
+.login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width:100%;
+  height: 100%;
+
+  &__bgImage {
+    background-size: cover;
+    filter: blur(8px);
+    -webkit-filter: blur(8px);
+    background-size: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    right: 0;
+    bottom: 0;
+  }
+
+  &__loginWrapper {
+    border: 1px solid #555050;
+    border-radius: 30px;
+    height: 25rem;
+    width: 30rem;
+    background-color: #151313ab;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+  }
+}

@@ -12,8 +12,8 @@ RUN cd /usr/src/fredy/ && npm install
 
 WORKDIR  /usr/src/fredy
 
-EXPOSE 9876
+EXPOSE 9998
 
-VOLUME [ "/conf" ]
+VOLUME [ "/conf", "/db" ]
 # --no-daemon is required for keeping Container alive
 CMD node index.js --no-daemon 

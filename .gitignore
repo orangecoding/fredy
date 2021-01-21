@@ -1,5 +1,5 @@
 node_modules/
+ui/public/
+db/
 npm-debug.log
-config.json
-store.json
 .DS_Store
