@@ -1,13 +1,13 @@
 <img src="https://github.com/orangecoding/fredy/blob/master/doc/logo.png" width="400">  
 
 [![Build Status](https://travis-ci.org/orangecoding/fredy.svg?branch=master)](https://travis-ci.org/orangecoding/fredy)
-  
+
 _Fredy_ scrapes multiple services (Immonet, Immowelt etc.) as often as you want and send new listings to you once they appear. The list of available services can easily be extended. For your convenience, a ui helps you to configure your search jobs.   
-  
+
 If _Fredy_ found matching results, it will send them to you via Slack, Email, Telegram etc. (More adapter possible.) As _Fredy_ will store the listings it found, new results will not be sent twice (and as a side-effect, _Fredy_ can show some statistics..)  
-  
+
 ## Usage  
-  
+
 - Make sure to use NodeJs 12 and above
 - Run the following commands
 ```ssh
@@ -49,7 +49,7 @@ yarn run dev
 You should now be able to access _Fredy_ with your browser. Go to `http://localhost:9000`
 
 ### Running Tests
-To run the tests, simply run 
+To run the tests, simply run
 ```shell
 yarn run test
 ```
@@ -57,24 +57,24 @@ yarn run test
 # Architecture
 ![Architecture](/doc/architecture.jpg "Architecture")
 
-
+## Why is Immoscout missing
+Immoscout decided to add "robot protection" to their service. Meaning if Fredy tries to check for listings, it will be recognized as a bot. I haven't found a way around it (yet) ;)
 
 #### Contribution guidelines  
-  
+
 See [Contribution](https://github.com/orangecoding/fredy/blob/master/CONTRIBUTION.md)  
-  
+
 # Docker   
 Use the Dockerfile in this Repository to build an image.  
-  
+
 Example: `docker build -t fredy/fredy /path/to/your/Dockerfile`  
-  
+
 ## Create & run a container  
-  
+
 Put your config.json to `/path/to/your/conf/`
-  
+
 Example: `docker create --name fredy -v /path/to/your/conf/:/conf -p 9988:9988 fredy/fredy`
-  
+
 ## Logs  
-  
+
 You can browse the logs with  `docker logs fredy -f`  
-  
