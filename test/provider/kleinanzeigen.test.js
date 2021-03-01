@@ -27,7 +27,6 @@ describe('#kleinanzeigen testsuite()', () => {
         notificationObj.payload.forEach((notify) => {
           /** check the actual structure **/
           expect(notify.id).to.be.a('number');
-          expect(notify.price).to.be.a('string');
           expect(notify.size).to.be.a('string');
           expect(notify.title).to.be.a('string');
           expect(notify.link).to.be.a('string');
