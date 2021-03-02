@@ -1,0 +1,12 @@
+version: '3.3'
+services:
+  fredy:
+    container_name: fredy
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    image: fredy/fredy
+    volumes:
+      - ./conf:/conf
+    ports:
+        - 9998:9998
