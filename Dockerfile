@@ -8,6 +8,9 @@ RUN cd /usr/src && git clone https://github.com/orangecoding/fredy.git
 
 RUN ln -s /usr/src/fredy/conf/ /conf
 
+# create db folder
+RUN mkdir /usr/src/fredy/db/
+
 RUN ln -s /usr/src/fredy/db/ /db
 
 RUN cd /usr/src/fredy/ && npm install
