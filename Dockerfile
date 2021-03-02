@@ -8,6 +8,8 @@ RUN cd /usr/src && git clone https://github.com/orangecoding/fredy.git
 
 RUN ln -s /usr/src/fredy/conf/ /conf
 
+RUN ln -s /usr/src/fredy/db/ /db
+
 RUN cd /usr/src/fredy/ && npm install
 
 WORKDIR  /usr/src/fredy
