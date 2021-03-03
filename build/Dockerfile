@@ -1,10 +1,15 @@
 FROM alpine:latest AS build
+# use given repository, default below:
+ARG repo=https://github.com/orangecoding/fredy.git
 
 RUN mkdir -p /usr/src/
 #Install Software
 RUN apk add --update nodejs npm git
 
-RUN cd /usr/src && git clone https://github.com/orangecoding/fredy.git
+# Output used repository
+RUN echo "Cloning from $repo"
+
+RUN cd /usr/src && git clone $repo
 
 RUN ln -s /usr/src/fredy/conf/ /conf
 
