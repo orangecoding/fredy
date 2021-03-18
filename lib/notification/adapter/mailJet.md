@@ -1,5 +1,4 @@
 ### MailJet Adapter
-
  
 To use [MailJet](https://mailjet.com), you need to create an account. You'll need to decided from which email address you want Fredy to send from.  
  
