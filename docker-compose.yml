@@ -7,7 +7,7 @@ services:
       context: ./build
       dockerfile: Dockerfile
       args:
-        repo: https://github.com/anbucher/fredy.git
+        repo: https://github.com/orangecoding/fredy.git
     image: fredy/fredy
     # map existing config and database
     volumes:
