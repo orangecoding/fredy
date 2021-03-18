@@ -1,0 +1,17 @@
+version: '3.3'
+services:
+  fredy:
+    container_name: fredy
+    # build from empty build folder to reduce size of image
+    build:
+      context: ./build
+      dockerfile: Dockerfile
+      args:
+        repo: https://github.com/anbucher/fredy.git
+    image: fredy/fredy
+    # map existing config and database
+    volumes:
+      - ./conf:/conf
+      - ./db:/db
+    ports:
+        - 9998:9998

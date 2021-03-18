@@ -73,7 +73,7 @@ Example: `docker build -t fredy/fredy /path/to/your/Dockerfile`
 
 Put your config.json to `/path/to/your/conf/`
 
-Example: `docker create --name fredy -v /path/to/your/conf/:/conf -p 9988:9988 fredy/fredy`
+Example: `docker create --name fredy -v /path/to/your/conf/:/conf -p 9998:9998 fredy/fredy`
 
 ## Logs  
 
