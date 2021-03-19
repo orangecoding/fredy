@@ -69,6 +69,10 @@ Use the Dockerfile in this Repository to build an image.
 
 Example: `docker build -t fredy/fredy /path/to/your/Dockerfile`  
 
+Or use docker-compose:
+
+Example `docker-compose build`
+
 ## Create & run a container  
 
 Put your config.json to `/path/to/your/conf/`
