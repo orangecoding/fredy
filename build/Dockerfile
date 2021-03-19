@@ -18,11 +18,13 @@ RUN mkdir /usr/src/fredy/db/
 
 RUN ln -s /usr/src/fredy/db/ /db
 
-RUN cd /usr/src/fredy/ && npm install 
+RUN npm i -g yarn
+
+RUN cd /usr/src/fredy/ && yarn
 
 WORKDIR  /usr/src/fredy
 
-RUN npm run prod
+RUN yarn run prod
 
 EXPOSE 9998
 
