@@ -18,6 +18,7 @@ module.exports = {
     publicPath: '/',
     filename: 'fredy.bundle.js',
   },
+  performance: { hints: false },
   module: {
     rules: [
       {
