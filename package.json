@@ -1,6 +1,6 @@
 {
   "name": "fredy",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
   "scripts": {
     "start": "node index.js",
@@ -72,7 +72,6 @@
     "react-switch": "^6.0.0",
     "redux": "4.0.5",
     "redux-thunk": "2.3.0",
-    "request-x-ray": "0.1.4",
     "restana": "4.8.1",
     "semantic-ui-react": "2.0.3",
     "serve-static": "^1.14.1",
