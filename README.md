@@ -57,8 +57,15 @@ yarn run test
 # Architecture
 ![Architecture](/doc/architecture.jpg "Architecture")
 
-## Why is Immoscout missing
-Immoscout decided to add "robot protection" to their service. Meaning if Fredy tries to check for listings, it will be recognized as a bot. I haven't found a way around it (yet) ;)
+## Immoscout 
+I have added EXPERIMENTAL support for Immoscout. Immoscout is somewhat special, coz they have decided to secure their service from bots using Re-Capture. Finding a way
+around this is barely possible. For _Fredy_ to be able to bypass the check, I'm using a service called [ScrapingAnt](https://scrapingant.com/).
+
+To be able to use Immoscout, you need to create an account and copy the apiKey into the config file under /conf/config.json.
+The rest should be done by _Fredy_. Keep in mind, the support is experimental. There might be bugs and you might not always get pass the re-capture check, but most of the time
+it works pretty good :)
+
+If you need more that the 1000 api calls you can do per month, I'd suggest opting for a paid account... (No I don't get any money for recommending good service)
 
 #### Contribution guidelines  
 
