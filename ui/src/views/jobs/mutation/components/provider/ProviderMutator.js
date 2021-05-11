@@ -85,6 +85,11 @@ export default function ProviderMutator({ onVisibilityChanged, visible = false, 
             When the search results are shown on the website, copy the url and paste it into the textfield below.
             <br />
             <span style={{ color: '#ff0000' }}>
+              If you chose Immoscout as a provider, make sure to also add the scrapingAnt apiKey to the config.json.
+              (See readme)
+            </span>
+            <br />
+            <span style={{ color: '#ff0000' }}>
               Do not forget to sort the results by date before copying the url to Fredy, so that Fredy always captures
               the latest search results.
             </span>

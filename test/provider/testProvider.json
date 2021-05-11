@@ -12,6 +12,10 @@
     "url": "https://www.immowelt.de/liste/duesseldorf-benrath/wohnungen/kaufen?geoid=10805111000004%2C10805111000005%2C10805111000006%2C10805111000007%2C10805111000009%2C10805111000010%2C10805111000011%2C10805111000013%2C10805111000014%2C10805111000015%2C10805111000016%2C10805111000017%2C10805111000018%2C10805111000019%2C10805111000023%2C10805111000024%2C10805111000027%2C10805111000032%2C10805111000034%2C10805111000035%2C10805111000039%2C10805111000041%2C10805111000042%2C10805111000043%2C10805111000047%2C10805111000048%2C10805111000049%2C10805111000051%2C10805111000052%2C10805111000053&roomi=3&prima=420000&wflmi=90&sort=createdate%2Bdesc",
     "enabled": true
   },
+  "immoscout": {
+    "url": "https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/duesseldorf/wohnung-mieten?enteredFrom=one_step_search",
+    "enabled": true
+  },
   "kalaydo": {
     "url": "https://www.kalaydo.de/immobilien/eigentumswohnung-kaufen/o/duesseldorf/4/?attr_gt_estate_size_living_area=90.0&attr_gt_no_of_rooms=3.5&maxPrice=420000.00&radius=5&resultsPerPage=50&sorting=-date",
     "enabled": true
