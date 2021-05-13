@@ -83,10 +83,11 @@ export default function JobMutator() {
       });
       history.push('/jobs');
     } catch (Exception) {
-      console.error(Exception);
+      console.error(Exception.json.message);
+
       ctx.showToast({
         title: 'Error',
-        message: Exception,
+        message: Exception.json != null ? Exception.json.message : Exception,
         delay: 35000,
         backgroundColor: '#db2828',
         color: '#fff',

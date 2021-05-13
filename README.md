@@ -17,7 +17,9 @@ yarn run start
 ```
 _Fredy_ will start with the default port, set to `9998`. You can access _Fredy_ by opening a browser `http://localhost:9998`. The default login is `admin` for username and password. (You should change the password asap when you plan to run Fredy on your server.)
 
-## Immoscout 
+![Screenshot 1](/doc/screenshot1.jpg "Screenshot 1") ![Screenshot 2](/doc/screenshot2.jpg "Screenshot 2") ![Screenshot 3](/doc/screenshot3.jpg "Screenshot 3")
+
+## Immoscout
 I have added **EXPERIMENTAL** support for Immoscout. Immoscout is somewhat special, coz they have decided to secure their service from bots using Re-Capture. Finding a way around this is barely possible. For _Fredy_ to be able to bypass the check, I'm using a service called [ScrapingAnt](https://scrapingant.com/). The trick is to use a headless browser, rotating proxies and (once successful validated) re-send the cookies each time.
 
 To be able to use Immoscout, you need to create an account and copy the apiKey into the config file under /conf/config.json.
@@ -27,7 +29,7 @@ If you need more that the 1000 api calls you can do per month, I'd suggest optin
 
 
 ## Understanding the fundamentals
-There are 3 important parts in Fredy, that you need to understand to leverage the full power of _Fredy_.
+There are 3 important parts in Fredy, that you need to understand leveraging the full power of _Fredy_.
 
 #### Adapter
 _Fredy_ supports multiple services. Immonet, Immowelt and Ebay are just a few. Those services are called adapter within _Fredy_. When creating a new job, you can choose 1 or many adapter.    
@@ -65,6 +67,16 @@ yarn run test
 
 # Architecture
 ![Architecture](/doc/architecture.jpg "Architecture")
+
+## Immoscout 
+I have added EXPERIMENTAL support for Immoscout. Immoscout is somewhat special, coz they have decided to secure their service from bots using Re-Capture. Finding a way
+around this is barely possible. For _Fredy_ to be able to bypass the check, I'm using a service called [ScrapingAnt](https://scrapingant.com/).
+
+To be able to use Immoscout, you need to create an account and copy the apiKey into the config file under /conf/config.json.
+The rest should be done by _Fredy_. Keep in mind, the support is experimental. There might be bugs and you might not always get pass the re-capture check, but most of the time
+it works pretty good :)
+
+If you need more that the 1000 api calls you can do per month, I'd suggest opting for a paid account... (No I don't get any money for recommending good service)
 
 #### Contribution guidelines  
 

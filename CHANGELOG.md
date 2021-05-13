@@ -1,3 +1,6 @@
+###### [V4.0.0]
+Bringing back Immoscout :tada:
+
 ###### [V3.0.0]
 This is basically a re-write, your old config file will not be compatible anymore. Please re-created your search jobs
 on the new ui and use the values from your previous config file if needed.
