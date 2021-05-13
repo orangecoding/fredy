@@ -29,6 +29,7 @@ export default function FredyApp() {
   useEffect(async () => {
     await dispatch.provider.getProvider();
     await dispatch.jobs.getJobs();
+    await dispatch.jobs.getProcessingTimes();
     await dispatch.notificationAdapter.getAdapter();
     await dispatch.user.getCurrentUser();
 

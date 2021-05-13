@@ -6,11 +6,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { xhrDelete, xhrPut } from '../../services/xhr';
 import { Button, Icon } from 'semantic-ui-react';
 import { useHistory } from 'react-router-dom';
+import ProcessingTimes from './ProcessingTimes';
 
 import './Jobs.less';
 
 export default function Jobs() {
   const jobs = useSelector((state) => state.jobs.jobs);
+  const processingTimes = useSelector((state) => state.jobs.processingTimes);
   const history = useHistory();
   const dispatch = useDispatch();
   const ctx = React.useContext(ToastContext);
@@ -61,10 +63,13 @@ export default function Jobs() {
 
   return (
     <div>
-      <Button primary className="jobs__newButton" onClick={() => history.push('/jobs/new')}>
-        <Icon name="plus" />
-        New Job
-      </Button>
+      <div>
+        {processingTimes != null && <ProcessingTimes processingTimes={processingTimes} />}
+        <Button primary className="jobs__newButton" onClick={() => history.push('/jobs/new')}>
+          <Icon name="plus" />
+          New Job
+        </Button>
+      </div>
 
       <JobTable
         jobs={jobs || []}

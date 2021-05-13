@@ -24,6 +24,7 @@ console.log(`Started Fredy successfully. Ui can be accessed via http://localhost
 /* eslint-enable no-console */
 setInterval(
   (function exec() {
+    config.lastRun = Date.now();
     jobStorage
       .getJobs()
       .filter((job) => job.enabled)
