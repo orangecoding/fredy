@@ -17,7 +17,7 @@ yarn run start
 ```
 _Fredy_ will start with the default port, set to `9998`. You can access _Fredy_ by opening a browser `http://localhost:9998`. The default login is `admin` for username and password. (You should change the password asap when you plan to run Fredy on your server.)
 
-![Screenshot 1](/doc/screenshot1.png "Screenshot 1") ![Screenshot 2](/doc/screenshot2.png "Screenshot 2") ![Screenshot 3](/doc/screenshot3.png "Screenshot 3")
+![Screenshot 1](/doc/screenshot_1.png "Screenshot 1") ![Screenshot 2](/doc/screenshot2.png "Screenshot 2") ![Screenshot 3](/doc/screenshot3.png "Screenshot 3")
 
 ## Immoscout
 I have added **EXPERIMENTAL** support for Immoscout. Immoscout is somewhat special, coz they have decided to secure their service from bots using Re-Capture. Finding a way around this is barely possible. For _Fredy_ to be able to bypass the check, I'm using a service called [ScrapingAnt](https://scrapingant.com/). The trick is to use a headless browser, rotating proxies and (once successful validated) re-send the cookies each time.
