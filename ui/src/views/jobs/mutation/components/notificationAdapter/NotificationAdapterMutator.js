@@ -174,7 +174,7 @@ export default function NotificationAdapterMutator({
             There are multiple ways how Fredy can send new listings to you. Chose your weapon...
           </p>
           <Dropdown
-            placeholder="Select a notification adapteer"
+            placeholder="Select a notification adapter"
             className="providerMutator__fields"
             selection
             value={selectedAdapter == null ? '' : selectedAdapter.id}
@@ -215,7 +215,7 @@ export default function NotificationAdapterMutator({
       </Modal.Content>
       <Modal.Actions>
         <Button
-          content="Try"
+          content="Try Notification Adapter"
           labelPosition="left"
           floated="left"
           icon="hand spock"
