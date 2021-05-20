@@ -42,15 +42,29 @@ const validate = (selectedAdapter) => {
   return [...new Set(results)];
 };
 
+function spreadPrefilledAdapterWithValues(prefilled, fields) {
+  if (prefilled != null && fields != null) {
+    Object.keys(fields).forEach((fieldKey) => {
+      prefilled.fields[fieldKey].value = fields[fieldKey];
+    });
+  }
+}
+
 export default function NotificationAdapterMutator({
   onVisibilityChanged,
   visible = false,
   selected = [],
+  editNotificationAdapter,
   onData,
 } = {}) {
   const adapter = useSelector((state) => state.notificationAdapter);
 
-  const [selectedAdapter, setSelectedAdapter] = useState(null);
+  const preFilledSelectedAdapter =
+    editNotificationAdapter == null ? null : adapter.find((a) => a.id === editNotificationAdapter.id);
+
+  spreadPrefilledAdapterWithValues(preFilledSelectedAdapter, editNotificationAdapter?.fields);
+
+  const [selectedAdapter, setSelectedAdapter] = useState(preFilledSelectedAdapter);
   const [validationMessage, setValidationMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
 
@@ -107,9 +121,12 @@ export default function NotificationAdapterMutator({
 
     setSelectedAdapter({
       ...selectedAdapter,
-      config: {
+      fields: {
         ...selectedAdapter.fields,
-        [key]: uiElement,
+        [key]: {
+          ...selectedAdapter.fields[key],
+          value,
+        },
       },
     });
   };
@@ -187,7 +204,11 @@ export default function NotificationAdapterMutator({
                 };
               })
               //filter out those, that have already been selected
-              .filter((option) => selected.find((selectedOption) => selectedOption.id === option.key) == null)
+              .filter((option) =>
+                editNotificationAdapter != null
+                  ? true
+                  : selected.find((selectedOption) => selectedOption.id === option.key) == null
+              )
               .sort(sortAdapter)}
             onChange={(e, { value }) => {
               setSuccessMessage(null);

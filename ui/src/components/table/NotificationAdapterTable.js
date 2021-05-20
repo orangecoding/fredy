@@ -12,7 +12,7 @@ const emptyTable = () => {
   );
 };
 
-const content = (adapterData, onRemove) => {
+const content = (adapterData, onRemove, onEdit) => {
   return (
     <Fragment>
       {adapterData.map((data) => {
@@ -21,6 +21,7 @@ const content = (adapterData, onRemove) => {
             <Table.Cell>{data.name}</Table.Cell>
             <Table.Cell>
               <div style={{ float: 'right' }}>
+                <Button circular color="blue" icon="edit" onClick={() => onEdit(data.id)} />
                 <Button circular color="red" icon="trash" onClick={() => onRemove(data.id)} />
               </div>
             </Table.Cell>
@@ -31,7 +32,7 @@ const content = (adapterData, onRemove) => {
   );
 };
 
-export default function NotificationAdapterTable({ notificationAdapter = [], onRemove } = {}) {
+export default function NotificationAdapterTable({ notificationAdapter = [], onRemove, onEdit } = {}) {
   return (
     <Table singleLine inverted>
       <Table.Header>
@@ -42,7 +43,7 @@ export default function NotificationAdapterTable({ notificationAdapter = [], onR
       </Table.Header>
 
       <Table.Body>
-        {notificationAdapter.length === 0 ? emptyTable() : content(notificationAdapter, onRemove)}
+        {notificationAdapter.length === 0 ? emptyTable() : content(notificationAdapter, onRemove, onEdit)}
       </Table.Body>
     </Table>
   );
