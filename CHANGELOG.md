@@ -1,3 +1,7 @@
+###### [V5.0.0]
+- Upgrading dependencies
+- NodeJS 12 is now the minimum supported version
+
 ###### [V4.0.0]
 Bringing back Immoscout :tada:
 
