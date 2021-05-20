@@ -31,8 +31,8 @@ const content = (jobs, onJobRemoval, onJobStatusChanged, onJobEdit, onJobInsight
             <Table.Cell>
               <div style={{ float: 'right' }}>
                 <Button circular color="teal" icon="chart line" onClick={() => onJobInsight(job.id)} />
-                <Button circular color="red" icon="trash" onClick={() => onJobRemoval(job.id)} />
                 <Button circular color="blue" icon="edit" onClick={() => onJobEdit(job.id)} />
+                <Button circular color="red" icon="trash" onClick={() => onJobRemoval(job.id)} />
               </div>
             </Table.Cell>
           </Table.Row>

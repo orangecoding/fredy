@@ -29,6 +29,7 @@ export default function JobMutator() {
 
   const [providerCreationVisible, setProviderCreationVisibility] = useState(false);
   const [notificationCreationVisible, setNotificationCreationVisibility] = useState(false);
+  const [editNotificationAdapter, setEditNotificationAdapter] = useState(null);
   const [providerData, setProviderData] = useState(defaultProviderData);
   const [name, setName] = useState(defaultName);
   const [blacklist, setBlacklist] = useState(defaultBlacklist);
@@ -88,7 +89,7 @@ export default function JobMutator() {
       ctx.showToast({
         title: 'Error',
         message: Exception.json != null ? Exception.json.message : Exception,
-        delay: 35000,
+        delay: 8000,
         backgroundColor: '#db2828',
         color: '#fff',
       });
@@ -106,14 +107,25 @@ export default function JobMutator() {
         }}
       />
 
-      <NotificationAdapterMutator
-        visible={notificationCreationVisible}
-        onVisibilityChanged={(visible) => setNotificationCreationVisibility(visible)}
-        selected={providerData}
-        onData={(data) => {
-          setNotificationAdapterData([...notificationAdapterData, data]);
-        }}
-      />
+      {notificationCreationVisible && (
+        <NotificationAdapterMutator
+          visible={notificationCreationVisible}
+          onVisibilityChanged={(visible) => {
+            setEditNotificationAdapter(null);
+            setNotificationCreationVisibility(visible);
+          }}
+          selected={notificationAdapterData}
+          editNotificationAdapter={
+            editNotificationAdapter == null
+              ? null
+              : notificationAdapterData.find((adapter) => adapter.id === editNotificationAdapter)
+          }
+          onData={(data) => {
+            const oldData = [...notificationAdapterData].filter((o) => o.id !== data.id);
+            setNotificationAdapterData([...oldData, data]);
+          }}
+        />
+      )}
 
       <Headline text={jobToBeEdit ? 'Edit a Job' : 'Create a new Job'} />
       <Form className="jobMutation__form">
@@ -174,7 +186,12 @@ export default function JobMutator() {
           <NotificationAdapterTable
             notificationAdapter={notificationAdapterData}
             onRemove={(adapterId) => {
+              setEditNotificationAdapter(null);
               setNotificationAdapterData(notificationAdapterData.filter((adapter) => adapter.id !== adapterId));
+            }}
+            onEdit={(adapterId) => {
+              setEditNotificationAdapter(adapterId);
+              setNotificationCreationVisibility(true);
             }}
           />
         </div>

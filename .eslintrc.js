@@ -6,7 +6,7 @@ module.exports = {
     browser: true,
   },
   parser: 'babel-eslint',
-  extends: ['eslint:recommended', 'prettier', 'prettier/react'],
+  extends: ['eslint:recommended', 'prettier'],
   plugins: ['react'],
   globals: {
     Promise: false,
