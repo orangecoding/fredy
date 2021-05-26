@@ -1,7 +1,1 @@
-{
-  "interval": 30,
-  "port": 9998,
-  "scrapingAnt": {
-    "apiKey": ""
-  }
-}
+{"interval":30,"port":9998,"scrapingAnt":{"apiKey":""},"workingHours":{}}
