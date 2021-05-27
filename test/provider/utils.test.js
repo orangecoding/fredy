@@ -24,7 +24,7 @@ describe('utils', () => {
       expect(utils.duringWorkingHoursOrNotSet(fakeWorkingHoursConfig('12:00', '13:00'), 0)).to.be.false;
     });
     it('should be true', () => {
-      expect(utils.duringWorkingHoursOrNotSet(fakeWorkingHoursConfig('12:00', '13:00'), 1622026740000)).to.be.true;
+      expect(utils.duringWorkingHoursOrNotSet(fakeWorkingHoursConfig('10:00', '16:00'), 1622026740000)).to.be.true;
     });
     it('should be true if nothing set', () => {
       expect(utils.duringWorkingHoursOrNotSet(fakeWorkingHoursConfig(null, null), 1622026740000)).to.be.true;
