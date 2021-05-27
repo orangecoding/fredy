@@ -31,7 +31,7 @@ _Fredy_ will start with the default port, set to `9998`. You can access _Fredy_ 
 ## Immoscout
 I have added **EXPERIMENTAL** support for Immoscout. Immoscout is somewhat special, coz they have decided to secure their service from bots using Re-Capture. Finding a way around this is barely possible. For _Fredy_ to be able to bypass the check, I'm using a service called [ScrapingAnt](https://scrapingant.com/). The trick is to use a headless browser, rotating proxies and (once successful validated) re-send the cookies each time.
 
-To be able to use Immoscout, you need to create an account and copy the apiKey into the config file under /conf/config.json.
+To be able to use Immoscout, you need to create an account at ScrapingAnt. Configure the ApiKey in the "General Settings" tab (visible when logged in as administrator).
 The rest should be done by _Fredy_. Keep in mind, the support is experimental. There might be bugs and you might not always get pass the re-capture check, but most of the time it works pretty good :)
 
 If you need more that the 1000 api calls you can do per month, I'd suggest opting for a paid account... ScrapingAnt loves OpenSource, therefor they've decided to give all _Fredy_ users a 10% discount by using the code **FREDY10** (No I don't get any money for recommending good services...)
