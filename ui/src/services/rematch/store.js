@@ -1,4 +1,5 @@
 import { notificationAdapter } from './models/notificationAdapter';
+import { generalSettings } from './models/generalSettings';
 import createLoadingPlugin from '@rematch/loading';
 import { provider } from './models/provider';
 import { createLogger } from 'redux-logger';
@@ -17,6 +18,7 @@ const store = init({
   name: 'fredy',
   models: {
     notificationAdapter,
+    generalSettings,
     provider,
     jobs,
     user,

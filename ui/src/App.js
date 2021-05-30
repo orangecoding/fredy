@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 
 import InsufficientPermission from './components/permission/InsufficientPermission';
 import PermissionAwareRoute from './components/permission/PermissionAwareRoute';
+import GeneralSettings from './views/generalSettings/GeneralSettings';
 import ToastsContainer from './components/toasts/ToastContainer';
 import JobMutation from './views/jobs/mutation/JobMutation';
 import UserMutator from './views/user/mutation/UserMutator';
@@ -78,6 +79,12 @@ export default function FredyApp() {
               currentUser={currentUser}
             />
             <PermissionAwareRoute name="Users" path="/users" component={<Users />} currentUser={currentUser} />
+            <PermissionAwareRoute
+              name="General Settings"
+              path="/generalSettings"
+              component={<GeneralSettings />}
+              currentUser={currentUser}
+            />
 
             <Redirect from="/" to={'/jobs'} />
           </Switch>
