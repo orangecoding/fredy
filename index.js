@@ -9,8 +9,9 @@ const path = './lib/provider';
 const provider = fs.readdirSync(path).filter((file) => file.endsWith('.js'));
 const config = require('./conf/config.json');
 
-const jobStorage = require('./lib/services/storage/jobStorage');
+const similarityCache = require('./lib/services/similarity-check/cache/similarityCache');
 const { setLastJobExecution } = require('./lib/services/storage/listingsStorage');
+const jobStorage = require('./lib/services/storage/jobStorage');
 const FredyRuntime = require('./lib/FredyRuntime');
 
 const { duringWorkingHoursOrNotSet } = require('./lib/utils');
@@ -50,7 +51,13 @@ setInterval(
                 throw new Error(`Provider Config for provider with id ${providerId} not found.`);
               }
               pro.init(providerConfig, job.blacklist);
-              await new FredyRuntime(pro.config, job.notificationAdapter, providerId, job.id).execute();
+              await new FredyRuntime(
+                pro.config,
+                job.notificationAdapter,
+                providerId,
+                job.id,
+                similarityCache
+              ).execute();
               setLastJobExecution(job.id);
             });
         });
