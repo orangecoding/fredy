@@ -1,8 +1,13 @@
+###### [V5.2.0]
+- Upgrading dependencies
+- Adding new similarity check layer (Duplicates are being removed now)
+- Adding paging for search results
+
 ###### [V5.1.0]
 - Upgrading dependencies
 - NodeJS 12.13 is now the minimum supported version
 - Adding general settings as new configuration page to ui
-- Adding new feature working hours 
+- Adding new feature working hours
 
 ###### [V5.0.0]
 - Upgrading dependencies
