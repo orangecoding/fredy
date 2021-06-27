@@ -1,4 +1,4 @@
-const similarityCache = require('../../lib/services/similarity-check/cache/similarityCache');
+const similarityCache = require('../../lib/services/similarity-check/similarityCache');
 const mockNotification = require('../mocks/mockNotification');
 const providerConfig = require('./testProvider.json');
 const mockStore = require('../mocks/mockStore');

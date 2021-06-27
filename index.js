@@ -9,7 +9,7 @@ const path = './lib/provider';
 const provider = fs.readdirSync(path).filter((file) => file.endsWith('.js'));
 const config = require('./conf/config.json');
 
-const similarityCache = require('./lib/services/similarity-check/cache/similarityCache');
+const similarityCache = require('./lib/services/similarity-check/similarityCache');
 const { setLastJobExecution } = require('./lib/services/storage/listingsStorage');
 const jobStorage = require('./lib/services/storage/jobStorage');
 const FredyRuntime = require('./lib/FredyRuntime');

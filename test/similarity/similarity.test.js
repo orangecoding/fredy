@@ -1,4 +1,4 @@
-const SimilarityCacheEntry = require('../../lib/services/similarity-check/cache/SimilarityCacheEntry');
+const SimilarityCacheEntry = require('../../lib/services/similarity-check/SimilarityCacheEntry');
 const expect = require('chai').expect;
 
 describe('similarityCheck', () => {
