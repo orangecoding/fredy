@@ -40,9 +40,8 @@ export default function Login() {
 
   return (
     <div className="login">
+      <div className="login__bgImage" style={{ background: `url("${cityBackground}")` }} />
       <Logo />
-      <div className="login__bgImage" style={{ background: `url(${cityBackground})` }} />
-
       <form>
         <div className="login__loginWrapper">
           {error && <Message negative icon="error" content={error} />}
