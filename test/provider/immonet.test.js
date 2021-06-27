@@ -7,6 +7,10 @@ const expect = require('chai').expect;
 const provider = require('../../lib/provider/immonet');
 
 describe('#immonet testsuite()', () => {
+  after(() => {
+    similarityCache.stopCacheCleanup();
+  });
+
   provider.init(providerConfig.immonet, [], []);
   const Fredy = proxyquire('../../lib/FredyRuntime', {
     './services/storage/listingsStorage': {

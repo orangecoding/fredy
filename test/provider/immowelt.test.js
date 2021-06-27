@@ -7,6 +7,9 @@ const expect = require('chai').expect;
 const provider = require('../../lib/provider/immowelt');
 
 describe('#immowelt testsuite()', () => {
+  after(() => {
+    similarityCache.stopCacheCleanup();
+  });
   it('should test immowelt provider', async () => {
     provider.init(providerConfig.immowelt, [], []);
     const Fredy = proxyquire('../../lib/FredyRuntime', {

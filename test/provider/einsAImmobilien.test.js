@@ -7,6 +7,10 @@ const expect = require('chai').expect;
 const provider = require('../../lib/provider/einsAImmobilien');
 
 describe('#einsAImmobilien testsuite()', () => {
+  after(() => {
+    similarityCache.stopCacheCleanup();
+  });
+
   provider.init(providerConfig.einsAImmobilien, [], []);
 
   const Fredy = proxyquire('../../lib/FredyRuntime', {

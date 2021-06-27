@@ -8,6 +8,9 @@ const provider = require('../../lib/provider/immoscout');
 const scrapingAnt = require('../../lib/services/scrapingAnt');
 
 describe('#immoscout testsuite()', () => {
+  after(() => {
+    similarityCache.stopCacheCleanup();
+  });
   provider.init(providerConfig.immoscout, [], []);
   const Fredy = proxyquire('../../lib/FredyRuntime', {
     './services/storage/listingsStorage': {

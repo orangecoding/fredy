@@ -7,6 +7,9 @@ const expect = require('chai').expect;
 const provider = require('../../lib/provider/wgGesucht');
 
 describe('#wgGesucht testsuite()', () => {
+  after(() => {
+    similarityCache.stopCacheCleanup();
+  });
   provider.init(providerConfig.wgGesucht, [], []);
   const Fredy = proxyquire('../../lib/FredyRuntime', {
     './services/storage/listingsStorage': {

@@ -7,6 +7,9 @@ const expect = require('chai').expect;
 const provider = require('../../lib/provider/neubauKompass');
 
 describe('#neubauKompass testsuite()', () => {
+  after(() => {
+    similarityCache.stopCacheCleanup();
+  });
   provider.init(providerConfig.neubauKompass, [], []);
   const Fredy = proxyquire('../../lib/FredyRuntime', {
     './services/storage/listingsStorage': {

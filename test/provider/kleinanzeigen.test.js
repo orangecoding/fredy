@@ -7,6 +7,9 @@ const expect = require('chai').expect;
 const provider = require('../../lib/provider/kleinanzeigen');
 
 describe('#kleinanzeigen testsuite()', () => {
+  after(() => {
+    similarityCache.stopCacheCleanup();
+  });
   it('should test kleinanzeigen provider', async () => {
     provider.init(providerConfig.kleinanzeigen, [], []);
     const Fredy = proxyquire('../../lib/FredyRuntime', {
