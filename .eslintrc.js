@@ -4,6 +4,7 @@ module.exports = {
     es6: true,
     node: true,
     browser: true,
+    mocha: true,
   },
   parser: 'babel-eslint',
   extends: ['eslint:recommended', 'prettier'],
@@ -11,6 +12,7 @@ module.exports = {
   globals: {
     Promise: false,
     describe: true,
+    after: true,
     it: true,
     fetch: true,
   },

@@ -2,18 +2,17 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width:100%;
+  width: 100%;
   height: 100%;
 
   &__bgImage {
     background-size: cover;
     filter: blur(8px);
     -webkit-filter: blur(8px);
-    background-size: cover;
     position: absolute;
     top: 0;
     left: 0;
-    z-index: -1;
+    z-index: 0;
     right: 0;
     bottom: 0;
   }
@@ -23,9 +22,14 @@
     border-radius: 30px;
     height: 25rem;
     width: 30rem;
+    z-index: 1;
     background-color: #151313ab;
     display: flex;
     flex-direction: column;
     padding: 2rem;
+  }
+
+  form {
+    z-index: 1;
   }
 }

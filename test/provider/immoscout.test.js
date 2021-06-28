@@ -1,3 +1,4 @@
+const similarityCache = require('../../lib/services/similarity-check/similarityCache');
 const mockNotification = require('../mocks/mockNotification');
 const providerConfig = require('./testProvider.json');
 const mockStore = require('../mocks/mockStore');
@@ -7,6 +8,9 @@ const provider = require('../../lib/provider/immoscout');
 const scrapingAnt = require('../../lib/services/scrapingAnt');
 
 describe('#immoscout testsuite()', () => {
+  after(() => {
+    similarityCache.stopCacheCleanup();
+  });
   provider.init(providerConfig.immoscout, [], []);
   const Fredy = proxyquire('../../lib/FredyRuntime', {
     './services/storage/listingsStorage': {
@@ -25,7 +29,7 @@ describe('#immoscout testsuite()', () => {
         return;
       }
 
-      const fredy = new Fredy(provider.config, null, provider.metaInformation.id, 'test1');
+      const fredy = new Fredy(provider.config, null, provider.metaInformation.id, 'test1', similarityCache);
       fredy.execute().then((listing) => {
         expect(listing).to.be.a('array');
 

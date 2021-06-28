@@ -1,3 +1,4 @@
+const similarityCache = require('../../lib/services/similarity-check/similarityCache');
 const mockNotification = require('../mocks/mockNotification');
 const providerConfig = require('./testProvider.json');
 const mockStore = require('../mocks/mockStore');
@@ -6,6 +7,10 @@ const expect = require('chai').expect;
 const provider = require('../../lib/provider/immonet');
 
 describe('#immonet testsuite()', () => {
+  after(() => {
+    similarityCache.stopCacheCleanup();
+  });
+
   provider.init(providerConfig.immonet, [], []);
   const Fredy = proxyquire('../../lib/FredyRuntime', {
     './services/storage/listingsStorage': {
@@ -16,7 +21,7 @@ describe('#immonet testsuite()', () => {
 
   it('should test immonet provider', async () => {
     return await new Promise((resolve) => {
-      const fredy = new Fredy(provider.config, null, provider.metaInformation.id, 'test1');
+      const fredy = new Fredy(provider.config, null, provider.metaInformation.id, 'test1', similarityCache);
       fredy.execute().then((listing) => {
         expect(listing).to.be.a('array');
 
