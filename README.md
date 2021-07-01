@@ -2,9 +2,11 @@
 
 [![Build Status](https://travis-ci.org/orangecoding/fredy.svg?branch=master)](https://travis-ci.org/orangecoding/fredy)
 
-_Fredy_ scrapes multiple services (Immonet, Immowelt etc.) as often as you want and send new listings to you once they appear. The list of available services can easily be extended. For your convenience, a ui helps you to configure your search jobs.   
+Searching an apartment in Germany can be quite frustrating. Not any longer as Fredy will take over and only notifies you once new listings have been found that matches your requirements.
 
-If _Fredy_ found matching results, it will send them to you via Slack, Email, Telegram etc. (More adapter possible.) As _Fredy_ will store the listings it found, new results will not be sent twice (and as a side-effect, _Fredy_ can show some statistics..)  
+_Fredy_ scrapes multiple services (Immonet, Immowelt etc.) and send new listings to you once they appear. The list of available services can easily be extended. For your convenience, a ui helps you to configure your search jobs.   
+
+If _Fredy_ found matching results, it will send them to you via Slack, Email, Telegram etc. (More adapter possible.) As _Fredy_ will store the listings it has found, new results will not be sent twice (and as a side-effect, _Fredy_ can show some statistics..). Furthermore, _Fredy_ checks duplicates per scraping so that the same listings are not being sent when posted on various platforms. (Happens more often than one might think)
 
 ## Usage  
 
@@ -29,7 +31,7 @@ _Fredy_ will start with the default port, set to `9998`. You can access _Fredy_ 
 </p>
 
 ## Immoscout
-I have added **EXPERIMENTAL** support for Immoscout. Immoscout is somewhat special, coz they have decided to secure their service from bots using Re-Capture. Finding a way around this is barely possible. For _Fredy_ to be able to bypass the check, I'm using a service called [ScrapingAnt](https://scrapingant.com/). The trick is to use a headless browser, rotating proxies and (once successful validated) re-send the cookies each time.
+I have added **experimental** support for Immoscout. Immoscout is somewhat special, coz they have decided to secure their service from bots using Re-Capture. Finding a way around this is barely possible. For _Fredy_ to be able to bypass the check, I'm using a service called [ScrapingAnt](https://scrapingant.com/). The trick is to use a headless browser, rotating proxies and (once successful validated) re-send the cookies each time.
 
 To be able to use Immoscout, you need to create an account at ScrapingAnt. Configure the ApiKey in the "General Settings" tab (visible when logged in as administrator).
 The rest should be done by _Fredy_. Keep in mind, the support is experimental. There might be bugs and you might not always get pass the re-capture check, but most of the time it works pretty good :)
