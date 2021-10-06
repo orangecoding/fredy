@@ -1,3 +1,8 @@
+###### [V5.3.0]
+- Upgrading dependencies
+- It's now possible to send mails to multiple receiver using comma separation for MailJet & Sendgrid
+- Fixing Immowelt scraping
+
 ###### [V5.2.0]
 - Upgrading dependencies
 - Adding new similarity check layer (Duplicates are being removed now)
