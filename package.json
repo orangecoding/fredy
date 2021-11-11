@@ -32,6 +32,7 @@
     "house",
     "rent",
     "immoscout",
+    "scraper",
     "immonet",
     "immowelt",
     "immobilienscout24"
@@ -54,7 +55,8 @@
     "@rematch/core": "2.1.0",
     "@rematch/loading": "2.1.0",
     "@sendgrid/mail": "7.4.7",
-    "axios": "0.22.0",
+    "axios": "0.24.0",
+    "axios-retry": "^3.2.4",
     "body-parser": "1.19.0",
     "cookie-session": "1.4.0",
     "handlebars": "4.7.7",
