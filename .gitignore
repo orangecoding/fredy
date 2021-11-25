@@ -3,3 +3,4 @@ ui/public/
 db/
 npm-debug.log
 .DS_Store
+.idea
