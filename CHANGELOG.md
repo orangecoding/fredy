@@ -1,3 +1,13 @@
+###### [V5.4.0]
+- Upgrading dependencies
+- Provider urls are now automagically been changed to include the correct sort order for search results
+
+```
+Note: It has been an point of confusion since the very beginning of Fredy, that people simply copied the url, but
+did not take care of sorting the search results by date. If this is not done, Fredy will most likely not see the latest
+results, thus cannot report them. This release fixes it by adding the necessary params (or replaces them).
+```
+
 ###### [V5.3.0]
 - Upgrading dependencies
 - It's now possible to send mails to multiple receiver using comma separation for MailJet & Sendgrid

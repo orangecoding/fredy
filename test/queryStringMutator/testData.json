@@ -1,0 +1,33 @@
+[
+  {
+    "url": "https://www.immowelt.de/liste/40589/wohnungen/mieten?d=true&sd=DESC&sf=PRIMARY_PRICE_AMOUNT&sp=1",
+    "shouldBecome": "https://www.immowelt.de/liste/40589/wohnungen/mieten?d=true&sd=DESC&sf=TIMESTAMP&sp=1",
+    "id": "immowelt"
+  },
+  {
+    "url": "https://www.1a-immobilienmarkt.de/suchen/duesseldorf/wohnung-mieten.html?search=yes",
+    "shouldBecome": "https://www.1a-immobilienmarkt.de/suchen/duesseldorf/wohnung-mieten.html?search=yes&sort_type=newest",
+    "id": "einsAImmobilien"
+  },
+  {
+    "url": "https://www.wg-gesucht.de/1-zimmer-wohnungen-in-Dusseldorf.30.1.1.0.html?sort_column=1&sort_order=0",
+    "shouldBecome": "https://www.wg-gesucht.de/1-zimmer-wohnungen-in-Dusseldorf.30.1.1.0.html?sort_column=0&sort_order=0",
+    "id": "wgGesucht"
+  },
+
+  {
+    "url": "https://www.immonet.de/immobiliensuche/sel.do?sortby=0&suchart=1&objecttype=1&marketingtype=2&parentcat=1&locationname=d%C3%BCsseldorf",
+    "shouldBecome": "https://www.immonet.de/immobiliensuche/sel.do?sortby=19&suchart=1&objecttype=1&marketingtype=2&parentcat=1&locationname=d%C3%BCsseldorf",
+    "id": "immonet"
+  },
+  {
+    "url": "https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/duesseldorf/wohnung-mieten",
+    "shouldBecome": "https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/duesseldorf/wohnung-mieten?sorting=2",
+    "id": "immoscout"
+  },
+  {
+    "url": "https://www.neubaukompass.de/neubau-immobilien/berlin-region/",
+    "shouldBecome": "https://www.neubaukompass.de/neubau-immobilien/berlin-region/?Sortierung=Id&Richtung=DESC",
+    "id": "neubauKompass"
+  }
+]
