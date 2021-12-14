@@ -38,7 +38,6 @@ describe('#immowelt testsuite()', () => {
           expect(notify.address).to.be.a('string');
 
           /** check the values if possible **/
-          expect(notify.price).that.does.include('€');
           if (notify.size.trim().toLowerCase() !== 'k.a.') {
             expect(notify.size).that.does.include('m²');
           }
