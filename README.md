@@ -2,22 +2,22 @@
 
 [![Build Status](https://travis-ci.org/orangecoding/fredy.svg?branch=master)](https://travis-ci.org/orangecoding/fredy)
 
-Searching an apartment in Germany can be quite frustrating. Not any longer as Fredy will take over and only notifies you once new listings have been found that matches your requirements.
+Searching an apartment in Germany can be a frustrating task. Not any longer though, as _Fredy_ will take over and will only notify you once new listings have been found that match your requirements.
 
-_Fredy_ scrapes multiple services (Immonet, Immowelt etc.) and send new listings to you once they appear. The list of available services can easily be extended. For your convenience, a ui helps you to configure your search jobs.   
+_Fredy_ scrapes multiple services (Immonet, Immowelt etc.) and send new listings to you once they become available. The list of available services can easily be extended. For your convenience, _Fredy_ has a UI to help you configure your search jobs.   
 
-If _Fredy_ found matching results, it will send them to you via Slack, Email, Telegram etc. (More adapter possible.) As _Fredy_ will store the listings it has found, new results will not be sent twice (and as a side-effect, _Fredy_ can show some statistics..). Furthermore, _Fredy_ checks duplicates per scraping so that the same listings are not being sent when posted on various platforms. (Happens more often than one might think)
+If _Fredy_ finds matching results, it will send them to you via Slack, Email, Telegram etc. (More adapters can be configured.) As _Fredy_ stores the listings it has found, new results will not be sent to you twice (and as a side-effect, _Fredy_ can show some statistics). Furthermore, _Fredy_ checks duplicates per scraping so that the same listings are not being sent twice or more when posted on various platforms (which happens more often than one might think).
 
 ## Usage  
 
-- Make sure to use NodeJs 12 and above
-- Run the following commands
+- Make sure to use Node.js 12 or above
+- Run the following commands:
 ```ssh
 yarn (or npm install)
 yarn run prod
 yarn run start
 ```
-_Fredy_ will start with the default port, set to `9998`. You can access _Fredy_ by opening a browser `http://localhost:9998`. The default login is `admin` both for username and password. (You should change the password asap when you plan to run Fredy on your server.)
+_Fredy_ will start with the default port, set to `9998`. You can access _Fredy_ by opening your browser at `http://localhost:9998`. The default login is `admin`, both for username and password. You should change the password as soon as possible when you plan to run Fredy on a server.
 
 <p align="center">
   <img alt="Job Configuration" src="https://github.com/orangecoding/fredy/blob/master/doc/screenshot__1.png" width="30%">
@@ -30,48 +30,38 @@ _Fredy_ will start with the default port, set to `9998`. You can access _Fredy_ 
 
 </p>
 
-## Immoscout
-I have added **experimental** support for Immoscout. Immoscout is somewhat special, coz they have decided to secure their service from bots using Re-Capture. Finding a way around this is barely possible. For _Fredy_ to be able to bypass the check, I'm using a service called [ScrapingAnt](https://scrapingant.com/). The trick is to use a headless browser, rotating proxies and (once successful validated) re-send the cookies each time.
-
-To be able to use Immoscout, you need to create an account at ScrapingAnt. Configure the ApiKey in the "General Settings" tab (visible when logged in as administrator).
-The rest should be done by _Fredy_. Keep in mind, the support is experimental. There might be bugs and you might not always get pass the re-capture check, but most of the time it works pretty good :)
-
-If you need more that the 1000 api calls you can do per month, I'd suggest opting for a paid account... ScrapingAnt loves OpenSource, therefor they've decided to give all _Fredy_ users a 10% discount by using the code **FREDY10** (No I don't get any money for recommending good services...)
-
-
 ## Understanding the fundamentals
-There are 3 important parts in Fredy, that you need to understand leveraging the full power of _Fredy_.
+There are 3 important parts in Fredy, that you need to understand to leverage the full power of _Fredy_.
 
 #### Adapter
-_Fredy_ supports multiple services. Immonet, Immowelt and Ebay are just a few. Those services are called adapter within _Fredy_. When creating a new job, you can choose 1 or many adapter.    
-An adapter holds the url that points to the search results for the service. If you go to immonet.de and search for something, the shown url in the browser is what the adapter needs to do it's magic.   
-**It is important that you order the search results by date, so that _Fredy_ always picks the latest ones first**
+_Fredy_ supports multiple services. Immonet, Immowelt and Ebay are just a few examples. Those services are called adapters within _Fredy_. When creating a new job, you can choose one or more adapters.    
+An adapter contains the URL that points to the search results for the respective service. If you go to immonet.de and search for something, the displayed URL in the browser is what the adapter needs to do its magic.   
+**It is important that you order the search results by date, so that _Fredy_ always picks the latest results first!**
 
 #### Provider
-_Fredy_ supports multiple provider. Slack, SendGrid, Telegram etc. A search job can have as many provider as supported by _Fredy_. Each provider needs different configuration values, which you have to provide when using it. A provider itself dictactes how the frontend renders by telling the frontend what information it needs in order to send listings to the user.
+_Fredy_ supports multiple providers, such as Slack, SendGrid, Telegram etc. A search job can have as many providers as supported by _Fredy_. Each provider needs different configuration values, which you have to provide when using them. A provider dictactes how the frontend renders by telling the frontend what information it needs in order to send listings to the user.
 
 #### Jobs
-A Job wraps adapter and provider. _Fredy_ runs the configured jobs in a specific interval (can be configured in `/conf/config.json`).
+A Job wraps adapters and providers. _Fredy_ runs the configured jobs in a specific interval (can be configured in `/conf/config.json`).
 
 ## Creating your first job
-To create your first job, click on the button "Create New Job" on the job table. The job creation dialog should be self explanatory, however there's one important thing.
-When configuring adapter, before copying the url from your browser make sure that you have sorted the results by date to make sure _Fredy_ always picks the latest results first.
+To create your first job, click on the button "Create New Job" on the job table. The job creation dialog should be self-explanatory, however there is one important thing.
+When configuring adapters, before copying the URL from your browser, make sure that you have sorted the results by date to make sure _Fredy_ always picks the latest results first.
 
 ## User management
-As an administrator, you can create/edit and remove user from _Fredy_. Be careful, each job is connected to the user that has created the job. If you remove the user, the jobs will also be removed.
-
+As an administrator, you can create, edit and remove users from _Fredy_. Be careful, each job is connected to the user that has created the job. If you remove the user, their jobs will also be removed.
 
 # Development
 
-### Running Fredy in dev mode
-To run _Fredy_ in dev mode, you need to run the backend & frontend separately. Run the backend in your favorite IDE, the frontend can be started from the terminal.
+### Running Fredy in development mode
+To run _Fredy_ in development mode, you need to run the backend & frontend separately. Run the backend in your favorite IDE, the frontend can be started from the terminal.
 ```shell
 yarn run dev
 ```
-You should now be able to access _Fredy_ with your browser. Go to `http://localhost:9000`
+You should now be able to access _Fredy_ from your browser. Go to `http://localhost:9000`.
 
 ### Running Tests
-To run the tests, simply run
+To run the tests, run
 ```shell
 yarn run test
 ```
@@ -79,22 +69,20 @@ yarn run test
 # Architecture
 ![Architecture](/doc/architecture.jpg "Architecture")
 
-## Immoscout 
-I have added EXPERIMENTAL support for Immoscout. Immoscout is somewhat special, coz they have decided to secure their service from bots using Re-Capture. Finding a way
-around this is barely possible. For _Fredy_ to be able to bypass the check, I'm using a service called [ScrapingAnt](https://scrapingant.com/).
+## Immoscout
+I have added **experimental** support for Immoscout. Immoscout is somewhat special, because they have decided to secure their service from bots using Re-Capture. Finding a way around this is barely possible. For _Fredy_ to be able to bypass this check, I'm using a service called [ScrapingAnt](https://scrapingant.com/). The trick is to use a headless browser, rotating proxies and (once successfully validated) to re-send the cookies each time.
 
-To be able to use Immoscout, you need to create an account and copy the apiKey into the config file under /conf/config.json.
-The rest should be done by _Fredy_. Keep in mind, the support is experimental. There might be bugs and you might not always get pass the re-capture check, but most of the time
-it works pretty good :)
+To be able to use Immoscout, you need to create an account at ScrapingAnt. Configure the API key in the "General Settings" tab (visible when logged in as administrator).
+The rest will be handled by _Fredy_. Keep in mind, the support is experimental. There might be bugs and you might not always pass the re-capture check, but most of the time it works rather well :)
 
-If you need more that the 1000 api calls you can do per month, I'd suggest opting for a paid account... (No I don't get any money for recommending good service)
+If you need more than the 1000 API calls allowed per month, I'd suggest opting for a paid account... ScrapingAnt loves OpenSource, therefore they have decided to give all _Fredy_ users a 10% discount by using the code **FREDY10** (Disclaimer: I do not earn any money for recommending their service).
 
 #### Contribution guidelines  
 
-See [Contribution](https://github.com/orangecoding/fredy/blob/master/CONTRIBUTION.md)  
+See [Contributing](https://github.com/orangecoding/fredy/blob/master/CONTRIBUTING.md)  
 
 # Docker   
-Use the Dockerfile in this Repository to build an image.  
+Use the Dockerfile in this repository to build an image.  
 
 Example: `docker build -t fredy/fredy /path/to/your/Dockerfile`  
 
@@ -104,10 +92,10 @@ Example `docker-compose build`
 
 ## Create & run a container  
 
-Put your config.json to `/path/to/your/conf/`
+Put your config.json into a path of your choice, such as `/path/to/your/conf/`.
 
 Example: `docker create --name fredy -v /path/to/your/conf/:/conf -p 9998:9998 fredy/fredy`
 
 ## Logs  
 
-You can browse the logs with  `docker logs fredy -f`  
+You can browse the logs with  `docker logs fredy -f`.
