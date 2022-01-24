@@ -4,10 +4,8 @@ services:
     container_name: fredy
     # build from empty build folder to reduce size of image
     build:
-      context: ./build
+      context: .
       dockerfile: Dockerfile
-      args:
-        repo: https://github.com/orangecoding/fredy.git
     image: fredy/fredy
     # map existing config and database
     volumes:
