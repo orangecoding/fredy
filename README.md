@@ -1,6 +1,6 @@
 <img src="https://github.com/orangecoding/fredy/blob/master/doc/logo.png" width="400">  
 
-[![Build Status](https://github.com/orangecoding/fredy/actions/workflows/test.yml/badge.svg)
+![Build Status](https://github.com/orangecoding/fredy/actions/workflows/test.yml/badge.svg)
 
 Searching an apartment in Germany can be a frustrating task. Not any longer though, as _Fredy_ will take over and will only notify you once new listings have been found that match your requirements.
 
