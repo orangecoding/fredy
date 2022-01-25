@@ -90,7 +90,7 @@ Or use docker-compose:
 
 Example `docker-compose build`
 
-Or use tbe container, that will be build automatically.
+Or use the container that will be built automatically.
 
 `docker pull ghcr.io/orangecoding/fredy:master`
 
