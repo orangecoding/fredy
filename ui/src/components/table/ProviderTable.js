@@ -12,10 +12,6 @@ const emptyTable = () => {
   );
 };
 
-const truncate = (str, n) => {
-  return str.length > n ? str.substr(0, n - 1) + '…' : str;
-};
-
 const content = (providerData, onRemove) => {
   return (
     <Fragment>
@@ -23,7 +19,11 @@ const content = (providerData, onRemove) => {
         return (
           <Table.Row key={data.id}>
             <Table.Cell>{data.name}</Table.Cell>
-            <Table.Cell>{truncate(data.url, 60)}</Table.Cell>
+            <Table.Cell>
+              <a href={data.url} target="_blank" rel="noopener noreferrer">
+                Visit site
+              </a>
+            </Table.Cell>
             <Table.Cell>
               <div style={{ float: 'right' }}>
                 <Button circular color="red" icon="trash" onClick={() => onRemove(data.id)} />
