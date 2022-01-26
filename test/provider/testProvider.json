@@ -16,6 +16,10 @@
     "url": "https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/duesseldorf/wohnung-mieten?enteredFrom=one_step_search",
     "enabled": true
   },
+  "immoswp": {
+    "url": "https://immo.swp.de/suchergebnisse?l=M%C3%BCnchen&r=0km&_multiselect_r=0km&ut=private&t=apartment%3Arental&a=de.muenchen&pf=&pt=&rf=0&rt=0&sf=50&st=&yf=&yt=&ff=&ft=&s=most_recently_updated_first&pa=&o=&ad=&u=",
+    "enabled": true
+  },
   "kalaydo": {
     "url": "https://www.kalaydo.de/immobilien/eigentumswohnung-kaufen/o/duesseldorf/4/?attr_gt_estate_size_living_area=90.0&attr_gt_no_of_rooms=3.5&maxPrice=420000.00&radius=5&resultsPerPage=50&sorting=-date",
     "enabled": true
