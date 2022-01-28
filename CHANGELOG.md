@@ -1,4 +1,4 @@
-###### [V5.4.3]
+###### [V5.4.4]
 - Add support for Immo Südwest Presse (immo.swp.de)
 - Telegram: Use job name instead of ID and link in title
 - Fix race condition if user ID is in session but not in user store
