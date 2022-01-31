@@ -1,3 +1,4 @@
+require('dotenv').config();
 /********OPTIONAL INSTANA INITIALIZATION BEGIN********/
 //if you want to use Instana to monitor fredy, go to https://www.instana.com and
 // try it yourself by signing up for a free trial

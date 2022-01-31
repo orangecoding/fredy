@@ -84,10 +84,7 @@ See [Contributing](https://github.com/orangecoding/fredy/blob/master/CONTRIBUTIN
 ### Monitoring
 
 _Fredy_ can be monitored by [Instana](https://www.instana.com). If you are interested, sign up for a free trial. This is totally optional of course :)  
-If you want to use Instana to monitor _Fredy_, you have to set an environment variable to true before starting _Fredy_.
-```
-SET INSTANA_MONITORING=true
-```
+If you want to use Instana to monitor _Fredy_, please change the variable `INSTANA_MONITORING` in the `.env` file to `true`.
 
 # Docker   
 Use the Dockerfile in this repository to build an image.  
