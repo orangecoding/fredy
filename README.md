@@ -69,7 +69,7 @@ yarn run test
 # Architecture
 ![Architecture](/doc/architecture.jpg "Architecture")
 
-## Immoscout
+### Immoscout
 I have added **experimental** support for Immoscout. Immoscout is somewhat special, because they have decided to secure their service from bots using Re-Capture. Finding a way around this is barely possible. For _Fredy_ to be able to bypass this check, I'm using a service called [ScrapingAnt](https://scrapingant.com/). The trick is to use a headless browser, rotating proxies and (once successfully validated) to re-send the cookies each time.
 
 To be able to use Immoscout, you need to create an account at ScrapingAnt. Configure the API key in the "General Settings" tab (visible when logged in as administrator).
@@ -77,9 +77,17 @@ The rest will be handled by _Fredy_. Keep in mind, the support is experimental. 
 
 If you need more than the 1000 API calls allowed per month, I'd suggest opting for a paid account... ScrapingAnt loves OpenSource, therefore they have decided to give all _Fredy_ users a 10% discount by using the code **FREDY10** (Disclaimer: I do not earn any money for recommending their service).
 
-#### Contribution guidelines  
+### Contribution guidelines  
 
-See [Contributing](https://github.com/orangecoding/fredy/blob/master/CONTRIBUTING.md)  
+See [Contributing](https://github.com/orangecoding/fredy/blob/master/CONTRIBUTING.md)
+
+### Monitoring
+
+_Fredy_ can be monitored by [Instana](https://www.instana.com). If you are interested, sign up for a free trial. This is totally optional of course :)  
+If you want to use Instana to monitor _Fredy_, you have to set an environment variable to true before starting _Fredy_.
+```
+SET INSTANA_MONITORING=true
+```
 
 # Docker   
 Use the Dockerfile in this repository to build an image.  

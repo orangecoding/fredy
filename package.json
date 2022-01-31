@@ -1,6 +1,6 @@
 {
   "name": "fredy",
-  "version": "5.4.4",
+  "version": "5.4.5",
   "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
   "scripts": {
     "start": "node index.js",
@@ -53,6 +53,7 @@
     "Firefox ESR"
   ],
   "dependencies": {
+    "@instana/collector": "^1.137.5",
     "@rematch/core": "2.2.0",
     "@rematch/loading": "2.1.2",
     "@sendgrid/mail": "7.6.0",

@@ -1,3 +1,15 @@
+/********OPTIONAL INSTANA INITIALIZATION BEGIN********/
+//if you want to use Instana to monitor fredy, go to https://www.instana.com and
+// try it yourself by signing up for a free trial
+const { INSTANA_MONITORING } = process.env;
+if (INSTANA_MONITORING != null && INSTANA_MONITORING === 'true') {
+  /* eslint-disable no-console */
+  console.debug('Starting Instana monitoring');
+  /* eslint-enable no-console */
+  require('@instana/collector')();
+}
+/********OPTIONAL INSTANA INITIALIZATION END********/
+
 const fs = require('fs');
 
 //if db folder does not exist, ensure to create it before loading anything else

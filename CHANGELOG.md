@@ -1,3 +1,6 @@
+###### [V5.4.5]
+- Adding Instana node.js monitoring 
+
 ###### [V5.4.4]
 - Add support for Immo Südwest Presse (immo.swp.de)
 - Telegram: Use job name instead of ID and link in title
