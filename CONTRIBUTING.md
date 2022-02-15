@@ -17,7 +17,7 @@ function normalize(o) {
   return Object.assign(o, { id });
 }
 
-//apply blaclist if needed
+//apply blacklist if needed
 function applyBlacklist(o) {
   const titleNotBlacklisted = !utils.isOneOf(o.title, appliedBlackList);
   const descNotBlacklisted = !utils.isOneOf(o.description, appliedBlackList);
