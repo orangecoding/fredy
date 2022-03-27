@@ -81,12 +81,6 @@ If you need more than the 1000 API calls allowed per month, I'd suggest opting f
 
 See [Contributing](https://github.com/orangecoding/fredy/blob/master/CONTRIBUTING.md)
 
-### Monitoring
-
-_Fredy_ can be monitored by [Instana](https://www.instana.com). If you are interested, sign up for a free trial. This is totally optional of course :)  
-If you want to use Instana to monitor _Fredy_, please change the variable `INSTANA_MONITORING` in the `.env` file to `true`.   
-If you want to know more, head over to the [Instana docs](https://www.ibm.com/docs/en/obi/current?topic=technologies-monitoring-nodejs).
-
 # Docker   
 Use the Dockerfile in this repository to build an image.  
 
