@@ -1,3 +1,10 @@
+Newer release changelog see https://github.com/orangecoding/fredy/releases
+
+------------
+
+###### [V5.4.6]
+- Adding Instana node.js monitoring
+- 
 ###### [V5.4.5]
 - Adding Instana node.js monitoring 
 

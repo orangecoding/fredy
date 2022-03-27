@@ -2,7 +2,7 @@ import React, { Fragment, useState } from 'react';
 
 import NotificationAdapterMutator from './components/notificationAdapter/NotificationAdapterMutator';
 import NotificationAdapterTable from '../../../components/table/NotificationAdapterTable';
-import { Header, Icon, Form, Popup, Button, Label } from 'semantic-ui-react';
+import { Icon, Form, Button, Label } from 'semantic-ui-react';
 import ProviderTable from '../../../components/table/ProviderTable';
 import ProviderMutator from './components/provider/ProviderMutator';
 import ToastContext from '../../../components/toasts/ToastContext';
@@ -14,6 +14,7 @@ import { useParams } from 'react-router';
 
 import './JobMutation.less';
 import Switch from 'react-switch';
+import { SegmentPart } from '../../../components/segment/SegmentPart';
 
 export default function JobMutator() {
   const jobs = useSelector((state) => state.jobs.jobs);
@@ -38,27 +39,6 @@ export default function JobMutator() {
   const history = useHistory();
   const dispatch = useDispatch();
   const ctx = React.useContext(ToastContext);
-
-  const header = (name, icon) => (
-    <Header as="h5" inverted>
-      <Icon name={icon} inverted />
-      {name}
-    </Header>
-  );
-
-  const help = (helpText) => (
-    <div>
-      <Popup
-        content={helpText}
-        trigger={
-          <Header as="h6" inverted>
-            <Icon name="help circle" inverted />
-            What is this?
-          </Header>
-        }
-      />
-    </div>
-  );
 
   const isSavingEnabled = () => {
     return notificationAdapterData.length > 0 && providerData.length > 0 && name != null && name.length > 0;
@@ -128,8 +108,8 @@ export default function JobMutator() {
       )}
 
       <Headline text={jobToBeEdit ? 'Edit a Job' : 'Create a new Job'} />
-      <Form className="jobMutation__form">
-        <div className="jobMutation__block">
+      <Form>
+        <SegmentPart name="Name">
           <Form.Input
             type="text"
             maxLength={40}
@@ -140,48 +120,43 @@ export default function JobMutator() {
             defaultValue={name}
             onChange={(e) => setName(e.target.value)}
           />
-        </div>
+        </SegmentPart>
 
-        <div className="jobMutation__block jobMutation__separator">
-          {header('Provider', 'briefcase')}
+        <SegmentPart
+          name="Provider"
+          icon="briefcase"
+          helpText={
+            'A provider is essentially the service (Immowelt etc.) that Fredy is using to search for new listings. When adding a new provider, Fredy will open a new tab pointing ' +
+            'to the website of this provider. You have to adjust your search parameter and click on "Search". If the results are being shown, copy the browser url. This is the url, Fredy will use ' +
+            'to search for new listings.'
+          }
+        >
+          <Form.Button primary className="jobMutation__newButton" onClick={() => setProviderCreationVisibility(true)}>
+            <Icon name="plus" />
+            Add new Provider
+          </Form.Button>
 
-          <div className="jobMutation__helpContainer">
-            {help(
-              'A provider is essentially the service (Immowelt etc.) that Fredy is using to search for new listings. When adding a new provider, Fredy will open a new tab pointing ' +
-                'to the website of this provider. You have to adjust your search parameter and click on "Search". If the results are being shown, copy the browser url. This is the url, Fredy will use ' +
-                'to search for new listings.'
-            )}
-
-            <Form.Button primary className="jobMutation__newButton" onClick={() => setProviderCreationVisibility(true)}>
-              <Icon name="plus" />
-              Add new Provider
-            </Form.Button>
-          </div>
           <ProviderTable
             providerData={providerData}
             onRemove={(providerId) => {
               setProviderData(providerData.filter((provider) => provider.id !== providerId));
             }}
           />
-        </div>
+        </SegmentPart>
 
-        <div className="jobMutation__block jobMutation__separator">
-          {header('Notification Adapter', 'bell')}
-
-          <div className="jobMutation__helpContainer">
-            {help(
-              'Fredy supports multiple ways to notify you about new findings. These are called notification adapter. You can chose between email, Telegram etc.'
-            )}
-
-            <Form.Button
-              primary
-              className="jobMutation__newButton"
-              onClick={() => setNotificationCreationVisibility(true)}
-            >
-              <Icon name="plus" />
-              Add new Notification Adapter
-            </Form.Button>
-          </div>
+        <SegmentPart
+          icon="bell"
+          name="Notification Adapter"
+          helpText="Fredy supports multiple ways to notify you about new findings. These are called notification adapter. You can chose between email, Telegram etc."
+        >
+          <Form.Button
+            primary
+            className="jobMutation__newButton"
+            onClick={() => setNotificationCreationVisibility(true)}
+          >
+            <Icon name="plus" />
+            Add new Notification Adapter
+          </Form.Button>
 
           <NotificationAdapterTable
             notificationAdapter={notificationAdapterData}
@@ -194,20 +169,15 @@ export default function JobMutator() {
               setNotificationCreationVisibility(true);
             }}
           />
-        </div>
+        </SegmentPart>
 
-        <div className="jobMutation__block jobMutation__separator">
-          {header('Blacklist', 'bell')}
-
-          <div className="jobMutation__helpContainer">
-            {help(
-              'If a listing contains one of these words, it will be filtered out. Words must be comma separated. To remove a word from the black list, just click the red label(s).'
-            )}
-          </div>
-
+        <SegmentPart
+          icon="bell"
+          name="Blacklist"
+          helpText="If a listing contains one of these words, it will be filtered out. Words must be comma separated. To remove a word from the black list, just click the red label(s)."
+        >
           <Form.Input
             type="text"
-            className="jobMutation__spaceTop"
             maxLength={40}
             placeholder="Comma separated list of blacklisted words"
             autoFocus
@@ -232,19 +202,15 @@ export default function JobMutator() {
               color="red"
             />
           ))}
-        </div>
+        </SegmentPart>
 
-        <div className="jobMutation__block jobMutation__separator">
-          {header('Job activation', 'play circle outline')}
-
-          <div className="jobMutation__helpContainer">
-            {help(
-              'Whether or not the job is activated. If it is not activated, it will be ignored when Fredy checks for new listings.'
-            )}
-          </div>
-
+        <SegmentPart
+          icon="play circle outline"
+          name="Job activation"
+          helpText="Whether or not the job is activated. If it is not activated, it will be ignored when Fredy checks for new listings."
+        >
           <Switch className="jobMutation__spaceTop" onChange={(checked) => setEnabled(checked)} checked={enabled} />
-        </div>
+        </SegmentPart>
 
         <Button color="red" onClick={() => history.push('/jobs')}>
           Cancel

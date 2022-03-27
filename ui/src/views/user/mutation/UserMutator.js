@@ -8,6 +8,7 @@ import { useDispatch } from 'react-redux';
 import Switch from 'react-switch';
 
 import './UserMutator.less';
+import { SegmentPart } from '../../../components/segment/SegmentPart';
 
 const UserMutator = function UserMutator() {
   const params = useParams();
@@ -69,40 +70,47 @@ const UserMutator = function UserMutator() {
 
   return (
     <Form inverted className="userMutator">
-      <Form.Input
-        type="text"
-        label="Username"
-        maxLength={30}
-        placeholder="Username"
-        autoFocus
-        inverted
-        width={6}
-        defaultValue={username}
-        onChange={(e) => setUsername(e.target.value)}
-      />
-      <Form.Input
-        type="password"
-        label="Password"
-        placeholder="Password"
-        inverted
-        width={6}
-        defaultValue={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <Form.Input
-        type="password"
-        label="Retype password"
-        placeholder="Retype password"
-        inverted
-        width={6}
-        defaultValue={password2}
-        onChange={(e) => setPassword2(e.target.value)}
-      />
-      <Form.Field>
-        <label>Is user an admin?</label>
-        <Switch checked={isAdmin} onChange={(checked) => setIsAdmin(checked)} />
-      </Form.Field>
-
+      <SegmentPart name="Username" helpText="The username used to login to Fredy">
+        <Form.Input
+          type="text"
+          label="Username"
+          maxLength={30}
+          placeholder="Username"
+          autoFocus
+          inverted
+          width={6}
+          defaultValue={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+      </SegmentPart>
+      <SegmentPart name="Password" helpText="The password used to login to Fredy">
+        <Form.Input
+          type="password"
+          label="Password"
+          placeholder="Password"
+          inverted
+          width={6}
+          defaultValue={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+      </SegmentPart>
+      <SegmentPart name="Retype password" helpText="Retype the password to make sure they match">
+        <Form.Input
+          type="password"
+          label="Retype password"
+          placeholder="Retype password"
+          inverted
+          width={6}
+          defaultValue={password2}
+          onChange={(e) => setPassword2(e.target.value)}
+        />
+      </SegmentPart>
+      <SegmentPart name="Admin use" helpText="Check this if the user is an administrator">
+        <Form.Field>
+          <label>Is user an admin?</label>
+          <Switch checked={isAdmin} onChange={(checked) => setIsAdmin(checked)} />
+        </Form.Field>
+      </SegmentPart>
       <Button color="red" onClick={() => history.push('/users')}>
         Cancel
       </Button>

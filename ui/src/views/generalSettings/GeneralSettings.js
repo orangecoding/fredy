@@ -2,35 +2,12 @@ import React from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Button, Form, Header, Icon, Message, Popup, Segment } from 'semantic-ui-react';
+import { Button, Form, Icon, Message, Segment } from 'semantic-ui-react';
 import ToastContext from '../../components/toasts/ToastContext';
 import Headline from '../../components/headline/Headline';
 import { xhrPost } from '../../services/xhr';
-
+import { SegmentPart } from '../../components/segment/SegmentPart';
 import './GeneralSettings.less';
-
-const SegmentPart = ({ name, icon, children, helpText }) => (
-  <React.Fragment>
-    <Header as="h5" inverted attached="top" sub>
-      <Icon name={icon} inverted size="mini" />
-      <Header.Content>{name}</Header.Content>
-    </Header>
-
-    <Popup
-      content={helpText}
-      trigger={
-        <span className="generalSettings__help">
-          {' '}
-          <Icon name="help circle" inverted />
-          What is this?
-        </span>
-      }
-    />
-    <Segment inverted attached>
-      {children}
-    </Segment>
-  </React.Fragment>
-);
 
 const GeneralSettings = function Users() {
   const dispatch = useDispatch();
@@ -111,7 +88,7 @@ const GeneralSettings = function Users() {
       {!loading && (
         <React.Fragment>
           <Headline text="General Settings" />
-          <Message info>
+          <Message className="generalSettings__message">
             <h5>
               <Icon name="info circle" />
               Info

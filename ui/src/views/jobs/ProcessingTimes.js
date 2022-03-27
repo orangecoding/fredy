@@ -37,9 +37,13 @@ export default function ProcessingTimes({ processingTimes }) {
               {processingTimes.scrapingAntData.plan_total_credits} (250 credits per call)
             </Message.Item>
           </Message.List>
-          If you want to scrape Immoscout more often, you have to purchase a premium account of ScrapingAnt. You can use
-          the code <b>FREDY10</b> to get 10% off. (No affiliation, we are <b>not</b> getting paid to recommend
-          ScrapingAnt.
+          If you want to scrape Immoscout more often, you have to purchase a premium account of{' '}
+          <a href="https://scrapingant.com/" target="_blank" rel="noreferrer">
+            {' '}
+            ScrapingAnt
+          </a>
+          . You can use the code <b>FREDY10</b> to get 10% off. (No affiliation, we are <b>not</b> getting paid to
+          recommend ScrapingAnt.
         </Segment>
       )}
     </React.Fragment>
