@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Button, Form, Icon, Message, Segment } from 'semantic-ui-react';
+import { Button, Form, Icon, Message, Segment, Radio } from 'semantic-ui-react';
 import ToastContext from '../../components/toasts/ToastContext';
 import Headline from '../../components/headline/Headline';
 import { xhrPost } from '../../services/xhr';
@@ -145,6 +145,51 @@ const GeneralSettings = function Users() {
             </SegmentPart>
 
             <SegmentPart
+              name="ScrapingAnt proxy settings"
+              helpText="Scraping ant provides different proxies."
+              icon="key"
+            >
+              <Message info>
+                ScrapingAnt is needed to scrape Immoscout. ScrapingAnt itself is using 2 different types of proxies.{' '}
+                <br />
+                <h4>Datacenter-Proxy</h4>
+                Proxy server located in one of the datacenters across the world. Datacenter proxies are slower and more
+                likely to fail, but they are cheaper. A call with a datacenter proxy cost 10 credits.
+                <h4>Residental-Proxy</h4>
+                High-quality proxy server located in one of the real people houses across the world. Datacenter proxies
+                are faster and more likely to success, but they are more expensive. A call with a datacenter proxy cost
+                250 credits.
+                <br />
+                <br />
+                <b>On the free tier, you have 1000 credits, so chose your option wisely.</b>
+              </Message>
+              <Form>
+                <Form.Field>
+                  <Radio
+                    label="Datacenter proxy"
+                    name="scrapingAntProxy"
+                    inverted
+                    size="mini"
+                    width={6}
+                    defaultValue={scrapingAntApiKey}
+                    onChange={(e) => setScrapingAntApiKey(e.target.value)}
+                  />
+                </Form.Field>
+                <Form.Field>
+                  <Radio
+                    label="Residential proxy"
+                    name="scrapingAntProxy"
+                    inverted
+                    size="mini"
+                    width={6}
+                    defaultValue={scrapingAntApiKey}
+                    onChange={(e) => setScrapingAntApiKey(e.target.value)}
+                  />
+                </Form.Field>
+              </Form>
+            </SegmentPart>
+
+            <SegmentPart
               name="Working hours"
               helpText="During this hours, Fredy will search for new apartments. If nothing is configured, Fredy will search around the clock."
               icon="calendar outline"
@@ -153,7 +198,7 @@ const GeneralSettings = function Users() {
                 <Form.Input
                   className="generalSettings__time"
                   type="time"
-                  placeholder="ScrapingAnt Api Key"
+                  placeholder="Working hours from"
                   inverted
                   size="mini"
                   width={2}
@@ -163,7 +208,7 @@ const GeneralSettings = function Users() {
                 <div className="generalSettings__until">until</div>
                 <Form.Input
                   type="time"
-                  placeholder="ScrapingAnt Api Key"
+                  placeholder="Working hours to"
                   inverted
                   size="mini"
                   width={2}
