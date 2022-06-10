@@ -43,7 +43,7 @@ export default function ProcessingTimes({ processingTimes }) {
             ScrapingAnt
           </a>
           . You can use the code <b>FREDY10</b> to get 10% off. (No affiliation, we are <b>not</b> getting paid to
-          recommend ScrapingAnt.
+          recommend ScrapingAnt.)
         </Segment>
       )}
     </React.Fragment>

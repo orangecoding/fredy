@@ -39,7 +39,6 @@ describe('#einsAImmobilien testsuite()', () => {
           expect(notify.link).to.be.a('string');
 
           /** check the values if possible **/
-          expect(notify.price).that.does.include('EUR');
           expect(notify.size).to.be.not.empty;
           expect(notify.title).to.be.not.empty;
           expect(notify.link).that.does.include('https://www.1a-immobilienmarkt.de');
