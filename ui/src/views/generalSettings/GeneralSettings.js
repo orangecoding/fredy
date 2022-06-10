@@ -18,6 +18,7 @@ const GeneralSettings = function Users() {
   const [interval, setInterval] = React.useState('');
   const [port, setPort] = React.useState('');
   const [scrapingAntApiKey, setScrapingAntApiKey] = React.useState('');
+  const [scrapingAntProxy, setScrapingAntProxy] = React.useState('');
   const [workingHourFrom, setWorkingHourFrom] = React.useState(null);
   const [workingHourTo, setWorkingHourTo] = React.useState(null);
   const ctx = React.useContext(ToastContext);
@@ -33,6 +34,7 @@ const GeneralSettings = function Users() {
     setScrapingAntApiKey(settings?.scrapingAnt?.apiKey);
     setWorkingHourFrom(settings?.workingHours?.from);
     setWorkingHourTo(settings?.workingHours?.to);
+    setScrapingAntProxy(settings?.scrapingAnt?.proxy || 'datacenter');
   }, [settings]);
 
   const nullOrEmpty = (val) => val == null || val.length === 0;
@@ -69,6 +71,7 @@ const GeneralSettings = function Users() {
         port,
         scrapingAnt: {
           apiKey: scrapingAntApiKey,
+          proxy: scrapingAntProxy,
         },
         workingHours: {
           from: workingHourFrom,
@@ -163,30 +166,24 @@ const GeneralSettings = function Users() {
                 <br />
                 <b>On the free tier, you have 1000 credits, so chose your option wisely.</b>
               </Message>
-              <Form>
-                <Form.Field>
-                  <Radio
-                    label="Datacenter proxy"
-                    name="scrapingAntProxy"
-                    inverted
-                    size="mini"
-                    width={6}
-                    defaultValue={scrapingAntApiKey}
-                    onChange={(e) => setScrapingAntApiKey(e.target.value)}
-                  />
-                </Form.Field>
-                <Form.Field>
-                  <Radio
-                    label="Residential proxy"
-                    name="scrapingAntProxy"
-                    inverted
-                    size="mini"
-                    width={6}
-                    defaultValue={scrapingAntApiKey}
-                    onChange={(e) => setScrapingAntApiKey(e.target.value)}
-                  />
-                </Form.Field>
-              </Form>
+              <Form.Field>
+                <Radio
+                  label="Datacenter proxy"
+                  name="scrapingAntProxy"
+                  value="datacenter"
+                  checked={scrapingAntProxy === 'datacenter'}
+                  onChange={(e, { value }) => setScrapingAntProxy(value)}
+                />
+              </Form.Field>
+              <Form.Field>
+                <Radio
+                  label="Residential proxy"
+                  name="scrapingAntProxy"
+                  value="residential"
+                  checked={scrapingAntProxy === 'residential'}
+                  onChange={(e, { value }) => setScrapingAntProxy(value)}
+                />
+              </Form.Field>
             </SegmentPart>
 
             <SegmentPart
