@@ -1,6 +1,6 @@
 {
   "name": "fredy",
-  "version": "5.6.1",
+  "version": "5.7.0",
   "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
   "scripts": {
     "start": "node index.js",
@@ -11,7 +11,7 @@
     "prod:win32": "set BUILD_DEV='false' && webpack --node-env=production --config ./webpack.prod.js",
     "prod:default": "export BUILD_DEV='false' && webpack --node-env=production --config ./webpack.prod.js",
     "format": "prettier --write lib/**/*.js ui/src/**/*.js test/**/*.js *.js --single-quote --print-width 120",
-    "test": "mocha --timeout 20000 test/**/*.test.js",
+    "test": "mocha --timeout 3000000 test/**/*.test.js",
     "lint": "eslint ./index.js ./lib/**/*.js ./test/**/*.js"
   },
   "husky": {

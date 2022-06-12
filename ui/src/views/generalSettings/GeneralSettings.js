@@ -158,13 +158,16 @@ const GeneralSettings = function Users() {
                 <h4>Datacenter-Proxy</h4>
                 Proxy server located in one of the datacenters across the world. Datacenter proxies are slower and more
                 likely to fail, but they are cheaper. A call with a datacenter proxy cost 10 credits.
-                <h4>Residental-Proxy</h4>
+                <h4>Residential-Proxy</h4>
                 High-quality proxy server located in one of the real people houses across the world. Datacenter proxies
                 are faster and more likely to success, but they are more expensive. A call with a datacenter proxy cost
                 250 credits.
                 <br />
                 <br />
-                <b>On the free tier, you have 1000 credits, so chose your option wisely.</b>
+                <b>
+                  On the free tier, you have 10.000 credits, so chose your option wisely. Keep in mind, only successful
+                  calls will be charged.
+                </b>
               </Message>
               <Form.Field>
                 <Radio
