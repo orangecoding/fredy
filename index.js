@@ -1,4 +1,5 @@
-const fs = require('fs');
+import fs  from 'fs';
+import {readConfig} from './lib/utils.js';
 
 //if db folder does not exist, ensure to create it before loading anything else
 if (!fs.existsSync('./db')) {
@@ -7,22 +8,23 @@ if (!fs.existsSync('./db')) {
 
 const path = './lib/provider';
 const provider = fs.readdirSync(path).filter((file) => file.endsWith('.js'));
-const config = require('./conf/config.json');
+const config = readConfig();
 
-const similarityCache = require('./lib/services/similarity-check/similarityCache');
-const { setLastJobExecution } = require('./lib/services/storage/listingsStorage');
-const jobStorage = require('./lib/services/storage/jobStorage');
-const FredyRuntime = require('./lib/FredyRuntime');
+import similarityCache from './lib/services/similarity-check/similarityCache.js';
+import { setLastJobExecution } from './lib/services/storage/listingsStorage.js';
+import jobStorage from './lib/services/storage/jobStorage.js';
+import FredyRuntime from './lib/FredyRuntime.js';
 
-const { duringWorkingHoursOrNotSet } = require('./lib/utils');
+import { duringWorkingHoursOrNotSet }  from './lib/utils.js';
 
 //starting the api service
-require('./lib/api/api');
+import apiStart from './lib/api/api.js';
 
 //assuming interval is always in minutes
 const INTERVAL = config.interval * 60 * 1000;
 
 /* eslint-disable no-console */
+apiStart();
 console.log(`Started Fredy successfully. Ui can be accessed via http://localhost:${config.port}`);
 /* eslint-enable no-console */
 setInterval(
