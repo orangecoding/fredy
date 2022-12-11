@@ -29,7 +29,7 @@ describe('#immoscout testsuite()', () => {
         return;
       }
 
-      const fredy = new Fredy(provider.config, null, provider.metaInformation.id, 'test1', similarityCache);
+      const fredy = new Fredy(provider.config, null, provider.metaInformation.id, 'immoscout', similarityCache);
       fredy.execute().then((listing) => {
         expect(listing).to.be.a('array');
 

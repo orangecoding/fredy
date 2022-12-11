@@ -31,33 +31,20 @@ setInterval(
 
     if (isDuringWorkingHoursOrNotSet) {
       config.lastRun = Date.now();
+      const fetchedProvider = provider
+        .filter((provider) => provider.endsWith('.js'))
+        .map((pro) => require(`${path}/${pro}`));
+
       jobStorage
         .getJobs()
         .filter((job) => job.enabled)
         .forEach((job) => {
-          const providerIds = job.provider.map((provider) => provider.id);
-
-          provider
-            .filter((provider) => provider.endsWith('.js'))
-            .map((pro) => require(`${path}/${pro}`))
-            .filter((provider) => providerIds.indexOf(provider.metaInformation.id) !== -1)
-            .forEach(async (pro) => {
-              const providerId = pro.metaInformation.id;
-              if (providerId == null || providerId.length === 0) {
-                throw new Error('Provider id must not be empty. => ' + pro);
-              }
-              const providerConfig = job.provider.find((jobProvider) => jobProvider.id === providerId);
-              if (providerConfig == null) {
-                throw new Error(`Provider Config for provider with id ${providerId} not found.`);
-              }
-              pro.init(providerConfig, job.blacklist);
-              await new FredyRuntime(
-                pro.config,
-                job.notificationAdapter,
-                providerId,
-                job.id,
-                similarityCache
-              ).execute();
+          job.provider
+            .filter((p) => fetchedProvider.find((fp) => fp.metaInformation.id === p.id) != null)
+            .forEach(async (prov) => {
+              const pro = fetchedProvider.find((fp) => fp.metaInformation.id === prov.id);
+              pro.init(prov, job.blacklist);
+              await new FredyRuntime(pro.config, job.notificationAdapter, prov.id, job.id, similarityCache).execute();
               setLastJobExecution(job.id);
             });
         });

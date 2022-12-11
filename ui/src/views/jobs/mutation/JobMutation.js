@@ -81,7 +81,6 @@ export default function JobMutator() {
       <ProviderMutator
         visible={providerCreationVisible}
         onVisibilityChanged={(visible) => setProviderCreationVisibility(visible)}
-        selected={providerData}
         onData={(data) => {
           setProviderData([...providerData, data]);
         }}

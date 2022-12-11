@@ -16,7 +16,7 @@ const sortProvider = (a, b) => {
   return 0;
 };
 
-export default function ProviderMutator({ onVisibilityChanged, visible = false, selected = [], onData } = {}) {
+export default function ProviderMutator({ onVisibilityChanged, visible = false, onData } = {}) {
   const provider = useSelector((state) => state.provider);
   const [selectedProvider, setSelectedProvider] = useState(null);
   const [providerUrl, setProviderUrl] = useState(null);
@@ -107,8 +107,6 @@ export default function ProviderMutator({ onVisibilityChanged, visible = false, 
                   text: pro.name,
                 };
               })
-              //filter out those, that have already been selected
-              .filter((option) => selected.find((selectedOption) => selectedOption.id === option.key) == null)
               .sort(sortProvider)}
             onChange={(e, { value }) => {
               const selectedProvider = provider.find((pro) => pro.id === value);

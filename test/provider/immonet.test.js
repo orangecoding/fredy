@@ -21,7 +21,7 @@ describe('#immonet testsuite()', () => {
 
   it('should test immonet provider', async () => {
     return await new Promise((resolve) => {
-      const fredy = new Fredy(provider.config, null, provider.metaInformation.id, 'test1', similarityCache);
+      const fredy = new Fredy(provider.config, null, provider.metaInformation.id, 'immonet', similarityCache);
       fredy.execute().then((listing) => {
         expect(listing).to.be.a('array');
 

@@ -2,6 +2,12 @@ Newer release changelog see https://github.com/orangecoding/fredy/releases
 
 ------------
 
+###### [V5.5.0]
+- Upgrading dependencies
+- fixing provider
+- allow multiple instances of 1 provider  
+- __BREAKING__: Minimum node version is now 16
+
 ###### [V5.4.6]
 - Adding Instana node.js monitoring
 - 

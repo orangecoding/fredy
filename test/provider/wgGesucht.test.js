@@ -20,7 +20,7 @@ describe('#wgGesucht testsuite()', () => {
 
   it('should test wgGesucht provider', async () => {
     return await new Promise((resolve) => {
-      const fredy = new Fredy(provider.config, null, provider.metaInformation.id, 'test1', similarityCache);
+      const fredy = new Fredy(provider.config, null, provider.metaInformation.id, 'wgGesucht', similarityCache);
       fredy.execute().then((listing) => {
         expect(listing).to.be.a('array');
         const notificationObj = mockNotification.get();

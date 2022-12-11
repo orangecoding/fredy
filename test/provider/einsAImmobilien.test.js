@@ -22,7 +22,7 @@ describe('#einsAImmobilien testsuite()', () => {
 
   it('should test einsAImmobilien provider', async () => {
     return await new Promise((resolve) => {
-      const fredy = new Fredy(provider.config, null, provider.metaInformation.id, 'test1', similarityCache);
+      const fredy = new Fredy(provider.config, null, provider.metaInformation.id, 'einsAImmobilien', similarityCache);
       fredy.execute().then((listings) => {
         expect(listings).to.be.a('array');
 
