@@ -13,7 +13,7 @@ If you like my work, consider sponsoring this or other projects. I'm not expecti
 
 ## Usage  
 
-- Make sure to use Node.js 12 or above
+- Make sure to use Node.js 16 or above
 - Run the following commands:
 ```ssh
 yarn (or npm install)
