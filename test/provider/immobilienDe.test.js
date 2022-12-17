@@ -4,14 +4,14 @@ const providerConfig = require('./testProvider.json');
 const mockStore = require('../mocks/mockStore');
 const proxyquire = require('proxyquire').noCallThru();
 const expect = require('chai').expect;
-const provider = require('../../lib/provider/immobilien');
+const provider = require('../../lib/provider/immobilienDe');
 
 describe('#immobilien.de testsuite()', () => {
   after(() => {
     similarityCache.stopCacheCleanup();
   });
 
-  provider.init(providerConfig.immobilien, [], []);
+  provider.init(providerConfig.immobilienDe, [], []);
   const Fredy = proxyquire('../../lib/FredyRuntime', {
     './services/storage/listingsStorage': {
       ...mockStore,
@@ -27,7 +27,7 @@ describe('#immobilien.de testsuite()', () => {
 
         const notificationObj = mockNotification.get();
         expect(notificationObj).to.be.a('object');
-        expect(notificationObj.serviceName).to.equal('immobilien');
+        expect(notificationObj.serviceName).to.equal('immobilienDe');
         notificationObj.payload.forEach((notify) => {
           /** check the actual structure **/
           expect(notify.id).to.be.a('string');
