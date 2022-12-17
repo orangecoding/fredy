@@ -4,6 +4,10 @@
     "enabled": true,
     "id": "einsAImmobilien"
   },
+  "immobilien": {
+    "url": "https://www.immobilien.de/Wohnen/Suchergebnisse-51797.html?search._digest=true&search._filter=wohnen&search.flaeche_von=50&search.objektart=wohnung&search.preis_bis=1200&search.typ=mieten&search.umkreis=15&search.wo=district%3A2434%2C2695%2C2621%2C2700%2C2967%2C2734%2C2909%2C2955%2C2392%2C2746%2C2767%2C2982%2C2904%2C2612%2C2892%2C2587%2C2871%2C2975%2C2591%2C2887%2C2569%2C2640%2C2735&sort_col=*created_ts&sort_dir=desc",
+    "enabled": true
+  },
   "immonet": {
     "url": "https://www.immonet.de/immobiliensuche/sel.do?pageoffset=1&listsize=100&objecttype=1&locationname=Düsseldorf&acid=&actype=&district=8717&district=8718&district=8719&district=8720&district=8721&district=8723&district=8724&district=8725&district=8727&district=8728&district=8729&district=8730&district=8731&district=8732&district=8733&district=8737&district=8738&district=8741&district=8745&district=8747&district=8750&district=8752&district=8754&district=8755&district=8756&district=8759&district=8760&district=8761&district=8763&district=8764&district=8765&ajaxIsRadiusActive=false&sortby=19&suchart=1&radius=0&pcatmtypes=1_1&pCatMTypeStoragefield=&parentcat=1&marketingtype=1&fromprice=&toprice=420000&fromarea=90&toarea=&fromplotarea=&toplotarea=&fromrooms=3&torooms=&objectcat=225&objectcat=18&objectcat=17&objectcat=12&objectcat=16&objectcat=181&objectcat=14&objectcat=15&objectcat=226&objectcat=13&wbs=-1&fromyear=&toyear=",
     "enabled": true
