@@ -36,20 +36,20 @@ _Fredy_ will start with the default port, set to `9998`. You can access _Fredy_ 
 ## Understanding the fundamentals
 There are 3 important parts in Fredy, that you need to understand to leverage the full power of _Fredy_.
 
-#### Adapter
-_Fredy_ supports multiple services. Immonet, Immowelt and Ebay are just a few examples. Those services are called adapters within _Fredy_. When creating a new job, you can choose one or more adapters.    
-An adapter contains the URL that points to the search results for the respective service. If you go to immonet.de and search for something, the displayed URL in the browser is what the adapter needs to do its magic.   
+#### Provider
+_Fredy_ supports multiple services. Immonet, Immowelt and Ebay are just a few examples. Those services are called providers within _Fredy_. When creating a new job, you can choose one or more providers.
+A provider contains the URL that points to the search results for the respective service. If you go to immonet.de and search for something, the displayed URL in the browser is what the provider needs to do its magic.
 **It is important that you order the search results by date, so that _Fredy_ always picks the latest results first!**
 
-#### Provider
-_Fredy_ supports multiple providers, such as Slack, SendGrid, Telegram etc. A search job can have as many providers as supported by _Fredy_. Each provider needs different configuration values, which you have to provide when using them. A provider dictactes how the frontend renders by telling the frontend what information it needs in order to send listings to the user.
+#### Adapter
+_Fredy_ supports multiple adapters, such as Slack, SendGrid, Telegram etc. A search job can have as many adapters as supported by _Fredy_. Each adapter needs different configuration values, which you have to provide when using them. A adapter dictactes how the frontend renders by telling the frontend what information it needs in order to send listings to the user.
 
 #### Jobs
 A Job wraps adapters and providers. _Fredy_ runs the configured jobs in a specific interval (can be configured in `/conf/config.json`).
 
 ## Creating your first job
 To create your first job, click on the button "Create New Job" on the job table. The job creation dialog should be self-explanatory, however there is one important thing.
-When configuring adapters, before copying the URL from your browser, make sure that you have sorted the results by date to make sure _Fredy_ always picks the latest results first.
+When configuring providers, before copying the URL from your browser, make sure that you have sorted the results by date to make sure _Fredy_ always picks the latest results first.
 
 ## User management
 As an administrator, you can create, edit and remove users from _Fredy_. Be careful, each job is connected to the user that has created the job. If you remove the user, their jobs will also be removed.
@@ -57,7 +57,12 @@ As an administrator, you can create, edit and remove users from _Fredy_. Be care
 # Development
 
 ### Running Fredy in development mode
-To run _Fredy_ in development mode, you need to run the backend & frontend separately. Run the backend in your favorite IDE, the frontend can be started from the terminal.
+To run _Fredy_ in development mode, you need to run the backend & frontend separately.
+Start the backend with:
+```shell
+yarn run start
+```
+For the frontend, run:
 ```shell
 yarn run dev
 ```
