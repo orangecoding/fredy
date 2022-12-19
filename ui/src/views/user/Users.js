@@ -18,9 +18,12 @@ const Users = function Users() {
   const [userIdToBeRemoved, setUserIdToBeRemoved] = React.useState(null);
   const history = useHistory();
 
-  React.useEffect(async () => {
-    await dispatch.user.getUsers();
-    setLoading(false);
+  React.useEffect(() => {
+    async function init() {
+      await dispatch.user.getUsers();
+      setLoading(false);
+    }
+    init();
   }, []);
 
   const onUserRemoval = async () => {

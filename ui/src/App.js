@@ -27,14 +27,17 @@ export default function FredyApp() {
   const [loading, setLoading] = React.useState(true);
   const currentUser = useSelector((state) => state.user.currentUser);
 
-  useEffect(async () => {
-    await dispatch.provider.getProvider();
-    await dispatch.jobs.getJobs();
-    await dispatch.jobs.getProcessingTimes();
-    await dispatch.notificationAdapter.getAdapter();
-    await dispatch.user.getCurrentUser();
+  useEffect(() => {
+    async function init() {
+      await dispatch.provider.getProvider();
+      await dispatch.jobs.getJobs();
+      await dispatch.jobs.getProcessingTimes();
+      await dispatch.notificationAdapter.getAdapter();
+      await dispatch.user.getCurrentUser();
 
-    setLoading(false);
+      setLoading(false);
+    }
+    init();
   }, [currentUser?.userId]);
 
   const needsLogin = () => {

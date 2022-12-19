@@ -6,7 +6,7 @@ const path = require('path');
 module.exports = merge(common, {
   devtool: 'inline-source-map',
   devServer: {
-    contentBase: path.join(__dirname, 'ui', 'public'),
+    static: path.join(__dirname, 'ui', 'public'),
     port: 9000,
     proxy: {
       '/api': {

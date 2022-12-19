@@ -21,21 +21,24 @@ const UserMutator = function UserMutator() {
   const ctx = React.useContext(ToastContext);
   const dispatch = useDispatch();
 
-  React.useEffect(async () => {
-    if (params.userId != null) {
-      try {
-        const userJson = await xhrGet(`/api/admin/users/${params.userId}`);
-        const user = userJson.json;
+  React.useEffect(() => {
+    async function init() {
+      if (params.userId != null) {
+        try {
+          const userJson = await xhrGet(`/api/admin/users/${params.userId}`);
+          const user = userJson.json;
 
-        const defaultName = user?.username || '';
-        const defaultIsAdmin = user?.isAdmin || false;
+          const defaultName = user?.username || '';
+          const defaultIsAdmin = user?.isAdmin || false;
 
-        setUsername(defaultName);
-        setIsAdmin(defaultIsAdmin);
-      } catch (Exception) {
-        console.error(Exception);
+          setUsername(defaultName);
+          setIsAdmin(defaultIsAdmin);
+        } catch (Exception) {
+          console.error(Exception);
+        }
       }
     }
+    init();
   }, [params.userId]);
 
   const saveUser = async () => {

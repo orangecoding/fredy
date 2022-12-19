@@ -23,18 +23,24 @@ const GeneralSettings = function Users() {
   const [workingHourTo, setWorkingHourTo] = React.useState(null);
   const ctx = React.useContext(ToastContext);
 
-  React.useEffect(async () => {
-    await dispatch.generalSettings.getGeneralSettings();
-    setLoading(false);
+  React.useEffect(() => {
+    async function init() {
+      await dispatch.generalSettings.getGeneralSettings();
+      setLoading(false);
+    }
+    init();
   }, []);
 
-  React.useEffect(async () => {
-    setInterval(settings?.interval);
-    setPort(settings?.port);
-    setScrapingAntApiKey(settings?.scrapingAnt?.apiKey);
-    setWorkingHourFrom(settings?.workingHours?.from);
-    setWorkingHourTo(settings?.workingHours?.to);
-    setScrapingAntProxy(settings?.scrapingAnt?.proxy || 'datacenter');
+  React.useEffect(() => {
+    async function init() {
+      setInterval(settings?.interval);
+      setPort(settings?.port);
+      setScrapingAntApiKey(settings?.scrapingAnt?.apiKey);
+      setWorkingHourFrom(settings?.workingHours?.from);
+      setWorkingHourTo(settings?.workingHours?.to);
+      setScrapingAntProxy(settings?.scrapingAnt?.proxy || 'datacenter');
+    }
+    init();
   }, [settings]);
 
   const nullOrEmpty = (val) => val == null || val.length === 0;
