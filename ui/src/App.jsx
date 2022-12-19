@@ -7,7 +7,7 @@ import ToastsContainer from './components/toasts/ToastContainer';
 import JobMutation from './views/jobs/mutation/JobMutation';
 import UserMutator from './views/user/mutation/UserMutator';
 import ToastContext from './components/toasts/ToastContext';
-import JobInsight from './views/jobs/insights/JobInsight';
+import JobInsight from './views/jobs/insights/JobInsight.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import useToast from './components/toasts/useToast';
 import { Switch, Redirect } from 'react-router-dom';

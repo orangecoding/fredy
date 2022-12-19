@@ -66,7 +66,7 @@ For the frontend, run:
 ```shell
 yarn run dev
 ```
-You should now be able to access _Fredy_ from your browser. Go to `http://localhost:9000`.
+You should now be able to access _Fredy_ from your browser. Check your Terminal to see what port the frontend is running on.
 
 ### Running Tests
 To run the tests, run
