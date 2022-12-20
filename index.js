@@ -20,6 +20,7 @@ const { duringWorkingHoursOrNotSet } = require('./lib/utils');
 require('./lib/api/api');
 
 //assuming interval is always in minutes
+
 const INTERVAL = config.interval * 60 * 1000;
 
 /* eslint-disable no-console */
