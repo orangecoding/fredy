@@ -11,7 +11,7 @@ If _Fredy_ finds matching results, it will send them to you via Slack, Email, Te
 # Sponsorship [![](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/orangecoding)    
 If you like my work, consider becoming a sponsor. I'm not expecting anybody to pay for _Fredy_ or any other Open Source Project I'm maintaining, however keep in mind, I'm doing all of this in my spare time :) Thanks.
 
-<img src="https://github.com/orangecoding/fredy/blob/master/doc/jetbrains.png" width="300">   
+<img src="https://github.com/orangecoding/fredy/blob/master/doc/jetbrains.png" width="200">   
 
 _Fredy_ is supported by JetBrains under Open Source Support Program
 
