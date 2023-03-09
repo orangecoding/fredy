@@ -1,5 +1,4 @@
 import { xhrGet } from '../../xhr';
-
 export const jobs = {
   state: {
     jobs: [],
