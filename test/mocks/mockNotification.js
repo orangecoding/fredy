@@ -1,12 +1,10 @@
-module.exports = {
-  _tmpStore: {},
+let tmpStore = {};
 
-  send: (serviceName, payload) => {
-    this._tmpStore = { serviceName, payload };
-    return [Promise.resolve()];
-  },
+export const send = (serviceName, payload) => {
+  tmpStore = { serviceName, payload };
+  return [Promise.resolve()];
+};
 
-  get: () => {
-    return this._tmpStore;
-  },
+export const get = () => {
+  return tmpStore;
 };

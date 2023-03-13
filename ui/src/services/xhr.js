@@ -9,7 +9,6 @@
 export function xhrPost(url, data, contentType = 'application/json; charset=utf-8', isJson = true) {
   return executePostOrPutCall(url, contentType, data, isJson, true);
 }
-
 /**
  * put request to backend.
  *
@@ -21,7 +20,6 @@ export function xhrPost(url, data, contentType = 'application/json; charset=utf-
 export function xhrPut(url, data, contentType = 'application/json; charset=utf-8', isJson = true) {
   return executePostOrPutCall(url, contentType, data, isJson, false);
 }
-
 function executePostOrPutCall(url, contentType, data, isJson, isPost) {
   return new Promise((resolve, reject) => {
     fetch(url, {
@@ -41,7 +39,6 @@ function executePostOrPutCall(url, contentType, data, isJson, isPost) {
       });
   });
 }
-
 /**
  * get request to backend
  * returns a Promise with
@@ -75,7 +72,6 @@ export function xhrGet(url, contentType = 'application/json; charset=utf-8', isJ
       });
   });
 }
-
 /**
  * delete request to backend
  * returns a Promise with
@@ -114,7 +110,6 @@ export function xhrDelete(url, data, contentType = 'application/json; charset=ut
       });
   });
 }
-
 function parseJSON(response) {
   return new Promise((resolve, reject) =>
     response
@@ -122,7 +117,6 @@ function parseJSON(response) {
       .then((text) => {
         //some responses doesn't contain a body. .json() would throw errors here...
         const json = text != null && text.length > 0 ? JSON.parse(text) : {};
-
         if (response.ok) {
           resolve({
             status: response.status,

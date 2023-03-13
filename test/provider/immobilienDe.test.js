@@ -1,31 +1,21 @@
-const similarityCache = require('../../lib/services/similarity-check/similarityCache');
-const mockNotification = require('../mocks/mockNotification');
-const providerConfig = require('./testProvider.json');
-const mockStore = require('../mocks/mockStore');
-const proxyquire = require('proxyquire').noCallThru();
-const expect = require('chai').expect;
-const provider = require('../../lib/provider/immobilienDe');
-
+import * as similarityCache from '../../lib/services/similarity-check/similarityCache.js';
+import { get } from '../mocks/mockNotification.js';
+import { providerConfig, mockFredy } from '../utils.js';
+import chai from 'chai';
+import * as provider from '../../lib/provider/immobilienDe.js';
+const expect = chai.expect;
 describe('#immobilien.de testsuite()', () => {
   after(() => {
     similarityCache.stopCacheCleanup();
   });
-
   provider.init(providerConfig.immobilienDe, [], []);
-  const Fredy = proxyquire('../../lib/FredyRuntime', {
-    './services/storage/listingsStorage': {
-      ...mockStore,
-    },
-    './notification/notify': mockNotification,
-  });
-
   it('should test immobilien.de provider', async () => {
+    const Fredy = await mockFredy();
     return await new Promise((resolve) => {
       const fredy = new Fredy(provider.config, null, provider.metaInformation.id, 'test1', similarityCache);
       fredy.execute().then((listing) => {
         expect(listing).to.be.a('array');
-
-        const notificationObj = mockNotification.get();
+        const notificationObj = get();
         expect(notificationObj).to.be.a('object');
         expect(notificationObj.serviceName).to.equal('immobilienDe');
         notificationObj.payload.forEach((notify) => {
@@ -36,7 +26,6 @@ describe('#immobilien.de testsuite()', () => {
           expect(notify.title).to.be.a('string');
           expect(notify.link).to.be.a('string');
           expect(notify.address).to.be.a('string');
-
           /** check the values if possible **/
           expect(notify.price).that.does.include('€');
           expect(notify.size).that.does.include('m²');

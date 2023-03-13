@@ -1,7 +1,6 @@
 module.exports = {
   env: {
-    commonjs: true,
-    es6: true,
+    es2021: true,
     node: true,
     browser: true,
     mocha: true,
@@ -17,7 +16,6 @@ module.exports = {
     fetch: true,
   },
   parserOptions: {
-    ecmaVersion: 2018,
     sourceType: 'module',
   },
   rules: {

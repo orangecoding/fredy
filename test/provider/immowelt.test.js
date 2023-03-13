@@ -1,42 +1,30 @@
-const similarityCache = require('../../lib/services/similarity-check/similarityCache');
-const mockNotification = require('../mocks/mockNotification');
-const providerConfig = require('./testProvider.json');
-const mockStore = require('../mocks/mockStore');
-const proxyquire = require('proxyquire').noCallThru();
-const expect = require('chai').expect;
-const provider = require('../../lib/provider/immowelt');
-
+import * as similarityCache from '../../lib/services/similarity-check/similarityCache.js';
+import { get } from '../mocks/mockNotification.js';
+import { mockFredy, providerConfig } from '../utils.js';
+import chai from 'chai';
+import * as provider from '../../lib/provider/immowelt.js';
+const expect = chai.expect;
 describe('#immowelt testsuite()', () => {
   after(() => {
     similarityCache.stopCacheCleanup();
   });
   it('should test immowelt provider', async () => {
+    const Fredy = await mockFredy();
     provider.init(providerConfig.immowelt, [], []);
-    const Fredy = proxyquire('../../lib/FredyRuntime', {
-      './services/storage/listingsStorage': {
-        ...mockStore,
-      },
-      './notification/notify': mockNotification,
-    });
-
     return await new Promise((resolve) => {
       const fredy = new Fredy(provider.config, null, provider.metaInformation.id, 'immowelt', similarityCache);
       fredy.execute().then((listing) => {
         expect(listing).to.be.a('array');
-
-        const notificationObj = mockNotification.get();
+        const notificationObj = get();
         expect(notificationObj).to.be.a('object');
         expect(notificationObj.serviceName).to.equal('immowelt');
-
         notificationObj.payload.forEach((notify) => {
           /** check the actual structure **/
           expect(notify.id).to.be.a('string');
           expect(notify.price).to.be.a('string');
           expect(notify.title).to.be.a('string');
-
           expect(notify.link).to.be.a('string');
           expect(notify.address).to.be.a('string');
-
           /** check the values if possible **/
           if (notify.size != null && notify.size.trim().toLowerCase() !== 'k.a.') {
             expect(notify.size).that.does.include('m²');
