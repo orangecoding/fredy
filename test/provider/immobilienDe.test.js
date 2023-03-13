@@ -1,29 +1,21 @@
 import * as similarityCache from '../../lib/services/similarity-check/similarityCache.js';
-import mockNotification from '../mocks/mockNotification.js';
-import { config } from '../../lib/utils.js';
-import * as mockStore from '../mocks/mockStore.js';
-import proxyquire$0 from 'proxyquire';
+import { get } from '../mocks/mockNotification.js';
+import { providerConfig, mockFredy } from '../utils.js';
 import chai from 'chai';
 import * as provider from '../../lib/provider/immobilienDe.js';
-const proxyquire = proxyquire$0.noCallThru();
 const expect = chai.expect;
 describe('#immobilien.de testsuite()', () => {
   after(() => {
     similarityCache.stopCacheCleanup();
   });
-  provider.init(config.immobilienDe, [], []);
-  const Fredy = proxyquire('../../lib/FredyRuntime', {
-    './services/storage/listingsStorage': {
-      ...mockStore,
-    },
-    './notification/notify': mockNotification,
-  });
+  provider.init(providerConfig.immobilienDe, [], []);
   it('should test immobilien.de provider', async () => {
+    const Fredy = await mockFredy();
     return await new Promise((resolve) => {
       const fredy = new Fredy(provider.config, null, provider.metaInformation.id, 'test1', similarityCache);
       fredy.execute().then((listing) => {
         expect(listing).to.be.a('array');
-        const notificationObj = mockNotification.get();
+        const notificationObj = get();
         expect(notificationObj).to.be.a('object');
         expect(notificationObj.serviceName).to.equal('immobilienDe');
         notificationObj.payload.forEach((notify) => {

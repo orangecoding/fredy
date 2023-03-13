@@ -1,29 +1,21 @@
 import * as similarityCache from '../../lib/services/similarity-check/similarityCache.js';
-import mockNotification from '../mocks/mockNotification.js';
-import { config } from '../../lib/utils.js';
-import * as mockStore from '../mocks/mockStore.js';
-import proxyquire$0 from 'proxyquire';
+import { get } from '../mocks/mockNotification.js';
+import { mockFredy, providerConfig } from '../utils.js';
 import chai from 'chai';
 import * as provider from '../../lib/provider/wgGesucht.js';
-const proxyquire = proxyquire$0.noCallThru();
 const expect = chai.expect;
 describe('#wgGesucht testsuite()', () => {
   after(() => {
     similarityCache.stopCacheCleanup();
   });
-  provider.init(config.wgGesucht, [], []);
-  const Fredy = proxyquire('../../lib/FredyRuntime', {
-    './services/storage/listingsStorage': {
-      ...mockStore,
-    },
-    './notification/notify': mockNotification,
-  });
+  provider.init(providerConfig.wgGesucht, [], []);
   it('should test wgGesucht provider', async () => {
+    const Fredy = await mockFredy();
     return await new Promise((resolve) => {
       const fredy = new Fredy(provider.config, null, provider.metaInformation.id, 'wgGesucht', similarityCache);
       fredy.execute().then((listing) => {
         expect(listing).to.be.a('array');
-        const notificationObj = mockNotification.get();
+        const notificationObj = get();
         expect(notificationObj.serviceName).to.equal('wgGesucht');
         notificationObj.payload.forEach((notify) => {
           expect(notify).to.be.a('object');
