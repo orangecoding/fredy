@@ -1,12 +1,11 @@
 import React from 'react';
-import { Header } from 'semantic-ui-react';
+import {Typography} from '@douyinfe/semi-ui';
 
-import './Headline.less';
-
-export default function Headline({ text, size = 'medium', className = '' } = {}) {
-  return (
-    <Header className={`headline ${className}`} size={size}>
-      {text}
-    </Header>
-  );
+export default function Headline({text, size = 3} = {}) {
+    const {Title} = Typography;
+    return (
+        <Title heading={size} style={{marginBottom: '1rem'}}>
+            {text}
+        </Title>
+    );
 }

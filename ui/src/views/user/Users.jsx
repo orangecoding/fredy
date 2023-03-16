@@ -3,7 +3,8 @@ import React from 'react';
 import ToastContext from '../../components/toasts/ToastContext';
 import UserTable from '../../components/table/UserTable';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Icon } from 'semantic-ui-react';
+import {IconPlus} from '@douyinfe/semi-icons';
+import { Button,  } from '@douyinfe/semi-ui';
 import UserRemovalModal from './UserRemovalModal';
 import { xhrDelete } from '../../services/xhr';
 import { useHistory } from 'react-router';
@@ -57,8 +58,7 @@ const Users = function Users() {
         <React.Fragment>
           {userIdToBeRemoved && <UserRemovalModal onCancel={() => setUserIdToBeRemoved(null)} onOk={onUserRemoval} />}
 
-          <Button primary className="users__newButton" onClick={() => history.push('/users/new')}>
-            <Icon name="plus" />
+          <Button type="primary" className="users__newButton" icon={<IconPlus/>} onClick={() => history.push('/users/new')}>
             Create new User
           </Button>
 
