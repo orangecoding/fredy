@@ -109,10 +109,10 @@ export default function JobMutator() {
             <form>
                 <SegmentPart name="Name">
                     <Input
+                        autofocus
                         type="text"
                         maxLength={40}
                         placeholder="Name"
-                        autoFocus
                         width={6}
                         value={name}
                         onChange={(value) => setName(value)}
