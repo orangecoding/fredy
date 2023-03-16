@@ -55,6 +55,7 @@
     "Firefox ESR"
   ],
   "dependencies": {
+    "@douyinfe/semi-ui": "2.30.2",
     "@rematch/core": "2.2.0",
     "@rematch/loading": "2.1.2",
     "@sendgrid/mail": "7.7.0",
@@ -89,7 +90,6 @@
     "x-ray": "2.3.4"
   },
   "devDependencies": {
-    "esmock": "2.1.0",
     "@babel/core": "7.21.0",
     "@babel/eslint-parser": "7.19.1",
     "@babel/preset-env": "7.20.2",
@@ -98,6 +98,7 @@
     "eslint": "8.36.0",
     "eslint-config-prettier": "8.7.0",
     "eslint-plugin-react": "7.32.2",
+    "esmock": "2.1.0",
     "history": "5.3.0",
     "husky": "4.3.8",
     "less": "4.1.3",

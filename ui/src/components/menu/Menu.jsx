@@ -1,50 +1,48 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
-import { Icon, Menu } from 'semantic-ui-react';
+import {useHistory} from 'react-router-dom';
+import {Tabs, TabPane} from '@douyinfe/semi-ui';
 
-import './Menu.less';
-import { useLocation } from 'react-router';
+import {useLocation} from 'react-router';
+import {IconUser, IconTerminal, IconSetting} from '@douyinfe/semi-icons';
 
-const TopMenu = function TopMenu({ isAdmin }) {
-  const history = useHistory();
-  const location = useLocation();
+function parsePathName(name) {
+    const split = name.split('/')
+        .filter(s => s.length !== 0);
+    return '/'+split[0];
+}
 
-  const isActiveRoute = (name) => location.pathname.indexOf(name) !== -1;
+const TopMenu = function TopMenu({isAdmin}) {
+    const history = useHistory();
+    const location = useLocation();
+    return (
+        <Tabs type="line" activeKey={parsePathName(location.pathname)} onTabClick={(key) => history.push(key)}>
+            <TabPane
+                itemKey="/jobs"
+                tab={<span>
+                            <IconTerminal/>
+                            Jobs
+                        </span>
+                }
+            >
+            </TabPane>
 
-  return (
-    <Menu pointing secondary className="topMenu">
-      <Menu.Item
-        name="jobs"
-        active={isActiveRoute('jobs')}
-        className={isActiveRoute('jobs') ? 'topMenu__active' : 'topMenu__item'}
-        onClick={() => history.push('/jobs')}
-      >
-        <Icon name="search" /> Job Configuration
-      </Menu.Item>
+            {isAdmin && (
+                <TabPane
+                    itemKey="/users"
+                    tab={<span><IconUser/>User</span>}
+                >
+                </TabPane>
+            )}
 
-      {isAdmin && (
-        <Menu.Item
-          name="user"
-          active={isActiveRoute('users')}
-          className={isActiveRoute('users') ? 'topMenu__active' : 'topMenu__item'}
-          onClick={() => history.push('/users')}
-        >
-          <Icon name="user" /> User configuration
-        </Menu.Item>
-      )}
-
-      {isAdmin && (
-        <Menu.Item
-          name="general"
-          active={isActiveRoute('general')}
-          className={isActiveRoute('general') ? 'topMenu__active' : 'topMenu__item'}
-          onClick={() => history.push('/generalSettings')}
-        >
-          <Icon name="cog" /> General Settings
-        </Menu.Item>
-      )}
-    </Menu>
-  );
+            {isAdmin && (
+                <TabPane
+                    itemKey="/generalSettings"
+                    tab={<span><IconSetting/>General</span>}
+                >
+                </TabPane>
+            )}
+        </Tabs>
+    );
 };
 
 export default TopMenu;

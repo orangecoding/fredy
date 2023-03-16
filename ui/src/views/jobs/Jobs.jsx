@@ -4,11 +4,11 @@ import ToastContext from '../../components/toasts/ToastContext';
 import JobTable from '../../components/table/JobTable';
 import { useSelector, useDispatch } from 'react-redux';
 import { xhrDelete, xhrPut } from '../../services/xhr';
-import { Button, Icon } from 'semantic-ui-react';
 import { useHistory } from 'react-router-dom';
 import ProcessingTimes from './ProcessingTimes';
-
+import {Divider, Input, Switch, Button, TagInput} from '@douyinfe/semi-ui';
 import './Jobs.less';
+import {IconPlusCircle} from '@douyinfe/semi-icons';
 
 export default function Jobs() {
   const jobs = useSelector((state) => state.jobs.jobs);
@@ -65,8 +65,7 @@ export default function Jobs() {
     <div>
       <div>
         {processingTimes != null && <ProcessingTimes processingTimes={processingTimes} />}
-        <Button primary className="jobs__newButton" onClick={() => history.push('/jobs/new')}>
-          <Icon name="plus" />
+        <Button type="primary" icon={<IconPlusCircle/>} className="jobs__newButton" onClick={() => history.push('/jobs/new')}>
           New Job
         </Button>
       </div>
