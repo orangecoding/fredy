@@ -92,8 +92,7 @@ export default function ProviderMutator({onVisibilityChanged, visible = false, o
                 provider's website.
                 <br/>
                 When the search results are shown on the website, copy the url and paste it into the textfield below.
-                <br/>
-                <br/>
+            </p>
                 <Banner fullMode={false}
                         type="warning"
                         closeIcon={null}
@@ -111,7 +110,7 @@ export default function ProviderMutator({onVisibilityChanged, visible = false, o
                                 the latest search results.
                             </p>
                         </div>}/>
-            </p>
+
             <Select
                 filter
                 placeholder="Select a provider"

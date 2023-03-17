@@ -166,21 +166,20 @@ export default function NotificationAdapterMutator({
     return (
         <Modal
             title="Adding a new Notification Adapter"
-            onOk={() => onSubmit(true)}
-            onCancel={() => onSubmit(false)}
             visible={visible}
             style={{width: '95%'}}
             footer={
-            <div>
-                <Button type="secondary" disabled={selectedAdapter == null} style={{float: 'left'}} onClick={() => onTry()}>
-                    Try
-                </Button>
-                <Button type="danger" onClick={() => onSubmit(false)}>
-                    Save
-                </Button>
-                <Button type="primary" onClick={() => onSubmit(true)}>
-                    Cancel
-                </Button>
+                <div>
+                    <Button type="secondary" disabled={selectedAdapter == null} style={{float: 'left'}}
+                            onClick={() => onTry()}>
+                        Try
+                    </Button>
+                    <Button type="danger" onClick={() => onSubmit(true)}>
+                        Save
+                    </Button>
+                    <Button type="primary" onClick={() => onSubmit(false)}>
+                        Cancel
+                    </Button>
                 </div>
             }
         >
@@ -253,20 +252,3 @@ export default function NotificationAdapterMutator({
         </Modal>
     );
 }
-
-/*
-<Modal.Actions>
-        <Button
-          content="Try Notification Adapter"
-          labelPosition="left"
-          floated="left"
-          icon="hand spock"
-          onClick={() => onTry()}
-          color="teal"
-        />
-        <Button color="black" onClick={() => onSubmit(false)}>
-          Cancel
-        </Button>
-        <Button content="Save" labelPosition="right" icon="checkmark" onClick={() => onSubmit(true)} positive />
-      </Modal.Actions>
- */

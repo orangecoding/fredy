@@ -82,7 +82,6 @@
     "redux": "4.2.1",
     "redux-thunk": "2.4.2",
     "restana": "4.9.7",
-    "semantic-ui-react": "2.1.4",
     "serve-static": "1.15.0",
     "slack": "11.0.2",
     "string-similarity": "^4.0.4",
