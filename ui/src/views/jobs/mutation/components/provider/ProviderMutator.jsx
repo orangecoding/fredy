@@ -2,9 +2,8 @@ import React, {useState} from 'react';
 
 import {Banner, Modal, Select, Input} from '@douyinfe/semi-ui';
 import {transform} from '../../../../../services/transformer/providerTransformer';
-import {Icon} from 'semantic-ui-react';
 import {useSelector} from 'react-redux';
-
+import {IconLikeHeart} from '@douyinfe/semi-icons';
 import './ProviderMutator.less';
 
 const sortProvider = (a, b) => {
@@ -83,7 +82,7 @@ export default function ProviderMutator({onVisibilityChanged, visible = false, o
             )}
 
             <p>
-                Provider are the <Icon name="heart" color="red"/> of Fredy. We're supporting multiple Provider such as
+                Provider are the <IconLikeHeart style={{ color: '#ff0000' }} /> of Fredy. We're supporting multiple Provider such as
                 Immowelt, Kalaydo etc. Select a provider from the list below.
                 <br/>
                 Fredy will then open the provider's url in a new tab.

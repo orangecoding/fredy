@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { xhrDelete, xhrPut } from '../../services/xhr';
 import { useHistory } from 'react-router-dom';
 import ProcessingTimes from './ProcessingTimes';
-import {Divider, Input, Switch, Button, TagInput} from '@douyinfe/semi-ui';
+import {Button} from '@douyinfe/semi-ui';
 import './Jobs.less';
 import {IconPlusCircle} from '@douyinfe/semi-icons';
 
