@@ -8,7 +8,7 @@ import {IconUser, IconTerminal, IconSetting} from '@douyinfe/semi-icons';
 function parsePathName(name) {
     const split = name.split('/')
         .filter(s => s.length !== 0);
-    return '/'+split[0];
+    return '/' + split[0];
 }
 
 const TopMenu = function TopMenu({isAdmin}) {
@@ -23,23 +23,20 @@ const TopMenu = function TopMenu({isAdmin}) {
                             Jobs
                         </span>
                 }
-            >
-            </TabPane>
+            />
 
             {isAdmin && (
                 <TabPane
                     itemKey="/users"
                     tab={<span><IconUser/>User</span>}
-                >
-                </TabPane>
+                />
             )}
 
             {isAdmin && (
                 <TabPane
                     itemKey="/generalSettings"
                     tab={<span><IconSetting/>General</span>}
-                >
-                </TabPane>
+                />
             )}
         </Tabs>
     );

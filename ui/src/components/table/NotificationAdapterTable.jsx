@@ -18,10 +18,10 @@ export default function NotificationAdapterTable({ notificationAdapter = [], onR
                   title: '',
                   dataIndex: 'tools',
                   render: (_, record) => {
-                      return  <div style={{float: 'right'}}>
+                      return (<div style={{float: 'right'}}>
                           <Button type="secondary" icon={<IconEdit />}  onClick={() => onEdit(record.id)} style={{marginRight:'1rem'}} />
                           <Button type="danger" icon={<IconDelete />} onClick={() => onRemove(record.id)} />
-                      </div>;
+                      </div>);
                   }
               }
           ]}

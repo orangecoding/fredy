@@ -38,10 +38,10 @@ export default function UserTable({user = [], onUserRemoval, onUserEdit} = {}) {
                     title: '',
                     dataIndex: 'tools',
                     render: (value, user) => {
-                        return  <div style={{float: 'right'}}>
+                        return (<div style={{float: 'right'}}>
                             <Button type="danger" icon={<IconDelete />} onClick={() => onUserRemoval(user.id)} style={{marginRight:'1rem'}}/>
                             <Button type="primary" icon={<IconEdit/>} onClick={() => onUserEdit(user.id)}/>
-                        </div>;
+                        </div>);
                     }
                 }
             ]}

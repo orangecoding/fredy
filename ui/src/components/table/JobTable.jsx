@@ -22,7 +22,7 @@ export default function JobTable({ jobs = {}, onJobRemoval, onJobStatusChanged, 
                   title: '',
                   dataIndex: '',
                   render: (job) => {
-                      return <Switch onChange={(checked) => onJobStatusChanged(job.id, checked)} checked={job.enabled} />
+                      return <Switch onChange={(checked) => onJobStatusChanged(job.id, checked)} checked={job.enabled} />;
                   }
               },
               {
@@ -54,11 +54,11 @@ export default function JobTable({ jobs = {}, onJobRemoval, onJobStatusChanged, 
                   title: '',
                   dataIndex: 'tools',
                   render: (_, job) => {
-                      return  <div style={{float: 'right'}}>
+                      return (<div style={{float: 'right'}}>
                           <Button type="primary" icon={<IconHistogram />}  onClick={() => onJobInsight(job.id)} style={{marginRight:'1rem'}}/>
                           <Button type="secondary" icon={<IconEdit />}  onClick={() => onJobEdit(job.id)} style={{marginRight:'1rem'}} />
                           <Button type="danger" icon={<IconDelete />} onClick={() => onJobRemoval(job.id)} />
-                      </div>;
+                      </div>);
                   }
               }
           ]}

@@ -17,18 +17,18 @@ export default function ProviderTable({ providerData = [], onRemove } = {}) {
                   title: 'Provider Url',
                   dataIndex: 'url',
                   render: (_, data) => {
-                      return <a href={data.url} target="_blank" rel="noopener noreferrer">
+                      return (<a href={data.url} target="_blank" rel="noopener noreferrer">
                           Visit site
-                      </a>;
+                      </a>);
                   }
               },
               {
                   title: '',
                   dataIndex: 'tools',
                   render: (_, record) => {
-                      return  <div style={{float: 'right'}}>
+                      return (<div style={{float: 'right'}}>
                           <Button type="danger" icon={<IconDelete />} onClick={() => onRemove(record.id)} />
-                      </div>;
+                      </div>);
                   }
               }
           ]}
