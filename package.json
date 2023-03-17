@@ -78,7 +78,6 @@
     "react-redux": "8.0.5",
     "react-router": "5.2.1",
     "react-router-dom": "5.3.0",
-    "react-switch": "7.0.0",
     "redux": "4.2.1",
     "redux-thunk": "2.4.2",
     "restana": "4.9.7",

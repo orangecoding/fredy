@@ -1,7 +1,6 @@
 import React from 'react';
 
-import {Button, Empty, Table} from '@douyinfe/semi-ui';
-import Switch from 'react-switch';
+import {Button, Empty, Table, Switch} from '@douyinfe/semi-ui';
 import {IconDelete, IconEdit, IconHistogram} from '@douyinfe/semi-icons';
 import {IllustrationNoResult, IllustrationNoResultDark} from '@douyinfe/semi-illustrations';
 const empty = (
