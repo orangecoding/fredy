@@ -55,7 +55,7 @@
     "Firefox ESR"
   ],
   "dependencies": {
-    "@douyinfe/semi-ui": "2.30.2",
+    "@douyinfe/semi-ui": "2.31.0",
     "@rematch/core": "2.2.0",
     "@rematch/loading": "2.1.2",
     "@sendgrid/mail": "7.7.0",
@@ -85,12 +85,12 @@
     "serve-static": "1.15.0",
     "slack": "11.0.2",
     "string-similarity": "^4.0.4",
-    "vite": "4.1.4",
+    "vite": "4.2.0",
     "x-ray": "2.3.4"
   },
   "devDependencies": {
-    "@babel/core": "7.21.0",
-    "@babel/eslint-parser": "7.19.1",
+    "@babel/core": "7.21.3",
+    "@babel/eslint-parser": "7.21.3",
     "@babel/preset-env": "7.20.2",
     "@babel/preset-react": "7.18.6",
     "chai": "4.3.7",
