@@ -2,19 +2,17 @@ import React, { Fragment, useState } from 'react';
 
 import NotificationAdapterMutator from './components/notificationAdapter/NotificationAdapterMutator';
 import NotificationAdapterTable from '../../../components/table/NotificationAdapterTable';
-import { Icon, Form, Button, Label } from 'semantic-ui-react';
 import ProviderTable from '../../../components/table/ProviderTable';
 import ProviderMutator from './components/provider/ProviderMutator';
-import ToastContext from '../../../components/toasts/ToastContext';
 import Headline from '../../../components/headline/Headline';
 import { useDispatch, useSelector } from 'react-redux';
 import { xhrPost } from '../../../services/xhr';
 import { useHistory } from 'react-router-dom';
 import { useParams } from 'react-router';
-
+import { Divider, Input, Switch, Button, TagInput, Toast } from '@douyinfe/semi-ui';
 import './JobMutation.less';
-import Switch from 'react-switch';
 import { SegmentPart } from '../../../components/segment/SegmentPart';
+import { IconPlusCircle } from '@douyinfe/semi-icons';
 
 export default function JobMutator() {
   const jobs = useSelector((state) => state.jobs.jobs);
@@ -38,7 +36,6 @@ export default function JobMutator() {
   const [enabled, setEnabled] = useState(defaultEnabled);
   const history = useHistory();
   const dispatch = useDispatch();
-  const ctx = React.useContext(ToastContext);
 
   const isSavingEnabled = () => {
     return notificationAdapterData.length > 0 && providerData.length > 0 && name != null && name.length > 0;
@@ -55,24 +52,11 @@ export default function JobMutator() {
         jobId: jobToBeEdit?.id || null,
       });
       await dispatch.jobs.getJobs();
-      ctx.showToast({
-        title: 'Success',
-        message: 'Job successfully saved...',
-        delay: 5000,
-        backgroundColor: '#87eb8f',
-        color: '#000',
-      });
+      Toast.success('Job successfully saved...');
       history.push('/jobs');
     } catch (Exception) {
       console.error(Exception.json.message);
-
-      ctx.showToast({
-        title: 'Error',
-        message: Exception.json != null ? Exception.json.message : Exception,
-        delay: 8000,
-        backgroundColor: '#db2828',
-        color: '#fff',
-      });
+      Toast.error(Exception.json != null ? Exception.json.message : Exception);
     }
   };
 
@@ -107,20 +91,19 @@ export default function JobMutator() {
       )}
 
       <Headline text={jobToBeEdit ? 'Edit a Job' : 'Create a new Job'} />
-      <Form>
+      <form>
         <SegmentPart name="Name">
-          <Form.Input
+          <Input
+            autofocus
             type="text"
             maxLength={40}
             placeholder="Name"
-            autoFocus
-            inverted
             width={6}
-            defaultValue={name}
-            onChange={(e) => setName(e.target.value)}
+            value={name}
+            onChange={(value) => setName(value)}
           />
         </SegmentPart>
-
+        <Divider margin="1rem" />
         <SegmentPart
           name="Provider"
           icon="briefcase"
@@ -130,10 +113,14 @@ export default function JobMutator() {
             'to search for new listings.'
           }
         >
-          <Form.Button primary className="jobMutation__newButton" onClick={() => setProviderCreationVisibility(true)}>
-            <Icon name="plus" />
+          <Button
+            type="primary"
+            icon={<IconPlusCircle />}
+            className="jobMutation__newButton"
+            onClick={() => setProviderCreationVisibility(true)}
+          >
             Add new Provider
-          </Form.Button>
+          </Button>
 
           <ProviderTable
             providerData={providerData}
@@ -142,20 +129,20 @@ export default function JobMutator() {
             }}
           />
         </SegmentPart>
-
+        <Divider margin="1rem" />
         <SegmentPart
           icon="bell"
           name="Notification Adapter"
           helpText="Fredy supports multiple ways to notify you about new findings. These are called notification adapter. You can chose between email, Telegram etc."
         >
-          <Form.Button
-            primary
+          <Button
+            type="primary"
             className="jobMutation__newButton"
+            icon={<IconPlusCircle />}
             onClick={() => setNotificationCreationVisibility(true)}
           >
-            <Icon name="plus" />
             Add new Notification Adapter
-          </Form.Button>
+          </Button>
 
           <NotificationAdapterTable
             notificationAdapter={notificationAdapterData}
@@ -169,40 +156,19 @@ export default function JobMutator() {
             }}
           />
         </SegmentPart>
-
+        <Divider margin="1rem" />
         <SegmentPart
           icon="bell"
           name="Blacklist"
-          helpText="If a listing contains one of these words, it will be filtered out. Words must be comma separated. To remove a word from the black list, just click the red label(s)."
+          helpText="If a listing contains one of these words, it will be filtered out. Type in a word, then hit enter."
         >
-          <Form.Input
-            type="text"
-            maxLength={40}
-            placeholder="Comma separated list of blacklisted words"
-            autoFocus
-            inverted
-            width={6}
-            onChange={(e) => {
-              if (e.target.value.indexOf(',') !== -1) {
-                setBlacklist([...blacklist, e.target.value.replace(',', '')]);
-                e.target.value = '';
-              }
-            }}
+          <TagInput
+            value={blacklist || []}
+            placeholder="Add a word for filtering..."
+            onChange={(v) => setBlacklist([...v])}
           />
-          {blacklist.map((blacklistWord) => (
-            <Label
-              as="a"
-              key={`blacklist_${blacklistWord}`}
-              onClick={(e, obj) => {
-                setBlacklist(blacklist.filter((word) => word !== obj.content));
-              }}
-              content={blacklistWord}
-              icon="thumbs down"
-              color="red"
-            />
-          ))}
         </SegmentPart>
-
+        <Divider margin="1rem" />
         <SegmentPart
           icon="play circle outline"
           name="Job activation"
@@ -210,14 +176,14 @@ export default function JobMutator() {
         >
           <Switch className="jobMutation__spaceTop" onChange={(checked) => setEnabled(checked)} checked={enabled} />
         </SegmentPart>
-
-        <Button color="red" onClick={() => history.push('/jobs')}>
+        <Divider margin="1rem" />
+        <Button type="danger" style={{ marginRight: '1rem' }} onClick={() => history.push('/jobs')}>
           Cancel
         </Button>
-        <Button color="green" disabled={!isSavingEnabled()} onClick={mutateJob}>
+        <Button type="primary" icon={<IconPlusCircle />} disabled={!isSavingEnabled()} onClick={mutateJob}>
           Save
         </Button>
-      </Form>
+      </form>
     </Fragment>
   );
 }

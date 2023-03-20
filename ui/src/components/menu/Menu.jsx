@@ -1,49 +1,54 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { Icon, Menu } from 'semantic-ui-react';
+import { Tabs, TabPane } from '@douyinfe/semi-ui';
 
-import './Menu.less';
 import { useLocation } from 'react-router';
+import { IconUser, IconTerminal, IconSetting } from '@douyinfe/semi-icons';
+
+function parsePathName(name) {
+  const split = name.split('/').filter((s) => s.length !== 0);
+  return '/' + split[0];
+}
 
 const TopMenu = function TopMenu({ isAdmin }) {
   const history = useHistory();
   const location = useLocation();
-
-  const isActiveRoute = (name) => location.pathname.indexOf(name) !== -1;
-
   return (
-    <Menu pointing secondary className="topMenu">
-      <Menu.Item
-        name="jobs"
-        active={isActiveRoute('jobs')}
-        className={isActiveRoute('jobs') ? 'topMenu__active' : 'topMenu__item'}
-        onClick={() => history.push('/jobs')}
-      >
-        <Icon name="search" /> Job Configuration
-      </Menu.Item>
+    <Tabs type="line" activeKey={parsePathName(location.pathname)} onTabClick={(key) => history.push(key)}>
+      <TabPane
+        itemKey="/jobs"
+        tab={
+          <span>
+            <IconTerminal />
+            Jobs
+          </span>
+        }
+      />
 
       {isAdmin && (
-        <Menu.Item
-          name="user"
-          active={isActiveRoute('users')}
-          className={isActiveRoute('users') ? 'topMenu__active' : 'topMenu__item'}
-          onClick={() => history.push('/users')}
-        >
-          <Icon name="user" /> User configuration
-        </Menu.Item>
+        <TabPane
+          itemKey="/users"
+          tab={
+            <span>
+              <IconUser />
+              User
+            </span>
+          }
+        />
       )}
 
       {isAdmin && (
-        <Menu.Item
-          name="general"
-          active={isActiveRoute('general')}
-          className={isActiveRoute('general') ? 'topMenu__active' : 'topMenu__item'}
-          onClick={() => history.push('/generalSettings')}
-        >
-          <Icon name="cog" /> General Settings
-        </Menu.Item>
+        <TabPane
+          itemKey="/generalSettings"
+          tab={
+            <span>
+              <IconSetting />
+              General
+            </span>
+          }
+        />
       )}
-    </Menu>
+    </Tabs>
   );
 };
 

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 
+import { Banner, Modal, Select, Input } from '@douyinfe/semi-ui';
 import { transform } from '../../../../../services/transformer/providerTransformer';
-import { Modal, Icon, Button, Dropdown, Input, Message } from 'semantic-ui-react';
 import { useSelector } from 'react-redux';
-
+import { IconLikeHeart } from '@douyinfe/semi-icons';
 import './ProviderMutator.less';
 
 const sortProvider = (a, b) => {
@@ -61,79 +61,90 @@ export default function ProviderMutator({ onVisibilityChanged, visible = false, 
   };
 
   return (
-    <Modal onClose={() => onVisibilityChanged(false)} onOpen={() => onVisibilityChanged(true)} open={visible}>
-      <Modal.Header>Adding a new Provider</Modal.Header>
-      <Modal.Content image>
-        <Modal.Description>
-          {validationMessage != null && (
-            <Message negative>
-              <Message.Header>Houston we have a problem...</Message.Header>
-              <p>{validationMessage}</p>
-            </Message>
-          )}
+    <Modal
+      title="Adding a new Provider"
+      visible={visible}
+      onOk={() => onSubmit(true)}
+      onCancel={() => onSubmit(false)}
+      style={{ width: '50rem' }}
+      okText="Save"
+    >
+      {validationMessage != null && (
+        <Banner
+          fullMode={false}
+          type="danger"
+          closeIcon={null}
+          title={<div style={{ fontWeight: 600, fontSize: '14px', lineHeight: '20px' }}>Error</div>}
+          style={{ marginBottom: '1rem' }}
+          description={validationMessage}
+        />
+      )}
 
-          <p>
-            Provider are the <Icon name="heart" color="red" /> of Fredy. We're supporting multiple Provider such as
-            Immowelt, Kalaydo etc. Select a provider from the list below.
-            <br />
-            Fredy will then open the provider's url in a new tab.
-          </p>
-          <p>
-            You will need to configure your search parameter like you would do when you do a regular search on the
-            provider's website.
-            <br />
-            When the search results are shown on the website, copy the url and paste it into the textfield below.
-            <br />
-            <span style={{ color: '#ff0000' }}>
+      <p>
+        Provider are the <IconLikeHeart style={{ color: '#ff0000' }} /> of Fredy. We're supporting multiple Provider
+        such as Immowelt, Kalaydo etc. Select a provider from the list below.
+        <br />
+        Fredy will then open the provider's url in a new tab.
+      </p>
+      <p>
+        You will need to configure your search parameter like you would do when you do a regular search on the
+        provider's website.
+        <br />
+        When the search results are shown on the website, copy the url and paste it into the textfield below.
+      </p>
+      <Banner
+        fullMode={false}
+        type="warning"
+        closeIcon={null}
+        title={<div style={{ fontWeight: 600, fontSize: '14px', lineHeight: '20px' }}>ScrapingAnt</div>}
+        style={{ marginBottom: '1rem' }}
+        description={
+          <div>
+            <p>
               If you chose Immoscout as a provider, make sure to also add the scrapingAnt apiKey to the config.json.
               (See readme)
-            </span>
-            <br />
-            <span style={{ color: '#ff0000' }}>
+            </p>
+            <p>
               Do not forget to sort the results by date before copying the url to Fredy, so that Fredy always captures
               the latest search results.
-            </span>
-          </p>
-          <Dropdown
-            placeholder="Select a provider"
-            className="providerMutator__fields"
-            selection
-            value={selectedProvider == null ? '' : selectedProvider.id}
-            options={provider
-              .map((pro) => {
-                return {
-                  key: pro.id,
-                  value: pro.id,
-                  text: pro.name,
-                };
-              })
-              .sort(sortProvider)}
-            onChange={(e, { value }) => {
-              const selectedProvider = provider.find((pro) => pro.id === value);
-              setSelectedProvider(selectedProvider);
+            </p>
+          </div>
+        }
+      />
 
-              window.open(selectedProvider.baseUrl);
-            }}
-          />
-          <br />
-          <br />
-          <Input
-            type="text"
-            placeholder="Provider Url"
-            width={10}
-            className="providerMutator__fields"
-            onBlur={(e) => {
-              setProviderUrl(e.target.value);
-            }}
-          />
-        </Modal.Description>
-      </Modal.Content>
-      <Modal.Actions>
-        <Button color="black" onClick={() => onSubmit(false)}>
-          Cancel
-        </Button>
-        <Button content="Save" labelPosition="right" icon="checkmark" onClick={() => onSubmit(true)} positive />
-      </Modal.Actions>
+      <Select
+        filter
+        placeholder="Select a provider"
+        className="providerMutator__fields"
+        optionList={provider
+          .map((pro) => {
+            return {
+              otherKey: pro.id,
+              value: pro.id,
+              label: pro.name,
+            };
+          })
+          .sort(sortProvider)}
+        style={{ width: 180 }}
+        value={selectedProvider == null ? '' : selectedProvider.id}
+        onChange={(value) => {
+          const selectedProvider = provider.find((pro) => pro.id === value);
+          setSelectedProvider(selectedProvider);
+
+          window.open(selectedProvider.baseUrl);
+        }}
+      />
+      <br />
+      <br />
+      <Input
+        type="text"
+        placeholder="Provider Url"
+        width={10}
+        className="providerMutator__fields"
+        onBlur={(e) => {
+          setProviderUrl(e.target.value);
+        }}
+      />
     </Modal>
   );
 }

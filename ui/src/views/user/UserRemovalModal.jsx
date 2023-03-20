@@ -1,21 +1,9 @@
 import React from 'react';
-import { Modal, Header, Icon, Button } from 'semantic-ui-react';
-
+import { Modal } from '@douyinfe/semi-ui';
 const UserRemovalModal = function UserRemovalModal({ onOk, onCancel }) {
   return (
-    <Modal open={true}>
-      <Header icon="warning sign" content="Warning" />
-      <Modal.Content>
-        <p>Removing this user will also remove all associated jobs.</p>
-      </Modal.Content>
-      <Modal.Actions>
-        <Button color="red" onClick={() => onCancel()}>
-          <Icon name="remove" /> Cancel
-        </Button>
-        <Button color="green" onClick={() => onOk()}>
-          <Icon name="checkmark" /> Remove
-        </Button>
-      </Modal.Actions>
+    <Modal title="Removing user" visible={true} closable={false} onOk={onOk} onCancel={onCancel}>
+      <p>Removing this user will also remove all associated jobs.</p>
     </Modal>
   );
 };

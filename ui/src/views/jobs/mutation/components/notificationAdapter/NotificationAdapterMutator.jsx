@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 
 import { transform } from '../../../../../services/transformer/notificationAdapterTransformer';
-import { Modal, Form, Button, Dropdown, Input, Message } from 'semantic-ui-react';
 import { xhrPost } from '../../../../../services/xhr';
 import Help from './NotificationHelpDisplay';
 import { useSelector } from 'react-redux';
-import Switch from 'react-switch';
+import { Banner, Button, Form, Modal, Select, Switch } from '@douyinfe/semi-ui';
 
 import './NotificationAdapterMutator.less';
 
@@ -138,8 +137,7 @@ export default function NotificationAdapterMutator({
       const uiElement = selectedAdapter.fields[key];
 
       return (
-        <Form.Field key={uiElement.description}>
-          <label>{uiElement.label}:</label>
+        <Form key={key}>
           {uiElement.type === 'boolean' ? (
             <Switch
               checked={uiElement.value || false}
@@ -148,106 +146,108 @@ export default function NotificationAdapterMutator({
               }}
             />
           ) : (
-            <Input
+            <Form.Input
+              style={{ width: '100%' }}
+              field={uiElement.label}
               type={uiElement.type}
               value={uiElement.value || ''}
               placeholder={uiElement.label}
-              onChange={(e) => {
-                setValue(selectedAdapter, uiElement, key, e.target.value);
+              label={uiElement.label}
+              onChange={(value) => {
+                setValue(selectedAdapter, uiElement, key, value);
               }}
             />
           )}
-        </Form.Field>
+        </Form>
       );
     });
   };
 
   return (
     <Modal
-      onClose={() => onVisibilityChanged(false)}
-      onOpen={() => onVisibilityChanged(true)}
-      open={visible}
+      title="Adding a new Notification Adapter"
+      visible={visible}
       style={{ width: '95%' }}
+      footer={
+        <div>
+          <Button type="secondary" disabled={selectedAdapter == null} style={{ float: 'left' }} onClick={() => onTry()}>
+            Try
+          </Button>
+          <Button type="danger" onClick={() => onSubmit(true)}>
+            Save
+          </Button>
+          <Button type="primary" onClick={() => onSubmit(false)}>
+            Cancel
+          </Button>
+        </div>
+      }
     >
-      <Modal.Header>Adding a new Notification Adapter</Modal.Header>
-      <Modal.Content image>
-        <Modal.Description>
-          {validationMessage != null && (
-            <Message negative>
-              <Message.Header>Houston we have a problem...</Message.Header>
-              <p dangerouslySetInnerHTML={{ __html: validationMessage }} />
-            </Message>
-          )}
-          {successMessage != null && (
-            <Message positive>
-              <Message.Header>Yay!</Message.Header>
-              <p dangerouslySetInnerHTML={{ __html: successMessage }} />
-            </Message>
-          )}
-
-          <p>
-            When Fredy found new listings, we like to report them to you. To do so, notification adapter can be
-            configured. <br />
-            There are multiple ways how Fredy can send new listings to you. Chose your weapon...
-          </p>
-          <Dropdown
-            placeholder="Select a notification adapter"
-            className="providerMutator__fields"
-            selection
-            value={selectedAdapter == null ? '' : selectedAdapter.id}
-            options={adapter
-              .map((a) => {
-                return {
-                  key: a.id,
-                  value: a.id,
-                  text: a.name,
-                };
-              })
-              //filter out those, that have already been selected
-              .filter((option) =>
-                editNotificationAdapter != null
-                  ? true
-                  : selected.find((selectedOption) => selectedOption.id === option.key) == null
-              )
-              .sort(sortAdapter)}
-            onChange={(e, { value }) => {
-              setSuccessMessage(null);
-              setValidationMessage(null);
-              const selectedAdapter = adapter.find((a) => a.id === value);
-              setSelectedAdapter(Object.assign({}, selectedAdapter));
-            }}
-          />
-          <br />
-          <br />
-          {selectedAdapter != null && (
-            <Form>
-              <i>{selectedAdapter.description}</i>
-              <br />
-              {selectedAdapter.readme != null && (
-                <React.Fragment>
-                  <Help readme={selectedAdapter.readme} />
-                </React.Fragment>
-              )}
-              <br />
-              {getFieldsFor(selectedAdapter)}
-            </Form>
-          )}
-        </Modal.Description>
-      </Modal.Content>
-      <Modal.Actions>
-        <Button
-          content="Try Notification Adapter"
-          labelPosition="left"
-          floated="left"
-          icon="hand spock"
-          onClick={() => onTry()}
-          color="teal"
+      {validationMessage != null && (
+        <Banner
+          fullMode={false}
+          type="danger"
+          closeIcon={null}
+          title={<div style={{ fontWeight: 600, fontSize: '14px', lineHeight: '20px' }}>Error</div>}
+          style={{ marginBottom: '1rem' }}
+          description={<p dangerouslySetInnerHTML={{ __html: validationMessage }} />}
         />
-        <Button color="black" onClick={() => onSubmit(false)}>
-          Cancel
-        </Button>
-        <Button content="Save" labelPosition="right" icon="checkmark" onClick={() => onSubmit(true)} positive />
-      </Modal.Actions>
+      )}
+      {successMessage != null && (
+        <Banner
+          fullMode={false}
+          type="success"
+          closeIcon={null}
+          title={<div style={{ fontWeight: 600, fontSize: '14px', lineHeight: '20px' }}>Yay!</div>}
+          style={{ marginBottom: '1rem' }}
+          description={<p dangerouslySetInnerHTML={{ __html: successMessage }} />}
+        />
+      )}
+
+      <p>
+        When Fredy found new listings, we like to report them to you. To do so, notification adapter can be configured.{' '}
+        <br />
+        There are multiple ways how Fredy can send new listings to you. Chose your weapon...
+      </p>
+
+      <Select
+        filter
+        placeholder="Select a notification adapter"
+        className="providerMutator__fields"
+        value={selectedAdapter == null ? '' : selectedAdapter.id}
+        optionList={adapter
+          .map((a) => {
+            return {
+              otherKey: a.id,
+              value: a.id,
+              label: a.name,
+            };
+          })
+          //filter out those, that have already been selected
+          .filter((option) =>
+            editNotificationAdapter != null
+              ? true
+              : selected.find((selectedOption) => selectedOption.id === option.key) == null
+          )
+          .sort(sortAdapter)}
+        onChange={(value) => {
+          setSuccessMessage(null);
+          setValidationMessage(null);
+          const selectedAdapter = adapter.find((a) => a.id === value);
+          setSelectedAdapter(Object.assign({}, selectedAdapter));
+        }}
+      />
+      <br />
+      <br />
+      {selectedAdapter != null && (
+        <>
+          <i>{selectedAdapter.description}</i>
+          <br />
+          <br />
+          {selectedAdapter.readme != null && <Help readme={selectedAdapter.readme} />}
+          <br />
+          {getFieldsFor(selectedAdapter)}
+        </>
+      )}
     </Modal>
   );
 }

@@ -1,14 +1,12 @@
 import React from 'react';
 
-import ToastContext from '../../../components/toasts/ToastContext';
 import { xhrGet, xhrPost } from '../../../services/xhr';
 import { useHistory, useParams } from 'react-router';
-import { Button, Form } from 'semantic-ui-react';
 import { useDispatch } from 'react-redux';
-import Switch from 'react-switch';
-
+import { Divider, Input, Switch, Button, Toast } from '@douyinfe/semi-ui';
 import './UserMutator.less';
 import { SegmentPart } from '../../../components/segment/SegmentPart';
+import { IconPlusCircle } from '@douyinfe/semi-icons';
 
 const UserMutator = function UserMutator() {
   const params = useParams();
@@ -18,7 +16,6 @@ const UserMutator = function UserMutator() {
   const [isAdmin, setIsAdmin] = React.useState(false);
 
   const history = useHistory();
-  const ctx = React.useContext(ToastContext);
   const dispatch = useDispatch();
 
   React.useEffect(() => {
@@ -38,6 +35,7 @@ const UserMutator = function UserMutator() {
         }
       }
     }
+
     init();
   }, [params.userId]);
 
@@ -51,76 +49,62 @@ const UserMutator = function UserMutator() {
         isAdmin,
       });
       await dispatch.user.getUsers();
-      ctx.showToast({
-        title: 'Success',
-        message: 'User successfully saved...',
-        delay: 5000,
-        backgroundColor: '#87eb8f',
-        color: '#000',
-      });
+      Toast.success('User successfully saved...');
       history.push('/users');
-    } catch (Exception) {
-      console.error(Exception);
-      ctx.showToast({
-        title: 'Error',
-        message: Exception.json.message,
-        delay: 6000,
-        backgroundColor: '#db2828',
-        color: '#fff',
-      });
+    } catch (error) {
+      console.error(error);
+      Toast.error(error.json.message);
     }
   };
 
   return (
-    <Form inverted className="userMutator">
+    <form className="userMutator">
       <SegmentPart name="Username" helpText="The username used to login to Fredy">
-        <Form.Input
+        <Input
           type="text"
           label="Username"
           maxLength={30}
           placeholder="Username"
           autoFocus
-          inverted
           width={6}
-          defaultValue={username}
-          onChange={(e) => setUsername(e.target.value)}
+          value={username}
+          onChange={(val) => setUsername(val)}
         />
       </SegmentPart>
+      <Divider margin="1rem" />
       <SegmentPart name="Password" helpText="The password used to login to Fredy">
-        <Form.Input
-          type="password"
+        <Input
+          mode="password"
           label="Password"
           placeholder="Password"
-          inverted
           width={6}
-          defaultValue={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={password}
+          onChange={(val) => setPassword(val)}
         />
       </SegmentPart>
+      <Divider margin="1rem" />
       <SegmentPart name="Retype password" helpText="Retype the password to make sure they match">
-        <Form.Input
-          type="password"
+        <Input
+          mode="password"
           label="Retype password"
           placeholder="Retype password"
-          inverted
           width={6}
-          defaultValue={password2}
-          onChange={(e) => setPassword2(e.target.value)}
+          value={password2}
+          onChange={(val) => setPassword2(val)}
         />
       </SegmentPart>
-      <SegmentPart name="Admin use" helpText="Check this if the user is an administrator">
-        <Form.Field>
-          <label>Is user an admin?</label>
-          <Switch checked={isAdmin} onChange={(checked) => setIsAdmin(checked)} />
-        </Form.Field>
+      <Divider margin="1rem" />
+      <SegmentPart name="Is user an admin?" helpText="Check this if the user is an administrator">
+        <Switch checked={isAdmin} onChange={(checked) => setIsAdmin(checked)} />
       </SegmentPart>
-      <Button color="red" onClick={() => history.push('/users')}>
+      <Divider margin="1rem" />
+      <Button type="danger" style={{ marginRight: '1rem' }} onClick={() => history.push('/users')}>
         Cancel
       </Button>
-      <Button color="green" onClick={saveUser}>
+      <Button type="primary" icon={<IconPlusCircle />} onClick={saveUser}>
         Save
       </Button>
-    </Form>
+    </form>
   );
 };
 

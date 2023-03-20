@@ -1,14 +1,14 @@
 import React from 'react';
-import { Input } from 'semantic-ui-react';
 
 import cityBackground from '../../assets/city_background.jpg';
 import Logo from '../../components/logo/Logo';
 import { xhrPost } from '../../services/xhr';
-import { Message } from 'semantic-ui-react';
 import { useHistory } from 'react-router';
 import { useDispatch } from 'react-redux';
+import { Input, Button, Banner } from '@douyinfe/semi-ui';
 
 import './login.less';
+import { IconUser, IconLock } from '@douyinfe/semi-icons';
 
 export default function Login() {
   const dispatch = useDispatch();
@@ -44,30 +44,41 @@ export default function Login() {
       <Logo />
       <form>
         <div className="login__loginWrapper">
-          {error && <Message negative icon="error" content={error} />}
+          {error && <Banner type="danger" closeIcon={null} description={error} />}
           <Input
-            icon="user"
-            iconPosition="left"
+            size="large"
+            prefix={<IconUser />}
             placeholder="Username"
-            defaultValue={username}
+            value={username}
+            showClear
             style={{ marginTop: error ? '1rem' : '4rem' }}
-            autoFocus
-            onChange={(e) => setUserName(e.target.value)}
+            autofocus
+            onChange={(value) => setUserName(value)}
+            onKeyPress={async (e) => {
+              if (e.key === 'Enter') {
+                await tryLogin();
+              }
+            }}
           />
 
           <Input
-            type="password"
-            icon="lock"
-            iconPosition="left"
-            defaultValue={password}
+            size="large"
+            mode="password"
+            prefix={<IconLock />}
+            value={password}
             placeholder="Password"
             style={{ marginTop: '2rem' }}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(value) => setPassword(value)}
+            onKeyPress={async (e) => {
+              if (e.key === 'Enter') {
+                await tryLogin();
+              }
+            }}
           />
 
-          <button className="ui primary button" style={{ marginTop: '3rem' }} onClick={tryLogin}>
+          <Button type="primary" onClick={tryLogin} theme="solid" style={{ marginTop: '3rem' }}>
             Login
-          </button>
+          </Button>
         </div>
       </form>
     </div>

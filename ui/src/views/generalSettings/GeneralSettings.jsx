@@ -2,14 +2,32 @@ import React from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Button, Form, Icon, Message, Segment, Radio } from 'semantic-ui-react';
-import ToastContext from '../../components/toasts/ToastContext';
+import { Divider, Input, Radio, TimePicker, Button, RadioGroup } from '@douyinfe/semi-ui';
+import { InputNumber } from '@douyinfe/semi-ui';
 import Headline from '../../components/headline/Headline';
 import { xhrPost } from '../../services/xhr';
 import { SegmentPart } from '../../components/segment/SegmentPart';
+import { Banner, Toast } from '@douyinfe/semi-ui';
+import { IconSave, IconCalendar, IconKey, IconRefresh, IconSignal } from '@douyinfe/semi-icons';
 import './GeneralSettings.less';
 
-const GeneralSettings = function Users() {
+function formatFromTimestamp(ts) {
+  const date = new Date(ts);
+  return `${date.getHours()}:${date.getMinutes() > 9 ? date.getMinutes() : '0' + date.getMinutes()}`;
+}
+
+function formatFromTBackend(time) {
+  if (time == null || time.length === 0) {
+    return null;
+  }
+  const date = new Date();
+  const split = time.split(':');
+  date.setHours(split[0]);
+  date.setMinutes(split[1]);
+  return date.getTime();
+}
+
+const GeneralSettings = function GeneralSettings() {
   const dispatch = useDispatch();
   const [loading, setLoading] = React.useState(true);
 
@@ -21,13 +39,12 @@ const GeneralSettings = function Users() {
   const [scrapingAntProxy, setScrapingAntProxy] = React.useState('');
   const [workingHourFrom, setWorkingHourFrom] = React.useState(null);
   const [workingHourTo, setWorkingHourTo] = React.useState(null);
-  const ctx = React.useContext(ToastContext);
-
   React.useEffect(() => {
     async function init() {
       await dispatch.generalSettings.getGeneralSettings();
       setLoading(false);
     }
+
     init();
   }, []);
 
@@ -40,19 +57,18 @@ const GeneralSettings = function Users() {
       setWorkingHourTo(settings?.workingHours?.to);
       setScrapingAntProxy(settings?.scrapingAnt?.proxy || 'datacenter');
     }
+
     init();
   }, [settings]);
 
   const nullOrEmpty = (val) => val == null || val.length === 0;
 
   const throwMessage = (message, type) => {
-    ctx.showToast({
-      title: type === 'error' ? 'Error' : 'Success',
-      message: message,
-      delay: 5000,
-      backgroundColor: type === 'error' ? '#db2828' : '#87eb8f',
-      color: type === 'error' ? '#fff' : '#000',
-    });
+    if (type === 'error') {
+      Toast.error(message);
+    } else {
+      Toast.success(message);
+    }
   };
 
   const onStore = async () => {
@@ -97,139 +113,130 @@ const GeneralSettings = function Users() {
       {!loading && (
         <React.Fragment>
           <Headline text="General Settings" />
-          <Message className="generalSettings__message">
-            <h5>
-              <Icon name="info circle" />
-              Info
-            </h5>
-            <p>If you change any settings, you must restart Fredy afterwards.</p>
-          </Message>
-          <Form>
+          <Banner
+            fullMode={false}
+            type="info"
+            closeIcon={null}
+            title={<div style={{ fontWeight: 600, fontSize: '14px', lineHeight: '20px' }}>Info</div>}
+            style={{ marginBottom: '1rem' }}
+            description="If you change any settings, you must restart Fredy afterwards."
+          />
+          <div>
             <SegmentPart
               name="Interval"
               helpText="Interval in minutes for running queries against the configured services."
-              icon="refresh"
+              Icon={IconRefresh}
             >
-              <Form.Input
-                type="number"
-                min="0"
-                max="1440"
+              <InputNumber
+                min={0}
+                max={1440}
                 placeholder="Interval in minutes"
-                inverted
-                size="mini"
-                width={6}
-                defaultValue={interval}
-                onChange={(e) => setInterval(e.target.value)}
+                value={interval}
+                formatter={(value) => `${value}`.replace(/\D/g, '')}
+                onChange={(value) => setInterval(value)}
+                suffix={'minutes'}
               />
             </SegmentPart>
-
-            <SegmentPart name="Port" helpText="Port on which Fredy is running." icon="connectdevelop">
-              <Form.Input
-                type="number"
-                min="0"
-                max="99999"
+            <Divider margin="1rem" />
+            <SegmentPart name="Port" helpText="Port on which Fredy is running." Icon={IconSignal}>
+              <InputNumber
+                min={0}
+                max={99999}
                 placeholder="Port"
-                inverted
-                size="mini"
-                width={6}
-                defaultValue={port}
-                onChange={(e) => setPort(e.target.value)}
+                value={port}
+                formatter={(value) => `${value}`.replace(/\D/g, '')}
+                onChange={(value) => setPort(value)}
               />
             </SegmentPart>
-
+            <Divider margin="1rem" />
             <SegmentPart
               name="ScrapingAnt Api Key"
               helpText="The api key for ScrapingAnt is used to be able to scrape Immoscout."
-              icon="key"
+              Icon={IconKey}
             >
-              <Form.Input
+              <Input
                 type="text"
                 placeholder="ScrapingAnt Api Key"
-                inverted
-                size="mini"
-                width={6}
-                defaultValue={scrapingAntApiKey}
-                onChange={(e) => setScrapingAntApiKey(e.target.value)}
+                value={scrapingAntApiKey}
+                onChange={(val) => setScrapingAntApiKey(val)}
               />
             </SegmentPart>
-
+            <Divider margin="1rem" />
             <SegmentPart
               name="ScrapingAnt proxy settings"
               helpText="Scraping ant provides different proxies."
-              icon="key"
+              Icon={IconKey}
             >
-              <Message info>
-                ScrapingAnt is needed to scrape Immoscout. ScrapingAnt itself is using 2 different types of proxies.{' '}
-                <br />
-                <h4>Datacenter-Proxy</h4>
-                Proxy server located in one of the datacenters across the world. Datacenter proxies are slower and more
-                likely to fail, but they are cheaper. A call with a datacenter proxy cost 10 credits.
-                <h4>Residential-Proxy</h4>
-                High-quality proxy server located in one of the real people houses across the world. Datacenter proxies
-                are faster and more likely to success, but they are more expensive. A call with a datacenter proxy cost
-                250 credits.
-                <br />
-                <br />
-                <b>
-                  On the free tier, you have 10.000 credits, so chose your option wisely. Keep in mind, only successful
-                  calls will be charged.
-                </b>
-              </Message>
-              <Form.Field>
-                <Radio
-                  label="Datacenter proxy"
-                  name="scrapingAntProxy"
-                  value="datacenter"
-                  checked={scrapingAntProxy === 'datacenter'}
-                  onChange={(e, { value }) => setScrapingAntProxy(value)}
-                />
-              </Form.Field>
-              <Form.Field>
-                <Radio
-                  label="Residential proxy"
-                  name="scrapingAntProxy"
-                  value="residential"
-                  checked={scrapingAntProxy === 'residential'}
-                  onChange={(e, { value }) => setScrapingAntProxy(value)}
-                />
-              </Form.Field>
-            </SegmentPart>
+              <Banner
+                fullMode={false}
+                type="info"
+                closeIcon={null}
+                title={
+                  <div style={{ fontWeight: 600, fontSize: '14px', lineHeight: '20px' }}>
+                    ScrapingAnt is needed to scrape Immoscout. ScrapingAnt itself is using 2 different types of proxies
+                  </div>
+                }
+                style={{ marginBottom: '1rem' }}
+                description={
+                  <div>
+                    <h4>Datacenter-Proxy</h4>
+                    Proxy server located in one of the datacenters across the world. Datacenter proxies are slower and
+                    more likely to fail, but they are cheaper. A call with a datacenter proxy cost 10 credits.
+                    <h4>Residential-Proxy</h4>
+                    High-quality proxy server located in one of the real people houses across the world. Datacenter
+                    proxies are faster and more likely to success, but they are more expensive. A call with a datacenter
+                    proxy cost 250 credits.
+                    <br />
+                    <br />
+                    <b>
+                      On the free tier, you have 10.000 credits, so chose your option wisely. Keep in mind, only
+                      successful calls will be charged.
+                    </b>
+                  </div>
+                }
+              />
 
+              <RadioGroup value={scrapingAntProxy} onChange={(e) => setScrapingAntProxy(e.target.value)}>
+                <Radio name="datacenter" value="datacenter" checked={scrapingAntProxy === 'datacenter'}>
+                  Datacenter proxy
+                </Radio>
+                <Radio name="residential" value="residential" checked={scrapingAntProxy === 'residential'}>
+                  Residential proxy
+                </Radio>
+              </RadioGroup>
+            </SegmentPart>
+            <Divider margin="1rem" />
             <SegmentPart
               name="Working hours"
               helpText="During this hours, Fredy will search for new apartments. If nothing is configured, Fredy will search around the clock."
-              icon="calendar outline"
+              Icon={IconCalendar}
             >
               <div className="generalSettings__timePickerContainer">
-                <Form.Input
-                  className="generalSettings__time"
-                  type="time"
-                  placeholder="Working hours from"
-                  inverted
-                  size="mini"
-                  width={2}
-                  defaultValue={workingHourFrom}
-                  onChange={(e) => setWorkingHourFrom(e.target.value)}
+                <TimePicker
+                  format={'HH:mm'}
+                  insetLabel="From"
+                  value={formatFromTBackend(workingHourFrom)}
+                  placeholder=""
+                  onChange={(val) => {
+                    setWorkingHourFrom(val == null ? null : formatFromTimestamp(val));
+                  }}
                 />
-                <div className="generalSettings__until">until</div>
-                <Form.Input
-                  type="time"
-                  placeholder="Working hours to"
-                  inverted
-                  size="mini"
-                  width={2}
-                  defaultValue={workingHourTo}
-                  onChange={(e) => setWorkingHourTo(e.target.value)}
+                <TimePicker
+                  format={'HH:mm'}
+                  insetLabel="Until"
+                  value={formatFromTBackend(workingHourTo)}
+                  placeholder=""
+                  onChange={(val) => {
+                    setWorkingHourTo(val == null ? null : formatFromTimestamp(val));
+                  }}
                 />
               </div>
             </SegmentPart>
-
-            <Segment inverted floated="right">
-              <Button color="teal" onClick={onStore}>
-                Save
-              </Button>
-            </Segment>
-          </Form>
+            <Divider margin="1rem" />
+            <Button type="primary" theme="solid" onClick={onStore} icon={<IconSave />}>
+              Save
+            </Button>
+          </div>
         </React.Fragment>
       )}
     </div>

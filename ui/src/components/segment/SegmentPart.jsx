@@ -1,27 +1,18 @@
 import React from 'react';
-import { Header, Icon, Popup, Segment } from 'semantic-ui-react';
+import { Card } from '@douyinfe/semi-ui';
 
 import './SegmentParts.less';
 
-export const SegmentPart = ({ name, icon = null, children, helpText }) => (
-  <Segment inverted>
-    <Header as="h5" inverted sub>
-      {icon && <Icon name={icon} inverted size="mini" />}
-      <Header.Content>{name}</Header.Content>
-    </Header>
+export const SegmentPart = ({ name, Icon = null, children, helpText }) => {
+  const { Meta } = Card;
 
-    <Popup
-      content={helpText}
-      trigger={
-        <span className="generalSettings__help">
-          {' '}
-          <Icon name="help circle" inverted />
-          What is this?
-        </span>
+  return (
+    <Card
+      title={
+        <Meta title={name} description={helpText} avatar={Icon == null ? null : <Icon size="extra-extra-small" />} />
       }
-    />
-    <Segment inverted className="segmentParts">
+    >
       {children}
-    </Segment>
-  </Segment>
-);
+    </Card>
+  );
+};
