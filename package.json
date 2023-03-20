@@ -1,6 +1,6 @@
 {
   "name": "fredy",
-  "version": "7.1.0",
+  "version": "7.1.1",
   "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
   "scripts": {
     "start": "node index.js",
