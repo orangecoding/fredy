@@ -4,14 +4,12 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {Divider, Input, Radio, TimePicker, Button, RadioGroup} from '@douyinfe/semi-ui';
 import {InputNumber} from '@douyinfe/semi-ui';
-import ToastContext from '../../components/toasts/ToastContext';
 import Headline from '../../components/headline/Headline';
 import {xhrPost} from '../../services/xhr';
 import {SegmentPart} from '../../components/segment/SegmentPart';
-import {Banner} from '@douyinfe/semi-ui';
-import './GeneralSettings.less';
+import {Banner, Toast} from '@douyinfe/semi-ui';
 import {IconSave, IconCalendar, IconKey, IconRefresh, IconSignal} from '@douyinfe/semi-icons';
-
+import './GeneralSettings.less';
 
 function formatFromTimestamp(ts){
     const date = new Date(ts);
@@ -41,7 +39,6 @@ const GeneralSettings = function GeneralSettings() {
     const [scrapingAntProxy, setScrapingAntProxy] = React.useState('');
     const [workingHourFrom, setWorkingHourFrom] = React.useState(null);
     const [workingHourTo, setWorkingHourTo] = React.useState(null);
-    const ctx = React.useContext(ToastContext);
     React.useEffect(() => {
         async function init() {
             await dispatch.generalSettings.getGeneralSettings();
@@ -67,13 +64,11 @@ const GeneralSettings = function GeneralSettings() {
     const nullOrEmpty = (val) => val == null || val.length === 0;
 
     const throwMessage = (message, type) => {
-        ctx.showToast({
-            title: type === 'error' ? 'Error' : 'Success',
-            message: message,
-            delay: 5000,
-            backgroundColor: type === 'error' ? '#db2828' : '#87eb8f',
-            color: type === 'error' ? '#fff' : '#000',
-        });
+        if(type === 'error'){
+            Toast.error(message);
+        }else{
+            Toast.success(message);
+        }
     };
 
     const onStore = async () => {

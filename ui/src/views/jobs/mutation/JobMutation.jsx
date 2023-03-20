@@ -4,13 +4,12 @@ import NotificationAdapterMutator from './components/notificationAdapter/Notific
 import NotificationAdapterTable from '../../../components/table/NotificationAdapterTable';
 import ProviderTable from '../../../components/table/ProviderTable';
 import ProviderMutator from './components/provider/ProviderMutator';
-import ToastContext from '../../../components/toasts/ToastContext';
 import Headline from '../../../components/headline/Headline';
 import {useDispatch, useSelector} from 'react-redux';
 import {xhrPost} from '../../../services/xhr';
 import {useHistory} from 'react-router-dom';
 import {useParams} from 'react-router';
-import {Divider, Input, Switch, Button, TagInput} from '@douyinfe/semi-ui';
+import {Divider, Input, Switch, Button, TagInput, Toast} from '@douyinfe/semi-ui';
 import './JobMutation.less';
 import {SegmentPart} from '../../../components/segment/SegmentPart';
 import {IconPlusCircle} from '@douyinfe/semi-icons';
@@ -37,7 +36,6 @@ export default function JobMutator() {
     const [enabled, setEnabled] = useState(defaultEnabled);
     const history = useHistory();
     const dispatch = useDispatch();
-    const ctx = React.useContext(ToastContext);
 
     const isSavingEnabled = () => {
         return notificationAdapterData.length > 0 && providerData.length > 0 && name != null && name.length > 0;
@@ -54,24 +52,11 @@ export default function JobMutator() {
                 jobId: jobToBeEdit?.id || null,
             });
             await dispatch.jobs.getJobs();
-            ctx.showToast({
-                title: 'Success',
-                message: 'Job successfully saved...',
-                delay: 5000,
-                backgroundColor: '#87eb8f',
-                color: '#000',
-            });
+            Toast.success('Job successfully saved...');
             history.push('/jobs');
         } catch (Exception) {
             console.error(Exception.json.message);
-
-            ctx.showToast({
-                title: 'Error',
-                message: Exception.json != null ? Exception.json.message : Exception,
-                delay: 8000,
-                backgroundColor: '#db2828',
-                color: '#fff',
-            });
+            Toast.error(Exception.json != null ? Exception.json.message : Exception);
         }
     };
 
@@ -129,7 +114,7 @@ export default function JobMutator() {
                     }
                 >
                     <Button type="primary" icon={<IconPlusCircle/>} className="jobMutation__newButton"
-                                 onClick={() => setProviderCreationVisibility(true)}>
+                            onClick={() => setProviderCreationVisibility(true)}>
                         Add new Provider
                     </Button>
 
@@ -190,7 +175,7 @@ export default function JobMutator() {
                             checked={enabled}/>
                 </SegmentPart>
                 <Divider margin="1rem"/>
-                <Button type="danger" style={{ marginRight: '1rem' }} onClick={() => history.push('/jobs')}>
+                <Button type="danger" style={{marginRight: '1rem'}} onClick={() => history.push('/jobs')}>
                     Cancel
                 </Button>
                 <Button type="primary" icon={<IconPlusCircle/>} disabled={!isSavingEnabled()} onClick={mutateJob}>

@@ -3,13 +3,10 @@ import React, {useEffect} from 'react';
 import InsufficientPermission from './components/permission/InsufficientPermission';
 import PermissionAwareRoute from './components/permission/PermissionAwareRoute';
 import GeneralSettings from './views/generalSettings/GeneralSettings';
-import ToastsContainer from './components/toasts/ToastContainer';
 import JobMutation from './views/jobs/mutation/JobMutation';
 import UserMutator from './views/user/mutation/UserMutator';
-import ToastContext from './components/toasts/ToastContext';
 import JobInsight from './views/jobs/insights/JobInsight.jsx';
 import {useDispatch, useSelector} from 'react-redux';
-import useToast from './components/toasts/useToast';
 import {Switch, Redirect} from 'react-router-dom';
 import Logout from './components/logout/Logout';
 import Logo from './components/logo/Logo';
@@ -23,7 +20,6 @@ import './App.less';
 
 export default function FredyApp() {
     const dispatch = useDispatch();
-    const [showToast, onToastFinished, toasts] = useToast();
     const [loading, setLoading] = React.useState(true);
     const currentUser = useSelector((state) => state.user.currentUser);
 
@@ -58,13 +54,11 @@ export default function FredyApp() {
     return loading ? null : needsLogin() ? (
         login()
     ) : (
-        <ToastContext.Provider value={{showToast}}>
             <div className="app">
                 <div className="app__container">
                     <Logout/>
                     <Logo width={190} white/>
                     <Menu isAdmin={isAdmin()}/>
-                    <ToastsContainer toasts={toasts} onToastFinished={onToastFinished}/>
                     <Switch>
                         <Route name="Insufficient Permission" path={'/403'} component={InsufficientPermission}/>
                         <Route name="Create new Job" path={'/jobs/new'} component={JobMutation}/>
@@ -96,7 +90,6 @@ export default function FredyApp() {
                     </Switch>
                 </div>
             </div>
-        </ToastContext.Provider>
     );
 }
 

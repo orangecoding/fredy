@@ -1,10 +1,9 @@
 import React from 'react';
 
-import ToastContext from '../../../components/toasts/ToastContext';
 import {xhrGet, xhrPost} from '../../../services/xhr';
 import {useHistory, useParams} from 'react-router';
 import {useDispatch} from 'react-redux';
-import {Divider, Input, Switch, Button} from '@douyinfe/semi-ui';
+import {Divider, Input, Switch, Button, Toast} from '@douyinfe/semi-ui';
 import './UserMutator.less';
 import {SegmentPart} from '../../../components/segment/SegmentPart';
 import {IconPlusCircle} from '@douyinfe/semi-icons';
@@ -17,7 +16,6 @@ const UserMutator = function UserMutator() {
     const [isAdmin, setIsAdmin] = React.useState(false);
 
     const history = useHistory();
-    const ctx = React.useContext(ToastContext);
     const dispatch = useDispatch();
 
     React.useEffect(() => {
@@ -51,23 +49,11 @@ const UserMutator = function UserMutator() {
                 isAdmin,
             });
             await dispatch.user.getUsers();
-            ctx.showToast({
-                title: 'Success',
-                message: 'User successfully saved...',
-                delay: 5000,
-                backgroundColor: '#87eb8f',
-                color: '#000',
-            });
+            Toast.success('User successfully saved...');
             history.push('/users');
-        } catch (Exception) {
-            console.error(Exception);
-            ctx.showToast({
-                title: 'Error',
-                message: Exception.json.message,
-                delay: 6000,
-                backgroundColor: '#db2828',
-                color: '#fff',
-            });
+        } catch (error) {
+            console.error(error);
+            Toast.error(error.json.message);
         }
     };
 
