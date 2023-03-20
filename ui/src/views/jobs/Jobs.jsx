@@ -5,8 +5,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { xhrDelete, xhrPut } from '../../services/xhr';
 import { useHistory } from 'react-router-dom';
 import ProcessingTimes from './ProcessingTimes';
-import {Button, Toast} from '@douyinfe/semi-ui';
-import {IconPlusCircle} from '@douyinfe/semi-icons';
+import { Button, Toast } from '@douyinfe/semi-ui';
+import { IconPlusCircle } from '@douyinfe/semi-icons';
 import './Jobs.less';
 
 export default function Jobs() {
@@ -21,7 +21,7 @@ export default function Jobs() {
       Toast.success('Job successfully remove');
       await dispatch.jobs.getJobs();
     } catch (error) {
-        Toast.error(error);
+      Toast.error(error);
     }
   };
 
@@ -31,7 +31,7 @@ export default function Jobs() {
       Toast.success('Job status successfully changed');
       await dispatch.jobs.getJobs();
     } catch (error) {
-        Toast.error(error);
+      Toast.error(error);
     }
   };
 
@@ -39,7 +39,12 @@ export default function Jobs() {
     <div>
       <div>
         {processingTimes != null && <ProcessingTimes processingTimes={processingTimes} />}
-        <Button type="primary" icon={<IconPlusCircle/>} className="jobs__newButton" onClick={() => history.push('/jobs/new')}>
+        <Button
+          type="primary"
+          icon={<IconPlusCircle />}
+          className="jobs__newButton"
+          onClick={() => history.push('/jobs/new')}
+        >
           New Job
         </Button>
       </div>

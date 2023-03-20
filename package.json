@@ -7,7 +7,7 @@
     "dev": "yarn && rm -rf ./ui/public/* && vite",
     "ui": "rm -rf ./ui/public/* && vite",
     "prod": "yarn && vite build --emptyOutDir",
-    "format": "prettier --write lib/**/*.js ui/src/**/*.js test/**/*.js *.js --single-quote --print-width 120",
+    "format": "prettier --write lib/**/*.js ui/src/**/*.jsx test/**/*.js *.js --single-quote --print-width 120",
     "test": "mocha --loader=esmock --timeout 3000000 test/**/*.test.js",
     "lint": "eslint ./index.js ./lib/**/*.js ./test/**/*.js ./ui/src/**/*.jsx"
   },

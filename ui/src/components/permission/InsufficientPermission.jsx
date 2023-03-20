@@ -6,9 +6,7 @@ export default function InsufficientPermission() {
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
       <img src={insufficientPermission} height={250} />
       <br />
-      <h4>
-        Insufficient permission :(
-      </h4>
+      <h4>Insufficient permission :(</h4>
     </div>
   );
 }

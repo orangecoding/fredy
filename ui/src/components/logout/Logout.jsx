@@ -1,7 +1,7 @@
 import React from 'react';
-import {Button} from '@douyinfe/semi-ui';
+import { Button } from '@douyinfe/semi-ui';
 import { xhrPost } from '../../services/xhr';
-import {IconUser} from '@douyinfe/semi-icons';
+import { IconUser } from '@douyinfe/semi-icons';
 const Logout = function Logout() {
   return (
     <Button
@@ -13,7 +13,8 @@ const Logout = function Logout() {
         location.reload();
       }}
     >
-        Logout</Button>
+      Logout
+    </Button>
   );
 };
 
