@@ -25,9 +25,12 @@ const validate = (selectedAdapter) => {
       results.push('All fields are mandatory and must be set.');
       continue;
     }
-    if (uiElement.type === 'number' && (typeof uiElement.value !== 'number' || uiElement.value < 0)) {
-      results.push('A number field cannot contain anything else and must be > 0.');
-      continue;
+    if (uiElement.type === 'number') {
+      const numberValue = parseFloat(uiElement.value);
+      if(isNaN(numberValue) || numberValue < 0) {
+        results.push('A number field cannot contain anything else and must be > 0.');
+        continue;
+      }
     }
     if (uiElement.type === 'boolean' && typeof uiElement.value !== 'boolean') {
       results.push('A boolean field cannot be of a different type.');
