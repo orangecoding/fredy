@@ -84,6 +84,7 @@
     "serve-static": "1.15.0",
     "slack": "11.0.2",
     "string-similarity": "^4.0.4",
+    "utf8": "^3.0.0",
     "vite": "4.2.0",
     "x-ray": "2.3.4"
   },
