@@ -9,7 +9,7 @@ describe('#immobilien.de testsuite()', () => {
     similarityCache.stopCacheCleanup();
   });
   provider.init(providerConfig.immobilienDe, [], []);
-  it.only('should test immobilien.de provider', async () => {
+  it('should test immobilien.de provider', async () => {
     const Fredy = await mockFredy();
     return await new Promise((resolve) => {
       const fredy = new Fredy(provider.config, null, provider.metaInformation.id, 'test1', similarityCache);
