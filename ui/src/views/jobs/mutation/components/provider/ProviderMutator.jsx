@@ -101,7 +101,7 @@ export default function ProviderMutator({ onVisibilityChanged, visible = false, 
         description={
           <div>
             <p>
-              If you chose Immoscout as a provider, make sure to also add the scrapingAnt apiKey to the config.json.
+              If you chose Immoscout or Immonet as a provider, make sure to also add the scrapingAnt apiKey to the config.json.
               (See readme)
             </p>
             <p>

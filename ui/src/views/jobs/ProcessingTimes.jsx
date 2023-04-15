@@ -47,7 +47,7 @@ export default function ProcessingTimes({ processingTimes }) {
               Credits: {processingTimes.scrapingAntData.remained_credits}/
               {processingTimes.scrapingAntData.plan_total_credits} (250 credits per call)
             </p>
-            If you want to scrape Immoscout more often, you have to purchase a premium account of{' '}
+            If you want to scrape Immoscout or Immonet more often, you have to purchase a premium account of{' '}
             <a href="https://scrapingant.com/" target="_blank" rel="noreferrer">
               ScrapingAnt
             </a>
