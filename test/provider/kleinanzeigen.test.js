@@ -26,7 +26,7 @@ describe('#kleinanzeigen testsuite()', () => {
           expect(notify.address).to.be.a('string');
           /** check the values if possible **/
           expect(notify.title).to.be.not.empty;
-          expect(notify.link).that.does.include('https://www.ebay-kleinanzeigen.de');
+          expect(notify.link).that.does.include('https://www.kleinanzeigen.de');
           expect(notify.address).to.be.not.empty;
         });
         resolve();
