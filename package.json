@@ -1,6 +1,6 @@
 {
   "name": "fredy",
-  "version": "7.3.0",
+  "version": "7.3.1",
   "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
   "scripts": {
     "start": "node index.js",
@@ -60,7 +60,7 @@
     "@rematch/loading": "2.1.2",
     "@sendgrid/mail": "7.7.0",
     "@vitejs/plugin-react": "4.0.0",
-    "better-sqlite3": "8.3.0",
+    "better-sqlite3": "8.2.0",
     "body-parser": "1.20.2",
     "cookie-session": "2.0.0",
     "handlebars": "4.7.7",
