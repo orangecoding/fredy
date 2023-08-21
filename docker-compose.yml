@@ -9,7 +9,7 @@ services:
     image: fredy/fredy
     # map existing config and database
     volumes:
-      - ./conf:/conf
-      - ./db:/db
+      - ./home/apps/fredy/conf:/conf
+      - ./home/apps/fredy/db:/db
     ports:
         - 9998:9998
