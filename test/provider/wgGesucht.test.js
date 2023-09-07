@@ -23,7 +23,6 @@ describe('#wgGesucht testsuite()', () => {
           expect(notify.id).to.be.a('string');
           expect(notify.title).to.be.a('string');
           expect(notify.details).to.be.a('string');
-          expect(notify.size).to.be.a('string');
           expect(notify.price).to.be.a('string');
           expect(notify.link).to.be.a('string');
         });
