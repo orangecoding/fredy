@@ -1,7 +1,7 @@
 import utils from '../../lib/utils.js';
 import assert from 'assert';
-import chai from 'chai';
-const expect = chai.expect;
+import { expect } from 'chai';
+
 const fakeWorkingHoursConfig = (from, to) => ({
   workingHours: {
     to,

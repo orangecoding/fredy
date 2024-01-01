@@ -1,10 +1,8 @@
 import * as similarityCache from '../../lib/services/similarity-check/similarityCache.js';
 import { get } from '../mocks/mockNotification.js';
 import { providerConfig, mockFredy } from '../utils.js';
-import chai from 'chai';
+import { expect } from 'chai';
 import * as provider from '../../lib/provider/einsAImmobilien.js';
-
-const expect = chai.expect;
 
 describe('#einsAImmobilien testsuite()', () => {
   after(() => {

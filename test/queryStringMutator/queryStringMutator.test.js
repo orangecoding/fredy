@@ -1,16 +1,15 @@
 import fs from 'fs';
-import chai from 'chai';
+import { expect } from 'chai';
 import { readFile } from 'fs/promises';
 import mutator from '../../lib/services/queryStringMutator.js';
 import queryString from 'query-string';
-const expect = chai.expect;
 
 const data = await readFile(new URL('./testData.json', import.meta.url));
 
 const testData = JSON.parse(data);
 
 let _provider = await Promise.all(
-  fs.readdirSync('./lib/provider/').map(async (integPath) => await import(`../../lib/provider/${integPath}`))
+  fs.readdirSync('./lib/provider/').map(async (integPath) => await import(`../../lib/provider/${integPath}`)),
 );
 
 /**

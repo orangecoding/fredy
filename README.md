@@ -17,7 +17,7 @@ _Fredy_ is supported by JetBrains under Open Source Support Program
 
 ## Usage  
 
-- Make sure to use Node.js 16 or above
+- Make sure to use Node.js 18 or above
 - Run the following commands:
 ```ssh
 yarn (or npm install)
@@ -32,9 +32,6 @@ _Fredy_ will start with the default port, set to `9998`. You can access _Fredy_ 
   <img alt="Job Analytics" src="https://github.com/orangecoding/fredy/blob/master/doc/screenshot_2.png" width="30%">
 &nbsp; &nbsp; &nbsp; &nbsp;  
   <img alt="Job Overview" width="30%" src="https://github.com/orangecoding/fredy/blob/master/doc/screenshot_3.png">
-</p>
-<p align="center">
-
 </p>
 
 ## Understanding the fundamentals
