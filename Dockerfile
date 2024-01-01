@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.3
-FROM node:16-alpine AS builder
+FROM node:18-alpine AS builder
 COPY --chown=1000:1000 . /fredy
 WORKDIR  /fredy
 USER 1000
