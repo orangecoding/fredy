@@ -3,7 +3,9 @@
   "version": "8.0.1",
   "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
   "scripts": {
-    "start": "node index.js",
+    "copy-files": "copyfiles -e \"dist/**/*\" **/*.hbs db/* dist/",
+    "build": "tsc && yarn copy-files",
+    "start:server": "yarn build && concurrently \"tsc -w\" \"nodemon --watch dist/lib --watch index.js dist/index.js\"",
     "dev": "yarn && rm -rf ./ui/public/* && vite",
     "ui": "rm -rf ./ui/public/* && vite",
     "prod": "yarn && vite build --emptyOutDir",
@@ -56,6 +58,7 @@
   ],
   "dependencies": {
     "@douyinfe/semi-ui": "2.51.3",
+    "@googlemaps/google-maps-services-js": "^3.3.42",
     "@rematch/core": "2.2.0",
     "@rematch/loading": "2.1.2",
     "@sendgrid/mail": "8.1.0",
@@ -92,7 +95,10 @@
     "@babel/eslint-parser": "7.23.9",
     "@babel/preset-env": "7.23.9",
     "@babel/preset-react": "7.23.3",
+    "@types/node": "^20.11.16",
     "chai": "5.0.3",
+    "concurrently": "^8.2.2",
+    "copyfiles": "^2.4.1",
     "eslint": "8.56.0",
     "eslint-config-prettier": "8.8.0",
     "eslint-plugin-react": "7.33.2",
@@ -102,7 +108,9 @@
     "less": "4.2.0",
     "lint-staged": "13.2.2",
     "mocha": "10.2.0",
+    "nodemon": "^3.0.3",
     "prettier": "3.2.4",
-    "redux-logger": "3.0.6"
+    "redux-logger": "3.0.6",
+    "typescript": "^5.3.3"
   }
 }

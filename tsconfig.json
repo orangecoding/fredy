@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "allowJs": true,
+    "target": "ES2017",
+    "module": "NodeNext",
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "resolveJsonModule": true,
+  },
+  "include": ["./lib/**/*", "./index.js", "conf/config.json"],
+}
