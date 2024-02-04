@@ -5,7 +5,17 @@ import * as process from './processors/process.js';
 import xray from './services/scraper.js';
 import * as scrapingAnt from './services/scrapingAnt.js';
 import urlModifier from './services/queryStringMutator.js';
+import { Listing, ProviderConfig } from './provider/provider.js';
+import { SimilarityCacheService } from './services/similarity-check/similarityCache.js';
+
 class FredyRuntime {
+  private providerConfig: ProviderConfig;
+  private notificationAdapterConfigs: notify.NotifierAdapterConfig[];
+  private providerId: string;
+  private jobKey: string;
+  private similarityCache: SimilarityCacheService;
+  private listingProcessors: process.ProcessorConfig[];
+
   /**
    *
    * @param providerConfig the config for the specific provider, we're going to query at the moment
@@ -14,18 +24,25 @@ class FredyRuntime {
    * @param jobKey key of the job that is currently running (from within the config)
    * @param similarityCache cache instance holding values to check for similarity of entries
    */
-  constructor(providerConfig, notificationConfig, providerId, jobKey, similarityCache, listingProcessors) {
-    this._providerConfig = providerConfig;
-    this._notificationConfig = notificationConfig;
-    this._providerId = providerId;
-    this._jobKey = jobKey;
-    this._similarityCache = similarityCache;
-    this._listingProcessors = listingProcessors;
+  constructor(
+    providerConfig: ProviderConfig,
+    notificationConfig: notify.NotifierAdapterConfig[],
+    providerId: string,
+    jobKey: string,
+    similarityCache: SimilarityCacheService,
+    listingProcessors: process.ProcessorConfig[]
+  ) {
+    this.providerConfig = providerConfig;
+    this.notificationAdapterConfigs = notificationConfig;
+    this.providerId = providerId;
+    this.jobKey = jobKey;
+    this.similarityCache = similarityCache;
+    this.listingProcessors = listingProcessors;
   }
   execute() {
     return (
       //modify the url to make sure search order is correctly set
-      Promise.resolve(urlModifier(this._providerConfig.url, this._providerConfig.sortByDateParam))
+      Promise.resolve(urlModifier(this.providerConfig.url, this.providerConfig.sortByDateParam))
         //scraping the site and try finding new listings
         .then(this._getListings.bind(this))
         //bring them in a proper form (dictated by the provider)
@@ -45,9 +62,9 @@ class FredyRuntime {
         .catch(this._handleError.bind(this))
     );
   }
-  _getListings(url) {
+  _getListings(url: string) {
     return new Promise((resolve, reject) => {
-      const id = this._providerId;
+      const id = this.providerId;
       if (scrapingAnt.needScrapingAnt(id) && !scrapingAnt.isScrapingAntApiKeySet()) {
         const error = 'Immoscout or Immonet can only be used with if you have set an apikey for scrapingAnt.';
         /* eslint-disable no-console */
@@ -58,11 +75,11 @@ class FredyRuntime {
       }
       const u = scrapingAnt.needScrapingAnt(id) ? scrapingAnt.transformUrlForScrapingAnt(url, id) : url;
       try {
-        if (this._providerConfig.paginate != null) {
-          xray(u, this._providerConfig.crawlContainer, [this._providerConfig.crawlFields])
+        if (this.providerConfig.paginate != null) {
+          xray(u, this.providerConfig.crawlContainer, [this.providerConfig.crawlFields])
             //the first 2 pages should be enough here
             .limit(2)
-            .paginate(this._providerConfig.paginate)
+            .paginate(this.providerConfig.paginate)
             .then((listings) => {
               resolve(listings == null ? [] : listings);
             })
@@ -71,7 +88,7 @@ class FredyRuntime {
               console.error(err);
             });
         } else {
-          xray(u, this._providerConfig.crawlContainer, [this._providerConfig.crawlFields])
+          xray(u, this.providerConfig.crawlContainer, [this.providerConfig.crawlFields])
             .then((listings) => {
               resolve(listings == null ? [] : listings);
             })
@@ -86,53 +103,58 @@ class FredyRuntime {
       }
     });
   }
-  _normalize(listings) {
-    return listings.map(this._providerConfig.normalize);
+  _normalize(listings: Listing[]): Listing[] {
+    return listings.map(this.providerConfig.normalize);
   }
-  _filter(listings) {
-    return listings.filter(this._providerConfig.filter);
+  _filter(listings: Listing[]): Listing[] {
+    return listings.filter(this.providerConfig.filter);
   }
-  _findNew(listings) {
-    const newListings = listings.filter((o) => getKnownListings(this._jobKey, this._providerId)[o.id] == null);
+  _findNew(listings: Listing[]): Listing[] {
+    const newListings = listings.filter((o) => getKnownListings(this.jobKey, this.providerId)[o.id] == null);
     if (newListings.length === 0) {
       throw new NoNewListingsWarning();
     }
     return newListings;
   }
-  _notify(newListings) {
+  _notify(newListings: Listing[]): Promise<Listing[]> {
     if (newListings.length === 0) {
       throw new NoNewListingsWarning();
     }
-    const sendNotifications = notify.send(this._providerId, newListings, this._notificationConfig, this._jobKey);
+    const sendNotifications = notify.send({
+      serviceName: this.providerId,
+      newListings,
+      notificationConfig: this.notificationAdapterConfigs,
+      jobKey: this.jobKey,
+    });
     return Promise.all(sendNotifications).then(() => newListings);
   }
-  _save(newListings) {
-    const currentListings = getKnownListings(this._jobKey, this._providerId) || {};
+  _save(newListings: Listing[]): Listing[] {
+    const currentListings = getKnownListings(this.jobKey, this.providerId) || {};
     newListings.forEach((listing) => {
       currentListings[listing.id] = Date.now();
     });
-    setKnownListings(this._jobKey, this._providerId, currentListings);
+    setKnownListings(this.jobKey, this.providerId, currentListings);
     return newListings;
   }
-  _filterBySimilarListings(listings) {
+  _filterBySimilarListings(listings: Listing[]): Listing[] {
     const filteredList = listings.filter((listing) => {
-      const similar = this._similarityCache.hasSimilarEntries(this._jobKey, listing.title);
+      const similar = this.similarityCache.hasSimilarEntries(this.jobKey, listing.title);
       if (similar) {
         /* eslint-disable no-console */
-        console.debug(`Filtering similar entry for job with id ${this._jobKey} with title: `, listing.title);
+        console.debug(`Filtering similar entry for job with id ${this.jobKey} with title: `, listing.title);
         /* eslint-enable no-console */
       }
       return !similar;
     });
-    filteredList.forEach((filter) => this._similarityCache.addCacheEntry(this._jobKey, filter.title));
+    filteredList.forEach((filter) => this.similarityCache.addCacheEntry(this.jobKey, filter.title));
     return filteredList;
   }
 
-  _processListings(listings) {
-    return process.processListings(listings, this._listingProcessors);
+  _processListings(listings: Listing[]): Promise<Listing[]> {
+    return process.processListings(listings, this.listingProcessors);
   }
 
-  _handleError(err) {
+  _handleError(err: Error) {
     if (err.name !== 'NoNewListingsWarning') console.error(err);
   }
 }

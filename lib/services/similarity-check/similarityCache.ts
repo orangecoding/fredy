@@ -29,6 +29,7 @@ export const addCacheEntry = (jobId, value) => {
   cache[jobId] = cache[jobId] || new SimilarityCacheEntry(Date.now());
   cache[jobId].setCacheEntry(value);
 };
+
 export const hasSimilarEntries = (jobId, value) => {
   if (cache[jobId] == null) {
     return false;
@@ -37,4 +38,10 @@ export const hasSimilarEntries = (jobId, value) => {
 };
 export const stopCacheCleanup = () => {
   clearInterval(intervalId);
+};
+
+export type SimilarityCacheService = {
+  addCacheEntry(jobId: string, value: string): void;
+  hasSimilarEntries(jobId: string, value: string): boolean;
+  stopCacheCleanup(): void;
 };

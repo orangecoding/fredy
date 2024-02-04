@@ -1,7 +1,10 @@
 import stringSimilarity from 'string-similarity';
 //if the score is higher than this, it will be considered a match
 const MAX_DICE_INDEX = 0.7;
-export default (class SimilarityCacheEntry {
+
+export default class SimilarityCacheEntry {
+  time: string;
+  values: string[];
   constructor(time) {
     this.time = time;
     this.values = [];
@@ -23,4 +26,4 @@ export default (class SimilarityCacheEntry {
     }
     return false;
   };
-});
+}
