@@ -1,4 +1,5 @@
 import utils from '../utils.js';
+import { ProviderConfig } from './provider.js';
 let appliedBlackList = [];
 function normalize(o) {
   return o;
@@ -6,7 +7,7 @@ function normalize(o) {
 function applyBlacklist(o) {
   return !utils.isOneOf(o.title, appliedBlackList);
 }
-const config = {
+const config: ProviderConfig = {
   url: null,
   crawlContainer: '.nbk-container >div article',
   sortByDateParam: 'Sortierung=Id&Richtung=DESC',

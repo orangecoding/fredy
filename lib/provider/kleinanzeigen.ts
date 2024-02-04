@@ -1,4 +1,5 @@
 import utils from '../utils.js';
+import { ProviderConfig } from './provider.js';
 let appliedBlackList = [];
 let appliedBlacklistedDistricts = [];
 function normalize(o) {
@@ -12,7 +13,7 @@ function applyBlacklist(o) {
     appliedBlacklistedDistricts.length === 0 ? false : utils.isOneOf(o.description, appliedBlacklistedDistricts);
   return !isBlacklistedDistrict && titleNotBlacklisted && descNotBlacklisted;
 }
-const config = {
+const config: ProviderConfig = {
   url: null,
   crawlContainer: '#srchrslt-adtable .ad-listitem ',
   //sort by date is standard oO

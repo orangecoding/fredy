@@ -1,4 +1,5 @@
 import utils from '../utils.js';
+import { ProviderConfig } from './provider.js';
 let appliedBlackList = [];
 function shortenLink(link) {
   return link.substring(0, link.indexOf('?'));
@@ -20,7 +21,7 @@ function applyBlacklist(o) {
   const descNotBlacklisted = !utils.isOneOf(o.description, appliedBlackList);
   return titleNotBlacklisted && descNotBlacklisted;
 }
-const config = {
+const config: ProviderConfig = {
   url: null,
   crawlContainer: '.estates_list .list_immo a._ref',
   sortByDateParam: 'sort_col=*created_ts&sort_dir=desc',

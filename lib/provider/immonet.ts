@@ -1,4 +1,5 @@
 import utils from '../utils.js';
+import { ProviderConfig } from './provider.js';
 let appliedBlackList = [];
 function normalize(o) {
   const id = o.id.substring(o.id.lastIndexOf('/') + 1, o.id.length);
@@ -14,7 +15,7 @@ function applyBlacklist(o) {
   const descNotBlacklisted = !utils.isOneOf(o.description, appliedBlackList);
   return titleNotBlacklisted && descNotBlacklisted;
 }
-const config = {
+const config: ProviderConfig = {
   url: null,
   crawlContainer: '.content-wrapper-tiles .ng-star-inserted',
   sortByDateParam: 'sortby=19',

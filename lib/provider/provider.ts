@@ -21,3 +21,23 @@ export enum Providers {
   neubauKompass = 'neubauKompass',
   wgGesucht = 'wgGesucht',
 }
+
+export type ProviderConfig = {
+  enabled?: boolean;
+  url?: string;
+  crawlContainer: string;
+  sortByDateParam: string;
+  crawlFields: {
+    id?: string;
+    price: string;
+    size?: string;
+    rooms?: string;
+    title: string;
+    link?: string;
+    description?: string;
+    address?: string;
+  };
+  paginate?: string;
+  normalize(o): any;
+  filter(o): any;
+};

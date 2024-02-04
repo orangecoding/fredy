@@ -1,4 +1,5 @@
 import utils from '../utils.js';
+import { ProviderConfig } from './provider.js';
 let appliedBlackList = [];
 function normalize(o) {
   const id = o.id.substring(o.id.indexOf('-') + 1, o.id.length);
@@ -15,7 +16,7 @@ function applyBlacklist(o) {
   const descNotBlacklisted = !utils.isOneOf(o.description, appliedBlackList);
   return titleNotBlacklisted && descNotBlacklisted;
 }
-const config = {
+const config: ProviderConfig = {
   url: null,
   crawlContainer: '.js-serp-item',
   sortByDateParam: 's=most_recently_updated_first',

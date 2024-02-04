@@ -1,4 +1,5 @@
 import utils from '../utils.js';
+import { ProviderConfig } from './provider.js';
 let appliedBlackList = [];
 function nullOrEmpty(val) {
   return val == null || val.length === 0;
@@ -12,7 +13,7 @@ function normalize(o) {
 function applyBlacklist(o) {
   return !utils.isOneOf(o.title, appliedBlackList);
 }
-const config = {
+const config: ProviderConfig = {
   url: null,
   crawlContainer: '#resultListItems li.result-list__listing',
   sortByDateParam: 'sorting=2',

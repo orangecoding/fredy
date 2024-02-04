@@ -1,4 +1,5 @@
 import utils from '../utils.js';
+import { ProviderConfig } from './provider.js';
 let appliedBlackList = [];
 function normalize(o) {
   return o;
@@ -8,13 +9,13 @@ function applyBlacklist(o) {
   const descNotBlacklisted = !utils.isOneOf(o.description, appliedBlackList);
   return o.id != null && titleNotBlacklisted && descNotBlacklisted;
 }
-const config = {
+const config: ProviderConfig = {
   url: null,
   crawlContainer: '#main_column .wgg_card',
   sortByDateParam: 'sort_column=0&sort_order=0',
   crawlFields: {
     id: '@data-id',
-    details: '.row .noprint .col-xs-11 |removeNewline |trim',
+    description: '.row .noprint .col-xs-11 |removeNewline |trim',
     price: '.middle .col-xs-3 |removeNewline |trim',
     size: '.middle .text-right |removeNewline |trim',
     title: '.truncate_title a |removeNewline |trim',

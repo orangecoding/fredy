@@ -1,4 +1,5 @@
 import utils from '../utils.js';
+import { ProviderConfig } from './provider.js';
 let appliedBlackList = [];
 function normalize(o) {
   let size = `${o.size.replace(' Wohnfläche ', '').trim()}`;
@@ -13,7 +14,7 @@ function applyBlacklist(o) {
   const descNotBlacklisted = !utils.isOneOf(o.description, appliedBlackList);
   return titleNotBlacklisted && descNotBlacklisted;
 }
-const config = {
+const config: ProviderConfig = {
   url: null,
   crawlContainer: '.tabelle',
   sortByDateParam: 'sort_type=newest',
