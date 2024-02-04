@@ -1,5 +1,5 @@
 import { Client, TravelMode } from '@googlemaps/google-maps-services-js';
-import { Listing } from '../provider/provider.js';
+import { Listing, Providers } from '../provider/provider.js';
 import { Processor, ProcessorConfig } from './process.js';
 
 import { config } from '../utils.js';
@@ -62,14 +62,20 @@ export const isProcessorConfig = (config: ProcessorConfig) => {
 };
 
 export const isProviderTypeSupported = (provider: string) => {
-  return distanceProcessorConfig.supportedProviders.includes(provider);
+  return distanceProcessorConfig.supportedProviders.includes(Providers[provider]);
 };
 
 const distanceProcessorConfig: ProcessorConfig = {
-  id: 'static',
-  name: 'Google Distance Matrix',
-  description: 'This processor adds an extra `processed: true` property to the listing',
-  supportedProviders: ['immoscout'],
+  id: 'duration-google',
+  name: 'Duration Provider (Google)',
+  description: 'Add duration from flat to configured destinations',
+  supportedProviders: [
+    Providers.immobilienDe,
+    Providers.immonet,
+    Providers.immoswp,
+    Providers.kleinanzeigen,
+    Providers.neubauKompass,
+  ],
   configMetadata: {},
 };
 

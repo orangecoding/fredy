@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { Listing } from '../provider/provider.js';
+import { Listing, Providers } from '../provider/provider.js';
 
 // Processors
 import * as DistanceProcessors from './distanceProcessor.js';
@@ -38,7 +38,7 @@ export interface ProcessorConfig {
   id: string;
   name: string;
   description: string;
-  supportedProviders?: string[] | string;
+  supportedProviders?: Providers[] | Providers;
   configMetadata: ProcessorConfigMetadata;
 }
 
