@@ -48,7 +48,7 @@ export default {
   config,
 };
 
-interface Config {
+export interface Config {
   interval: number;
   port: number;
   scrapingAnt: {
