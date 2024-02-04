@@ -11,16 +11,27 @@ const findProcessor = (processor: ProcessorConfig): Processor => {
   const ProcessorFile = registeredProcessors.find((processorClass) => processorClass.isProcessorConfig(processor));
   return new ProcessorFile.default();
 };
+
 export function processListings(listings: Listing[], listingProcessorsConfig: ProcessorConfig[]) {
   const processors = listingProcessorsConfig.map(findProcessor);
-  const processedListingsPromises = listings.map(async (listing) => {
-    return processors.reduce(
-      async (listingAcc, processor) => await processor.processListing({ listing: await listingAcc }),
-      Promise.resolve(listing)
-    );
-  });
+  const processedListingsPromises = listings.map(async (listing) => processListingByAllProcessors(listing, processors));
+
   return Promise.resolve(Promise.all(processedListingsPromises));
 }
+
+const processListingByAllProcessors = async (listing: Listing, processors: Processor[]): Promise<Listing> => {
+  return processors.reduce(async (previousListingPromise, processor) => {
+    const listing = await previousListingPromise;
+    return processListingByOneProcessor(listing, processor);
+  }, Promise.resolve(listing));
+};
+
+const processListingByOneProcessor = async (listing: Listing, processor: Processor): Promise<Listing> => {
+  const processedListing = await processor.processListing({ listing });
+  const updatedNotificationText = processedListing.notificationText + processor.notificationText({ listing });
+  return { ...processedListing, notificationText: updatedNotificationText };
+};
+
 interface ProcessorConfigMetadata {}
 
 export interface ProcessorConfig {

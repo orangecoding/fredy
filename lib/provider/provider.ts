@@ -6,4 +6,5 @@ export interface Listing {
   link: string;
   address: string;
   id: string;
+  notificationText: string;
 }
