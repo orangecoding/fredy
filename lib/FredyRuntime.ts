@@ -6,15 +6,14 @@ import xray from './services/scraper.js';
 import * as scrapingAnt from './services/scrapingAnt.js';
 import urlModifier from './services/queryStringMutator.js';
 import { Listing, ProviderConfig } from './provider/provider.js';
-import { SimilarityCacheService } from './services/similarity-check/similarityCache.js';
+import { ProcessorConfig } from './processors/Processor.js';
 
 class FredyRuntime {
   private providerConfig: ProviderConfig;
   private notificationAdapterConfigs: notify.NotifierAdapterConfig[];
   private providerId: string;
   private jobKey: string;
-  private similarityCache: SimilarityCacheService;
-  private listingProcessors?: process.ProcessorConfig[];
+  private listingProcessors?: ProcessorConfig[];
 
   /**
    *
@@ -29,14 +28,12 @@ class FredyRuntime {
     notificationConfig: notify.NotifierAdapterConfig[],
     providerId: string,
     jobKey: string,
-    similarityCache: SimilarityCacheService,
-    listingProcessors?: process.ProcessorConfig[]
+    listingProcessors?: ProcessorConfig[]
   ) {
     this.providerConfig = providerConfig;
     this.notificationAdapterConfigs = notificationConfig;
     this.providerId = providerId;
     this.jobKey = jobKey;
-    this.similarityCache = similarityCache;
     this.listingProcessors = listingProcessors;
     console.log('Setup freddy runtime');
   }
@@ -54,8 +51,7 @@ class FredyRuntime {
         .then(this._findNew.bind(this))
         //store everything in db
         .then(this._save.bind(this))
-        //check for similar listings. if found, remove them before notifying
-        .then(this._filterBySimilarListings.bind(this))
+        //process all listing using global processors + job configured processors
         .then(this._processListings.bind(this))
         //notify the user using the configured notification adapter
         .then(this._notify.bind(this))
@@ -132,23 +128,12 @@ class FredyRuntime {
     setKnownListings(this.jobKey, this.providerId, currentListings);
     return newListings;
   }
-  _filterBySimilarListings(listings: Listing[]): Listing[] {
-    const filteredList = listings.filter((listing) => {
-      const similar = this.similarityCache.hasSimilarEntries(this.jobKey, listing.title);
-
-      if (similar) {
-        /* eslint-disable no-console */
-        console.debug(`Filtering similar entry for job with id ${this.jobKey} with title: `, listing.title);
-        /* eslint-enable no-console */
-      }
-      return !similar;
-    });
-    filteredList.forEach((filter) => this.similarityCache.addCacheEntry(this.jobKey, filter.title));
-    return filteredList;
-  }
 
   _processListings(listings: Listing[]): Promise<Listing[]> {
-    return process.processListings(listings, this.listingProcessors);
+    return process.processListings(listings, this.listingProcessors, {
+      jobId: this.jobKey,
+      providerId: this.providerId,
+    });
   }
 
   _handleError(err: Error) {

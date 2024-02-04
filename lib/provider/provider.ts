@@ -29,7 +29,7 @@ export interface Listing {
   address: string;
   id: string;
   rooms?: string;
-  notificationText: string;
+  notificationText?: string;
   providerId: string;
 }
 export type Provider = {

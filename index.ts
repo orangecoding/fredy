@@ -1,6 +1,5 @@
 import fs from 'fs';
 import { config } from './lib/utils.js';
-import * as similarityCache from './lib/services/similarity-check/similarityCache.js';
 import { setLastJobExecution } from './lib/services/storage/listingsStorage.js';
 import * as jobStorage from './lib/services/storage/jobStorage.js';
 import FredyRuntime from './lib/FredyRuntime.js';
@@ -42,7 +41,6 @@ setInterval(
               job.notificationAdapter,
               jobProvider.id,
               job.id,
-              similarityCache,
               job.listingProcessors
             ).execute();
             setLastJobExecution(job.id);

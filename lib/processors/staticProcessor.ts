@@ -1,11 +1,11 @@
 import { Listing } from '../provider/provider.js';
-import { Processor, ProcessorConfig } from './process.js';
+import { Processor, ProcessorConfig } from './Processor.js';
 
 export async function processListing({ listing }) {
   return { ...listing, processed: true };
 }
 
-export default class StaticProcessor implements Processor {
+export default class StaticProcessor extends Processor {
   notificationText({ listing }: { listing: Listing }) {
     return '\n[Processed]';
   }
@@ -18,15 +18,17 @@ interface StaticProcessorListing extends Listing {
   processed: boolean;
 }
 
-export const config = {
+export const config: ProcessorConfig = {
   id: 'static',
   name: 'Static',
   description: 'This processor adds an extra `processed: true` property to the listing',
-  config: {},
+  configMetadata: {},
+  supportedProviders: 'all',
+  isGlobal: true,
 };
 
-export const isProcessorConfig = (config: ProcessorConfig) => {
-  return config.id === config.id;
+export const isProcessorConfig = (otherConfig: ProcessorConfig) => {
+  return otherConfig.id === config.id;
 };
 
 export const isProviderTypeSupported = (provider: string) => {

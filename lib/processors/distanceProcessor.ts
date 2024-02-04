@@ -1,24 +1,24 @@
 import { Client, TravelMode } from '@googlemaps/google-maps-services-js';
 import { Listing, Providers } from '../provider/provider.js';
-import { Processor, ProcessorConfig } from './process.js';
+import { Processor, ProcessorConfig, ProcessorContext } from './Processor.js';
 
-import { config } from '../utils.js';
+import { config as globalConfig } from '../utils.js';
 
-export default class DistanceProcessor implements Processor {
+export default class DistanceProcessor extends Processor {
   async processListing({ listing }: { listing: Listing }): Promise<DistanceProcessorListing> {
     const client = new Client({});
-    const addresses = config.googleMaps.destinations.map((destination) => destination.address);
+    const addresses = globalConfig.googleMaps.destinations.map((destination) => destination.address);
     const response = await client.distancematrix({
       params: {
         origins: [listing.address],
         destinations: addresses,
         arrival_time: getNextMondayTimestamp(),
         mode: TravelMode.transit,
-        key: config.googleMaps.apiKey,
+        key: globalConfig.googleMaps.apiKey,
       },
     });
     const distances = response.data.rows[0].elements.map((address, index) => {
-      const destination = config.googleMaps.destinations[index];
+      const destination = globalConfig.googleMaps.destinations[index];
       return {
         name: destination.name,
         address: response.data.destination_addresses[index],
@@ -28,7 +28,7 @@ export default class DistanceProcessor implements Processor {
     });
     return { ...listing, distances };
   }
-  notificationText({ listing }: { listing: DistanceProcessorListing }) {
+  notificationText({ listing, context }: { listing: DistanceProcessorListing; context: ProcessorContext }) {
     return (
       '\n' +
       listing.distances.reduce((notification, distance) => {
@@ -57,15 +57,15 @@ const getNextMondayTimestamp = (): number => {
   return timestamp / 1000;
 };
 
-export const isProcessorConfig = (config: ProcessorConfig) => {
-  return config.id === distanceProcessorConfig.id;
+export const isProcessorConfig = (otherConfig: ProcessorConfig) => {
+  return otherConfig.id === config.id;
 };
 
 export const isProviderTypeSupported = (provider: string) => {
-  return distanceProcessorConfig.supportedProviders.includes(Providers[provider]);
+  return config.supportedProviders.includes(Providers[provider]);
 };
 
-const distanceProcessorConfig: ProcessorConfig = {
+export const config: ProcessorConfig = {
   id: 'duration-google',
   name: 'Duration Provider (Google)',
   description: 'Add duration from flat to configured destinations',
@@ -77,6 +77,7 @@ const distanceProcessorConfig: ProcessorConfig = {
     Providers.neubauKompass,
   ],
   configMetadata: {},
+  isGlobal: false,
 };
 
 interface DistanceProcessorListing extends Listing {
