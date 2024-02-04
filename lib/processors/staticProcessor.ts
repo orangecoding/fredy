@@ -6,9 +6,16 @@ export async function processListing({ listing }) {
 }
 
 export default class StaticProcessor implements Processor {
-  async processListing(listing: Listing): Promise<Listing> {
+  notificationText({ listing }: { listing: Listing }) {
+    return '\n[Processed]';
+  }
+  async processListing({ listing }: { listing: Listing }): Promise<StaticProcessorListing> {
     return { ...listing, processed: true };
   }
+}
+
+interface StaticProcessorListing extends Listing {
+  processed: boolean;
 }
 
 export const config = {

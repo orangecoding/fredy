@@ -1,3 +1,9 @@
 export interface Listing {
-  // TODO: Define listing type
+  price: string;
+  size: string;
+  title: string;
+  description: string;
+  link: string;
+  address: string;
+  id: string;
 }

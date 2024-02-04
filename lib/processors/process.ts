@@ -16,7 +16,7 @@ export function processListings(listings: Listing[], listingProcessorsConfig: Pr
   const processedListingsPromises = listings.map(async (listing) => {
     return processors.reduce(
       async (listingAcc, processor) => await processor.processListing({ listing: await listingAcc }),
-      listing
+      Promise.resolve(listing)
     );
   });
   return Promise.resolve(Promise.all(processedListingsPromises));
@@ -32,7 +32,8 @@ export interface ProcessorConfig {
 }
 
 export interface Processor {
-  processListing: (listing: Listing) => Promise<Listing>;
+  processListing: ({ listing }: { listing: Listing }) => Promise<Listing>;
+  notificationText: ({ listing }: { listing: Listing }) => string;
 }
 export type ProcessorFile = {
   default: { new (): Processor };

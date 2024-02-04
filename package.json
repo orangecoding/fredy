@@ -3,7 +3,7 @@
   "version": "8.0.1",
   "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
   "scripts": {
-    "copy-files": "copyfiles -e \"dist/**/*\" **/*.hbs db/* dist/",
+    "copy-files": "copyfiles -e \"dist/**/*\" **/*.hbs dist/",
     "build": "tsc && yarn copy-files",
     "start:server": "yarn build && concurrently \"tsc -w\" \"nodemon --watch dist/lib --watch index.js dist/index.js\"",
     "dev": "yarn && rm -rf ./ui/public/* && vite",
