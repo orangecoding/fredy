@@ -12,7 +12,8 @@ const findProcessor = (processor: ProcessorConfig): Processor => {
   return new ProcessorFile.default();
 };
 
-export function processListings(listings: Listing[], listingProcessorsConfig: ProcessorConfig[]) {
+export function processListings(listings: Listing[], listingProcessorsConfig: ProcessorConfig[]): Promise<Listing[]> {
+  if (!listingProcessorsConfig || listingProcessorsConfig.length === 0) return Promise.resolve(listings);
   const processors = listingProcessorsConfig.map(findProcessor);
   const processedListingsPromises = listings.map(async (listing) => processListingByAllProcessors(listing, processors));
 
@@ -28,7 +29,8 @@ const processListingByAllProcessors = async (listing: Listing, processors: Proce
 
 const processListingByOneProcessor = async (listing: Listing, processor: Processor): Promise<Listing> => {
   const processedListing = await processor.processListing({ listing });
-  const updatedNotificationText = processedListing.notificationText + processor.notificationText({ listing });
+  const previousNotificationText = processedListing.notificationText || '';
+  const updatedNotificationText = previousNotificationText + processor.notificationText({ listing: processedListing });
   return { ...processedListing, notificationText: updatedNotificationText };
 };
 

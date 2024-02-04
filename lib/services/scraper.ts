@@ -2,6 +2,7 @@ import { config } from '../utils.js';
 import makeDriver from './requestDriver.js';
 import Xray from 'x-ray';
 class Scraper {
+  xray: Xray;
   constructor() {
     const filters = {
       removeNewline: this._removeNewline,

@@ -1,12 +1,12 @@
 import utils from '../utils.js';
-import { ProviderConfig } from './provider.js';
+import { Listing, ProviderConfig, ProviderJobInformation } from './provider.js';
 let appliedBlackList = [];
 let appliedBlacklistedDistricts = [];
-function normalize(o) {
+function normalize(o: Listing): Listing {
   const size = o.size || '--- m²';
   return Object.assign(o, { size });
 }
-function applyBlacklist(o) {
+function applyBlacklist(o: Listing): boolean {
   const titleNotBlacklisted = !utils.isOneOf(o.title, appliedBlackList);
   const descNotBlacklisted = !utils.isOneOf(o.description, appliedBlackList);
   const isBlacklistedDistrict =
@@ -36,8 +36,7 @@ export const metaInformation = {
   baseUrl: 'https://www.kleinanzeigen.de/',
   id: 'kleinanzeigen',
 };
-export const init = (sourceConfig, blacklist, blacklistedDistricts) => {
-  config.enabled = sourceConfig.enabled;
+export const init = (sourceConfig: ProviderJobInformation, blacklist, blacklistedDistricts) => {
   config.url = sourceConfig.url;
   appliedBlacklistedDistricts = blacklistedDistricts || [];
   appliedBlackList = blacklist || [];

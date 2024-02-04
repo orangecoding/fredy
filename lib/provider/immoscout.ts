@@ -1,16 +1,16 @@
 import utils from '../utils.js';
-import { ProviderConfig } from './provider.js';
+import { Listing, ProviderConfig, ProviderJobInformation } from './provider.js';
 let appliedBlackList = [];
 function nullOrEmpty(val) {
   return val == null || val.length === 0;
 }
-function normalize(o) {
+function normalize(o: Listing): Listing {
   const title = nullOrEmpty(o.title) ? 'NO TITLE FOUND' : o.title.replace('NEU', '');
   const address = nullOrEmpty(o.address) ? 'NO ADDRESS FOUND' : (o.address || '').replace(/\(.*\),.*$/, '').trim();
   const link = `https://www.immobilienscout24.de${o.link.substring(o.link.indexOf('/expose'))}`;
   return Object.assign(o, { title, address, link });
 }
-function applyBlacklist(o) {
+function applyBlacklist(o: Listing): boolean {
   return !utils.isOneOf(o.title, appliedBlackList);
 }
 const config: ProviderConfig = {
@@ -29,8 +29,7 @@ const config: ProviderConfig = {
   normalize: normalize,
   filter: applyBlacklist,
 };
-export const init = (sourceConfig, blacklist) => {
-  config.enabled = sourceConfig.enabled;
+export const init = (sourceConfig: ProviderJobInformation, blacklist) => {
   config.url = sourceConfig.url;
   appliedBlackList = blacklist || [];
 };

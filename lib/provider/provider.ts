@@ -1,3 +1,25 @@
+import * as einsAImmobilien from './einsAImmobilien.js';
+import * as immobilienDe from './immobilienDe.js';
+import * as immonet from './immonet.js';
+import * as immoscout from './immoscout.js';
+import * as immoswp from './immoswp.js';
+import * as immowelt from './immowelt.js';
+import * as kleinanzeigen from './kleinanzeigen.js';
+import * as neubauKompass from './neubauKompass.js';
+import * as wgGesucht from './wgGesucht.js';
+
+export const providers: Provider[] = [
+  einsAImmobilien,
+  immobilienDe,
+  immonet,
+  immoscout,
+  immoswp,
+  immowelt,
+  kleinanzeigen,
+  neubauKompass,
+  wgGesucht,
+];
+
 export interface Listing {
   price: string;
   size: string;
@@ -6,9 +28,15 @@ export interface Listing {
   link: string;
   address: string;
   id: string;
+  rooms?: string;
   notificationText: string;
   providerId: string;
 }
+export type Provider = {
+  init(sourceConfig: ProviderJobInformation, blacklist: string[], blacklistedDistricts?): void;
+  metaInformation: ProviderMetaInformation;
+  config: ProviderConfig;
+};
 
 export enum Providers {
   einsAImmobilien = 'einsAImmobilien',
@@ -21,6 +49,18 @@ export enum Providers {
   neubauKompass = 'neubauKompass',
   wgGesucht = 'wgGesucht',
 }
+
+export type ProviderMetaInformation = {
+  name: string;
+  baseUrl: string;
+  id: string;
+};
+
+export type ProviderJobInformation = {
+  name: string;
+  url: string;
+  id: string;
+};
 
 export type ProviderConfig = {
   enabled?: boolean;
@@ -38,6 +78,6 @@ export type ProviderConfig = {
     address?: string;
   };
   paginate?: string;
-  normalize(o): any;
-  filter(o): any;
+  normalize(listing: Listing): Listing;
+  filter(listing: Listing): boolean;
 };

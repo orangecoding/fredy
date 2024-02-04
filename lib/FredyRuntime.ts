@@ -14,7 +14,7 @@ class FredyRuntime {
   private providerId: string;
   private jobKey: string;
   private similarityCache: SimilarityCacheService;
-  private listingProcessors: process.ProcessorConfig[];
+  private listingProcessors?: process.ProcessorConfig[];
 
   /**
    *
@@ -30,7 +30,7 @@ class FredyRuntime {
     providerId: string,
     jobKey: string,
     similarityCache: SimilarityCacheService,
-    listingProcessors: process.ProcessorConfig[]
+    listingProcessors?: process.ProcessorConfig[]
   ) {
     this.providerConfig = providerConfig;
     this.notificationAdapterConfigs = notificationConfig;
@@ -38,6 +38,7 @@ class FredyRuntime {
     this.jobKey = jobKey;
     this.similarityCache = similarityCache;
     this.listingProcessors = listingProcessors;
+    console.log('Setup freddy runtime');
   }
   execute() {
     return (
@@ -69,40 +70,35 @@ class FredyRuntime {
         const error = 'Immoscout or Immonet can only be used with if you have set an apikey for scrapingAnt.';
         /* eslint-disable no-console */
         console.log(error);
+
         /* eslint-enable no-console */
         reject(error);
         return;
       }
       const u = scrapingAnt.needScrapingAnt(id) ? scrapingAnt.transformUrlForScrapingAnt(url, id) : url;
       try {
+        const xrayPromise = xray(u, this.providerConfig.crawlContainer, [this.providerConfig.crawlFields]);
+
         if (this.providerConfig.paginate != null) {
-          xray(u, this.providerConfig.crawlContainer, [this.providerConfig.crawlFields])
-            //the first 2 pages should be enough here
-            .limit(2)
-            .paginate(this.providerConfig.paginate)
-            .then((listings) => {
-              resolve(listings == null ? [] : listings);
-            })
-            .catch((err) => {
-              reject(err);
-              console.error(err);
-            });
-        } else {
-          xray(u, this.providerConfig.crawlContainer, [this.providerConfig.crawlFields])
-            .then((listings) => {
-              resolve(listings == null ? [] : listings);
-            })
-            .catch((err) => {
-              reject(err);
-              console.error(err);
-            });
+          //the first 2 pages should be enough here
+          xrayPromise.limit(2).paginate(this.providerConfig.paginate);
         }
+
+        xrayPromise
+          .then((listings) => {
+            resolve(listings == null ? [] : listings);
+          })
+          .catch((err) => {
+            reject(err);
+            console.error(err);
+          });
       } catch (error) {
         reject(error);
         console.error(error);
       }
     });
   }
+
   _normalize(listings: Listing[]): Listing[] {
     return listings.map(this.providerConfig.normalize);
   }
@@ -139,6 +135,7 @@ class FredyRuntime {
   _filterBySimilarListings(listings: Listing[]): Listing[] {
     const filteredList = listings.filter((listing) => {
       const similar = this.similarityCache.hasSimilarEntries(this.jobKey, listing.title);
+
       if (similar) {
         /* eslint-disable no-console */
         console.debug(`Filtering similar entry for job with id ${this.jobKey} with title: `, listing.title);

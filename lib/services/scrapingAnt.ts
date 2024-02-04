@@ -6,10 +6,10 @@ const additionalImmonetUrlParams = `&wait_for_selector=.content-wrapper-tiles&js
   'window.scrollTo(0,document.body.scrollHeight);'
 ).toString('base64')}`;
 
-const needScrapingAnt = (id) => {
+const needScrapingAnt = (id: string) => {
   return id.toLowerCase() === immoScoutInfo.id || id.toLowerCase() === immoNetInfo.id;
 };
-export const transformUrlForScrapingAnt = (url, id) => {
+export const transformUrlForScrapingAnt = (url: string, id: string) => {
   let urlParams = '';
   if (needScrapingAnt(id)) {
     if (id.toLowerCase() === immoNetInfo.id) {
@@ -23,7 +23,7 @@ export const transformUrlForScrapingAnt = (url, id) => {
 export const isScrapingAntApiKeySet = () => {
   return config.scrapingAnt != null && config.scrapingAnt.apiKey != null && config.scrapingAnt.apiKey.length > 0;
 };
-export const makeUrlResidential = (url) => {
+export const makeUrlResidential = (url: string): string => {
   return url.replace('datacenter', 'residential');
 };
 export { needScrapingAnt };

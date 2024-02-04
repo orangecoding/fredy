@@ -1,5 +1,5 @@
 import utils from '../utils.js';
-import { ProviderConfig } from './provider.js';
+import { Listing, ProviderConfig, ProviderJobInformation } from './provider.js';
 let appliedBlackList = [];
 function shortenLink(link) {
   return link.substring(0, link.indexOf('?'));
@@ -7,7 +7,7 @@ function shortenLink(link) {
 function parseId(shortenedLink) {
   return shortenedLink.substring(shortenedLink.lastIndexOf('/') + 1);
 }
-function normalize(o) {
+function normalize(o: Listing): Listing {
   const id = parseId(shortenLink(o.link));
   const size = o.size || 'N/A m²';
   const price = o.price || 'N/A €';
@@ -16,7 +16,7 @@ function normalize(o) {
   const link = shortenLink(o.link);
   return Object.assign(o, { id, price, size, title, address, link });
 }
-function applyBlacklist(o) {
+function applyBlacklist(o: Listing): boolean {
   const titleNotBlacklisted = !utils.isOneOf(o.title, appliedBlackList);
   const descNotBlacklisted = !utils.isOneOf(o.description, appliedBlackList);
   return titleNotBlacklisted && descNotBlacklisted;
@@ -37,8 +37,7 @@ const config: ProviderConfig = {
   normalize: normalize,
   filter: applyBlacklist,
 };
-export const init = (sourceConfig, blacklist) => {
-  config.enabled = sourceConfig.enabled;
+export const init = (sourceConfig: ProviderJobInformation, blacklist) => {
   config.url = sourceConfig.url;
   appliedBlackList = blacklist || [];
 };

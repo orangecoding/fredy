@@ -8,5 +8,5 @@
     "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true,
   },
-  "include": ["./lib/**/*", "./index.js", "conf/config.json"],
+  "include": ["./lib/**/*", "./index.ts", "conf/config.json"],
 }

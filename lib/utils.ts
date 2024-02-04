@@ -63,4 +63,5 @@ export interface Config {
     from: string;
     to: string;
   };
+  lastRun?: number;
 }
