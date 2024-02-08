@@ -1,6 +1,6 @@
 {
   "name": "fredy",
-  "version": "8.0.1",
+  "version": "8.0.2",
   "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
   "scripts": {
     "start": "node index.js",
@@ -55,7 +55,7 @@
     "Firefox ESR"
   ],
   "dependencies": {
-    "@douyinfe/semi-ui": "2.51.3",
+    "@douyinfe/semi-ui": "2.52.0",
     "@rematch/core": "2.2.0",
     "@rematch/loading": "2.1.2",
     "@sendgrid/mail": "8.1.0",
@@ -69,10 +69,10 @@
     "lodash": "4.17.21",
     "lowdb": "6.0.1",
     "markdown": "^0.5.0",
-    "nanoid": "5.0.4",
+    "nanoid": "5.0.5",
     "node-fetch": "3.3.2",
     "node-mailjet": "6.0.5",
-    "query-string": "8.1.0",
+    "query-string": "8.2.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-redux": "9.1.0",
@@ -89,7 +89,7 @@
   },
   "devDependencies": {
     "@babel/core": "7.23.9",
-    "@babel/eslint-parser": "7.23.9",
+    "@babel/eslint-parser": "7.23.10",
     "@babel/preset-env": "7.23.9",
     "@babel/preset-react": "7.23.3",
     "chai": "5.0.3",
@@ -102,7 +102,7 @@
     "less": "4.2.0",
     "lint-staged": "13.2.2",
     "mocha": "10.2.0",
-    "prettier": "3.2.4",
+    "prettier": "3.2.5",
     "redux-logger": "3.0.6"
   }
 }
