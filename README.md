@@ -93,7 +93,6 @@ Thanks to all the people who already contributed!
   <img src="https://contrib.rocks/image?repo=orangecoding/fredy" />
 </a>
 
-#### Guideline     
 See [Contributing](https://github.com/orangecoding/fredy/blob/master/CONTRIBUTING.md)
 
 # Docker   
