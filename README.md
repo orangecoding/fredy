@@ -86,8 +86,14 @@ The rest will be handled by _Fredy_. Keep in mind, the support is experimental. 
 
 If you need more than the 1000 API calls allowed per month, I'd suggest opting for a paid account... ScrapingAnt loves OpenSource, therefore they have decided to give all _Fredy_ users a 10% discount by using the code **FREDY10** (Disclaimer: I do not earn any money for recommending their service).
 
-### Contribution guidelines  
+### 👐 Contributing
+Thanks to all the people who already contributed!
 
+<a href="https://github.com/orangecoding/fredy/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=orangecoding/fredy" />
+</a>
+
+#### Guideline     
 See [Contributing](https://github.com/orangecoding/fredy/blob/master/CONTRIBUTING.md)
 
 # Docker   
