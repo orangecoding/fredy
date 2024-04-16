@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.8'
 services:
   fredy:
     container_name: fredy
@@ -13,3 +13,4 @@ services:
       - ./db:/db
     ports:
         - 9998:9998
+    restart: unless-stopped
