@@ -184,8 +184,7 @@ const GeneralSettings = function GeneralSettings() {
                     more likely to fail, but they are cheaper. A call with a datacenter proxy cost 10 credits.
                     <h4>Residential-Proxy</h4>
                     High-quality proxy server located in one of the real people houses across the world. Datacenter
-                    proxies are faster and more likely to success, but they are more expensive. A call with a datacenter
-                    proxy cost 250 credits.
+                    proxies are faster and more likely to success, but they are more expensive.
                     <br />
                     <br />
                     <b>
