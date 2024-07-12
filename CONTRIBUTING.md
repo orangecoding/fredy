@@ -27,7 +27,7 @@ function applyBlacklist(o) {
 
 const config = {
   url: null,
-    //this is the container wrapping the search listings
+  //this is the container wrapping the search listings
   crawlContainer: '#result-list-stage .item',
   crawlFields: {
     id: '@id',
@@ -36,6 +36,9 @@ const config = {
     title: '.item a img@title',
     link: 'a[id*="lnkImgToDetails_"]@href',
     address: '.item .box-25 .ellipsis .text-100 | removeNewline | trim',
+    image: 'img@src',
+    //some websites provide image URLs for rendered ads only and lazy URLs for the rest
+    lazyImage: 'lazyImg@src'
   },
   paginate: '#idResultList .margin-bottom-6.margin-bottom-sm-12 .panel a.pull-right@href',
   normalize: normalize,

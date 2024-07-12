@@ -142,8 +142,9 @@ export default function NotificationAdapterMutator({
       return (
         <Form key={key}>
           {uiElement.type === 'boolean' ? (
-            <Switch
-              checked={uiElement.value || false}
+            <Form.Switch
+              checked={uiElement.checked || false}
+              label={uiElement.label}
               onChange={(checked) => {
                 setValue(selectedAdapter, uiElement, key, checked);
               }}
