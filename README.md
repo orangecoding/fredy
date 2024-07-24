@@ -17,7 +17,7 @@ _Fredy_ is supported by JetBrains under Open Source Support Program
 
 ## Usage  
 
-- Make sure to use Node.js 18 or above
+- Make sure to use Node.js 20 or above
 - Run the following commands:
 ```ssh
 yarn (or npm install)
