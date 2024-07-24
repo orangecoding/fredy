@@ -15,7 +15,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v2.5.1
         with:
-          node-version: 18
+          node-version: 20
           cache: 'yarn'
       - run: yarn install
       - run: yarn run test
