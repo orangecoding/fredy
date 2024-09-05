@@ -20,7 +20,7 @@ describe('#kleinanzeigen testsuite()', () => {
         expect(notificationObj.serviceName).to.equal('kleinanzeigen');
         notificationObj.payload.forEach((notify) => {
           /** check the actual structure **/
-          expect(notify.id).to.be.a('number');
+          expect(notify.id).to.be.a('string');
           expect(notify.title).to.be.a('string');
           expect(notify.link).to.be.a('string');
           expect(notify.address).to.be.a('string');
