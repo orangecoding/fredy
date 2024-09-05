@@ -10,7 +10,7 @@ describe('#neubauKompass testsuite()', () => {
         similarityCache.stopCacheCleanup();
     });
     provider.init(providerConfig.neubauKompass, [], []);
-    it.only('should test neubauKompass provider', async () => {
+    it('should test neubauKompass provider', async () => {
         const Fredy = await mockFredy();
         return await new Promise((resolve) => {
             if (!scrapingAnt.isScrapingAntApiKeySet()) {
