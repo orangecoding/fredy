@@ -4,3 +4,4 @@ db/
 npm-debug.log
 .DS_Store
 .idea
+.vscode/
