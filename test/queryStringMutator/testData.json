@@ -1,7 +1,7 @@
 [
   {
-    "url": "https://www.immowelt.de/liste/40589/wohnungen/mieten?d=true&sd=DESC&sf=PRIMARY_PRICE_AMOUNT&sp=1",
-    "shouldBecome": "https://www.immowelt.de/liste/40589/wohnungen/mieten?d=true&sd=DESC&sf=TIMESTAMP&sp=1",
+    "url": "https://www.immowelt.de/classified-search?distributionTypes=Buy,Buy_Auction,Compulsory_Auction&estateTypes=House,Apartment&locations=AD08DE2350",
+    "shouldBecome": "https://www.immowelt.de/classified-search?distributionTypes=Buy,Buy_Auction,Compulsory_Auction&estateTypes=House,Apartment&locations=AD08DE2350&order=DateDesc",
     "id": "immowelt"
   },
   {
