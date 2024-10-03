@@ -13,7 +13,7 @@
     "enabled": true
   },
   "immowelt": {
-    "url": "https://www.immowelt.de/liste/duesseldorf/wohnungen/kaufen?d=true&rmi=3&sd=DESC&sf=TIMESTAMP&sp=1",
+    "url": "https://www.immowelt.de/classified-search?distributionTypes=Buy,Buy_Auction,Compulsory_Auction&estateTypes=House,Apartment&locations=AD08DE2350",
     "enabled": true
   },
   "immoscout": {
