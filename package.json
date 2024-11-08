@@ -55,7 +55,7 @@
     "Firefox ESR"
   ],
   "dependencies": {
-    "@douyinfe/semi-ui": "2.68.3",
+    "@douyinfe/semi-ui": "2.69.0",
     "@rematch/core": "2.2.0",
     "@rematch/loading": "2.1.2",
     "@sendgrid/mail": "8.1.4",
@@ -72,6 +72,9 @@
     "nanoid": "5.0.8",
     "node-fetch": "3.3.2",
     "node-mailjet": "6.0.6",
+    "puppeteer": "^23.7.1",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
     "query-string": "9.1.1",
     "react": "18.3.1",
     "react-dom": "18.3.1",
