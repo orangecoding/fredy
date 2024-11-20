@@ -6,6 +6,7 @@ import * as jobStorage from './lib/services/storage/jobStorage.js';
 import FredyRuntime from './lib/FredyRuntime.js';
 import { duringWorkingHoursOrNotSet } from './lib/utils.js';
 import './lib/api/api.js';
+import {track} from './lib/services/tracking/Tracker.js';
 //if db folder does not exist, ensure to create it before loading anything else
 if (!fs.existsSync('./db')) {
   fs.mkdirSync('./db');
@@ -25,6 +26,7 @@ setInterval(
   (function exec() {
     const isDuringWorkingHoursOrNotSet = duringWorkingHoursOrNotSet(config, Date.now());
     if (isDuringWorkingHoursOrNotSet) {
+      track();
       config.lastRun = Date.now();
       jobStorage
         .getJobs()

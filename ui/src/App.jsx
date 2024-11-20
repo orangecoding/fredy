@@ -17,11 +17,13 @@ import Jobs from './views/jobs/Jobs';
 import { Route } from 'react-router';
 
 import './App.less';
+import TrackingModal from './components/tracking/TrackingModal.jsx';
 
 export default function FredyApp() {
   const dispatch = useDispatch();
   const [loading, setLoading] = React.useState(true);
   const currentUser = useSelector((state) => state.user.currentUser);
+  const settings = useSelector((state) => state.generalSettings.settings);
 
   useEffect(() => {
     async function init() {
@@ -31,6 +33,7 @@ export default function FredyApp() {
         await dispatch.jobs.getJobs();
         await dispatch.jobs.getProcessingTimes();
         await dispatch.notificationAdapter.getAdapter();
+        await dispatch.generalSettings.getGeneralSettings();
       }
       setLoading(false);
     }
@@ -59,6 +62,7 @@ export default function FredyApp() {
         <Logout />
         <Logo width={190} white />
         <Menu isAdmin={isAdmin()} />
+        {settings.analyticsEnabled === null && <TrackingModal/>}
         <Switch>
           <Route name="Insufficient Permission" path={'/403'} component={InsufficientPermission} />
           <Route name="Create new Job" path={'/jobs/new'} component={JobMutation} />
