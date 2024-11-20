@@ -95,6 +95,13 @@ Thanks to all the people who already contributed!
 
 See [Contributing](https://github.com/orangecoding/fredy/blob/master/CONTRIBUTING.md)
 
+# Analytics
+Fredy is completely free (and will always remain free). However, it would be a huge help if you’d allow me to collect some analytical data. 
+Before you start screaming, let me explain.      
+If you agree, Fredy will send a ping to my Mixpanel project each time it runs.   
+The data includes: names of active adapters/providers, OS, architecture, Node version, and language. The information is entirely anonymous and helps me understand which adapters/providers are most frequently used.</p>
+**Thanks**🤘
+
 # Docker   
 Use the Dockerfile in this repository to build an image.  
 
