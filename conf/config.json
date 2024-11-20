@@ -1,1 +1,1 @@
-{"interval":10,"port":9998,"scrapingAnt":{"apiKey":"1223","proxy":"datacenter"},"workingHours":{"from":"17:00","to":"18:00"}}
+{"interval":"60","port":9998,"scrapingAnt":{"apiKey":"","proxy":"datacenter"},"workingHours":{"from":"","to":""}}
