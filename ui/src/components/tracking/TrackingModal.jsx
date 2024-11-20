@@ -35,7 +35,7 @@ export default function TrackingModal() {
             <p>Fredy is completely free (and will always remain free). If you’d like, you can support me by donating
                 through my GitHub, but there’s absolutely no obligation to do so.</p>
             <p>However, it would be a huge
-                help if you’d allow me to collect some analytical data. Wait, before you click “no,” let me explain. If
+                help if you’d allow me to collect some analytical data. Wait, before you click "no", let me explain. If
                 you
                 agree, Fredy will send a ping to my Mixpanel project each time it runs.</p>
             <p>The data includes: names of
