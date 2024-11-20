@@ -1,6 +1,6 @@
 {
   "name": "fredy",
-  "version": "10.2.0",
+  "version": "10.3.0",
   "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
   "scripts": {
     "start": "node index.js",
@@ -64,6 +64,7 @@
     "lodash": "4.17.21",
     "lowdb": "6.0.1",
     "markdown": "^0.5.0",
+    "mixpanel": "^0.18.0",
     "nanoid": "5.0.8",
     "node-fetch": "3.3.2",
     "node-mailjet": "6.0.6",
