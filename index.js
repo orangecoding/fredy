@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { config } from './lib/utils.js';
+import {config} from './lib/utils.js';
 import * as similarityCache from './lib/services/similarity-check/similarityCache.js';
 import { setLastJobExecution } from './lib/services/storage/listingsStorage.js';
 import * as jobStorage from './lib/services/storage/jobStorage.js';
@@ -25,27 +25,29 @@ const fetchedProvider = await Promise.all(
 setInterval(
   (function exec() {
     const isDuringWorkingHoursOrNotSet = duringWorkingHoursOrNotSet(config, Date.now());
-    if (isDuringWorkingHoursOrNotSet) {
-      track();
-      config.lastRun = Date.now();
-      jobStorage
-        .getJobs()
-        .filter((job) => job.enabled)
-        .forEach((job) => {
-          job.provider
-            .filter((p) => fetchedProvider.find((fp) => fp.metaInformation.id === p.id) != null)
-            .forEach(async (prov) => {
-              const pro = fetchedProvider.find((fp) => fp.metaInformation.id === prov.id);
-              pro.init(prov, job.blacklist);
-              await new FredyRuntime(pro.config, job.notificationAdapter, prov.id, job.id, similarityCache).execute();
-              setLastJobExecution(job.id);
-            });
-        });
-    } else {
-      /* eslint-disable no-console */
-      console.debug('Working hours set. Skipping as outside of working hours.');
-      /* eslint-enable no-console */
-    }
+        if(!config.demoMode) {
+            if (isDuringWorkingHoursOrNotSet) {
+                track();
+                config.lastRun = Date.now();
+                jobStorage
+                    .getJobs()
+                    .filter((job) => job.enabled)
+                    .forEach((job) => {
+                        job.provider
+                            .filter((p) => fetchedProvider.find((fp) => fp.metaInformation.id === p.id) != null)
+                            .forEach(async (prov) => {
+                                const pro = fetchedProvider.find((fp) => fp.metaInformation.id === prov.id);
+                                pro.init(prov, job.blacklist);
+                                await new FredyRuntime(pro.config, job.notificationAdapter, prov.id, job.id, similarityCache).execute();
+                                setLastJobExecution(job.id);
+                            });
+                    });
+            } else {
+                /* eslint-disable no-console */
+                console.debug('Working hours set. Skipping as outside of working hours.');
+                /* eslint-enable no-console */
+            }
+        }
     return exec;
   })(),
   INTERVAL
