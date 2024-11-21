@@ -8,6 +8,7 @@ import { duringWorkingHoursOrNotSet } from './lib/utils.js';
 import './lib/api/api.js';
 import {track} from './lib/services/tracking/Tracker.js';
 import {handleDemoUser} from './lib/services/storage/userStorage.js';
+import {cleanupDemoAtMidnight} from './lib/services/demoCleanup.js';
 //if db folder does not exist, ensure to create it before loading anything else
 if (!fs.existsSync('./db')) {
   fs.mkdirSync('./db');
@@ -20,6 +21,7 @@ const INTERVAL = config.interval * 60 * 1000;
 console.log(`Started Fredy successfully. Ui can be accessed via http://localhost:${config.port}`);
 if(config.demoMode){
     console.info('Running in demo mode');
+    cleanupDemoAtMidnight();
 }
 /* eslint-enable no-console */
 const fetchedProvider = await Promise.all(
