@@ -3,7 +3,7 @@
   "version": "10.3.0",
   "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
   "scripts": {
-    "start": "node index.js",
+    "start": "node prod.js",
     "dev": "yarn && rm -rf ./ui/public/* && vite",
     "ui": "rm -rf ./ui/public/* && vite",
     "prod": "yarn && vite build --emptyOutDir",
