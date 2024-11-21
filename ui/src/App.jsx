@@ -69,7 +69,6 @@ export default function FredyApp() {
                     <Banner fullMode={true}
                             type="info"
                             bordered
-                            icon={null}
                             closeIcon={null}
                             description="You're currently viewing the demo version of Fredy. Jobs won't scrape websites, and any changes you make will be reverted at midnight."
                     />
