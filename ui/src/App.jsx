@@ -62,7 +62,7 @@ export default function FredyApp() {
         <Logout />
         <Logo width={190} white />
         <Menu isAdmin={isAdmin()} />
-        {settings.analyticsEnabled === null && <TrackingModal/>}
+        {(settings.analyticsEnabled === null && !settings.demoMode) && <TrackingModal/>}
         <Switch>
           <Route name="Insufficient Permission" path={'/403'} component={InsufficientPermission} />
           <Route name="Create new Job" path={'/jobs/new'} component={JobMutation} />
