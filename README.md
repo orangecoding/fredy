@@ -15,6 +15,9 @@ If you like my work, consider becoming a sponsor. I'm not expecting anybody to p
 
 _Fredy_ is supported by JetBrains under Open Source Support Program
 
+## Demo
+If you want to try out _Fredy_, you can access the demo version [here](https://fredy.orange-coding.net) 🤘
+
 ## Usage  
 
 - Make sure to use Node.js 20 or above
