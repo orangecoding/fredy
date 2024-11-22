@@ -5,6 +5,7 @@ import { provider } from './models/provider';
 import { createLogger } from 'redux-logger';
 import { jobs } from './models/jobs';
 import { user } from './models/user';
+import { demoMode } from './models/demoMode.js';
 import { init } from '@rematch/core';
 const middleware = [];
 if (process.env.NODE_ENV === 'development') {
@@ -16,6 +17,7 @@ const store = init({
   models: {
     notificationAdapter,
     generalSettings,
+    demoMode,
     provider,
     jobs,
     user,

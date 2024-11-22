@@ -109,10 +109,17 @@ const GeneralSettings = function GeneralSettings() {
             });
         } catch (exception) {
             console.error(exception);
-            throwMessage('Error while trying to store settings.', 'error');
+            if(exception?.json?.message != null){
+                throwMessage(exception.json.message, 'error');
+            }else {
+                throwMessage('Error while trying to store settings.', 'error');
+            }
             return;
         }
-        throwMessage('Settings stored successfully.', 'success');
+        throwMessage('Settings stored successfully. We will reload your browser in 3 seconds.', 'success');
+        setTimeout(()=>{
+            location.reload();
+        }, 3000);
     };
 
     return (
@@ -120,14 +127,6 @@ const GeneralSettings = function GeneralSettings() {
             {!loading && (
                 <React.Fragment>
                     <Headline text="General Settings"/>
-                    <Banner
-                        fullMode={false}
-                        type="info"
-                        closeIcon={null}
-                        title={<div style={{fontWeight: 600, fontSize: '14px', lineHeight: '20px'}}>Info</div>}
-                        style={{marginBottom: '1rem'}}
-                        description="If you change any settings, you must restart Fredy afterwards."
-                    />
                     <div>
                         <SegmentPart
                             name="Interval"
