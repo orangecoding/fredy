@@ -59,7 +59,7 @@ const GeneralSettings = function GeneralSettings() {
             setWorkingHourFrom(settings?.workingHours?.from);
             setWorkingHourTo(settings?.workingHours?.to);
             setScrapingAntProxy(settings?.scrapingAnt?.proxy || 'datacenter');
-            setAnalyticsEnabled(settings?.analytics || false);
+            setAnalyticsEnabled(settings?.analyticsEnabled || false);
             setDemoMode(settings?.demoMode || false);
         }
 
