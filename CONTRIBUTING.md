@@ -106,9 +106,7 @@ exports.config = {
 ```
 
 #### Running Tests
-If you've written a new provider you are an awesome person. You know it and I do. If you now write tests for it, you are even more awesome. And who doesn't want to be more awesome right?
-
-To write tests for provider, you need to use Node 8 as the tests are using `async / await`
+If you've written a new provider you are an awesome person. If you now write tests for it, you are even more awesome. And who doesn't want to be more awesome right?
 
 #### Codestyle
 I'm using Eslint to maintain quote style and quality. Do not skip it...
