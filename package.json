@@ -1,6 +1,6 @@
 {
   "name": "fredy",
-  "version": "10.4.3",
+  "version": "10.4.4",
   "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
   "scripts": {
     "start": "node prod.js",
