@@ -3,7 +3,6 @@ import {get} from '../mocks/mockNotification.js';
 import {mockFredy, providerConfig} from '../utils.js';
 import {expect} from 'chai';
 import * as provider from '../../lib/provider/neubauKompass.js';
-import * as scrapingAnt from '../../lib/services/scrapingAnt.js';
 
 describe('#neubauKompass testsuite()', () => {
     after(() => {
@@ -13,13 +12,6 @@ describe('#neubauKompass testsuite()', () => {
     it('should test neubauKompass provider', async () => {
         const Fredy = await mockFredy();
         return await new Promise((resolve) => {
-            if (!scrapingAnt.isScrapingAntApiKeySet()) {
-                /* eslint-disable no-console */
-                console.info('Skipping Neubaukompass test as ScrapingAnt Api Key is not set.');
-                /* eslint-enable no-console */
-                resolve();
-                return;
-            }
             const fredy = new Fredy(provider.config, null, provider.metaInformation.id, 'neubauKompass', similarityCache);
             fredy.execute().then((listing) => {
                 expect(listing).to.be.a('array');
