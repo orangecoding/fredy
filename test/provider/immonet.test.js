@@ -9,7 +9,7 @@ describe('#immonet testsuite()', () => {
     similarityCache.stopCacheCleanup();
   });
   provider.init(providerConfig.immonet, [], []);
-  it.only('should test immonet provider', async () => {
+  it('should test immonet provider', async () => {
     const Fredy = await mockFredy();
     return await new Promise((resolve) => {
       const fredy = new Fredy(provider.config, null, provider.metaInformation.id, 'immonet', similarityCache);
