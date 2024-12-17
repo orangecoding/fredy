@@ -69,6 +69,7 @@
     "nanoid": "5.0.9",
     "node-fetch": "3.3.2",
     "node-mailjet": "6.0.6",
+    "package-up": "^5.0.0",
     "puppeteer": "^23.10.4",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
