@@ -81,13 +81,8 @@ yarn run test
 # Architecture
 ![Architecture](/doc/architecture.jpg "Architecture")
 
-### Immoscout / Immonet / NeubauKompass
-I have added **experimental** support for Immoscout, Immonet and NeubauKompass. They all are somewhat special, because they have decided to secure their service from bots using Re-Capture. Finding a way around this is barely possible. For _Fredy_ to be able to bypass this check, I'm using a service called [ScrapingAnt](https://scrapingant.com/). The trick is to use a headless browser, rotating proxies and (once successfully validated) to re-send the cookies each time.
-
-To be able to use Immoscout / Immonet, you need to create an account at ScrapingAnt. Configure the API key in the "General Settings" tab (visible when logged in as administrator).
-The rest will be handled by _Fredy_. Keep in mind, the support is experimental. There might be bugs and you might not always pass the re-capture check, but most of the time it works rather well :)
-
-If you need more than the 1000 API calls allowed per month, I'd suggest opting for a paid account... ScrapingAnt loves OpenSource, therefore they have decided to give all _Fredy_ users a 10% discount by using the code **FREDY10** (Disclaimer: I do not earn any money for recommending their service).
+### Immoscout
+Immoscout has implemented advanced bot detection. I’m actively working on bypassing these measures, but until then, selecting Immoscout as a provider will not return any results. I apologize for the inconvenience. 😉
 
 # Analytics
 Fredy is completely free (and will always remain free). However, it would be a huge help if you’d allow me to collect some analytical data. 

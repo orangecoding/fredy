@@ -9,7 +9,7 @@
     "enabled": true
   },
   "immonet": {
-    "url": "https://www.immonet.de/immobiliensuche/beta?pageoffset=1&listsize=100&objecttype=1&locationname=D%C3%BCsseldorf&acid=&actype=&district=8717&district=8718&district=8719&district=8720&district=8721&district=8723&district=8724&district=8725&district=8727&district=8728&district=8729&district=8730&district=8731&district=8732&district=8733&district=8737&district=8738&district=8741&district=8745&district=8747&district=8750&district=8752&district=8754&district=8755&district=8756&district=8759&district=8760&district=8761&district=8763&district=8764&district=8765&ajaxIsRadiusActive=false&sortby=19&suchart=1&radius=0&pcatmtypes=1_1&pCatMTypeStoragefield=&parentcat=1&marketingtype=1&fromprice=&toprice=420000&fromarea=90&toarea=&fromplotarea=&toplotarea=&fromrooms=3&torooms=&objectcat=225&objectcat=18&objectcat=17&objectcat=12&objectcat=16&objectcat=181&objectcat=14&objectcat=15&objectcat=226&objectcat=13&wbs=-1&fromyear=&toyear=",
+    "url": "https://www.immonet.de/classified-search?distributionTypes=Buy,Buy_Auction,Compulsory_Auction&estateTypes=House,Apartment&locations=AD08DE2112&order=Default&m=homepage_new_search_classified_search_result",
     "enabled": true
   },
   "immowelt": {

@@ -1,6 +1,6 @@
 {
   "name": "fredy",
-  "version": "10.4.4",
+  "version": "11.0.0",
   "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
   "scripts": {
     "start": "node prod.js",
@@ -50,16 +50,17 @@
     "Firefox ESR"
   ],
   "dependencies": {
-    "@douyinfe/semi-ui": "2.70.1",
+    "@douyinfe/semi-ui": "2.71.3",
     "@rematch/core": "2.2.0",
     "@rematch/loading": "2.1.2",
     "@sendgrid/mail": "8.1.4",
     "@vitejs/plugin-react": "4.3.4",
-    "better-sqlite3": "^11.6.0",
+    "better-sqlite3": "^11.7.0",
     "body-parser": "1.20.3",
+    "cheerio": "^1.0.0",
     "cookie-session": "2.1.0",
     "handlebars": "4.7.8",
-    "highcharts": "12.0.1",
+    "highcharts": "12.1.0",
     "highcharts-react-official": "3.2.1",
     "lodash": "4.17.21",
     "lowdb": "6.0.1",
@@ -68,10 +69,13 @@
     "nanoid": "5.0.9",
     "node-fetch": "3.3.2",
     "node-mailjet": "6.0.6",
+    "puppeteer": "^23.10.4",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
     "query-string": "9.1.1",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "react-redux": "9.1.2",
+    "react-redux": "9.2.0",
     "react-router": "5.2.1",
     "react-router-dom": "5.3.0",
     "redux": "5.0.1",
@@ -80,14 +84,13 @@
     "serve-static": "1.16.2",
     "slack": "11.0.2",
     "string-similarity": "^4.0.4",
-    "vite": "5.4.11",
-    "x-ray": "2.3.4"
+    "vite": "5.4.11"
   },
   "devDependencies": {
     "@babel/core": "7.26.0",
     "@babel/eslint-parser": "7.25.9",
     "@babel/preset-env": "7.26.0",
-    "@babel/preset-react": "7.25.9",
+    "@babel/preset-react": "7.26.3",
     "chai": "5.1.2",
     "eslint": "8.56.0",
     "eslint-config-prettier": "8.8.0",
@@ -96,9 +99,9 @@
     "history": "5.3.0",
     "husky": "9.1.7",
     "less": "4.2.1",
-    "lint-staged": "15.2.10",
+    "lint-staged": "15.2.11",
     "mocha": "10.8.2",
-    "prettier": "3.3.3",
+    "prettier": "3.4.2",
     "redux-logger": "3.0.6"
   }
 }
