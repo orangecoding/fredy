@@ -2,13 +2,13 @@ import React from 'react';
 
 import {useDispatch, useSelector} from 'react-redux';
 
-import {Divider, Input, Radio, TimePicker, Button, RadioGroup, Checkbox} from '@douyinfe/semi-ui';
+import {Divider, TimePicker, Button, Checkbox} from '@douyinfe/semi-ui';
 import {InputNumber} from '@douyinfe/semi-ui';
 import Headline from '../../components/headline/Headline';
 import {xhrPost} from '../../services/xhr';
 import {SegmentPart} from '../../components/segment/SegmentPart';
 import {Banner, Toast} from '@douyinfe/semi-ui';
-import {IconSave, IconCalendar, IconKey, IconRefresh, IconSignal, IconLineChartStroked, IconSearch} from '@douyinfe/semi-icons';
+import {IconSave, IconCalendar, IconRefresh, IconSignal, IconLineChartStroked, IconSearch} from '@douyinfe/semi-icons';
 import './GeneralSettings.less';
 
 function formatFromTimestamp(ts) {
@@ -35,8 +35,6 @@ const GeneralSettings = function GeneralSettings() {
 
     const [interval, setInterval] = React.useState('');
     const [port, setPort] = React.useState('');
-    const [scrapingAntApiKey, setScrapingAntApiKey] = React.useState('');
-    const [scrapingAntProxy, setScrapingAntProxy] = React.useState('');
     const [workingHourFrom, setWorkingHourFrom] = React.useState(null);
     const [workingHourTo, setWorkingHourTo] = React.useState(null);
     const [demoMode, setDemoMode] = React.useState(null);
@@ -55,10 +53,8 @@ const GeneralSettings = function GeneralSettings() {
         async function init() {
             setInterval(settings?.interval);
             setPort(settings?.port);
-            setScrapingAntApiKey(settings?.scrapingAnt?.apiKey);
             setWorkingHourFrom(settings?.workingHours?.from);
             setWorkingHourTo(settings?.workingHours?.to);
-            setScrapingAntProxy(settings?.scrapingAnt?.proxy || 'datacenter');
             setAnalyticsEnabled(settings?.analyticsEnabled || false);
             setDemoMode(settings?.demoMode || false);
         }
@@ -96,10 +92,6 @@ const GeneralSettings = function GeneralSettings() {
             await xhrPost('/api/admin/generalSettings', {
                 interval,
                 port,
-                scrapingAnt: {
-                    apiKey: scrapingAntApiKey,
-                    proxy: scrapingAntProxy,
-                },
                 workingHours: {
                     from: workingHourFrom,
                     to: workingHourTo,
@@ -153,68 +145,6 @@ const GeneralSettings = function GeneralSettings() {
                                 formatter={(value) => `${value}`.replace(/\D/g, '')}
                                 onChange={(value) => setPort(value)}
                             />
-                        </SegmentPart>
-                        <Divider margin="1rem"/>
-                        <SegmentPart
-                            name="ScrapingAnt Api Key"
-                            helpText="The api key for ScrapingAnt is used to be able to scrape Immoscout."
-                            Icon={IconKey}
-                        >
-                            <Input
-                                type="text"
-                                placeholder="ScrapingAnt Api Key"
-                                value={scrapingAntApiKey}
-                                onChange={(val) => setScrapingAntApiKey(val)}
-                            />
-                        </SegmentPart>
-                        <Divider margin="1rem"/>
-                        <SegmentPart
-                            name="ScrapingAnt proxy settings"
-                            helpText="Scraping ant provides different proxies."
-                            Icon={IconKey}
-                        >
-                            <Banner
-                                fullMode={false}
-                                type="info"
-                                closeIcon={null}
-                                title={
-                                    <div style={{fontWeight: 600, fontSize: '14px', lineHeight: '20px'}}>
-                                        ScrapingAnt is needed to scrape Immoscout. ScrapingAnt itself is using 2
-                                        different types of proxies
-                                    </div>
-                                }
-                                style={{marginBottom: '1rem'}}
-                                description={
-                                    <div>
-                                        <h4>Datacenter-Proxy</h4>
-                                        Proxy server located in one of the datacenters across the world. Datacenter
-                                        proxies are slower and
-                                        more likely to fail, but they are cheaper. A call with a datacenter proxy cost
-                                        10 credits.
-                                        <h4>Residential-Proxy</h4>
-                                        High-quality proxy server located in one of the real people houses across the
-                                        world. Datacenter
-                                        proxies are faster and more likely to success, but they are more expensive.
-                                        <br/>
-                                        <br/>
-                                        <b>
-                                            On the free tier, you have 10.000 credits, so chose your option wisely. Keep
-                                            in mind, only
-                                            successful calls will be charged.
-                                        </b>
-                                    </div>
-                                }
-                            />
-
-                            <RadioGroup value={scrapingAntProxy} onChange={(e) => setScrapingAntProxy(e.target.value)}>
-                                <Radio name="datacenter" value="datacenter" checked={scrapingAntProxy === 'datacenter'}>
-                                    Datacenter proxy
-                                </Radio>
-                                <Radio name="residential" value="residential"
-                                       checked={scrapingAntProxy === 'residential'}>
-                                    Residential proxy
-                                </Radio>
-                            </RadioGroup>
                         </SegmentPart>
                         <Divider margin="1rem"/>
                         <SegmentPart

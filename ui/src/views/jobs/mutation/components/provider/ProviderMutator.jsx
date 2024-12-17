@@ -96,17 +96,15 @@ export default function ProviderMutator({ onVisibilityChanged, visible = false, 
         fullMode={false}
         type="warning"
         closeIcon={null}
-        title={<div style={{ fontWeight: 600, fontSize: '14px', lineHeight: '20px' }}>ScrapingAnt</div>}
+        title={<div style={{ fontWeight: 600, fontSize: '14px', lineHeight: '20px' }}>Warning</div>}
         style={{ marginBottom: '1rem' }}
         description={
           <div>
             <p>
-              If you chose Immoscout, Immonet or NeubauKompass as a provider, make sure to also add the scrapingAnt apiKey to the config.json.
-              (See readme)
+              Immoscout will not work at the moment due to advanced bot detection. I'm currently working on a fix.
             </p>
             <p>
-              Do not forget to sort the results by date before copying the url to Fredy, so that Fredy always captures
-              the latest search results.
+              Until a fix has been released, Immoscout won't yield any results.
             </p>
           </div>
         }
