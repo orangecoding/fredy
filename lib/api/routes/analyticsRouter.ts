@@ -1,11 +1,11 @@
 import restana from 'restana';
-import * as listingStorage from '../../services/storage/listingsStorage.js';
+import * as listingStorage from '#services/storage/listingsStorage';
 const service = restana();
 const analyticsRouter = service.newRouter();
 analyticsRouter.get('/:jobId', async (req, res) => {
-  const { jobId } = req.params;
-  // @ts-expect-error TS(2339): Property 'body' does not exist on type 'ServerResp... Remove this comment to see the full error message
-  res.body = listingStorage.getListingProviderDataForAnalytics(jobId) || {};
-  res.send();
+  const jobId: string = req.params['jobId'] as string;
+  const analyticsData = listingStorage.getListingProviderDataForAnalytics(jobId) || {};
+  res.setHeader('Content-Type', 'application/json');
+  res.send(JSON.stringify(analyticsData));
 });
 export { analyticsRouter };

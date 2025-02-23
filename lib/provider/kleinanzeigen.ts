@@ -1,51 +1,54 @@
-import utils, {buildHash} from '../utils.js';
+import { ProviderConfig, ProviderMetaInformation } from '#types/ProviderConfig.js';
+import utils, { buildHash } from '../utils';
+import { Listing } from '#types/Listings';
 
-let appliedBlackList: any = [];
-let appliedBlacklistedDistricts: any = [];
+let appliedBlackList: string[] = [];
+let appliedBlacklistedDistricts: string[] = [];
 
-function normalize(o: any) {
-    const size = o.size || '--- m²';
-    const id = buildHash(o.id, o.price);
-    const link = `https://www.kleinanzeigen.de${o.link}`;
-    return Object.assign(o, {id, size, link});
+function normalize(o: Listing): Listing {
+  const size = o.size || 'N/A m²';
+  const link = `https://www.kleinanzeigen.de${o.link}`;
+  const id = buildHash(o.id, o.price);
+  return Object.assign(o, { id, size, link });
 }
 
-function applyBlacklist(o: any) {
-    const titleNotBlacklisted = !utils.isOneOf(o.title, appliedBlackList);
-    const descNotBlacklisted = !utils.isOneOf(o.description, appliedBlackList);
-    const isBlacklistedDistrict =
-        appliedBlacklistedDistricts.length === 0 ? false : utils.isOneOf(o.description, appliedBlacklistedDistricts);
-    return o.title != null && !isBlacklistedDistrict && titleNotBlacklisted && descNotBlacklisted;
+function filter(o: Listing) {
+  const titleNotBlacklisted = !utils.isOneOf(o.title, appliedBlackList);
+  const descNotBlacklisted = !utils.isOneOf(o.description, appliedBlackList);
+  const isBlacklistedDistrict =
+    appliedBlacklistedDistricts.length === 0 ? false : utils.isOneOf(o.description, appliedBlacklistedDistricts);
+  return o.title != null && !isBlacklistedDistrict && titleNotBlacklisted && descNotBlacklisted;
 }
 
-const config = {
-    url: null,
-    crawlContainer: '#srchrslt-adtable .ad-listitem ',
-    //sort by date is standard oO
-    sortByDateParam: null,
-    waitForSelector: 'body',
-    crawlFields: {
-        id: '.aditem@data-adid | int',
-        price: '.aditem-main--middle--price-shipping--price | removeNewline | trim',
-        size: '.aditem-main .text-module-end | removeNewline | trim',
-        title: '.aditem-main .text-module-begin a | removeNewline | trim',
-        link: '.aditem-main .text-module-begin a@href | removeNewline | trim',
-        description: '.aditem-main .aditem-main--middle--description | removeNewline | trim',
-        address: '.aditem-main--top--left | trim | removeNewline',
-    },
-    normalize: normalize,
-    filter: applyBlacklist,
+const config: ProviderConfig = {
+  url: null,
+  crawlContainer: '#srchrslt-adtable .ad-listitem ',
+  sortByDateParam: '',
+  waitForSelector: 'body',
+  crawlFields: {
+    id: '.aditem@data-adid | int',
+    price: '.aditem-main--middle--price-shipping--price | removeNewline | trim',
+    size: '.aditem-main .text-module-end | removeNewline | trim',
+    title: '.aditem-main .text-module-begin a | removeNewline | trim',
+    link: '.aditem-main .text-module-begin a@href | removeNewline | trim',
+    description: '.aditem-main .aditem-main--middle--description | removeNewline | trim',
+    address: '.aditem-main--top--left | trim | removeNewline',
+  },
+  normalize,
+  filter,
 };
-export const metaInformation = {
-    name: 'Ebay Kleinanzeigen',
-    baseUrl: 'https://www.kleinanzeigen.de/',
-    id: 'kleinanzeigen',
+
+const metaInformation: ProviderMetaInformation = {
+  name: 'Ebay Kleinanzeigen',
+  baseUrl: 'https://www.kleinanzeigen.de/',
+  id: 'kleinanzeigen',
 };
-export const init = (sourceConfig: any, blacklist: any, blacklistedDistricts: any) => {
-    // @ts-expect-error TS(2339): Property 'enabled' does not exist on type '{ url: ... Remove this comment to see the full error message
-    config.enabled = sourceConfig.enabled;
-    config.url = sourceConfig.url;
-    appliedBlacklistedDistricts = blacklistedDistricts || [];
-    appliedBlackList = blacklist || [];
+
+const init = (sourceConfig: Partial<ProviderConfig>, blacklist: string[], blacklistedDistricts: string[]) => {
+  config.enabled = sourceConfig.enabled ?? false;
+  config.url = sourceConfig.url ?? null;
+  appliedBlackList = blacklist || [];
+  appliedBlacklistedDistricts = blacklistedDistricts || [];
 };
-export {config};
+
+export { config, metaInformation, init };

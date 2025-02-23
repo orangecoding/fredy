@@ -1,56 +1,88 @@
 import fs from 'fs';
 import restana from 'restana';
 const service = restana();
+
 const notificationAdapterRouter = service.newRouter();
-const notificationAdapterList = fs.readdirSync('./lib//notification/adapter').filter((file) => file.endsWith('.js'));
-// @ts-expect-error TS(1378): Top-level 'await' expressions are only allowed whe... Remove this comment to see the full error message
-const notificationAdapter = await Promise.all(
-  notificationAdapterList.map(async (pro) => {
-    return await import(`../../notification/adapter/${pro}`);
-  })
+import {
+  NotificationAdapterConfig,
+  NotificationAdapterExport,
+  NotificationAdapterFields,
+} from '#types/NotificationAdapter.js';
+import { Listing } from '#types/Listings.js';
+import { HTTPError } from '../errorHandling';
+
+const notificationAdapterList = fs.readdirSync('./lib//notification/adapter').filter((file) => file.endsWith('.ts')); // Filter for .ts files
+
+const notificationAdapter: NotificationAdapterExport[] = await Promise.all(
+  notificationAdapterList.map(async (pro): Promise<NotificationAdapterExport> => {
+    const module = await import(`../../notification/adapter/${pro}`);
+    return module as NotificationAdapterExport;
+  }),
 );
+
 notificationAdapterRouter.post('/try', async (req, res) => {
-  // @ts-expect-error TS(2339): Property 'id' does not exist on type 'Body | undef... Remove this comment to see the full error message
-  const { id, fields } = req.body;
-  const adapter = notificationAdapter.find((adapter) => adapter.config.id === id);
+  const { id, fields } = req.body as {
+    id: string;
+    fields: NotificationAdapterFields;
+  };
+
+  const adapter: NotificationAdapterExport | undefined = notificationAdapter.find(
+    (adapter) => adapter.config.id === id,
+  );
+
   if (adapter == null) {
-    res.send(404);
+    new HTTPError(res).setStatusCode(404).addError('Notification adapter not found').send();
+    return;
   }
-  const notificationConfig = [];
-  const notificationObject = {};
-  Object.keys(fields).forEach((key) => {
-    // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
-    notificationObject[key] = fields[key].value;
+
+  const notificationConfig: NotificationAdapterConfig[] = [];
+  const notificationObject: NotificationAdapterFields = {};
+
+  Object.keys(fields).forEach((key: string) => {
+    const field = fields[key];
+    if (field !== undefined) notificationObject[key] = field;
   });
+
   notificationConfig.push({
     fields: { ...notificationObject },
-    enabled: true,
+    enabled: true, // Assuming enabled is always true for try calls
     id,
   });
+
   try {
+    const testListing: Listing = {
+      id: 'testListing',
+      price: '42 €',
+      title: 'This is a test listing',
+      address: 'some address',
+      size: '666 2m',
+      link: 'https://www.orange-coding.net',
+    };
+
     await adapter.send({
       serviceName: 'TestCall',
-      newListings: [
-        {
-          price: '42 €',
-          title: 'This is a test listing',
-          address: 'some address',
-          size: '666 2m',
-          link: 'https://www.orange-coding.net',
-        },
-      ],
+      newListings: [testListing],
       notificationConfig,
       jobKey: 'TestJob',
     });
-    res.send();
-  } catch (Exception) {
-    // @ts-expect-error TS(2345): Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
-    res.send(new Error(Exception));
+    res.setHeader('Content-Type', 'text/plain');
+    res.setHeader('Content-Type', 'text/plain');
+    res.statusCode = 200;
+    res.send('Test notification sent successfully');
+  } catch (error: unknown) {
+    console.error(error);
+    new HTTPError(res)
+      .setStatusCode(500)
+      .addError(error as string | Error)
+      .send();
+    return;
   }
 });
+
 notificationAdapterRouter.get('/', async (req, res) => {
-  // @ts-expect-error TS(2339): Property 'body' does not exist on type 'ServerResp... Remove this comment to see the full error message
-  res.body = notificationAdapter.map((adapter) => adapter.config);
-  res.send();
+  const adapterConfigs = notificationAdapter.map((adapter) => adapter.config);
+  res.setHeader('Content-Type', 'application/json');
+  res.send(JSON.stringify(adapterConfigs));
 });
+
 export { notificationAdapterRouter };

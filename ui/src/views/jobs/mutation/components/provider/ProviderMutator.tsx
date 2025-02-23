@@ -1,34 +1,32 @@
-// @ts-expect-error TS(7016): Could not find a declaration file for module 'reac... Remove this comment to see the full error message
 import React, { useState } from 'react';
 
 import { Banner, Modal, Select, Input } from '@douyinfe/semi-ui';
-import { transform } from '../../../../../services/transformer/providerTransformer';
 import { useSelector } from 'react-redux';
 import { IconLikeHeart } from '@douyinfe/semi-icons';
 import './ProviderMutator.less';
+import { Provider, RootState } from 'ui/src/types';
 
-const sortProvider = (a: any, b: any) => {
-  if (a.key < b.key) {
-    return -1;
-  }
-  if (a.key > b.key) {
-    return 1;
-  }
+const sortProvider = (a: { value: string; label: string }, b: { value: string; label: string }) => {
+  if (a.value < b.value) return -1;
+  if (a.value > b.value) return 1;
   return 0;
 };
 
 export default function ProviderMutator({
   onVisibilityChanged,
   visible = false,
-  onData
-}: any = {}) {
-  // @ts-expect-error TS(2571): Object is of type 'unknown'.
-  const provider = useSelector((state) => state.provider);
-  const [selectedProvider, setSelectedProvider] = useState(null);
-  const [providerUrl, setProviderUrl] = useState(null);
-  const [validationMessage, setValidationMessage] = useState(null);
+  onData,
+}: {
+  onVisibilityChanged?: (visible: boolean) => void;
+  visible?: boolean;
+  onData?: (data: Provider) => void;
+} = {}) {
+  const provider = useSelector((state: RootState) => state.provider.provider);
+  const [selectedProvider, setSelectedProvider] = useState<Provider | null>(null);
+  const [providerUrl, setProviderUrl] = useState<string | null>(null);
+  const [validationMessage, setValidationMessage] = useState<string | null>(null);
   const validate = () => {
-    if (selectedProvider == null || selectedProvider.length === 0 || providerUrl == null || providerUrl.length === 0) {
+    if (selectedProvider == null || providerUrl == null || providerUrl.length === 0) {
       return 'Please select a provider and copy the browser url into the textfield after configuring your search parameter.';
     }
     try {
@@ -37,37 +35,33 @@ export default function ProviderMutator({
         return 'The url you have copied is not valid.';
       }
     } catch (Exception) {
+      console.error(Exception);
       return 'The url you have copied is not valid.';
     }
     return null;
   };
 
-  const onSubmit = (doStore: any) => {
-    if (doStore) {
+  const onSubmit = (doStore: boolean) => {
+    if (doStore && selectedProvider && providerUrl && onData) {
       const validationResult = validate();
       if (validationResult == null) {
-        onData(
-          transform({
-            url: providerUrl,
-            id: selectedProvider.id,
-            name: selectedProvider.name,
-          })
-        );
+        const provider = structuredClone(selectedProvider);
+        provider.url = providerUrl;
+        onData(provider);
         setProviderUrl(null);
         setSelectedProvider(null);
-        onVisibilityChanged(false);
+        onVisibilityChanged?.(false);
       } else {
         setValidationMessage(validationResult);
       }
     } else {
       setProviderUrl(null);
       setSelectedProvider(null);
-      onVisibilityChanged(false);
+      onVisibilityChanged?.(false);
     }
   };
 
   return (
-    // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
     <Modal
       title="Adding a new Provider"
       visible={visible}
@@ -77,97 +71,75 @@ export default function ProviderMutator({
       okText="Save"
     >
       {validationMessage != null && (
-        // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
         <Banner
           fullMode={false}
           type="danger"
           closeIcon={null}
-          // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
           title={<div style={{ fontWeight: 600, fontSize: '14px', lineHeight: '20px' }}>Error</div>}
           style={{ marginBottom: '1rem' }}
           description={validationMessage}
         />
       )}
-
-      // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
       <p>
-        // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
-        Provider are the <IconLikeHeart style={{ color: '#ff0000' }} /> of Fredy. We're supporting multiple Provider
-        such as Immowelt, Kalaydo etc. Select a provider from the list below.
-        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
+        Provider are the <IconLikeHeart style={{ color: '#ff0000' }} /> of Fredy. We&apos;re supporting multiple
+        Provider such as Immowelt, Kalaydo etc. Select a provider from the list below.
         <br />
-        Fredy will then open the provider's url in a new tab.
-      // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
+        Fredy will then open the provider&apos;s url in a new tab.
       </p>
-      // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
+
       <p>
         You will need to configure your search parameter like you would do when you do a regular search on the
-        provider's website.
-        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
+        provider&apos;s website.
         <br />
         When the search results are shown on the website, copy the url and paste it into the textfield below.
-      // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
       </p>
-      // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
       <Banner
         fullMode={false}
         type="warning"
         closeIcon={null}
-        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
         title={<div style={{ fontWeight: 600, fontSize: '14px', lineHeight: '20px' }}>Warning</div>}
         style={{ marginBottom: '1rem' }}
         description={
-          // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
           <div>
-            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
             <p>
-              Immoscout will not work at the moment due to advanced bot detection. I'm currently working on a fix.
-            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
+              Immoscout will not work at the moment due to advanced bot detection. I&apos;m currently working on a fix.
             </p>
-            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
-            <p>
-              Until a fix has been released, Immoscout won't yield any results.
-            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
-            </p>
-          // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
+            <p>Until a fix has been released, Immoscout won&apos;t yield any results.</p>
           </div>
         }
       />
-
-      // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
       <Select
         filter
         placeholder="Select a provider"
         className="providerMutator__fields"
-        optionList={provider
-          .map((pro: any) => {
-            return {
-              otherKey: pro.id,
-              value: pro.id,
-              label: pro.name,
-            };
-          })
-          .sort(sortProvider)}
+        optionList={
+          provider?.length > 0
+            ? provider
+                .map((pro: Provider) => {
+                  return {
+                    value: pro.id,
+                    label: pro.name,
+                  };
+                })
+                .sort(sortProvider)
+            : []
+        }
         style={{ width: 180 }}
         value={selectedProvider == null ? '' : selectedProvider.id}
-        onChange={(value: any) => {
-          const selectedProvider = provider.find((pro: any) => pro.id === value);
-          setSelectedProvider(selectedProvider);
-
-          window.open(selectedProvider.baseUrl);
+        onChange={(value) => {
+          const selectedProvider = provider.find((pro: Provider) => pro.id === value);
+          setSelectedProvider(selectedProvider || null);
+          window.open(selectedProvider?.baseUrl);
         }}
       />
-      // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
       <br />
-      // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
       <br />
-      // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
       <Input
         type="text"
         placeholder="Provider Url"
         width={10}
         className="providerMutator__fields"
-        onBlur={(e: any) => {
+        onBlur={(e) => {
           setProviderUrl(e.target.value);
         }}
       />

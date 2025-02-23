@@ -1,9 +1,10 @@
-// @ts-expect-error TS(7016): Could not find a declaration file for module 'loda... Remove this comment to see the full error message
 import lodash from 'lodash';
-import { LowSync } from 'lowdb';
-export default class LowdashAdapter extends LowSync {
-  chain: any;
-  constructor(adapter: any, defaultData = {}) {
+import { LowSync, SyncAdapter } from 'lowdb';
+
+export default class LowdashAdapter<T extends object> extends LowSync<T> {
+  chain: lodash.ExpChain<this['data']>;
+
+  constructor(adapter: SyncAdapter<T>, defaultData: T) {
     super(adapter, defaultData);
     this.chain = lodash.chain(this).get('data');
   }

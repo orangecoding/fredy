@@ -1,19 +1,21 @@
-import utils, { buildHash } from '../utils.js';
+import { ProviderConfig, ProviderMetaInformation } from '#types/ProviderConfig.js';
+import utils, { buildHash } from '../utils';
+import { Listing } from '#types/Listings';
 
-let appliedBlackList: any = [];
+let appliedBlackList: string[] = [];
 
-function normalize(o: any) {
+function normalize(o: Listing): Listing {
   const id = buildHash(o.id, o.price);
   return Object.assign(o, { id });
 }
 
-function applyBlacklist(o: any) {
+function filter(o: Listing) {
   const titleNotBlacklisted = !utils.isOneOf(o.title, appliedBlackList);
   const descNotBlacklisted = !utils.isOneOf(o.description, appliedBlackList);
   return titleNotBlacklisted && descNotBlacklisted;
 }
 
-const config = {
+const config: ProviderConfig = {
   url: null,
   crawlContainer:
     'div[data-testid="serp-core-scrollablelistview-testid"]:not(div[data-testid="serp-enlargementlist-testid"] div[data-testid="serp-card-testid"]) div[data-testid="serp-core-classified-card-testid"]',
@@ -27,18 +29,20 @@ const config = {
     link: 'a@href',
     address: 'div[data-testid="cardmfe-description-box-address"] | removeNewline | trim',
   },
-  normalize: normalize,
-  filter: applyBlacklist,
+  normalize,
+  filter,
 };
-export const init = (sourceConfig: any, blacklist: any) => {
-  // @ts-expect-error TS(2339): Property 'enabled' does not exist on type '{ url: ... Remove this comment to see the full error message
-  config.enabled = sourceConfig.enabled;
-  config.url = sourceConfig.url;
-  appliedBlackList = blacklist || [];
+
+const init = (sourceConfig: Partial<ProviderConfig>, blacklist: string[]) => {
+  config.enabled = sourceConfig.enabled ?? false;
+  config.url = sourceConfig.url ?? null;
+  appliedBlackList = blacklist ?? [];
 };
-export const metaInformation = {
+
+const metaInformation: ProviderMetaInformation = {
   name: 'Immowelt',
   baseUrl: 'https://www.immowelt.de/',
   id: 'immowelt',
 };
-export { config };
+
+export { config, metaInformation, init };

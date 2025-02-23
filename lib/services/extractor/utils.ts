@@ -1,3 +1,5 @@
+import { GeneralSettings } from '#types/GeneralSettings.js';
+
 let debuggingOn = false;
 
 export const DEFAULT_HEADER = {
@@ -9,24 +11,21 @@ export const DEFAULT_HEADER = {
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',
 };
 
-export const setDebug = (options: any) => {
+export const setDebug = (options: GeneralSettings) => {
   debuggingOn = !!options?.debug;
 };
 
-export const debug = (message: any) => {
-  if (debuggingOn) {
-    /* eslint-disable no-console */
-    console.debug(message);
-    /* eslint-enable no-console */
-  }
+export const debug = (message: string) => {
+  /* eslint-disable no-console */
+  if (debuggingOn) console.debug(message);
+  /* eslint-enable no-console */
 };
 
-export const botDetected = (pageSource: any, statusCode: any) => {
+export const botDetected = (pageSource: string | null, statusCode: number) => {
   const suspiciousStatusCodes = [403, 429];
+  if (suspiciousStatusCodes.includes(statusCode)) return true;
+
   const botDetectionPatterns = [/verify you are human/i, /access denied/i, /x-amz-cf-id/i];
-
-  const detectedInSource = botDetectionPatterns.some((pattern) => pattern.test(pageSource));
-  const detectedByStatus = suspiciousStatusCodes.includes(statusCode);
-
-  return detectedInSource || detectedByStatus;
+  if (!pageSource) return false;
+  return botDetectionPatterns.some((pattern) => pattern.test(pageSource));
 };

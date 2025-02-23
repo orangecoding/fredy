@@ -1,31 +1,53 @@
-import { markdown2Html } from '../../services/markdown.js';
-import { getJob } from '../../services/storage/jobStorage.js';
+import { markdown2Html } from '#services/markdown';
+import { getJob } from '#services/storage/jobStorage';
+import {
+  NotificationAdapterConfig,
+  NotificationAdapterFieldsValue,
+  SendNotificationArgs,
+} from '#types/NotificationAdapter.ts';
 import fetch from 'node-fetch';
-export const send = ({
-  serviceName,
-  newListings,
-  notificationConfig,
-  jobKey
-}: any) => {
-  const { webhook, channel } = notificationConfig.find((adapter: any) => adapter.id === config.id).fields;
+
+export const send = ({ serviceName, newListings, notificationConfig, jobKey }: SendNotificationArgs) => {
+  const adapterConfig = notificationConfig.find((adapter) => adapter.id === config.id);
+
+  if (!adapterConfig) {
+    console.error(`No adapter config found for id ${config.id}`);
+    return Promise.resolve(null);
+  }
+
+  const { priority, server, topic } = adapterConfig.fields;
+
+  const isValid = (field: NotificationAdapterFieldsValue) => {
+    return !field || (field.value !== null && field.value !== undefined && field.value !== '');
+  };
+
+  if (!isValid(priority) || !isValid(server) || !isValid(topic)) {
+    console.error(`Missing required fields in adapter config for id ${config.id}`);
+    return Promise.resolve(null);
+  }
+
   const job = getJob(jobKey);
   const jobName = job == null ? jobKey : job.name;
   let message = `### *${jobName}* (${serviceName}) found **${newListings.length}** new listings:\n\n`;
   message += `| Title | Address | Size | Price |\n|:----|:----|:----|:----|\n`;
-  message += newListings.map(
-    (o: any) => `| [${o.title}](${o.link}) | ` + [o.address, o.size.replace(/2m/g, '$m^2$'), o.price].join(' | ') + ' |\n',
-  );
-  return fetch(webhook, {
+  message += newListings
+    .map(
+      (o) =>
+        `| [${o.title}](${o.link}) | ` + [o.address, o.size?.replace(/2m/g, '$m^2$'), o.price].join(' | ') + ' |\n',
+    )
+    .join('');
+  const body = {
+    channel: topic.value,
+    text: message,
+  };
+  return fetch(server.value as string, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: {
-      channel: channel,
-      // @ts-expect-error TS(2322): Type 'string' is not assignable to type '() => Pro... Remove this comment to see the full error message
-      text: message,
-    },
+    body: JSON.stringify(body),
   });
 };
-export const config = {
+
+export const config: NotificationAdapterConfig = {
   id: 'mattermost',
   name: 'Mattermost',
   readme: markdown2Html('lib/notification/adapter/mattermost.md'),

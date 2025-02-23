@@ -1,26 +1,23 @@
-// @ts-expect-error TS(7016): Could not find a declaration file for module 'reac... Remove this comment to see the full error message
 import React from 'react';
 
 import { Toast } from '@douyinfe/semi-ui';
-// @ts-expect-error TS(6142): Module '../../components/table/UserTable' was reso... Remove this comment to see the full error message
 import UserTable from '../../components/table/UserTable';
 import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../services/rematch/store';
 import { IconPlus } from '@douyinfe/semi-icons';
 import { Button } from '@douyinfe/semi-ui';
-// @ts-expect-error TS(6142): Module './UserRemovalModal' was resolved to 'C:/Pr... Remove this comment to see the full error message
 import UserRemovalModal from './UserRemovalModal';
-import { xhrDelete } from '../../services/xhr';
-// @ts-expect-error TS(7016): Could not find a declaration file for module 'reac... Remove this comment to see the full error message
+import { parseError, xhrDelete } from '#ui_services/xhr';
 import { useHistory } from 'react-router';
 
 import './Users.less';
+import { ApiDeleteUserReq } from '#types/api.ts';
 
 const Users = function Users() {
   const dispatch = useDispatch();
   const [loading, setLoading] = React.useState(true);
-  // @ts-expect-error TS(2571): Object is of type 'unknown'.
-  const users = useSelector((state) => state.user.users);
-  const [userIdToBeRemoved, setUserIdToBeRemoved] = React.useState(null);
+  const users = useSelector((state: RootState) => state.user.users);
+  const [userIdToBeRemoved, setUserIdToBeRemoved] = React.useState<string | null>(null);
   const history = useHistory();
 
   React.useEffect(() => {
@@ -33,46 +30,53 @@ const Users = function Users() {
   }, []);
 
   const onUserRemoval = async () => {
-    try {
-      await xhrDelete('/api/admin/users', { userId: userIdToBeRemoved });
-      Toast.success('User successfully remove');
+    if (userIdToBeRemoved == null) {
+      Toast.error('userIdToBeRemoved is null');
       setUserIdToBeRemoved(null);
-      await dispatch.jobs.getJobs();
-      await dispatch.user.getUsers();
-    } catch (error) {
-      // @ts-expect-error TS(2345): Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
-      Toast.error(error);
-      setUserIdToBeRemoved(null);
+      return;
     }
+
+    xhrDelete<ApiDeleteUserReq>('/api/admin/users', { id: userIdToBeRemoved })
+      .then(async () => {
+        const awaits = [];
+        awaits.push(dispatch.jobs.getJobs());
+        awaits.push(dispatch.user.getUsers());
+        await Promise.all(awaits);
+        Toast.success('User successfully removed');
+        setUserIdToBeRemoved(null);
+      })
+      .catch((error) => {
+        const errorMessage = parseError(error, 'Failed to remove user');
+        Toast.error(errorMessage);
+        setUserIdToBeRemoved(null);
+      });
   };
 
+  const userToRemove = userIdToBeRemoved ? users.find((user) => user.id === userIdToBeRemoved) : null;
+
   return (
-    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
     <div>
       {!loading && (
-        // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
         <React.Fragment>
-          // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
-          {userIdToBeRemoved && <UserRemovalModal onCancel={() => setUserIdToBeRemoved(null)} onOk={onUserRemoval} />}
+          {userIdToBeRemoved && userToRemove && (
+            <UserRemovalModal user={userToRemove} onCancel={() => setUserIdToBeRemoved(null)} onOk={onUserRemoval} />
+          )}
 
-          // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
           <Button
             type="primary"
             className="users__newButton"
-            // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
             icon={<IconPlus />}
             onClick={() => history.push('/users/new')}
           >
             Create new User
           </Button>
 
-          // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
           <UserTable
             user={users}
-            onUserEdit={(userId: any) => {
+            onUserEdit={(userId: string) => {
               history.push(`/users/edit/${userId}`);
             }}
-            onUserRemoval={(userId: any) => {
+            onUserRemoval={(userId: string) => {
               setUserIdToBeRemoved(userId);
               //throw warning message that all jobs will be removed associated to this user
               //check if at least 1 admin is available
@@ -80,7 +84,6 @@ const Users = function Users() {
           />
         </React.Fragment>
       )}
-    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
     </div>
   );
 };

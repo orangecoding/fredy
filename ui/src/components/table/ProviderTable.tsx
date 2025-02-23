@@ -1,18 +1,17 @@
-// @ts-expect-error TS(7016): Could not find a declaration file for module 'reac... Remove this comment to see the full error message
 import React from 'react';
-
 import { Empty, Table, Button } from '@douyinfe/semi-ui';
 import { IconDelete } from '@douyinfe/semi-icons';
+import { Provider } from 'ui/src/types';
 
-export default function ProviderTable({
-  providerData = [],
-  onRemove
-}: any = {}) {
+interface ProviderTableProps {
+  providerData?: Provider[];
+  onRemove: (id: string) => void;
+}
+
+export default function ProviderTable({ providerData = [], onRemove }: ProviderTableProps) {
   return (
-    // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
     <Table
       pagination={false}
-      // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
       empty={<Empty description="No Provider available" />}
       columns={[
         {
@@ -22,12 +21,10 @@ export default function ProviderTable({
         {
           title: 'Provider Url',
           dataIndex: 'url',
-          render: (_, data) => {
+          render: (_, data: Provider) => {
             return (
-              // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
               <a href={data.url} target="_blank" rel="noopener noreferrer">
                 Visit site
-              // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
               </a>
             );
           },
@@ -35,13 +32,10 @@ export default function ProviderTable({
         {
           title: '',
           dataIndex: 'tools',
-          render: (_, record) => {
+          render: (_, record: Provider) => {
             return (
-              // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
               <div style={{ float: 'right' }}>
-                // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
                 <Button type="danger" icon={<IconDelete />} onClick={() => onRemove(record.id)} />
-              // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
               </div>
             );
           },

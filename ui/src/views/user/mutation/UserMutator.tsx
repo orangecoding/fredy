@@ -1,18 +1,22 @@
-// @ts-expect-error TS(7016): Could not find a declaration file for module 'reac... Remove this comment to see the full error message
 import React from 'react';
 
-import { xhrGet, xhrPost } from '../../../services/xhr';
-// @ts-expect-error TS(7016): Could not find a declaration file for module 'reac... Remove this comment to see the full error message
+import { xhrGet, xhrPost, parseError } from '#ui_services/xhr';
 import { useHistory, useParams } from 'react-router';
 import { useDispatch } from 'react-redux';
 import { Divider, Input, Switch, Button, Toast } from '@douyinfe/semi-ui';
 import './UserMutator.less';
-// @ts-expect-error TS(6142): Module '../../../components/segment/SegmentPart' w... Remove this comment to see the full error message
 import { SegmentPart } from '../../../components/segment/SegmentPart';
 import { IconPlusCircle } from '@douyinfe/semi-icons';
+import { User } from '#types/User.ts';
+import { ApiSaveUserReq } from '#types/api.ts';
+import { XhrApiResponseError } from 'ui/src/types/XhrApi';
+
+interface UserMutatorParams {
+  userId?: string;
+}
 
 const UserMutator = function UserMutator() {
-  const params = useParams();
+  const params = useParams<UserMutatorParams>();
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [password2, setPassword2] = React.useState('');
@@ -25,8 +29,7 @@ const UserMutator = function UserMutator() {
     async function init() {
       if (params.userId != null) {
         try {
-          const userJson = await xhrGet(`/api/admin/users/${params.userId}`);
-          // @ts-expect-error TS(2571): Object is of type 'unknown'.
+          const userJson = await xhrGet<User>(`/api/admin/users/${params.userId}`);
           const user = userJson.json;
 
           const defaultName = user?.username || '';
@@ -44,87 +47,68 @@ const UserMutator = function UserMutator() {
   }, [params.userId]);
 
   const saveUser = async () => {
-    try {
-      await xhrPost('/api/admin/users', {
-        userId: params.userId || null,
-        username,
-        password,
-        password2,
-        isAdmin,
+    xhrPost<ApiSaveUserReq, User>('/api/admin/users', {
+      id: params.userId || null,
+      username,
+      password,
+      password2,
+      isAdmin,
+    })
+      .then(async () => {
+        await dispatch.user.getUsers();
+        Toast.success('User successfully saved...');
+        history.push('/users');
+      })
+      .catch((error: XhrApiResponseError | Error) => {
+        const msg = parseError(error);
+        Toast.error(msg);
       });
-      await dispatch.user.getUsers();
-      Toast.success('User successfully saved...');
-      history.push('/users');
-    } catch (error) {
-      console.error(error);
-      // @ts-expect-error TS(2571): Object is of type 'unknown'.
-      Toast.error(error.json.message);
-    }
   };
 
   return (
-    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
     <form className="userMutator">
-      // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
       <SegmentPart name="Username" helpText="The username used to login to Fredy">
-        // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
         <Input
           type="text"
-          label="Username"
           maxLength={30}
           placeholder="Username"
           autoFocus
           width={6}
           value={username}
-          onChange={(val: any) => setUsername(val)}
+          onChange={(val: string) => setUsername(val)}
         />
       </SegmentPart>
-      // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
       <Divider margin="1rem" />
-      // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
       <SegmentPart name="Password" helpText="The password used to login to Fredy">
-        // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
         <Input
           mode="password"
-          label="Password"
           placeholder="Password"
           width={6}
           value={password}
-          onChange={(val: any) => setPassword(val)}
+          onChange={(val: string) => setPassword(val)}
         />
       </SegmentPart>
-      // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
       <Divider margin="1rem" />
-      // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
       <SegmentPart name="Retype password" helpText="Retype the password to make sure they match">
-        // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
         <Input
           mode="password"
-          label="Retype password"
           placeholder="Retype password"
           width={6}
           value={password2}
-          onChange={(val: any) => setPassword2(val)}
+          onChange={(val: string) => setPassword2(val)}
         />
       </SegmentPart>
-      // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
       <Divider margin="1rem" />
-      // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
       <SegmentPart name="Is user an admin?" helpText="Check this if the user is an administrator">
-        // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
         <Switch checked={isAdmin} onChange={(checked) => setIsAdmin(checked)} />
       </SegmentPart>
-      // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
       <Divider margin="1rem" />
-      // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
       <Button type="danger" style={{ marginRight: '1rem' }} onClick={() => history.push('/users')}>
         Cancel
       </Button>
-      // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
       <Button type="primary" icon={<IconPlusCircle />} onClick={saveUser}>
         Save
       </Button>
-    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
     </form>
   );
 };

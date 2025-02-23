@@ -1,19 +1,24 @@
-import utils, {buildHash} from '../utils.js';
-let appliedBlackList: any = [];
-function nullOrEmpty(val: any) {
-  return val == null || val.length === 0;
-}
-function normalize(o: any) {
-  const title = nullOrEmpty(o.title) ? 'NO TITLE FOUND' : o.title.replace('NEU', '');
-  const address = nullOrEmpty(o.address) ? 'NO ADDRESS FOUND' : (o.address || '').replace(/\(.*\),.*$/, '').trim();
-  const link = nullOrEmpty(o.link) ? 'NO LINK' : `https://www.immobilienscout24.de${o.link.substring(o.link.indexOf('/expose'))}`;
-  const id = buildHash(o.id, o.price);
+import utils, { buildHash } from '../utils';
+import { ProviderConfig, ProviderMetaInformation } from '#types/ProviderConfig.js';
+import { Listing } from '#types/Listings';
+
+let appliedBlackList: string[] = [];
+
+function normalize(o: Listing): Listing {
+  const title: string = (o.title ?? 'N/A').replace('NEU', '');
+  const address: string = (o.address ?? 'N/A').replace(/\(.*\),.*$/, '').trim();
+  o.link = o.link ?? 'NO LINK';
+  const link = `https://www.immobilienscout24.de${o.link.substring(o.link.indexOf('/expose'))}`;
+  const hash = buildHash(o.id, o.price);
+  const id = hash ?? 'NO_ID';
   return Object.assign(o, { id, title, address, link });
 }
-function applyBlacklist(o: any) {
+
+function filter(o: Listing) {
   return !utils.isOneOf(o.title, appliedBlackList);
 }
-const config = {
+
+const config: ProviderConfig = {
   url: null,
   crawlContainer: '#resultListItems li.result-list__listing',
   sortByDateParam: 'sorting=2',
@@ -26,18 +31,20 @@ const config = {
     link: '.result-list-entry .result-list-entry__brand-title-container@href',
     address: '.result-list-entry .result-list-entry__map-link',
   },
-  normalize: normalize,
-  filter: applyBlacklist,
+  normalize,
+  filter,
 };
-export const init = (sourceConfig: any, blacklist: any) => {
-  // @ts-expect-error TS(2339): Property 'enabled' does not exist on type '{ url: ... Remove this comment to see the full error message
-  config.enabled = sourceConfig.enabled;
-  config.url = sourceConfig.url;
-  appliedBlackList = blacklist || [];
+
+const init = (sourceConfig: Partial<ProviderConfig>, blacklist: string[]) => {
+  config.enabled = sourceConfig.enabled ?? false;
+  config.url = sourceConfig.url ?? null;
+  appliedBlackList = blacklist ?? [];
 };
-export const metaInformation = {
+
+const metaInformation: ProviderMetaInformation = {
   name: 'Immoscout',
   baseUrl: 'https://www.immobilienscout24.de/',
   id: 'immoscout',
 };
-export { config };
+
+export { config, metaInformation, init };

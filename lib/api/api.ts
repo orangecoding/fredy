@@ -1,27 +1,25 @@
-import { notificationAdapterRouter } from './routes/notificationAdapterRouter.js';
-import { authInterceptor, cookieSession, adminInterceptor } from './security.js';
-import { generalSettingsRouter } from './routes/generalSettingsRoute.js';
-import { analyticsRouter } from './routes/analyticsRouter.js';
-import { providerRouter } from './routes/providerRouter.js';
-import { loginRouter } from './routes/loginRoute.js';
-import { config } from '../utils.js';
-import { userRouter } from './routes/userRoute.js';
-import { jobRouter } from './routes/jobRouter.js';
-// @ts-expect-error TS(7016): Could not find a declaration file for module 'body... Remove this comment to see the full error message
+import { notificationAdapterRouter } from './routes/notificationAdapterRouter';
+import { authInterceptor, cookieSession, adminInterceptor } from './security';
+import { generalSettingsRouter } from './routes/generalSettingsRoute';
+import { analyticsRouter } from './routes/analyticsRouter';
+import { providerRouter } from './routes/providerRouter';
+import { loginRouter } from './routes/loginRoute';
+import { config } from '../utils';
+import { GeneralSettings } from '../types/GeneralSettings';
+import { userRouter } from './routes/userRoute';
+import { jobRouter } from './routes/jobRouter';
 import bodyParser from 'body-parser';
 import restana from 'restana';
-// @ts-expect-error TS(7016): Could not find a declaration file for module 'serv... Remove this comment to see the full error message
-import files from 'serve-static';
+import file from 'serve-static';
 import path from 'path';
-import { getDirName } from '../utils.js';
-import {demoRouter} from './routes/demoRouter.js';
+import { getDirName } from '../utils';
+import { demoRouter } from './routes/demoRouter';
+
 const service = restana();
-const staticService = files(path.join(getDirName(), '../ui/public'));
-// @ts-expect-error TS(2339): Property 'port' does not exist on type '{}'.
-const PORT = config.port || 9998;
+const staticService = file(path.join(getDirName(), '../ui/public'));
+const PORT = (config as GeneralSettings).port || 9998;
 
 service.use(bodyParser.json());
-// @ts-expect-error TS(2554): Expected 1 arguments, but got 0.
 service.use(cookieSession());
 service.use(staticService);
 service.use('/api/admin', authInterceptor());
@@ -38,7 +36,7 @@ service.use('/api/login', loginRouter);
 //this route is unsecured intentionally as it is being queried from the login page
 service.use('/api/demo', demoRouter);
 
-/* eslint-disable no-console */
 service.start(PORT).then(() => {
+  // eslint-disable-next-line no-console
   console.info(`Started API service on port ${PORT}`);
 });

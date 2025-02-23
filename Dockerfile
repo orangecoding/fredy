@@ -22,4 +22,4 @@ RUN mkdir /db /conf && \
 
 EXPOSE 9998
 
-CMD pm2-runtime index.js
+CMD pm2-runtime index.ts

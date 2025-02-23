@@ -70,7 +70,7 @@ The notification adapter itself dictates how the frontend should be rendered in 
 ```javascript
 const Slack = require('slack');
 const msg = Slack.chat.postMessage;
-const { markdown2Html } = require('../../services/markdown');
+const { markdown2Html } = require('#services/markdown');
 
 
 //as a parameter, you will always get the serviceName, newListings and all the values, that

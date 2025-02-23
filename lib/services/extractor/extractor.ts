@@ -1,19 +1,19 @@
-import { setDebug } from './utils.js';
-import puppeteerExtractor from './puppeteerExtractor.js';
-import { loadParser, parse } from './parser/parser.js';
-
-const DEFAULT_OPTIONS = {
-  debug: false,
-  puppeteerTimeout: 60_000,
-  puppeteerHeadless: true,
-};
+import { setDebug } from './utils';
+import puppeteerExtractor from './puppeteerExtractor';
+import { loadParser, parse } from './parser/parser';
+import { GeneralSettings } from '#types/GeneralSettings.js';
+import { Listing } from '#types/Listings';
 
 export default class Extractor {
-  options: any;
-  responseText: any;
-  constructor(options: any) {
+  options: GeneralSettings;
+  responseText: string | null;
+  /* eslint-disable-next-line @typescript-eslint/no-empty-object-type */
+  constructor(options: GeneralSettings | {}) {
     this.options = {
-      ...DEFAULT_OPTIONS,
+      workingHours: {
+        from: null,
+        to: null,
+      },
       ...options,
     };
     this.responseText = null;
@@ -26,7 +26,7 @@ export default class Extractor {
    * @param url
    * @param waitForSelector
    */
-  execute = async (url: any, waitForSelector = null) => {
+  execute = async (url: string, waitForSelector: string | null = null) => {
     this.responseText = null;
     try {
       this.responseText = await puppeteerExtractor(url, waitForSelector, this.options);
@@ -39,7 +39,8 @@ export default class Extractor {
     return this;
   };
 
-  parseResponseText = (crawlContainer: any, crawlFields: any, url: any) => {
-    return parse(crawlContainer, crawlFields, this.responseText, url);
+  parseResponseText = (crawlContainer: string, crawlFields: Listing, url: string): Listing[] => {
+    const parsedResult = parse(crawlContainer, crawlFields, this.responseText, url);
+    return parsedResult == null ? [] : (parsedResult as Listing[]);
   };
 }

@@ -1,20 +1,41 @@
 import sgMail from '@sendgrid/mail';
-import { markdown2Html } from '../../services/markdown.js';
-export const send = ({
-  serviceName,
-  newListings,
-  notificationConfig,
-  jobKey
-}: any) => {
-  const { apiKey, receiver, from, templateId } = notificationConfig.find((adapter: any) => adapter.id === config.id).fields;
-  sgMail.setApiKey(apiKey);
+import { markdown2Html } from '#services/markdown';
+import {
+  NotificationAdapterConfig,
+  NotificationAdapterFieldsValue,
+  SendNotificationArgs,
+} from '#types/NotificationAdapter.ts';
+
+export const send = ({ serviceName, newListings, notificationConfig, jobKey }: SendNotificationArgs) => {
+  const adapterConfig = notificationConfig.find((adapter) => adapter.id === config.id);
+
+  if (!adapterConfig) {
+    console.error(`No adapter config found for id ${config.id}`);
+    return Promise.resolve(null);
+  }
+
+  const apiKey = adapterConfig.fields['apiKey'];
+  const receiver = adapterConfig.fields['receiver'];
+  const from = adapterConfig.fields['from'];
+  const templateId = adapterConfig.fields['templateId'];
+
+  const isValid = (field: NotificationAdapterFieldsValue) => {
+    return !field || (field.value !== null && field.value !== undefined && field.value !== '');
+  };
+
+  if (!isValid(apiKey) || !isValid(receiver) || !isValid(from) || !isValid(templateId)) {
+    console.error(`Missing required fields in adapter config for id ${config.id}`);
+    return Promise.resolve(null);
+  }
+
+  sgMail.setApiKey(apiKey.value as string);
   const msg = {
-    templateId,
-    to: receiver
+    templateId: templateId.value as string,
+    to: (receiver.value as string)
       .trim()
       .split(',')
-      .map((r: any) => r.trim()),
-    from,
+      .map((r: string) => r.trim()),
+    from: from.value as string,
     subject: `Job ${jobKey} | Service ${serviceName} found ${newListings.length} new listing(s)`,
     dynamic_template_data: {
       serviceName: `Job: (${jobKey}) | Service: ${serviceName}`,
@@ -24,7 +45,8 @@ export const send = ({
   };
   return sgMail.send(msg);
 };
-export const config = {
+
+export const config: NotificationAdapterConfig = {
   id: 'sendgrid',
   name: 'SendGrid',
   description: 'SendGrid is being used to send new listings via mail.',

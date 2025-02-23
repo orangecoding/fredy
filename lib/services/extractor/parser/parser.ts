@@ -1,12 +1,18 @@
+import { Listing } from '#types/Listings';
 import * as cheerio from 'cheerio';
 
-let $: any = null;
+let $: cheerio.CheerioAPI | null = null;
 
-export function loadParser(text: any) {
+export function loadParser(text: string) {
   $ = cheerio.load(text);
 }
 
-export function parse(crawlContainer: any, crawlFields: any, text: any, url: any) {
+export function parse(crawlContainer: string, crawlFields: Listing, text: string | null, url: string) {
+  // Change return type
+  if (!$) {
+    console.warn('Parser not loaded, cannot parse');
+    return null;
+  }
   if (!text) {
     console.warn('Cannot parse, text was empty for url ', url);
     return null;
@@ -17,59 +23,63 @@ export function parse(crawlContainer: any, crawlFields: any, text: any, url: any
     return null;
   }
 
-  const result: any = [];
+  const result: Array<Partial<Listing>> = [];
 
   if ($(crawlContainer).length === 0) {
     console.warn('No elements in crawl container found for url ', url);
     return null;
   }
 
-  $(crawlContainer).each((_: any, element: any) => {
-    const container = $(element);
-    const parsedObject = {};
+  $(crawlContainer).each((_, element) => {
+    const container = $!(element);
+    const parsedObject: Partial<Listing> = {};
 
     // Parse fields based on crawlFields
-    for (const [key, fieldSelector] of Object.entries(crawlFields)) {
-      let value;
+    for (const [key, fieldSelector] of Object.entries(crawlFields) as [keyof Listing, string][]) {
+      let value: string | number | undefined;
 
       try {
-        // @ts-expect-error TS(2571): Object is of type 'unknown'.
         const selector = fieldSelector.includes('|')
-          // @ts-expect-error TS(2571): Object is of type 'unknown'.
           ? fieldSelector.substring(0, fieldSelector.indexOf('|')).trim()
           : fieldSelector;
 
         if (selector.includes('@')) {
-          const [sel, attr] = selector.split('@');
+          const parts = selector.split('@');
+          const sel = parts[0]?.trim();
+          const attr = parts[1]?.trim();
+
+          if (sel === undefined || attr === undefined) {
+            console.warn(`Invalid selector format for key '${key}': ${fieldSelector}`);
+            continue;
+          }
+
           if (sel.length === 0) {
-            value = container.attr(attr.trim());
+            value = container.attr(attr);
           } else {
-            value = container.find(sel.trim()).attr(attr.trim());
+            value = container.find(sel).attr(attr);
           }
         } else {
-          value = container.find(selector.trim()).text();
+          const sel = selector.trim();
+          value = container.find(sel).text();
         }
 
         // Apply modifiers if specified
-        // @ts-expect-error TS(2571): Object is of type 'unknown'.
         if (fieldSelector.includes('|')) {
-          /* eslint-disable no-unused-vars */
-          // @ts-expect-error TS(2571): Object is of type 'unknown'.
-          const [_, ...modifiers] = fieldSelector.split('|').map((s: any) => s.trim());
-          /* eslint-disable no-unused-vars */
+          const modifiers = fieldSelector
+            .split('|')
+            .map((s) => s.trim())
+            .slice(1) as Array<'int' | 'trim' | 'removeNewline'>;
           value = applyModifiers(value, modifiers);
         }
-
-        // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
-        parsedObject[key] = value || null;
+        if (value == null || value === undefined) continue;
+        if (typeof value === 'number') parsedObject[key] = String(value);
+        else parsedObject[key] = value;
       } catch (error) {
         console.error(`Error parsing field '${key}' with selector '${fieldSelector}':`, error);
-        // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
-        parsedObject[key] = null;
+        continue;
       }
     }
 
-    // @ts-expect-error TS(2339): Property 'id' does not exist on type '{}'.
     if (parsedObject.id != null) {
       result.push(parsedObject);
     } else {
@@ -80,20 +90,22 @@ export function parse(crawlContainer: any, crawlFields: any, text: any, url: any
   return result;
 }
 
-// Helper function to apply modifiers
-function applyModifiers(value: any, modifiers: any) {
-  if (!value) return value;
+function applyModifiers(value: string | number | undefined, modifiers: Array<'int' | 'trim' | 'removeNewline'>) {
+  if (value == null || value === undefined) return value;
 
-  modifiers.forEach((modifier: any) => {
+  modifiers.forEach((modifier) => {
     switch (modifier) {
       case 'int':
-        value = parseInt(value, 10);
+        if (typeof value === 'string') value = parseInt(value, 10);
+        else console.warn(`Cannot convert ${typeof value} to int (value: ${value})`);
         break;
       case 'trim':
-        value = value.replace(/\s+/g, ' ').trim();
+        if (typeof value === 'string') value = value.replace(/\s+/g, ' ').trim();
+        else console.warn(`Cannot trim ${typeof value} (value: ${value})`);
         break;
       case 'removeNewline':
-        value = value.replace(/\n/g, ' ');
+        if (typeof value === 'string') value = value.replace(/\n/g, ' ');
+        else console.warn(`Cannot remove newline from ${typeof value} (value: ${value})`);
         break;
       default:
         console.warn(`Unknown modifier: ${modifier}`);

@@ -1,42 +1,67 @@
-import { xhrGet } from '../../xhr';
-export const user = {
+import { User } from '#types/User.ts';
+import { UserState } from 'ui/src/types';
+import { xhrGet, xhrDelete, parseError } from '../../xhr';
+import { RootModel } from '../store';
+import { RematchDispatch, RematchRootState } from '@rematch/core';
+import { ApiDeleteUserReq } from '#types/api.ts';
+
+export interface UserSpecificModel {
+  state: UserState;
+  reducers: {
+    setUsers: (state: UserState, payload: User[]) => UserState;
+    setCurrentUser: (state: UserState, payload: User) => UserState;
+  };
+  effects: (dispatch: RematchDispatch<RootModel>) => {
+    getUsers: (payload: void, rootState: RematchRootState<RootModel>) => Promise<void>;
+    getCurrentUser: (payload: void, rootState: RematchRootState<RootModel>) => Promise<void>;
+    removeUser: (payload: string, rootState: RematchRootState<RootModel>) => Promise<void>;
+  };
+}
+
+export const user: UserSpecificModel = {
   state: {
     users: [],
     currentUser: null,
-  },
+  } as UserState,
   reducers: {
-    //only admins
-    setUsers: (state: any, payload: any) => {
-      return {
-        ...state,
-        users: payload,
-      };
-    },
-    setCurrentUser: (state: any, payload: any) => {
-      return {
-        ...state,
-        currentUser: Object.freeze(payload),
-      };
-    },
+    setUsers: (state: UserState, payload: User[]) => ({
+      ...state,
+      users: payload,
+    }),
+    setCurrentUser: (state: UserState, payload: User) => ({
+      ...state,
+      currentUser: Object.freeze(payload),
+    }),
   },
-  effects: {
+  effects: (dispatch: RematchDispatch<RootModel>) => ({
     async getUsers() {
       try {
-        const response = await xhrGet('/api/admin/users');
-        // @ts-expect-error TS(2551): Property 'setUsers' does not exist on type '{ getU... Remove this comment to see the full error message
-        this.setUsers(response.json);
-      } catch (Exception) {
-        console.error('Error while trying to get resource for api/admin/users. Error:', Exception);
+        const response = await xhrGet<User[]>('/api/admin/users');
+        const users = response.json;
+        dispatch.user.setUsers(users);
+      } catch (error) {
+        console.error('Error while trying to get resource for api/admin/users:', error);
       }
     },
     async getCurrentUser() {
       try {
-        const response = await xhrGet('/api/login/user');
-        // @ts-expect-error TS(2551): Property 'setCurrentUser' does not exist on type '... Remove this comment to see the full error message
-        this.setCurrentUser(response.json);
-      } catch (Exception) {
-        console.error('Error while trying to get resource for api/login/user. Error:', Exception);
+        const response = await xhrGet<User>('/api/login/user');
+        const user = response.json;
+        dispatch.user.setCurrentUser(user);
+      } catch (error) {
+        console.error('Failed to get current user', error);
       }
     },
-  },
+    async removeUser(userId: string) {
+      xhrDelete<ApiDeleteUserReq>(`/api/admin/users`, { id: userId })
+        .then(async () => {
+          await dispatch.user.getUsers();
+        })
+        .catch((error) => {
+          console.error(`Failed to remove user ${userId}`, parseError(error));
+        });
+    },
+  }),
 };
+
+export default user;

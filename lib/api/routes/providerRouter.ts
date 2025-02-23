@@ -1,17 +1,24 @@
 import fs from 'fs';
 import restana from 'restana';
+import { ProviderExport } from '#types/ProviderConfig.js';
+import { ReqWithSession } from '#types/api.ts';
+
 const service = restana();
 const providerRouter = service.newRouter();
-const providerList = fs.readdirSync('./lib/provider').filter((file) => file.endsWith('.js'));
-// @ts-expect-error TS(1378): Top-level 'await' expressions are only allowed whe... Remove this comment to see the full error message
-const provider = await Promise.all(
+
+const providerList = fs.readdirSync('./lib/provider').filter((file: string) => file.endsWith('.ts'));
+
+const provider: ProviderExport[] = await Promise.all(
   providerList.map(async (pro) => {
-    return await import(`../../provider/${pro}`);
-  })
+    const module = await import(`../../provider/${pro}`);
+    return module as ProviderExport;
+  }),
 );
-providerRouter.get('/', async (req, res) => {
-  // @ts-expect-error TS(2339): Property 'body' does not exist on type 'ServerResp... Remove this comment to see the full error message
-  res.body = provider.map((p) => p.metaInformation);
-  res.send();
+
+providerRouter.get('/', async (req: ReqWithSession, res) => {
+  const providerMetaInformation = provider.map((p) => p.metaInformation);
+  res.setHeader('Content-Type', 'application/json');
+  res.send(JSON.stringify(providerMetaInformation));
 });
+
 export { providerRouter };

@@ -1,22 +1,27 @@
-import * as userStorage from '../services/storage/userStorage.js';
-// @ts-expect-error TS(7016): Could not find a declaration file for module 'cook... Remove this comment to see the full error message
+import { ReqWithSession } from '#types/api.ts';
+import * as userStorage from '../services/storage/userStorage';
 import cookieSession from 'cookie-session';
 import { nanoid } from 'nanoid';
-const unauthorized = (res: any) => {
-  return res.send(401);
+import restana from 'restana';
+
+const unauthorized = (res: restana.Response<restana.Protocol.HTTP>) => {
+  res.send(401);
 };
-const isUnauthorized = (req: any) => {
-  return req.session.currentUser == null;
+
+const isUnauthorized = (req: ReqWithSession) => {
+  return !req.session || !req.session.currentUser;
 };
-const isAdmin = (req: any) => {
-  if (!isUnauthorized(req)) {
+
+const isAdmin = (req: ReqWithSession) => {
+  if (!isUnauthorized(req) && req.session?.currentUser) {
     const user = userStorage.getUser(req.session.currentUser);
     return user != null && user.isAdmin;
   }
   return false;
 };
+
 const authInterceptor = () => {
-  return (req: any, res: any, next: any) => {
+  return (req: ReqWithSession, res: restana.Response<restana.Protocol.HTTP>, next: (err?: Error) => void) => {
     if (isUnauthorized(req)) {
       return unauthorized(res);
     } else {
@@ -24,8 +29,9 @@ const authInterceptor = () => {
     }
   };
 };
+
 const adminInterceptor = () => {
-  return (req: any, res: any, next: any) => {
+  return (req: ReqWithSession, res: restana.Response<restana.Protocol.HTTP>, next: (err?: Error) => void) => {
     if (!isAdmin(req)) {
       return unauthorized(res);
     } else {
@@ -33,14 +39,15 @@ const adminInterceptor = () => {
     }
   };
 };
-const cookieSession$0 = (userId: any) => {
+
+const cookieSession$0 = () => {
   return cookieSession({
     name: 'fredy-admin-session',
     keys: ['fredy', 'super', 'fancy', 'key', nanoid()],
-    userId,
-    maxAge: 8 * 60 * 60 * 1000, // 8 hours
-  });
+    maxAge: 8 * 60 * 60 * 1000,
+  }) as unknown as restana.RequestHandler<restana.Protocol.HTTP>;
 };
+
 export { cookieSession$0 as cookieSession };
 export { adminInterceptor };
 export { authInterceptor };

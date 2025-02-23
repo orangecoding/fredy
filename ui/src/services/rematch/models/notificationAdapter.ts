@@ -1,20 +1,32 @@
+import { NotificationAdapterConfig } from '#types/NotificationAdapter.ts';
 import { xhrGet } from '../../xhr';
+import { RootModel } from '../store';
+import { RematchDispatch } from '@rematch/core';
+
+export interface NotificationAdapterState {
+  adapter: NotificationAdapterConfig[];
+}
+
+const defaultState: NotificationAdapterState = {
+  adapter: [],
+};
+
 export const notificationAdapter = {
-  state: [],
+  state: defaultState,
   reducers: {
-    setAdapter: (state: any, payload: any) => {
-      return [...Object.freeze(payload)];
+    setAdapter: (state: NotificationAdapterState, payload: NotificationAdapterConfig[]) => {
+      return { ...state, adapter: payload };
     },
   },
-  effects: {
+  effects: (dispatch: RematchDispatch<RootModel>) => ({
     async getAdapter() {
       try {
-        const response = await xhrGet('/api/jobs/notificationAdapter');
-        // @ts-expect-error TS(2551): Property 'setAdapter' does not exist on type '{ ge... Remove this comment to see the full error message
-        this.setAdapter(response.json);
-      } catch (Exception) {
-        console.error(`Error while trying to get resource for api/jobs/notificationAdapter. Error:`, Exception);
+        const response = await xhrGet<NotificationAdapterConfig[]>('/api/jobs/notificationAdapter');
+        const adapter = response.json;
+        dispatch.notificationAdapter.setAdapter(adapter);
+      } catch (error) {
+        console.error(`Error while trying to get resource for api/jobs/notificationAdapter. Error:`, error);
       }
     },
-  },
+  }),
 };

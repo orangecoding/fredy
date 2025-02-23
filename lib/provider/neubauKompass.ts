@@ -1,45 +1,46 @@
-import utils, {buildHash} from '../utils.js';
+import { ProviderConfig, ProviderMetaInformation } from '#types/ProviderConfig.js';
+import utils, { buildHash } from '../utils';
+import { Listing } from '#types/Listings';
+let appliedBlackList: string[] = [];
 
-let appliedBlackList: any = [];
-
-function nullOrEmpty(val: any) {
-    return val == null || val.length === 0;
+function normalize(o: Listing): Listing {
+  o.link = o.link ?? 'N/A';
+  const link = `https://www.neubaukompass.de${o.link.substring(o.link.indexOf('/neubau'))}`;
+  const id = buildHash(o.link, o.price);
+  return Object.assign(o, { id, link });
 }
 
-function normalize(o: any) {
-    const link = nullOrEmpty(o.link) ? 'NO LINK' : `https://www.neubaukompass.de${o.link.substring(o.link.indexOf('/neubau'))}`;
-    const id = buildHash(o.link, o.price);
-    return Object.assign(o, {id, link});
+function filter(o: Listing) {
+  return !utils.isOneOf(o.title, appliedBlackList);
 }
 
-function applyBlacklist(o: any) {
-    return !utils.isOneOf(o.title, appliedBlackList);
-}
+const config: ProviderConfig = {
+  url: null,
+  crawlContainer: '.col-12.mb-4',
+  sortByDateParam: 'Sortierung=Id&Richtung=DESC',
+  waitForSelector: '.nbk-section',
+  crawlFields: {
+    id: 'a@href',
+    title: 'a@title | removeNewline | trim',
+    link: 'a@href',
+    address: '.nbk-project-card__description | removeNewline | trim',
+    price: '.nbk-project-card__spec-item .nbk-project-card__spec-value | removeNewline | trim',
+  },
+  normalize,
+  filter,
+  enabled: false,
+};
 
-const config = {
-    url: null,
-    crawlContainer: '.col-12.mb-4',
-    sortByDateParam: 'Sortierung=Id&Richtung=DESC',
-    waitForSelector: '.nbk-section',
-    crawlFields: {
-        id: 'a@href',
-        title: 'a@title | removeNewline | trim',
-        link: 'a@href',
-        address: '.nbk-project-card__description | removeNewline | trim',
-        price: '.nbk-project-card__spec-item .nbk-project-card__spec-value | removeNewline | trim',
-    },
-    normalize: normalize,
-    filter: applyBlacklist,
+const init = (sourceConfig: Partial<ProviderConfig>, blacklist: string[]) => {
+  config.enabled = sourceConfig.enabled ?? false;
+  config.url = sourceConfig.url ?? null;
+  appliedBlackList = blacklist ?? [];
 };
-export const init = (sourceConfig: any, blacklist: any) => {
-    // @ts-expect-error TS(2339): Property 'enabled' does not exist on type '{ url: ... Remove this comment to see the full error message
-    config.enabled = sourceConfig.enabled;
-    config.url = sourceConfig.url;
-    appliedBlackList = blacklist || [];
+
+const metaInformation: ProviderMetaInformation = {
+  name: 'Neubau Kompass',
+  baseUrl: 'https://www.neubaukompass.de/',
+  id: 'neubauKompass',
 };
-export const metaInformation = {
-    name: 'Neubau Kompass',
-    baseUrl: 'https://www.neubaukompass.de/',
-    id: 'neubauKompass',
-};
-export {config};
+
+export { config, metaInformation, init };

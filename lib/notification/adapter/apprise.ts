@@ -1,17 +1,28 @@
-import { markdown2Html } from '../../services/markdown.js';
-import { getJob } from '../../services/storage/jobStorage.js';
+import { markdown2Html } from '#services/markdown';
+import { getJob } from '#services/storage/jobStorage';
+import { NotificationAdapterConfig } from '#types/NotificationAdapter.js';
 import fetch from 'node-fetch';
+import { SendNotificationArgs } from '#types/NotificationAdapter.ts';
 
-export const send = ({
-  serviceName,
-  newListings,
-  notificationConfig,
-  jobKey
-}: any) => {
-  const { server } = notificationConfig.find((adapter: any) => adapter.id === config.id).fields;
+export const send = ({ serviceName, newListings, notificationConfig, jobKey }: SendNotificationArgs) => {
+  const adapterConfig = notificationConfig.find((adapter) => adapter.id === config.id);
+  if (!adapterConfig) {
+    console.error(`No adapter config found for id ${config.id}`);
+    return Promise.resolve(null);
+  }
+  const serverField = adapterConfig.fields['server'];
+  if (!serverField) {
+    console.error(`No server field found in adapter config for id ${config.id}`);
+    return Promise.resolve(null);
+  }
+  const server = serverField.value as string;
+  if (!server) {
+    console.error(`No server value found in adapter config for id ${config.id}`);
+    return Promise.resolve(null);
+  }
   const job = getJob(jobKey);
   const jobName = job == null ? jobKey : job.name;
-  const promises = newListings.map((newListing: any) => {
+  const promises = newListings.map((newListing) => {
     const title = `${jobName} at ${serviceName}: ${newListing.title}`;
     const message = `Address: ${newListing.address}\nSize: ${newListing.size}\nPrice: ${newListing.price}\nink: ${newListing.link}`;
     return fetch(server, {
@@ -26,7 +37,8 @@ export const send = ({
 
   return Promise.all(promises);
 };
-export const config = {
+
+export const config: NotificationAdapterConfig = {
   id: 'apprise',
   name: 'Apprise',
   readme: markdown2Html('lib/notification/adapter/apprise.md'),

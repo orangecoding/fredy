@@ -1,7 +1,11 @@
-// @ts-expect-error TS(7016): Could not find a declaration file for module 'mark... Remove this comment to see the full error message
 import markdown$0 from 'markdown';
 import fs from 'fs';
 const markdown = markdown$0.markdown;
-export function markdown2Html(filePath: any) {
-  return markdown.toHTML(fs.readFileSync(filePath, 'utf8'));
+export function markdown2Html(filePath: string): string {
+  try {
+    const fileContent: string = fs.readFileSync(filePath, 'utf8');
+    return markdown.toHTML(fileContent);
+  } catch (error: unknown) {
+    throw new Error(`Failed to convert markdown file: ${error instanceof Error ? error.message : String(error)}`);
+  }
 }

@@ -1,19 +1,41 @@
+import { init, Models, RematchRootState } from '@rematch/core';
+import createLoadingPlugin, { ExtraModelsFromLoading, LoadingConfig } from '@rematch/loading';
+import { Middleware } from 'redux';
+
+// Import the actual model objects
 import { notificationAdapter } from './models/notificationAdapter';
-import { generalSettings } from './models/generalSettings';
-import createLoadingPlugin from '@rematch/loading';
-import { provider } from './models/provider';
-// @ts-expect-error TS(7016): Could not find a declaration file for module 'redu... Remove this comment to see the full error message
-import { createLogger } from 'redux-logger';
-import { jobs } from './models/jobs';
 import { user } from './models/user';
-import { demoMode } from './models/demoMode.js';
-import { init } from '@rematch/core';
-const middleware = [];
-if (process.env.NODE_ENV === 'development') {
-  // eslint-disable-line no-redeclare
-  middleware.push(createLogger({ duration: false, collapsed: (getState: any, action: any, logEntry: any) => !logEntry.error }));
+import { generalSettings } from './models/generalSettings';
+import { provider } from './models/provider';
+import { jobs } from './models/jobs';
+import { demoMode } from './models/demoMode';
+import { createLogger, LogEntryObject } from 'redux-logger';
+
+export interface RootModel extends Models<RootModel> {
+  notificationAdapter: typeof notificationAdapter;
+  generalSettings: typeof generalSettings;
+  demoMode: typeof demoMode;
+  provider: typeof provider;
+  jobs: typeof jobs;
+  user: typeof user;
 }
-const store = init({
+
+// StoreModel is the complete model for the store, including the loading plugin.
+export type StoreModel = RootModel & ExtraModelsFromLoading<RootModel>;
+
+const middleware: Middleware[] = [];
+if (process.env.NODE_ENV === 'development') {
+  middleware.push(
+    createLogger({
+      duration: false,
+      collapsed: (getState: unknown, action: unknown, logEntry: LogEntryObject | undefined) => !logEntry?.error,
+    }),
+  );
+}
+
+const loadingPlugin = createLoadingPlugin<RootModel, ExtraModelsFromLoading<RootModel>, LoadingConfig>({});
+
+export const store = init<RootModel, ExtraModelsFromLoading<RootModel>>({
   name: 'fredy',
   models: {
     notificationAdapter,
@@ -23,9 +45,11 @@ const store = init({
     jobs,
     user,
   },
-  plugins: [createLoadingPlugin({})],
+  plugins: [loadingPlugin],
   redux: {
     middlewares: middleware,
   },
 });
-export const reduxStore = store;
+
+export type Store = typeof store;
+export type RootState = RematchRootState<StoreModel>;

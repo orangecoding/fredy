@@ -1,26 +1,49 @@
+import { GeneralSettings } from '#types/GeneralSettings.ts';
 import { xhrGet } from '../../xhr';
-export const generalSettings = {
+import { RootModel } from '../store';
+import { RematchDispatch } from '@rematch/core';
+
+export interface GeneralSettingsState {
+  settings: GeneralSettings;
+}
+
+export interface GeneralSettingsModel {
+  state: GeneralSettingsState;
+  reducers: {
+    setGeneralSettings: (state: GeneralSettingsState, payload: GeneralSettings) => GeneralSettingsState;
+  };
+  effects: (dispatch: RematchDispatch<RootModel>) => {
+    getGeneralSettings: () => Promise<void>;
+  };
+}
+
+export const generalSettings: GeneralSettingsModel = {
   state: {
-    settings: {},
+    settings: {
+      demoMode: false,
+      analyticsEnabled: null,
+      workingHours: {
+        from: null,
+        to: null,
+      },
+    },
   },
   reducers: {
-    //only admins
-    setGeneralSettings: (state: any, payload: any) => {
+    setGeneralSettings: (state: GeneralSettingsState, payload: GeneralSettings): GeneralSettingsState => {
       return {
         ...state,
         settings: payload,
       };
     },
   },
-  effects: {
+  effects: (dispatch: RematchDispatch<RootModel>) => ({
     async getGeneralSettings() {
       try {
-        const response = await xhrGet('/api/admin/generalSettings');
-        // @ts-expect-error TS(2551): Property 'setGeneralSettings' does not exist on ty... Remove this comment to see the full error message
-        this.setGeneralSettings(response.json);
-      } catch (Exception) {
-        console.error('Error while trying to get resource for api/admin/generalSettings. Error:', Exception);
+        const response = await xhrGet<GeneralSettings>('/api/admin/generalSettings');
+        dispatch.generalSettings.setGeneralSettings(response.json);
+      } catch (error) {
+        console.error('Error while trying to get resource for api/admin/generalSettings. Error:', error);
       }
     },
-  },
+  }),
 };

@@ -1,20 +1,32 @@
 import { xhrGet } from '../../xhr';
+import { Provider } from '../../../types';
+import { RootModel } from '../store';
+import { RematchDispatch } from '@rematch/core';
+
+export interface ProviderState {
+  provider: Provider[];
+}
+
+const defaultState: ProviderState = {
+  provider: [],
+};
+
 export const provider = {
-  state: [],
+  state: defaultState,
   reducers: {
-    setProvider: (state: any, payload: any) => {
-      return [...Object.freeze(payload)];
+    setProvider: (state: ProviderState, payload: Provider[]): ProviderState => {
+      return { ...state, provider: payload };
     },
   },
-  effects: {
+  effects: (dispatch: RematchDispatch<RootModel>) => ({
     async getProvider() {
       try {
-        const response = await xhrGet('/api/jobs/provider');
-        // @ts-expect-error TS(2551): Property 'setProvider' does not exist on type '{ g... Remove this comment to see the full error message
-        this.setProvider(response.json);
-      } catch (Exception) {
-        console.error(`Error while trying to get resource for api/jobs/provider. Error:`, Exception);
+        const response = await xhrGet<Provider[]>('/api/jobs/provider');
+        const provider = response.json;
+        dispatch.provider.setProvider(provider);
+      } catch (error) {
+        console.error(`Error while trying to get resource for api/jobs/provider. Error:`, error);
       }
     },
-  },
+  }),
 };
