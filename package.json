@@ -85,6 +85,7 @@
     "serve-static": "1.16.2",
     "slack": "11.0.2",
     "string-similarity": "^4.0.4",
+    "ts-migrate": "^0.1.35",
     "vite": "5.4.11"
   },
   "devDependencies": {
