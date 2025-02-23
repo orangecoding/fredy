@@ -9,28 +9,32 @@ const RATE_LIMIT_INTERVAL = 1010;
  * @param inputArray
  * @param perChunk
  */
-const arrayChunks = (inputArray, perChunk) =>
-  inputArray.reduce((all, one, i) => {
+const arrayChunks = (inputArray: any, perChunk: any) =>
+  inputArray.reduce((all: any, one: any, i: any) => {
     const ch = Math.floor(i / perChunk);
     all[ch] = [].concat(all[ch] || [], one);
     return all;
   }, []);
-function shorten(str, len = 30) {
+function shorten(str: any, len = 30) {
   return str.length > len ? str.substring(0, len) + '...' : str;
 }
-export const send = ({ serviceName, newListings, notificationConfig, jobKey }) => {
-  const { token, chatId } = notificationConfig.find((adapter) => adapter.id === config.id).fields;
+export const send = ({
+  serviceName,
+  newListings,
+  notificationConfig,
+  jobKey
+}: any) => {
+  const { token, chatId } = notificationConfig.find((adapter: any) => adapter.id === config.id).fields;
   const job = getJob(jobKey);
   const jobName = job == null ? jobKey : job.name;
   //we have to split messages into chunk, because otherwise messages are going to become too big and will fail
   const chunks = arrayChunks(newListings, MAX_ENTITIES_PER_CHUNK);
-  const promises = chunks.map((chunk) => {
+  const promises = chunks.map((chunk: any) => {
     let message = `<i>${jobName}</i> (${serviceName}) found <b>${newListings.length}</b> new listings:\n\n`;
     message += chunk.map(
-      (o) =>
-        `<a href='${o.link}'><b>${shorten(o.title.replace(/\*/g, ''), 45).trim()}</b></a>\n` +
-        [o.address, o.price, o.size].join(' | ') +
-        '\n\n',
+      (o: any) => `<a href='${o.link}'><b>${shorten(o.title.replace(/\*/g, ''), 45).trim()}</b></a>\n` +
+      [o.address, o.price, o.size].join(' | ') +
+      '\n\n',
     );
     /**
      * This is to not break the rate limit. It is to only send 1 message per second
@@ -48,6 +52,7 @@ export const send = ({ serviceName, newListings, notificationConfig, jobKey }) =
           headers: { 'Content-Type': 'application/json' },
         })
           .then(() => {
+            // @ts-expect-error TS(2794): Expected 1 arguments, but got 0. Did you forget to... Remove this comment to see the full error message
             resolve();
           })
           .catch(() => {

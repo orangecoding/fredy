@@ -7,16 +7,21 @@ import { getDirName } from '../../utils.js';
 const __dirname = getDirName();
 const template = fs.readFileSync(path.resolve(__dirname + '/notification/emailTemplate/template.hbs'), 'utf8');
 const emailTemplate = Handlebars.compile(template);
-export const send = ({ serviceName, newListings, notificationConfig, jobKey }) => {
+export const send = ({
+  serviceName,
+  newListings,
+  notificationConfig,
+  jobKey
+}: any) => {
   const { apiPublicKey, apiPrivateKey, receiver, from } = notificationConfig.find(
-    (adapter) => adapter.id === config.id,
+    (adapter: any) => adapter.id === config.id,
   ).fields;
   const to = receiver
     .trim()
     .split(',')
-    .map((r) => ({
-      Email: r.trim(),
-    }));
+    .map((r: any) => ({
+    Email: r.trim()
+  }));
   return mailjet
     .apiConnect(apiPublicKey, apiPrivateKey)
     .post('send', { version: 'v3.1' })

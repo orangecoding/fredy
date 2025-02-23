@@ -1,18 +1,18 @@
 import utils, {buildHash} from '../utils.js';
 
-let appliedBlackList = [];
+let appliedBlackList: any = [];
 
-function nullOrEmpty(val) {
+function nullOrEmpty(val: any) {
     return val == null || val.length === 0;
 }
 
-function normalize(o) {
+function normalize(o: any) {
     const link = nullOrEmpty(o.link) ? 'NO LINK' : `https://www.neubaukompass.de${o.link.substring(o.link.indexOf('/neubau'))}`;
     const id = buildHash(o.link, o.price);
     return Object.assign(o, {id, link});
 }
 
-function applyBlacklist(o) {
+function applyBlacklist(o: any) {
     return !utils.isOneOf(o.title, appliedBlackList);
 }
 
@@ -31,7 +31,8 @@ const config = {
     normalize: normalize,
     filter: applyBlacklist,
 };
-export const init = (sourceConfig, blacklist) => {
+export const init = (sourceConfig: any, blacklist: any) => {
+    // @ts-expect-error TS(2339): Property 'enabled' does not exist on type '{ url: ... Remove this comment to see the full error message
     config.enabled = sourceConfig.enabled;
     config.url = sourceConfig.url;
     appliedBlackList = blacklist || [];

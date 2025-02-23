@@ -1,14 +1,19 @@
 import sgMail from '@sendgrid/mail';
 import { markdown2Html } from '../../services/markdown.js';
-export const send = ({ serviceName, newListings, notificationConfig, jobKey }) => {
-  const { apiKey, receiver, from, templateId } = notificationConfig.find((adapter) => adapter.id === config.id).fields;
+export const send = ({
+  serviceName,
+  newListings,
+  notificationConfig,
+  jobKey
+}: any) => {
+  const { apiKey, receiver, from, templateId } = notificationConfig.find((adapter: any) => adapter.id === config.id).fields;
   sgMail.setApiKey(apiKey);
   const msg = {
     templateId,
     to: receiver
       .trim()
       .split(',')
-      .map((r) => r.trim()),
+      .map((r: any) => r.trim()),
     from,
     subject: `Job ${jobKey} | Service ${serviceName} found ${newListings.length} new listing(s)`,
     dynamic_template_data: {

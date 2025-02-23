@@ -1,5 +1,5 @@
 class ExtendableError extends Error {
-  constructor(message) {
+  constructor(message: any) {
     super(message);
     this.name = this.constructor.name;
     if (typeof Error.captureStackTrace === 'function') {

@@ -9,7 +9,9 @@ const DEFAULT_OPTIONS = {
 };
 
 export default class Extractor {
-  constructor(options) {
+  options: any;
+  responseText: any;
+  constructor(options: any) {
     this.options = {
       ...DEFAULT_OPTIONS,
       ...options,
@@ -24,7 +26,7 @@ export default class Extractor {
    * @param url
    * @param waitForSelector
    */
-  execute = async (url, waitForSelector = null) => {
+  execute = async (url: any, waitForSelector = null) => {
     this.responseText = null;
     try {
       this.responseText = await puppeteerExtractor(url, waitForSelector, this.options);
@@ -37,7 +39,7 @@ export default class Extractor {
     return this;
   };
 
-  parseResponseText = (crawlContainer, crawlFields, url) => {
+  parseResponseText = (crawlContainer: any, crawlFields: any, url: any) => {
     return parse(crawlContainer, crawlFields, this.responseText, url);
   };
 }

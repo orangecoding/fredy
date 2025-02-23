@@ -16,14 +16,18 @@ if (!fs.existsSync('./db')) {
 const path = './lib/provider';
 const provider = fs.readdirSync(path).filter((file) => file.endsWith('.js'));
 //assuming interval is always in minutes
+// @ts-expect-error TS(2339): Property 'interval' does not exist on type '{}'.
 const INTERVAL = config.interval * 60 * 1000;
 /* eslint-disable no-console */
+// @ts-expect-error TS(2339): Property 'port' does not exist on type '{}'.
 console.log(`Started Fredy successfully. Ui can be accessed via http://localhost:${config.port}`);
+// @ts-expect-error TS(2339): Property 'demoMode' does not exist on type '{}'.
 if(config.demoMode){
     console.info('Running in demo mode');
     cleanupDemoAtMidnight();
 }
 /* eslint-enable no-console */
+// @ts-expect-error TS(1378): Top-level 'await' expressions are only allowed whe... Remove this comment to see the full error message
 const fetchedProvider = await Promise.all(
   provider.filter((provider) => provider.endsWith('.js')).map(async (pro) => import(`${path}/${pro}`))
 );
@@ -33,17 +37,19 @@ handleDemoUser();
 setInterval(
   (function exec() {
     const isDuringWorkingHoursOrNotSet = duringWorkingHoursOrNotSet(config, Date.now());
+        // @ts-expect-error TS(2339): Property 'demoMode' does not exist on type '{}'.
         if(!config.demoMode) {
             if (isDuringWorkingHoursOrNotSet) {
                 track();
+                // @ts-expect-error TS(2339): Property 'lastRun' does not exist on type '{}'.
                 config.lastRun = Date.now();
                 jobStorage
                     .getJobs()
-                    .filter((job) => job.enabled)
-                    .forEach((job) => {
+                    .filter((job: any) => job.enabled)
+                    .forEach((job: any) => {
                         job.provider
-                            .filter((p) => fetchedProvider.find((fp) => fp.metaInformation.id === p.id) != null)
-                            .forEach(async (prov) => {
+                            .filter((p: any) => fetchedProvider.find((fp) => fp.metaInformation.id === p.id) != null)
+                            .forEach(async (prov: any) => {
                                 const pro = fetchedProvider.find((fp) => fp.metaInformation.id === prov.id);
                                 pro.init(prov, job.blacklist);
                                 await new FredyRuntime(pro.config, job.notificationAdapter, prov.id, job.id, similarityCache).execute();

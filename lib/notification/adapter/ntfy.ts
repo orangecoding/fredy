@@ -2,11 +2,16 @@ import { markdown2Html } from '../../services/markdown.js';
 import { getJob } from '../../services/storage/jobStorage.js';
 import fetch from 'node-fetch';
 
-export const send = ({ serviceName, newListings, notificationConfig, jobKey }) => {
-  const { priority, server, topic } = notificationConfig.find((adapter) => adapter.id === config.id).fields;
+export const send = ({
+  serviceName,
+  newListings,
+  notificationConfig,
+  jobKey
+}: any) => {
+  const { priority, server, topic } = notificationConfig.find((adapter: any) => adapter.id === config.id).fields;
   const job = getJob(jobKey);
   const jobName = job == null ? jobKey : job.name;
-  const promises = newListings.map((newListing) => {
+  const promises = newListings.map((newListing: any) => {
     const message = `
     Address: ${newListing.address} 
     Size: ${newListing.size.replace(/2m/g, '$m^2$')} 

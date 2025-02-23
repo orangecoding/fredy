@@ -1,5 +1,7 @@
+// @ts-expect-error TS(7016): Could not find a declaration file for module 'reac... Remove this comment to see the full error message
 import React from 'react';
 
+// @ts-expect-error TS(6142): Module '../../../components/placeholder/Placeholde... Remove this comment to see the full error message
 import Placeholder from '../../../components/placeholder/Placeholder';
 import HighchartsReact from 'highcharts-react-official';
 import Highcharts from 'highcharts/highcharts.src.js';
@@ -134,6 +136,7 @@ Highcharts.theme = {
       color: '#666',
     },
   },
+  // @ts-expect-error TS(2322): Type '{ colors: string[]; chart: { backgroundColor... Remove this comment to see the full error message
   labels: {
     style: {
       color: '#707073',
@@ -300,7 +303,12 @@ const defaultOptions = {
  *    ]}
  * />
  */
-const Linechart = function Linechart({ title, series, height, isLoading = false }) {
+const Linechart = function Linechart({
+  title,
+  series,
+  height,
+  isLoading = false
+}: any) {
   const options = () => {
     return {
       ...defaultOptions,
@@ -313,7 +321,7 @@ const Linechart = function Linechart({ title, series, height, isLoading = false 
       legend: {
         enabled: true,
       },
-      series: series.map((series) => {
+      series: series.map((series: any) => {
         return {
           ...series,
         };
@@ -327,10 +335,13 @@ const Linechart = function Linechart({ title, series, height, isLoading = false 
   };
 
   return (
+    // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
     <Placeholder ready={!isLoading} rows={6}>
       {series == null || series.length === 0 ? (
+        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
         <div className="linechart__no__data">No Data for selected timeframe :-/</div>
       ) : (
+        // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
         <HighchartsReact highcharts={Highcharts} options={options()} />
       )}
     </Placeholder>

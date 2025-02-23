@@ -1,13 +1,14 @@
 import * as userStorage from '../services/storage/userStorage.js';
+// @ts-expect-error TS(7016): Could not find a declaration file for module 'cook... Remove this comment to see the full error message
 import cookieSession from 'cookie-session';
 import { nanoid } from 'nanoid';
-const unauthorized = (res) => {
+const unauthorized = (res: any) => {
   return res.send(401);
 };
-const isUnauthorized = (req) => {
+const isUnauthorized = (req: any) => {
   return req.session.currentUser == null;
 };
-const isAdmin = (req) => {
+const isAdmin = (req: any) => {
   if (!isUnauthorized(req)) {
     const user = userStorage.getUser(req.session.currentUser);
     return user != null && user.isAdmin;
@@ -15,7 +16,7 @@ const isAdmin = (req) => {
   return false;
 };
 const authInterceptor = () => {
-  return (req, res, next) => {
+  return (req: any, res: any, next: any) => {
     if (isUnauthorized(req)) {
       return unauthorized(res);
     } else {
@@ -24,7 +25,7 @@ const authInterceptor = () => {
   };
 };
 const adminInterceptor = () => {
-  return (req, res, next) => {
+  return (req: any, res: any, next: any) => {
     if (!isAdmin(req)) {
       return unauthorized(res);
     } else {
@@ -32,7 +33,7 @@ const adminInterceptor = () => {
     }
   };
 };
-const cookieSession$0 = (userId) => {
+const cookieSession$0 = (userId: any) => {
   return cookieSession({
     name: 'fredy-admin-session',
     keys: ['fredy', 'super', 'fancy', 'key', nanoid()],

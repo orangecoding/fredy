@@ -32,36 +32,42 @@ const db = new LowdashAdapter(adapter, defaultData);
 
 db.read();
 
-export const getUsers = (withPassword) => {
+export const getUsers = (withPassword: any) => {
   const jobs = jobStorage.getJobs();
   return db.chain
     .get('user')
     .value()
-    .map((user) => ({
-      //we dont want the password in the frontend, even tho it's hashed
-      ...user,
-      password: withPassword ? user.password : null,
-      numberOfJobs: jobs.filter((job) => job.userId === user.id).length,
-    }));
+    .map((user: any) => ({
+    //we dont want the password in the frontend, even tho it's hashed
+    ...user,
+
+    password: withPassword ? user.password : null,
+    numberOfJobs: jobs.filter((job: any) => job.userId === user.id).length
+  }));
 };
-export const getUser = (id) => {
+export const getUser = (id: any) => {
   const jobs = jobStorage.getJobs();
   const user = db.chain
     .get('user')
-    .find((user) => user.id === id)
+    .find((user: any) => user.id === id)
     .value();
   if (user == null) {
     return null;
   }
   return {
     ...user,
-    numberOfJobs: jobs.filter((job) => job.userId === user.id).length,
+    numberOfJobs: jobs.filter((job: any) => job.userId === user.id).length,
   };
 };
-export const upsertUser = ({ username, password, userId, isAdmin }) => {
+export const upsertUser = ({
+  username,
+  password,
+  userId,
+  isAdmin
+}: any) => {
   const user = db.chain
     .get('user')
-    .filter((u) => u.id !== userId)
+    .filter((u: any) => u.id !== userId)
     .value();
   user.push({
     id: userId || nanoid(),
@@ -73,35 +79,38 @@ export const upsertUser = ({ username, password, userId, isAdmin }) => {
   db.chain.set('user', user).value();
   db.write();
 };
-export const setLastLoginToNow = ({ userId }) => {
+export const setLastLoginToNow = ({
+  userId
+}: any) => {
   db.chain
     .get('user')
-    .find((u) => u.id === userId)
+    .find((u: any) => u.id === userId)
     .assign({ lastLogin: Date.now() })
     .value();
   db.write();
 };
-export const removeUser = (userId) => {
+export const removeUser = (userId: any) => {
   const user = db.chain.get('user').value();
   db.chain
     .set(
       'user',
-      user.filter((u) => u.id !== userId)
+      user.filter((u: any) => u.id !== userId)
     )
     .value();
   db.write();
 };
 
 export const handleDemoUser = () => {
+    // @ts-expect-error TS(2339): Property 'demoMode' does not exist on type '{}'.
     if(!config.demoMode){
         const user = db.chain.get('user').value();
         db.chain.get('user').value();
-        db.chain.set('user', user.filter((u) => u.username !== 'demo')).value();
+        db.chain.set('user', user.filter((u: any) => u.username !== 'demo')).value();
         db.write();
     }else {
         const demoUser = db.chain
             .get('user')
-            .filter((u) => u.username === 'demo')
+            .filter((u: any) => u.username === 'demo')
             .value();
         if (demoUser == null || demoUser.length === 0) {
             db.chain.get('user')

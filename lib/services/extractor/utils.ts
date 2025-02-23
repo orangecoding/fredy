@@ -9,11 +9,11 @@ export const DEFAULT_HEADER = {
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',
 };
 
-export const setDebug = (options) => {
+export const setDebug = (options: any) => {
   debuggingOn = !!options?.debug;
 };
 
-export const debug = (message) => {
+export const debug = (message: any) => {
   if (debuggingOn) {
     /* eslint-disable no-console */
     console.debug(message);
@@ -21,7 +21,7 @@ export const debug = (message) => {
   }
 };
 
-export const botDetected = (pageSource, statusCode) => {
+export const botDetected = (pageSource: any, statusCode: any) => {
   const suspiciousStatusCodes = [403, 429];
   const botDetectionPatterns = [/verify you are human/i, /access denied/i, /x-amz-cf-id/i];
 

@@ -6,7 +6,7 @@
  * @param contentType default is json
  * @returns {Promise}
  */
-export function xhrPost(url, data, contentType = 'application/json; charset=utf-8', isJson = true) {
+export function xhrPost(url: any, data: any, contentType = 'application/json; charset=utf-8', isJson = true) {
   return executePostOrPutCall(url, contentType, data, isJson, true);
 }
 /**
@@ -17,10 +17,10 @@ export function xhrPost(url, data, contentType = 'application/json; charset=utf-
  * @param contentType default is json
  * @returns {Promise}
  */
-export function xhrPut(url, data, contentType = 'application/json; charset=utf-8', isJson = true) {
+export function xhrPut(url: any, data: any, contentType = 'application/json; charset=utf-8', isJson = true) {
   return executePostOrPutCall(url, contentType, data, isJson, false);
 }
-function executePostOrPutCall(url, contentType, data, isJson, isPost) {
+function executePostOrPutCall(url: any, contentType: any, data: any, isJson: any, isPost: any) {
   return new Promise((resolve, reject) => {
     fetch(url, {
       method: isPost ? 'POST' : 'PUT',
@@ -56,7 +56,7 @@ function executePostOrPutCall(url, contentType, data, isJson, isPost) {
  * @param isJson
  * @returns {Promise}
  */
-export function xhrGet(url, contentType = 'application/json; charset=utf-8', isJson = true) {
+export function xhrGet(url: any, contentType = 'application/json; charset=utf-8', isJson = true) {
   return new Promise((resolve, reject) => {
     fetch(url, {
       credentials: 'include',
@@ -88,7 +88,7 @@ export function xhrGet(url, contentType = 'application/json; charset=utf-8', isJ
  * @param data
  * @returns {Promise}
  */
-export function xhrDelete(url, data, contentType = 'application/json; charset=utf-8') {
+export function xhrDelete(url: any, data: any, contentType = 'application/json; charset=utf-8') {
   return new Promise((resolve, reject) => {
     fetch(url, {
       method: 'DELETE',
@@ -110,11 +110,11 @@ export function xhrDelete(url, data, contentType = 'application/json; charset=ut
       });
   });
 }
-function parseJSON(response) {
+function parseJSON(response: any) {
   return new Promise((resolve, reject) =>
     response
       .text()
-      .then((text) => {
+      .then((text: any) => {
         //some responses doesn't contain a body. .json() would throw errors here...
         const json = text != null && text.length > 0 ? JSON.parse(text) : {};
         if (response.ok) {
@@ -129,6 +129,7 @@ function parseJSON(response) {
           });
         }
       })
-      .catch((error) => reject('Error while trying to parse json.', error))
+      // @ts-expect-error TS(2554): Expected 0-1 arguments, but got 2.
+      .catch((error: any) => reject('Error while trying to parse json.', error))
   );
 }

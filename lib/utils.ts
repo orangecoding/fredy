@@ -8,7 +8,7 @@ function inDevMode(){
     return process.env.NODE_ENV == null || process.env.NODE_ENV !== 'production';
 }
 
-function isOneOf(word, arr) {
+function isOneOf(word: any, arr: any) {
     if (arr == null || arr.length === 0) {
         return false;
     }
@@ -17,11 +17,11 @@ function isOneOf(word, arr) {
     return blacklist.test(word);
 }
 
-function nullOrEmpty(val) {
+function nullOrEmpty(val: any) {
     return val == null || val.length === 0;
 }
 
-function timeStringToMs(timeString, now) {
+function timeStringToMs(timeString: any, now: any) {
     const d = new Date(now);
     const parts = timeString.split(':');
     d.setHours(parts[0]);
@@ -30,7 +30,7 @@ function timeStringToMs(timeString, now) {
     return d.getTime();
 }
 
-function duringWorkingHoursOrNotSet(config, now) {
+function duringWorkingHoursOrNotSet(config: any, now: any) {
     const {workingHours} = config;
     if (workingHours == null || nullOrEmpty(workingHours.from) || nullOrEmpty(workingHours.to)) {
         return true;
@@ -41,10 +41,11 @@ function duringWorkingHoursOrNotSet(config, now) {
 }
 
 function getDirName() {
+    // @ts-expect-error TS(1343): The 'import.meta' meta-property is only allowed wh... Remove this comment to see the full error message
     return dirname(fileURLToPath(import.meta.url));
 }
 
-function buildHash(...inputs) {
+function buildHash(...inputs: any[]) {
     if (inputs == null) {
         return null;
     }
@@ -59,6 +60,7 @@ function buildHash(...inputs) {
 
 let config = {};
 export async function readConfigFromStorage(){
+    // @ts-expect-error TS(2345): Argument of type 'Buffer' is not assignable to par... Remove this comment to see the full error message
     return JSON.parse(await readFile(new URL('../conf/config.json', import.meta.url)));
 }
 
@@ -66,13 +68,16 @@ export async function refreshConfig(){
     try {
         config = await readConfigFromStorage();
         //backwards compatability...
+        // @ts-expect-error TS(2339): Property 'analyticsEnabled' does not exist on type... Remove this comment to see the full error message
         config.analyticsEnabled ??= null;
+        // @ts-expect-error TS(2339): Property 'demoMode' does not exist on type '{}'.
         config.demoMode ??= false;
     } catch (error) {
         config = {...DEFAULT_CONFIG};
         console.error('Error reading config file', error);
     }
 }
+// @ts-expect-error TS(1378): Top-level 'await' expressions are only allowed whe... Remove this comment to see the full error message
 await refreshConfig();
 
 export {isOneOf};

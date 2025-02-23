@@ -4,7 +4,7 @@ import { debug, DEFAULT_HEADER, botDetected } from './utils.js';
 
 puppeteer.use(StealthPlugin());
 
-export default async function execute(url, waitForSelector, options) {
+export default async function execute(url: any, waitForSelector: any, options: any) {
   let browser;
   try {
     debug(`Sending request to ${url} using Puppeteer.`);
@@ -30,6 +30,7 @@ export default async function execute(url, waitForSelector, options) {
       pageSource = await page.content();
     }
 
+    // @ts-expect-error TS(2531): Object is possibly 'null'.
     const statusCode = response.status();
 
     if (botDetected(pageSource, statusCode)) {

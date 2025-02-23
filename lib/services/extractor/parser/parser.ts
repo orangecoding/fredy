@@ -1,12 +1,12 @@
 import * as cheerio from 'cheerio';
 
-let $ = null;
+let $: any = null;
 
-export function loadParser(text) {
+export function loadParser(text: any) {
   $ = cheerio.load(text);
 }
 
-export function parse(crawlContainer, crawlFields, text, url) {
+export function parse(crawlContainer: any, crawlFields: any, text: any, url: any) {
   if (!text) {
     console.warn('Cannot parse, text was empty for url ', url);
     return null;
@@ -17,14 +17,14 @@ export function parse(crawlContainer, crawlFields, text, url) {
     return null;
   }
 
-  const result = [];
+  const result: any = [];
 
   if ($(crawlContainer).length === 0) {
     console.warn('No elements in crawl container found for url ', url);
     return null;
   }
 
-  $(crawlContainer).each((_, element) => {
+  $(crawlContainer).each((_: any, element: any) => {
     const container = $(element);
     const parsedObject = {};
 
@@ -33,7 +33,9 @@ export function parse(crawlContainer, crawlFields, text, url) {
       let value;
 
       try {
+        // @ts-expect-error TS(2571): Object is of type 'unknown'.
         const selector = fieldSelector.includes('|')
+          // @ts-expect-error TS(2571): Object is of type 'unknown'.
           ? fieldSelector.substring(0, fieldSelector.indexOf('|')).trim()
           : fieldSelector;
 
@@ -49,20 +51,25 @@ export function parse(crawlContainer, crawlFields, text, url) {
         }
 
         // Apply modifiers if specified
+        // @ts-expect-error TS(2571): Object is of type 'unknown'.
         if (fieldSelector.includes('|')) {
           /* eslint-disable no-unused-vars */
-          const [_, ...modifiers] = fieldSelector.split('|').map((s) => s.trim());
+          // @ts-expect-error TS(2571): Object is of type 'unknown'.
+          const [_, ...modifiers] = fieldSelector.split('|').map((s: any) => s.trim());
           /* eslint-disable no-unused-vars */
           value = applyModifiers(value, modifiers);
         }
 
+        // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
         parsedObject[key] = value || null;
       } catch (error) {
         console.error(`Error parsing field '${key}' with selector '${fieldSelector}':`, error);
+        // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
         parsedObject[key] = null;
       }
     }
 
+    // @ts-expect-error TS(2339): Property 'id' does not exist on type '{}'.
     if (parsedObject.id != null) {
       result.push(parsedObject);
     } else {
@@ -74,10 +81,10 @@ export function parse(crawlContainer, crawlFields, text, url) {
 }
 
 // Helper function to apply modifiers
-function applyModifiers(value, modifiers) {
+function applyModifiers(value: any, modifiers: any) {
   if (!value) return value;
 
-  modifiers.forEach((modifier) => {
+  modifiers.forEach((modifier: any) => {
     switch (modifier) {
       case 'int':
         value = parseInt(value, 10);

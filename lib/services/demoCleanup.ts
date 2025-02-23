@@ -23,6 +23,7 @@ export function cleanupDemoAtMidnight() {
 }
 
 function cleanup(){
+    // @ts-expect-error TS(2339): Property 'demoMode' does not exist on type '{}'.
     if(config.demoMode){
         removeJobsByUserName('demo');
     }

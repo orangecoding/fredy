@@ -1,5 +1,5 @@
 import utils, { buildHash } from '../utils.js';
-let appliedBlackList = [];
+let appliedBlackList: any = [];
 
 /**
  * Note, Immonet is rly a piece of sh*t. It is using a weird combination of React and some buttons (instead of links),
@@ -8,7 +8,7 @@ let appliedBlackList = [];
  * This is not only bad for us, but also bad for ppl with disabilities...
  */
 
-function normalize(o) {
+function normalize(o: any) {
   const size = o.size != null ? o.size.replace('Wohnfläche ', '') : 'N/A m²';
   const price = o.price.replace('Kaufpreis ', '');
   const address = o.address.split(' • ')[o.address.split(' • ').length - 1];
@@ -17,7 +17,7 @@ function normalize(o) {
   const id = buildHash(title, price);
   return Object.assign(o, { id, address, price, size, title, link });
 }
-function applyBlacklist(o) {
+function applyBlacklist(o: any) {
   const titleNotBlacklisted = !utils.isOneOf(o.title, appliedBlackList);
   const descNotBlacklisted = !utils.isOneOf(o.description, appliedBlackList);
   return titleNotBlacklisted && descNotBlacklisted;
@@ -37,7 +37,8 @@ const config = {
   normalize: normalize,
   filter: applyBlacklist,
 };
-export const init = (sourceConfig, blacklist) => {
+export const init = (sourceConfig: any, blacklist: any) => {
+  // @ts-expect-error TS(2339): Property 'enabled' does not exist on type '{ url: ... Remove this comment to see the full error message
   config.enabled = sourceConfig.enabled;
   config.url = sourceConfig.url;
   appliedBlackList = blacklist || [];

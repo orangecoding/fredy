@@ -7,17 +7,21 @@ import { loginRouter } from './routes/loginRoute.js';
 import { config } from '../utils.js';
 import { userRouter } from './routes/userRoute.js';
 import { jobRouter } from './routes/jobRouter.js';
+// @ts-expect-error TS(7016): Could not find a declaration file for module 'body... Remove this comment to see the full error message
 import bodyParser from 'body-parser';
 import restana from 'restana';
+// @ts-expect-error TS(7016): Could not find a declaration file for module 'serv... Remove this comment to see the full error message
 import files from 'serve-static';
 import path from 'path';
 import { getDirName } from '../utils.js';
 import {demoRouter} from './routes/demoRouter.js';
 const service = restana();
 const staticService = files(path.join(getDirName(), '../ui/public'));
+// @ts-expect-error TS(2339): Property 'port' does not exist on type '{}'.
 const PORT = config.port || 9998;
 
 service.use(bodyParser.json());
+// @ts-expect-error TS(2554): Expected 1 arguments, but got 0.
 service.use(cookieSession());
 service.use(staticService);
 service.use('/api/admin', authInterceptor());

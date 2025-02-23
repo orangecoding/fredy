@@ -12,17 +12,25 @@ const db = new LowdashAdapter(adapter, { jobs: [] });
 db.read();
 
 
-export const upsertJob = ({ jobId, name, blacklist = [], enabled = true, provider, notificationAdapter, userId }) => {
+export const upsertJob = ({
+  jobId,
+  name,
+  blacklist = [],
+  enabled = true,
+  provider,
+  notificationAdapter,
+  userId
+}: any) => {
   const currentJob =
     jobId == null
       ? null
       : db.chain
           .get('jobs')
-          .find((job) => job.id === jobId)
+          .find((job: any) => job.id === jobId)
           .value();
   const jobs = db.chain
     .get('jobs')
-    .filter((job) => job.id !== jobId)
+    .filter((job: any) => job.id !== jobId)
     .value();
   jobs.push({
     id: jobId || nanoid(),
@@ -37,63 +45,67 @@ export const upsertJob = ({ jobId, name, blacklist = [], enabled = true, provide
   db.chain.set('jobs', jobs).value();
   db.write();
 };
-export const getJob = (jobId) => {
+export const getJob = (jobId: any) => {
   const job = db.chain
     .get('jobs')
-    .find((job) => job.id === jobId)
+    .find((job: any) => job.id === jobId)
     .value();
   if (job == null) {
     return null;
   }
   return {
     ...job,
+    // @ts-expect-error TS(2339): Property 'length' does not exist on type 'number'.
     numberOfFoundListings: listingStorage.getNumberOfAllKnownListings(job.id).length,
   };
 };
-export const setJobStatus = ({ jobId, status }) => {
+export const setJobStatus = ({
+  jobId,
+  status
+}: any) => {
   db.chain
     .get('jobs')
-    .find((job) => job.id === jobId)
+    .find((job: any) => job.id === jobId)
     .assign({ enabled: status })
     .value();
   db.write();
 };
-export const removeJob = (jobId) => {
+export const removeJob = (jobId: any) => {
   listingStorage.removeListings(jobId);
   db.chain
     .get('jobs')
-    .remove((job) => job.id === jobId)
+    .remove((job: any) => job.id === jobId)
     .value();
   db.write();
 };
-export const removeJobsByUserId = (userId) => {
+export const removeJobsByUserId = (userId: any) => {
   db.chain
     .get('jobs')
-    .filter((job) => job.userId === userId)
-    .forEach((job) => listingStorage.removeListings(job.id));
+    .filter((job: any) => job.userId === userId)
+    .forEach((job: any) => listingStorage.removeListings(job.id));
   db.chain
     .get('jobs')
-    .remove((job) => job.userId === userId)
+    .remove((job: any) => job.userId === userId)
     .value();
   db.write();
 };
-export const removeJobsByUserName = (userName) => {
+export const removeJobsByUserName = (userName: any) => {
   db.chain
       .get('jobs')
-      .filter((job) => job.username === userName)
-      .forEach((job) => listingStorage.removeListings(job.id));
+      .filter((job: any) => job.username === userName)
+      .forEach((job: any) => listingStorage.removeListings(job.id));
   db.chain
       .get('jobs')
-      .remove((job) => job.username === userName)
+      .remove((job: any) => job.username === userName)
       .value();
   db.write();
 };
 export const getJobs = () => {
   return db.chain
     .get('jobs')
-    .map((job) => ({
-      ...job,
-      numberOfFoundListings: listingStorage.getNumberOfAllKnownListings(job.id),
-    }))
+    .map((job: any) => ({
+    ...job,
+    numberOfFoundListings: listingStorage.getNumberOfAllKnownListings(job.id)
+  }))
     .value();
 };

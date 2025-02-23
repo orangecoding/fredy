@@ -1,4 +1,9 @@
-export function transform({ name, id, enabled, url }) {
+export function transform({
+  name,
+  id,
+  enabled,
+  url
+}: any) {
   return {
     name,
     id,
