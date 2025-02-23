@@ -1,6 +1,6 @@
 {
   "name": "fredy",
-  "version": "11.0.2",
+  "version": "11.0.3",
   "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
   "scripts": {
     "start": "node prod.js",
@@ -50,12 +50,12 @@
     "Firefox ESR"
   ],
   "dependencies": {
-    "@douyinfe/semi-ui": "2.72.3",
+    "@douyinfe/semi-ui": "2.75.0",
     "@rematch/core": "2.2.0",
     "@rematch/loading": "2.1.2",
     "@sendgrid/mail": "8.1.4",
     "@vitejs/plugin-react": "4.3.4",
-    "better-sqlite3": "^11.7.2",
+    "better-sqlite3": "^11.8.1",
     "body-parser": "1.20.3",
     "cheerio": "^1.0.0",
     "cookie-session": "2.1.0",
@@ -66,11 +66,11 @@
     "lowdb": "6.0.1",
     "markdown": "^0.5.0",
     "mixpanel": "^0.18.0",
-    "nanoid": "5.0.9",
+    "nanoid": "5.1.2",
     "node-fetch": "3.3.2",
     "node-mailjet": "6.0.6",
     "package-up": "^5.0.0",
-    "puppeteer": "^23.11.1",
+    "puppeteer": "^24.2.1",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
     "query-string": "9.1.1",
@@ -88,21 +88,21 @@
     "vite": "5.4.11"
   },
   "devDependencies": {
-    "@babel/core": "7.26.0",
-    "@babel/eslint-parser": "7.25.9",
-    "@babel/preset-env": "7.26.0",
+    "@babel/core": "7.26.9",
+    "@babel/eslint-parser": "7.26.8",
+    "@babel/preset-env": "7.26.9",
     "@babel/preset-react": "7.26.3",
-    "chai": "5.1.2",
+    "chai": "5.2.0",
     "eslint": "8.56.0",
     "eslint-config-prettier": "8.8.0",
-    "eslint-plugin-react": "7.37.3",
-    "esmock": "2.6.9",
+    "eslint-plugin-react": "7.37.4",
+    "esmock": "2.7.0",
     "history": "5.3.0",
     "husky": "9.1.7",
-    "less": "4.2.1",
-    "lint-staged": "15.3.0",
+    "less": "4.2.2",
+    "lint-staged": "15.4.3",
     "mocha": "10.8.2",
-    "prettier": "3.4.2",
+    "prettier": "3.5.2",
     "redux-logger": "3.0.6"
   }
 }
