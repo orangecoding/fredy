@@ -101,10 +101,7 @@ export default function ProviderMutator({ onVisibilityChanged, visible = false, 
         description={
           <div>
             <p>
-              Immoscout will not work at the moment due to advanced bot detection. I'm currently working on a fix.
-            </p>
-            <p>
-              Until a fix has been released, Immoscout won't yield any results.
+              Currently, Immoscout only works for real estate rentals. Purchases are not yet supported.
             </p>
           </div>
         }

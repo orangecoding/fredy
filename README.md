@@ -82,7 +82,7 @@ yarn run test
 ![Architecture](/doc/architecture.jpg "Architecture")
 
 ### Immoscout
-Immoscout has implemented advanced bot detection. I’m actively working on bypassing these measures, but until then, selecting Immoscout as a provider will not return any results. I apologize for the inconvenience. 😉
+Immoscout has implemented advanced bot detection. In order to work around this, we are using a reversed engineered version of their mobile api. For now, only real estate rentals are supported. Purchases will be supported at a later point in time.
 
 # Analytics
 Fredy is completely free (and will always remain free). However, it would be a huge help if you’d allow me to collect some analytical data. 
