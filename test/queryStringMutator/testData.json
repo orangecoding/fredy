@@ -21,11 +21,6 @@
     "id": "immonet"
   },
   {
-    "url": "https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/duesseldorf/wohnung-mieten",
-    "shouldBecome": "https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/duesseldorf/wohnung-mieten?sorting=2",
-    "id": "immoscout"
-  },
-  {
     "url": "https://www.neubaukompass.de/neubau-immobilien/berlin-region/",
     "shouldBecome": "https://www.neubaukompass.de/neubau-immobilien/berlin-region/?Sortierung=Id&Richtung=DESC",
     "id": "neubauKompass"
