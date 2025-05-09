@@ -52,10 +52,10 @@ describe('#immoscout-mobile URL conversion', () => {
   });
 
   // Test URL conversion with unsupported query parameters
-  it('should throw an error for unsupported query parameters', () => {
+  it('should remove unsupported query parameters', () => {
     const webUrl = 'https://www.immobilienscout24.de/Suche/de/berlin/berlin/wohnung-mieten?minimuminternetspeed=100000';
-
-    expect(() => convertWebToMobile(webUrl)).to.throw('Unsupported Web-API parameter: "minimuminternetspeed"');
+    const converted = convertWebToMobile(webUrl);
+    expect(converted).that.does.not.include('minimuminternetspeed');
   });
 
   // Test URL conversion with invalid URL
@@ -68,7 +68,6 @@ describe('#immoscout-mobile URL conversion', () => {
   // Test URL conversion with unexpected path format
   it('should throw an error for unexpected path format', () => {
     const webUrl = 'https://www.immobilienscout24.de/invalid/path/format';
-
     expect(() => convertWebToMobile(webUrl)).to.throw('Unexpected path format: /invalid/path/format');
   });
 });
