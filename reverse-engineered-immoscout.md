@@ -66,7 +66,7 @@ curl -X POST 'https://api.mobile.immobilienscout24.de/search/list?pricetype=calc
 ```
 
 ---
-#### Get details of listing
+#### Get details of listings
 `GET /expose/{id}`
 The response contains additional details not included in the listing response.
 ```
@@ -74,3 +74,7 @@ curl -H "User-Agent: ImmoScout24_1410_30_._" \
      -H "Accept: application/json" \
      "https://api.mobile.immobilienscout24.de/expose/158382494"
 ```
+
+
+## Parameters 
+The parameters between web and mobile are very different which is why we have to translate them. Please see `immoscout-web-translator.js`.
