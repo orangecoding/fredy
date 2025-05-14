@@ -39,7 +39,9 @@ Challenges:
 `GET /search/total?{search parameters}`    
 *Returns the total number of listings for the given query.*
 ```
-curl -H "User-Agent: ImmoScout24_1410_30_._" https://api.mobile.immobilienscout24.de/search/total?searchType=region&realestatetype=apartmentrent&pricetype=calculatedtotalrent&geocodes=%2Fde%2Fberlin%2Fberlin
+curl -H "User-Agent: ImmoScout24_1410_30_._" \
+     -H "Accept: application/json" \
+     "https://api.mobile.immobilienscout24.de/search/total?searchType=region&realestatetype=apartmentrent&pricetype=calculatedtotalrent&geocodes=%2Fde%2Fberlin%2Fberlin"
 ```
 
 ---
@@ -54,7 +56,13 @@ curl -H "User-Agent: ImmoScout24_1410_30_._" https://api.mobile.immobilienscout2
   }
   ```
 ```
-curl -X POST 'https://api.mobile.immobilienscout24.de/search/list?pricetype=calculatedtotalrent&realestatetype=apartmentrent&searchType=region&geocodes=%2Fde%2Fberlin%2Fberlin&pagenumber=1' -H "Connection: keep-alive" -H "User-Agent: ImmoScout24_1410_30_._" -H "Accept: application/json" -H "Content-Type: application/json" -d '{"supportedResultListType": [], "userData": {}}'
+curl -X POST 'https://api.mobile.immobilienscout24.de/search/list?pricetype=calculatedtotalrent&realestatetype=apartmentrent&searchType=region&geocodes=%2Fde%2Fberlin%2Fberlin&pagenumber=1' \
+  -H "Connection: keep-alive" \
+  -H "User-Agent: ImmoScout24_1410_30_._" \
+  -H "Accept: application/json" \
+  -H "Content-Type: application/json" \
+  -d '{"supportedResultListType":[],"userData":{}}'
+
 ```
 
 ---
@@ -62,5 +70,7 @@ curl -X POST 'https://api.mobile.immobilienscout24.de/search/list?pricetype=calc
 `GET /expose/{id}`
 The response contains additional details not included in the listing response.
 ```
-curl -H "User-Agent: ImmoScout24_1410_30_._" "https://api.mobile.immobilienscout24.de/expose/158382494"
+curl -H "User-Agent: ImmoScout24_1410_30_._" \
+     -H "Accept: application/json" \
+     "https://api.mobile.immobilienscout24.de/expose/158382494"
 ```
