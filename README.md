@@ -1,12 +1,14 @@
 <img src="https://github.com/orangecoding/fredy/blob/master/doc/logo.png" width="400">  
 
-![Build Status](https://github.com/orangecoding/fredy/actions/workflows/test.yml/badge.svg)
+![Build Status](https://github.com/orangecoding/fredy/actions/workflows/test.yml/badge.svg)  [![Create and publish Docker image](https://github.com/orangecoding/fredy/actions/workflows/docker.yml/badge.svg)](https://github.com/orangecoding/fredy/actions/workflows/docker.yml)
 
 Searching an apartment in Germany can be a frustrating task. Not any longer though, as _Fredy_ will take over and will only notify you once new listings have been found that match your requirements.
 
 _Fredy_ scrapes multiple services (Immonet, Immowelt etc.) and send new listings to you once they become available. The list of available services can easily be extended. For your convenience, _Fredy_ has a UI to help you configure your search jobs.   
 
 If _Fredy_ finds matching results, it will send them to you via Slack, Email, Telegram etc. (More adapters can be configured.) As _Fredy_ stores the listings it has found, new results will not be sent to you twice (and as a side-effect, _Fredy_ can show some statistics). Furthermore, _Fredy_ checks duplicates per scraping so that the same listings are not being sent twice or more when posted on various platforms (which happens more often than one might think).
+
+<a href="https://www.producthunt.com/posts/fredy-find-real-estates-damn-easy?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-fredy&#0045;find&#0045;real&#0045;estates&#0045;damn&#0045;easy" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=965690&theme=light&t=1747292331626" alt="Fredy&#0032;&#0045;&#0032;Find&#0032;Real&#0032;Estates&#0032;Damn&#0032;EasY&#0032; - Your&#0032;personal&#0032;real&#0032;estate&#0032;search&#0032;bot | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
 
 # Sponsorship [![](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/orangecoding)    
 If you like my work, consider becoming a sponsor. I'm not expecting anybody to pay for _Fredy_ or any other Open Source Project I'm maintaining, however keep in mind, I'm doing all of this in my spare time :) Thanks.
