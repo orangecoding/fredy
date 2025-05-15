@@ -55,17 +55,12 @@ jobs:
               --label ${{ steps.meta.outputs.labels }} \
               --cache-from=type=gha \
               --cache-to=type=gha,mode=max \
-              .
-            status=$?
-            if [ $status -eq 0 ]; then
-              echo "Docker build succeeded on attempt $i"
-              break
-            else
-              echo "Docker build failed (attempt $i). Retrying in 10 seconds..."
-              sleep 10
-            fi
+              . && break || echo "Build failed (attempt $i)"
             if [ $i -eq 3 ]; then
               echo "Docker build failed after 3 attempts. Exiting with error."
               exit 1
+            else
+              echo "Retrying in 10 seconds..."
+              sleep 10
             fi
           done
