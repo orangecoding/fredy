@@ -19,11 +19,8 @@ jobs:
           node-version: 22
           cache: 'pnpm'
 
-      - name: Enable pnpm via Corepack
-        run: corepack enable
-
-      - name: Set pnpm version
-        run: corepack prepare pnpm@latest --activate
+      - name: Install pnpm
+        run: npm install -g pnpm
 
       - name: Install dependencies
         run: pnpm install
