@@ -1,41 +1,49 @@
-FROM node:22 AS builder
+FROM node:22
 
+# Install chromium dependencies in a separate layer (cacheable)
+RUN apt-get update && apt-get install -y chromium && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
 WORKDIR /fredy
 
-RUN corepack enable \
- && corepack prepare pnpm@latest --activate
+# Copy only package.json + yarn.lock for dependency caching
+COPY package.json yarn.lock ./
+COPY . /fredy
 
-COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
+RUN apt-get update && apt-get install -y chromium
 
-COPY . .
-RUN pnpm run prod
-
-FROM node:22-slim
-
-WORKDIR /fredy
-
-RUN apt-get update \
- && apt-get install -y chromium \
- && rm -rf /var/lib/apt/lists/*
-
-RUN corepack enable \
- && corepack prepare pnpm@latest --activate \
- && pnpm add -g pm2
-
-COPY --from=builder /fredy/node_modules ./node_modules
-COPY --from=builder /fredy/dist ./dist
-COPY --from=builder /fredy/package.json ./
-
+# Increase network timeout for npm registry
+RUN yarn config set network-timeout 600000 && yarn install
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
-    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
+  PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
-RUN mkdir -p /db /conf \
- && chown 1000:1000 /db /conf \
- && chmod 777 /db /conf \
- && ln -s /db /fredy/db \
- && ln -s /conf /fredy/conf
+# Global tools (cached separately)
+# Timeout fix für yarn hinzugefügt
+RUN yarn config set network-timeout 600000
 
+RUN yarn install
+
+RUN yarn global add pm2
+
+# Copy application source code (after deps, cache friendly)
+COPY . .
+
+# Build step (assuming 'prod' is a build script)
+RUN yarn run prod
+
+# Prepare runtime dirs
+RUN mkdir /db /conf && \
+    chown 1000:1000 /db /conf && \
+    chmod 777 -R /db/ && \
+    ln -s /db /fredy/db && ln -s /conf /fredy/conf
+  chown 1000:1000 /db /conf && \
+  chmod 777 -R /db/ && \
+  ln -s /db /fredy/db && ln -s /conf /fredy/conf
+
+# Expose port & set runtime command
 EXPOSE 9998
+CMD ["pm2-runtime", "index.js"]
 
-CMD ["pm2-runtime", "dist/index.js"]
+CMD pm2-runtime index.js
+
