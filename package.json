@@ -1,6 +1,6 @@
 {
   "name": "fredy",
-  "version": "11.3.0",
+  "version": "12.0.0",
   "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
   "packageManager": "pnpm@9.1.0",
   "scripts": {
@@ -41,7 +41,7 @@
   },
   "license": "MIT",
   "engines": {
-    "node": ">=20.0.0",
+    "node": ">=22.0.0",
     "pnpm": ">=9.0.0"
   },
   "browserslist": [
