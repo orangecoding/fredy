@@ -25,7 +25,7 @@ If you want to try out _Fredy_, you can access the demo version [here](https://f
 - Make sure to use Node.js 22 or above
 - Run the following commands:
 ```ssh
-corepack enable
+npm install -g pnpm //if you have not yet installed pnpm
 pnpm i
 pnpm prod
 pnpm start
