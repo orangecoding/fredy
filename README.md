@@ -25,9 +25,10 @@ If you want to try out _Fredy_, you can access the demo version [here](https://f
 - Make sure to use Node.js 20 or above
 - Run the following commands:
 ```ssh
-yarn (or npm install)
-yarn run prod
-yarn run start
+corepack enable (if you use node < 22)
+pnpm i
+pnpm prod
+pnpm start
 ```
 _Fredy_ will start with the default port, set to `9998`. You can access _Fredy_ by opening your browser at `http://localhost:9998`. The default login is `admin`, both for username and password. You should change the password as soon as possible when you plan to run Fredy on a server.
 
@@ -66,18 +67,18 @@ As an administrator, you can create, edit and remove users from _Fredy_. Be care
 To run _Fredy_ in development mode, you need to run the backend & frontend separately.
 Start the backend with:
 ```shell
-yarn run start
+pnpm start
 ```
 For the frontend, run:
 ```shell
-yarn run dev
+pnpm dev
 ```
 You should now be able to access _Fredy_ from your browser. Check your Terminal to see what port the frontend is running on.
 
 ### Running Tests
 To run the tests, run
 ```shell
-yarn run test
+pnpm test
 ```
 
 # Architecture

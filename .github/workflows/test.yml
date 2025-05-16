@@ -17,7 +17,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'yarn'
+          cache: 'pnpm'
 
-      - run: yarn install
-      - run: yarn test
+      - name: Install pnpm
+        run: corepack enable
+
+      - run: pnpm install
+      - run: pnpm test

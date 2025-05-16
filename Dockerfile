@@ -9,14 +9,13 @@ RUN apt-get update && apt-get install -y chromium
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
   PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
-# Timeout fix für yarn hinzugefügt
-RUN yarn config set network-timeout 600000
+RUN corepack enable && pnpm config set network-timeout 600000
 
-RUN yarn install
+RUN pnpm install
 
-RUN yarn global add pm2
+RUN pnpm add -g pm2
 
-RUN yarn run prod
+RUN pnpm run prod
 
 RUN mkdir /db /conf && \
   chown 1000:1000 /db /conf && \

@@ -113,7 +113,7 @@ I'm using Eslint to maintain quote style and quality. Do not skip it...
 
 ##### To do before merging:
 
-- executed tests? (`yarn run test`)
+- executed tests? (`pnpm test`)
 - sure the changes are useful for everybody? Or is it maybe a custom modification just for your case?
 
 _Thanks!_ :heart:
