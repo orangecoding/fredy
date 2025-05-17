@@ -112,6 +112,10 @@ Put your config.json into a path of your choice, such as `/path/to/your/conf/`.
 
 Example: `docker create --name fredy -v /path/to/your/conf/:/conf -p 9998:9998 fredy/fredy`
 
+## Logs  
+
+You can browse the logs with  `docker logs fredy -f`.
+
 ### 👐 Contributing
 Thanks to all the people who already contributed!
 
@@ -121,6 +125,7 @@ Thanks to all the people who already contributed!
 
 See [Contributing](https://github.com/orangecoding/fredy/blob/master/CONTRIBUTING.md)
 
-## Logs  
 
-You can browse the logs with  `docker logs fredy -f`.
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=orangecoding/fredy&type=Date)](https://www.star-history.com/#orangecoding/fredy&Date)
