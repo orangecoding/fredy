@@ -16,6 +16,15 @@ describe('#immoscout-mobile URL conversion', () => {
     expect(actualMobileUrl).to.equal(expectedMobileUrl);
   });
 
+  // Test URL conversion of web-only SEO path
+  it('should convert a SEO web path to the correct query params', () => {
+    const webUrl = 'https://www.immobilienscout24.de/Suche/de/berlin/berlin/wohnung-mit-balkon-mieten?equipment=garden';
+
+    const converted = convertWebToMobile(webUrl);
+    const queryParams = new URL(converted).searchParams;
+    expect(queryParams.get('equipment').split(',')).to.include.members(['garden', 'balcony']);
+  });
+
   // Test URL conversion with unsupported query parameters
   it('should remove unsupported query parameters', () => {
     const webUrl = 'https://www.immobilienscout24.de/Suche/de/berlin/berlin/wohnung-mieten?minimuminternetspeed=100000';
