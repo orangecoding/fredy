@@ -81,11 +81,11 @@
     "react-router-dom": "5.3.0",
     "redux": "5.0.1",
     "redux-thunk": "3.1.0",
-    "restana": "4.9.9",
-    "serve-static": "1.16.2",
+    "restana": "5.0.0",
+    "serve-static": "2.2.0",
     "slack": "11.0.2",
     "string-similarity": "^4.0.4",
-    "vite": "5.4.11"
+    "vite": "6.3.5"
   },
   "devDependencies": {
     "@babel/core": "7.27.3",

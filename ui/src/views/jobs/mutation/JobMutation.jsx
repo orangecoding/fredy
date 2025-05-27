@@ -94,7 +94,7 @@ export default function JobMutator() {
       <form>
         <SegmentPart name="Name">
           <Input
-            autofocus
+            autoFocus
             type="text"
             maxLength={40}
             placeholder="Name"
