@@ -46,7 +46,7 @@ A provider contains the URL that points to the search results for the respective
 **It is important that you order the search results by date, so that _Fredy_ always picks the latest results first!**
 
 #### Adapter
-_Fredy_ supports multiple adapters, such as Slack, SendGrid, Telegram etc. A search job can have as many adapters as supported by _Fredy_. Each adapter needs different configuration values, which you have to provide when using them. A adapter dictactes how the frontend renders by telling the frontend what information it needs in order to send listings to the user.
+_Fredy_ supports multiple adapters, such as Slack, SendGrid, Telegram etc. A search job can have as many adapters as supported by _Fredy_. Each adapter needs different configuration values, which you have to provide when using them. An adapter dictates how the frontend renders by telling the frontend what information it needs in order to send listings to the user.
 
 #### Jobs
 A Job wraps adapters and providers. _Fredy_ runs the configured jobs in a specific interval (can be configured in `/conf/config.json`).
@@ -82,7 +82,7 @@ yarn run test
 ![Architecture](/doc/architecture.jpg "Architecture")
 
 ### Immoscout
-Immoscout has implemented advanced bot detection. In order to work around this, we are using a reversed engineered version of their mobile api. See See [Immoscout Reverse Engineering Documentation](https://github.com/orangecoding/fredy/blob/master/reverse-engineered-immoscout.md)
+Immoscout has implemented advanced bot detection. In order to work around this, we are using a reversed engineered version of their mobile api. See [Immoscout Reverse Engineering Documentation](https://github.com/orangecoding/fredy/blob/master/reverse-engineered-immoscout.md)
 
 # Analytics
 Fredy is completely free (and will always remain free). However, it would be a huge help if you’d allow me to collect some analytical data. 
