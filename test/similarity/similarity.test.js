@@ -34,6 +34,7 @@ describe('similarityCheck', () => {
       check.setCacheEntry(
         'where |X| and |Y| are the cardinalities of the two sets (i.e. the number of elements in each set). The Sørensen index equals twice the number of elements common to both sets divided by the sum of the number of elements in each set.',
       );
+      expect(check.hasSimilarEntries('unrelated text')).to.be.false;
     });
   });
 });
