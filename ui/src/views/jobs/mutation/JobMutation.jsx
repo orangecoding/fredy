@@ -13,6 +13,8 @@ import { Divider, Input, Switch, Button, TagInput, Toast } from '@douyinfe/semi-
 import './JobMutation.less';
 import { SegmentPart } from '../../../components/segment/SegmentPart';
 import { IconPlusCircle } from '@douyinfe/semi-icons';
+import CustomFields from './components/customFields/CustomFields.jsx';
+import CustomFieldsHelpDisplay from './components/customFields/CustomFieldsHelpDisplay.jsx';
 
 export default function JobMutator() {
   const jobs = useSelector((state) => state.jobs.jobs);
@@ -25,6 +27,7 @@ export default function JobMutator() {
   const defaultProviderData = jobToBeEdit?.provider || [];
   const defaultNotificationAdapter = jobToBeEdit?.notificationAdapter || [];
   const defaultEnabled = jobToBeEdit?.enabled ?? true;
+  const defaultCustomFields = jobToBeEdit?.customFields || [];
 
   const [providerCreationVisible, setProviderCreationVisibility] = useState(false);
   const [notificationCreationVisible, setNotificationCreationVisibility] = useState(false);
@@ -34,11 +37,27 @@ export default function JobMutator() {
   const [blacklist, setBlacklist] = useState(defaultBlacklist);
   const [notificationAdapterData, setNotificationAdapterData] = useState(defaultNotificationAdapter);
   const [enabled, setEnabled] = useState(defaultEnabled);
+  const [customFields, setCustomFields] = useState(defaultCustomFields);
   const history = useHistory();
   const dispatch = useDispatch();
 
+  const isCustomFieldsValid = () => {
+    // All fields must be either completely filled or completely empty
+    return customFields.every(field => {
+      const allEmpty = !field.name && !field.questionPrompt && !field.answerLength;
+      const allFilled = field.name && field.questionPrompt && field.answerLength;
+      return allEmpty || allFilled;
+    });
+  };
+
   const isSavingEnabled = () => {
-    return notificationAdapterData.length > 0 && providerData.length > 0 && name != null && name.length > 0;
+    return (
+      notificationAdapterData.length > 0 &&
+      providerData.length > 0 &&
+      name != null &&
+      name.length > 0 &&
+      isCustomFieldsValid()
+    );
   };
 
   const mutateJob = async () => {
@@ -49,6 +68,7 @@ export default function JobMutator() {
         name,
         blacklist,
         enabled,
+        customFields,
         jobId: jobToBeEdit?.id || null,
       });
       await dispatch.jobs.getJobs();
@@ -175,6 +195,15 @@ export default function JobMutator() {
           helpText="Whether or not the job is activated. If it is not activated, it will be ignored when Fredy checks for new listings."
         >
           <Switch className="jobMutation__spaceTop" onChange={(checked) => setEnabled(checked)} checked={enabled} />
+        </SegmentPart>
+        <Divider margin="1rem" />
+        <SegmentPart
+          icon="settings"
+          name="Custom Fields"
+          helpText="Define custom fields to be extracted from the expose using AI. Each field requires a name, a question prompt, and an answer length."
+        >
+          <CustomFieldsHelpDisplay helpText="Custom fields allow you to extract specific information from each expose using AI. For each field, provide a name, a question prompt (what you want to know), and the desired answer length." />
+          <CustomFields value={customFields} onChange={setCustomFields} />
         </SegmentPart>
         <Divider margin="1rem" />
         <Button type="danger" style={{ marginRight: '1rem' }} onClick={() => history.push('/jobs')}>

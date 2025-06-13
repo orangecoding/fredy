@@ -1,0 +1,144 @@
+.customFieldsMutator {
+  &__fields{
+    width:25rem !important;
+  }
+
+  &__helpBox {
+    background-color: #ececec;
+    border-radius: 5px;
+    padding: 1rem !important;
+  }
+
+  &__helpLink{
+    color: #4183c4;
+    cursor: pointer;
+  }
+}
+
+.customFieldsMutator__container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.customFieldsMutator__headerRow,
+.customFieldsMutator__row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.customFieldsMutator__headerCell {
+  font-weight: 600;
+  padding: 0 8px 4px 0;
+  color: #888;
+  display: flex;
+  align-items: center;
+}
+
+.customFieldsMutator__headerCell.customFieldsMutator__input--name {
+  min-width: 80px;
+  max-width: 200px;
+  flex: 0 0 180px;
+  margin-right: 8px;
+}
+.customFieldsMutator__headerCell.customFieldsMutator__input--prompt {
+  min-width: 120px;
+  flex: 1 1 auto;
+  max-width: 100%;
+  margin-right: 12px;
+}
+.customFieldsMutator__headerCell.customFieldsMutator__input--length {
+  min-width: 100px;
+  max-width: 220px;
+  flex: 0 0 180px;
+  margin-right: 8px;
+}
+.customFieldsMutator__headerCell.customFieldsMutator__input--actions {
+  flex: 0 0 60px;
+}
+
+.customFieldsMutator__input--name {
+  min-width: 80px;
+  max-width: 200px;
+  flex: 0 0 180px;
+  margin-right: 8px;
+}
+
+.customFieldsMutator__input--prompt {
+  min-width: 120px;
+  flex: 1 1 auto;
+  max-width: 100%;
+  margin-right: 12px;
+}
+
+.customFieldsMutator__input--length {
+  min-width: 100px;
+  max-width: 220px;
+  flex: 0 0 180px;
+  margin-right: 8px;
+}
+
+.customFieldsMutator__input--actions {
+  flex: 0 0 60px;
+}
+
+.customFieldsMutator__addBtnRow {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+  margin-top: 24px;
+}
+
+.customFieldsMutator__addBtn {
+  margin-left: 8px;
+}
+
+.customFieldsMutator__col--name,
+.customFieldsMutator__input--name {
+  min-width: 60px;
+  max-width: 250px;
+  width: 200px;
+}
+
+.customFieldsMutator__col--prompt,
+.customFieldsMutator__input--prompt {
+  min-width: 300px;
+  max-width: 1000px;
+  width: 800px;
+}
+
+.customFieldsMutator__col--length,
+.customFieldsMutator__input--length {
+  min-width: 100px;
+  max-width: 220px;
+  width: 180px;
+}
+
+.customFieldsMutator__col--actions {
+  width: 60px;
+}
+
+@media (max-width: 900px) {
+  .customFieldsMutator__col--name,
+  .customFieldsMutator__input--name {
+    min-width: 40px;
+    max-width: 80px;
+    width: 60px;
+  }
+  .customFieldsMutator__col--prompt,
+  .customFieldsMutator__input--prompt {
+    min-width: 100px;
+    max-width: 300px;
+    width: 150px;
+  }
+  .customFieldsMutator__col--length,
+  .customFieldsMutator__input--length {
+    min-width: 60px;
+    max-width: 120px;
+    width: 80px;
+  }
+  .customFieldsMutator__col--actions {
+    width: 40px;
+  }
+}
