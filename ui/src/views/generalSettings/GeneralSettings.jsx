@@ -2,13 +2,13 @@ import React from 'react';
 
 import {useDispatch, useSelector} from 'react-redux';
 
-import {Divider, TimePicker, Button, Checkbox} from '@douyinfe/semi-ui';
+import {Divider, TimePicker, Button, Checkbox, Input} from '@douyinfe/semi-ui';
 import {InputNumber} from '@douyinfe/semi-ui';
 import Headline from '../../components/headline/Headline';
 import {xhrPost} from '../../services/xhr';
 import {SegmentPart} from '../../components/segment/SegmentPart';
 import {Banner, Toast} from '@douyinfe/semi-ui';
-import {IconSave, IconCalendar, IconRefresh, IconSignal, IconLineChartStroked, IconSearch} from '@douyinfe/semi-icons';
+import {IconSave, IconCalendar, IconRefresh, IconSignal, IconLineChartStroked, IconSearch, IconKey} from '@douyinfe/semi-icons';
 import './GeneralSettings.less';
 
 function formatFromTimestamp(ts) {
@@ -39,6 +39,8 @@ const GeneralSettings = function GeneralSettings() {
     const [workingHourTo, setWorkingHourTo] = React.useState(null);
     const [demoMode, setDemoMode] = React.useState(null);
     const [analyticsEnabled, setAnalyticsEnabled] = React.useState(null);
+    const [chatgptApiKey, setChatgptApiKey] = React.useState('');
+    const [chatgptEnabled, setChatgptEnabled] = React.useState(false);
 
     React.useEffect(() => {
         async function init() {
@@ -57,6 +59,8 @@ const GeneralSettings = function GeneralSettings() {
             setWorkingHourTo(settings?.workingHours?.to);
             setAnalyticsEnabled(settings?.analyticsEnabled || false);
             setDemoMode(settings?.demoMode || false);
+            setChatgptApiKey(settings?.chatgpt?.apiKey || '');
+            setChatgptEnabled(settings?.chatgpt?.enabled || false);
         }
 
         init();
@@ -97,7 +101,11 @@ const GeneralSettings = function GeneralSettings() {
                     to: workingHourTo,
                 },
                 demoMode,
-                analyticsEnabled
+                analyticsEnabled,
+                chatgpt: {
+                    apiKey: chatgptApiKey,
+                    enabled: chatgptEnabled
+                }
             });
         } catch (exception) {
             console.error(exception);
@@ -245,6 +253,48 @@ const GeneralSettings = function GeneralSettings() {
                             > Enabled
                             </Checkbox>
 
+                        </SegmentPart>
+
+                        <Divider margin="1rem"/>
+                        <SegmentPart
+                            name="ChatGPT Integration"
+                            helpText="Configure ChatGPT API settings for enhanced listing analysis."
+                            Icon={IconKey}
+                        >
+                            <div style={{ marginBottom: '1rem' }}>
+                                <Checkbox
+                                    checked={chatgptEnabled}
+                                    onChange={(e) => setChatgptEnabled(e.target.checked)}
+                                >
+                                    Enable ChatGPT Integration
+                                </Checkbox>
+                            </div>
+                            <Input
+                                type="password"
+                                placeholder="Enter your ChatGPT API key"
+                                value={chatgptApiKey}
+                                onChange={(value) => setChatgptApiKey(value)}
+                                showClear
+                                disabled={!chatgptEnabled}
+                            />
+                            <Banner
+                                fullMode={false}
+                                type="info"
+                                closeIcon={null}
+                                title="About ChatGPT Integration"
+                                style={{marginTop: '1rem'}}
+                                description={
+                                    <div>
+                                        The ChatGPT integration enhances listing analysis by:
+                                        <ul>
+                                            <li>Extracting additional information from listings</li>
+                                            <li>Analyzing listing content for better matching</li>
+                                            <li>Providing more detailed insights about properties</li>
+                                        </ul>
+                                        Your API key is stored securely and never exposed.
+                                    </div>
+                                }
+                            />
                         </SegmentPart>
 
                         <Divider margin="1rem"/>

@@ -50,6 +50,7 @@
     "Firefox ESR"
   ],
   "dependencies": {
+    "@douyinfe/semi-icons": "^2.80.0",
     "@douyinfe/semi-ui": "2.80.0",
     "@rematch/core": "2.2.0",
     "@rematch/loading": "2.1.2",
@@ -69,6 +70,7 @@
     "nanoid": "5.1.5",
     "node-fetch": "3.3.2",
     "node-mailjet": "6.0.8",
+    "openai": "^5.3.0",
     "package-up": "^5.0.0",
     "puppeteer": "^24.10.1",
     "puppeteer-extra": "^3.3.6",
