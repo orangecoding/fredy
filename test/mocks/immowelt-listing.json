@@ -1,0 +1,23 @@
+{
+  "id": "test-immowelt-1",
+  "title": "Große 5-Zimmer-Wohnung in Hellersdorf",
+  "link": "https://www.immowelt.de/expose/123456789",
+  "price": "1.200 €",
+  "size": "120 m²",
+  "address": "Lion-Feuchtwanger-Straße 61, Hellersdorf, Berlin (12619)",
+  "rooms": "5",
+  "floor": "3. OG",
+  "description": "Großzügige 5-Zimmer-Wohnung in ruhiger Lage in Hellersdorf. Die Wohnung verfügt über einen großen Balkon und einen Kellerraum. Die Küche ist bereits eingebaut und die Bäder wurden kürzlich modernisiert.",
+  "features": [
+    "Balkon",
+    "Keller",
+    "Einbauküche",
+    "Bad mit Dusche",
+    "Bad mit Wanne",
+    "Fußbodenheizung"
+  ],
+  "location": "Die Wohnung liegt in einer ruhigen Seitenstraße in Hellersdorf. Einkaufsmöglichkeiten, Schulen und Kindergärten sind fußläufig erreichbar. Die U-Bahn-Station Hellersdorf ist in 5 Minuten zu erreichen.",
+  "energyRating": "C",
+  "additionalCosts": "200 €",
+  "availableFrom": "01.05.2024"
+} 
