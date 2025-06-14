@@ -88,7 +88,7 @@
     "vite": "6.3.5"
   },
   "devDependencies": {
-    "@babel/core": "7.27.4",
+    "@babel/core": "7.27.3",
     "@babel/eslint-parser": "7.27.5",
     "@babel/preset-env": "7.27.2",
     "@babel/preset-react": "7.27.1",
