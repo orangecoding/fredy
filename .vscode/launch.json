@@ -4,11 +4,24 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+
         
         {
             "type": "node",
             "request": "launch",
-            "name": "Mocha Tests",
+            "name": "Mocha Tests ImmoScout",
+            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+            "args": [
+              "test/provider/immoscout.test.js",
+              "--timeout",
+              "999999"
+            ],
+            "internalConsoleOptions": "openOnSessionStart"
+          },
+          {
+            "type": "node",
+            "request": "launch",
+            "name": "Mocha Tests Enhanced Listings",
             "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
             "args": [
               "test/services/enhancedListings.test.js",
