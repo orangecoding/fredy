@@ -1,5 +1,4 @@
 import React, {useEffect} from 'react';
-
 import InsufficientPermission from './components/permission/InsufficientPermission';
 import PermissionAwareRoute from './components/permission/PermissionAwareRoute';
 import GeneralSettings from './views/generalSettings/GeneralSettings';
@@ -7,14 +6,14 @@ import JobMutation from './views/jobs/mutation/JobMutation';
 import UserMutator from './views/user/mutation/UserMutator';
 import JobInsight from './views/jobs/insights/JobInsight.jsx';
 import {useDispatch, useSelector} from 'react-redux';
-import {Switch, Redirect} from 'react-router-dom';
+import {Switch, Route, Redirect, useHistory} from 'react-router-dom';
 import Logout from './components/logout/Logout';
 import Logo from './components/logo/Logo';
 import Menu from './components/menu/Menu';
 import Login from './views/login/Login';
 import Users from './views/user/Users';
 import Jobs from './views/jobs/Jobs';
-import {Route} from 'react-router';
+import Dashboard from './views/dashboard/Dashboard';
 
 import './App.less';
 import TrackingModal from './components/tracking/TrackingModal.jsx';
@@ -25,6 +24,7 @@ export default function FredyApp() {
     const [loading, setLoading] = React.useState(true);
     const currentUser = useSelector((state) => state.user.currentUser);
     const settings = useSelector((state) => state.generalSettings.settings);
+    const history = useHistory();
 
     useEffect(() => {
         async function init() {
@@ -81,6 +81,7 @@ export default function FredyApp() {
                     <Route name="Edit a Job" path={'/jobs/edit/:jobId'} component={JobMutation}/>
                     <Route name="Insights into a Job" path={'/jobs/insights/:jobId'} component={JobInsight}/>
                     <Route name="Job overview" path={'/jobs'} component={Jobs}/>
+                    <Route name="Dashboard" path={'/dashboard'} component={Dashboard}/>
                     <PermissionAwareRoute
                         name="Create new User"
                         path="/users/new"
@@ -101,7 +102,7 @@ export default function FredyApp() {
                         currentUser={currentUser}
                     />
 
-                    <Redirect from="/" to={'/jobs'}/>
+                    <Redirect from="/" to={'/dashboard'}/>
                 </Switch>
             </div>
         </div>

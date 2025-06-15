@@ -1,0 +1,57 @@
+.dashboard {
+  padding: 24px;
+
+  &__selector {
+    margin-bottom: 24px;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+  }
+
+  &__card {
+    height: 100%;
+    transition: transform 0.2s;
+
+    &:hover {
+      transform: translateY(-4px);
+    }
+  }
+
+  &__tags {
+    margin: 12px 0;
+  }
+
+  &__empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+    padding: 24px;
+
+    .semi-banner {
+      max-width: 600px;
+      width: 100%;
+      padding-bottom: 16px;
+      padding-top: 16px;
+
+      .semi-banner-icon {
+        font-size: 32px;
+        margin-right: 32px;
+      }
+
+    }
+
+    &-content {
+      text-align: left;
+    }
+
+    &-actions {
+      display: flex;
+      justify-content: flex-start;
+      margin-top: 24px;
+    }
+  }
+} 
