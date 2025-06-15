@@ -18,6 +18,7 @@ import CustomFieldsHelpDisplay from './components/customFields/CustomFieldsHelpD
 
 export default function JobMutator() {
   const jobs = useSelector((state) => state.jobs.jobs);
+  const defaultCustomFields = useSelector((state) => state.jobs.defaultCustomFields);
   const params = useParams();
 
   const jobToBeEdit = params.jobId == null ? null : jobs.find((job) => job.id === params.jobId);
@@ -27,7 +28,7 @@ export default function JobMutator() {
   const defaultProviderData = jobToBeEdit?.provider || [];
   const defaultNotificationAdapter = jobToBeEdit?.notificationAdapter || [];
   const defaultEnabled = jobToBeEdit?.enabled ?? true;
-  const defaultCustomFields = jobToBeEdit?.customFields || [];
+  const defaultCustomFieldsForJob = jobToBeEdit?.customFields || defaultCustomFields;
 
   const [providerCreationVisible, setProviderCreationVisibility] = useState(false);
   const [notificationCreationVisible, setNotificationCreationVisibility] = useState(false);
@@ -37,7 +38,7 @@ export default function JobMutator() {
   const [blacklist, setBlacklist] = useState(defaultBlacklist);
   const [notificationAdapterData, setNotificationAdapterData] = useState(defaultNotificationAdapter);
   const [enabled, setEnabled] = useState(defaultEnabled);
-  const [customFields, setCustomFields] = useState(defaultCustomFields);
+  const [customFields, setCustomFields] = useState(defaultCustomFieldsForJob);
   const history = useHistory();
   const dispatch = useDispatch();
 

@@ -9,7 +9,7 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Mocha Tests ImmoScout",
+            "name": "Test ImmoScout",
             "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
             "args": [
               "test/provider/immoscout.test.js",
@@ -21,10 +21,34 @@
           {
             "type": "node",
             "request": "launch",
-            "name": "Mocha Tests Enhanced Listings",
+            "name": "Test Enhanced Listings",
             "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
             "args": [
               "test/services/enhancedListings.test.js",
+              "--timeout",
+              "999999"
+            ],
+            "internalConsoleOptions": "openOnSessionStart"
+          },
+          {
+            "type": "node",
+            "request": "launch",
+            "name": "Test EnhList Storage",
+            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+            "args": [
+              "test/services/enhancedListingsStorage.test.js",
+              "--timeout",
+              "999999"
+            ],
+            "internalConsoleOptions": "openOnSessionStart"
+          },
+          {
+            "type": "node",
+            "request": "launch",
+            "name": "Test Prompter",
+            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+            "args": [
+              "test/services/prompts.test.js",
               "--timeout",
               "999999"
             ],

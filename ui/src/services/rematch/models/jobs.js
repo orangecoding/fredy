@@ -4,6 +4,7 @@ export const jobs = {
     jobs: [],
     insights: {},
     processingTimes: {},
+    defaultCustomFields: []
   },
   reducers: {
     setJobs: (state, payload) => {
@@ -27,6 +28,12 @@ export const jobs = {
         },
       };
     },
+    setDefaultCustomFields: (state, payload) => {
+      return {
+        ...state,
+        defaultCustomFields: Object.freeze(payload),
+      };
+    }
   },
   effects: {
     async getJobs() {
@@ -53,5 +60,13 @@ export const jobs = {
         console.error(`Error while trying to get resource for api/jobs/insights. Error:`, Exception);
       }
     },
+    async getDefaultCustomFields() {
+      try {
+        const response = await xhrGet('/api/jobs/defaultCustomFields');
+        this.setDefaultCustomFields(response.json || []);
+      } catch (Exception) {
+        console.error(`Error while trying to get resource for api/jobs/defaultCustomFields. Error:`, Exception);
+      }
+    }
   },
 };

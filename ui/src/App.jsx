@@ -33,6 +33,7 @@ export default function FredyApp() {
                 await dispatch.provider.getProvider();
                 await dispatch.jobs.getJobs();
                 await dispatch.jobs.getProcessingTimes();
+                await dispatch.jobs.getDefaultCustomFields();
                 await dispatch.notificationAdapter.getAdapter();
                 await dispatch.generalSettings.getGeneralSettings();
             }
