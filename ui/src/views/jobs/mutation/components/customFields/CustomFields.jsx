@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Button, Input, Select } from '@douyinfe/semi-ui';
+import { Table, Button, Input, Select, Banner } from '@douyinfe/semi-ui';
 import { IconDelete, IconPlusCircle } from '@douyinfe/semi-icons';
 import './CustomFieldsMutator.less';
 
@@ -81,6 +81,13 @@ export default function CustomFields({ value = [], onChange }) {
 
   return (
     <div className="customFieldsMutator__container">
+      <Banner
+        fullMode={false}
+        type="info"
+        closeIcon={null}
+        title={<div style={{ fontWeight: 600, fontSize: '14px', lineHeight: '20px' }}>Custom Fields Information</div>}
+        description="Define custom fields to be extracted from the expose using AI. Each field requires a name, a question prompt, and an answer length."
+      />
       <div className="customFieldsMutator__addBtnRow">
         <Button
           type="primary"

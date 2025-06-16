@@ -4,7 +4,7 @@ export const jobs = {
     jobs: [],
     insights: {},
     processingTimes: {},
-    defaultCustomFields: []
+    defaultCustomFields: [],
   },
   reducers: {
     setJobs: (state, payload) => {
@@ -33,7 +33,7 @@ export const jobs = {
         ...state,
         defaultCustomFields: Object.freeze(payload),
       };
-    }
+    },
   },
   effects: {
     async getJobs() {
@@ -67,6 +67,6 @@ export const jobs = {
       } catch (Exception) {
         console.error(`Error while trying to get resource for api/jobs/defaultCustomFields. Error:`, Exception);
       }
-    }
+    },
   },
 };

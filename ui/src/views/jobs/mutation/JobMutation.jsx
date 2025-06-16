@@ -14,7 +14,7 @@ import './JobMutation.less';
 import { SegmentPart } from '../../../components/segment/SegmentPart';
 import { IconPlusCircle } from '@douyinfe/semi-icons';
 import CustomFields from './components/customFields/CustomFields.jsx';
-import CustomFieldsHelpDisplay from './components/customFields/CustomFieldsHelpDisplay.jsx';
+import Waypoints from './components/waypoints/Waypoints.jsx';
 
 export default function JobMutator() {
   const jobs = useSelector((state) => state.jobs.jobs);
@@ -29,6 +29,7 @@ export default function JobMutator() {
   const defaultNotificationAdapter = jobToBeEdit?.notificationAdapter || [];
   const defaultEnabled = jobToBeEdit?.enabled ?? true;
   const defaultCustomFieldsForJob = jobToBeEdit?.customFields || defaultCustomFields;
+  const defaultWaypoints = jobToBeEdit?.waypoints || [];
 
   const [providerCreationVisible, setProviderCreationVisibility] = useState(false);
   const [notificationCreationVisible, setNotificationCreationVisibility] = useState(false);
@@ -39,6 +40,7 @@ export default function JobMutator() {
   const [notificationAdapterData, setNotificationAdapterData] = useState(defaultNotificationAdapter);
   const [enabled, setEnabled] = useState(defaultEnabled);
   const [customFields, setCustomFields] = useState(defaultCustomFieldsForJob);
+  const [waypoints, setWaypoints] = useState(defaultWaypoints);
   const history = useHistory();
   const dispatch = useDispatch();
 
@@ -51,13 +53,22 @@ export default function JobMutator() {
     });
   };
 
+  const isWaypointsValid = () => {
+    return waypoints.every(waypoint => {
+      const allEmpty = !waypoint.name && !waypoint.location && !waypoint.transportMode;
+      const allFilled = waypoint.name && waypoint.location && waypoint.transportMode;
+      return allEmpty || allFilled;
+    });
+  };
+
   const isSavingEnabled = () => {
     return (
       notificationAdapterData.length > 0 &&
       providerData.length > 0 &&
       name != null &&
       name.length > 0 &&
-      isCustomFieldsValid()
+      isCustomFieldsValid() &&
+      isWaypointsValid()
     );
   };
 
@@ -70,6 +81,7 @@ export default function JobMutator() {
         blacklist,
         enabled,
         customFields,
+        waypoints,
         jobId: jobToBeEdit?.id || null,
       });
       await dispatch.jobs.getJobs();
@@ -201,10 +213,16 @@ export default function JobMutator() {
         <SegmentPart
           icon="settings"
           name="Custom Fields"
-          helpText="Define custom fields to be extracted from the expose using AI. Each field requires a name, a question prompt, and an answer length."
         >
-          <CustomFieldsHelpDisplay helpText="Custom fields allow you to extract specific information from each expose using AI. For each field, provide a name, a question prompt (what you want to know), and the desired answer length." />
           <CustomFields value={customFields} onChange={setCustomFields} />
+        </SegmentPart>
+        <Divider margin="1rem" />
+        <SegmentPart
+          icon="map marker alternate"
+          name="Waypoints"
+          helpText="Define important locations and how you want to travel to them. Fredy will calculate travel times from each listing to these locations."
+        >
+          <Waypoints value={waypoints} onChange={setWaypoints} />
         </SegmentPart>
         <Divider margin="1rem" />
         <Button type="danger" style={{ marginRight: '1rem' }} onClick={() => history.push('/jobs')}>

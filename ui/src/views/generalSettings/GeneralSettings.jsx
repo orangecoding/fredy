@@ -41,6 +41,7 @@ const GeneralSettings = function GeneralSettings() {
     const [analyticsEnabled, setAnalyticsEnabled] = React.useState(null);
     const [chatgptApiKey, setChatgptApiKey] = React.useState('');
     const [chatgptEnabled, setChatgptEnabled] = React.useState(false);
+    const [googleMapsApiKey, setGoogleMapsApiKey] = React.useState('');
 
     React.useEffect(() => {
         async function init() {
@@ -61,6 +62,7 @@ const GeneralSettings = function GeneralSettings() {
             setDemoMode(settings?.demoMode || false);
             setChatgptApiKey(settings?.chatgpt?.apiKey || '');
             setChatgptEnabled(settings?.chatgpt?.enabled || false);
+            setGoogleMapsApiKey(settings?.googleMaps?.apiKey || '');
         }
 
         init();
@@ -105,6 +107,9 @@ const GeneralSettings = function GeneralSettings() {
                 chatgpt: {
                     apiKey: chatgptApiKey,
                     enabled: chatgptEnabled
+                },
+                googleMaps: {
+                    apiKey: googleMapsApiKey
                 }
             });
         } catch (exception) {
@@ -294,6 +299,21 @@ const GeneralSettings = function GeneralSettings() {
                                         Your API key is stored securely and never exposed.
                                     </div>
                                 }
+                            />
+                        </SegmentPart>
+
+                        <Divider margin="1rem"/>
+                        <SegmentPart
+                            name="Google Maps API"
+                            helpText="API key for Google Maps services, required for waypoint calculations."
+                            Icon={IconKey}
+                        >
+                            <Input
+                                type="password"
+                                placeholder="Enter your Google Maps API key"
+                                value={googleMapsApiKey}
+                                onChange={setGoogleMapsApiKey}
+                                showClear
                             />
                         </SegmentPart>
 
