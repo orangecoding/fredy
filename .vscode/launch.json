@@ -4,20 +4,7 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Test WaypointCalculator",
-            "skipFiles": ["<node_internals>/**"],
-            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
-            "args": [
-                "test/services/calculateWaypoints.test.js",
-                "--timeout",
-                "999999",
-            ],
-            "outFiles": ["${workspaceFolder}/**/*.js"],
-            "console": "integratedTerminal"
-        },
+
         {
             "type": "node",
             "request": "launch",
@@ -28,7 +15,10 @@
               "--timeout",
               "999999"
             ],
-            "internalConsoleOptions": "openOnSessionStart"
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "skipFiles": ["<node_internals>/**"],
+            "outFiles": ["${workspaceFolder}/**/*.js"]
           },
           {
             "type": "node",
@@ -40,7 +30,10 @@
               "--timeout",
               "999999"
             ],
-            "internalConsoleOptions": "openOnSessionStart"
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "skipFiles": ["<node_internals>/**"],
+            "outFiles": ["${workspaceFolder}/**/*.js"]
           },
           {
             "type": "node",
@@ -52,7 +45,10 @@
               "--timeout",
               "999999"
             ],
-            "internalConsoleOptions": "openOnSessionStart"
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "skipFiles": ["<node_internals>/**"],
+            "outFiles": ["${workspaceFolder}/**/*.js"]
           },
           {
             "type": "node",
@@ -64,7 +60,40 @@
               "--timeout",
               "999999"
             ],
-            "internalConsoleOptions": "openOnSessionStart"
-          }
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "skipFiles": ["<node_internals>/**"],
+            "outFiles": ["${workspaceFolder}/**/*.js"]
+          },
+          {
+            "type": "node",
+            "request": "launch",
+            "name": "Test WaypointCalculator",
+            "skipFiles": ["<node_internals>/**"],
+            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+            "args": [
+                "test/services/calculateWaypoints.test.js",
+                "--timeout",
+                "999999"
+            ],
+            "cwd": "${workspaceFolder}",
+            "outFiles": ["${workspaceFolder}/**/*.js"],
+            "console": "integratedTerminal"
+        },
+        {
+          "type": "node",
+          "request": "launch",
+          "name": "Test FredyRuntime",
+          "skipFiles": ["<node_internals>/**"],
+          "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+          "args": [
+              "test/services/fredyRuntime.integration.test.js",
+              "--timeout",
+              "999999"
+          ],
+          "cwd": "${workspaceFolder}",
+          "outFiles": ["${workspaceFolder}/**/*.js"],
+          "console": "integratedTerminal"
+        }
     ]
 }

@@ -214,7 +214,7 @@ export default function JobMutator() {
           icon="settings"
           name="Custom Fields"
         >
-          <CustomFields value={customFields} onChange={setCustomFields} />
+          <CustomFields value={customFields} onChange={setCustomFields} jobToBeEdit={jobToBeEdit} />
         </SegmentPart>
         <Divider margin="1rem" />
         <SegmentPart
@@ -222,7 +222,7 @@ export default function JobMutator() {
           name="Waypoints"
           helpText="Define important locations and how you want to travel to them. Fredy will calculate travel times from each listing to these locations."
         >
-          <Waypoints value={waypoints} onChange={setWaypoints} />
+          <Waypoints value={waypoints} onChange={setWaypoints} jobToBeEdit={jobToBeEdit}/>
         </SegmentPart>
         <Divider margin="1rem" />
         <Button type="danger" style={{ marginRight: '1rem' }} onClick={() => history.push('/jobs')}>

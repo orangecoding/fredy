@@ -1,7 +1,8 @@
 import React from 'react';
-import { Table, Button, Input, Select, Banner } from '@douyinfe/semi-ui';
+import { Table, Button, Input, Select, Banner, Modal } from '@douyinfe/semi-ui';
 import { IconDelete, IconPlusCircle } from '@douyinfe/semi-icons';
 import './Waypoints.less';
+import { nanoid } from 'nanoid';
 
 const TRANSPORT_MODES = [
   { value: 'transit', label: 'Public Transport' },
@@ -10,15 +11,29 @@ const TRANSPORT_MODES = [
   { value: 'bicycling', label: 'Cycling' },
 ];
 
-export default function Waypoints({ value = [], onChange }) {
+export default function Waypoints({ value = [], onChange, jobToBeEdit }) {
   const handleAddWaypoint = () => {
-    const newWaypoints = [...value, { id: Date.now(), name: '', location: '', transportMode: 'transit' }];
+    const newWaypoints = [...value, { id: nanoid(), name: '', location: '', transportMode: 'transit' }];
     onChange(newWaypoints);
   };
 
   const handleRemoveWaypoint = (id) => {
-    const newWaypoints = value.filter((waypoint) => waypoint.id !== id);
-    onChange(newWaypoints);
+    const waypoint = value.find(w => w.id === id);
+    if (jobToBeEdit && typeof id === 'number' && id < Date.now() - 10000) {
+      Modal.confirm({
+        title: 'Delete Waypoint',
+        content: 'Are you sure you want to delete this waypoint? This will remove any associated data in the database.',
+        okText: 'Delete waypoint',
+        cancelText: 'Cancel',
+        onOk: () => {
+          const newWaypoints = value.filter((waypoint) => waypoint.id !== id);
+          onChange(newWaypoints);
+        }
+      });
+    } else {
+      const newWaypoints = value.filter((waypoint) => waypoint.id !== id);
+      onChange(newWaypoints);
+    }
   };
 
   const handleWaypointChange = (id, field, fieldValue) => {

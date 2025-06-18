@@ -1,10 +1,10 @@
 import fs from 'fs';
-import {config} from './lib/utils.js';
+import {config} from './lib/utils/utils.js';
 import * as similarityCache from './lib/services/similarity-check/similarityCache.js';
 import { setLastJobExecution } from './lib/services/storage/listingsStorage.js';
 import * as jobStorage from './lib/services/storage/jobStorage.js';
 import FredyRuntime from './lib/FredyRuntime.js';
-import { duringWorkingHoursOrNotSet } from './lib/utils.js';
+import { duringWorkingHoursOrNotSet } from './lib/utils/utils.js';
 import './lib/api/api.js';
 import {track} from './lib/services/tracking/Tracker.js';
 import {handleDemoUser} from './lib/services/storage/userStorage.js';

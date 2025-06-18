@@ -1,15 +1,31 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Typography, Select, Card, Button, Toast, Empty, Space, Tag, Banner } from '@douyinfe/semi-ui';
+import { Typography, Select, Button, Toast, Empty, Space, Tag, Banner, Table } from '@douyinfe/semi-ui';
 import { IconPlusCircle, IconInfoCircle } from '@douyinfe/semi-icons';
 import { useHistory } from 'react-router-dom';
 import './Dashboard.less';
+
+const flattenListing = (listing, schema) => {
+  // Copy all top-level fields
+  const flat = { ...listing };
+  if (schema?.waypoints && listing.travelTimes) {
+    schema.waypoints.forEach(wp => {
+      const wpId = wp.id;
+      const wpName = wp.name;
+      const travel = listing.travelTimes?.[wpId] || {};
+      flat[`travelTime_${wpId}`] = travel.duration && travel.duration !== 'N/A' ? travel.duration : '';
+      flat[`travelDistance_${wpId}`] = travel.distance && travel.distance !== 'N/A' ? travel.distance : '';
+    });
+  }
+  return flat;
+};
 
 const Dashboard = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const jobs = useSelector((state) => state.jobs.jobs);
   const listings = useSelector((state) => state.dashboard.listings);
+  const schema = useSelector((state) => state.dashboard.schema);
   const [selectedJobId, setSelectedJobId] = React.useState('');
 
   useEffect(() => {
@@ -21,11 +37,40 @@ const Dashboard = () => {
   useEffect(() => {
     if (selectedJobId) {
       dispatch.dashboard.getListings(selectedJobId);
+      dispatch.dashboard.getSchema(selectedJobId);
     }
   }, [selectedJobId, dispatch]);
 
   const handleJobChange = (value) => {
     setSelectedJobId(value);
+  };
+
+  // Preprocess listings to flatten travelTimes
+  const flattenedListings = useMemo(() => {
+    if (!listings || !schema) return [];
+    return listings.map(l => flattenListing(l, schema));
+  }, [listings, schema]);
+
+  const getColumns = () => {
+    if (!schema) return [];
+
+    return schema
+      .filter(col => col.visible !== false) // Optionally filter hidden columns
+      .map(col => ({
+        title: col.display_name,
+        dataIndex: col.id,
+        width: 200,
+        // Optionally add custom renderers for certain types
+        render: (text) => {
+          if (col.type === 'waypoint' && col.id.startsWith('travelTime_')) {
+            return text ? `${text} min` : '-';
+          }
+          if (col.type === 'waypoint' && col.id.startsWith('travelDistance_')) {
+            return text ? `${text} km` : '-';
+          }
+          return text ?? '-';
+        }
+      }));
   };
 
   if (!jobs || jobs.length === 0) {
@@ -84,29 +129,25 @@ const Dashboard = () => {
         </Select>
       </div>
 
-      <div className="dashboard__grid">
-        {listings.map((listing) => (
-          <Card
-            key={listing.url}
-            className="dashboard__card"
-            bodyStyle={{ padding: '12px' }}
-          >
-            <Typography.Title heading={6}>
-              {listing.title}
-            </Typography.Title>
-            <Space wrap className="dashboard__tags">
-              <Tag color="blue">{`${listing.price}€`}</Tag>
-              <Tag>{`${listing.size}m²`}</Tag>
-              <Tag>{`${listing.rooms} rooms`}</Tag>
-            </Space>
-            <Typography.Text type="secondary" paragraph>
-              {listing.description}
-            </Typography.Text>
-            <a href={listing.url} target="_blank" rel="noopener noreferrer">
-              View Original Listing
-            </a>
-          </Card>
-        ))}
+      <div className="dashboard__table">
+        <Table
+          columns={getColumns()}
+          dataSource={flattenedListings}
+          pagination={{
+            pageSize: 10,
+            showTotal: true,
+            showSizeChanger: true,
+          }}
+          scroll={{ x: 'max-content' }}
+          rowKey="url"
+          loading={!listings}
+          empty={
+            <Empty
+              image={<IconInfoCircle size="extra-large" />}
+              description="No enhanced listings found for this job"
+            />
+          }
+        />
       </div>
     </div>
   );

@@ -91,7 +91,8 @@
     "serve-static": "2.2.0",
     "slack": "11.0.2",
     "string-similarity": "^4.0.4",
-    "vite": "6.3.5"
+    "vite": "6.3.5",
+    "winston": "^3.11.0"
   },
   "devDependencies": {
     "@babel/core": "7.27.3",

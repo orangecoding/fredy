@@ -38,7 +38,9 @@ export const jobs = {
   effects: {
     async getJobs() {
       try {
+        console.log('[DEBUG] Fetching jobs from /api/jobs');
         const response = await xhrGet('/api/jobs');
+        console.log('[DEBUG] Response from /api/jobs:', response);
         this.setJobs(response.json);
       } catch (Exception) {
         console.error(`Error while trying to get resource for api/jobs. Error:`, Exception);

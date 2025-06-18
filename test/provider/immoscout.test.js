@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import * as similarityCache from '../../lib/services/similarity-check/similarityCache.js';
-import { mockFredy, providerConfig } from '../utils.js';
+import { mockFredy, providerConfig } from '../../lib/utils/utils.js';
 import { get } from '../mocks/mockNotification.js';
 import * as provider from '../../lib/provider/immoscout.js';
 

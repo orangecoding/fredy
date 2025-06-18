@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { mockFredy } from '../utils.js';
+import { mockFredy } from '../../lib/utils/utils.js';
 import * as providerImmoWelt from '../../lib/provider/immowelt.js';
 import * as providerKleinanzeigen from '../../lib/provider/kleinanzeigen.js';
 import * as providerWGesucht from '../../lib/provider/wgGesucht.js';

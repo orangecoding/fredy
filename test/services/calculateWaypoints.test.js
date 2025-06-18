@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import esmock from 'esmock';
 import * as jobStorage from '../../lib/services/storage/jobStorage.js';
-import { config } from '../../lib/utils.js';
+import { config } from '../../lib/utils/utils.js';
 
 describe('Waypoint Calculation', () => {
   let FredyRuntime;
@@ -38,7 +38,7 @@ describe('Waypoint Calculation', () => {
       '../../lib/services/storage/jobStorage.js': {
         getJob: (jobId) => jobId === 'test-job' ? mockJob : null
       },
-      '../../lib/utils.js': {
+      '../../lib/utils/utils.js': {
         config: mockConfig
       }
     });
@@ -82,7 +82,7 @@ describe('Waypoint Calculation', () => {
         '../../lib/services/storage/jobStorage.js': {
           getJob: (jobId) => jobId === 'test-job' ? mockJob : null
         },
-        '../../lib/utils.js': {
+        '../../lib/utils/utils.js': {
           config: {
             googleMaps: {
               apiKey: 'invalid-key'
@@ -136,7 +136,7 @@ describe('Waypoint Calculation', () => {
         '../../lib/services/storage/jobStorage.js': {
           getJob: (jobId) => jobId === 'test-job' ? jobWithInvalidWaypoint : null
         },
-        '../../lib/utils.js': {
+        '../../lib/utils/utils.js': {
           config: mockConfig
         }
       });
