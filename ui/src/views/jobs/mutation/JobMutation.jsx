@@ -13,9 +13,12 @@ import { Divider, Input, Switch, Button, TagInput, Toast } from '@douyinfe/semi-
 import './JobMutation.less';
 import { SegmentPart } from '../../../components/segment/SegmentPart';
 import { IconPlusCircle } from '@douyinfe/semi-icons';
+import CustomFields from './components/customFields/CustomFields.jsx';
+import Waypoints from './components/waypoints/Waypoints.jsx';
 
 export default function JobMutator() {
   const jobs = useSelector((state) => state.jobs.jobs);
+  const defaultCustomFields = useSelector((state) => state.jobs.defaultCustomFields);
   const params = useParams();
 
   const jobToBeEdit = params.jobId == null ? null : jobs.find((job) => job.id === params.jobId);
@@ -25,6 +28,8 @@ export default function JobMutator() {
   const defaultProviderData = jobToBeEdit?.provider || [];
   const defaultNotificationAdapter = jobToBeEdit?.notificationAdapter || [];
   const defaultEnabled = jobToBeEdit?.enabled ?? true;
+  const defaultCustomFieldsForJob = jobToBeEdit?.customFields || defaultCustomFields;
+  const defaultWaypoints = jobToBeEdit?.waypoints || [];
 
   const [providerCreationVisible, setProviderCreationVisibility] = useState(false);
   const [notificationCreationVisible, setNotificationCreationVisibility] = useState(false);
@@ -34,11 +39,37 @@ export default function JobMutator() {
   const [blacklist, setBlacklist] = useState(defaultBlacklist);
   const [notificationAdapterData, setNotificationAdapterData] = useState(defaultNotificationAdapter);
   const [enabled, setEnabled] = useState(defaultEnabled);
+  const [customFields, setCustomFields] = useState(defaultCustomFieldsForJob);
+  const [waypoints, setWaypoints] = useState(defaultWaypoints);
   const history = useHistory();
   const dispatch = useDispatch();
 
+  const isCustomFieldsValid = () => {
+    // All fields must be either completely filled or completely empty
+    return customFields.every(field => {
+      const allEmpty = !field.name && !field.questionPrompt && !field.answerLength;
+      const allFilled = field.name && field.questionPrompt && field.answerLength;
+      return allEmpty || allFilled;
+    });
+  };
+
+  const isWaypointsValid = () => {
+    return waypoints.every(waypoint => {
+      const allEmpty = !waypoint.name && !waypoint.location && !waypoint.transportMode;
+      const allFilled = waypoint.name && waypoint.location && waypoint.transportMode;
+      return allEmpty || allFilled;
+    });
+  };
+
   const isSavingEnabled = () => {
-    return notificationAdapterData.length > 0 && providerData.length > 0 && name != null && name.length > 0;
+    return (
+      notificationAdapterData.length > 0 &&
+      providerData.length > 0 &&
+      name != null &&
+      name.length > 0 &&
+      isCustomFieldsValid() &&
+      isWaypointsValid()
+    );
   };
 
   const mutateJob = async () => {
@@ -49,6 +80,8 @@ export default function JobMutator() {
         name,
         blacklist,
         enabled,
+        customFields,
+        waypoints,
         jobId: jobToBeEdit?.id || null,
       });
       await dispatch.jobs.getJobs();
@@ -175,6 +208,21 @@ export default function JobMutator() {
           helpText="Whether or not the job is activated. If it is not activated, it will be ignored when Fredy checks for new listings."
         >
           <Switch className="jobMutation__spaceTop" onChange={(checked) => setEnabled(checked)} checked={enabled} />
+        </SegmentPart>
+        <Divider margin="1rem" />
+        <SegmentPart
+          icon="settings"
+          name="Custom Fields"
+        >
+          <CustomFields value={customFields} onChange={setCustomFields} jobToBeEdit={jobToBeEdit} />
+        </SegmentPart>
+        <Divider margin="1rem" />
+        <SegmentPart
+          icon="map marker alternate"
+          name="Waypoints"
+          helpText="Define important locations and how you want to travel to them. Fredy will calculate travel times from each listing to these locations."
+        >
+          <Waypoints value={waypoints} onChange={setWaypoints} jobToBeEdit={jobToBeEdit}/>
         </SegmentPart>
         <Divider margin="1rem" />
         <Button type="danger" style={{ marginRight: '1rem' }} onClick={() => history.push('/jobs')}>

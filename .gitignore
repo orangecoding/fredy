@@ -1,6 +1,42 @@
+# Node modules
 node_modules/
+
+# Dependency files
+package.json
+yarn.lock
+package-lock.json
+
+# Config files
+config.json
+*.config.json
+
+# Build output
+dist/
+build/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Misc
+.env
+.env.*
+
 ui/public/
 db/
 npm-debug.log
-.DS_Store
 .idea
+
+# VS Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# Local History for Visual Studio Code
+.history/

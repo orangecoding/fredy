@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { Tabs, TabPane } from '@douyinfe/semi-ui';
 
 import { useLocation } from 'react-router';
-import { IconUser, IconTerminal, IconSetting } from '@douyinfe/semi-icons';
+import { IconUser, IconTerminal, IconSetting, IconHome } from '@douyinfe/semi-icons';
 
 function parsePathName(name) {
   const split = name.split('/').filter((s) => s.length !== 0);
@@ -15,6 +15,15 @@ const TopMenu = function TopMenu({ isAdmin }) {
   const location = useLocation();
   return (
     <Tabs type="line" activeKey={parsePathName(location.pathname)} onTabClick={(key) => history.push(key)}>
+      <TabPane
+        itemKey="/dashboard"
+        tab={
+          <span>
+            <IconHome />
+            Dashboard
+          </span>
+        }
+      />
       <TabPane
         itemKey="/jobs"
         tab={

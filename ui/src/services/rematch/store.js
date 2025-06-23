@@ -6,6 +6,7 @@ import { createLogger } from 'redux-logger';
 import { jobs } from './models/jobs';
 import { user } from './models/user';
 import { demoMode } from './models/demoMode.js';
+import { dashboard } from './models/dashboard.js';
 import { init } from '@rematch/core';
 const middleware = [];
 if (process.env.NODE_ENV === 'development') {
@@ -21,6 +22,7 @@ const store = init({
     provider,
     jobs,
     user,
+    dashboard,
   },
   plugins: [createLoadingPlugin({})],
   redux: {

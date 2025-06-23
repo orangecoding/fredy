@@ -1,8 +1,8 @@
 import * as similarityCache from '../../lib/services/similarity-check/similarityCache.js';
 import {get} from '../mocks/mockNotification.js';
-import {mockFredy, providerConfig} from '../utils.js';
+import {mockFredy, providerConfig} from '../../lib/utils/utils.js';
 import {expect} from 'chai';
-import * as provider from '../../lib/provider/neubauKompass.js';
+import * as provider from '../../lib/provider/neubaukompass.js';
 
 describe('#neubauKompass testsuite()', () => {
     after(() => {

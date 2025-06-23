@@ -1,0 +1,71 @@
+.waypoints {
+  &__container {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  &__addBtnRow {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 8px;
+    margin-top: 24px;
+  }
+
+  &__addBtn {
+    margin-left: 8px;
+  }
+
+  &__col--name,
+  &__input--name {
+    min-width: 80px;
+    max-width: 200px;
+    width: 180px;
+    margin-right: 8px;
+  }
+
+  &__col--location,
+  &__input--location {
+    min-width: 120px;
+    width: 800px;
+    max-width: 100%;
+    margin-right: 12px;
+  }
+
+  &__col--transport,
+  &__input--transport {
+    min-width: 100px;
+    max-width: 220px;
+    width: 250px;
+    margin-right: 8px;
+  }
+
+  &__col--actions {
+    min-width: 20px;
+    max-width: 100px;
+    width: 60px;
+  }
+
+  @media (max-width: 900px) {
+    &__col--name,
+    &__input--name {
+      min-width: 40px;
+      max-width: 80px;
+      width: 60px;
+    }
+    &__col--location,
+    &__input--location {
+      min-width: 100px;
+      max-width: 300px;
+      width: 150px;
+    }
+    &__col--transport,
+    &__input--transport {
+      min-width: 60px;
+      max-width: 120px;
+      width: 80px;
+    }
+    &__col--actions {
+      width: 40px;
+    }
+  }
+} 

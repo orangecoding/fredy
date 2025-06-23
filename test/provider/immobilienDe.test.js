@@ -1,6 +1,6 @@
 import * as similarityCache from '../../lib/services/similarity-check/similarityCache.js';
 import { get } from '../mocks/mockNotification.js';
-import { providerConfig, mockFredy } from '../utils.js';
+import { providerConfig, mockFredy } from '../../lib/utils/utils.js';
 import { expect } from 'chai';
 import * as provider from '../../lib/provider/immobilienDe.js';
 
