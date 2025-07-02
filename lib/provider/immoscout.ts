@@ -1,50 +1,119 @@
-import utils, { buildHash } from '../utils';
-import { ProviderConfig, ProviderMetaInformation } from '#types/ProviderConfig.js';
-import { Listing } from '#types/Listings';
+/**
+ * ImmoScout provider using the mobile API to retrieve listings.
+ *
+ * The mobile API provides the following endpoints:
+ * - GET /search/total?{search parameters}: Returns the total number of listings for the given query
+ *   Example: `curl -H "User-Agent: ImmoScout24_1410_30_._" https://api.mobile.immobilienscout24.de/search/total?searchType=region&realestatetype=apartmentrent&pricetype=calculatedtotalrent&geocodes=%2Fde%2Fberlin%2Fberlin `
+ *
+ * - POST /search/list?{search parameters}: Actually retrieves the listings. Body is json encoded and contains
+ *   data specifying additional results (advertisements) to return. The format is as follows:
+ *   ```
+ *   {
+ *   "supportedResultListTypes": [],
+ *   "userData": {}
+ *   }
+ *   ```
+ *   It is not necessary to provide data for the specified keys.
+ *
+ *   Example: `curl -X POST 'https://api.mobile.immobilienscout24.de/search/list?pricetype=calculatedtotalrent&realestatetype=apartmentrent&searchType=region&geocodes=%2Fde%2Fberlin%2Fberlin&pagenumber=1' -H "Connection: keep-alive" -H "User-Agent: ImmoScout24_1410_30_._" -H "Accept: application/json" -H "Content-Type: application/json" -d '{"supportedResultListType": [], "userData": {}}'`
+
+ * - GET /expose/{id} - Returns the details of a listing. The response contains additional details not included in the
+ *   listing response.
+ *
+ *   Example: `curl -H "User-Agent: ImmoScout24_1410_30_._" "https://api.mobile.immobilienscout24.de/expose/158382494"`
+ *
+ *
+ * It is necessary to set the correct User Agent (see `getListings`) in the request header.
+ *
+ * Note that the mobile API is not publicly documented. I've reverse-engineered
+ * it by intercepting traffic from an android emulator running the immoscout app.
+ * Moreover, the search parameters differ slightly from the web API. I've mapped them
+ * to the web API parameters by comparing a search request with all parameters set between
+ * the web and mobile API. The mobile API actually seems to be a superset of the web API,
+ * but I have decided not to include new parameters as I wanted to keep the existing UX (i.e.,
+ * users only have to provide a link to an existing search).
+ *
+ */
+
+import utils, { buildHash } from '../utils.js';
+import { convertWebToMobile } from '../services/immoscout/immoscout-web-translater.js';
+import { Listing } from '#types/Listings.js';
+import { ProviderConfig } from '#types/ProviderConfig.js';
+import { ImmoScoutMobileApiResponse } from '#types/Immoscount.js';
 
 let appliedBlackList: string[] = [];
 
-function normalize(o: Listing): Listing {
-  const title: string = (o.title ?? 'N/A').replace('NEU', '');
-  const address: string = (o.address ?? 'N/A').replace(/\(.*\),.*$/, '').trim();
-  o.link = o.link ?? 'NO LINK';
-  const link = `https://www.immobilienscout24.de${o.link.substring(o.link.indexOf('/expose'))}`;
-  const hash = buildHash(o.id, o.price);
-  const id = hash ?? 'NO_ID';
-  return Object.assign(o, { id, title, address, link });
+async function getListings(url: string) {
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'User-Agent': 'ImmoScout24_1410_30_._',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      supportedResultListTypes: [],
+      userData: {},
+    }),
+  });
+  if (!response.ok) {
+    console.error('Error fetching data from ImmoScout Mobile API:', response.statusText);
+    return [];
+  }
+
+  const responseBody = (await response.json()) as ImmoScoutMobileApiResponse;
+  return responseBody.resultListItems
+    .filter((item) => item.type === 'EXPOSE_RESULT')
+    .map((expose) => {
+      const item = expose.item;
+      const [price, size] = item.attributes;
+      return {
+        id: item.id,
+        price: price?.value,
+        size: size?.value,
+        title: item.title,
+        link: `${metaInformation.baseUrl}expose/${item.id}`,
+        address: item.address?.line,
+      };
+    });
 }
 
-function filter(o: Listing) {
+function normalize(o: Listing) {
+  const title = (o.title ?? 'NO TITLE FOUND').replace('NEU', '');
+  const address = (o.address ?? 'NO ADDRESS FOUND').replace(/\(.*\),.*$/, '').trim();
+  const id = buildHash(o.id, o.price);
+  return Object.assign(o, { id, title, address });
+}
+function applyBlacklist(o: Listing) {
   return !utils.isOneOf(o.title, appliedBlackList);
 }
 
 const config: ProviderConfig = {
   url: null,
-  crawlContainer: '#resultListItems li.result-list__listing',
-  sortByDateParam: 'sorting=2',
-  waitForSelector: 'body',
   crawlFields: {
-    id: '.result-list-entry@data-obid | int',
-    price: '.result-list-entry .result-list-entry__criteria .grid-item:first-child dd | removeNewline | trim',
-    size: '.result-list-entry .result-list-entry__criteria .grid-item:nth-child(2) dd | removeNewline | trim',
-    title: '.result-list-entry .result-list-entry__brand-title-container h2 | removeNewline | trim',
-    link: '.result-list-entry .result-list-entry__brand-title-container@href',
-    address: '.result-list-entry .result-list-entry__map-link',
+    id: 'id',
+    title: 'title',
+    price: 'price',
+    size: 'size',
+    link: 'link',
+    address: 'address',
   },
-  normalize,
-  filter,
+  // Not required - used by filter to remove and listings that failed to parse
+  sortByDateParam: 'sorting=-firstactivation',
+  normalize: normalize,
+  filter: applyBlacklist,
+  getListings: getListings,
 };
-
-const init = (sourceConfig: Partial<ProviderConfig>, blacklist: string[]) => {
+export const init = (sourceConfig: Partial<ProviderConfig>, blacklist: string[]) => {
   config.enabled = sourceConfig.enabled ?? false;
-  config.url = sourceConfig.url ?? null;
-  appliedBlackList = blacklist ?? [];
+  if (!sourceConfig.url)
+    throw new Error('Immoscout provider requires a URL');
+  config.url = convertWebToMobile(sourceConfig.url);
+  appliedBlackList = blacklist || [];
 };
-
-const metaInformation: ProviderMetaInformation = {
+export const metaInformation = {
   name: 'Immoscout',
   baseUrl: 'https://www.immobilienscout24.de/',
   id: 'immoscout',
 };
 
-export { config, metaInformation, init };
+export { config };

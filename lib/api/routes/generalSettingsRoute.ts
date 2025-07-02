@@ -5,7 +5,7 @@ import { handleDemoUser } from '#services/storage/userStorage';
 const service = restana();
 const generalSettingsRouter = service.newRouter();
 import { GeneralSettings } from '#types/GeneralSettings.ts';
-import { ReqWithSession } from '#types/api.ts';
+import { ReqWithSession } from '#types/Api.ts';
 import { HTTPError } from '../errorHandling';
 
 generalSettingsRouter.get('/', async (req: ReqWithSession, res) => {

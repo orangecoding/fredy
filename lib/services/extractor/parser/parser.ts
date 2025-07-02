@@ -14,7 +14,7 @@ export function parse(crawlContainer: string, crawlFields: Listing, text: string
     return null;
   }
   if (!text) {
-    console.warn('Cannot parse, text was empty for url ', url);
+    console.warn('No content found for ', url);
     return null;
   }
 

@@ -14,7 +14,7 @@ import { parseError, xhrPost } from '#ui_services/xhr.ts';
 import { SegmentPart } from '../../components/segment/SegmentPart';
 import './GeneralSettings.less';
 import { RootState } from 'ui/src/types';
-import { XhrApiResponse, XhrApiResponseError } from 'ui/src/types/XhrApi';
+import { XhrApiResponseError } from 'ui/src/types/XhrApi';
 import { GeneralSettings } from '#types/GeneralSettings.ts';
 
 const GeneralSettingsView: React.FC = () => {

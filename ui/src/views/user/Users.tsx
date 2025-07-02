@@ -11,7 +11,7 @@ import { parseError, xhrDelete } from '#ui_services/xhr';
 import { useHistory } from 'react-router';
 
 import './Users.less';
-import { ApiDeleteUserReq } from '#types/api.ts';
+import { ApiDeleteUserReq } from '#types/Api.ts';
 
 const Users = function Users() {
   const dispatch = useDispatch();

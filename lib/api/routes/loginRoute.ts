@@ -3,7 +3,7 @@ import * as userStorage from '#services/storage/userStorage';
 import * as hasher from '#services/security/hash';
 import { config } from '../../utils.js';
 import { trackDemoAccessed } from '#services/tracking/Tracker';
-import { ApiCurrentUserRes, ApiLoginReq, ReqWithSession } from '#types/api.js';
+import { ApiCurrentUserRes, ApiLoginReq, ReqWithSession } from '#types/Api.js';
 import { User } from '#types/User.js';
 import { HTTPError } from '../errorHandling.js';
 

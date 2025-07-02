@@ -27,6 +27,8 @@ export function cleanupDemoAtMidnight() {
 
 function cleanup() {
   if (config.demoMode) {
-    removeJobsByUserName('demo');
+    const numberOfDeleted = removeJobsByUserName('demo');
+    // eslint-disable-next-line no-console
+    console.info(`Deleted ${numberOfDeleted} jobs for demo user`);
   }
 }

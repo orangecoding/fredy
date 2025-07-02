@@ -8,7 +8,7 @@ import './UserMutator.less';
 import { SegmentPart } from '../../../components/segment/SegmentPart';
 import { IconPlusCircle } from '@douyinfe/semi-icons';
 import { User } from '#types/User.ts';
-import { ApiSaveUserReq } from '#types/api.ts';
+import { ApiSaveUserReq } from '#types/Api.ts';
 import { XhrApiResponseError } from 'ui/src/types/XhrApi';
 
 interface UserMutatorParams {

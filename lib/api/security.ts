@@ -1,4 +1,4 @@
-import { ReqWithSession } from '#types/api.ts';
+import { ReqWithSession } from '#types/Api.ts';
 import * as userStorage from '../services/storage/userStorage';
 import cookieSession from 'cookie-session';
 import { nanoid } from 'nanoid';

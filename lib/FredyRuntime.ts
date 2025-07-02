@@ -41,7 +41,7 @@ class FredyRuntime {
       //modify the url to make sure search order is correctly set
       Promise.resolve(urlModifier(this._providerConfig.url ?? '', this._providerConfig.sortByDateParam))
         //scraping the site and try finding new listings
-        .then(this._getListings.bind(this))
+        .then(this._providerConfig.getListings?.bind(this) ?? this._defaultGetListings.bind(this))
         //bring them in a proper form (dictated by the provider)
         .then((value: Listing[] | void) => this._normalize(value as Listing[]))
         //filter listings with stuff tagged by the blacklist of the provider
@@ -59,14 +59,17 @@ class FredyRuntime {
     );
   }
 
-  _getListings(url: string): Promise<Listing[]> {
+  _defaultGetListings(url: string): Promise<Listing[]> {
+    if (!this._providerConfig.crawlContainer)
+      throw new Error('crawlContainer is not set for provider ' + this._providerId);
+
     const extractor = new Extractor({});
     return new Promise((resolve, reject) => {
       extractor
         .execute(url, this._providerConfig.waitForSelector ?? null)
         .then(() => {
           const listings: Listing[] = extractor.parseResponseText(
-            this._providerConfig.crawlContainer,
+            this._providerConfig.crawlContainer!,
             this._providerConfig.crawlFields,
             url,
           );

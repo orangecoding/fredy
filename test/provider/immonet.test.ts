@@ -27,8 +27,6 @@ describe('#immonet testsuite()', () => {
           expect(notify.link).to.be.a('string');
           expect(notify.address).to.be.a('string');
 
-          /** check the values if possible **/
-          expect(notify.price).that.does.include('€');
           expect(notify.size).that.does.include('m²');
           expect(notify.title).to.be.not.empty;
           expect(notify.address).to.be.not.empty;

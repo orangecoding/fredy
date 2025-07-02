@@ -32,7 +32,7 @@ const config: ProviderConfig = {
   url: null,
   crawlContainer: 'div[data-testid="serp-core-classified-card-testid"]',
   sortByDateParam: 'sortby=19',
-  waitForSelector: 'div[data-testid="serp-resultscount-testid"]',
+  waitForSelector: 'div[data-testid="serp-gridcontainer-testid"]',
   crawlFields: {
     id: 'button@title |trim', // Immonet is a piece of sh*t. See comment above
     title: 'button@title |trim',

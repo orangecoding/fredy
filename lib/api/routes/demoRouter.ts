@@ -1,6 +1,6 @@
 import restana from 'restana';
 import { config } from '../../utils';
-import { ReqWithSession } from '#types/api.ts';
+import { ReqWithSession } from '#types/Api.ts';
 const service = restana();
 const demoRouter = service.newRouter();
 

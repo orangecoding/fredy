@@ -101,9 +101,7 @@ export default function ProviderMutator({
         style={{ marginBottom: '1rem' }}
         description={
           <div>
-            <p>
-              Immoscout will not work at the moment due to advanced bot detection. I&apos;m currently working on a fix.
-            </p>
+            <p>Currently, our Immoscout implementation does not drawing shapes on a map. Use a radius instead.</p>
             <p>Until a fix has been released, Immoscout won&apos;t yield any results.</p>
           </div>
         }

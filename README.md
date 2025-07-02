@@ -1,6 +1,6 @@
 <img src="https://github.com/orangecoding/fredy/blob/master/doc/logo.png" width="400">  
 
-![Build Status](https://github.com/orangecoding/fredy/actions/workflows/test.yml/badge.svg)
+![Build Status](https://github.com/orangecoding/fredy/actions/workflows/test.yml/badge.svg)  [![Create and publish Docker image](https://github.com/orangecoding/fredy/actions/workflows/docker.yml/badge.svg)](https://github.com/orangecoding/fredy/actions/workflows/docker.yml)
 
 Searching an apartment in Germany can be a frustrating task. Not any longer though, as _Fredy_ will take over and will only notify you once new listings have been found that match your requirements.
 
@@ -46,7 +46,7 @@ A provider contains the URL that points to the search results for the respective
 **It is important that you order the search results by date, so that _Fredy_ always picks the latest results first!**
 
 #### Adapter
-_Fredy_ supports multiple adapters, such as Slack, SendGrid, Telegram etc. A search job can have as many adapters as supported by _Fredy_. Each adapter needs different configuration values, which you have to provide when using them. A adapter dictactes how the frontend renders by telling the frontend what information it needs in order to send listings to the user.
+_Fredy_ supports multiple adapters, such as Slack, SendGrid, Telegram etc. A search job can have as many adapters as supported by _Fredy_. Each adapter needs different configuration values, which you have to provide when using them. An adapter dictates how the frontend renders by telling the frontend what information it needs in order to send listings to the user.
 
 #### Jobs
 A Job wraps adapters and providers. _Fredy_ runs the configured jobs in a specific interval (can be configured in `/conf/config.json`).
@@ -82,7 +82,7 @@ yarn run test
 ![Architecture](/doc/architecture.jpg "Architecture")
 
 ### Immoscout
-Immoscout has implemented advanced bot detection. I’m actively working on bypassing these measures, but until then, selecting Immoscout as a provider will not return any results. I apologize for the inconvenience. 😉
+Immoscout has implemented advanced bot detection. In order to work around this, we are using a reversed engineered version of their mobile api. See [Immoscout Reverse Engineering Documentation](https://github.com/orangecoding/fredy/blob/master/reverse-engineered-immoscout.md)
 
 # Analytics
 Fredy is completely free (and will always remain free). However, it would be a huge help if you’d allow me to collect some analytical data. 
@@ -110,6 +110,10 @@ Put your config.json into a path of your choice, such as `/path/to/your/conf/`.
 
 Example: `docker create --name fredy -v /path/to/your/conf/:/conf -p 9998:9998 fredy/fredy`
 
+## Logs  
+
+You can browse the logs with  `docker logs fredy -f`.
+
 ### 👐 Contributing
 Thanks to all the people who already contributed!
 
@@ -119,6 +123,7 @@ Thanks to all the people who already contributed!
 
 See [Contributing](https://github.com/orangecoding/fredy/blob/master/CONTRIBUTING.md)
 
-## Logs  
 
-You can browse the logs with  `docker logs fredy -f`.
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=orangecoding/fredy&type=Date)](https://www.star-history.com/#orangecoding/fredy&Date)

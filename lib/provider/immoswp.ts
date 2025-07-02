@@ -32,7 +32,7 @@ const config: ProviderConfig = {
     id: '.js-bookmark-btn@data-id',
     price: 'div.align-items-start div:first-child | trim',
     size: 'div.align-items-start div:nth-child(3) | trim',
-    title: '.card-title h2 | trim',
+    title: '.js-item-title-link@title | trim',
     link: '.ci-search-result__link@href',
     description: '.js-show-more-item-sm | removeNewline | trim',
   },

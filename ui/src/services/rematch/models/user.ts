@@ -3,7 +3,7 @@ import { UserState } from 'ui/src/types';
 import { xhrGet, xhrDelete, parseError } from '../../xhr';
 import { RootModel } from '../store';
 import { RematchDispatch, RematchRootState } from '@rematch/core';
-import { ApiDeleteUserReq } from '#types/api.ts';
+import { ApiDeleteUserReq } from '#types/Api.ts';
 
 export interface UserSpecificModel {
   state: UserState;

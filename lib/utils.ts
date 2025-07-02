@@ -10,12 +10,9 @@ function inDevMode() {
 }
 
 function isOneOf(word: string | null | undefined, arr: string[]) {
-  if (arr == null || arr.length === 0) {
-    return false;
-  }
-  const expression = String.raw`\b(${arr.join('|')})\b`;
-  const blacklist = new RegExp(expression, 'ig');
-  return blacklist.test(String(word));
+  if (!arr || arr.length === 0 || word == null) return false;
+  const lowerWord = word.toLowerCase();
+  return arr.some((item) => lowerWord.indexOf(item.toLowerCase()) !== -1);
 }
 
 function timeStringToMs(timeString: string, now: number) {

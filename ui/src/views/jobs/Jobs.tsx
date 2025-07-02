@@ -9,7 +9,7 @@ import { Button, Toast } from '@douyinfe/semi-ui';
 import { IconPlusCircle } from '@douyinfe/semi-icons';
 import './Jobs.less';
 import { RootState } from 'ui/src/types';
-import { ApiDeleteJobReq, ApiSetJobStatusReq } from '#types/api.ts';
+import { ApiDeleteJobReq, ApiSetJobStatusReq } from '#types/Api.ts';
 
 const Jobs: React.FC = () => {
   const jobs = useSelector((state: RootState) => state.jobs.jobs);

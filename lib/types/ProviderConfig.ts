@@ -2,12 +2,13 @@ import { Listing } from '#types/Listings.ts';
 
 export interface ProviderConfig {
   url: string | null;
-  crawlContainer: string;
+  crawlContainer?: string;
   sortByDateParam: string;
-  waitForSelector: string;
+  waitForSelector?: string;
   crawlFields: Listing;
   normalize: (o: Listing) => Listing;
   filter: (o: Listing) => boolean;
+  getListings?: (url: string) => Promise<Listing[]>;
   enabled?: boolean;
 }
 

@@ -17,7 +17,7 @@ import { JobInsightParams, Provider, RootState } from 'ui/src/types';
 import { NotificationAdapterConfig } from '#types/NotificationAdapter.ts';
 import { Job } from '#types/Jobs.ts';
 import { XhrApiResponseError } from 'ui/src/types/XhrApi';
-import { ApiSaveJobReq } from '#types/api.ts';
+import { ApiSaveJobReq } from '#types/Api.ts';
 
 export default function JobMutator() {
   const jobs = useSelector((state: RootState) => state.jobs.jobs);

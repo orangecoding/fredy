@@ -12,7 +12,7 @@ import {
   ApiSaveJobReq,
   ApiSetJobStatusReq,
   ReqWithSession,
-} from '#types/api.ts';
+} from '#types/Api.ts';
 import { HTTPError } from '../errorHandling';
 
 const service = restana();
@@ -20,13 +20,9 @@ const jobRouter = service.newRouter();
 
 function doesJobBelongsToUser(job: Job | null, req: ReqWithSession) {
   const userId = req.session?.currentUser;
-  if (!userId) {
-    return false;
-  }
+  if (!userId) return false;
   const user: User | null = userStorage.getUser(userId);
-  if (user == null) {
-    return false;
-  }
+  if (user == null) return false;
   return user.isAdmin || (job != null && job.userId === userId);
 }
 

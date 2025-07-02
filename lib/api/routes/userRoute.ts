@@ -3,7 +3,7 @@ import * as userStorage from '#services/storage/userStorage';
 import * as jobStorage from '#services/storage/jobStorage';
 import { config } from '../../utils';
 import { User } from '#types/User.ts';
-import { ApiDeleteUserReq, ApiSaveUserReq, ReqWithSession } from '#types/api.ts';
+import { ApiDeleteUserReq, ApiSaveUserReq, ReqWithSession } from '#types/Api.ts';
 import { HTTPError } from '../errorHandling';
 
 const service = restana();

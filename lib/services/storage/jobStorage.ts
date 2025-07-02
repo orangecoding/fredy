@@ -6,7 +6,7 @@ import path from 'path';
 import LowdashAdapter from './LowDashAdapter';
 import { JobsDbData } from './types';
 import { Job } from '#types/Jobs.ts';
-import { ApiSaveJobReq } from '#types/api.ts';
+import { ApiSaveJobReq } from '#types/Api.ts';
 import { getUser } from './userStorage';
 
 const file: string = path.join(getDirName(), '../', 'db/jobs.json');
@@ -73,11 +73,16 @@ export const setJobStatus = ({ jobId, status }: { jobId: string; status: boolean
 
 export const removeJob = (jobId: string) => {
   listingStorage.removeListings(jobId);
+  let foundJob = false;
   db.chain
     .get('jobs')
-    .remove((job) => job.id === jobId)
+    .remove((job) => {
+      if (job.id === jobId) foundJob = true;
+      return job.id === jobId;
+    })
     .value();
   db.write();
+  return foundJob;
 };
 
 export const removeJobsByUserId = (userId: string) => {
@@ -92,8 +97,7 @@ export const removeJobsByUserId = (userId: string) => {
     .remove((job) => job.userId === userId)
     .value();
   db.write();
-  // eslint-disable-next-line no-console
-  console.info(`Deleted ${cntDeletedJobs} jobs for user with id ${userId}`);
+  return cntDeletedJobs;
 };
 
 export const removeJobsByUserName = (userName: string) => {
@@ -102,7 +106,7 @@ export const removeJobsByUserName = (userName: string) => {
     console.error(`User ${userName} not found, cannot remove jobs`);
     return;
   }
-  removeJobsByUserId(user.id);
+  return removeJobsByUserId(user.id);
 };
 
 export const getJobs = () => {

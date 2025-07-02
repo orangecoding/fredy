@@ -25,7 +25,7 @@ const config: ProviderConfig = {
     id: 'a@href',
     price: 'div[data-testid="cardmfe-price-testid"] | removeNewline | trim',
     size: 'div[data-testid="cardmfe-keyfacts-testid"] | removeNewline | trim',
-    title: '.css-1cbj9xw',
+    title: 'div[data-testid="cardmfe-description-box-text-test-id"] > div:nth-of-type(2)',
     link: 'a@href',
     address: 'div[data-testid="cardmfe-description-box-address"] | removeNewline | trim',
   },

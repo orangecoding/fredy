@@ -9,7 +9,7 @@ import { Input, Button, Banner } from '@douyinfe/semi-ui';
 
 import './login.less';
 import { IconUser, IconLock } from '@douyinfe/semi-icons';
-import { ApiLoginReq } from '#types/api.ts';
+import { ApiLoginReq } from '#types/Api.ts';
 
 export default function Login() {
   const dispatch = useDispatch();

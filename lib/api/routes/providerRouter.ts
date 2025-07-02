@@ -1,7 +1,7 @@
 import fs from 'fs';
 import restana from 'restana';
 import { ProviderExport } from '#types/ProviderConfig.js';
-import { ReqWithSession } from '#types/api.ts';
+import { ReqWithSession } from '#types/Api.ts';
 
 const service = restana();
 const providerRouter = service.newRouter();

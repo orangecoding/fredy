@@ -116,21 +116,15 @@ export const removeUserByUsername = (username: string) => {
 };
 
 export const handleDemoUser = () => {
-  if (!config.demoMode) {
-    /* eslint-disable-next-line no-console */
-    console.info('demo mode disabled');
+  const demoUser = getUser('demo');
+  if (!config.demoMode && demoUser !== null) {
     removeUserByUsername('demo');
-  } else {
-    /* eslint-disable-next-line no-console */
-    console.info('demo mode enabled');
-    const demoUser = getUser('demo');
-    if (demoUser == null) {
-      upsertUser({
-        username: 'demo',
-        password: 'demo',
-        id: nanoid(),
-        isAdmin: true,
-      });
-    }
+  } else if (demoUser === null) {
+    upsertUser({
+      username: 'demo',
+      password: 'demo',
+      id: nanoid(),
+      isAdmin: true,
+    });
   }
 };

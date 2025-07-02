@@ -1,4 +1,4 @@
-import { ApiErrorRes } from '#types/api.ts';
+import { ApiErrorRes } from '#types/Api.ts';
 
 export interface XhrApiResponse<T> {
   json: T;

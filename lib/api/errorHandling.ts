@@ -1,4 +1,4 @@
-import { ApiErrorRes } from '#types/api.ts';
+import { ApiErrorRes } from '#types/Api.ts';
 import { ServerResponse, IncomingMessage } from 'http';
 import restana from 'restana';
 

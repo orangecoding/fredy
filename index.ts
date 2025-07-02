@@ -64,9 +64,9 @@ const exec = async () => {
 handleDemoUser();
 
 while (true) {
+  await exec();
   const nextRun = new Date(Date.now() + INTERVAL);
   /* eslint-disable-next-line no-console */
-  console.log(`Next Scrape at ${nextRun}`);
+  console.log(`scrape done, next scrape at ${nextRun}`);
   await sleep(INTERVAL);
-  await exec();
 }
