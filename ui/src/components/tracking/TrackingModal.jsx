@@ -14,7 +14,6 @@ const saveResponse = async (analyticsEnabled) => {
 
 export default function TrackingModal() {
     if(inDevelopment()){
-        console.log("FFFUUUCCCKKK")
         return null;
     }
 
