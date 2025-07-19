@@ -4,6 +4,7 @@ import Logo from '../logo/Logo.jsx';
 import {xhrPost} from '../../services/xhr.js';
 
 import './TrackingModal.less';
+import inDevelopment from '../../services/developmentMode.js';
 
 const saveResponse = async (analyticsEnabled) => {
     await xhrPost('/api/admin/generalSettings', {
@@ -12,6 +13,10 @@ const saveResponse = async (analyticsEnabled) => {
 };
 
 export default function TrackingModal() {
+    if(inDevelopment()){
+        console.log("FFFUUUCCCKKK")
+        return null;
+    }
 
     return <Modal
         visible={true}

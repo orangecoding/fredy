@@ -124,8 +124,8 @@ export default function JobMutator() {
 
           <ProviderTable
             providerData={providerData}
-            onRemove={(providerId) => {
-              setProviderData(providerData.filter((provider) => provider.id !== providerId));
+            onRemove={(providerUrl) => {
+              setProviderData(providerData.filter((provider) => provider.url !== providerUrl));
             }}
           />
         </SegmentPart>

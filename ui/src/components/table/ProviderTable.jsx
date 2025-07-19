@@ -30,7 +30,7 @@ export default function ProviderTable({ providerData = [], onRemove } = {}) {
           render: (_, record) => {
             return (
               <div style={{ float: 'right' }}>
-                <Button type="danger" icon={<IconDelete />} onClick={() => onRemove(record.id)} />
+                <Button type="danger" icon={<IconDelete />} onClick={() => onRemove(record.url)} />
               </div>
             );
           },
