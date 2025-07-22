@@ -3,19 +3,20 @@
   "version": "11.2.5",
   "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
   "scripts": {
+    "prepare": "husky",
     "start": "node prod.js",
     "dev": "yarn && rm -rf ./ui/public/* && vite",
     "ui": "rm -rf ./ui/public/* && vite",
     "prod": "yarn && vite build --emptyOutDir",
-    "format": "prettier --write lib/**/*.js ui/src/**/*.jsx test/**/*.js *.js --single-quote --print-width 120",
+    "format": "prettier --write lib/**/*.js ui/src/**/*.jsx test/**/*.js *.js",
     "test": "mocha --loader=esmock --timeout 3000000 test/**/*.test.js",
-    "lint": "eslint ./index.js ./lib/**/*.js ./test/**/*.js ./ui/src/**/*.jsx"
+    "lint": "eslint index.js lib/**/*.js test/**/*.js ui/src/**/*.jsx --fix"
   },
   "type": "module",
   "lint-staged": {
-    "*.js": [
-      "eslint ./index.js ./lib/**/*.js ./test/**/*.js",
-      "prettier --single-quote --print-width 120 --write"
+    "*.{js,jsx}": [
+      "npm run lint",
+      "npm run format"
     ]
   },
   "main": "index.js",
