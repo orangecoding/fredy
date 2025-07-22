@@ -15,8 +15,8 @@
   "type": "module",
   "lint-staged": {
     "*.{js,jsx}": [
-      "npm run lint",
-      "npm run format"
+      "yarn lint",
+      "yarn format"
     ]
   },
   "main": "index.js",
@@ -70,6 +70,7 @@
     "nanoid": "5.1.5",
     "node-fetch": "3.3.2",
     "node-mailjet": "6.0.8",
+    "p-throttle": "^7.0.0",
     "package-up": "^5.0.0",
     "puppeteer": "^24.14.0",
     "puppeteer-extra": "^3.3.6",
