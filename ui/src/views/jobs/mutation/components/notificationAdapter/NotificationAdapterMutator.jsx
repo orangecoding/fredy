@@ -27,7 +27,7 @@ const validate = (selectedAdapter) => {
     }
     if (uiElement.type === 'number') {
       const numberValue = parseFloat(uiElement.value);
-      if(isNaN(numberValue) || numberValue < 0) {
+      if (isNaN(numberValue) || numberValue < 0) {
         results.push('A number field cannot contain anything else and must be > 0.');
         continue;
       }
@@ -83,7 +83,7 @@ export default function NotificationAdapterMutator({
           id: selectedAdapter.id,
           name: selectedAdapter.name,
           fields: selectedAdapter.fields || {},
-        })
+        }),
       );
 
       setSelectedAdapter(null);
@@ -114,7 +114,7 @@ export default function NotificationAdapterMutator({
         setSuccessMessage('It seems like it worked! Please check your service.');
       })
       .catch((error) =>
-        setValidationMessage(`This did not work :-( I've received the following error: ${error.json.message}`)
+        setValidationMessage(`This did not work :-( I've received the following error: ${error.json.message}`),
       );
   };
 
@@ -229,7 +229,7 @@ export default function NotificationAdapterMutator({
           .filter((option) =>
             editNotificationAdapter != null
               ? true
-              : selected.find((selectedOption) => selectedOption.id === option.key) == null
+              : selected.find((selectedOption) => selectedOption.id === option.key) == null,
           )
           .sort(sortAdapter)}
         onChange={(value) => {
