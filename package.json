@@ -5,7 +5,7 @@
   "scripts": {
     "prepare": "husky",
     "start:backend": "NODE_ENV=production node index.js",
-    "start:backend:dev": "nodemon  --watch index.js --watch lib",
+    "start:backend:dev": "nodemon --watch index.js --watch lib",
     "start:frontend": "vite -m production",
     "start:frontend:dev": "vite",
     "build:frontend": "vite build",
