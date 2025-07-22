@@ -101,7 +101,7 @@ export default function ProviderMutator({ onVisibilityChanged, visible = false, 
         description={
           <div>
             <p>
-              Currently, our Immoscout implementation does not drawing shapes on a map. Use a radius instead.
+              Currently, our Immoscout implementation does not support drawing shapes on a map. Use a radius instead.
             </p>
           </div>
         }
