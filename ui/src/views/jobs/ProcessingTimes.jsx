@@ -1,6 +1,6 @@
 import React from 'react';
 import {format} from '../../services/time/timeService';
-import {Banner, Descriptions} from '@douyinfe/semi-ui';
+import {Descriptions} from '@douyinfe/semi-ui';
 
 export default function ProcessingTimes({processingTimes = {}}) {
     if (Object.keys(processingTimes).length === 0) {
