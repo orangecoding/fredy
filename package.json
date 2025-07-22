@@ -9,8 +9,10 @@
     "ui": "rm -rf ./ui/public/* && vite",
     "prod": "yarn && vite build --emptyOutDir",
     "format": "prettier --write lib/**/*.js ui/src/**/*.jsx test/**/*.js *.js",
+    "format:check": "prettier --check lib/**/*.js ui/src/**/*.jsx test/**/*.js *.js",
     "test": "mocha --loader=esmock --timeout 3000000 test/**/*.test.js",
-    "lint": "eslint index.js lib/**/*.js test/**/*.js ui/src/**/*.jsx --fix"
+    "lint": "eslint index.js lib/**/*.js test/**/*.js ui/src/**/*.jsx",
+    "lint:fix": "yarn lint --fix"
   },
   "type": "module",
   "lint-staged": {
