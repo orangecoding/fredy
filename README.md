@@ -23,9 +23,9 @@ If you want to try out _Fredy_, you can access the demo version [here](https://f
 - Make sure to use Node.js 20 or above
 - Run the following commands:
 ```ssh
-yarn (or npm install)
-yarn run prod
-yarn run start
+yarn
+yarn run start:backend
+yarn run start:frontend
 ```
 _Fredy_ will start with the default port, set to `9998`. You can access _Fredy_ by opening your browser at `http://localhost:9998`. The default login is `admin`, both for username and password. You should change the password as soon as possible when you plan to run Fredy on a server.
 
@@ -61,14 +61,13 @@ As an administrator, you can create, edit and remove users from _Fredy_. Be care
 # Development
 
 ### Running Fredy in development mode
-To run _Fredy_ in development mode, you need to run the backend & frontend separately.
 Start the backend with:
 ```shell
-yarn run start
+yarn run start:backend:dev
 ```
 For the frontend, run:
 ```shell
-yarn run dev
+yarn run start:frontend:dev
 ```
 You should now be able to access _Fredy_ from your browser. Check your Terminal to see what port the frontend is running on.
 
@@ -82,7 +81,7 @@ yarn run test
 ![Architecture](/doc/architecture.jpg "Architecture")
 
 ### Immoscout
-Immoscout has implemented advanced bot detection. In order to work around this, we are using a reversed engineered version of their mobile api. See [Immoscout Reverse Engineering Documentation](https://github.com/orangecoding/fredy/blob/master/reverse-engineered-immoscout.md)
+Immoscout has implemented advanced bot detection. In order to work around this, we are using a reversed engineered version of their mobile api. See [Immoscout Reverse Engineering Documentation](https://github.com/orangecoding/fredy/blob/master/doc/reverse-engineered-immoscout.md)
 
 # Analytics
 Fredy is completely free (and will always remain free). However, it would be a huge help if you’d allow me to collect some analytical data. 

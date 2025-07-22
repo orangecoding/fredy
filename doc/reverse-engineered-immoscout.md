@@ -77,4 +77,4 @@ curl -H "User-Agent: ImmoScout24_1410_30_._" \
 
 
 ## Parameters 
-The parameters between web and mobile are very different which is why we have to translate them. Please see `immoscout-web-translator.js`.
+The parameters between web and mobile are very different which is why we have to translate them. Please see [/lib/services/immoscout/immoscout-web-translator.js](https://github.com/orangecoding/fredy/blob/master/lib/services/immoscout/immoscout-web-translator.js).
