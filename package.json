@@ -4,7 +4,7 @@
   "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
   "scripts": {
     "prepare": "husky",
-    "start:backend": "NODE_ENV=production node index.js",
+    "start:backend": "x-var NODE_ENV=production node index.js",
     "start:backend:dev": "nodemon --watch index.js --watch lib",
     "start:frontend": "vite -m production",
     "start:frontend:dev": "vite",
@@ -89,7 +89,8 @@
     "serve-static": "2.2.0",
     "slack": "11.0.2",
     "string-similarity": "^4.0.4",
-    "vite": "7.0.5"
+    "vite": "7.0.5",
+    "x-var": "^2.1.0"
   },
   "devDependencies": {
     "@babel/core": "7.27.3",
