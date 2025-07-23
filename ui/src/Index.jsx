@@ -23,5 +23,5 @@ root.render(
         <App />
       </LocaleProvider>
     </HashRouter>
-  </Provider>
+  </Provider>,
 );

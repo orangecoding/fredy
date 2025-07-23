@@ -45,7 +45,7 @@ export default function ProviderMutator({ onVisibilityChanged, visible = false, 
             url: providerUrl,
             id: selectedProvider.id,
             name: selectedProvider.name,
-          })
+          }),
         );
         setProviderUrl(null);
         setSelectedProvider(null);
