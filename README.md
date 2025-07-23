@@ -1,6 +1,6 @@
 <img src="https://github.com/orangecoding/fredy/blob/master/doc/logo.png" width="400">  
 
-![Build Status](https://github.com/orangecoding/fredy/actions/workflows/test.yml/badge.svg)  [![Create and publish Docker image](https://github.com/orangecoding/fredy/actions/workflows/docker.yml/badge.svg)](https://github.com/orangecoding/fredy/actions/workflows/docker.yml)
+![Test](https://github.com/orangecoding/fredy/actions/workflows/test.yml/badge.svg)  [![Create and publish Docker image](https://github.com/orangecoding/fredy/actions/workflows/docker.yml/badge.svg)](https://github.com/orangecoding/fredy/actions/workflows/docker.yml) ![Check the sourcecode](https://github.com/orangecoding/fredy/actions/workflows/check_source.yml/badge.svg)
 
 Searching an apartment in Germany can be a frustrating task. Not any longer though, as _Fredy_ will take over and will only notify you once new listings have been found that match your requirements.
 
@@ -81,7 +81,7 @@ yarn run test
 ![Architecture](/doc/architecture.jpg "Architecture")
 
 ### Immoscout
-Immoscout has implemented advanced bot detection. In order to work around this, we are using a reversed engineered version of their mobile api. See [Immoscout Reverse Engineering Documentation](https://github.com/orangecoding/fredy/blob/master/doc/reverse-engineered-immoscout.md)
+Immoscout has implemented advanced bot detection. In order to work around this, we are using a reversed engineered version of their mobile api. See [Immoscout Reverse Engineering Documentation](https://github.com/orangecoding/fredy/blob/master/reverse-engineered-immoscout.md)
 
 # Analytics
 Fredy is completely free (and will always remain free). However, it would be a huge help if you’d allow me to collect some analytical data. 
