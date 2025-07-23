@@ -16,7 +16,7 @@ jobs:
           node-version: 20
           cache: 'yarn'
 
-      - name: install
+      - name: Install dependencies
         run: yarn install
 
       - name: Check formatting
