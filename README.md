@@ -1,6 +1,6 @@
 <img src="https://github.com/orangecoding/fredy/blob/master/doc/logo.png" width="400">  
 
-![Build Status](https://github.com/orangecoding/fredy/actions/workflows/test.yml/badge.svg)  [![Create and publish Docker image](https://github.com/orangecoding/fredy/actions/workflows/docker.yml/badge.svg)](https://github.com/orangecoding/fredy/actions/workflows/docker.yml)
+![Test](https://github.com/orangecoding/fredy/actions/workflows/test.yml/badge.svg)  [![Create and publish Docker image](https://github.com/orangecoding/fredy/actions/workflows/docker.yml/badge.svg)](https://github.com/orangecoding/fredy/actions/workflows/docker.yml) ![Check the sourcecode](https://github.com/orangecoding/fredy/actions/workflows/check_source.yml/badge.svg)
 
 Searching an apartment in Germany can be a frustrating task. Not any longer though, as _Fredy_ will take over and will only notify you once new listings have been found that match your requirements.
 
@@ -23,9 +23,9 @@ If you want to try out _Fredy_, you can access the demo version [here](https://f
 - Make sure to use Node.js 20 or above
 - Run the following commands:
 ```ssh
-yarn (or npm install)
-yarn run prod
-yarn run start
+yarn
+yarn run start:backend
+yarn run start:frontend
 ```
 _Fredy_ will start with the default port, set to `9998`. You can access _Fredy_ by opening your browser at `http://localhost:9998`. The default login is `admin`, both for username and password. You should change the password as soon as possible when you plan to run Fredy on a server.
 
@@ -61,14 +61,13 @@ As an administrator, you can create, edit and remove users from _Fredy_. Be care
 # Development
 
 ### Running Fredy in development mode
-To run _Fredy_ in development mode, you need to run the backend & frontend separately.
 Start the backend with:
 ```shell
-yarn run start
+yarn run start:backend:dev
 ```
 For the frontend, run:
 ```shell
-yarn run dev
+yarn run start:frontend:dev
 ```
 You should now be able to access _Fredy_ from your browser. Check your Terminal to see what port the frontend is running on.
 

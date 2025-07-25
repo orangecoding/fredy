@@ -11,16 +11,16 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
     PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 # Copy lockfiles first to leverage cache for dependencies
-COPY package.json yarn.lock ./
+COPY package.json yarn.lock .
 
 # Set Yarn timeout, install dependencies and PM2 globally
 RUN yarn config set network-timeout 600000 \
-  && yarn install --frozen-lockfile \
+  && yarn --frozen-lockfile \
   && yarn global add pm2
 
 # Copy application source and build production assets
-COPY . ./
-RUN yarn run prod
+COPY . .
+RUN yarn build:frontend
 
 # Prepare runtime directories and symlinks for data and config
 RUN mkdir -p /db /conf \

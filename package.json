@@ -4,10 +4,11 @@
   "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
   "scripts": {
     "prepare": "husky",
-    "start": "node prod.js",
-    "dev": "yarn && rm -rf ./ui/public/* && vite",
-    "ui": "rm -rf ./ui/public/* && vite",
-    "prod": "yarn && vite build --emptyOutDir",
+    "start:backend": "x-var NODE_ENV=production node index.js",
+    "start:backend:dev": "nodemon --watch index.js --watch lib",
+    "start:frontend": "vite -m production",
+    "start:frontend:dev": "vite",
+    "build:frontend": "vite build",
     "format": "prettier --write lib/**/*.js ui/src/**/*.jsx test/**/*.js *.js",
     "format:check": "prettier --check lib/**/*.js ui/src/**/*.jsx test/**/*.js *.js",
     "test": "mocha --loader=esmock --timeout 3000000 test/**/*.test.js",
@@ -88,7 +89,8 @@
     "serve-static": "2.2.0",
     "slack": "11.0.2",
     "string-similarity": "^4.0.4",
-    "vite": "7.0.5"
+    "vite": "7.0.5",
+    "x-var": "^2.1.0"
   },
   "devDependencies": {
     "@babel/core": "7.27.3",
@@ -105,6 +107,7 @@
     "less": "4.4.0",
     "lint-staged": "15.5.2",
     "mocha": "10.8.2",
+    "nodemon": "^3.1.10",
     "prettier": "3.6.2",
     "redux-logger": "3.0.6"
   }

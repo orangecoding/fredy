@@ -6,6 +6,7 @@ export default defineConfig({
   build: {
     chunkSizeWarningLimit: 9999999,
     outDir: './ui/public',
+    emptyOutDir: true,
   },
   plugins: [react()],
   server: {
