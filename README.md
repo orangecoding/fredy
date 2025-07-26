@@ -78,7 +78,47 @@ yarn run test
 ```
 
 # Architecture
-![Architecture](/doc/architecture.jpg "Architecture")
+
+```mermaid
+flowchart TD
+ subgraph Jobs["Jobs"]
+        A1["Job 1"]
+        A2["Job 2"]
+        A3["Job 3"]
+  end
+ subgraph Providers["Providers"]
+        C1["Provider 1"]
+        C2["Provider 2"]
+        C3["Provider 3"]
+  end
+ subgraph NotificationAdapters["Notification Adapters"]
+        F1["Notification Adapter 1"]
+        F2["Notification Adapter 2"]
+  end
+
+    A1 --> B["FredyRuntime"]
+    A2 --> B
+    A3 --> B
+    B --> C1 & C2 & C3
+    C1 --> D["Similarity-Check"]
+    C2 --> D
+    C3 --> D
+    D --> E{"Found<br>similarity?"}
+    E -- No --> F1
+    F1 --> F2
+
+    style A1 fill:#fde9a0
+    style A2 fill:#fde9a0
+    style A3 fill:#fde9a0
+    style C1 fill:#c4c9f1
+    style C2 fill:#c4c9f1
+    style C3 fill:#c4c9f1
+    style F1 fill:#d2edba
+    style F2 fill:#d2edba
+    style B fill:#abd8f9
+    style D fill:#fab4a8
+    style E fill:#fffbb4
+```
 
 ### Immoscout
 Immoscout has implemented advanced bot detection. In order to work around this, we are using a reversed engineered version of their mobile api. See [Immoscout Reverse Engineering Documentation](https://github.com/orangecoding/fredy/blob/master/reverse-engineered-immoscout.md)
