@@ -86,7 +86,7 @@ const GeneralSettings = function GeneralSettings() {
       throwMessage('Port may not be empty.', 'error');
       return;
     }
-    if ((workingHourFrom && workingHourTo) || (!workingHourFrom && workingHourTo)) {
+    if ((workingHourFrom && !workingHourTo) || (!workingHourFrom && workingHourTo)) {
       throwMessage('Working hours to and from must be set if either to or from has been set before.', 'error');
       return;
     }
