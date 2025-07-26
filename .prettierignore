@@ -1,0 +1,6 @@
+/ui/public
+/db/
+/conf/
+
+# TODO re-write from scratch or fix all html structure issues
+/lib/notification/emailTemplate/template.hbs
