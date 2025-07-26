@@ -129,6 +129,6 @@ function parseJSON(response) {
           });
         }
       })
-      .catch((error) => reject('Error while trying to parse json.', error))
+      .catch((error) => reject('Error while trying to parse json.', error)),
   );
 }

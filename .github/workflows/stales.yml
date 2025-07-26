@@ -2,7 +2,7 @@ name: Close stale issues and PRs
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # Daily
+    - cron: '0 0 * * *' # Daily
 
 jobs:
   stale:
@@ -12,10 +12,10 @@ jobs:
         with:
           days-before-stale: 30
           days-before-close: 7
-          stale-issue-message: "This issue has been automatically marked as stale due to inactivity."
-          stale-pr-message: "This PR has been automatically marked as stale due to inactivity."
-          close-issue-message: "Closing this issue due to prolonged inactivity."
-          close-pr-message: "Closing this PR due to prolonged inactivity."
-          exempt-issue-labels: "keep-open"
-          exempt-pr-labels: "keep-open"
-          only: "pulls"
+          stale-issue-message: 'This issue has been automatically marked as stale due to inactivity.'
+          stale-pr-message: 'This PR has been automatically marked as stale due to inactivity.'
+          close-issue-message: 'Closing this issue due to prolonged inactivity.'
+          close-pr-message: 'Closing this PR due to prolonged inactivity.'
+          exempt-issue-labels: 'keep-open'
+          exempt-pr-labels: 'keep-open'
+          only: 'pulls'

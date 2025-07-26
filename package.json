@@ -9,10 +9,10 @@
     "start:frontend": "vite -m production",
     "start:frontend:dev": "vite",
     "build:frontend": "vite build",
-    "format": "prettier --write lib/**/*.js ui/src/**/*.jsx test/**/*.js *.js",
-    "format:check": "prettier --check lib/**/*.js ui/src/**/*.jsx test/**/*.js *.js",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "test": "mocha --loader=esmock --timeout 3000000 test/**/*.test.js",
-    "lint": "eslint index.js lib/**/*.js test/**/*.js ui/src/**/*.jsx",
+    "lint": "eslint .",
     "lint:fix": "yarn lint --fix"
   },
   "type": "module",
