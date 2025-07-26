@@ -5,7 +5,7 @@ import Logo from '../../components/logo/Logo';
 import { xhrPost } from '../../services/xhr';
 import { useHistory } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
-import { Input, Button, Banner } from '@douyinfe/semi-ui';
+import { Input, Button, Banner, Toast } from '@douyinfe/semi-ui';
 
 import './login.less';
 import { IconUser, IconLock } from '@douyinfe/semi-icons';
@@ -27,20 +27,24 @@ export default function Login() {
   }, []);
 
   const tryLogin = async () => {
-    if (username.length === 0 || password.length === 0) {
-      setError('Username and password are mandatory.');
+    if (!username?.trim() || !password) {
+      Toast.error('Username and password are mandatory.');
       return;
     }
+
     try {
       await xhrPost('/api/login', {
-        username,
+        username: username.trim(),
         password,
       });
-      setError(null);
     } catch (Exception) {
-      setError('Login not successful...');
+      Toast.error('Login unsuccessful…');
       return;
     }
+
+    setError(null);
+    Toast.success('Login successful!');
+
     await dispatch.user.getCurrentUser();
     history.push('/jobs');
   };
@@ -58,7 +62,6 @@ export default function Login() {
             placeholder="Username"
             value={username}
             showClear
-            style={{ marginTop: error ? '1rem' : '4rem' }}
             autoFocus
             onChange={(value) => setUserName(value)}
             onKeyPress={async (e) => {
@@ -74,7 +77,6 @@ export default function Login() {
             prefix={<IconLock />}
             value={password}
             placeholder="Password"
-            style={{ marginTop: '2rem' }}
             onChange={(value) => setPassword(value)}
             onKeyPress={async (e) => {
               if (e.key === 'Enter') {
