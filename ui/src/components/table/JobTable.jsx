@@ -41,7 +41,6 @@ export default function JobTable({ jobs = {}, onJobRemoval, onJobStatusChanged, 
         {
           title: 'Providers',
           dataIndex: 'provider',
-          className: 'hide-mobile',
           render: (value) => {
             return value.length || 0;
           },
@@ -49,7 +48,6 @@ export default function JobTable({ jobs = {}, onJobRemoval, onJobStatusChanged, 
         {
           title: 'Notification adapters',
           dataIndex: 'notificationAdapter',
-          className: 'hide-mobile',
           render: (value) => {
             return value.length || 0;
           },
