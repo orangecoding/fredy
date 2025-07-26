@@ -1,0 +1,16 @@
+.interactions {
+  float: right;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+@media (max-width: 767px) {
+  .hide-mobile {
+    display: none !important;
+  }
+
+  .interactions {
+    flex-direction: column;
+  }
+}

@@ -3,6 +3,9 @@ import React from 'react';
 import { Button, Empty, Table, Switch } from '@douyinfe/semi-ui';
 import { IconDelete, IconEdit, IconHistogram } from '@douyinfe/semi-icons';
 import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-illustrations';
+
+import './JobTable.less';
+
 const empty = (
   <Empty
     image={<IllustrationNoResult />}
@@ -25,7 +28,7 @@ export default function JobTable({ jobs = {}, onJobRemoval, onJobStatusChanged, 
           },
         },
         {
-          title: 'Job Name',
+          title: 'Name',
           dataIndex: 'name',
         },
         {
@@ -38,6 +41,7 @@ export default function JobTable({ jobs = {}, onJobRemoval, onJobStatusChanged, 
         {
           title: 'Providers',
           dataIndex: 'provider',
+          className: 'hide-mobile',
           render: (value) => {
             return value.length || 0;
           },
@@ -45,6 +49,7 @@ export default function JobTable({ jobs = {}, onJobRemoval, onJobStatusChanged, 
         {
           title: 'Notification adapters',
           dataIndex: 'notificationAdapter',
+          className: 'hide-mobile',
           render: (value) => {
             return value.length || 0;
           },
@@ -54,19 +59,9 @@ export default function JobTable({ jobs = {}, onJobRemoval, onJobStatusChanged, 
           dataIndex: 'tools',
           render: (_, job) => {
             return (
-              <div style={{ float: 'right' }}>
-                <Button
-                  type="primary"
-                  icon={<IconHistogram />}
-                  onClick={() => onJobInsight(job.id)}
-                  style={{ marginRight: '1rem' }}
-                />
-                <Button
-                  type="secondary"
-                  icon={<IconEdit />}
-                  onClick={() => onJobEdit(job.id)}
-                  style={{ marginRight: '1rem' }}
-                />
+              <div className="interactions">
+                <Button type="primary" icon={<IconHistogram />} onClick={() => onJobInsight(job.id)} />
+                <Button type="secondary" icon={<IconEdit />} onClick={() => onJobEdit(job.id)} />
                 <Button type="danger" icon={<IconDelete />} onClick={() => onJobRemoval(job.id)} />
               </div>
             );
