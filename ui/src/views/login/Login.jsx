@@ -85,10 +85,10 @@ export default function Login() {
             }}
           />
 
-          <Button type="primary" onClick={tryLogin} theme="solid" style={{ marginTop: '3rem' }}>
+          <Button type="primary" onClick={tryLogin} theme="solid" style={{ marginTop: '1rem' }}>
             Login
           </Button>
-          <br />
+
           {demoMode && (
             <Banner
               fullMode={true}
