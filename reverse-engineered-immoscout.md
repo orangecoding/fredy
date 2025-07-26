@@ -22,22 +22,24 @@ These protections make it extremely difficult to reliably extract data from Immo
 
 To work around these limitations, we are in the progress of reverse-engineering Immoscout24's mobile API. The mobile applications need to communicate with Immoscout's servers to retrieve listing data, and these API endpoints typically have fewer anti-bot protections than the web interface.
 
-The mobile API provides several key endpoints:    
+The mobile API provides several key endpoints:
+
 - Search total endpoint: Returns the total number of listings for a given query
 - Search list endpoint: Retrieves the actual listings with details
 - Expose endpoint: Returns detailed information about a specific listing
 
-Challenges:    
+Challenges:
+
 1. Identifying the necessary endpoints and parameters required to perform searches
 2. Mapping the mobile API parameters to their web counterparts to maintain compatibility with existing search URLs
-
 
 ## Api Specs
 
 #### Search for Listings
 
-`GET /search/total?{search parameters}`    
-*Returns the total number of listings for the given query.*
+`GET /search/total?{search parameters}`  
+_Returns the total number of listings for the given query._
+
 ```
 curl -H "User-Agent: ImmoScout24_1410_30_._" \
      -H "Accept: application/json" \
@@ -47,14 +49,17 @@ curl -H "User-Agent: ImmoScout24_1410_30_._" \
 ---
 
 #### Retrieve the listings
-`POST /search/list?{search parameters}`   
-*The body is json encoded and contains data specifying additional results (advertisements) to return. The format is as follows (It is not necessary to provide data for the specified keys.)*
-  ```
-  {
-  "supportedResultListTypes": [],
-  "userData": {}
-  }
-  ```
+
+`POST /search/list?{search parameters}`  
+_The body is json encoded and contains data specifying additional results (advertisements) to return. The format is as follows (It is not necessary to provide data for the specified keys.)_
+
+```
+{
+"supportedResultListTypes": [],
+"userData": {}
+}
+```
+
 ```
 curl -X POST 'https://api.mobile.immobilienscout24.de/search/list?pricetype=calculatedtotalrent&realestatetype=apartmentrent&searchType=region&geocodes=%2Fde%2Fberlin%2Fberlin&pagenumber=1' \
   -H "Connection: keep-alive" \
@@ -66,15 +71,18 @@ curl -X POST 'https://api.mobile.immobilienscout24.de/search/list?pricetype=calc
 ```
 
 ---
+
 #### Get details of listings
+
 `GET /expose/{id}`
 The response contains additional details not included in the listing response.
+
 ```
 curl -H "User-Agent: ImmoScout24_1410_30_._" \
      -H "Accept: application/json" \
      "https://api.mobile.immobilienscout24.de/expose/158382494"
 ```
 
+## Parameters
 
-## Parameters 
 The parameters between web and mobile are very different which is why we have to translate them. Please see [/lib/services/immoscout/immoscout-web-translator.js](https://github.com/orangecoding/fredy/blob/master/lib/services/immoscout/immoscout-web-translator.js).
