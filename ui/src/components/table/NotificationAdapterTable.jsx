@@ -7,10 +7,10 @@ export default function NotificationAdapterTable({ notificationAdapter = [], onR
   return (
     <Table
       pagination={false}
-      empty={<Empty description="No Data" />}
+      empty={<Empty description="No notification adapters found." />}
       columns={[
         {
-          title: 'Notification Adapter Name',
+          title: 'Name',
           dataIndex: 'name',
         },
 

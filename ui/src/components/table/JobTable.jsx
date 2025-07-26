@@ -7,7 +7,7 @@ const empty = (
   <Empty
     image={<IllustrationNoResult />}
     darkModeImage={<IllustrationNoResultDark />}
-    description={'No jobs available'}
+    description={'No jobs available.'}
   />
 );
 
@@ -29,21 +29,21 @@ export default function JobTable({ jobs = {}, onJobRemoval, onJobStatusChanged, 
           dataIndex: 'name',
         },
         {
-          title: 'Number of findings',
+          title: 'Findings',
           dataIndex: 'numberOfFoundListings',
           render: (value) => {
             return value || 0;
           },
         },
         {
-          title: 'Active provider',
+          title: 'Providers',
           dataIndex: 'provider',
           render: (value) => {
             return value.length || 0;
           },
         },
         {
-          title: 'Active notification adapter',
+          title: 'Notification adapters',
           dataIndex: 'notificationAdapter',
           render: (value) => {
             return value.length || 0;
