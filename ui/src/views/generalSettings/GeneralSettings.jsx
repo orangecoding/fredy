@@ -71,28 +71,20 @@ const GeneralSettings = function GeneralSettings() {
 
   const nullOrEmpty = (val) => val == null || val.length === 0;
 
-  const throwMessage = (message, type) => {
-    if (type === 'error') {
-      Toast.error(message);
-    } else {
-      Toast.success(message);
-    }
-  };
-
   const onStore = async () => {
     if (nullOrEmpty(interval)) {
-      throwMessage('Interval may not be empty.', 'error');
+      Toast.error('Interval may not be empty.');
       return;
     }
     if (nullOrEmpty(port)) {
-      throwMessage('Port may not be empty.', 'error');
+      Toast.error('Port may not be empty.');
       return;
     }
     if (
       (!nullOrEmpty(workingHourFrom) && nullOrEmpty(workingHourTo)) ||
       (nullOrEmpty(workingHourFrom) && !nullOrEmpty(workingHourTo))
     ) {
-      throwMessage('Working hours to and from must be set if either to or from has been set before.', 'error');
+      Toast.error('Working hours to and from must be set if either to or from has been set before.');
       return;
     }
     try {
@@ -109,13 +101,13 @@ const GeneralSettings = function GeneralSettings() {
     } catch (exception) {
       console.error(exception);
       if (exception?.json?.message != null) {
-        throwMessage(exception.json.message, 'error');
+        Toast.error(exception.json.message);
       } else {
-        throwMessage('Error while trying to store settings.', 'error');
+        Toast.error('Error while trying to store settings.');
       }
       return;
     }
-    throwMessage('Settings stored successfully. We will reload your browser in 3 seconds.', 'success');
+    Toast.success('Settings stored successfully. We will reload your browser in 3 seconds.');
     setTimeout(() => {
       location.reload();
     }, 3000);

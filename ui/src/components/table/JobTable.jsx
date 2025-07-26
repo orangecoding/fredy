@@ -3,11 +3,14 @@ import React from 'react';
 import { Button, Empty, Table, Switch } from '@douyinfe/semi-ui';
 import { IconDelete, IconEdit, IconHistogram } from '@douyinfe/semi-icons';
 import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-illustrations';
+
+import './JobTable.less';
+
 const empty = (
   <Empty
     image={<IllustrationNoResult />}
     darkModeImage={<IllustrationNoResultDark />}
-    description={'No jobs available'}
+    description={'No jobs available.'}
   />
 );
 
@@ -25,25 +28,25 @@ export default function JobTable({ jobs = {}, onJobRemoval, onJobStatusChanged, 
           },
         },
         {
-          title: 'Job Name',
+          title: 'Name',
           dataIndex: 'name',
         },
         {
-          title: 'Number of findings',
+          title: 'Findings',
           dataIndex: 'numberOfFoundListings',
           render: (value) => {
             return value || 0;
           },
         },
         {
-          title: 'Active provider',
+          title: 'Providers',
           dataIndex: 'provider',
           render: (value) => {
             return value.length || 0;
           },
         },
         {
-          title: 'Active notification adapter',
+          title: 'Notification adapters',
           dataIndex: 'notificationAdapter',
           render: (value) => {
             return value.length || 0;
@@ -54,19 +57,9 @@ export default function JobTable({ jobs = {}, onJobRemoval, onJobStatusChanged, 
           dataIndex: 'tools',
           render: (_, job) => {
             return (
-              <div style={{ float: 'right' }}>
-                <Button
-                  type="primary"
-                  icon={<IconHistogram />}
-                  onClick={() => onJobInsight(job.id)}
-                  style={{ marginRight: '1rem' }}
-                />
-                <Button
-                  type="secondary"
-                  icon={<IconEdit />}
-                  onClick={() => onJobEdit(job.id)}
-                  style={{ marginRight: '1rem' }}
-                />
+              <div className="interactions">
+                <Button type="primary" icon={<IconHistogram />} onClick={() => onJobInsight(job.id)} />
+                <Button type="secondary" icon={<IconEdit />} onClick={() => onJobEdit(job.id)} />
                 <Button type="danger" icon={<IconDelete />} onClick={() => onJobRemoval(job.id)} />
               </div>
             );

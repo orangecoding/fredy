@@ -38,7 +38,7 @@ export default function JobMutator() {
   const dispatch = useDispatch();
 
   const isSavingEnabled = () => {
-    return notificationAdapterData.length > 0 && providerData.length > 0 && name != null && name.length > 0;
+    return notificationAdapterData.length && providerData.length && name;
   };
 
   const mutateJob = async () => {
@@ -105,13 +105,13 @@ export default function JobMutator() {
         </SegmentPart>
         <Divider margin="1rem" />
         <SegmentPart
-          name="Provider"
+          name="Providers"
           icon="briefcase"
-          helpText={
-            'A provider is essentially the service (Immowelt etc.) that Fredy is using to search for new listings. When adding a new provider, Fredy will open a new tab pointing ' +
-            'to the website of this provider. You have to adjust your search parameter and click on "Search". If the results are being shown, copy the browser url. This is the url, Fredy will use ' +
-            'to search for new listings.'
-          }
+          helpText={`
+            A provider is essentially the service (e.g. ImmoScout24, Kleinanzeigen) that Fredy searches for new listings.
+            Fredy will open a new tab pointing to the website of this provider. You have to adjust your search parameter
+            and click on "Search". If the results are being shown, copy the browser URL in here.
+            `}
         >
           <Button
             type="primary"
@@ -132,7 +132,7 @@ export default function JobMutator() {
         <Divider margin="1rem" />
         <SegmentPart
           icon="bell"
-          name="Notification Adapter"
+          name="Notification Adapters"
           helpText="Fredy supports multiple ways to notify you about new findings. These are called notification adapter. You can chose between email, Telegram etc."
         >
           <Button
@@ -172,7 +172,7 @@ export default function JobMutator() {
         <SegmentPart
           icon="play circle outline"
           name="Job activation"
-          helpText="Whether or not the job is activated. If it is not activated, it will be ignored when Fredy checks for new listings."
+          helpText="Whether or not the job is activated. Inactive jobs will be ignored when Fredy checks for new listings."
         >
           <Switch className="jobMutation__spaceTop" onChange={(checked) => setEnabled(checked)} checked={enabled} />
         </SegmentPart>

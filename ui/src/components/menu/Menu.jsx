@@ -4,6 +4,7 @@ import { Tabs, TabPane } from '@douyinfe/semi-ui';
 
 import { useLocation } from 'react-router';
 import { IconUser, IconTerminal, IconSetting } from '@douyinfe/semi-icons';
+import './Menu.less';
 
 function parsePathName(name) {
   const split = name.split('/').filter((s) => s.length !== 0);
@@ -14,7 +15,12 @@ const TopMenu = function TopMenu({ isAdmin }) {
   const history = useHistory();
   const location = useLocation();
   return (
-    <Tabs type="line" activeKey={parsePathName(location.pathname)} onTabClick={(key) => history.push(key)}>
+    <Tabs
+      className="menu"
+      type="line"
+      activeKey={parsePathName(location.pathname)}
+      onTabClick={(key) => history.push(key)}
+    >
       <TabPane
         itemKey="/jobs"
         tab={
