@@ -28,9 +28,10 @@ export default function Login() {
 
   const tryLogin = async () => {
     if (!username?.trim() || !password) {
-      Toast.error('Username and password are mandatory.');
+      setError('Username and password are mandatory.');
       return;
     }
+    setError(null);
 
     try {
       await xhrPost('/api/login', {
@@ -42,7 +43,6 @@ export default function Login() {
       return;
     }
 
-    setError(null);
     Toast.success('Login successful!');
 
     await dispatch.user.getCurrentUser();

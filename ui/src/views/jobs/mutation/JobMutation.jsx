@@ -38,7 +38,7 @@ export default function JobMutator() {
   const dispatch = useDispatch();
 
   const isSavingEnabled = () => {
-    return notificationAdapterData.length && providerData.length && name;
+    return Boolean(notificationAdapterData.length && providerData.length && name);
   };
 
   const mutateJob = async () => {
