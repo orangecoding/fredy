@@ -107,17 +107,17 @@ flowchart TD
     E -- No --> F1
     F1 --> F2
 
-    style A1 fill:#fde9a0
-    style A2 fill:#fde9a0
-    style A3 fill:#fde9a0
-    style C1 fill:#c4c9f1
-    style C2 fill:#c4c9f1
-    style C3 fill:#c4c9f1
-    style F1 fill:#d2edba
-    style F2 fill:#d2edba
-    style B fill:#abd8f9
-    style D fill:#fab4a8
-    style E fill:#fffbb4
+    style A1 fill:#fde9a0,stroke:#333333,color:#333333
+    style A2 fill:#fde9a0,stroke:#333333,color:#333333
+    style A3 fill:#fde9a0,stroke:#333333,color:#333333
+    style C1 fill:#c4c9f1,stroke:#333333,color:#333333
+    style C2 fill:#c4c9f1,stroke:#333333,color:#333333
+    style C3 fill:#c4c9f1,stroke:#333333,color:#333333
+    style F1 fill:#d2edba,stroke:#333333,color:#333333
+    style F2 fill:#d2edba,stroke:#333333,color:#333333
+    style B fill:#abd8f9,stroke:#333333,color:#333333
+    style D fill:#fab4a8,stroke:#333333,color:#333333
+    style E fill:#fffbb4,stroke:#333333,color:#333333
 ```
 
 ### Immoscout
