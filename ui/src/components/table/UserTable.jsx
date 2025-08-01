@@ -9,7 +9,7 @@ const empty = (
   <Empty
     image={<IllustrationNoResult />}
     darkModeImage={<IllustrationNoResultDark />}
-    description={'No user available'}
+    description={'No users found.'}
   />
 );
 
