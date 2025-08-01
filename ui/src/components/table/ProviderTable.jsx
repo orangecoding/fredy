@@ -7,14 +7,14 @@ export default function ProviderTable({ providerData = [], onRemove } = {}) {
   return (
     <Table
       pagination={false}
-      empty={<Empty description="No Provider available" />}
+      empty={<Empty description="No providers found." />}
       columns={[
         {
-          title: 'Provider Name',
+          title: 'Name',
           dataIndex: 'name',
         },
         {
-          title: 'Provider Url',
+          title: 'URL',
           dataIndex: 'url',
           render: (_, data) => {
             return (
