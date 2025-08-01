@@ -2,8 +2,8 @@
 
 If you want to contribute, please make sure you've executed the tests.
 
-
 ### How to write new provider?
+
 - create the provider filer under `/lib/provider`
 - create a test under /test and make sure it is running successfully
 
@@ -13,7 +13,7 @@ let appliedBlackList = [];
 //normalize incoming values
 function normalize(o) {
   const id = parseInt(o.id.substring(o.id.indexOf('_') + 1, o.id.length));
-  
+
   return Object.assign(o, { id });
 }
 
@@ -27,7 +27,7 @@ function applyBlacklist(o) {
 
 const config = {
   url: null,
-    //this is the container wrapping the search listings
+  //this is the container wrapping the search listings
   crawlContainer: '#result-list-stage .item',
   crawlFields: {
     id: '@id',
@@ -49,7 +49,7 @@ exports.init = (sourceConfig, blacklist) => {
   appliedBlackList = blacklist || [];
 };
 
-//ths 
+//ths
 exports.metaInformation = {
   name: 'your provider name',
   baseUrl: 'https://www.yourprovider.de/',
@@ -57,11 +57,10 @@ exports.metaInformation = {
 };
 
 exports.config = config;
-
 ```
- 
 
 ### How to write new notification adapter?
+
 - create the provider filer under `/lib/notification/adapter`
 - create a description of the provider under `/lib/notification/adapter/*.md`. Make sure the name of the md file is equal to the notification adapter
 
@@ -72,43 +71,43 @@ const Slack = require('slack');
 const msg = Slack.chat.postMessage;
 const { markdown2Html } = require('../../services/markdown');
 
-
 //as a parameter, you will always get the serviceName, newListings and all the values, that
 //you have defined exports.config.fields. (This is being used for rendering in the frontend)
 exports.send = ({ serviceName, newListings, notificationConfig, jobKey }) => {
-    const { token, channel } = notificationConfig.find((adapter) => adapter.id === 'slack').fields;
-    return newListings.map((payload) => {
-        //tho whatever needs to be done to send the data to the receiver, make sure the format is human readable
-    });
+  const { token, channel } = notificationConfig.find((adapter) => adapter.id === 'slack').fields;
+  return newListings.map((payload) => {
+    //tho whatever needs to be done to send the data to the receiver, make sure the format is human readable
+  });
 };
 
 exports.config = {
-    id: __filename.slice(__dirname.length + 1, -3),
-    name: 'someUniqueName, used in the frontend',
-    //this readme is rendered in the frontend to explain how to use this
-    readme: markdown2Html('lib/notification/adapter/slack.md'),
-    description: 'Some description text rendered on the notification page',
-    fields: {
-        token: {
-            //type can be text/number/boolean
-            type: 'text',
-            label: 'Token',
-            description: 'The token needed to send notifications to slack.',
-        },
-        channel: {
-            type: 'channel',
-            label: 'Channel',
-            description: 'The channel where fredy should send notifications to.',
-        },
+  id: __filename.slice(__dirname.length + 1, -3),
+  name: 'someUniqueName, used in the frontend',
+  //this readme is rendered in the frontend to explain how to use this
+  readme: markdown2Html('lib/notification/adapter/slack.md'),
+  description: 'Some description text rendered on the notification page',
+  fields: {
+    token: {
+      //type can be text/number/boolean
+      type: 'text',
+      label: 'Token',
+      description: 'The token needed to send notifications to slack.',
     },
+    channel: {
+      type: 'channel',
+      label: 'Channel',
+      description: 'The channel where fredy should send notifications to.',
+    },
+  },
 };
-
 ```
 
 #### Running Tests
+
 If you've written a new provider you are an awesome person. If you now write tests for it, you are even more awesome. And who doesn't want to be more awesome, right?
 
 #### Codestyle
+
 I'm using ESLint to maintain quote style and quality. Do not skip it...
 
 ##### To-do before merging:
