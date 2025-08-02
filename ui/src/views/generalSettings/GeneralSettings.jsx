@@ -69,21 +69,16 @@ const GeneralSettings = function GeneralSettings() {
     init();
   }, [settings]);
 
-  const nullOrEmpty = (val) => val == null || val.length === 0;
-
   const onStore = async () => {
-    if (nullOrEmpty(interval)) {
-      Toast.error('Interval may not be empty.');
+    if (!interval) {
+      throwMessage('Interval may not be empty.', 'error');
       return;
     }
-    if (nullOrEmpty(port)) {
-      Toast.error('Port may not be empty.');
+    if (!port) {
+      throwMessage('Port may not be empty.', 'error');
       return;
     }
-    if (
-      (!nullOrEmpty(workingHourFrom) && nullOrEmpty(workingHourTo)) ||
-      (nullOrEmpty(workingHourFrom) && !nullOrEmpty(workingHourTo))
-    ) {
+    if ((workingHourFrom && !workingHourTo) || (!workingHourFrom && workingHourTo)) {
       Toast.error('Working hours to and from must be set if either to or from has been set before.');
       return;
     }
