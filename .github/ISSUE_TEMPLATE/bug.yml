@@ -1,43 +1,65 @@
-name: Feature Request
-description: Suggest an improvement or new idea for Fredy
-title: "[Feature]: "
-labels: [enhancement]
+name: Bug Report
+description: Help us improve Fredy by reporting a bug
+title: "[Bug]: "
+labels: [bug]
 assignees: []
 
 body:
   - type: textarea
-    id: problem
+    id: description
     attributes:
-      label: Related Problem
-      description: Is your feature request related to a problem? Describe it clearly.
-      placeholder: "Example: It’s difficult to do X when Y happens..."
-    validations:
-      required: false
-
-  - type: textarea
-    id: solution
-    attributes:
-      label: Proposed Solution
-      description: Describe the feature you would like to see.
-      placeholder: "I would like Fredy to automatically..."
+      label: Bug Description
+      description: Provide a clear and concise description of the bug.
+      placeholder: e.g. "Fredy crashes when I click on Save."
     validations:
       required: true
 
   - type: textarea
-    id: alternatives
+    id: steps
     attributes:
-      label: Alternatives Considered
-      description: List any alternative solutions or workarounds you’ve tried or thought about.
-      placeholder: "Instead of this, I also considered..."
+      label: Steps to Reproduce
+      description: List the steps to reproduce the issue.
+      placeholder: |
+        1. Go to '...'
+        2. Click on '...'
+        3. Scroll down to '...'
+        4. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+      placeholder: "It should save without errors."
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened?
+      placeholder: "Fredy crashed with error XYZ."
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots / Logs
+      description: Add screenshots or paste log output to help explain the problem.
+      placeholder: "Drag and drop screenshots here, or paste logs."
     validations:
       required: false
 
-  - type: textarea
-    id: benefits
+  - type: input
+    id: environment
     attributes:
-      label: Benefits
-      description: Explain how this feature would improve Fredy or it's user experience.
-      placeholder: "This would save users time by..."
+      label: Environment
+      description: Provide details about your environment.
+      placeholder: "OS: macOS 15, Browser: Chrome 124, App version: 1.2.3"
     validations:
       required: true
 
@@ -45,7 +67,7 @@ body:
     id: context
     attributes:
       label: Additional Context
-      description: Add any other context, examples, or screenshots that might help clarify your idea.
-      placeholder: "Any other relevant information..."
+      description: Add any other context about the problem here.
+      placeholder: "Any other information that might help..."
     validations:
       required: false
