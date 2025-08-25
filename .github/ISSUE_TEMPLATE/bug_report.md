@@ -1,24 +1,35 @@
 ---
-name: Bug report
-about: Create a report to help us improve
-title: ''
-labels: ''
+name: Bug Report
+about: Help us improve by reporting an issue
+title: "[Bug]: "
+labels: bug
 assignees: ''
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+## Description
+Provide a clear and concise description of the bug.
 
-**To Reproduce**
-Steps to reproduce the behavior:
-
+## Steps to Reproduce
+List the steps to reproduce the issue, for example:
 1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+2. Click on '...'
+3. Scroll down to '...'
+4. Observe the error
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+## Expected Behavior
+Describe what you expected to happen instead.
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+## Actual Behavior
+Describe what actually happened.
+
+## Screenshots / Logs
+If applicable, add screenshots or paste relevant log output to help explain the problem.
+
+## Environment
+Please complete the following information (if relevant):
+- OS: [e.g. Windows 11, macOS 14, Ubuntu 22.04]
+- Browser [e.g. Chrome 124, Safari 17]
+- App/Service version [e.g. v1.2.3]
+
+## Additional Context
+Add any other details that might help us understand or reproduce the issue.
