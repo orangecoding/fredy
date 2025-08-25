@@ -1,4 +1,4 @@
-import { convertWebToMobile } from '../../../lib/services/immoscout/immoscout-web-translater.js';
+import { convertWebToMobile } from '../../../lib/services/immoscout/immoscout-web-translator.js';
 import { expect } from 'chai';
 import { readFile } from 'fs/promises';
 
