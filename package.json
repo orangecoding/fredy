@@ -9,7 +9,7 @@
     "start:frontend": "vite -m production",
     "start:frontend:dev": "vite",
     "build:frontend": "vite build",
-    "format": "prettier --write .",
+    "format": "prettier --write \"**/*.js\"",
     "format:check": "prettier --check \"**/*.js\"",
     "test": "mocha --loader=esmock --timeout 3000000 test/**/*.test.js",
     "lint": "eslint .",
