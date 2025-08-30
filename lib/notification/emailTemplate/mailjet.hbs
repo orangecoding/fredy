@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Fredy found some new listings</title>
+    <title>Listings</title>
     <style type="text/css">
         body { margin:0; padding:0; background:#000000; }
         table { border-collapse:collapse; }
@@ -35,22 +35,18 @@
         <td align="center">
             <table role="presentation" class="container" width="640">
                 <tr><td class="sp-20"></td></tr>
+
                 <tr>
                     <td align="center">
-                        <table role="presentation" width="100%">
-                            <tr>
-                                <td align="center">
-                                    <h1 class="h1" style="text-align:center;">
-                                        Service {{serviceName}} found {{numberOfListings}} new listings
-                                    </h1>
-                                </td>
-                            </tr>
-                            <tr><td class="sp-12"></td></tr>
-                            <tr><td class="divider"></td></tr>
-                            <tr><td class="sp-16"></td></tr>
-                        </table>
+                        <h1 class="h1" style="text-align:center;">
+                            Service {{serviceName}} found {{numberOfListings}} new listings
+                        </h1>
                     </td>
                 </tr>
+
+                <tr><td class="sp-12"></td></tr>
+                <tr><td class="divider"></td></tr>
+                <tr><td class="sp-16"></td></tr>
 
                 {{#each listings}}
                     <tr>
@@ -60,11 +56,13 @@
                                     <tr>
                                         <td>
                                             <a href="{{this.link}}" target="_blank">
-                                                <img src="{{this.image}}" alt="{{this.title}}" width="640" style="width:100%;height:auto;background:#1a1a1a;" />
+                                                <img src="cid:{{this.imageCid}}" alt="{{this.title}}" width="640"
+                                                     style="width:100%; height:auto; background:#1a1a1a;" />
                                             </a>
                                         </td>
                                     </tr>
                                 {{/if}}
+
                                 <tr>
                                     <td style="padding:16px 18px 0 18px;">
                                         <a href="{{this.link}}" target="_blank" style="color:#ffffff;">
@@ -72,7 +70,9 @@
                                         </a>
                                     </td>
                                 </tr>
+
                                 <tr><td class="sp-8"></td></tr>
+
                                 <tr>
                                     <td style="padding:0 18px;">
                                         <table role="presentation" width="100%">
@@ -93,20 +93,12 @@
                                         </table>
                                     </td>
                                 </tr>
+
                                 <tr><td class="sp-16"></td></tr>
+
                                 <tr>
                                     <td align="left" style="padding:0 18px 18px 18px;">
-                                        <!--[if mso]>
-                    <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" href="{{this.link}}" arcsize="8%" strokecolor="#00dc73" strokeweight="0" fillcolor="#00dc73" style="height:40px;v-text-anchor:middle;width:180px;">
-                      <w:anchorlock/>
-                      <center style="color:#0b0b0b;font-family:Arial;font-size:14px;font-weight:bold;">
-                        View Listing
-                      </center>
-                    </v:roundrect>
-                    <![endif]-->
-                                        <!--[if !mso]><!-- -->
                                         <a href="{{this.link}}" class="btn" target="_blank">View Listing</a>
-                                        <!--<![endif]-->
                                     </td>
                                 </tr>
                             </table>
