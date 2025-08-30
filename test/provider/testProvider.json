@@ -24,10 +24,6 @@
     "url": "https://immo.swp.de/suchergebnisse?l=M%C3%BCnchen&r=0km&_multiselect_r=0km&ut=private&t=apartment%3Arental&a=de.muenchen&pf=&pt=&rf=0&rt=0&sf=50&st=&yf=&yt=&ff=&ft=&s=most_recently_updated_first&pa=&o=&ad=&u=",
     "enabled": true
   },
-  "kalaydo": {
-    "url": "https://www.kalaydo.de/immobilien/eigentumswohnung-kaufen/o/duesseldorf/4/?attr_gt_estate_size_living_area=90.0&attr_gt_no_of_rooms=3.5&maxPrice=420000.00&radius=5&resultsPerPage=50&sorting=-date",
-    "enabled": true
-  },
   "kleinanzeigen": {
     "url": "https://www.kleinanzeigen.de/s-immobilien/duesseldorf/anzeige:angebote/wohnung/k0c195l2068r5",
     "enabled": true
