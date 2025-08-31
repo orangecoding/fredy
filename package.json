@@ -11,7 +11,7 @@
     "build:frontend": "vite build",
     "format": "prettier --write \"**/*.js\"",
     "format:check": "prettier --check \"**/*.js\"",
-    "test": "mocha --loader=esmock --timeout 3000000 test/**/*.test.js",
+    "test": "mocha --loader=esmock --timeout 60000 test/**/*.test.js",
     "lint": "eslint .",
     "lint:fix": "yarn lint --fix"
   },
@@ -107,7 +107,7 @@
     "husky": "9.1.7",
     "less": "4.4.1",
     "lint-staged": "16.1.5",
-    "mocha": "10.8.2",
+    "mocha": "11.7.1",
     "nodemon": "^3.1.10",
     "prettier": "3.6.2",
     "redux-logger": "3.0.6"
