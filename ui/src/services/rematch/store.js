@@ -9,7 +9,6 @@ import { demoMode } from './models/demoMode.js';
 import { init } from '@rematch/core';
 const middleware = [];
 if (process.env.NODE_ENV === 'development') {
-  // eslint-disable-line no-redeclare
   middleware.push(createLogger({ duration: false, collapsed: (getState, action, logEntry) => !logEntry.error }));
 }
 const store = init({
