@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import cityBackground from '../../assets/city_background.jpg';
 import Logo from '../../components/logo/Logo';
 import { xhrPost } from '../../services/xhr';
-import { useHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Input, Button, Banner, Toast } from '@douyinfe/semi-ui';
 
@@ -16,7 +16,7 @@ export default function Login() {
   const [password, setPassword] = React.useState('');
   const [error, setError] = React.useState(null);
   const demoMode = useSelector((state) => state.demoMode.demoMode || false);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function init() {
@@ -46,7 +46,7 @@ export default function Login() {
     Toast.success('Login successful!');
 
     await dispatch.user.getCurrentUser();
-    history.push('/jobs');
+    navigate('/jobs');
   };
 
   return (

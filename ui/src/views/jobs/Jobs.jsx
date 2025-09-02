@@ -3,7 +3,7 @@ import React from 'react';
 import JobTable from '../../components/table/JobTable';
 import { useSelector, useDispatch } from 'react-redux';
 import { xhrDelete, xhrPut } from '../../services/xhr';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import ProcessingTimes from './ProcessingTimes';
 import { Button, Toast } from '@douyinfe/semi-ui';
 import { IconPlusCircle } from '@douyinfe/semi-icons';
@@ -12,7 +12,7 @@ import './Jobs.less';
 export default function Jobs() {
   const jobs = useSelector((state) => state.jobs.jobs);
   const processingTimes = useSelector((state) => state.jobs.processingTimes);
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const onJobRemoval = async (jobId) => {
@@ -43,7 +43,7 @@ export default function Jobs() {
           type="primary"
           icon={<IconPlusCircle />}
           className="jobs__newButton"
-          onClick={() => history.push('/jobs/new')}
+          onClick={() => navigate('/jobs/new')}
         >
           New Job
         </Button>
@@ -53,8 +53,8 @@ export default function Jobs() {
         jobs={jobs || []}
         onJobRemoval={onJobRemoval}
         onJobStatusChanged={onJobStatusChanged}
-        onJobInsight={(jobId) => history.push(`/jobs/insights/${jobId}`)}
-        onJobEdit={(jobId) => history.push(`/jobs/edit/${jobId}`)}
+        onJobInsight={(jobId) => navigate(`/jobs/insights/${jobId}`)}
+        onJobEdit={(jobId) => navigate(`/jobs/edit/${jobId}`)}
       />
     </div>
   );

@@ -7,7 +7,7 @@ import { IconPlus } from '@douyinfe/semi-icons';
 import { Button } from '@douyinfe/semi-ui';
 import UserRemovalModal from './UserRemovalModal';
 import { xhrDelete } from '../../services/xhr';
-import { useHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import './Users.less';
 
@@ -16,7 +16,7 @@ const Users = function Users() {
   const [loading, setLoading] = React.useState(true);
   const users = useSelector((state) => state.user.users);
   const [userIdToBeRemoved, setUserIdToBeRemoved] = React.useState(null);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     async function init() {
@@ -50,7 +50,7 @@ const Users = function Users() {
             type="primary"
             className="users__newButton"
             icon={<IconPlus />}
-            onClick={() => history.push('/users/new')}
+            onClick={() => navigate('/users/new')}
           >
             Create new User
           </Button>
@@ -58,7 +58,7 @@ const Users = function Users() {
           <UserTable
             user={users}
             onUserEdit={(userId) => {
-              history.push(`/users/edit/${userId}`);
+              navigate(`/users/edit/${userId}`);
             }}
             onUserRemoval={(userId) => {
               setUserIdToBeRemoved(userId);

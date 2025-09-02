@@ -3,7 +3,7 @@ import React from 'react';
 import { roundToNext5Minute } from '../../../services/time/timeService';
 import Headline from '../../../components/headline/Headline';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router';
+import { useParams } from 'react-router-dom';
 import Linechart from './Linechart';
 
 const JobInsight = function JobInsight() {

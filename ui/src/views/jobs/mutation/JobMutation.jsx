@@ -7,8 +7,7 @@ import ProviderMutator from './components/provider/ProviderMutator';
 import Headline from '../../../components/headline/Headline';
 import { useDispatch, useSelector } from 'react-redux';
 import { xhrPost } from '../../../services/xhr';
-import { useHistory } from 'react-router-dom';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Divider, Input, Switch, Button, TagInput, Toast } from '@douyinfe/semi-ui';
 import './JobMutation.less';
 import { SegmentPart } from '../../../components/segment/SegmentPart';
@@ -34,7 +33,7 @@ export default function JobMutator() {
   const [blacklist, setBlacklist] = useState(defaultBlacklist);
   const [notificationAdapterData, setNotificationAdapterData] = useState(defaultNotificationAdapter);
   const [enabled, setEnabled] = useState(defaultEnabled);
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const isSavingEnabled = () => {
@@ -53,7 +52,7 @@ export default function JobMutator() {
       });
       await dispatch.jobs.getJobs();
       Toast.success('Job successfully saved...');
-      history.push('/jobs');
+      navigate('/jobs');
     } catch (Exception) {
       console.error(Exception.json.message);
       Toast.error(Exception.json != null ? Exception.json.message : Exception);
@@ -177,7 +176,7 @@ export default function JobMutator() {
           <Switch className="jobMutation__spaceTop" onChange={(checked) => setEnabled(checked)} checked={enabled} />
         </SegmentPart>
         <Divider margin="1rem" />
-        <Button type="danger" style={{ marginRight: '1rem' }} onClick={() => history.push('/jobs')}>
+        <Button type="danger" style={{ marginRight: '1rem' }} onClick={() => navigate('/jobs')}>
           Cancel
         </Button>
         <Button type="primary" icon={<IconPlusCircle />} disabled={!isSavingEnabled()} onClick={mutateJob}>

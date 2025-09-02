@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { xhrGet, xhrPost } from '../../../services/xhr';
-import { useHistory, useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { Divider, Input, Switch, Button, Toast } from '@douyinfe/semi-ui';
 import './UserMutator.less';
@@ -15,7 +15,7 @@ const UserMutator = function UserMutator() {
   const [password2, setPassword2] = React.useState('');
   const [isAdmin, setIsAdmin] = React.useState(false);
 
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   React.useEffect(() => {
@@ -50,7 +50,7 @@ const UserMutator = function UserMutator() {
       });
       await dispatch.user.getUsers();
       Toast.success('User successfully saved...');
-      history.push('/users');
+      navigate('/users');
     } catch (error) {
       console.error(error);
       Toast.error(error.json.message);
@@ -98,7 +98,7 @@ const UserMutator = function UserMutator() {
         <Switch checked={isAdmin} onChange={(checked) => setIsAdmin(checked)} />
       </SegmentPart>
       <Divider margin="1rem" />
-      <Button type="danger" style={{ marginRight: '1rem' }} onClick={() => history.push('/users')}>
+      <Button type="danger" style={{ marginRight: '1rem' }} onClick={() => navigate('/users')}>
         Cancel
       </Button>
       <Button type="primary" icon={<IconPlusCircle />} onClick={saveUser}>

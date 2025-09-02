@@ -7,14 +7,13 @@ import JobMutation from './views/jobs/mutation/JobMutation';
 import UserMutator from './views/user/mutation/UserMutator';
 import JobInsight from './views/jobs/insights/JobInsight.jsx';
 import { useDispatch, useSelector } from 'react-redux';
-import { Switch, Redirect } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Logout from './components/logout/Logout';
 import Logo from './components/logo/Logo';
 import Menu from './components/menu/Menu';
 import Login from './views/login/Login';
 import Users from './views/user/Users';
 import Jobs from './views/jobs/Jobs';
-import { Route } from 'react-router';
 
 import './App.less';
 import TrackingModal from './components/tracking/TrackingModal.jsx';
@@ -49,10 +48,10 @@ export default function FredyApp() {
   const isAdmin = () => currentUser != null && currentUser.isAdmin;
 
   const login = () => (
-    <Switch>
-      <Route name="Login" path={'/login'} component={Login} />
-      <Redirect from="*" to={'/login'} />
-    </Switch>
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="*" element={<Navigate to="/login" replace />} />
+    </Routes>
   );
 
   return loading ? null : needsLogin() ? (
@@ -77,34 +76,49 @@ export default function FredyApp() {
           </>
         )}
         {settings.analyticsEnabled === null && !settings.demoMode && <TrackingModal />}
-        <Switch>
-          <Route name="Insufficient Permission" path={'/403'} component={InsufficientPermission} />
-          <Route name="Create new Job" path={'/jobs/new'} component={JobMutation} />
-          <Route name="Edit a Job" path={'/jobs/edit/:jobId'} component={JobMutation} />
-          <Route name="Insights into a Job" path={'/jobs/insights/:jobId'} component={JobInsight} />
-          <Route name="Job overview" path={'/jobs'} component={Jobs} />
-          <PermissionAwareRoute
-            name="Create new User"
+        <Routes>
+          <Route path="/403" element={<InsufficientPermission />} />
+          <Route path="/jobs/new" element={<JobMutation />} />
+          <Route path="/jobs/edit/:jobId" element={<JobMutation />} />
+          <Route path="/jobs/insights/:jobId" element={<JobInsight />} />
+          <Route path="/jobs" element={<Jobs />} />
+
+          {/* Permission-aware routes */}
+          <Route
             path="/users/new"
-            component={<UserMutator />}
-            currentUser={currentUser}
+            element={
+              <PermissionAwareRoute currentUser={currentUser}>
+                <UserMutator />
+              </PermissionAwareRoute>
+            }
           />
-          <PermissionAwareRoute
-            name="Edit a user"
+          <Route
             path="/users/edit/:userId"
-            component={<UserMutator />}
-            currentUser={currentUser}
+            element={
+              <PermissionAwareRoute currentUser={currentUser}>
+                <UserMutator />
+              </PermissionAwareRoute>
+            }
           />
-          <PermissionAwareRoute name="Users" path="/users" component={<Users />} currentUser={currentUser} />
-          <PermissionAwareRoute
-            name="General Settings"
+          <Route
+            path="/users"
+            element={
+              <PermissionAwareRoute currentUser={currentUser}>
+                <Users />
+              </PermissionAwareRoute>
+            }
+          />
+          <Route
             path="/generalSettings"
-            component={<GeneralSettings />}
-            currentUser={currentUser}
+            element={
+              <PermissionAwareRoute currentUser={currentUser}>
+                <GeneralSettings />
+              </PermissionAwareRoute>
+            }
           />
 
-          <Redirect from="/" to={'/jobs'} />
-        </Switch>
+          <Route path="/" element={<Navigate to="/jobs" replace />} />
+        </Routes>
       </div>
     </div>
   );

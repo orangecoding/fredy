@@ -1,8 +1,8 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Tabs, TabPane } from '@douyinfe/semi-ui';
 
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 import { IconUser, IconTerminal, IconSetting } from '@douyinfe/semi-icons';
 import './Menu.less';
 
@@ -12,15 +12,10 @@ function parsePathName(name) {
 }
 
 const TopMenu = function TopMenu({ isAdmin }) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
   return (
-    <Tabs
-      className="menu"
-      type="line"
-      activeKey={parsePathName(location.pathname)}
-      onTabClick={(key) => history.push(key)}
-    >
+    <Tabs className="menu" type="line" activeKey={parsePathName(location.pathname)} onTabClick={(key) => navigate(key)}>
       <TabPane
         itemKey="/jobs"
         tab={
