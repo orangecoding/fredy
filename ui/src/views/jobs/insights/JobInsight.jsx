@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { roundToNext5Minute } from '../../../services/time/timeService';
+import { roundToHour } from '../../../services/time/timeService';
 import Headline from '../../../components/headline/Headline';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
@@ -26,14 +26,13 @@ const JobInsight = function JobInsight() {
     const allTimes = new Set();
 
     const cap = (s) => (s ? s[0].toUpperCase() + s.slice(1) : 'Unknown');
-    const toDate = (ts) => new Date(ts < 1e12 ? ts * 1000 : ts); // seconds vs ms
 
     providers.forEach((key) => {
       const providerName = cap(key);
       const tmpTimeObj = {};
 
       Object.values(data[key] || {}).forEach((listingTs) => {
-        const time = roundToNext5Minute(listingTs);
+        const time = roundToHour(listingTs);
         tmpTimeObj[time] = tmpTimeObj[time] == null ? 1 : tmpTimeObj[time] + 1;
         allTimes.add(time);
       });
@@ -50,14 +49,19 @@ const JobInsight = function JobInsight() {
 
       sortedTimes.forEach((t) => {
         result.push({
-          listings: Number(t), // Date object for time axis
+          listings: new Intl.DateTimeFormat('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+          }).format(new Date(parseInt(t))),
           listingsNumber: bucket[t] || 0, // y value
           provider: providerName, // series key
         });
       });
     });
-
-    console.log(result);
 
     return result;
   };

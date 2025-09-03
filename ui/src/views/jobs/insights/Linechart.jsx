@@ -11,6 +11,21 @@ const commonSpec = {
   yField: 'listingsNumber',
   seriesField: 'provider',
   legends: { visible: true },
+  line: {
+    style: {
+      lineWidth: 2,
+    },
+  },
+  point: {
+    visible: false,
+  },
+  axes: [
+    {
+      orient: 'bottom',
+      field: 'listings',
+      zero: false,
+    },
+  ],
 };
 
 const Linechart = function Linechart({ title, series, isLoading = false }) {
@@ -28,7 +43,6 @@ const Linechart = function Linechart({ title, series, isLoading = false }) {
             },
             data: { values: series },
           }}
-          option={{ mode: 'desktop-browser' }}
         />
       )}
     </Placeholder>

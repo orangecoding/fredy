@@ -38,7 +38,8 @@ export default function Login() {
         username: username.trim(),
         password,
       });
-    } catch (Exception) {
+      /* eslint-disable no-unused-vars */
+    } catch (ignored) {
       Toast.error('Login unsuccessful…');
       return;
     }
