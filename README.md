@@ -33,13 +33,11 @@ yarn run start:frontend
 
 _Fredy_ will start with the default port, set to `9998`. You can access _Fredy_ by opening your browser at `http://localhost:9998`. The default login is `admin`, both for username and password. You should change the password as soon as possible when you plan to run Fredy on a server.
 
-<p align="center">
-  <img alt="Job Configuration" src="https://github.com/orangecoding/fredy/blob/master/doc/screenshot1.png" width="30%">
-&nbsp; &nbsp; &nbsp; &nbsp;
-  <img alt="Job Analytics" src="https://github.com/orangecoding/fredy/blob/master/doc/screenshot_2.png" width="30%">
-&nbsp; &nbsp; &nbsp; &nbsp;  
-  <img alt="Job Overview" width="30%" src="https://github.com/orangecoding/fredy/blob/master/doc/screenshot_3.png">
-</p>
+## Screenshots
+
+| Job Configuration | Job Analytics | Job Overview |
+|-------------------|--------------|--------------|
+| ![Screenshot showing job configuration in Fredy](doc/screenshot1.png) | ![Screenshot showing job analytics in Fredy](doc/screenshot_2.png) | ![Screenshot showing job overview in Fredy](doc/screenshot_3.png) |
 
 ## Understanding the fundamentals
 
