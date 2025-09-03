@@ -11,7 +11,7 @@
     "build:frontend": "vite build",
     "format": "prettier --write \"**/*.js\"",
     "format:check": "prettier --check \"**/*.js\"",
-    "test": "mocha --loader=esmock --timeout 60000 test/**/*.test.js",
+    "test": "node --import ./test/esmock-loader.mjs ./node_modules/mocha/bin/mocha.js --timeout 60000 test/**/*.test.js",
     "lint": "eslint .",
     "lint:fix": "yarn lint --fix"
   },
