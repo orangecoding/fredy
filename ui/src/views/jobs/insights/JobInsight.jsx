@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { roundToNext5Minute } from '../../../services/time/timeService';
+import { roundToHour } from '../../../services/time/timeService';
 import Headline from '../../../components/headline/Headline';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
@@ -20,27 +20,47 @@ const JobInsight = function JobInsight() {
 
   const getData = () => {
     const data = insights[params.jobId] || {};
+    const providers = Object.keys(data);
 
-    const result = [];
-    Object.keys(data).forEach((key) => {
-      const series = {
-        name: key[0].toUpperCase() + key.substring(1),
-        data: [],
-      };
+    const countsByProvider = {};
+    const allTimes = new Set();
 
+    const cap = (s) => (s ? s[0].toUpperCase() + s.slice(1) : 'Unknown');
+
+    providers.forEach((key) => {
+      const providerName = cap(key);
       const tmpTimeObj = {};
 
       Object.values(data[key] || {}).forEach((listingTs) => {
-        const time = roundToNext5Minute(listingTs);
+        const time = roundToHour(listingTs);
         tmpTimeObj[time] = tmpTimeObj[time] == null ? 1 : tmpTimeObj[time] + 1;
+        allTimes.add(time);
       });
 
-      Object.keys(tmpTimeObj)
-        .sort()
-        .forEach((timeKey) => {
-          series.data.push([parseInt(timeKey), tmpTimeObj[timeKey]]);
+      countsByProvider[providerName] = tmpTimeObj;
+    });
+
+    const sortedTimes = Array.from(allTimes).sort((a, b) => a - b);
+
+    const result = [];
+    providers.forEach((key) => {
+      const providerName = cap(key);
+      const bucket = countsByProvider[providerName] || {};
+
+      sortedTimes.forEach((t) => {
+        result.push({
+          listings: new Intl.DateTimeFormat('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+          }).format(new Date(parseInt(t))),
+          listingsNumber: bucket[t] || 0, // y value
+          provider: providerName, // series key
         });
-      result.push(series);
+      });
     });
 
     return result;

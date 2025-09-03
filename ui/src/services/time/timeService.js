@@ -8,4 +8,4 @@ export function format(ts) {
     second: 'numeric',
   }).format(ts);
 }
-export const roundToNext5Minute = (ts) => Math.ceil(ts / (1000 * 60 * 5)) * (1000 * 60 * 5);
+export const roundToHour = (ts) => Math.ceil(ts / (1000 * 60 * 60)) * (1000 * 60 * 60);

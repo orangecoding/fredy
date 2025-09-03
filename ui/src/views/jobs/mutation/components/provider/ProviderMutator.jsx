@@ -30,7 +30,8 @@ export default function ProviderMutator({ onVisibilityChanged, visible = false, 
       if (selectedProvider.baseUrl.indexOf(url.origin) === -1) {
         return 'The url you have copied is not valid.';
       }
-    } catch (Exception) {
+      /* eslint-disable no-unused-vars */
+    } catch (ignored) {
       return 'The url you have copied is not valid.';
     }
     return null;
