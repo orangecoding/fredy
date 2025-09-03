@@ -20,28 +20,44 @@ const JobInsight = function JobInsight() {
 
   const getData = () => {
     const data = insights[params.jobId] || {};
+    const providers = Object.keys(data);
 
-    const result = [];
-    Object.keys(data).forEach((key) => {
-      const series = {
-        name: key[0].toUpperCase() + key.substring(1),
-        data: [],
-      };
+    const countsByProvider = {};
+    const allTimes = new Set();
 
+    const cap = (s) => (s ? s[0].toUpperCase() + s.slice(1) : 'Unknown');
+    const toDate = (ts) => new Date(ts < 1e12 ? ts * 1000 : ts); // seconds vs ms
+
+    providers.forEach((key) => {
+      const providerName = cap(key);
       const tmpTimeObj = {};
 
       Object.values(data[key] || {}).forEach((listingTs) => {
         const time = roundToNext5Minute(listingTs);
         tmpTimeObj[time] = tmpTimeObj[time] == null ? 1 : tmpTimeObj[time] + 1;
+        allTimes.add(time);
       });
 
-      Object.keys(tmpTimeObj)
-        .sort()
-        .forEach((timeKey) => {
-          series.data.push([parseInt(timeKey), tmpTimeObj[timeKey]]);
-        });
-      result.push(series);
+      countsByProvider[providerName] = tmpTimeObj;
     });
+
+    const sortedTimes = Array.from(allTimes).sort((a, b) => a - b);
+
+    const result = [];
+    providers.forEach((key) => {
+      const providerName = cap(key);
+      const bucket = countsByProvider[providerName] || {};
+
+      sortedTimes.forEach((t) => {
+        result.push({
+          listings: Number(t), // Date object for time axis
+          listingsNumber: bucket[t] || 0, // y value
+          provider: providerName, // series key
+        });
+      });
+    });
+
+    console.log(result);
 
     return result;
   };
