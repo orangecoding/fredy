@@ -1,123 +1,159 @@
-# Fredy – Self-Hosted Real Estate Search & Alerts for Germany
+# Fredy 🏡 – Your Self-Hosted Real Estate Finder for Germany
 
-Searching for an apartment or house in Germany can be frustrating.  
-Fredy makes it easier: it scrapes **ImmoScout24, Immowelt, Immonet, eBay Kleinanzeigen, and WG-Gesucht**, and notifies you instantly via **Slack, Telegram, Email, ntfy, and more** when new listings match your requirements.  
+Finding an apartment or house in Germany can be stressful and
+time-consuming.\
+**Fredy** makes it easier: it automatically scrapes **ImmoScout24,
+Immowelt, Immonet, eBay Kleinanzeigen, and WG-Gesucht** and notifies you
+instantly via **Slack, Telegram, Email, ntfy, and more** when new
+listings appear.
 
-Fredy includes a **web UI** to configure your searches, prevents duplicates even across multiple platforms, and stores results so you won’t receive the same listing twice.  
+With a modern architecture, Fredy provides a **clean Web UI**, removes
+duplicates across platforms, and stores results so you never see the
+same listing twice.
 
 <img src="https://github.com/orangecoding/fredy/blob/master/doc/logo.png" width="400">
 
-![Test](https://github.com/orangecoding/fredy/actions/workflows/test.yml/badge.svg) [![Create and publish Docker image](https://github.com/orangecoding/fredy/actions/workflows/docker.yml/badge.svg)](https://github.com/orangecoding/fredy/actions/workflows/docker.yml) ![Check the sourcecode](https://github.com/orangecoding/fredy/actions/workflows/check_source.yml/badge.svg)
+![Tests](https://github.com/orangecoding/fredy/actions/workflows/test.yml/badge.svg)
+[![Docker](https://github.com/orangecoding/fredy/actions/workflows/docker.yml/badge.svg)](https://github.com/orangecoding/fredy/actions/workflows/docker.yml)
+![Source](https://github.com/orangecoding/fredy/actions/workflows/check_source.yml/badge.svg)
 
-## Key-Features
+------------------------------------------------------------------------
 
-- ✅ Scrapes **ImmoScout24, Immowelt, Immonet, eBay Kleinanzeigen, WG-Gesucht**
-- ✅ Instant notifications: Slack, Telegram, Email (SendGrid, Mailjet), ntfy
-- ✅ Reverse-engineered **ImmoScout mobile API** for reliable results
-- ✅ Runs anywhere: Docker, Node.js, self-hosted
-- ✅ Modern stack: Node.js, Express, React, Vite
-- ✅ Web UI to manage your searches
-- ✅ Deduplication and configurable search intervals
+## ✨ Key Features
 
----
+-   🏠 Scrapes **ImmoScout24, Immowelt, Immonet, eBay Kleinanzeigen,
+    WG-Gesucht**
+-   ⚡ Instant notifications: Slack, Telegram, Email (SendGrid,
+    Mailjet), ntfy
+-   🔎 Uses the **ImmoScout Mobile API** (reverse engineered)
+-   🌍 Runs anywhere: Docker, Node.js, self-hosted
+-   🖥️ Intuitive **Web UI** to manage searches
+-   🎯 Easy to use thanks to a user-friendly Web UI
+-   🔄 Deduplication across platforms
+-   ⏱️ Customizable search intervals
 
-## Demo
+------------------------------------------------------------------------
 
-If you want to try out _Fredy_, you can access the demo version [here](https://fredy.orange-coding.net) 🤘
+## 🤝 Sponsorship [![](https://img.shields.io/static/v1?label=Sponsor&message=❤&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/orangecoding)
 
----
-
-## Sponsorship [![](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/orangecoding)
-
-If you find Fredy useful, consider supporting my work.  
-I maintain Fredy and other open source projects in my spare time – your sponsorship helps keep development active. Thanks for your support!
+I maintain Fredy and other open-source projects in my free time.\
+If you find it useful, consider supporting the project 💙
 
 [<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg" alt="JetBrains" width="120"/>](https://jb.gg/OpenSourceSupport)
 
-Fredy is proudly supported by **JetBrains** under their Open Source Support Program.
+Fredy is proudly supported by the **JetBrains Open Source Support
+Program**.
 
+------------------------------------------------------------------------
 
-#### Usage
+## 🚀 Quick Start
 
-- Requires **Node.js 20 or higher**
-- Install dependencies and start both backend and frontend:
+### With Docker
 
-```bash
+``` bash
+docker pull ghcr.io/orangecoding/fredy:master
+docker create --name fredy -v /path/to/your/conf/:/conf -p 9998:9998 fredy/fredy
+docker start fredy
+```
+
+Logs:
+
+``` bash
+docker logs fredy -f
+```
+
+### Manual (Node.js)
+
+-   Requirement: **Node.js 20 or higher**
+-   Install dependencies and start:
+
+``` bash
 yarn
 yarn run start:backend   # in one terminal
 yarn run start:frontend  # in another terminal
 ```
 
-Fredy will start on port 9998.   
-Open http://localhost:9998 in your browser.
+👉 Open <http://localhost:9998>
 
-## Default login:
+**Default Login:**
+- Username: `admin`
+- Password: `admin`
 
-Username: admin   
-Password: admin
+------------------------------------------------------------------------
 
-## Screenshots
+## 📸 Screenshots
 
 | Job Configuration | Job Analytics | Job Overview |
 |-------------------|--------------|--------------|
 | ![Screenshot showing job configuration in Fredy](doc/screenshot1.png) | ![Screenshot showing job analytics in Fredy](doc/screenshot_2.png) | ![Screenshot showing job overview in Fredy](doc/screenshot_3.png) |
 
-## Understanding the fundamentals
+------------------------------------------------------------------------
 
-There are 3 important parts in Fredy, that you need to understand to leverage the full power of _Fredy_.
+## 🧩 Core Concepts
 
-#### Provider
+Fredy is built around three simple concepts:
 
-_Fredy_ supports multiple services. Immonet, Immowelt and Ebay are just a few examples. Those services are called providers within _Fredy_. When creating a new job, you can choose one or more providers.
-A provider contains the URL that points to the search results for the respective service. If you go to immonet.de and search for something, the displayed URL in the browser is what the provider needs to do its magic.
-**It is important that you order the search results by date, so that _Fredy_ always picks the latest results first!**
+### Provider 🌐
 
-#### Adapter
+A **provider** is a real-estate platform (e.g. ImmoScout24, Immowelt,
+Immonet, eBay Kleinanzeigen, WG-Gesucht).\
+When you create a job, you paste the search URL from the platform into
+Fredy.\
+⚠️ Always make sure the search results are sorted by **date**, so Fredy
+picks up the newest listings first.
 
-_Fredy_ supports multiple adapters, such as Slack, SendGrid, Telegram etc. A search job can have as many adapters as supported by _Fredy_. Each adapter needs different configuration values, which you have to provide when using them. An adapter dictates how the frontend renders by telling the frontend what information it needs in order to send listings to the user.
+### Adapter 📡
 
-#### Jobs
+An **adapter** is the channel through which Fredy notifies you (Slack,
+Telegram, Email, ntfy, ...).\
+Each adapter has its own configuration (e.g. API keys, webhook URLs).\
+You can use multiple adapters at once --- Fredy will send new listings
+through all of them.
 
-A Job wraps adapters and providers. _Fredy_ runs the configured jobs in a specific interval (can be configured in `/conf/config.json`).
+### Job 📅
 
-## Creating your first job
+A **job** combines providers and adapters.\
+Example: "Search apartments on ImmoScout24 + Immowelt and send results
+to Slack + Telegram."\
+Jobs run automatically at the interval you configure (see
+`/conf/config.json`).
 
-To create your first job, click on the button "Create New Job" on the job table. The job creation dialog should be self-explanatory, however there is one important thing.
-When configuring providers, before copying the URL from your browser, make sure that you have sorted the results by date to make sure _Fredy_ always picks the latest results first.
+------------------------------------------------------------------------
 
-## User management
+## Immoscout
 
-As an administrator, you can create, edit and remove users from _Fredy_. Be careful, each job is connected to the user that has created the job. If you remove the user, their jobs will also be removed.
+Immoscout has implemented advanced bot detection. In order to work around this, we are using a reversed engineered version of their mobile api. See [Immoscout Reverse Engineering Documentation](https://github.com/orangecoding/fredy/blob/master/reverse-engineered-immoscout.md)
 
-# Development
+## Analytics
 
-### Running Fredy in development mode
+Fredy is completely free (and will always remain free). However, it would be a huge help if you’d allow me to collect some analytical data.
+Before you freak out, let me explain...  
+If you agree, Fredy will send a ping to my Mixpanel project each time it runs.  
+The data includes: names of active adapters/providers, OS, architecture, Node version, and language. The information is entirely anonymous and helps me understand which adapters/providers are most frequently used.</p>
 
-Start the backend with:
+**Thanks**🤘
 
-```shell
+## 🛠️ Development
+
+### Development Mode
+
+``` bash
 yarn run start:backend:dev
-```
-
-For the frontend, run:
-
-```shell
 yarn run start:frontend:dev
 ```
-
 You should now be able to access _Fredy_ from your browser. Check your Terminal to see what port the frontend is running on.
 
-### Running Tests
+### Run Tests
 
-To run the tests, run
-
-```shell
+``` bash
 yarn run test
 ```
 
-# Architecture
+------------------------------------------------------------------------
 
-```mermaid
+## 📐 Architecture
+
+``` mermaid
 flowchart TD
  subgraph Jobs["Jobs"]
         A1["Job 1"]
@@ -130,80 +166,38 @@ flowchart TD
         C3["Provider 3"]
   end
  subgraph NotificationAdapters["Notification Adapters"]
-        F1["Notification Adapter 1"]
-        F2["Notification Adapter 2"]
+        F1["Adapter 1"]
+        F2["Adapter 2"]
   end
 
     A1 --> B["FredyRuntime"]
     A2 --> B
     A3 --> B
     B --> C1 & C2 & C3
-    C1 --> D["Similarity-Check"]
+    C1 --> D["Similarity Check"]
     C2 --> D
     C3 --> D
-    D --> E{"Found<br>similarity?"}
+    D --> E{"Duplicate?"}
     E -- No --> F1
     F1 --> F2
-
-    style A1 fill:#fde9a0,stroke:#333333,color:#333333
-    style A2 fill:#fde9a0,stroke:#333333,color:#333333
-    style A3 fill:#fde9a0,stroke:#333333,color:#333333
-    style C1 fill:#c4c9f1,stroke:#333333,color:#333333
-    style C2 fill:#c4c9f1,stroke:#333333,color:#333333
-    style C3 fill:#c4c9f1,stroke:#333333,color:#333333
-    style F1 fill:#d2edba,stroke:#333333,color:#333333
-    style F2 fill:#d2edba,stroke:#333333,color:#333333
-    style B fill:#abd8f9,stroke:#333333,color:#333333
-    style D fill:#fab4a8,stroke:#333333,color:#333333
-    style E fill:#fffbb4,stroke:#333333,color:#333333
 ```
 
-### Immoscout
+------------------------------------------------------------------------
 
-Immoscout has implemented advanced bot detection. In order to work around this, we are using a reversed engineered version of their mobile api. See [Immoscout Reverse Engineering Documentation](https://github.com/orangecoding/fredy/blob/master/reverse-engineered-immoscout.md)
+## 👐 Contributing
 
-# Analytics
+Thanks to everyone who has contributed!
 
-Fredy is completely free (and will always remain free). However, it would be a huge help if you’d allow me to collect some analytical data.
-Before you freak out, let me explain...  
-If you agree, Fredy will send a ping to my Mixpanel project each time it runs.  
-The data includes: names of active adapters/providers, OS, architecture, Node version, and language. The information is entirely anonymous and helps me understand which adapters/providers are most frequently used.</p>
-**Thanks**🤘
+`<a href="https://github.com/orangecoding/fredy/graphs/contributors">`{=html}
+`<img src="https://contrib.rocks/image?repo=orangecoding/fredy" />`{=html}
+`</a>`{=html}
 
-# Docker
+See the [Contributing
+Guide](https://github.com/orangecoding/fredy/blob/master/CONTRIBUTING.md).
 
-Use the Dockerfile in this repository to build an image.
+------------------------------------------------------------------------
 
-Example: `docker build -t fredy/fredy /path/to/your/Dockerfile`
+## ⭐ Star History
 
-Or use docker-compose:
-
-Example `docker-compose build`
-
-Or use the container that will be built automatically.
-
-`docker pull ghcr.io/orangecoding/fredy:master`
-
-## Create & run a container
-
-Put your config.json into a path of your choice, such as `/path/to/your/conf/`.
-
-Example: `docker create --name fredy -v /path/to/your/conf/:/conf -p 9998:9998 fredy/fredy`
-
-## Logs
-
-You can browse the logs with `docker logs fredy -f`.
-
-### 👐 Contributing
-
-Thanks to all the people who already contributed!
-
-<a href="https://github.com/orangecoding/fredy/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=orangecoding/fredy" />
-</a>
-
-See [Contributing](https://github.com/orangecoding/fredy/blob/master/CONTRIBUTING.md)
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=orangecoding/fredy&type=Date)](https://www.star-history.com/#orangecoding/fredy&Date)
+[![Star History
+Chart](https://api.star-history.com/svg?repos=orangecoding/fredy&type=Date)](https://www.star-history.com/#orangecoding/fredy&Date)
