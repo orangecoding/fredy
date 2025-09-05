@@ -42,8 +42,7 @@ If you find it useful, consider supporting the project 💙
 
 [<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg" alt="JetBrains" width="120"/>](https://jb.gg/OpenSourceSupport)
 
-Fredy is proudly supported by the **JetBrains Open Source Support
-Program**.
+Fredy is proudly backed by the JetBrains  **JetBrains Open Source Support Program**.
 
 ------------------------------------------------------------------------
 
