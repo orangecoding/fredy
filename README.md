@@ -16,6 +16,7 @@ same listing twice.
 ![Tests](https://github.com/orangecoding/fredy/actions/workflows/test.yml/badge.svg)
 [![Docker](https://github.com/orangecoding/fredy/actions/workflows/docker.yml/badge.svg)](https://github.com/orangecoding/fredy/actions/workflows/docker.yml)
 ![Source](https://github.com/orangecoding/fredy/actions/workflows/check_source.yml/badge.svg)
+![Docker Pulls](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fghcr-badge.elias.eu.org%2Fapi%2Forangecoding%2Ffredy%2Ffredy&query=%24.downloadCount&label=Docker%20Pulls)
 
 ------------------------------------------------------------------------
 
