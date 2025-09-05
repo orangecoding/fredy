@@ -40,7 +40,7 @@ same listing twice.
 I maintain Fredy and other open-source projects in my free time.\
 If you find it useful, consider supporting the project 💙
 
-Fredy is proudly backed by the JetBrains  **JetBrains Open Source Support Program**.   
+Fredy is proudly backed by the **JetBrains Open Source Support Program**.   
 [<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg" alt="JetBrains" width="120"/>](https://jb.gg/OpenSourceSupport)
 
 ------------------------------------------------------------------------
