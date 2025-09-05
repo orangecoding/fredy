@@ -187,9 +187,7 @@ flowchart TD
 
 Thanks to everyone who has contributed!
 
-`<a href="https://github.com/orangecoding/fredy/graphs/contributors">`{=html}
-`<img src="https://contrib.rocks/image?repo=orangecoding/fredy" />`{=html}
-`</a>`{=html}
+<a href="https://github.com/orangecoding/fredy/graphs/contributors"><img src="https://contrib.rocks/image?repo=orangecoding/fredy" /></a>
 
 See the [Contributing
 Guide](https://github.com/orangecoding/fredy/blob/master/CONTRIBUTING.md).
