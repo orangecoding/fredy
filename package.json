@@ -90,7 +90,6 @@
     "restana": "5.1.0",
     "serve-static": "2.2.0",
     "slack": "11.0.2",
-    "string-similarity": "^4.0.4",
     "vite": "7.1.4",
     "x-var": "^2.1.0"
   },
