@@ -49,10 +49,11 @@ Fredy is proudly backed by the **JetBrains Open Source Support Program**.
 
 ### With Docker
 
+> [!NOTE]
+> In order to start Fredy, you must provide a config.json. As a start, use the one in this repo: https://github.com/orangecoding/fredy/blob/master/conf/config.json
+
 ``` bash
-docker pull ghcr.io/orangecoding/fredy:master
-docker create --name fredy -v /path/to/your/conf/:/conf -p 9998:9998 fredy/fredy
-docker start fredy
+docker run -d --name fredy -v fredy_conf:/conf -p 9998:9998 ghcr.io/orangecoding/fredy:master
 ```
 
 Logs:
