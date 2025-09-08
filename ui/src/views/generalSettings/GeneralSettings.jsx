@@ -121,11 +121,11 @@ const GeneralSettings = function GeneralSettings() {
           <div>
             <SegmentPart
               name="Interval"
-              helpText="Interval in minutes for running queries against the configured services."
+              helpText="Interval in minutes for running queries against the configured services. Do NOT go under 5 minutes as with a lower interval, your instance might be detected as a bot."
               Icon={IconRefresh}
             >
               <InputNumber
-                min={0}
+                min={5}
                 max={1440}
                 placeholder="Interval in minutes"
                 value={interval}
