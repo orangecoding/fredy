@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Button, Empty, Table, Switch } from '@douyinfe/semi-ui';
-import { IconDelete, IconEdit, IconHistogram } from '@douyinfe/semi-icons';
+import { IconDelete, IconEdit, IconHistogram, IconList } from '@douyinfe/semi-icons';
 import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-illustrations';
 
 import './JobTable.less';
@@ -14,7 +14,14 @@ const empty = (
   />
 );
 
-export default function JobTable({ jobs = {}, onJobRemoval, onJobStatusChanged, onJobEdit, onJobInsight } = {}) {
+export default function JobTable({
+  jobs = {},
+  onJobRemoval,
+  onJobStatusChanged,
+  onJobEdit,
+  onJobInsight,
+  onViewListings,
+} = {}) {
   return (
     <Table
       pagination={false}
@@ -59,6 +66,7 @@ export default function JobTable({ jobs = {}, onJobRemoval, onJobStatusChanged, 
             return (
               <div className="interactions">
                 <Button type="primary" icon={<IconHistogram />} onClick={() => onJobInsight(job.id)} />
+                <Button type="secondary" icon={<IconList />} onClick={() => onViewListings(job.id)} />
                 <Button type="secondary" icon={<IconEdit />} onClick={() => onJobEdit(job.id)} />
                 <Button type="danger" icon={<IconDelete />} onClick={() => onJobRemoval(job.id)} />
               </div>

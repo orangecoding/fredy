@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Tabs, TabPane } from '@douyinfe/semi-ui';
 
 import { useLocation } from 'react-router-dom';
-import { IconUser, IconTerminal, IconSetting } from '@douyinfe/semi-icons';
+import { IconUser, IconTerminal, IconSetting, IconList } from '@douyinfe/semi-icons';
 import './Menu.less';
 
 function parsePathName(name) {
@@ -22,6 +22,16 @@ const TopMenu = function TopMenu({ isAdmin }) {
           <span>
             <IconTerminal />
             Jobs
+          </span>
+        }
+      />
+
+      <TabPane
+        itemKey="/listings"
+        tab={
+          <span>
+            <IconList />
+            Listings
           </span>
         }
       />

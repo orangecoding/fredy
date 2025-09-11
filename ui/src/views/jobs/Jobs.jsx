@@ -35,6 +35,10 @@ export default function Jobs() {
     }
   };
 
+  const onViewListings = (jobId) => {
+    navigate(`/listings?jobId=${jobId}`);
+  };
+
   return (
     <div>
       <div>
@@ -55,6 +59,7 @@ export default function Jobs() {
         onJobStatusChanged={onJobStatusChanged}
         onJobInsight={(jobId) => navigate(`/jobs/insights/${jobId}`)}
         onJobEdit={(jobId) => navigate(`/jobs/edit/${jobId}`)}
+        onViewListings={onViewListings}
       />
     </div>
   );

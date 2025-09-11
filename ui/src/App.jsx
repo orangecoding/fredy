@@ -14,6 +14,7 @@ import Menu from './components/menu/Menu';
 import Login from './views/login/Login';
 import Users from './views/user/Users';
 import Jobs from './views/jobs/Jobs';
+import Listings from './views/listings/Listings';
 
 import './App.less';
 import TrackingModal from './components/tracking/TrackingModal.jsx';
@@ -82,6 +83,7 @@ export default function FredyApp() {
           <Route path="/jobs/edit/:jobId" element={<JobMutation />} />
           <Route path="/jobs/insights/:jobId" element={<JobInsight />} />
           <Route path="/jobs" element={<Jobs />} />
+          <Route path="/listings" element={<Listings />} />
 
           {/* Permission-aware routes */}
           <Route
