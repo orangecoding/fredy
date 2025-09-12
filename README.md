@@ -45,6 +45,11 @@ Fredy is proudly backed by the **JetBrains Open Source Support Program**.
 
 ------------------------------------------------------------------------
 
+## 👨‍🏫 Demo
+You can try out Fredy here: [Fredy Demo](https://fredy-demo.orange-coding.net/)
+
+------------------------------------------------------------------------
+
 ## 🚀 Quick Start
 
 ### With Docker
