@@ -128,7 +128,7 @@ Immoscout has implemented advanced bot detection. In order to work around this, 
 
 Fredy is completely free (and will always remain free). However, it would be a huge help if you’d allow me to collect some analytical data.
 Before you freak out, let me explain...  
-If you agree, Fredy will send a ping to my Mixpanel project each time it runs.  
+If you agree, Fredy will send a ping once every 6 hours to my internal tracking project (Will be open sourced soon).  
 The data includes: names of active adapters/providers, OS, architecture, Node version, and language. The information is entirely anonymous and helps me understand which adapters/providers are most frequently used.</p>
 
 **Thanks**🤘

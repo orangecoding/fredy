@@ -43,7 +43,8 @@ export default function TrackingModal() {
         </p>
         <p>
           However, it would be a huge help if you’d allow me to collect some analytical data. Wait, before you click
-          "no", let me explain. If you agree, Fredy will send a ping to my Mixpanel project each time it runs.
+          "no", let me explain. If you agree, Fredy will send a ping once every 6 hours to my internal tracking project.
+          (Will be open-sourced soon)
         </p>
         <p>
           The data includes: names of active adapters/providers, OS, architecture, Node version, and language. The
