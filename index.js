@@ -6,9 +6,9 @@ import * as jobStorage from './lib/services/storage/jobStorage.js';
 import FredyRuntime from './lib/FredyRuntime.js';
 import { duringWorkingHoursOrNotSet } from './lib/utils.js';
 import './lib/api/api.js';
-import { track } from './lib/services/tracking/Tracker.js';
 import { handleDemoUser } from './lib/services/storage/userStorage.js';
 import { cleanupDemoAtMidnight } from './lib/services/demoCleanup.js';
+import { initTrackerCron } from './lib/services/tracking/Tracker-Cron.js';
 //if db folder does not exist, ensure to create it before loading anything else
 if (!fs.existsSync('./db')) {
   fs.mkdirSync('./db');
@@ -29,13 +29,13 @@ const fetchedProvider = await Promise.all(
 );
 
 handleDemoUser();
+await initTrackerCron();
 
 setInterval(
   (function exec() {
     const isDuringWorkingHoursOrNotSet = duringWorkingHoursOrNotSet(config, Date.now());
     if (!config.demoMode) {
       if (isDuringWorkingHoursOrNotSet) {
-        track();
         config.lastRun = Date.now();
         jobStorage
           .getJobs()
