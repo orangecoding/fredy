@@ -9,6 +9,7 @@ import './lib/api/api.js';
 import { handleDemoUser } from './lib/services/storage/userStorage.js';
 import { cleanupDemoAtMidnight } from './lib/services/demoCleanup.js';
 import { initTrackerCron } from './lib/services/tracking/Tracker-Cron.js';
+import logger from './lib/services/logger.js';
 //if db folder does not exist, ensure to create it before loading anything else
 if (!fs.existsSync('./db')) {
   fs.mkdirSync('./db');
@@ -17,13 +18,11 @@ const path = './lib/provider';
 const provider = fs.readdirSync(path).filter((file) => file.endsWith('.js'));
 //assuming interval is always in minutes
 const INTERVAL = config.interval * 60 * 1000;
-/* eslint-disable no-console */
-console.log(`Started Fredy successfully. Ui can be accessed via http://localhost:${config.port}`);
+logger.info(`Started Fredy successfully. Ui can be accessed via http://localhost:${config.port}`);
 if (config.demoMode) {
-  console.info('Running in demo mode');
+  logger.info('Running in demo mode');
   cleanupDemoAtMidnight();
 }
-/* eslint-enable no-console */
 const fetchedProvider = await Promise.all(
   provider.filter((provider) => provider.endsWith('.js')).map(async (pro) => import(`${path}/${pro}`)),
 );
@@ -51,9 +50,7 @@ setInterval(
               });
           });
       } else {
-        /* eslint-disable no-console */
-        console.debug('Working hours set. Skipping as outside of working hours.');
-        /* eslint-enable no-console */
+        logger.debug('Working hours set. Skipping as outside of working hours.');
       }
     }
     return exec;
