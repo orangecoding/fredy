@@ -1,11 +1,15 @@
 <p align="center">
-  <a href="https://fredy.orange-coding.net/">
-    <img alt="Expo logo" width="400" src="https://github.com/orangecoding/fredy/blob/master/doc/logo.png">
-  </a>
+
+<a href="https://fredy.orange-coding.net/">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/orangecoding/fredy/blob/master/doc/logo_white.png" width="400">
+  <source media="(prefers-color-scheme: light)" srcset="https://github.com/orangecoding/fredy/blob/master/doc/logo.png" width="400">
+  <img alt="Jetbrains Open Source" src="https://github.com/orangecoding/fredy/blob/master/doc/logo.png">
+</picture>
+</a>
 </p>
 
-
- ![Tests](https://github.com/orangecoding/fredy/actions/workflows/test.yml/badge.svg)
+![Tests](https://github.com/orangecoding/fredy/actions/workflows/test.yml/badge.svg)
 [![Docker](https://github.com/orangecoding/fredy/actions/workflows/docker.yml/badge.svg)](https://github.com/orangecoding/fredy/actions/workflows/docker.yml)
 ![Source](https://github.com/orangecoding/fredy/actions/workflows/check_source.yml/badge.svg)
 ![Docker Pulls](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fghcr-badge.elias.eu.org%2Fapi%2Forangecoding%2Ffredy%2Ffredy&query=%24.downloadCount&label=Docker%20Pulls)
