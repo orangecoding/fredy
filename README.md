@@ -1,3 +1,16 @@
+<p align="center">
+  <a href="https://fredy.orange-coding.net/">
+    <img alt="Expo logo" width="400" src="https://github.com/orangecoding/fredy/blob/master/doc/logo.png">
+  </a>
+</p>
+
+
+ ![Tests](https://github.com/orangecoding/fredy/actions/workflows/test.yml/badge.svg)
+[![Docker](https://github.com/orangecoding/fredy/actions/workflows/docker.yml/badge.svg)](https://github.com/orangecoding/fredy/actions/workflows/docker.yml)
+![Source](https://github.com/orangecoding/fredy/actions/workflows/check_source.yml/badge.svg)
+![Docker Pulls](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fghcr-badge.elias.eu.org%2Fapi%2Forangecoding%2Ffredy%2Ffredy&query=%24.downloadCount&label=Docker%20Pulls)
+
+
 # Fredy 🏡 – Your Self-Hosted Real Estate Finder for Germany
 
 Finding an apartment or house in Germany can be stressful and
@@ -11,12 +24,7 @@ With a modern architecture, Fredy provides a **clean Web UI**, removes
 duplicates across platforms, and stores results so you never see the
 same listing twice.
 
-<img src="https://github.com/orangecoding/fredy/blob/master/doc/logo.png" width="400">
 
-![Tests](https://github.com/orangecoding/fredy/actions/workflows/test.yml/badge.svg)
-[![Docker](https://github.com/orangecoding/fredy/actions/workflows/docker.yml/badge.svg)](https://github.com/orangecoding/fredy/actions/workflows/docker.yml)
-![Source](https://github.com/orangecoding/fredy/actions/workflows/check_source.yml/badge.svg)
-![Docker Pulls](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fghcr-badge.elias.eu.org%2Fapi%2Forangecoding%2Ffredy%2Ffredy&query=%24.downloadCount&label=Docker%20Pulls)
 
 ------------------------------------------------------------------------
 
