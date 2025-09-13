@@ -49,7 +49,12 @@ I maintain Fredy and other open-source projects in my free time.\
 If you find it useful, consider supporting the project 💙
 
 Fredy is proudly backed by the **JetBrains Open Source Support Program**.   
-[<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg" alt="JetBrains" width="120"/>](https://jb.gg/OpenSourceSupport)
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://www.jetbrains.com/company/brand/img/logo_jb_dos_3.svg">
+  <source media="(prefers-color-scheme: light)" srcset="https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg">
+  <img alt="Jetbrains Open Source" src="https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg">
+</picture>
 
 ------------------------------------------------------------------------
 
