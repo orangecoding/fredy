@@ -91,7 +91,6 @@
     "serve-static": "2.2.0",
     "slack": "11.0.2",
     "vite": "7.1.5",
-    "winston": "^3.17.0",
     "x-var": "^2.1.0"
   },
   "devDependencies": {
