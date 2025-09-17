@@ -2,7 +2,6 @@ import fs from 'fs';
 import path from 'path';
 import { config } from './lib/utils.js';
 import * as similarityCache from './lib/services/similarity-check/similarityCache.js';
-import { setLastJobExecution } from './lib/services/storage/listingsStorage.js';
 import * as jobStorage from './lib/services/storage/jobStorage.js';
 import FredyRuntime from './lib/FredyRuntime.js';
 import { duringWorkingHoursOrNotSet } from './lib/utils.js';
@@ -62,7 +61,6 @@ setInterval(
                 const pro = fetchedProvider.find((fp) => fp.metaInformation.id === prov.id);
                 pro.init(prov, job.blacklist);
                 await new FredyRuntime(pro.config, job.notificationAdapter, prov.id, job.id, similarityCache).execute();
-                setLastJobExecution(job.id);
               });
           });
       } else {

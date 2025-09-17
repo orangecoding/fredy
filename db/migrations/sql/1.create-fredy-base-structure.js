@@ -15,19 +15,19 @@ export function up(db) {
       username   TEXT    NOT NULL,
       password   TEXT    NOT NULL,
       last_login INTEGER,
-      is_admin    INTEGER NOT NULL DEFAULT 0
+      is_admin   INTEGER NOT NULL DEFAULT 0
     );
 
     CREATE UNIQUE INDEX IF NOT EXISTS idx_users_username ON users (username);
 
     CREATE TABLE IF NOT EXISTS jobs
     (
-      id                  TEXT PRIMARY KEY,
-      user_id             TEXT    NOT NULL,
-      enabled             INTEGER NOT NULL DEFAULT 1,
-      name                TEXT,
-      blacklist           JSONB   NOT NULL DEFAULT '[]',
-      provider            JSONB   NOT NULL DEFAULT '[]',
+      id                   TEXT PRIMARY KEY,
+      user_id              TEXT    NOT NULL,
+      enabled              INTEGER NOT NULL DEFAULT 1,
+      name                 TEXT,
+      blacklist            JSONB   NOT NULL DEFAULT '[]',
+      provider             JSONB   NOT NULL DEFAULT '[]',
       notification_adapter JSONB   NOT NULL DEFAULT '[]',
       FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
     );
@@ -38,6 +38,7 @@ export function up(db) {
     CREATE TABLE IF NOT EXISTS listings
     (
       id          TEXT PRIMARY KEY,
+      created_at  INTEGER,
       hash        TEXT,
       provider    TEXT,
       job_id      TEXT,
