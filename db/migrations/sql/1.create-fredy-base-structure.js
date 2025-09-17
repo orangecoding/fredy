@@ -4,6 +4,7 @@
 
 import fs from 'fs';
 import path from 'path';
+import { toJson } from '../../../lib/utils.js';
 
 export function up(db) {
   // 1) Create tables
@@ -58,9 +59,6 @@ export function up(db) {
   const ROOT = path.resolve('.');
   const usersJsonPath = path.join(ROOT, 'db', 'users.json');
   const jobsJsonPath = path.join(ROOT, 'db', 'jobs.json');
-
-  // Helper to safely stringify JSON values for storage
-  const toJson = (v) => (v == null ? null : JSON.stringify(v));
 
   // Insert users
   if (fs.existsSync(usersJsonPath)) {
