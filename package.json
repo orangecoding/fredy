@@ -13,7 +13,8 @@
     "format:check": "prettier --check \"**/*.js\"",
     "test": "node --import ./test/esmock-loader.mjs ./node_modules/mocha/bin/mocha.js --timeout 60000 test/**/*.test.js",
     "lint": "eslint .",
-    "lint:fix": "yarn lint --fix"
+    "lint:fix": "yarn lint --fix",
+    "migratedb": "node db/migrations/migrate.js"
   },
   "type": "module",
   "lint-staged": {
