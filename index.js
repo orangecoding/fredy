@@ -7,7 +7,7 @@ import * as jobStorage from './lib/services/storage/jobStorage.js';
 import FredyRuntime from './lib/FredyRuntime.js';
 import { duringWorkingHoursOrNotSet } from './lib/utils.js';
 import { runMigrations } from './db/migrations/migrate.js';
-import { handleDemoUser } from './lib/services/storage/userStorage.js';
+import { ensureDemoUserExists, ensureAdminUserExists } from './lib/services/storage/userStorage.js';
 import { cleanupDemoAtMidnight } from './lib/services/demoCleanup.js';
 import { initTrackerCron } from './lib/services/tracking/Tracker-Cron.js';
 import logger from './lib/services/logger.js';
@@ -42,7 +42,8 @@ const fetchedProvider = await Promise.all(
   provider.filter((provider) => provider.endsWith('.js')).map(async (pro) => import(`${providersPath}/${pro}`)),
 );
 
-handleDemoUser();
+ensureAdminUserExists();
+ensureDemoUserExists();
 await initTrackerCron();
 
 setInterval(
