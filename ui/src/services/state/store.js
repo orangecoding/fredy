@@ -25,53 +25,13 @@ const logger = (config) => (set, get, api) =>
 export const useFredyState = create(
   logger(
     (set) => {
-      // Internal setters
-      const reducers = {
-        notificationAdapter: {
-          setAdapter: (payload) => set(() => ({ notificationAdapter: Object.freeze([...payload]) })),
-        },
-        generalSettings: {
-          setGeneralSettings: (payload) =>
-            set((state) => ({ generalSettings: { ...state.generalSettings, settings: payload } })),
-        },
-        demoMode: {
-          setDemoMode: (payload) =>
-            set((state) => ({
-              demoMode: {
-                ...state.demoMode,
-                demoMode: payload.demoMode,
-              },
-            })),
-        },
-        provider: {
-          setProvider: (payload) => set(() => ({ provider: Object.freeze([...payload]) })),
-        },
-        jobs: {
-          setJobs: (payload) => set((state) => ({ jobs: { ...state.jobs, jobs: Object.freeze(payload) } })),
-          setProcessingTimes: (payload) =>
-            set((state) => ({ jobs: { ...state.jobs, processingTimes: Object.freeze(payload) } })),
-          setJobInsights: (payload, jobId) =>
-            set((state) => ({
-              jobs: {
-                ...state.jobs,
-                insights: { ...state.jobs.insights, [jobId]: Object.freeze(payload) },
-              },
-            })),
-        },
-        user: {
-          setUsers: (payload) => set((state) => ({ user: { ...state.user, users: payload } })),
-          setCurrentUser: (payload) =>
-            set((state) => ({ user: { ...state.user, currentUser: Object.freeze(payload) } })),
-        },
-      };
-
-      // Async actions
+      // Async actions that directly set state (no separate reducer concept)
       const effects = {
         notificationAdapter: {
           async getAdapter() {
             try {
               const response = await xhrGet('/api/jobs/notificationAdapter');
-              reducers.notificationAdapter.setAdapter(response.json);
+              set(() => ({ notificationAdapter: Object.freeze([...response.json]) }));
             } catch (Exception) {
               console.error(`Error while trying to get resource for api/jobs/notificationAdapter. Error:`, Exception);
             }
@@ -81,7 +41,7 @@ export const useFredyState = create(
           async getGeneralSettings() {
             try {
               const response = await xhrGet('/api/admin/generalSettings');
-              reducers.generalSettings.setGeneralSettings(response.json);
+              set((state) => ({ generalSettings: { ...state.generalSettings, settings: response.json } }));
             } catch (Exception) {
               console.error('Error while trying to get resource for api/admin/generalSettings. Error:', Exception);
             }
@@ -91,7 +51,7 @@ export const useFredyState = create(
           async getProvider() {
             try {
               const response = await xhrGet('/api/jobs/provider');
-              reducers.provider.setProvider(response.json);
+              set(() => ({ provider: Object.freeze([...response.json]) }));
             } catch (Exception) {
               console.error(`Error while trying to get resource for api/jobs/provider. Error:`, Exception);
             }
@@ -101,7 +61,7 @@ export const useFredyState = create(
           async getJobs() {
             try {
               const response = await xhrGet('/api/jobs');
-              reducers.jobs.setJobs(response.json);
+              set((state) => ({ jobs: { ...state.jobs, jobs: Object.freeze(response.json) } }));
             } catch (Exception) {
               console.error(`Error while trying to get resource for api/jobs. Error:`, Exception);
             }
@@ -109,7 +69,7 @@ export const useFredyState = create(
           async getProcessingTimes() {
             try {
               const response = await xhrGet('/api/jobs/processingTimes');
-              reducers.jobs.setProcessingTimes(response.json);
+              set((state) => ({ jobs: { ...state.jobs, processingTimes: Object.freeze(response.json) } }));
             } catch (Exception) {
               console.error(`Error while trying to get resource for api/processingTimes. Error:`, Exception);
             }
@@ -117,7 +77,12 @@ export const useFredyState = create(
           async getInsightDataForJob(jobId) {
             try {
               const response = await xhrGet(`/api/jobs/insights/${jobId}`);
-              reducers.jobs.setJobInsights(response.json, jobId);
+              set((state) => ({
+                jobs: {
+                  ...state.jobs,
+                  insights: { ...state.jobs.insights, [jobId]: Object.freeze(response.json) },
+                },
+              }));
             } catch (Exception) {
               console.error(`Error while trying to get resource for api/jobs/insights. Error:`, Exception);
             }
@@ -127,7 +92,7 @@ export const useFredyState = create(
           async getUsers() {
             try {
               const response = await xhrGet('/api/admin/users');
-              reducers.user.setUsers(response.json);
+              set((state) => ({ user: { ...state.user, users: response.json } }));
             } catch (Exception) {
               console.error('Error while trying to get resource for api/admin/users. Error:', Exception);
             }
@@ -135,7 +100,7 @@ export const useFredyState = create(
           async getCurrentUser() {
             try {
               const response = await xhrGet('/api/login/user');
-              reducers.user.setCurrentUser(response.json);
+              set((state) => ({ user: { ...state.user, currentUser: Object.freeze(response.json) } }));
             } catch (Exception) {
               console.error('Error while trying to get resource for api/login/user. Error:', Exception);
             }
@@ -145,7 +110,9 @@ export const useFredyState = create(
           async getDemoMode() {
             try {
               const response = await xhrGet('/api/demo');
-              reducers.demoMode.setDemoMode(response.json);
+              set((state) => ({
+                demoMode: { ...state.demoMode, demoMode: response.json.demoMode },
+              }));
             } catch (Exception) {
               console.error('Error while trying to get resource for api/demo. Error:', Exception);
             }
