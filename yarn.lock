@@ -6054,10 +6054,10 @@ qs@^6.14.0:
   dependencies:
     side-channel "^1.1.0"
 
-query-string@9.3.0:
-  version "9.3.0"
-  resolved "https://registry.yarnpkg.com/query-string/-/query-string-9.3.0.tgz#f2d60d6b4442cb445f374b5ff749b937b2cccd03"
-  integrity sha512-IQHOQ9aauHAApwAaUYifpEyLHv6fpVGVkMOnwPzcDScLjbLj8tLsILn6unSW79NafOw1llh8oK7Gd0VwmXBFmA==
+query-string@9.3.1:
+  version "9.3.1"
+  resolved "https://registry.yarnpkg.com/query-string/-/query-string-9.3.1.tgz#d0c93e6c7fb7c17bdf04aa09e382114580ede270"
+  integrity sha512-5fBfMOcDi5SA9qj5jZhWAcTtDfKF5WFdd2uD9nVNlbxVv1baq65aALy6qofpNEGELHvisjjasxQp7BlM9gvMzw==
   dependencies:
     decode-uri-component "^0.4.1"
     filter-obj "^5.1.0"
