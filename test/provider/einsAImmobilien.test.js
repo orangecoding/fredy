@@ -25,6 +25,7 @@ describe('#einsAImmobilien testsuite()', () => {
           expect(notify.size).to.be.a('string');
           expect(notify.title).to.be.a('string');
           expect(notify.link).to.be.a('string');
+          expect(notify.address).to.be.a('string');
           /** check the values if possible **/
           expect(notify.size).to.be.not.empty;
           expect(notify.title).to.be.not.empty;
