@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { Banner, Modal, Select, Input } from '@douyinfe/semi-ui';
 import { transform } from '../../../../../services/transformer/providerTransformer';
-import { useSelector } from 'react-redux';
+import { useSelector } from '../../../../../services/state/store';
 import { IconLikeHeart } from '@douyinfe/semi-icons';
 import './ProviderMutator.less';
 

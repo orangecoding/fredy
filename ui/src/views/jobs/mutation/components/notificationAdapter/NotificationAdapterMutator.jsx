@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { transform } from '../../../../../services/transformer/notificationAdapterTransformer';
 import { xhrPost } from '../../../../../services/xhr';
 import Help from './NotificationHelpDisplay';
-import { useSelector } from 'react-redux';
+import { useSelector } from '../../../../../services/state/store';
 import { Banner, Button, Form, Modal, Select, Switch } from '@douyinfe/semi-ui';
 
 import './NotificationAdapterMutator.less';

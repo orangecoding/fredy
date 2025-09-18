@@ -5,7 +5,7 @@ import NotificationAdapterTable from '../../../components/table/NotificationAdap
 import ProviderTable from '../../../components/table/ProviderTable';
 import ProviderMutator from './components/provider/ProviderMutator';
 import Headline from '../../../components/headline/Headline';
-import { useDispatch, useSelector } from 'react-redux';
+import { useActions, useSelector } from '../../../services/state/store';
 import { xhrPost } from '../../../services/xhr';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Divider, Input, Switch, Button, TagInput, Toast } from '@douyinfe/semi-ui';
@@ -34,7 +34,7 @@ export default function JobMutator() {
   const [notificationAdapterData, setNotificationAdapterData] = useState(defaultNotificationAdapter);
   const [enabled, setEnabled] = useState(defaultEnabled);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const actions = useActions();
 
   const isSavingEnabled = () => {
     return Boolean(notificationAdapterData.length && providerData.length && name);
@@ -50,7 +50,7 @@ export default function JobMutator() {
         enabled,
         jobId: jobToBeEdit?.id || null,
       });
-      await dispatch.jobs.getJobs();
+      await actions.jobs.getJobs();
       Toast.success('Job successfully saved...');
       navigate('/jobs');
     } catch (Exception) {
