@@ -48,7 +48,6 @@ export function up(db) {
       image_url   TEXT,
       description TEXT,
       address     TEXT,
-      city        TEXT,
       link        TEXT,
       FOREIGN KEY (job_id) REFERENCES jobs (id) ON DELETE CASCADE
     );
