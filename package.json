@@ -1,6 +1,6 @@
 {
   "name": "fredy",
-  "version": "12.0.0",
+  "version": "12.0.1",
   "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
   "scripts": {
     "prepare": "husky",
@@ -14,8 +14,8 @@
     "test": "node --import ./test/esmock-loader.mjs ./node_modules/mocha/bin/mocha.js --timeout 60000 test/**/*.test.js",
     "lint": "eslint .",
     "lint:fix": "yarn lint --fix",
-    "migratedb": "node db/migrations/migrate.js",
-    "migratedb:overwrite": "x-var MIGRATION_ALLOW_CHECKSUM_UPDATE=true node db/migrations/migrate.js"
+    "migratedb": "node lib/services/storage/migrations/migrate.js",
+    "migratedb:overwrite": "x-var MIGRATION_ALLOW_CHECKSUM_UPDATE=true node lib/services/storage/migrations/migrate.js"
   },
   "type": "module",
   "lint-staged": {

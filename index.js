@@ -5,7 +5,7 @@ import * as similarityCache from './lib/services/similarity-check/similarityCach
 import * as jobStorage from './lib/services/storage/jobStorage.js';
 import FredyRuntime from './lib/FredyRuntime.js';
 import { duringWorkingHoursOrNotSet } from './lib/utils.js';
-import { runMigrations } from './db/migrations/migrate.js';
+import { runMigrations } from './lib/services/storage/migrations/migrate.js';
 import { ensureDemoUserExists, ensureAdminUserExists } from './lib/services/storage/userStorage.js';
 import { cleanupDemoAtMidnight } from './lib/services/demoCleanup.js';
 import { initTrackerCron } from './lib/services/tracking/Tracker-Cron.js';

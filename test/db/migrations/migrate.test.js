@@ -307,7 +307,7 @@ describe('db/migrations/migrate.js - runMigrations', () => {
     const loggerPath = path.join(ROOT, 'lib', 'services', 'logger.js');
 
     const mod = await esmock(
-      '../../../db/migrations/migrate.js',
+      '../../../lib/services/storage/migrations/migrate.js',
       {},
       {
         fs: fsMock,
