@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useActions, useSelector } from '../../services/state/store';
 
 import { Divider, TimePicker, Button, Checkbox, Input } from '@douyinfe/semi-ui';
 import { InputNumber } from '@douyinfe/semi-ui';
@@ -36,7 +36,7 @@ function formatFromTBackend(time) {
 }
 
 const GeneralSettings = function GeneralSettings() {
-  const dispatch = useDispatch();
+  const actions = useActions();
   const [loading, setLoading] = React.useState(true);
 
   const settings = useSelector((state) => state.generalSettings.settings);
@@ -51,7 +51,7 @@ const GeneralSettings = function GeneralSettings() {
 
   React.useEffect(() => {
     async function init() {
-      await dispatch.generalSettings.getGeneralSettings();
+      await actions.generalSettings.getGeneralSettings();
       setLoading(false);
     }
 

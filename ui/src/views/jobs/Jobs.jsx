@@ -1,7 +1,7 @@
 import React from 'react';
 
 import JobTable from '../../components/table/JobTable';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useActions } from '../../services/state/store';
 import { xhrDelete, xhrPut } from '../../services/xhr';
 import { useNavigate } from 'react-router-dom';
 import ProcessingTimes from './ProcessingTimes';
@@ -13,13 +13,13 @@ export default function Jobs() {
   const jobs = useSelector((state) => state.jobs.jobs);
   const processingTimes = useSelector((state) => state.jobs.processingTimes);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const actions = useActions();
 
   const onJobRemoval = async (jobId) => {
     try {
       await xhrDelete('/api/jobs', { jobId });
       Toast.success('Job successfully remove');
-      await dispatch.jobs.getJobs();
+      await actions.jobs.getJobs();
     } catch (error) {
       Toast.error(error);
     }
@@ -29,7 +29,7 @@ export default function Jobs() {
     try {
       await xhrPut(`/api/jobs/${jobId}/status`, { status });
       Toast.success('Job status successfully changed');
-      await dispatch.jobs.getJobs();
+      await actions.jobs.getJobs();
     } catch (error) {
       Toast.error(error);
     }
