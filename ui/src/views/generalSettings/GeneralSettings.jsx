@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Divider, TimePicker, Button, Checkbox } from '@douyinfe/semi-ui';
+import { Divider, TimePicker, Button, Checkbox, Input } from '@douyinfe/semi-ui';
 import { InputNumber } from '@douyinfe/semi-ui';
 import Headline from '../../components/headline/Headline';
 import { xhrPost } from '../../services/xhr';
@@ -15,6 +15,7 @@ import {
   IconSignal,
   IconLineChartStroked,
   IconSearch,
+  IconFolder,
 } from '@douyinfe/semi-icons';
 import './GeneralSettings.less';
 
@@ -46,6 +47,7 @@ const GeneralSettings = function GeneralSettings() {
   const [workingHourTo, setWorkingHourTo] = React.useState(null);
   const [demoMode, setDemoMode] = React.useState(null);
   const [analyticsEnabled, setAnalyticsEnabled] = React.useState(null);
+  const [sqlitePath, setSqlitePath] = React.useState(null);
 
   React.useEffect(() => {
     async function init() {
@@ -64,6 +66,7 @@ const GeneralSettings = function GeneralSettings() {
       setWorkingHourTo(settings?.workingHours?.to);
       setAnalyticsEnabled(settings?.analyticsEnabled || false);
       setDemoMode(settings?.demoMode || false);
+      setSqlitePath(settings?.sqlitepath);
     }
 
     init();
@@ -87,6 +90,10 @@ const GeneralSettings = function GeneralSettings() {
       Toast.error('Working hours to and from must be set if either to or from has been set before.');
       return;
     }
+    if (nullOrEmpty(sqlitePath)) {
+      Toast.error('SQLite db path cannot be empty.');
+      return;
+    }
     try {
       await xhrPost('/api/admin/generalSettings', {
         interval,
@@ -97,6 +104,7 @@ const GeneralSettings = function GeneralSettings() {
         },
         demoMode,
         analyticsEnabled,
+        sqlitepath: sqlitePath,
       });
     } catch (exception) {
       console.error(exception);
@@ -143,6 +151,36 @@ const GeneralSettings = function GeneralSettings() {
                 value={port}
                 formatter={(value) => `${value}`.replace(/\D/g, '')}
                 onChange={(value) => setPort(value)}
+              />
+            </SegmentPart>
+            <Divider margin="1rem" />
+            <SegmentPart
+              name="SQLite Database path"
+              helpText="The directory where Fredy stores its SQLite database files."
+              Icon={IconFolder}
+            >
+              <Banner
+                fullMode={false}
+                type="warning"
+                closeIcon={null}
+                title={<div style={{ fontWeight: 600, fontSize: '14px', lineHeight: '20px' }}>Warning</div>}
+                style={{ marginBottom: '1rem' }}
+                description={
+                  <div>
+                    Changing the path later may result in data loss.
+                    <br />
+                    You <b>must</b> restart Fredy immediately after changing this setting!
+                  </div>
+                }
+              />
+
+              <Input
+                type="text"
+                placeholder="Select folder"
+                value={sqlitePath}
+                onChange={(value) => {
+                  setSqlitePath(value);
+                }}
               />
             </SegmentPart>
             <Divider margin="1rem" />
