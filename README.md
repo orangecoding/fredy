@@ -90,7 +90,7 @@ docker logs fredy -f
 
 ### Manual (Node.js)
 
--   Requirement: **Node.js 20 or higher**
+-   Requirement: **Node.js 22 or higher**
 -   Install dependencies and start:
 
 ``` bash

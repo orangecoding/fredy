@@ -77,8 +77,9 @@ function sha256File(filePath) {
  * @throws {Error} If the migration file does not export a valid function.
  */
 async function loadMigrationModule(filePath) {
+    const testImporter = globalThis.__TEST_MIGRATE_IMPORT__;
     const url = pathToFileURL(filePath);
-    const mod = await import(url.href);
+    const mod = testImporter ? await testImporter(filePath, url) : await import(url.href);
     const fn = mod.up || mod.default;
     if (typeof fn !== 'function') {
         throw new Error(`Migration ${filePath} must export function up(db) or default function(db)`);
