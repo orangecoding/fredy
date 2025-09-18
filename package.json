@@ -14,7 +14,8 @@
     "test": "node --import ./test/esmock-loader.mjs ./node_modules/mocha/bin/mocha.js --timeout 60000 test/**/*.test.js",
     "lint": "eslint .",
     "lint:fix": "yarn lint --fix",
-    "migratedb": "node db/migrations/migrate.js"
+    "migratedb": "node db/migrations/migrate.js",
+    "migratedb:overwrite": "x-var MIGRATION_ALLOW_CHECKSUM_UPDATE=true node db/migrations/migrate.js"
   },
   "type": "module",
   "lint-staged": {
