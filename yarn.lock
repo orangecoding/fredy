@@ -973,7 +973,7 @@
     remark-gfm "^4.0.0"
     scroll-into-view-if-needed "^2.2.24"
 
-"@douyinfe/semi-icons@2.86.0":
+"@douyinfe/semi-icons@2.86.0", "@douyinfe/semi-icons@^2.86.0":
   version "2.86.0"
   resolved "https://registry.yarnpkg.com/@douyinfe/semi-icons/-/semi-icons-2.86.0.tgz#ee4355c81616ea4325627a3bb607ed9f9b9afac3"
   integrity sha512-KEDlYYP1wdOqN28Ck0YcdCx7mSks8SRY4w4KKbXPaROzYNEyT2BRcJxwysMHfxL2IDfsroHrRPJsX9pnrmQqTg==
