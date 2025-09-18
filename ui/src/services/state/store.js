@@ -35,7 +35,13 @@ export const useFredyState = create(
             set((state) => ({ generalSettings: { ...state.generalSettings, settings: payload } })),
         },
         demoMode: {
-          setDemoMode: (payload) => set((state) => ({ demoMode: { ...state.demoMode, demoMode: payload.demoMode } })),
+          setDemoMode: (payload) =>
+            set((state) => ({
+              demoMode: {
+                ...state.demoMode,
+                demoMode: payload.demoMode,
+              },
+            })),
         },
         provider: {
           setProvider: (payload) => set(() => ({ provider: Object.freeze([...payload]) })),
