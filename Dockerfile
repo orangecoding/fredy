@@ -2,9 +2,10 @@ FROM node:22-slim
 
 WORKDIR /fredy
 
-# Install Chromium without extra recommended packages and clean apt cache
+# Install Chromium and curl without extra recommended packages and clean apt cache
+# curl is needed for the health check
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends chromium \
+  && apt-get install -y --no-install-recommends chromium curl \
   && rm -rf /var/lib/apt/lists/*
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
