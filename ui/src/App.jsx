@@ -18,11 +18,13 @@ import Jobs from './views/jobs/Jobs';
 import './App.less';
 import TrackingModal from './components/tracking/TrackingModal.jsx';
 import { Banner } from '@douyinfe/semi-ui';
+import VersionBanner from './components/version/VersionBanner.jsx';
 
 export default function FredyApp() {
   const actions = useActions();
   const [loading, setLoading] = React.useState(true);
   const currentUser = useSelector((state) => state.user.currentUser);
+  const versionUpdate = useSelector((state) => state.versionUpdate.versionUpdate);
   const settings = useSelector((state) => state.generalSettings.settings);
 
   useEffect(() => {
@@ -34,6 +36,7 @@ export default function FredyApp() {
         await actions.jobs.getProcessingTimes();
         await actions.notificationAdapter.getAdapter();
         await actions.generalSettings.getGeneralSettings();
+        await actions.versionUpdate.getVersionUpdate();
       }
       setLoading(false);
     }
@@ -53,7 +56,6 @@ export default function FredyApp() {
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
-
   return loading ? null : needsLogin() ? (
     login()
   ) : (
@@ -62,7 +64,7 @@ export default function FredyApp() {
         <Logout />
         <Logo width={190} white />
         <Menu isAdmin={isAdmin()} />
-
+        {versionUpdate?.newVersion && <VersionBanner />}
         {settings.demoMode && (
           <>
             <Banner

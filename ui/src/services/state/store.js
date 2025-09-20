@@ -118,6 +118,18 @@ export const useFredyState = create(
             }
           },
         },
+        versionUpdate: {
+          async getVersionUpdate() {
+            try {
+              const response = await xhrGet('/api/version');
+              set((state) => ({
+                versionUpdate: { ...state.versionUpdate, versionUpdate: response.json },
+              }));
+            } catch (Exception) {
+              console.error('Error while trying to get resource for api/version. Error:', Exception);
+            }
+          },
+        },
       };
 
       // Initial state
@@ -125,6 +137,7 @@ export const useFredyState = create(
         notificationAdapter: [],
         generalSettings: { settings: {} },
         demoMode: { demoMode: false },
+        versionUpdate: {},
         provider: [],
         jobs: { jobs: [], insights: {}, processingTimes: {} },
         user: { users: [], currentUser: null },
@@ -135,6 +148,7 @@ export const useFredyState = create(
         notificationAdapter: { ...effects.notificationAdapter },
         generalSettings: { ...effects.generalSettings },
         demoMode: { ...effects.demoMode },
+        versionUpdate: { ...effects.versionUpdate },
         provider: { ...effects.provider },
         jobs: { ...effects.jobs },
         user: { ...effects.user },
