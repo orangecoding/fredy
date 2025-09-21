@@ -1,16 +1,20 @@
 import fs from 'fs';
 import path from 'path';
-import { config } from './lib/utils.js';
+import { config, getProviders, refreshConfig } from './lib/utils.js';
 import * as similarityCache from './lib/services/similarity-check/similarityCache.js';
 import * as jobStorage from './lib/services/storage/jobStorage.js';
 import FredyRuntime from './lib/FredyRuntime.js';
 import { duringWorkingHoursOrNotSet } from './lib/utils.js';
 import { runMigrations } from './lib/services/storage/migrations/migrate.js';
 import { ensureDemoUserExists, ensureAdminUserExists } from './lib/services/storage/userStorage.js';
-import { cleanupDemoAtMidnight } from './lib/services/demoCleanup.js';
-import { initTrackerCron } from './lib/services/tracking/Tracker-Cron.js';
+import { cleanupDemoAtMidnight } from './lib/services/crons/demoCleanup-cron.js';
+import { initTrackerCron } from './lib/services/crons/tracker-cron.js';
 import logger from './lib/services/logger.js';
 import { bus } from './lib/services/events/event-bus.js';
+import { initActiveCheckerCron } from './lib/services/crons/listing-alive-cron.js';
+
+// Load configuration before any other startup steps
+await refreshConfig();
 
 // Ensure sqlite directory exists before loading anything else (based on config.sqlitepath)
 const rawDir = config.sqlitepath || '/db';
@@ -23,8 +27,9 @@ if (!fs.existsSync(absDir)) {
 // Run DB migrations once at startup and block until finished
 await runMigrations();
 
-const providersPath = './lib/provider';
-const provider = fs.readdirSync(providersPath).filter((file) => file.endsWith('.js'));
+// Load provider modules once at startup
+const providers = await getProviders();
+
 //assuming interval is always in minutes
 const INTERVAL = config.interval * 60 * 1000;
 
@@ -38,13 +43,11 @@ if (config.demoMode) {
 
 logger.info(`Started Fredy successfully. Ui can be accessed via http://localhost:${config.port}`);
 
-const fetchedProvider = await Promise.all(
-  provider.filter((provider) => provider.endsWith('.js')).map(async (pro) => import(`${providersPath}/${pro}`)),
-);
-
 ensureAdminUserExists();
 ensureDemoUserExists();
 await initTrackerCron();
+//do not wait for this to finish, let it run in the background
+initActiveCheckerCron();
 
 bus.on('jobs:runAll', () => {
   logger.debug('Running Fredy Job manually');
@@ -61,11 +64,17 @@ const execute = () => {
         .filter((job) => job.enabled)
         .forEach((job) => {
           job.provider
-            .filter((p) => fetchedProvider.find((fp) => fp.metaInformation.id === p.id) != null)
+            .filter((p) => providers.find((loaded) => loaded.metaInformation.id === p.id) != null)
             .forEach(async (prov) => {
-              const pro = fetchedProvider.find((fp) => fp.metaInformation.id === prov.id);
-              pro.init(prov, job.blacklist);
-              await new FredyRuntime(pro.config, job.notificationAdapter, prov.id, job.id, similarityCache).execute();
+              const matchedProvider = providers.find((loaded) => loaded.metaInformation.id === prov.id);
+              matchedProvider.init(prov, job.blacklist);
+              await new FredyRuntime(
+                matchedProvider.config,
+                job.notificationAdapter,
+                prov.id,
+                job.id,
+                similarityCache,
+              ).execute();
             });
         });
     } else {
