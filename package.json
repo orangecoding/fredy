@@ -1,6 +1,6 @@
 {
   "name": "fredy",
-  "version": "12.1.5",
+  "version": "12.1.6",
   "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
   "scripts": {
     "prepare": "husky",
@@ -70,7 +70,7 @@
     "handlebars": "4.7.8",
     "lodash": "4.17.21",
     "markdown": "^0.5.0",
-    "nanoid": "5.1.5",
+    "nanoid": "5.1.6",
     "node-cron": "^4.2.1",
     "node-fetch": "3.3.2",
     "node-mailjet": "6.0.9",
