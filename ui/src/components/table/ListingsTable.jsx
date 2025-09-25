@@ -1,14 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { Table, Popover } from '@douyinfe/semi-ui';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Table, Popover, Input, Descriptions, Tag, Image } from '@douyinfe/semi-ui';
 import { useActions, useSelector } from '../../services/state/store.js';
-import { IconClose, IconTick } from '@douyinfe/semi-icons';
+import { IconClose, IconSearch, IconTick } from '@douyinfe/semi-icons';
+import * as timeService from '../../services/time/timeService.js';
+import debounce from 'lodash/debounce';
+import no_image from '../../assets/no_image.jpg';
+
+import './ListingsTable.less';
+import { format } from '../../services/time/timeService.js';
 
 const columns = [
   {
-    title: '',
+    title: '#',
     dataIndex: 'is_active',
-    width: 30,
-    sorter: (a, b) => (a.updateTime - b.updateTime > 0 ? 1 : -1),
+    width: 58,
+    sorter: true,
     render: (value) => {
       return value ? (
         <div style={{ color: 'rgba(var(--semi-green-6), 1)' }}>
@@ -39,29 +45,48 @@ const columns = [
   },
   {
     title: 'Job-Name',
+    sorter: true,
     dataIndex: 'job_name',
-    width: 120,
-    filters: [
-      {
-        text: 'Semi Design design draft',
-        value: 'Semi Design design draft',
-      },
-      {
-        text: 'Semi D2C design draft',
-        value: 'Semi D2C design draft',
-      },
-    ],
-    onFilter: (value, record) => record.name.includes(value),
+    width: 170,
+  },
+  {
+    title: 'Listing date',
+    width: 130,
+    dataIndex: 'created_at',
+    sorter: true,
+    render: (text) => timeService.format(text),
   },
   {
     title: 'Provider',
+    width: 130,
     dataIndex: 'provider',
-    sorter: (a, b) => (a.size - b.size > 0 ? 1 : -1),
+    sorter: true,
     render: (text) => text.charAt(0).toUpperCase() + text.slice(1),
+  },
+  {
+    title: 'Price',
+    width: 100,
+    dataIndex: 'price',
+    sorter: true,
+    render: (text) => text + ' €',
+  },
+  {
+    title: 'Address',
+    width: 150,
+    dataIndex: 'address',
+    sorter: true,
   },
   {
     title: 'Title',
     dataIndex: 'title',
+    sorter: true,
+    render: (text, row) => {
+      return (
+        <a href={row.url} target="_blank" rel="noopener noreferrer">
+          {text}
+        </a>
+      );
+    },
   },
 ];
 
@@ -69,28 +94,91 @@ export default function ListingsTable() {
   const tableData = useSelector((state) => state.listingsTable);
   const actions = useActions();
   const [page, setPage] = useState(1);
+  const pageSize = 15;
+  const [sortData, setSortData] = useState({});
+  const [filter, setFilter] = useState(null);
 
   const handlePageChange = (_page) => {
     setPage(_page);
   };
 
   useEffect(() => {
-    actions.listingsTable.getListingsTable({ page });
-  }, [page]);
+    let sortfield = null;
+    let sortdir = null;
+
+    if (sortData != null && Object.keys(sortData).length > 0) {
+      sortfield = sortData.field;
+      sortdir = sortData.direction;
+    }
+    actions.listingsTable.getListingsTable({ page, pageSize, sortfield, sortdir, filter });
+  }, [page, sortData, filter]);
+
+  const handleFilterChange = useMemo(() => debounce((value) => setFilter(value), 500), []);
+
+  const expandRowRender = (record) => {
+    return (
+      <div className="listingsTable__expanded">
+        <div>
+          {record.image_url == null ? (
+            <Image height={200} src={no_image} />
+          ) : (
+            <Image height={200} src={record.image_url} />
+          )}
+        </div>
+        <div>
+          <Descriptions align="justify">
+            <Descriptions.Item itemKey="Listing still online">
+              <Tag size="small" shape="circle" color={record.is_active ? 'green' : 'red'}>
+                {record.is_active ? 'Yes' : 'No'}
+              </Tag>
+            </Descriptions.Item>
+            <Descriptions.Item itemKey="Link">
+              <a href={record.link} target="_blank" rel="noreferrer">
+                Link to Listing
+              </a>
+            </Descriptions.Item>
+            <Descriptions.Item itemKey="Listing date">{format(record.created_at)}</Descriptions.Item>
+            <Descriptions.Item itemKey="Price">{record.price} €</Descriptions.Item>
+          </Descriptions>
+          <b>{record.title}</b>
+          <p>{record.description == null ? 'No description available' : record.description}</p>
+        </div>
+      </div>
+    );
+  };
 
   return (
-    <Table
-      sticky={{ top: 5 }}
-      columns={columns}
-      dataSource={tableData?.result || []}
-      pagination={{
-        currentPage: page,
-        //for now fixed
-        pageSize: 20,
-        total: tableData?.totalNumber || 0,
-        onPageChange: handlePageChange,
-      }}
-      loading={false}
-    />
+    <div>
+      <Input
+        prefix={<IconSearch />}
+        showClear
+        className="listingsTable__search"
+        placeholder="Search"
+        onChange={handleFilterChange}
+      />
+      <Table
+        rowKey="id"
+        hideExpandedColumn={false}
+        sticky={{ top: 5 }}
+        columns={columns}
+        expandedRowRender={expandRowRender}
+        dataSource={tableData?.result || []}
+        onChange={(changeSet) => {
+          if (changeSet?.extra?.changeType === 'sorter') {
+            setSortData({
+              field: changeSet.sorter.dataIndex,
+              direction: changeSet.sorter.sortOrder === 'ascend' ? 'asc' : 'desc',
+            });
+          }
+        }}
+        pagination={{
+          currentPage: page,
+          //for now fixed
+          pageSize,
+          total: tableData?.totalNumber || 0,
+          onPageChange: handlePageChange,
+        }}
+      />
+    </div>
   );
 }
