@@ -8,6 +8,7 @@ const fakeWorkingHoursConfig = (from, to) => ({
     from,
   },
 });
+
 describe('utils', () => {
   describe('#isOneOf()', () => {
     it('should be false', () => {
@@ -32,6 +33,20 @@ describe('utils', () => {
     });
     it('should be true if only from is set', () => {
       expect(duringWorkingHoursOrNotSet(fakeWorkingHoursConfig('12:00', null), 1622026740000)).to.be.true;
+    });
+    it('should handle working hours that cross midnight (e.g., 05:00 → 00:30)', () => {
+      const cfg = fakeWorkingHoursConfig('05:00', '00:30');
+      const mkTs = (h, m = 0) => {
+        const d = new Date();
+        d.setHours(h);
+        d.setMinutes(m);
+        d.setSeconds(0);
+        d.setMilliseconds(0);
+        return d.getTime();
+      };
+      expect(duringWorkingHoursOrNotSet(cfg, mkTs(23, 0))).to.be.true; // 23:00 => within window
+      expect(duringWorkingHoursOrNotSet(cfg, mkTs(1, 0))).to.be.false; // 01:00 => outside window
+      expect(duringWorkingHoursOrNotSet(cfg, mkTs(6, 0))).to.be.true; // 06:00 => within window
     });
   });
 });
