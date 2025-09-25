@@ -19,6 +19,7 @@ import './App.less';
 import TrackingModal from './components/tracking/TrackingModal.jsx';
 import { Banner } from '@douyinfe/semi-ui';
 import VersionBanner from './components/version/VersionBanner.jsx';
+import Listings from './views/listings/Listings.jsx';
 
 export default function FredyApp() {
   const actions = useActions();
@@ -50,14 +51,11 @@ export default function FredyApp() {
 
   const isAdmin = () => currentUser != null && currentUser.isAdmin;
 
-  const login = () => (
+  return loading ? null : needsLogin() ? (
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
-  );
-  return loading ? null : needsLogin() ? (
-    login()
   ) : (
     <div className="app">
       <div className="app__container">
@@ -84,6 +82,7 @@ export default function FredyApp() {
           <Route path="/jobs/edit/:jobId" element={<JobMutation />} />
           <Route path="/jobs/insights/:jobId" element={<JobInsight />} />
           <Route path="/jobs" element={<Jobs />} />
+          <Route path="/listings" element={<Listings />} />
 
           {/* Permission-aware routes */}
           <Route

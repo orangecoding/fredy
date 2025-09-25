@@ -4,6 +4,7 @@
 import { create } from 'zustand';
 import { shallow } from 'zustand/shallow';
 import { xhrGet } from '../xhr.js';
+import queryString from 'query-string';
 
 const logger = (config) => (set, get, api) =>
   config(
@@ -130,11 +131,35 @@ export const useFredyState = create(
             }
           },
         },
+        listingsTable: {
+          async getListingsTable({ page = 1, pageSize = 20, filter = null, sortfield = null, sortdir = 'asc' }) {
+            try {
+              const qryString = queryString.stringify({
+                page,
+                pageSize,
+                filter,
+                sortfield,
+                sortdir,
+              });
+              const response = await xhrGet(`/api/listings/table?${qryString}`);
+              set((state) => ({
+                listingsTable: { ...state.listingsTable, ...response.json },
+              }));
+            } catch (Exception) {
+              console.error('Error while trying to get resource for api/listings. Error:', Exception);
+            }
+          },
+        },
       };
 
       // Initial state
       const initial = {
         notificationAdapter: [],
+        listingsTable: {
+          totalNumber: 0,
+          page: 1,
+          result: [],
+        },
         generalSettings: { settings: {} },
         demoMode: { demoMode: false },
         versionUpdate: {},
@@ -149,6 +174,7 @@ export const useFredyState = create(
         generalSettings: { ...effects.generalSettings },
         demoMode: { ...effects.demoMode },
         versionUpdate: { ...effects.versionUpdate },
+        listingsTable: { ...effects.listingsTable },
         provider: { ...effects.provider },
         jobs: { ...effects.jobs },
         user: { ...effects.user },
