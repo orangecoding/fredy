@@ -53,7 +53,7 @@ const TopMenu = function TopMenu({ isAdmin }) {
           tab={
             <span>
               <IconSetting />
-              General
+              Settings
             </span>
           }
         />
