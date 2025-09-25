@@ -26,10 +26,12 @@ describe('#immonet testsuite()', () => {
           expect(notify.title).to.be.a('string');
           expect(notify.link).to.be.a('string');
           expect(notify.address).to.be.a('string');
-
+          expect(notify.description).to.be.a('string');
+          /** check the values if possible **/
           expect(notify.size).that.does.include('m²');
           expect(notify.title).to.be.not.empty;
           expect(notify.address).to.be.not.empty;
+          expect(notify.description).to.be.not.empty;
         });
         resolve();
       });
