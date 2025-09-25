@@ -25,6 +25,7 @@ describe('#immowelt testsuite()', () => {
           expect(notify.title).to.be.a('string');
           expect(notify.link).to.be.a('string');
           expect(notify.address).to.be.a('string');
+          expect(notify.description).to.be.a('string');
           /** check the values if possible **/
           if (notify.size != null && notify.size.trim().toLowerCase() !== 'k.a.') {
             expect(notify.size).that.does.include('m²');
@@ -32,6 +33,7 @@ describe('#immowelt testsuite()', () => {
           expect(notify.title).to.be.not.empty;
           expect(notify.link).that.does.include('https://www.immowelt.de');
           expect(notify.address).to.be.not.empty;
+          expect(notify.description).to.be.not.empty;
         });
         resolve();
       });
