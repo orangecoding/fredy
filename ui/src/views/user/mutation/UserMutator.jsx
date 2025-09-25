@@ -2,7 +2,7 @@ import React from 'react';
 
 import { xhrGet, xhrPost } from '../../../services/xhr';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useActions } from '../../../services/state/store';
 import { Divider, Input, Switch, Button, Toast } from '@douyinfe/semi-ui';
 import './UserMutator.less';
 import { SegmentPart } from '../../../components/segment/SegmentPart';
@@ -16,7 +16,7 @@ const UserMutator = function UserMutator() {
   const [isAdmin, setIsAdmin] = React.useState(false);
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const actions = useActions();
 
   React.useEffect(() => {
     async function init() {
@@ -48,7 +48,7 @@ const UserMutator = function UserMutator() {
         password2,
         isAdmin,
       });
-      await dispatch.user.getUsers();
+      await actions.user.getUsers();
       Toast.success('User successfully saved...');
       navigate('/users');
     } catch (error) {

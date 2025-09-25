@@ -2,20 +2,20 @@ import React from 'react';
 
 import { roundToHour } from '../../../services/time/timeService';
 import Headline from '../../../components/headline/Headline';
-import { useDispatch, useSelector } from 'react-redux';
+import { useActions, useSelector } from '../../../services/state/store';
 import { useParams } from 'react-router-dom';
 import Linechart from './Linechart';
 
 const JobInsight = function JobInsight() {
-  const dispatch = useDispatch();
+  const actions = useActions();
 
   const insights = useSelector((state) => state.jobs.insights);
   const jobs = useSelector((state) => state.jobs.jobs);
   const params = useParams();
 
   React.useEffect(() => {
-    dispatch.jobs.getInsightDataForJob(params.jobId);
-    dispatch.jobs.getJobs();
+    actions.jobs.getInsightDataForJob(params.jobId);
+    actions.jobs.getJobs();
   }, []);
 
   const getData = () => {

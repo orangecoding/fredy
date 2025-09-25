@@ -6,7 +6,7 @@ import GeneralSettings from './views/generalSettings/GeneralSettings';
 import JobMutation from './views/jobs/mutation/JobMutation';
 import UserMutator from './views/user/mutation/UserMutator';
 import JobInsight from './views/jobs/insights/JobInsight.jsx';
-import { useDispatch, useSelector } from 'react-redux';
+import { useActions, useSelector } from './services/state/store';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Logout from './components/logout/Logout';
 import Logo from './components/logo/Logo';
@@ -18,22 +18,25 @@ import Jobs from './views/jobs/Jobs';
 import './App.less';
 import TrackingModal from './components/tracking/TrackingModal.jsx';
 import { Banner } from '@douyinfe/semi-ui';
+import VersionBanner from './components/version/VersionBanner.jsx';
 
 export default function FredyApp() {
-  const dispatch = useDispatch();
+  const actions = useActions();
   const [loading, setLoading] = React.useState(true);
   const currentUser = useSelector((state) => state.user.currentUser);
+  const versionUpdate = useSelector((state) => state.versionUpdate.versionUpdate);
   const settings = useSelector((state) => state.generalSettings.settings);
 
   useEffect(() => {
     async function init() {
-      await dispatch.user.getCurrentUser();
+      await actions.user.getCurrentUser();
       if (!needsLogin()) {
-        await dispatch.provider.getProvider();
-        await dispatch.jobs.getJobs();
-        await dispatch.jobs.getProcessingTimes();
-        await dispatch.notificationAdapter.getAdapter();
-        await dispatch.generalSettings.getGeneralSettings();
+        await actions.provider.getProvider();
+        await actions.jobs.getJobs();
+        await actions.jobs.getProcessingTimes();
+        await actions.notificationAdapter.getAdapter();
+        await actions.generalSettings.getGeneralSettings();
+        await actions.versionUpdate.getVersionUpdate();
       }
       setLoading(false);
     }
@@ -53,7 +56,6 @@ export default function FredyApp() {
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
-
   return loading ? null : needsLogin() ? (
     login()
   ) : (
@@ -62,7 +64,7 @@ export default function FredyApp() {
         <Logout />
         <Logo width={190} white />
         <Menu isAdmin={isAdmin()} />
-
+        {versionUpdate?.newVersion && <VersionBanner />}
         {settings.demoMode && (
           <>
             <Banner

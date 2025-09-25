@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Toast } from '@douyinfe/semi-ui';
 import UserTable from '../../components/table/UserTable';
-import { useDispatch, useSelector } from 'react-redux';
+import { useActions, useSelector } from '../../services/state/store';
 import { IconPlus } from '@douyinfe/semi-icons';
 import { Button } from '@douyinfe/semi-ui';
 import UserRemovalModal from './UserRemovalModal';
@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import './Users.less';
 
 const Users = function Users() {
-  const dispatch = useDispatch();
+  const actions = useActions();
   const [loading, setLoading] = React.useState(true);
   const users = useSelector((state) => state.user.users);
   const [userIdToBeRemoved, setUserIdToBeRemoved] = React.useState(null);
@@ -20,7 +20,7 @@ const Users = function Users() {
 
   React.useEffect(() => {
     async function init() {
-      await dispatch.user.getUsers();
+      await actions.user.getUsers();
       setLoading(false);
     }
 
@@ -32,8 +32,8 @@ const Users = function Users() {
       await xhrDelete('/api/admin/users', { userId: userIdToBeRemoved });
       Toast.success('User successfully remove');
       setUserIdToBeRemoved(null);
-      await dispatch.jobs.getJobs();
-      await dispatch.user.getUsers();
+      await actions.jobs.getJobs();
+      await actions.user.getUsers();
     } catch (error) {
       Toast.error(error);
       setUserIdToBeRemoved(null);

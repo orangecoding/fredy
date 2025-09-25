@@ -1,6 +1,7 @@
 node_modules/
 ui/public/
-db/
+db/*.json
+db/*.db*
 npm-debug.log
 .DS_Store
 .idea

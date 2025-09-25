@@ -1,62 +1,88 @@
 import fs from 'fs';
-import { config } from './lib/utils.js';
+import path from 'path';
+import { config, getProviders, refreshConfig } from './lib/utils.js';
 import * as similarityCache from './lib/services/similarity-check/similarityCache.js';
-import { setLastJobExecution } from './lib/services/storage/listingsStorage.js';
 import * as jobStorage from './lib/services/storage/jobStorage.js';
 import FredyRuntime from './lib/FredyRuntime.js';
 import { duringWorkingHoursOrNotSet } from './lib/utils.js';
-import './lib/api/api.js';
-import { track } from './lib/services/tracking/Tracker.js';
-import { handleDemoUser } from './lib/services/storage/userStorage.js';
-import { cleanupDemoAtMidnight } from './lib/services/demoCleanup.js';
-//if db folder does not exist, ensure to create it before loading anything else
-if (!fs.existsSync('./db')) {
-  fs.mkdirSync('./db');
+import { runMigrations } from './lib/services/storage/migrations/migrate.js';
+import { ensureDemoUserExists, ensureAdminUserExists } from './lib/services/storage/userStorage.js';
+import { cleanupDemoAtMidnight } from './lib/services/crons/demoCleanup-cron.js';
+import { initTrackerCron } from './lib/services/crons/tracker-cron.js';
+import logger from './lib/services/logger.js';
+import { bus } from './lib/services/events/event-bus.js';
+import { initActiveCheckerCron } from './lib/services/crons/listing-alive-cron.js';
+
+// Load configuration before any other startup steps
+await refreshConfig();
+
+// Ensure sqlite directory exists before loading anything else (based on config.sqlitepath)
+const rawDir = config.sqlitepath || '/db';
+const relDir = rawDir.startsWith('/') ? rawDir.slice(1) : rawDir;
+const absDir = path.isAbsolute(relDir) ? relDir : path.join(process.cwd(), relDir);
+if (!fs.existsSync(absDir)) {
+  fs.mkdirSync(absDir, { recursive: true });
 }
-const path = './lib/provider';
-const provider = fs.readdirSync(path).filter((file) => file.endsWith('.js'));
+
+// Run DB migrations once at startup and block until finished
+await runMigrations();
+
+// Load provider modules once at startup
+const providers = await getProviders();
+
 //assuming interval is always in minutes
 const INTERVAL = config.interval * 60 * 1000;
-/* eslint-disable no-console */
-console.log(`Started Fredy successfully. Ui can be accessed via http://localhost:${config.port}`);
+
+// Initialize API only after migrations completed
+await import('./lib/api/api.js');
+
 if (config.demoMode) {
-  console.info('Running in demo mode');
+  logger.info('Running in demo mode');
   cleanupDemoAtMidnight();
 }
-/* eslint-enable no-console */
-const fetchedProvider = await Promise.all(
-  provider.filter((provider) => provider.endsWith('.js')).map(async (pro) => import(`${path}/${pro}`)),
-);
 
-handleDemoUser();
+logger.info(`Started Fredy successfully. Ui can be accessed via http://localhost:${config.port}`);
 
-setInterval(
-  (function exec() {
-    const isDuringWorkingHoursOrNotSet = duringWorkingHoursOrNotSet(config, Date.now());
-    if (!config.demoMode) {
-      if (isDuringWorkingHoursOrNotSet) {
-        track();
-        config.lastRun = Date.now();
-        jobStorage
-          .getJobs()
-          .filter((job) => job.enabled)
-          .forEach((job) => {
-            job.provider
-              .filter((p) => fetchedProvider.find((fp) => fp.metaInformation.id === p.id) != null)
-              .forEach(async (prov) => {
-                const pro = fetchedProvider.find((fp) => fp.metaInformation.id === prov.id);
-                pro.init(prov, job.blacklist);
-                await new FredyRuntime(pro.config, job.notificationAdapter, prov.id, job.id, similarityCache).execute();
-                setLastJobExecution(job.id);
-              });
-          });
-      } else {
-        /* eslint-disable no-console */
-        console.debug('Working hours set. Skipping as outside of working hours.');
-        /* eslint-enable no-console */
-      }
+ensureAdminUserExists();
+ensureDemoUserExists();
+await initTrackerCron();
+//do not wait for this to finish, let it run in the background
+initActiveCheckerCron();
+
+bus.on('jobs:runAll', () => {
+  logger.debug('Running Fredy Job manually');
+  execute();
+});
+
+const execute = () => {
+  const isDuringWorkingHoursOrNotSet = duringWorkingHoursOrNotSet(config, Date.now());
+  if (!config.demoMode) {
+    if (isDuringWorkingHoursOrNotSet) {
+      config.lastRun = Date.now();
+      jobStorage
+        .getJobs()
+        .filter((job) => job.enabled)
+        .forEach((job) => {
+          job.provider
+            .filter((p) => providers.find((loaded) => loaded.metaInformation.id === p.id) != null)
+            .forEach(async (prov) => {
+              const matchedProvider = providers.find((loaded) => loaded.metaInformation.id === prov.id);
+              matchedProvider.init(prov, job.blacklist);
+              await new FredyRuntime(
+                matchedProvider.config,
+                job.notificationAdapter,
+                prov.id,
+                job.id,
+                similarityCache,
+              ).execute();
+            });
+        });
+    } else {
+      logger.debug('Working hours set. Skipping as outside of working hours.');
     }
-    return exec;
-  })(),
-  INTERVAL,
-);
+  }
+};
+
+setInterval(execute, INTERVAL);
+//start once at startup
+execute();

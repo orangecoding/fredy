@@ -57,3 +57,41 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      # Test container health with docker compose
+      - name: Test container with docker compose
+        run: |
+          echo "Starting container with docker compose..."
+          docker compose up --build -d
+          echo "Waiting for container to be ready (60 seconds for start_period)..."
+          sleep 60
+
+          echo "Monitoring container health for 30 seconds..."
+          SECONDS_ELAPSED=0
+          HEALTH_CHECK_INTERVAL=5
+          TOTAL_DURATION=30
+          
+          while [ $SECONDS_ELAPSED -lt $TOTAL_DURATION ]; do
+            HEALTH_STATUS=$(docker inspect --format='{{.State.Health.Status}}' fredy 2>/dev/null || echo "not_found")
+            CONTAINER_STATUS=$(docker inspect --format='{{.State.Status}}' fredy 2>/dev/null || echo "not_found")
+            echo "[$SECONDS_ELAPSED/$TOTAL_DURATION sec] Container: $CONTAINER_STATUS, Health: $HEALTH_STATUS"
+            
+            # Check if container is not running or unhealthy
+            if [ "$CONTAINER_STATUS" != "running" ]; then
+              echo "Container stopped running! Status: $CONTAINER_STATUS"
+              docker compose logs fredy
+              exit 1
+            fi
+            
+            if [ "$HEALTH_STATUS" = "unhealthy" ]; then
+              echo "Container is unhealthy!"
+              docker compose logs fredy
+              docker inspect --format='{{json .State.Health}}' fredy | jq
+              exit 1
+            fi
+            
+            sleep $HEALTH_CHECK_INTERVAL
+            SECONDS_ELAPSED=$((SECONDS_ELAPSED + HEALTH_CHECK_INTERVAL))
+          done
+
+          docker compose down

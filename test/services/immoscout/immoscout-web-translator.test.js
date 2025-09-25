@@ -53,7 +53,7 @@ describe('#immoscout-mobile URL conversion', () => {
       const response = await fetch(url, {
         method: 'POST',
         headers: {
-          'User-Agent': 'ImmoScout24_1410_30_._',
+          'User-Agent': 'ImmoScout_27.3_26.0_._',
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({

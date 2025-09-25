@@ -1,6 +1,8 @@
 import React from 'react';
 import { format } from '../../services/time/timeService';
-import { Descriptions } from '@douyinfe/semi-ui';
+import { Button, Descriptions, Toast } from '@douyinfe/semi-ui';
+import { IconPlayCircle } from '@douyinfe/semi-icons';
+import { xhrPost } from '../../services/xhr.js';
 
 export default function ProcessingTimes({ processingTimes = {} }) {
   if (Object.keys(processingTimes).length === 0) {
@@ -23,6 +25,19 @@ export default function ProcessingTimes({ processingTimes = {} }) {
             <Descriptions.Item itemKey="Last run">{format(processingTimes.lastRun)}</Descriptions.Item>
             <Descriptions.Item itemKey="Next run">
               {format(processingTimes.lastRun + processingTimes.interval * 60000)}
+            </Descriptions.Item>
+            <Descriptions.Item itemKey="Find Listings now">
+              <Button
+                size="small"
+                icon={<IconPlayCircle />}
+                aria-label="Start now"
+                onClick={async () => {
+                  await xhrPost('/api/jobs/startAll', null);
+                  Toast.success('Successfully triggered Fredy search.');
+                }}
+              >
+                Search now
+              </Button>
             </Descriptions.Item>
           </>
         )}

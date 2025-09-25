@@ -4,14 +4,14 @@ import cityBackground from '../../assets/city_background.jpg';
 import Logo from '../../components/logo/Logo';
 import { xhrPost } from '../../services/xhr';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useActions, useSelector } from '../../services/state/store';
 import { Input, Button, Banner, Toast } from '@douyinfe/semi-ui';
 
 import './login.less';
 import { IconUser, IconLock } from '@douyinfe/semi-icons';
 
 export default function Login() {
-  const dispatch = useDispatch();
+  const actions = useActions();
   const [username, setUserName] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [error, setError] = React.useState(null);
@@ -20,7 +20,7 @@ export default function Login() {
 
   useEffect(() => {
     async function init() {
-      await dispatch.demoMode.getDemoMode();
+      await actions.demoMode.getDemoMode();
     }
 
     init();
@@ -46,7 +46,7 @@ export default function Login() {
 
     Toast.success('Login successful!');
 
-    await dispatch.user.getCurrentUser();
+    await actions.user.getCurrentUser();
     navigate('/jobs');
   };
 
