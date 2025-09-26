@@ -28,8 +28,6 @@ With a modern architecture, Fredy provides a **clean Web UI**, removes
 duplicates across platforms, and stores results so you never see the
 same listing twice.
 
-
-
 ------------------------------------------------------------------------
 
 ## ✨ Key Features
