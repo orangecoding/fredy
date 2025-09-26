@@ -85,6 +85,7 @@
     "react-router": "7.9.2",
     "react-router-dom": "7.9.2",
     "restana": "5.1.0",
+    "semver": "^7.7.2",
     "serve-static": "2.2.0",
     "slack": "11.0.2",
     "vite": "7.1.7",
