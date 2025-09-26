@@ -32,6 +32,10 @@
     "url": "https://www.neubaukompass.de/neubau-immobilien/duesseldorf-region/eigentumswohnung/",
     "enabled": true
   },
+  "sparkasse": {
+    "url": "https://immobilien.sparkasse.de/immobilien/treffer?marketingType=buy&objectType=flat&perimeter=10&usageType=residential&zipCityEstateId=62782__Hamburg",
+    "enabled": true
+  },
   "wgGesucht": {
     "url": "https://www.wg-gesucht.de/wg-zimmer-in-Duesseldorf.30.0.1.0.html",
     "enabled": true
