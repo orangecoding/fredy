@@ -1,6 +1,7 @@
 import React from 'react';
 import { Banner, Descriptions } from '@douyinfe/semi-ui';
 import { useSelector } from '../../services/state/store.js';
+import { MarkdownRender } from '@douyinfe/semi-ui';
 
 import './VersionBanner.less';
 
@@ -12,7 +13,7 @@ export default function VersionBanner() {
       type="success"
       icon={null}
       description={
-        <div>
+        <div style={{ overflow: 'auto' }}>
           <p>A new version of Fredy is available. Update now to take advantage of the latest features and bug fixes.</p>
           <Descriptions row size="small">
             <Descriptions.Item itemKey="Your Version">{versionUpdate.localFredyVersion}</Descriptions.Item>
@@ -28,16 +29,9 @@ export default function VersionBanner() {
               <small>Release Notes</small>
             </b>
           </p>
-          <pre>{stripFullChangelog(versionUpdate.body)}</pre>
+          <MarkdownRender raw={versionUpdate.body} style={{ height: '200px' }} />
         </div>
       }
     />
   );
-
-  function stripFullChangelog(text) {
-    if (text == null) {
-      return '';
-    }
-    return text.replace(/(?:\r?\n)\*\*Full Changelog\*\*[\s\S]*$/u, '');
-  }
 }
