@@ -32,6 +32,10 @@
     "url": "https://www.neubaukompass.de/neubau-immobilien/duesseldorf-region/eigentumswohnung/",
     "enabled": true
   },
+  "regionalimmobilien24": {
+    "url": "https://www.regionalimmobilien24.de/rostock/rostock/kaufen/haus/-/-/-/?rd=5",
+    "enabled": true
+  },
   "sparkasse": {
     "url": "https://immobilien.sparkasse.de/immobilien/treffer?marketingType=buy&objectType=flat&perimeter=10&usageType=residential&zipCityEstateId=62782__Hamburg",
     "enabled": true
