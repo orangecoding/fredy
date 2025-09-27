@@ -186,7 +186,7 @@ const GeneralSettings = function GeneralSettings() {
             <Divider margin="1rem" />
             <SegmentPart
               name="Working hours"
-              helpText="During this hours, Fredy will search for new apartments. If nothing is configured, Fredy will search around the clock."
+              helpText="During these hours, Fredy will search for new apartments. If nothing is configured, Fredy will search around the clock."
               Icon={IconCalendar}
             >
               <div className="generalSettings__timePickerContainer">

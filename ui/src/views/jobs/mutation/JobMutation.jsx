@@ -89,7 +89,7 @@ export default function JobMutator() {
         />
       )}
 
-      <Headline text={jobToBeEdit ? 'Edit a Job' : 'Create a new Job'} />
+      <Headline text={jobToBeEdit ? 'Edit Job' : 'Create new Job'} />
       <form>
         <SegmentPart name="Name">
           <Input

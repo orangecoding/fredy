@@ -32,7 +32,7 @@ export default function JobTable({ jobs = {}, onJobRemoval, onJobStatusChanged, 
           dataIndex: 'name',
         },
         {
-          title: 'Findings',
+          title: 'Listings',
           dataIndex: 'numberOfFoundListings',
           render: (value) => {
             return value || 0;
