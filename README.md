@@ -21,7 +21,7 @@ Finding an apartment or house in Germany can be stressful and
 time-consuming.\
 **Fredy** makes it easier: it automatically scrapes **ImmoScout24,
 Immowelt, Immonet, eBay Kleinanzeigen, and WG-Gesucht** and notifies you
-instantly via **Slack, Telegram, Email, ntfy, and more** when new
+instantly via **Slack, Telegram, Email, ntfy, discord and more** when new
 listings appear.
 
 With a modern architecture, Fredy provides a **clean Web UI**, removes
@@ -35,7 +35,7 @@ same listing twice.
 -   🏠 Scrapes **ImmoScout24, Immowelt, Immonet, eBay Kleinanzeigen,
     WG-Gesucht**
 -   ⚡ Instant notifications: Slack, Telegram, Email (SendGrid,
-    Mailjet), ntfy
+    Mailjet), ntfy, discord 
 -   🔎 Uses the **ImmoScout Mobile API** (reverse engineered)
 -   🌍 Runs anywhere: Docker, Node.js, self-hosted
 -   🖥️ Intuitive **Web UI** to manage searches
@@ -129,7 +129,7 @@ picks up the newest listings first.
 ### Adapter 📡
 
 An **adapter** is the channel through which Fredy notifies you (Slack,
-Telegram, Email, ntfy, ...).\
+Telegram, Email, ntfy, discord ...).\
 Each adapter has its own configuration (e.g. API keys, webhook URLs).\
 You can use multiple adapters at once --- Fredy will send new listings
 through all of them.
