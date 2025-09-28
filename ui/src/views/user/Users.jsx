@@ -52,7 +52,7 @@ const Users = function Users() {
             icon={<IconPlus />}
             onClick={() => navigate('/users/new')}
           >
-            Create new User
+            New User
           </Button>
 
           <UserTable

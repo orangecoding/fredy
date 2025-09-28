@@ -94,7 +94,7 @@ export default function ListingsTable() {
   const tableData = useSelector((state) => state.listingsTable);
   const actions = useActions();
   const [page, setPage] = useState(1);
-  const pageSize = 15;
+  const pageSize = 10;
   const [sortData, setSortData] = useState({});
   const [filter, setFilter] = useState(null);
 
