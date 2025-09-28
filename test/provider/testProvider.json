@@ -28,6 +28,10 @@
     "url": "https://www.kleinanzeigen.de/s-immobilien/duesseldorf/anzeige:angebote/wohnung/k0c195l2068r5",
     "enabled": true
   },
+  "mcMakler": {
+    "url": "https://www.mcmakler.de/immobilien/results?placeId=62649&search=Leipzig%252C+Sachsen&propertyTypes=APARTMENT&page=0",
+    "enabled": true
+  },
   "neubauKompass": {
     "url": "https://www.neubaukompass.de/neubau-immobilien/duesseldorf-region/eigentumswohnung/",
     "enabled": true
