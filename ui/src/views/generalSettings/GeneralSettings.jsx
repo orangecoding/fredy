@@ -4,7 +4,6 @@ import { useActions, useSelector } from '../../services/state/store';
 
 import { Divider, TimePicker, Button, Checkbox, Input } from '@douyinfe/semi-ui';
 import { InputNumber } from '@douyinfe/semi-ui';
-import Headline from '../../components/headline/Headline';
 import { xhrPost } from '../../services/xhr';
 import { SegmentPart } from '../../components/segment/SegmentPart';
 import { Banner, Toast } from '@douyinfe/semi-ui';
@@ -125,7 +124,6 @@ const GeneralSettings = function GeneralSettings() {
     <div>
       {!loading && (
         <React.Fragment>
-          <Headline text="General Settings" />
           <div>
             <SegmentPart
               name="Interval"

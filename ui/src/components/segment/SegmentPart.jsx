@@ -8,6 +8,7 @@ export const SegmentPart = ({ name, Icon = null, children, helpText }) => {
 
   return (
     <Card
+      className="segmentParts"
       title={
         <Meta title={name} description={helpText} avatar={Icon == null ? null : <Icon size="extra-extra-small" />} />
       }

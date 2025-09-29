@@ -107,9 +107,9 @@ yarn run start:frontend  # in another terminal
 
 ## 📸 Screenshots
 
-| Job Configuration | Job Analytics | Job Overview |
-|-------------------|--------------|--------------|
-| ![Screenshot showing job configuration in Fredy](doc/screenshot1.png) | ![Screenshot showing job analytics in Fredy](doc/screenshot_2.png) | ![Screenshot showing job overview in Fredy](doc/screenshot_3.png) |
+| Fredy Main Overview                              | Job Configuration                                                     | Found Listings                                                              |
+|--------------------------------------------------|-----------------------------------------------------------------------|-----------------------------------------------------------------------------|
+| ![Screenshot showing Fredy](doc/screenshot1.png) | ![Screenshot showing job configuration in Fredy](doc/screenshot3.png) | ![Screenshot showing found listings in Fredy](doc/screenshot2.png) |
 
 ------------------------------------------------------------------------
 

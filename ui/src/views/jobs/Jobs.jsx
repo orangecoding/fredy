@@ -4,14 +4,12 @@ import JobTable from '../../components/table/JobTable';
 import { useSelector, useActions } from '../../services/state/store';
 import { xhrDelete, xhrPut } from '../../services/xhr';
 import { useNavigate } from 'react-router-dom';
-import ProcessingTimes from './ProcessingTimes';
 import { Button, Toast } from '@douyinfe/semi-ui';
 import { IconPlusCircle } from '@douyinfe/semi-icons';
 import './Jobs.less';
 
 export default function Jobs() {
   const jobs = useSelector((state) => state.jobs.jobs);
-  const processingTimes = useSelector((state) => state.jobs.processingTimes);
   const navigate = useNavigate();
   const actions = useActions();
 
@@ -38,7 +36,6 @@ export default function Jobs() {
   return (
     <div>
       <div>
-        {processingTimes != null && <ProcessingTimes processingTimes={processingTimes} />}
         <Button
           type="primary"
           icon={<IconPlusCircle />}
