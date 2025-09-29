@@ -66,7 +66,7 @@ const columns = [
   },
   {
     title: 'Price',
-    width: 100,
+    width: 110,
     dataIndex: 'price',
     sorter: true,
     render: (text) => text + ' €',
