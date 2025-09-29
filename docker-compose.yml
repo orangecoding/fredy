@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: fredy/fredy
+    image: ghcr.io/orangecoding/fredy
     # map existing config and database
     volumes:
       - ./conf:/conf
