@@ -42,7 +42,7 @@ export default function Navigation({ isAdmin }) {
       header={<img src={logoWhite} width="180" alt="Fredy Logo" />}
       footer={
         <div className="navigate__logout_Button">
-          <Logout />
+          <Logout text={!collapsed} />
         </div>
       }
     />

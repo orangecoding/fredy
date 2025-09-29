@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Table, Popover, Input, Descriptions, Tag, Image } from '@douyinfe/semi-ui';
+import { Table, Popover, Input, Descriptions, Tag, Image, Empty } from '@douyinfe/semi-ui';
 import { useActions, useSelector } from '../../services/state/store.js';
 import { IconClose, IconSearch, IconTick } from '@douyinfe/semi-icons';
 import * as timeService from '../../services/time/timeService.js';
@@ -8,6 +8,7 @@ import no_image from '../../assets/no_image.jpg';
 
 import './ListingsTable.less';
 import { format } from '../../services/time/timeService.js';
+import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-illustrations';
 
 const columns = [
   {
@@ -90,6 +91,14 @@ const columns = [
   },
 ];
 
+const empty = (
+  <Empty
+    image={<IllustrationNoResult />}
+    darkModeImage={<IllustrationNoResultDark />}
+    description="No listings available."
+  />
+);
+
 export default function ListingsTable() {
   const tableData = useSelector((state) => state.listingsTable);
   const actions = useActions();
@@ -158,6 +167,7 @@ export default function ListingsTable() {
       />
       <Table
         rowKey="id"
+        empty={empty}
         hideExpandedColumn={false}
         sticky={{ top: 5 }}
         columns={columns}

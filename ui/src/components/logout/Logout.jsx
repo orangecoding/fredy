@@ -2,7 +2,8 @@ import React from 'react';
 import { Button } from '@douyinfe/semi-ui';
 import { xhrPost } from '../../services/xhr';
 import { IconUser } from '@douyinfe/semi-icons';
-const Logout = function Logout() {
+
+const Logout = function Logout({ text }) {
   return (
     <div>
       <Button
@@ -14,7 +15,7 @@ const Logout = function Logout() {
           location.reload();
         }}
       >
-        Logout
+        {text && 'Logout'}
       </Button>
     </div>
   );

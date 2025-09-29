@@ -10,7 +10,7 @@ const empty = (
   <Empty
     image={<IllustrationNoResult />}
     darkModeImage={<IllustrationNoResultDark />}
-    description={'No jobs available.'}
+    description="No jobs available. Why don't you create one? ;)"
   />
 );
 
