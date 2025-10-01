@@ -13,8 +13,7 @@ RUN apt-get update \
 RUN usermod -d /fredy node
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
-    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium \
-    PUPPETEER_ARGS="--no-sandbox --disable-setuid-sandbox"
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 # Copy lockfiles first to leverage cache for dependencies
 COPY --chown=node:node package.json yarn.lock .
