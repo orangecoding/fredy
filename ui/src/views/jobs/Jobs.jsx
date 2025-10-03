@@ -16,7 +16,17 @@ export default function Jobs() {
   const onJobRemoval = async (jobId) => {
     try {
       await xhrDelete('/api/jobs', { jobId });
-      Toast.success('Job successfully remove');
+      Toast.success('Job successfully removed');
+      await actions.jobs.getJobs();
+    } catch (error) {
+      Toast.error(error);
+    }
+  };
+
+  const onListingRemoval = async (jobId) => {
+    try {
+      await xhrDelete('/api/listings', { jobId });
+      Toast.success('Listings successfully removed');
       await actions.jobs.getJobs();
     } catch (error) {
       Toast.error(error);
@@ -49,6 +59,7 @@ export default function Jobs() {
       <JobTable
         jobs={jobs || []}
         onJobRemoval={onJobRemoval}
+        onListingRemoval={onListingRemoval}
         onJobStatusChanged={onJobStatusChanged}
         onJobInsight={(jobId) => navigate(`/jobs/insights/${jobId}`)}
         onJobEdit={(jobId) => navigate(`/jobs/edit/${jobId}`)}
