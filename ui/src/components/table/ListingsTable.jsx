@@ -112,15 +112,16 @@ const columns = [
   {
     title: 'Job-Name',
     sorter: true,
+    ellipsis: true,
     dataIndex: 'job_name',
-    width: 170,
+    width: 150,
   },
   {
     title: 'Listing date',
     width: 130,
     dataIndex: 'created_at',
     sorter: true,
-    render: (text) => timeService.format(text),
+    render: (text) => timeService.format(text, false),
   },
   {
     title: 'Provider',
