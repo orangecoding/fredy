@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { config, getProviders, refreshConfig } from './lib/utils.js';
+import { checkIfConfigIsAccessible, config, getProviders, refreshConfig } from './lib/utils.js';
 import * as similarityCache from './lib/services/similarity-check/similarityCache.js';
 import * as jobStorage from './lib/services/storage/jobStorage.js';
 import FredyRuntime from './lib/FredyRuntime.js';
@@ -15,6 +15,13 @@ import { initActiveCheckerCron } from './lib/services/crons/listing-alive-cron.j
 
 // Load configuration before any other startup steps
 await refreshConfig();
+
+const isConfigAccessible = await checkIfConfigIsAccessible();
+
+if (!isConfigAccessible) {
+  logger.error('Configuration exists, but is not accessible. Please check the file permission');
+  process.exit(1);
+}
 
 // Ensure sqlite directory exists before loading anything else (based on config.sqlitepath)
 const rawDir = config.sqlitepath || '/db';
