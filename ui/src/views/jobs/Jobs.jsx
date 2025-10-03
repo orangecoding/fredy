@@ -25,7 +25,7 @@ export default function Jobs() {
 
   const onListingRemoval = async (jobId) => {
     try {
-      await xhrDelete('/api/listings', { jobId });
+      await xhrDelete('/api/listings/job', { jobId });
       Toast.success('Listings successfully removed');
       await actions.jobs.getJobs();
     } catch (error) {
