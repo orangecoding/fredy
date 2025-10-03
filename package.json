@@ -76,7 +76,7 @@
     "node-mailjet": "6.0.9",
     "p-throttle": "^8.0.0",
     "package-up": "^5.0.0",
-    "puppeteer": "^24.22.3",
+    "puppeteer": "^24.23.0",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
     "query-string": "9.3.1",
@@ -88,7 +88,7 @@
     "semver": "^7.7.2",
     "serve-static": "2.2.0",
     "slack": "11.0.2",
-    "vite": "7.1.7",
+    "vite": "7.1.9",
     "x-var": "^3.0.1",
     "zustand": "^5.0.8"
   },
@@ -106,7 +106,7 @@
     "husky": "9.1.7",
     "less": "4.4.1",
     "lint-staged": "16.2.3",
-    "mocha": "11.7.2",
+    "mocha": "11.7.4",
     "nodemon": "^3.1.10",
     "prettier": "3.6.2"
   }
