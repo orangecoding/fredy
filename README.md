@@ -9,10 +9,18 @@
 </a>
 </p>
 
-![Tests](https://github.com/orangecoding/fredy/actions/workflows/test.yml/badge.svg)
-[![Docker](https://github.com/orangecoding/fredy/actions/workflows/docker.yml/badge.svg)](https://github.com/orangecoding/fredy/actions/workflows/docker.yml)
-![Source](https://github.com/orangecoding/fredy/actions/workflows/check_source.yml/badge.svg)
-![Docker Pulls](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fghcr-badge.elias.eu.org%2Fapi%2Forangecoding%2Ffredy%2Ffredy&query=%24.downloadCount&label=Docker%20Pulls)
+<p align="center">
+  <a href="https://fredy.orange-coding.net/" target="_blank">Website</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+  <a href="https://demo-fredy.orange-coding.net/" target="_blank">Demo</a>
+</p>
+
+<p align="center">
+  <img src="https://github.com/orangecoding/fredy/actions/workflows/test.yml/badge.svg" alt="Tests" />
+  <img src="https://github.com/orangecoding/fredy/actions/workflows/docker.yml/badge.svg" alt="Docker" />
+  <img src="https://github.com/orangecoding/fredy/actions/workflows/check_source.yml/badge.svg" alt="Source" />
+  <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fghcr-badge.elias.eu.org%2Fapi%2Forangecoding%2Ffredy%2Ffredy&query=%24.downloadCount&label=Docker%20Pulls" alt="Docker Pulls" />
+</p>
+
 
 
 # Fredy 🏡 – Your Self-Hosted Real Estate Finder for Germany
