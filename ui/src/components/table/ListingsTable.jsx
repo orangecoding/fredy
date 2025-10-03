@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Table, Popover, Input, Descriptions, Tag, Image, Empty, Button, Card, Toast } from '@douyinfe/semi-ui';
+import { Table, Popover, Input, Descriptions, Tag, Image, Empty, Button, Toast, Divider } from '@douyinfe/semi-ui';
 import { useActions, useSelector } from '../../services/state/store.js';
-import { IconClose, IconDelete, IconSearch, IconTick } from '@douyinfe/semi-icons';
+import { IconClose, IconDelete, IconSearch, IconStar, IconStarStroked, IconTick } from '@douyinfe/semi-icons';
 import * as timeService from '../../services/time/timeService.js';
 import debounce from 'lodash/debounce';
 import no_image from '../../assets/no_image.jpg';
@@ -9,9 +9,73 @@ import no_image from '../../assets/no_image.jpg';
 import './ListingsTable.less';
 import { format } from '../../services/time/timeService.js';
 import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-illustrations';
-import { xhrDelete } from '../../services/xhr.js';
+import { xhrDelete, xhrPost } from '../../services/xhr.js';
 
 const columns = [
+  {
+    title: '',
+    width: 100,
+    dataIndex: 'id',
+    render: (id, row) => {
+      return (
+        <div>
+          <Popover
+            style={{
+              padding: '.4rem',
+              color: 'var(--semi-color-white)',
+            }}
+            content={row.isWatched === 1 ? 'Unwatch Listing' : 'Watch Listing'}
+          >
+            <Button
+              icon={
+                row.isWatched === 1 ? (
+                  <IconStar style={{ color: 'rgba(var(--semi-green-5), 1)' }} />
+                ) : (
+                  <IconStarStroked />
+                )
+              }
+              theme="borderless"
+              size="small"
+              onClick={async () => {
+                try {
+                  await xhrPost('/api/listings/watch', { listingId: row.id });
+                  Toast.success(row.isWatched === 1 ? 'Listing removed from Watchlist' : 'Listing added to Watchlist');
+                  row.reloadTable();
+                } catch (e) {
+                  console.error(e);
+                  Toast.error('Failed to operate Watchlist');
+                }
+              }}
+            />
+          </Popover>
+          <Divider layout="vertical" margin="4px" />
+          <Popover
+            style={{
+              padding: '.4rem',
+              color: 'var(--semi-color-white)',
+            }}
+            content="Delete Listing"
+          >
+            <Button
+              icon={<IconDelete />}
+              theme="borderless"
+              size="small"
+              type="danger"
+              onClick={async () => {
+                try {
+                  await xhrDelete('/api/listings/', { ids: [id] });
+                  Toast.success('Listing(s) successfully removed');
+                  row.reloadTable();
+                } catch (error) {
+                  Toast.error(error);
+                }
+              }}
+            />
+          </Popover>
+        </div>
+      );
+    },
+  },
   {
     title: '#',
     dataIndex: 'is_active',
@@ -25,7 +89,7 @@ const columns = [
               padding: '.4rem',
               color: 'var(--semi-color-white)',
             }}
-            content="Listing still online"
+            content="Listing is still active"
           >
             <IconTick />
           </Popover>
@@ -37,7 +101,7 @@ const columns = [
               padding: '.4rem',
               color: 'var(--semi-color-white)',
             }}
-            content="Listing not online anymore"
+            content="Listing is inactive"
           >
             <IconClose />
           </Popover>
@@ -108,7 +172,6 @@ export default function ListingsTable() {
   const pageSize = 10;
   const [sortData, setSortData] = useState({});
   const [filter, setFilter] = useState(null);
-  const [selectedKeys, setSelectedKeys] = useState([]);
 
   const handlePageChange = (_page) => {
     setPage(_page);
@@ -130,12 +193,6 @@ export default function ListingsTable() {
   }, [page, sortData, filter]);
 
   const handleFilterChange = useMemo(() => debounce((value) => setFilter(value), 500), []);
-
-  const rowSelection = {
-    onChange: (selectedRowKeys) => {
-      setSelectedKeys(selectedRowKeys);
-    },
-  };
 
   const expandRowRender = (record) => {
     return (
@@ -169,18 +226,6 @@ export default function ListingsTable() {
     );
   };
 
-  const onRemoveSelectedListings = async () => {
-    if (selectedKeys != null && selectedKeys.length > 0) {
-      try {
-        await xhrDelete('/api/listings/', { ids: selectedKeys });
-        Toast.success('Listing(s) successfully removed');
-        loadTable();
-      } catch (error) {
-        Toast.error(error);
-      }
-    }
-  };
-
   return (
     <div>
       <Input
@@ -190,22 +235,19 @@ export default function ListingsTable() {
         placeholder="Search"
         onChange={handleFilterChange}
       />
-      {selectedKeys != null && selectedKeys.length > 0 && (
-        <Card className="listingsTable__toolbar">
-          <Button type="danger" icon={<IconDelete />} onClick={() => onRemoveSelectedListings()}>
-            Remove selected Listings
-          </Button>
-        </Card>
-      )}
       <Table
         rowKey="id"
         empty={empty}
         hideExpandedColumn={false}
         sticky={{ top: 5 }}
         columns={columns}
-        rowSelection={rowSelection}
         expandedRowRender={expandRowRender}
-        dataSource={tableData?.result || []}
+        dataSource={(tableData?.result || []).map((row) => {
+          return {
+            ...row,
+            reloadTable: loadTable,
+          };
+        })}
         onChange={(changeSet) => {
           if (changeSet?.extra?.changeType === 'sorter') {
             setSortData({
