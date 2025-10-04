@@ -13,9 +13,10 @@ import { xhrDelete, xhrPost } from '../../services/xhr.js';
 
 const columns = [
   {
-    title: '',
+    title: '#',
     width: 100,
-    dataIndex: 'id',
+    dataIndex: 'isWatched',
+    sorter: true,
     render: (id, row) => {
       return (
         <div>
@@ -77,9 +78,9 @@ const columns = [
     },
   },
   {
-    title: '#',
+    title: 'State',
     dataIndex: 'is_active',
-    width: 58,
+    width: 84,
     sorter: true,
     render: (value) => {
       return value ? (
