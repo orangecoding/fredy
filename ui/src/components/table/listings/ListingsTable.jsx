@@ -1,15 +1,16 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Table, Popover, Input, Descriptions, Tag, Image, Empty, Button, Toast, Divider } from '@douyinfe/semi-ui';
-import { useActions, useSelector } from '../../services/state/store.js';
+import { useActions, useSelector } from '../../../services/state/store.js';
 import { IconClose, IconDelete, IconSearch, IconStar, IconStarStroked, IconTick } from '@douyinfe/semi-icons';
-import * as timeService from '../../services/time/timeService.js';
+import * as timeService from '../../../services/time/timeService.js';
 import debounce from 'lodash/debounce';
-import no_image from '../../assets/no_image.jpg';
+import no_image from '../../../assets/no_image.jpg';
 
 import './ListingsTable.less';
-import { format } from '../../services/time/timeService.js';
+import { format } from '../../../services/time/timeService.js';
 import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-illustrations';
-import { xhrDelete, xhrPost } from '../../services/xhr.js';
+import { xhrDelete, xhrPost } from '../../../services/xhr.js';
+import ListingsFilter from './ListingsFilter.jsx';
 
 const columns = [
   {
@@ -173,7 +174,11 @@ export default function ListingsTable() {
   const [page, setPage] = useState(1);
   const pageSize = 10;
   const [sortData, setSortData] = useState({});
-  const [filter, setFilter] = useState(null);
+  const [freeTextFilter, setFreeTextFilter] = useState(null);
+  const [watchListFilter, setWatchListFilter] = useState(null);
+  const [jobNameFilter, setJobNameFilter] = useState(null);
+  const [activityFilter, setActivityFilter] = useState(null);
+  const [providerFilter, setProviderFilter] = useState(null);
 
   const handlePageChange = (_page) => {
     setPage(_page);
@@ -187,14 +192,21 @@ export default function ListingsTable() {
       sortfield = sortData.field;
       sortdir = sortData.direction;
     }
-    actions.listingsTable.getListingsTable({ page, pageSize, sortfield, sortdir, filter });
+    actions.listingsTable.getListingsTable({
+      page,
+      pageSize,
+      sortfield,
+      sortdir,
+      freeTextFilter,
+      filter: { watchListFilter, jobNameFilter, activityFilter, providerFilter },
+    });
   };
 
   useEffect(() => {
     loadTable();
-  }, [page, sortData, filter]);
+  }, [page, sortData, freeTextFilter, providerFilter, activityFilter, jobNameFilter, watchListFilter]);
 
-  const handleFilterChange = useMemo(() => debounce((value) => setFilter(value), 500), []);
+  const handleFilterChange = useMemo(() => debounce((value) => setFreeTextFilter(value), 500), []);
 
   const expandRowRender = (record) => {
     return (
@@ -230,6 +242,12 @@ export default function ListingsTable() {
 
   return (
     <div>
+      <ListingsFilter
+        onActivityFilter={setActivityFilter}
+        onWatchListFilter={setWatchListFilter}
+        onJobNameFilter={setJobNameFilter}
+        onProviderFilter={setProviderFilter}
+      />
       <Input
         prefix={<IconSearch />}
         showClear

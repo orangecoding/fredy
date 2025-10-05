@@ -132,14 +132,22 @@ export const useFredyState = create(
           },
         },
         listingsTable: {
-          async getListingsTable({ page = 1, pageSize = 20, filter = null, sortfield = null, sortdir = 'asc' }) {
+          async getListingsTable({
+            page = 1,
+            pageSize = 20,
+            freeTextFilter = null,
+            sortfield = null,
+            sortdir = 'asc',
+            filter,
+          }) {
             try {
               const qryString = queryString.stringify({
                 page,
                 pageSize,
-                filter,
+                freeTextFilter,
                 sortfield,
                 sortdir,
+                ...filter,
               });
               const response = await xhrGet(`/api/listings/table?${qryString}`);
               set((state) => ({
