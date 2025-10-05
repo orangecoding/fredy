@@ -65,7 +65,7 @@ const columns = [
               type="danger"
               onClick={async () => {
                 try {
-                  await xhrDelete('/api/listings/', { ids: [id] });
+                  await xhrDelete('/api/listings/', { ids: [row.id] });
                   Toast.success('Listing(s) successfully removed');
                   row.reloadTable();
                 } catch (error) {
