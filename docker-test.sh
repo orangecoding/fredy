@@ -7,8 +7,8 @@ if [ "$(docker ps -aq -f name=fredy)" ]; then
   docker rm fredy || true
 fi
 
-# Build image from local Dockerfile
-docker build -t fredy:local .
+# Build image from local Dockerfile, forcing a fresh build without cache
+docker build --no-cache -t fredy:local .
 
 # Run container with volumes and port mapping
 docker run -d --name fredy \
