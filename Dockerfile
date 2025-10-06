@@ -12,7 +12,7 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
     PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 # Copy lockfiles first to leverage cache for dependencies
-COPY package.json yarn.lock .
+COPY --chown=node:node package.json yarn.lock ./
 
 # Set Yarn timeout, install dependencies and PM2 globally
 RUN yarn config set network-timeout 600000 \
@@ -20,19 +20,22 @@ RUN yarn config set network-timeout 600000 \
   && yarn global add pm2
 
 # Copy application source and build production assets
-COPY . .
+COPY --chown=node:node . .
 RUN yarn build:frontend
 
-# Prepare runtime directories and symlinks for data and config
+# Prepare runtime directories and symlinks for data and config (as root)
 RUN mkdir -p /db /conf \
-  && chown 1000:1000 /db /conf \
-  && chmod 777 /db /conf \
+  && chown -R node:node /fredy /db /conf \
+  && chmod 770 /db /conf \
   && ln -s /db /fredy/db \
   && ln -s /conf /fredy/conf
 
 EXPOSE 9998
 VOLUME /db
 VOLUME /conf
+
+# Change to non-root user
+USER node
 
 # Start application using PM2 runtime
 CMD ["pm2-runtime", "index.js"]
