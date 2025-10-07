@@ -37,6 +37,7 @@ export default function FredyApp() {
         await actions.provider.getProvider();
         await actions.jobs.getJobs();
         await actions.jobs.getProcessingTimes();
+        await actions.jobs.getSharableUserList();
         await actions.notificationAdapter.getAdapter();
         await actions.generalSettings.getGeneralSettings();
         await actions.versionUpdate.getVersionUpdate();

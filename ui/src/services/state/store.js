@@ -67,6 +67,14 @@ export const useFredyState = create(
               console.error(`Error while trying to get resource for api/jobs. Error:`, Exception);
             }
           },
+          async getSharableUserList() {
+            try {
+              const response = await xhrGet('/api/jobs/shareableUserList');
+              set((state) => ({ jobs: { ...state.jobs, shareableUserList: Object.freeze(response.json) } }));
+            } catch (Exception) {
+              console.error(`Error while trying to get resource for api/jobs. Error:`, Exception);
+            }
+          },
           async getProcessingTimes() {
             try {
               const response = await xhrGet('/api/jobs/processingTimes');
@@ -172,7 +180,7 @@ export const useFredyState = create(
         demoMode: { demoMode: false },
         versionUpdate: {},
         provider: [],
-        jobs: { jobs: [], insights: {}, processingTimes: {} },
+        jobs: { jobs: [], insights: {}, processingTimes: {}, shareableUserList: [] },
         user: { users: [], currentUser: null },
       };
 

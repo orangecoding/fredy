@@ -26,7 +26,11 @@ export default function ListingsFilter({ onWatchListFilter, onActivityFilter, on
             {jobs != null &&
               jobs.length > 0 &&
               jobs.map((job) => {
-                return <Select.Option value={job.id}>{job.name}</Select.Option>;
+                return (
+                  <Select.Option value={job.id} key={job.id}>
+                    {job.name}
+                  </Select.Option>
+                );
               })}
           </Select>
         </Descriptions.Item>
@@ -35,7 +39,11 @@ export default function ListingsFilter({ onWatchListFilter, onActivityFilter, on
             {provider != null &&
               provider.length > 0 &&
               provider.map((prov) => {
-                return <Select.Option value={prov.id}>{prov.name}</Select.Option>;
+                return (
+                  <Select.Option value={prov.id} key={prov.id}>
+                    {prov.name}
+                  </Select.Option>
+                );
               })}
           </Select>
         </Descriptions.Item>

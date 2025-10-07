@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Button, Empty, Table, Switch, Popover } from '@douyinfe/semi-ui';
-import { IconDelete, IconDescend2, IconEdit, IconHistogram } from '@douyinfe/semi-icons';
+import { IconAlertTriangle, IconDelete, IconDescend2, IconEdit, IconHistogram } from '@douyinfe/semi-icons';
 import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-illustrations';
 
 import './JobTable.less';
@@ -33,12 +33,38 @@ export default function JobTable({
           title: '',
           dataIndex: '',
           render: (job) => {
-            return <Switch onChange={(checked) => onJobStatusChanged(job.id, checked)} checked={job.enabled} />;
+            return (
+              <Switch
+                onChange={(checked) => onJobStatusChanged(job.id, checked)}
+                checked={job.enabled}
+                disabled={job.isOnlyShared}
+              />
+            );
           },
         },
         {
           title: 'Name',
           dataIndex: 'name',
+          render: (name, job) => {
+            if (job.isOnlyShared) {
+              return (
+                <Popover
+                  content={getPopoverContent(
+                    'This job has been shared with you by another user, therefor it is read-only.',
+                  )}
+                >
+                  <div style={{ display: 'flex', gap: '.3rem' }}>
+                    <div style={{ color: 'rgba(var(--semi-yellow-7), 1)' }}>
+                      <IconAlertTriangle />
+                    </div>
+                    {name}
+                  </div>
+                </Popover>
+              );
+            } else {
+              return name;
+            }
+          },
         },
         {
           title: 'Listings',
@@ -48,14 +74,14 @@ export default function JobTable({
           },
         },
         {
-          title: 'Providers',
+          title: 'Provider',
           dataIndex: 'provider',
           render: (value) => {
             return value.length || 0;
           },
         },
         {
-          title: 'Notification adapters',
+          title: 'Notification Adapter',
           dataIndex: 'notificationAdapter',
           render: (value) => {
             return value.length || 0;
@@ -68,16 +94,36 @@ export default function JobTable({
             return (
               <div className="interactions">
                 <Popover content={getPopoverContent('Job Insights')}>
-                  <Button type="primary" icon={<IconHistogram />} onClick={() => onJobInsight(job.id)} />
+                  <Button
+                    type="primary"
+                    icon={<IconHistogram />}
+                    disabled={job.isOnlyShared}
+                    onClick={() => onJobInsight(job.id)}
+                  />
                 </Popover>
                 <Popover content={getPopoverContent('Edit a Job')}>
-                  <Button type="secondary" icon={<IconEdit />} onClick={() => onJobEdit(job.id)} />
+                  <Button
+                    type="secondary"
+                    icon={<IconEdit />}
+                    disabled={job.isOnlyShared}
+                    onClick={() => onJobEdit(job.id)}
+                  />
                 </Popover>
                 <Popover content={getPopoverContent('Delete all found Listings of this Job')}>
-                  <Button type="danger" icon={<IconDescend2 />} onClick={() => onListingRemoval(job.id)} />
+                  <Button
+                    type="danger"
+                    icon={<IconDescend2 />}
+                    disabled={job.isOnlyShared}
+                    onClick={() => onListingRemoval(job.id)}
+                  />
                 </Popover>
                 <Popover content={getPopoverContent('Delete Job')}>
-                  <Button type="danger" icon={<IconDelete />} onClick={() => onJobRemoval(job.id)} />
+                  <Button
+                    type="danger"
+                    icon={<IconDelete />}
+                    disabled={job.isOnlyShared}
+                    onClick={() => onJobRemoval(job.id)}
+                  />
                 </Popover>
               </div>
             );

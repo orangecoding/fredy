@@ -8,13 +8,14 @@ import Headline from '../../../components/headline/Headline';
 import { useActions, useSelector } from '../../../services/state/store';
 import { xhrPost } from '../../../services/xhr';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Divider, Input, Switch, Button, TagInput, Toast } from '@douyinfe/semi-ui';
+import { Divider, Input, Switch, Button, TagInput, Toast, Select } from '@douyinfe/semi-ui';
 import './JobMutation.less';
 import { SegmentPart } from '../../../components/segment/SegmentPart';
-import { IconPlusCircle } from '@douyinfe/semi-icons';
+import { IconBell, IconBriefcase, IconPaperclip, IconPlayCircle, IconPlusCircle, IconUser } from '@douyinfe/semi-icons';
 
 export default function JobMutator() {
   const jobs = useSelector((state) => state.jobs.jobs);
+  const shareableUserList = useSelector((state) => state.jobs.shareableUserList);
   const params = useParams();
 
   const jobToBeEdit = params.jobId == null ? null : jobs.find((job) => job.id === params.jobId);
@@ -32,6 +33,7 @@ export default function JobMutator() {
   const [name, setName] = useState(defaultName);
   const [blacklist, setBlacklist] = useState(defaultBlacklist);
   const [notificationAdapterData, setNotificationAdapterData] = useState(defaultNotificationAdapter);
+  const [shareWithUsers, setShareWithUsers] = useState(jobToBeEdit?.shared_with_user ?? []);
   const [enabled, setEnabled] = useState(defaultEnabled);
   const navigate = useNavigate();
   const actions = useActions();
@@ -45,6 +47,7 @@ export default function JobMutator() {
       await xhrPost('/api/jobs', {
         provider: providerData,
         notificationAdapter: notificationAdapterData,
+        shareWithUsers,
         name,
         blacklist,
         enabled,
@@ -91,7 +94,7 @@ export default function JobMutator() {
 
       <Headline text={jobToBeEdit ? 'Edit Job' : 'Create new Job'} />
       <form>
-        <SegmentPart name="Name">
+        <SegmentPart name="Name" Icon={IconPaperclip}>
           <Input
             autoFocus
             type="text"
@@ -105,7 +108,7 @@ export default function JobMutator() {
         <Divider margin="1rem" />
         <SegmentPart
           name="Providers"
-          icon="briefcase"
+          Icon={IconBriefcase}
           helpText={`
             A provider is essentially the service (e.g. ImmoScout24, Kleinanzeigen) that Fredy searches for new listings.
             Fredy will open a new tab pointing to the website of this provider. You have to adjust your search parameter
@@ -130,7 +133,7 @@ export default function JobMutator() {
         </SegmentPart>
         <Divider margin="1rem" />
         <SegmentPart
-          icon="bell"
+          Icon={IconBell}
           name="Notification Adapters"
           helpText="Fredy supports multiple ways to notify you about new findings. These are called notification adapter. You can chose between email, Telegram etc."
         >
@@ -157,7 +160,7 @@ export default function JobMutator() {
         </SegmentPart>
         <Divider margin="1rem" />
         <SegmentPart
-          icon="bell"
+          Icon={IconBell}
           name="Blacklist"
           helpText="If a listing contains one of these words, it will be filtered out. Type in a word, then hit enter."
         >
@@ -169,7 +172,32 @@ export default function JobMutator() {
         </SegmentPart>
         <Divider margin="1rem" />
         <SegmentPart
-          icon="play circle outline"
+          Icon={IconUser}
+          name="Sharing with user"
+          helpText="You can share this job with other users. They will be able to see the listings, but only (as the creator) you can edit the job. Admins are filtered from this list as they have access to everything."
+        >
+          {shareableUserList.length === 0 ? (
+            <div>No users found to share this Job to. Please create additional non-admin user.</div>
+          ) : (
+            <Select
+              filter
+              multiple
+              placeholder="Search user"
+              autoClearSearchValue={false}
+              defaultValue={shareWithUsers}
+              onChange={(value) => setShareWithUsers(value)}
+            >
+              {shareableUserList.map((user) => (
+                <Select.Option value={user.id} key={user.id}>
+                  {user.name}
+                </Select.Option>
+              ))}
+            </Select>
+          )}
+        </SegmentPart>
+        <Divider margin="1rem" />
+        <SegmentPart
+          Icon={IconPlayCircle}
           name="Job activation"
           helpText="Whether or not the job is activated. Inactive jobs will be ignored when Fredy checks for new listings."
         >
