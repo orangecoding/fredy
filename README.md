@@ -11,7 +11,7 @@
 
 <p align="center">
   <a href="https://fredy.orange-coding.net/" target="_blank">Website</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-  <a href="https://demo-fredy.orange-coding.net/" target="_blank">Demo</a>
+  <a href="https://fredy-demo.orange-coding.net/" target="_blank">Demo</a>
 </p>
 
 <p align="center">
