@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import * as similarityCache from '../../lib/services/similarity-check/similarityCache.js';
 import { mockFredy } from '../utils.js';
 
-describe('FredyRuntime', () => {
+describe('FredyPipeline', () => {
   afterEach(() => {
     similarityCache.invalidateAllForTest();
   });

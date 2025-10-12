@@ -6,7 +6,7 @@ import { send } from './mocks/mockNotification.js';
 export const providerConfig = JSON.parse(await readFile(new URL('./provider/testProvider.json', import.meta.url)));
 
 export const mockFredy = async () => {
-  return await esmock('../lib/FredyRuntime', {
+  return await esmock('../lib/FredyPipeline', {
     '../lib/services/storage/listingsStorage.js': {
       ...mockStore,
     },

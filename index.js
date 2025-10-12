@@ -3,7 +3,7 @@ import path from 'path';
 import { checkIfConfigIsAccessible, config, getProviders, refreshConfig } from './lib/utils.js';
 import * as similarityCache from './lib/services/similarity-check/similarityCache.js';
 import * as jobStorage from './lib/services/storage/jobStorage.js';
-import FredyRuntime from './lib/FredyRuntime.js';
+import FredyPipeline from './lib/FredyPipeline.js';
 import { duringWorkingHoursOrNotSet } from './lib/utils.js';
 import { runMigrations } from './lib/services/storage/migrations/migrate.js';
 import { ensureDemoUserExists, ensureAdminUserExists } from './lib/services/storage/userStorage.js';
@@ -75,7 +75,7 @@ const execute = () => {
             .forEach(async (prov) => {
               const matchedProvider = providers.find((loaded) => loaded.metaInformation.id === prov.id);
               matchedProvider.init(prov, job.blacklist);
-              await new FredyRuntime(
+              await new FredyPipeline(
                 matchedProvider.config,
                 job.notificationAdapter,
                 prov.id,
