@@ -235,10 +235,106 @@ export default function ListingsTable() {
           </Descriptions>
           <b>{record.title}</b>
           <p>{record.description == null ? 'No description available' : record.description}</p>
+          {/* Render additional pictures as thumbnails if available.
+              Protect against malformed values by normalizing `additionalpictures` to an array
+              of valid URL strings and limiting the number of thumbnails. */}
+          {renderAdditionalPictures(record.additionalpictures)}
         </div>
       </div>
     );
   };
+
+  // Helper: normalize additionalpictures input to an array of valid URL strings
+  // Accepts: null/undefined, string (single url), array of mixed values
+  // Returns: array (possibly empty) with at most 8 items
+  function normalizeAdditionalPictures(input, max = 8) {
+    try {
+      if (!input) return [];
+
+      // If it's a single string, return it as an array
+      if (typeof input === 'string') {
+        return input.trim() ? [input.trim()] : [];
+      }
+
+      // If it's an array-like, filter for strings
+      if (Array.isArray(input)) {
+        const urls = input.map((v) => (typeof v === 'string' ? v.trim() : null)).filter((v) => v && v.length > 0);
+
+        // dedupe while preserving order
+        const seen = new Set();
+        const unique = [];
+        for (const u of urls) {
+          if (!seen.has(u)) {
+            seen.add(u);
+            unique.push(u);
+          }
+          if (unique.length >= max) break;
+        }
+        return unique.slice(0, max);
+      }
+
+      // If it's an object with properties (maybe keyed list), try to extract string values
+      if (typeof input === 'object') {
+        const vals = Object.values(input)
+          .map((v) => (typeof v === 'string' ? v.trim() : null))
+          .filter((v) => v && v.length > 0);
+        return vals.slice(0, max);
+      }
+
+      return [];
+    } catch (err) {
+      // Defensive: if anything unexpected happens, return empty list and log once
+      // eslint-disable-next-line no-console
+      console.error('normalizeAdditionalPictures failed', err);
+      return [];
+    }
+  }
+
+  function renderAdditionalPictures(additionalpictures) {
+    const pics = normalizeAdditionalPictures(additionalpictures, 8);
+    if (!pics || pics.length === 0) return null;
+
+    try {
+      return (
+        <div className="listingsTable__additionalpictures">
+          {pics.map((pic, idx) => (
+            <a
+              key={idx}
+              //href={typeof pic === 'string' && isValidUrl(pic) ? pic : '#'}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="listingsTable__additionalpictures__link"
+            >
+              <Image
+                src={pic}
+                width={80}
+                height={80}
+                style={{ objectFit: 'cover', borderRadius: 4, marginRight: 8 }}
+                fallback={no_image}
+                alt={`more-pic-${idx}`}
+              />
+            </a>
+          ))}
+        </div>
+      );
+    } catch (e) {
+      // In unlikely case rendering fails, avoid crashing entire page
+      // eslint-disable-next-line no-console
+      console.error('renderAdditionalPictures failed', e);
+      return null;
+    }
+  }
+
+  // Basic URL validator to avoid rendering non-URL strings into href/src attrs
+  //function isValidUrl(s) {
+  //  if (typeof s !== 'string') return false;
+  //  try {
+  //    const url = new URL(s);
+  //    return url.protocol === 'http:' || url.protocol === 'https:';
+  //  } catch (e) {
+  //    return false;
+  //  }
+  //}
 
   return (
     <div>
