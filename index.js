@@ -38,6 +38,7 @@ await runMigrations();
 const providers = await getProviders();
 
 similarityCache.initSimilarityCache();
+similarityCache.startSimilarityCacheReloader();
 
 //assuming interval is always in minutes
 const INTERVAL = config.interval * 60 * 1000;
