@@ -37,6 +37,8 @@ await runMigrations();
 // Load provider modules once at startup
 const providers = await getProviders();
 
+similarityCache.initSimilarityCache();
+
 //assuming interval is always in minutes
 const INTERVAL = config.interval * 60 * 1000;
 

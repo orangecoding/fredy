@@ -5,9 +5,6 @@ import { expect } from 'chai';
 import * as provider from '../../lib/provider/kleinanzeigen.js';
 
 describe('#kleinanzeigen testsuite()', () => {
-  after(() => {
-    similarityCache.stopCacheCleanup();
-  });
   it('should test kleinanzeigen provider', async () => {
     const Fredy = await mockFredy();
     provider.init(providerConfig.kleinanzeigen, [], []);

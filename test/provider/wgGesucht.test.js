@@ -5,9 +5,6 @@ import { expect } from 'chai';
 import * as provider from '../../lib/provider/wgGesucht.js';
 
 describe('#wgGesucht testsuite()', () => {
-  after(() => {
-    similarityCache.stopCacheCleanup();
-  });
   provider.init(providerConfig.wgGesucht, [], []);
   it('should test wgGesucht provider', async () => {
     const Fredy = await mockFredy();

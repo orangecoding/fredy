@@ -5,9 +5,6 @@ import { expect } from 'chai';
 import * as provider from '../../lib/provider/neubauKompass.js';
 
 describe('#neubauKompass testsuite()', () => {
-  after(() => {
-    similarityCache.stopCacheCleanup();
-  });
   provider.init(providerConfig.neubauKompass, [], []);
   it('should test neubauKompass provider', async () => {
     const Fredy = await mockFredy();

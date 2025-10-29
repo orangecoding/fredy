@@ -5,10 +5,6 @@ import { get } from '../mocks/mockNotification.js';
 import * as provider from '../../lib/provider/immoscout.js';
 
 describe('#immoscout provider testsuite()', () => {
-  after(() => {
-    similarityCache.stopCacheCleanup();
-  });
-
   provider.init(providerConfig.immoscout, [], []);
   it('should test immoscout provider', async () => {
     const Fredy = await mockFredy();

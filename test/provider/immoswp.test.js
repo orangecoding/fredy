@@ -5,9 +5,6 @@ import { expect } from 'chai';
 import * as provider from '../../lib/provider/immoswp.js';
 
 describe('#immoswp testsuite()', () => {
-  after(() => {
-    similarityCache.stopCacheCleanup();
-  });
   provider.init(providerConfig.immoswp, [], []);
   it('should test immoswp provider', async () => {
     const Fredy = await mockFredy();

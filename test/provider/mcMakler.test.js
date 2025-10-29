@@ -5,10 +5,6 @@ import { expect } from 'chai';
 import * as provider from '../../lib/provider/mcMakler.js';
 
 describe('#mcMakler testsuite()', () => {
-  after(() => {
-    similarityCache.stopCacheCleanup();
-  });
-
   it('should test mcMakler provider', async () => {
     const Fredy = await mockFredy();
     provider.init(providerConfig.mcMakler, []);

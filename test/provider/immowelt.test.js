@@ -5,10 +5,6 @@ import { expect } from 'chai';
 import * as provider from '../../lib/provider/immowelt.js';
 
 describe('#immowelt testsuite()', () => {
-  after(() => {
-    similarityCache.stopCacheCleanup();
-  });
-
   it('should test immowelt provider', async () => {
     const Fredy = await mockFredy();
     provider.init(providerConfig.immowelt, [], []);

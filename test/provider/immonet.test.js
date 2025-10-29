@@ -5,10 +5,6 @@ import { expect } from 'chai';
 import * as provider from '../../lib/provider/immonet.js';
 
 describe('#immonet testsuite()', () => {
-  after(() => {
-    similarityCache.stopCacheCleanup();
-  });
-
   it('should test immonet provider', async () => {
     const Fredy = await mockFredy();
     provider.init(providerConfig.immonet, [], []);

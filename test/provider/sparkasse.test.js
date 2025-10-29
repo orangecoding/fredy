@@ -5,10 +5,6 @@ import { expect } from 'chai';
 import * as provider from '../../lib/provider/sparkasse.js';
 
 describe('#sparkasse testsuite()', () => {
-  after(() => {
-    similarityCache.stopCacheCleanup();
-  });
-
   it('should test sparkasse provider', async () => {
     const Fredy = await mockFredy();
     provider.init(providerConfig.sparkasse, []);

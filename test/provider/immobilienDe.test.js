@@ -5,9 +5,6 @@ import { expect } from 'chai';
 import * as provider from '../../lib/provider/immobilienDe.js';
 
 describe('#immobilien.de testsuite()', () => {
-  after(() => {
-    similarityCache.stopCacheCleanup();
-  });
   provider.init(providerConfig.immobilienDe, [], []);
   it('should test immobilien.de provider', async () => {
     const Fredy = await mockFredy();

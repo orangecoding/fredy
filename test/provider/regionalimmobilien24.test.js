@@ -5,10 +5,6 @@ import { expect } from 'chai';
 import * as provider from '../../lib/provider/regionalimmobilien24.js';
 
 describe('#regionalimmobilien24 testsuite()', () => {
-  after(() => {
-    similarityCache.stopCacheCleanup();
-  });
-
   it('should test regionalimmobilien24 provider', async () => {
     const Fredy = await mockFredy();
     provider.init(providerConfig.regionalimmobilien24, []);
