@@ -1,9 +1,21 @@
 ### SQLite Adapter
 
-This adapter stores search results in an SQLite database. By default, the database is located at `db/listings.db`, but you can configure a custom location. This file can be used for further analysis later.
+This adapter stores search results in an SQLite database. By default, the database is located at `db/listings.db`, but you can configure a custom location. The file can be used for analysis later.
 
-The database table contains the following columns (all stored as `TEXT` type):
+The table contains the following columns (all stored as `TEXT`):
 
-```
-['serviceName', 'jobKey', 'id', 'size', 'rooms', 'price', 'address', 'title', 'link', 'description', 'image']
+```json
+[
+  "serviceName",
+  "jobKey",
+  "id",
+  "size",
+  "rooms",
+  "price",
+  "address",
+  "title",
+  "link",
+  "description",
+  "image"
+]
 ```

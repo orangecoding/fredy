@@ -21,7 +21,7 @@ const sortAdapter = (a, b) => {
 const validate = (selectedAdapter) => {
   const results = [];
   for (let uiElement of Object.values(selectedAdapter.fields || [])) {
-    if (uiElement.value == null) {
+    if (uiElement.value == null && !uiElement.optional) {
       results.push('All fields are mandatory and must be set.');
       continue;
     }
@@ -36,7 +36,7 @@ const validate = (selectedAdapter) => {
       results.push('A boolean field cannot be of a different type.');
       continue;
     }
-    if (typeof uiElement.value === 'string' && uiElement.value.length === 0) {
+    if (typeof uiElement.value === 'string' && uiElement.value.length === 0 && !uiElement.optional) {
       results.push('All fields are mandatory and must be set.');
     }
   }

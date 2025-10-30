@@ -1,5 +1,8 @@
 ### ntfy Adapter
 
-For ntfy, you need to create a topic on your preferred ntfy instance. This is pretty easy. Please visit the steps in the [docs](https://docs.ntfy.sh/publish/) and follow the instructions.
+Send push notifications using an ntfy topic.
 
-As a result, you get the URL for configuration in fredy. In addition, the priority must be defined.
+Quick start:
+- Create or choose a topic on your preferred ntfy instance (see docs: https://docs.ntfy.sh/publish/).
+- Copy the publish URL for that topic.
+- In Fredy, configure the ntfy adapter with the topic URL and set a priority.

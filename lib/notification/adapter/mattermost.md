@@ -1,5 +1,8 @@
 ### Mattermost Adapter
 
-For Mattermost, you need to create a incoming webhook. This is pretty easy. Please visit the steps in the [developer docs](https://docs.mattermost.com/developer/webhooks-incoming.html) and follow the instructions.
+Receive notifications in Mattermost via an incoming webhook.
 
-As a result, you get the webhook URL for configuration in fredy. In addition, the target channel must be defined.
+Quick start:
+- Create an incoming webhook following the Mattermost developer docs: https://docs.mattermost.com/developer/webhooks-incoming.html
+- Copy the webhook URL.
+- In Fredy, configure the Mattermost adapter with this URL and the target channel.

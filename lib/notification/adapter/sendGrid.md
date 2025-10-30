@@ -1,9 +1,12 @@
 ### SendGrid Adapter
 
-SendGrid is a free email service (free as in "you cannot send more than 100(Sendgrid) and 200(Mailjet) emails a day"), which is more than enough for Fredy.
+SendGrid is an email delivery service with a generous free tier, which is more than enough for Fredy.
 
-To use [SendGrid](https://sendgrid.com/), you need to create an account. You'll need to decided from which email address you want Fredy to send from. E.g. if you use yourGmailAccount@gmail.com, you have to add this to sendgrid and verify it as well.
+Setup:
+- Create a SendGrid account: https://sendgrid.com/
+- Decide which email address Fredy should send from (e.g., yourGmailAccount@gmail.com), add it to SendGrid, and complete the verification.
+- Create an API key and add it to Fredy's configuration.
+- Create a Dynamic Template in SendGrid. You can copy the template from `/lib/notification/emailTemplate/template.hbs`.
 
-Lastly you have to create an api-key and feed it into Fredy's config, as well as creating a new dynamic template. For this new template, I recommend copying and pasting the code from the one I have provided under `/lib/notification/emailTemplate/template.hbs`.
-
-If this email should be sent to multiple receiver use a comma separator (some@email.com, someOther@email.com).
+Sending to multiple recipients:
+- Separate email addresses with commas (e.g., some@email.com, someOther@email.com).

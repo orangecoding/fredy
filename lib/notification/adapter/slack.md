@@ -1,4 +1,5 @@
-### Slack Adapter
-IMPORTANT:
-Don't use this adapter anymore, it is outdated and only here for backwards compatability reasons. Use the new Slack Adapter with webhooks!
+### Slack Adapter (Legacy)
+
+*IMPORTANT:*
+This legacy adapter is outdated and kept only for backward compatibility. Please use the Slack adapter with webhooks instead.
 

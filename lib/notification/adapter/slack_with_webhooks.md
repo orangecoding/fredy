@@ -1,6 +1,10 @@
-### Slack Adapter
+### Slack Adapter (Webhooks)
 
-IMPORTANT:
-This is the new version of the Slack adapter. I strongly encourage you to use it, the old version is now unmaintained and only kept due to backwards compatability reasons.
+*IMPORTANT:*
+This is the recommended Slack adapter. The old Slack adapter is unmaintained and kept only for backward compatibility.
 
-In order to use [Slack](https://slack.com), you need to create an account. When done, create a new channel and add the Webhook integration to that channel. Copy the webhook url. That's it.
+Setup:
+- Create a Slack account and workspace if you don't have one: https://slack.com
+- Create a channel where you want to receive notifications.
+- Add the Incoming Webhooks integration to that channel and copy the Webhook URL.
+- In Fredy, configure the Slack Webhook adapter with this URL.

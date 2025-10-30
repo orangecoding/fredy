@@ -1,6 +1,6 @@
 {
   "name": "fredy",
-  "version": "14.3.0",
+  "version": "14.3.1",
   "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
   "scripts": {
     "prepare": "husky",
@@ -69,7 +69,6 @@
     "cookie-session": "2.1.1",
     "handlebars": "4.7.8",
     "lodash": "4.17.21",
-    "markdown": "^0.5.0",
     "nanoid": "5.1.6",
     "node-cron": "^4.2.1",
     "node-fetch": "3.3.2",

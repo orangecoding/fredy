@@ -1,5 +1,8 @@
 ### Pushover Adapter
 
-Refer to the [instructions](https://support.pushover.net/i7-what-is-pushover-and-how-do-i-use-it) to set up your Pushover application.
+Use Pushover to receive push notifications on your devices.
 
-After setting up the application, please enter both your newly created User key and API token.
+Setup:
+- Follow Pushover's getting-started guide: https://support.pushover.net/i7-what-is-pushover-and-how-do-i-use-it
+- Create an application and obtain your User Key and API Token.
+- In Fredy, configure the Pushover adapter with both values.
