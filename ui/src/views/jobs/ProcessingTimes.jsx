@@ -79,8 +79,12 @@ export default function ProcessingTimes({ processingTimes = {} }) {
               icon={<IconPlayCircle />}
               aria-label="Start now"
               onClick={async () => {
-                await xhrPost('/api/jobs/startAll', null);
-                Toast.success('Successfully triggered Fredy search.');
+                try {
+                  await xhrPost('/api/jobs/startAll', null);
+                  Toast.success('Successfully triggered Fredy search.');
+                } catch {
+                  Toast.error('Failed to trigger search');
+                }
               }}
             >
               Search now

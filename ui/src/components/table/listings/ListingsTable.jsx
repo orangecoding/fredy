@@ -209,6 +209,13 @@ export default function ListingsTable() {
 
   const handleFilterChange = useMemo(() => debounce((value) => setFreeTextFilter(value), 500), []);
 
+  useEffect(() => {
+    return () => {
+      // cleanup debounced handler to avoid memory leaks
+      handleFilterChange.cancel && handleFilterChange.cancel();
+    };
+  }, [handleFilterChange]);
+
   const expandRowRender = (record) => {
     return (
       <div className="listingsTable__expanded">
@@ -235,7 +242,7 @@ export default function ListingsTable() {
               </Tag>
             </Descriptions.Item>
             <Descriptions.Item itemKey="Link">
-              <a href={record.link} target="_blank" rel="noreferrer">
+              <a href={record.link} target="_blank" rel="noopener noreferrer">
                 Link to Listing
               </a>
             </Descriptions.Item>
