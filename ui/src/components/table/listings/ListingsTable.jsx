@@ -14,8 +14,8 @@ import ListingsFilter from './ListingsFilter.jsx';
 
 const columns = [
   {
-    title: '#',
-    width: 100,
+    title: 'Watchlist',
+    width: 110,
     dataIndex: 'isWatched',
     sorter: true,
     render: (id, row) => {
@@ -180,6 +180,7 @@ export default function ListingsTable() {
   const [activityFilter, setActivityFilter] = useState(null);
   const [providerFilter, setProviderFilter] = useState(null);
 
+  const [imageWidth, setImageWidth] = useState('100%');
   const handlePageChange = (_page) => {
     setPage(_page);
   };
@@ -213,9 +214,17 @@ export default function ListingsTable() {
       <div className="listingsTable__expanded">
         <div>
           {record.image_url == null ? (
-            <Image height={200} src={no_image} />
+            <Image height={200} width={180} src={no_image} />
           ) : (
-            <Image height={200} src={record.image_url} />
+            <Image
+              height={200}
+              width={imageWidth}
+              src={record.image_url}
+              onError={() => {
+                setImageWidth('180px');
+              }}
+              fallback={<Image height={200} src={no_image} />}
+            />
           )}
         </div>
         <div>
