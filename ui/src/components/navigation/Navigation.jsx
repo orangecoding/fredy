@@ -22,7 +22,7 @@ export default function Navigation({ isAdmin }) {
 
   if (isAdmin) {
     items.push({ itemKey: '/users', text: 'User Management', icon: <IconUser /> });
-    items.push({ itemKey: '/generalSettings', text: 'Settings', icon: <IconSetting /> });
+    items.push({ itemKey: '/generalSettings', text: 'General Settings', icon: <IconSetting /> });
   }
 
   function parsePathName(name) {
