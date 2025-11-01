@@ -75,6 +75,7 @@ export default function ProcessingTimes({ processingTimes = {} }) {
           value={
             <Button
               size="small"
+              style={{ marginTop: '.2rem' }}
               icon={<IconPlayCircle />}
               aria-label="Start now"
               onClick={async () => {
