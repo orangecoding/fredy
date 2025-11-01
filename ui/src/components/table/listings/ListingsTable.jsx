@@ -1,5 +1,18 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Table, Popover, Input, Descriptions, Tag, Image, Empty, Button, Toast, Divider } from '@douyinfe/semi-ui';
+import {
+  Table,
+  Popover,
+  Input,
+  Descriptions,
+  Tag,
+  Image,
+  Empty,
+  Button,
+  Toast,
+  Divider,
+  Space,
+  Select,
+} from '@douyinfe/semi-ui';
 import { useActions, useSelector } from '../../../services/state/store.js';
 import { IconClose, IconDelete, IconSearch, IconStar, IconStarStroked, IconTick } from '@douyinfe/semi-icons';
 import * as timeService from '../../../services/time/timeService.js';
@@ -10,166 +23,220 @@ import './ListingsTable.less';
 import { format } from '../../../services/time/timeService.js';
 import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-illustrations';
 import { xhrDelete, xhrPost } from '../../../services/xhr.js';
-import ListingsFilter from './ListingsFilter.jsx';
 
-const columns = [
-  {
-    title: 'Watchlist',
-    width: 110,
-    dataIndex: 'isWatched',
-    sorter: true,
-    render: (id, row) => {
-      return (
-        <div>
-          <Popover
-            style={{
-              padding: '.4rem',
-              color: 'var(--semi-color-white)',
-            }}
-            content={row.isWatched === 1 ? 'Unwatch Listing' : 'Watch Listing'}
-          >
-            <Button
-              icon={
-                row.isWatched === 1 ? (
-                  <IconStar style={{ color: 'rgba(var(--semi-green-5), 1)' }} />
-                ) : (
-                  <IconStarStroked />
-                )
-              }
-              theme="borderless"
-              size="small"
-              onClick={async () => {
-                try {
-                  await xhrPost('/api/listings/watch', { listingId: row.id });
-                  Toast.success(row.isWatched === 1 ? 'Listing removed from Watchlist' : 'Listing added to Watchlist');
-                  row.reloadTable();
-                } catch (e) {
-                  console.error(e);
-                  Toast.error('Failed to operate Watchlist');
-                }
+const getColumns = (provider, setProviderFilter, jobs, setJobNameFilter) => {
+  return [
+    {
+      title: 'Watchlist',
+      width: 133,
+      dataIndex: 'isWatched',
+      sorter: true,
+      filters: [
+        {
+          text: 'Show only watched listings',
+          value: 'watchList',
+        },
+      ],
+      render: (id, row) => {
+        return (
+          <div>
+            <Popover
+              style={{
+                padding: '.4rem',
+                color: 'var(--semi-color-white)',
               }}
-            />
-          </Popover>
-          <Divider layout="vertical" margin="4px" />
-          <Popover
-            style={{
-              padding: '.4rem',
-              color: 'var(--semi-color-white)',
-            }}
-            content="Delete Listing"
-          >
-            <Button
-              icon={<IconDelete />}
-              theme="borderless"
-              size="small"
-              type="danger"
-              onClick={async () => {
-                try {
-                  await xhrDelete('/api/listings/', { ids: [row.id] });
-                  Toast.success('Listing(s) successfully removed');
-                  row.reloadTable();
-                } catch (error) {
-                  Toast.error(error);
+              content={row.isWatched === 1 ? 'Unwatch Listing' : 'Watch Listing'}
+            >
+              <Button
+                icon={
+                  row.isWatched === 1 ? (
+                    <IconStar style={{ color: 'rgba(var(--semi-green-5), 1)' }} />
+                  ) : (
+                    <IconStarStroked />
+                  )
                 }
+                theme="borderless"
+                size="small"
+                onClick={async () => {
+                  try {
+                    await xhrPost('/api/listings/watch', { listingId: row.id });
+                    Toast.success(
+                      row.isWatched === 1 ? 'Listing removed from Watchlist' : 'Listing added to Watchlist',
+                    );
+                    row.reloadTable();
+                  } catch (e) {
+                    console.error(e);
+                    Toast.error('Failed to operate Watchlist');
+                  }
+                }}
+              />
+            </Popover>
+            <Divider layout="vertical" margin="4px" />
+            <Popover
+              style={{
+                padding: '.4rem',
+                color: 'var(--semi-color-white)',
               }}
-            />
-          </Popover>
-        </div>
-      );
+              content="Delete Listing"
+            >
+              <Button
+                icon={<IconDelete />}
+                theme="borderless"
+                size="small"
+                type="danger"
+                onClick={async () => {
+                  try {
+                    await xhrDelete('/api/listings/', { ids: [row.id] });
+                    Toast.success('Listing(s) successfully removed');
+                    row.reloadTable();
+                  } catch (error) {
+                    Toast.error(error);
+                  }
+                }}
+              />
+            </Popover>
+          </div>
+        );
+      },
     },
-  },
-  {
-    title: 'State',
-    dataIndex: 'is_active',
-    width: 84,
-    sorter: true,
-    render: (value) => {
-      return value ? (
-        <div style={{ color: 'rgba(var(--semi-green-6), 1)' }}>
-          <Popover
-            style={{
-              padding: '.4rem',
-              color: 'var(--semi-color-white)',
-            }}
-            content="Listing is still active"
-          >
-            <IconTick />
-          </Popover>
-        </div>
-      ) : (
-        <div style={{ color: 'rgba(var(--semi-red-5), 1)' }}>
-          <Popover
-            style={{
-              padding: '.4rem',
-              color: 'var(--semi-color-white)',
-            }}
-            content="Listing is inactive"
-          >
-            <IconClose />
-          </Popover>
-        </div>
-      );
+    {
+      title: 'State',
+      dataIndex: 'is_active',
+      width: 105,
+      sorter: true,
+      filters: [
+        {
+          text: 'Show only active listings',
+          value: 'activityStatus',
+        },
+      ],
+      render: (value) => {
+        return value ? (
+          <div style={{ color: 'rgba(var(--semi-green-6), 1)' }}>
+            <Popover
+              style={{
+                padding: '.4rem',
+                color: 'var(--semi-color-white)',
+              }}
+              content="Listing is still active"
+            >
+              <IconTick />
+            </Popover>
+          </div>
+        ) : (
+          <div style={{ color: 'rgba(var(--semi-red-5), 1)' }}>
+            <Popover
+              style={{
+                padding: '.4rem',
+                color: 'var(--semi-color-white)',
+              }}
+              content="Listing is inactive"
+            >
+              <IconClose />
+            </Popover>
+          </div>
+        );
+      },
     },
-  },
-  {
-    title: 'Job-Name',
-    sorter: true,
-    ellipsis: true,
-    dataIndex: 'job_name',
-    width: 150,
-  },
-  {
-    title: 'Listing date',
-    width: 130,
-    dataIndex: 'created_at',
-    sorter: true,
-    render: (text) => timeService.format(text, false),
-  },
-  {
-    title: 'Provider',
-    width: 130,
-    dataIndex: 'provider',
-    sorter: true,
-    render: (text) => text.charAt(0).toUpperCase() + text.slice(1),
-  },
-  {
-    title: 'Price',
-    width: 110,
-    dataIndex: 'price',
-    sorter: true,
-    render: (text) => text + ' €',
-  },
-  {
-    title: 'Address',
-    width: 150,
-    dataIndex: 'address',
-    sorter: true,
-  },
-  {
-    title: 'Title',
-    dataIndex: 'title',
-    sorter: true,
-    ellipsis: true,
-    render: (text, row) => {
-      return (
-        <a href={row.url} target="_blank" rel="noopener noreferrer">
-          {text}
-        </a>
-      );
+    {
+      title: 'Job-Name',
+      sorter: true,
+      ellipsis: true,
+      dataIndex: 'job_name',
+      width: 150,
+      onFilter: () => true,
+      renderFilterDropdown: () => {
+        return (
+          <Space vertical style={{ padding: 8 }}>
+            <Select showClear placeholder="Select Job to Filter" onChange={(val) => setJobNameFilter(val)}>
+              {jobs != null &&
+                jobs.length > 0 &&
+                jobs.map((job) => {
+                  return (
+                    <Select.Option value={job.id} key={job.id}>
+                      {job.name}
+                    </Select.Option>
+                  );
+                })}
+            </Select>
+          </Space>
+        );
+      },
     },
-  },
-];
+    {
+      title: 'Listing date',
+      width: 130,
+      dataIndex: 'created_at',
+      sorter: true,
+      render: (text) => timeService.format(text, false),
+    },
+    {
+      title: 'Provider',
+      width: 130,
+      dataIndex: 'provider',
+      sorter: true,
+      render: (text) => text.charAt(0).toUpperCase() + text.slice(1),
+      onFilter: () => true,
+      renderFilterDropdown: () => {
+        return (
+          <Space vertical style={{ padding: 8 }}>
+            <Select showClear placeholder="Select Provider to Filter" onChange={(val) => setProviderFilter(val)}>
+              {provider != null &&
+                provider.length > 0 &&
+                provider.map((prov) => {
+                  return (
+                    <Select.Option value={prov.id} key={prov.id}>
+                      {prov.name}
+                    </Select.Option>
+                  );
+                })}
+            </Select>
+          </Space>
+        );
+      },
+    },
+    {
+      title: 'Price',
+      width: 110,
+      dataIndex: 'price',
+      sorter: true,
+      render: (text) => text + ' €',
+    },
+    {
+      title: 'Address',
+      width: 150,
+      dataIndex: 'address',
+      sorter: true,
+    },
+    {
+      title: 'Title',
+      dataIndex: 'title',
+      sorter: true,
+      ellipsis: true,
+      render: (text, row) => {
+        return (
+          <a href={row.url} target="_blank" rel="noopener noreferrer">
+            {text}
+          </a>
+        );
+      },
+    },
+  ];
+};
 
 const empty = (
   <Empty
     image={<IllustrationNoResult />}
     darkModeImage={<IllustrationNoResultDark />}
-    description="No listings available."
+    description="No listings found."
   />
 );
 
 export default function ListingsTable() {
   const tableData = useSelector((state) => state.listingsTable);
+  const provider = useSelector((state) => state.provider);
+  const jobs = useSelector((state) => state.jobs.jobs);
+
   const actions = useActions();
   const [page, setPage] = useState(1);
   const pageSize = 10;
@@ -179,12 +246,14 @@ export default function ListingsTable() {
   const [jobNameFilter, setJobNameFilter] = useState(null);
   const [activityFilter, setActivityFilter] = useState(null);
   const [providerFilter, setProviderFilter] = useState(null);
+  const [allFilters, setAllFilters] = useState([]);
 
   const [imageWidth, setImageWidth] = useState('100%');
   const handlePageChange = (_page) => {
     setPage(_page);
   };
 
+  const columns = getColumns(provider, setProviderFilter, jobs, setJobNameFilter);
   const loadTable = () => {
     let sortfield = null;
     let sortdir = null;
@@ -208,6 +277,20 @@ export default function ListingsTable() {
   }, [page, sortData, freeTextFilter, providerFilter, activityFilter, jobNameFilter, watchListFilter]);
 
   const handleFilterChange = useMemo(() => debounce((value) => setFreeTextFilter(value), 500), []);
+
+  const diffArrays = (primary, secondary) => {
+    const result = {};
+
+    for (const item of secondary) {
+      if (!primary.includes(item)) result[item] = true;
+    }
+
+    for (const item of primary) {
+      if (!secondary.includes(item)) result[item] = false;
+    }
+
+    return [result];
+  };
 
   useEffect(() => {
     return () => {
@@ -258,12 +341,6 @@ export default function ListingsTable() {
 
   return (
     <div>
-      <ListingsFilter
-        onActivityFilter={setActivityFilter}
-        onWatchListFilter={setWatchListFilter}
-        onJobNameFilter={setJobNameFilter}
-        onProviderFilter={setProviderFilter}
-      />
       <Input
         prefix={<IconSearch />}
         showClear
@@ -285,7 +362,23 @@ export default function ListingsTable() {
           };
         })}
         onChange={(changeSet) => {
-          if (changeSet?.extra?.changeType === 'sorter') {
+          if (changeSet?.extra?.changeType === 'filter') {
+            const transformed = changeSet.filters.map((f) => f.dataIndex);
+            const diff = diffArrays(allFilters, transformed);
+            setAllFilters(transformed);
+            diff.forEach((filter) => {
+              switch (Object.keys(filter)[0]) {
+                case 'isWatched':
+                  setWatchListFilter(Object.values(filter)[0]);
+                  break;
+                case 'is_active':
+                  setActivityFilter(Object.values(filter)[0]);
+                  break;
+                default:
+                  console.error('Unknown filter: ', filter.dataIndex);
+              }
+            });
+          } else if (changeSet?.extra?.changeType === 'sorter') {
             setSortData({
               field: changeSet.sorter.dataIndex,
               direction: changeSet.sorter.sortOrder === 'ascend' ? 'asc' : 'desc',

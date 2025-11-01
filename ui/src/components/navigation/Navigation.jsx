@@ -1,6 +1,6 @@
 import React from 'react';
 import { Nav } from '@douyinfe/semi-ui';
-import { IconUser, IconStar, IconSetting, IconTerminal } from '@douyinfe/semi-icons';
+import { IconUser, IconStar, IconSetting, IconTerminal, IconUserSetting } from '@douyinfe/semi-icons';
 import logoWhite from '../../assets/logo_white.png';
 import Logout from '../logout/Logout.jsx';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -22,7 +22,8 @@ export default function Navigation({ isAdmin }) {
 
   if (isAdmin) {
     items.push({ itemKey: '/users', text: 'User Management', icon: <IconUser /> });
-    items.push({ itemKey: '/generalSettings', text: 'General Settings', icon: <IconSetting /> });
+    items.push({ itemKey: '/listingSettings', text: 'Listing Management', icon: <IconSetting /> });
+    items.push({ itemKey: '/generalSettings', text: 'General Settings', icon: <IconUserSetting /> });
   }
 
   function parsePathName(name) {
@@ -32,7 +33,7 @@ export default function Navigation({ isAdmin }) {
 
   return (
     <Nav
-      style={{ height: '100%', width: collapsed ? '' : '13rem' }}
+      style={{ height: '100%', width: collapsed ? '' : '13.2rem' }}
       items={items}
       isCollapsed={collapsed}
       selectedKeys={[parsePathName(location.pathname)]}
