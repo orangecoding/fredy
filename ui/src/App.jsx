@@ -21,6 +21,7 @@ import Navigation from './components/navigation/Navigation.jsx';
 import { Layout } from '@douyinfe/semi-ui';
 import FredyFooter from './components/footer/FredyFooter.jsx';
 import ProcessingTimes from './views/jobs/ProcessingTimes.jsx';
+import ListingManagement from './views/listings/management/ListingManagement.jsx';
 
 export default function FredyApp() {
   const actions = useActions();
@@ -91,6 +92,7 @@ export default function FredyApp() {
               <Route path="/jobs/insights/:jobId" element={<JobInsight />} />
               <Route path="/jobs" element={<Jobs />} />
               <Route path="/listings" element={<Listings />} />
+              <Route path="/listingManagement" element={<ListingManagement />} />
 
               {/* Permission-aware routes */}
               <Route

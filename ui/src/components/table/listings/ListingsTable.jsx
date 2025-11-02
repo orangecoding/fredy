@@ -23,6 +23,7 @@ import './ListingsTable.less';
 import { format } from '../../../services/time/timeService.js';
 import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-illustrations';
 import { xhrDelete, xhrPost } from '../../../services/xhr.js';
+import { useNavigate } from 'react-router-dom';
 
 const getColumns = (provider, setProviderFilter, jobs, setJobNameFilter) => {
   return [
@@ -100,9 +101,9 @@ const getColumns = (provider, setProviderFilter, jobs, setJobNameFilter) => {
       },
     },
     {
-      title: 'State',
+      title: 'Active',
       dataIndex: 'is_active',
-      width: 105,
+      width: 110,
       sorter: true,
       filters: [
         {
@@ -236,6 +237,7 @@ export default function ListingsTable() {
   const tableData = useSelector((state) => state.listingsTable);
   const provider = useSelector((state) => state.provider);
   const jobs = useSelector((state) => state.jobs.jobs);
+  const navigate = useNavigate();
 
   const actions = useActions();
   const [page, setPage] = useState(1);
@@ -348,6 +350,14 @@ export default function ListingsTable() {
         placeholder="Search"
         onChange={handleFilterChange}
       />
+      <Button
+        className="listingsTable__setupButton"
+        onClick={() => {
+          navigate('/listingManagement');
+        }}
+      >
+        Setup notification on listing changes
+      </Button>
       <Table
         rowKey="id"
         empty={empty}

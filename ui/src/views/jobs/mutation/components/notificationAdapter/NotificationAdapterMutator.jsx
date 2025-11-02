@@ -53,6 +53,8 @@ function spreadPrefilledAdapterWithValues(prefilled, fields) {
 }
 
 export default function NotificationAdapterMutator({
+  title,
+  description,
   onVisibilityChanged,
   visible = false,
   selected = [],
@@ -168,7 +170,7 @@ export default function NotificationAdapterMutator({
 
   return (
     <Modal
-      title="Adding a new Notification Adapter"
+      title={title != null ? title : 'Adding a new Notification Adapter'}
       visible={visible}
       style={{ width: '95%' }}
       footer={
@@ -206,11 +208,15 @@ export default function NotificationAdapterMutator({
         />
       )}
 
-      <p>
-        When Fredy found new listings, we like to report them to you. To do so, notification adapter can be configured.{' '}
-        <br />
-        There are multiple ways how Fredy can send new listings to you. Chose your weapon...
-      </p>
+      {description != null ? (
+        <p>{description}</p>
+      ) : (
+        <p>
+          When Fredy found new listings, we like to report them to you. To do so, notification adapter can be
+          configured. <br />
+          There are multiple ways how Fredy can send new listings to you. Chose your weapon...
+        </p>
+      )}
 
       <Select
         filter
