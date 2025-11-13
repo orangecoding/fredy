@@ -11,7 +11,15 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Divider, Input, Switch, Button, TagInput, Toast, Select } from '@douyinfe/semi-ui';
 import './JobMutation.less';
 import { SegmentPart } from '../../../components/segment/SegmentPart';
-import { IconBell, IconBriefcase, IconPaperclip, IconPlayCircle, IconPlusCircle, IconUser } from '@douyinfe/semi-icons';
+import {
+  IconBell,
+  IconBriefcase,
+  IconPaperclip,
+  IconPlayCircle,
+  IconPlusCircle,
+  IconUser,
+  IconClear,
+} from '@douyinfe/semi-icons';
 
 export default function JobMutator() {
   const jobs = useSelector((state) => state.jobs.jobs);
@@ -160,7 +168,7 @@ export default function JobMutator() {
         </SegmentPart>
         <Divider margin="1rem" />
         <SegmentPart
-          Icon={IconBell}
+          Icon={IconClear}
           name="Blacklist"
           helpText="If a listing contains one of these words, it will be filtered out. Type in a word, then hit enter."
         >
