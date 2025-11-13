@@ -170,17 +170,18 @@ export default function NotificationAdapterMutator({
     <Modal
       title="Adding a new Notification Adapter"
       visible={visible}
-      style={{ width: '95%' }}
+      style={{ width: '50rem' }}
+      onCancel={() => onSubmit(false)}
       footer={
         <div>
-          <Button type="secondary" disabled={selectedAdapter == null} style={{ float: 'left' }} onClick={() => onTry()}>
+          <Button type="secondary" disabled={selectedAdapter == null} style={{ float: 'left' }} onClick={onTry}>
             Try
           </Button>
-          <Button type="danger" onClick={() => onSubmit(true)}>
-            Save
-          </Button>
-          <Button type="primary" onClick={() => onSubmit(false)}>
+          <Button theme="light" type="tertiary" onClick={() => onSubmit(false)}>
             Cancel
+          </Button>
+          <Button theme="solid" type="primary" onClick={() => onSubmit(true)}>
+            Save
           </Button>
         </div>
       }
@@ -207,9 +208,9 @@ export default function NotificationAdapterMutator({
       )}
 
       <p>
-        When Fredy found new listings, we like to report them to you. To do so, notification adapter can be configured.{' '}
-        <br />
-        There are multiple ways how Fredy can send new listings to you. Chose your weapon...
+        When Fredy finds new listings, we like to report them to you. To do so, the notification adapter can be
+        configured. <br />
+        There are multiple ways Fredy can send new listings to you. Choose your weapon...
       </p>
 
       <Select
