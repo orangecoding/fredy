@@ -3,6 +3,8 @@
 This is a generic adapter for sending notifications via HTTP requests. 
 It can be configured to send notifications to any HTTP endpoint.
 
+Request Details:
+<details>
 Request Method: `POST`  
 Content Type: `application/json`  
 Payload Structure:
@@ -26,3 +28,4 @@ Payload Structure:
   ]
 }
 ```
+</details>
