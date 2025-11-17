@@ -5,6 +5,7 @@ You can leverage this adapter to integrate with various webhooks or APIs that ac
 Functions, a Node.js server, etc.)
 
 HTTP adapter supports a `authToken` field, which can be used to include an authorization token in the request headers.
+Your token would be included as a Bearer token in the `Authorization` header, which is a common method for securing API requests.
 
 Request Details:
 <details>
