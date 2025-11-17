@@ -7,6 +7,7 @@ import { useSelector } from '../../../../../services/state/store';
 import { Banner, Button, Form, Modal, Select, Switch } from '@douyinfe/semi-ui';
 
 import './NotificationAdapterMutator.less';
+import { useScreenWidth } from '../../../../../hooks/screenWidth.js';
 
 const sortAdapter = (a, b) => {
   if (a.name < b.name) {
@@ -69,6 +70,9 @@ export default function NotificationAdapterMutator({
   const [selectedAdapter, setSelectedAdapter] = useState(preFilledSelectedAdapter);
   const [validationMessage, setValidationMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
+
+  const width = useScreenWidth();
+  const isMobile = width <= 850;
 
   const onSubmit = (doStore) => {
     if (doStore) {
@@ -170,7 +174,7 @@ export default function NotificationAdapterMutator({
     <Modal
       title="Adding a new Notification Adapter"
       visible={visible}
-      style={{ width: '50rem' }}
+      style={{ width: isMobile ? '95%' : '50rem' }}
       onCancel={() => onSubmit(false)}
       footer={
         <div>
