@@ -997,34 +997,34 @@
   dependencies:
     tslib "^2.0.0"
 
-"@douyinfe/semi-animation-react@2.88.0":
-  version "2.88.0"
-  resolved "https://registry.yarnpkg.com/@douyinfe/semi-animation-react/-/semi-animation-react-2.88.0.tgz#34d951e46a263b14db563b4044b3144f787e44e5"
-  integrity sha512-K6WzTDnLn75I+XOB/9C/hA2Mwjqd+TQpYiEjxSC+l3Ep6MiLS/5VbkGOSt4jiRJJQs584xfw59ReUJ5LGuPQLQ==
+"@douyinfe/semi-animation-react@2.88.1":
+  version "2.88.1"
+  resolved "https://registry.yarnpkg.com/@douyinfe/semi-animation-react/-/semi-animation-react-2.88.1.tgz#edf263f35bd77bdd48ef158ad0c2d31456e277d2"
+  integrity sha512-vQeJEXd0hWwYafovYz7mcC/HOuUnt1QnCE/+KZx0gsuQ9CuBGUkCMuMDtHkmJtj4S8tQM440CTD7dh3ZC7yyUw==
   dependencies:
-    "@douyinfe/semi-animation" "2.88.0"
-    "@douyinfe/semi-animation-styled" "2.88.0"
+    "@douyinfe/semi-animation" "2.88.1"
+    "@douyinfe/semi-animation-styled" "2.88.1"
     classnames "^2.2.6"
 
-"@douyinfe/semi-animation-styled@2.88.0":
-  version "2.88.0"
-  resolved "https://registry.yarnpkg.com/@douyinfe/semi-animation-styled/-/semi-animation-styled-2.88.0.tgz#abc29d577fc910ee3707af0f581548608c388d27"
-  integrity sha512-iHqrD2HoWL9Vd40DAsSjZHONHU91ayelMlziFoBjvvmaiuvcQms2ead7hLFkDtvkDswT0Mfd8BqkVDJSxTwxnw==
+"@douyinfe/semi-animation-styled@2.88.1":
+  version "2.88.1"
+  resolved "https://registry.yarnpkg.com/@douyinfe/semi-animation-styled/-/semi-animation-styled-2.88.1.tgz#8a8fbb5613becdea26bec307a0b71d3bf1083f31"
+  integrity sha512-97qugh5GQWDHtDJbSLez7EYuC0oXgkhIMzRivBoaJ1i7jrDLVt+7Cua/CXiRnSoYi32c0ySQuns5M90/1gQD4g==
 
-"@douyinfe/semi-animation@2.88.0":
-  version "2.88.0"
-  resolved "https://registry.yarnpkg.com/@douyinfe/semi-animation/-/semi-animation-2.88.0.tgz#2c069476b24a55041837e976b0d045c2c0da0049"
-  integrity sha512-J7fjwnVJEYvS2ZbKvWTjRRXTWQPlmYwkeXasICom+KFuE2vrkCzeqTXXIJ25MuaWlM/OWBPqrkAZBIfmNNQXWg==
+"@douyinfe/semi-animation@2.88.1":
+  version "2.88.1"
+  resolved "https://registry.yarnpkg.com/@douyinfe/semi-animation/-/semi-animation-2.88.1.tgz#6224da91742040de43da98ef7f546888ff54a8be"
+  integrity sha512-xi1NE+L26sf8722O+4FUA1ycw8+qAsqHj4FofAFQoUzj5k4nwZi9KEhdEfcXfiF4ML6Kx+4LsA6J9N2pajpdWw==
   dependencies:
     bezier-easing "^2.1.0"
 
-"@douyinfe/semi-foundation@2.88.0":
-  version "2.88.0"
-  resolved "https://registry.yarnpkg.com/@douyinfe/semi-foundation/-/semi-foundation-2.88.0.tgz#8fa4d5373acb5bb9f1e9fe1ca97c553c0ae76bfc"
-  integrity sha512-WYT1blbg2873xAU9iCasMRnTUsE/9WP/9gE1Zd87vsnZYWwl3WP9imH0iSqeSXkFdJllNo/KBImBY7clOoVIYA==
+"@douyinfe/semi-foundation@2.88.1":
+  version "2.88.1"
+  resolved "https://registry.yarnpkg.com/@douyinfe/semi-foundation/-/semi-foundation-2.88.1.tgz#2eff45a3b61027a74f65460f00af4d9105ad42c1"
+  integrity sha512-GHQOiwTvlep77QF6Kw18UIeqIjaEDqJdraqTzS4J3ePO/KK9FsnzhyN5ggfhhNoAXXx+NHNFaTDKXxOPQXqCVA==
   dependencies:
-    "@douyinfe/semi-animation" "2.88.0"
-    "@douyinfe/semi-json-viewer-core" "2.88.0"
+    "@douyinfe/semi-animation" "2.88.1"
+    "@douyinfe/semi-json-viewer-core" "2.88.1"
     "@mdx-js/mdx" "^3.0.1"
     async-validator "^3.5.0"
     classnames "^2.2.6"
@@ -1038,44 +1038,44 @@
     remark-gfm "^4.0.0"
     scroll-into-view-if-needed "^2.2.24"
 
-"@douyinfe/semi-icons@2.88.0", "@douyinfe/semi-icons@^2.88.0":
-  version "2.88.0"
-  resolved "https://registry.yarnpkg.com/@douyinfe/semi-icons/-/semi-icons-2.88.0.tgz#8bc28881aba3fa5a190599e1ddf4c6fb1840dbaa"
-  integrity sha512-kZSni5KZFL6fxs+c2nF4e3biPNcnAxV9U27577kOlaqP7l2FqP9U+d4x2YQisgsoT+Z3brqfWEayastQk5fzig==
+"@douyinfe/semi-icons@2.88.1", "@douyinfe/semi-icons@^2.88.1":
+  version "2.88.1"
+  resolved "https://registry.yarnpkg.com/@douyinfe/semi-icons/-/semi-icons-2.88.1.tgz#e169d1c17571a3eadf84ad014294af42895f2380"
+  integrity sha512-ictYoa+9/9I/A+ioIoubIOY6vY5j285Nj8fJNo39LPr6OEH/Y80yL3aeaQOoi9vTHLx/iV8yp5fgk5NUoOZYeg==
   dependencies:
     classnames "^2.2.6"
 
-"@douyinfe/semi-illustrations@2.88.0":
-  version "2.88.0"
-  resolved "https://registry.yarnpkg.com/@douyinfe/semi-illustrations/-/semi-illustrations-2.88.0.tgz#7ba4dad1fe98c813386c3baf7fd9720974cab1b3"
-  integrity sha512-fQ+Q9g9KjE9a2nH59uNHEzUdSt40GDloPCB4n7J3Q9EUeOiWpOsXbC/3NCDZc2ElZVryMChT3g6vjvIzHAl9Hw==
+"@douyinfe/semi-illustrations@2.88.1":
+  version "2.88.1"
+  resolved "https://registry.yarnpkg.com/@douyinfe/semi-illustrations/-/semi-illustrations-2.88.1.tgz#5e0545536bf3d16b851c7c37f8c4bde771407248"
+  integrity sha512-ynnTxM4oTOi0byp08J5V/JRnTVdx8ACexwroYUDtiqNb7esNf1fcDPfkKPzuj3g7gwVJUnw4bpjquQk79yNOsw==
 
-"@douyinfe/semi-json-viewer-core@2.88.0":
-  version "2.88.0"
-  resolved "https://registry.yarnpkg.com/@douyinfe/semi-json-viewer-core/-/semi-json-viewer-core-2.88.0.tgz#53cd6e6aa2a7f4b517c4cd532b08e65af4d60da7"
-  integrity sha512-LLdLZ477eJBQKlCPIqPhpIcXL1GOy9mvjpwryqiAj/h6BXmwcvp1zJwJQP9Rq9inePawdYMSZozaB2X1FPjKOg==
+"@douyinfe/semi-json-viewer-core@2.88.1":
+  version "2.88.1"
+  resolved "https://registry.yarnpkg.com/@douyinfe/semi-json-viewer-core/-/semi-json-viewer-core-2.88.1.tgz#9cd502530658ca1e7d2d8d4b64aac84fbc91286c"
+  integrity sha512-kG7vEd9qPvQ2q3vOe8wT5VBiIATZ+4WPUUpexeg/otkF4Da0II5f2AO4CfGbPB9wFzIgDttRrLHX6QcRBmF4mQ==
   dependencies:
     jsonc-parser "^3.3.1"
 
-"@douyinfe/semi-theme-default@2.88.0":
-  version "2.88.0"
-  resolved "https://registry.yarnpkg.com/@douyinfe/semi-theme-default/-/semi-theme-default-2.88.0.tgz#caa8c24c3afd3c24689a74efacdd6e11199cc22c"
-  integrity sha512-Cykl39Tkw9cJYTBpDToyj0uyXBGS15QDZGR2zCskdG52+eaCyZAoCds4W3HOxlToUmuw0JgVES5VSalIy3M07A==
+"@douyinfe/semi-theme-default@2.88.1":
+  version "2.88.1"
+  resolved "https://registry.yarnpkg.com/@douyinfe/semi-theme-default/-/semi-theme-default-2.88.1.tgz#9b72a4f2a77a58c84a3c14e465ca4008da43b0e0"
+  integrity sha512-JKpC23F0ZCHlyazB4J3+vx43/+++odrgzZIGKHprXBTjbvqagu5wFe8mpeaY9mD8Nrd3ZeQJ3wApgwHuQR1fwA==
 
-"@douyinfe/semi-ui@2.88.0":
-  version "2.88.0"
-  resolved "https://registry.yarnpkg.com/@douyinfe/semi-ui/-/semi-ui-2.88.0.tgz#a220fcfcad593f9669acb44b74c3c1e10efcb262"
-  integrity sha512-MlfLjUpTqnfk3Sg6pQOA2JETvZaWFEQwLvEcbfwA5LijX/hu7hG1Zhj1AVnpXTXrOUiU+ENTOiLu4GggoW2EaA==
+"@douyinfe/semi-ui@2.88.1":
+  version "2.88.1"
+  resolved "https://registry.yarnpkg.com/@douyinfe/semi-ui/-/semi-ui-2.88.1.tgz#68dd9b2d7421c0741fe0599932b15aa51a314b38"
+  integrity sha512-x7HsvBn8AVbpLQcNk6C4vhAORmSBGN9kzbljSGWzFUx2xqrUz10bu39eBrKLMVuR6+GX3Gw22edPfx62QAaYow==
   dependencies:
     "@dnd-kit/core" "^6.0.8"
     "@dnd-kit/sortable" "^7.0.2"
     "@dnd-kit/utilities" "^3.2.1"
-    "@douyinfe/semi-animation" "2.88.0"
-    "@douyinfe/semi-animation-react" "2.88.0"
-    "@douyinfe/semi-foundation" "2.88.0"
-    "@douyinfe/semi-icons" "2.88.0"
-    "@douyinfe/semi-illustrations" "2.88.0"
-    "@douyinfe/semi-theme-default" "2.88.0"
+    "@douyinfe/semi-animation" "2.88.1"
+    "@douyinfe/semi-animation-react" "2.88.1"
+    "@douyinfe/semi-foundation" "2.88.1"
+    "@douyinfe/semi-icons" "2.88.1"
+    "@douyinfe/semi-illustrations" "2.88.1"
+    "@douyinfe/semi-theme-default" "2.88.1"
     "@tiptap/core" "^3.1.0"
     "@tiptap/extension-document" "^3.3.0"
     "@tiptap/extension-hard-break" "^3.3.0"

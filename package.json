@@ -56,8 +56,8 @@
     "Firefox ESR"
   ],
   "dependencies": {
-    "@douyinfe/semi-icons": "^2.88.0",
-    "@douyinfe/semi-ui": "2.88.0",
+    "@douyinfe/semi-icons": "^2.88.1",
+    "@douyinfe/semi-ui": "2.88.1",
     "@sendgrid/mail": "8.1.6",
     "@visactor/react-vchart": "^2.0.8",
     "@visactor/vchart": "^2.0.8",
