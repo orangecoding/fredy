@@ -1,13 +1,23 @@
 ### HTTP Adapter
 
-This is a generic adapter for sending notifications via HTTP requests. 
-It can be configured to send notifications to any HTTP endpoint.
+This is a generic adapter for sending notifications via HTTP requests.
+You can leverage this adapter to integrate with various webhooks or APIs that accept HTTP requests. (e.g. Supabase
+Functions, a Node.js server, etc.)
+
+HTTP adapter supports a `authToken` field, which can be used to include an authorization token in the request headers.
 
 Request Details:
 <details>
-Request Method: `POST`  
-Content Type: `application/json`  
-Payload Structure:
+Request Method: POST  
+
+Headers:
+
+```
+Content Type: `application/json`
+Authorization: Bearer {your-optional-auth-token}
+```
+
+Body:
 
 ```json
 {
@@ -21,11 +31,12 @@ Payload Structure:
       "id": "123456789",
       "imageUrl": "https://<target-url>.com/listings/123456789.jpg",
       "price": "1.240 €",
-      "size":"38 m²",
+      "size": "38 m²",
       "title": "Schöne 1-Zimmer-Wohnung in Bielefeld",
       "url": "https://<target-url>.com/listings/123456789"
     }
   ]
 }
 ```
+
 </details>
