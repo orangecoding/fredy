@@ -5,6 +5,7 @@ import { transform } from '../../../../../services/transformer/providerTransform
 import { useSelector } from '../../../../../services/state/store';
 import { IconLikeHeart } from '@douyinfe/semi-icons';
 import './ProviderMutator.less';
+import { useScreenWidth } from '../../../../../hooks/screenWidth.js';
 
 const sortProvider = (a, b) => {
   if (a.key < b.key) {
@@ -21,6 +22,10 @@ export default function ProviderMutator({ onVisibilityChanged, visible = false, 
   const [selectedProvider, setSelectedProvider] = useState(null);
   const [providerUrl, setProviderUrl] = useState(null);
   const [validationMessage, setValidationMessage] = useState(null);
+
+  const width = useScreenWidth();
+  const isMobile = width <= 850;
+
   const validate = () => {
     if (selectedProvider == null || selectedProvider.length === 0 || providerUrl == null || providerUrl.length === 0) {
       return 'Please select a provider and copy the browser url into the textfield after configuring your search parameter.';
@@ -67,7 +72,7 @@ export default function ProviderMutator({ onVisibilityChanged, visible = false, 
       visible={visible}
       onOk={() => onSubmit(true)}
       onCancel={() => onSubmit(false)}
-      style={{ width: '50rem' }}
+      style={{ width: isMobile ? '95%' : '50rem' }}
       okText="Save"
     >
       {validationMessage != null && (
