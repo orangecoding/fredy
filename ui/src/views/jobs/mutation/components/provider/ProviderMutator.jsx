@@ -153,7 +153,7 @@ export default function ProviderMutator({
 
       <Select
         filter
-        placeholder={'Select a provider'}
+        placeholder="Select a provider"
         className="providerMutator__fields"
         disabled={providerToEdit != null}
         optionList={provider
@@ -177,7 +177,7 @@ export default function ProviderMutator({
       <br />
       <Input
         type="text"
-        placeholder={'Provider Url'}
+        placeholder="Provider Url"
         width={10}
         className="providerMutator__fields"
         value={providerUrl}
