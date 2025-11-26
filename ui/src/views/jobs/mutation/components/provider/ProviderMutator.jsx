@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { Banner, Modal, Select, Input } from '@douyinfe/semi-ui';
 import { transform } from '../../../../../services/transformer/providerTransformer';
@@ -17,11 +17,31 @@ const sortProvider = (a, b) => {
   return 0;
 };
 
-export default function ProviderMutator({ onVisibilityChanged, visible = false, onData } = {}) {
+const returnOriginalSelectedProvider = (providerToEdit, provider) => {
+  return provider.find((pro) => pro.id === providerToEdit.id);
+};
+
+export default function ProviderMutator({
+  onVisibilityChanged,
+  visible = false,
+  onData,
+  onEditData,
+  providerToEdit,
+} = {}) {
   const provider = useSelector((state) => state.provider);
   const [selectedProvider, setSelectedProvider] = useState(null);
   const [providerUrl, setProviderUrl] = useState(null);
   const [validationMessage, setValidationMessage] = useState(null);
+
+  useEffect(() => {
+    if (providerToEdit) {
+      setSelectedProvider(returnOriginalSelectedProvider(providerToEdit, provider));
+      setProviderUrl(providerToEdit.url);
+    } else {
+      setSelectedProvider(null);
+      setProviderUrl(null);
+    }
+  }, [providerToEdit, visible]);
 
   const width = useScreenWidth();
   const isMobile = width <= 850;
@@ -46,13 +66,24 @@ export default function ProviderMutator({ onVisibilityChanged, visible = false, 
     if (doStore) {
       const validationResult = validate();
       if (validationResult == null) {
-        onData(
-          transform({
-            url: providerUrl,
-            id: selectedProvider.id,
-            name: selectedProvider.name,
-          }),
-        );
+        if (providerToEdit != null) {
+          onEditData({
+            newData: transform({
+              url: providerUrl,
+              id: selectedProvider.id,
+              name: selectedProvider.name,
+            }),
+            oldProviderToEdit: providerToEdit,
+          });
+        } else {
+          onData(
+            transform({
+              url: providerUrl,
+              id: selectedProvider.id,
+              name: selectedProvider.name,
+            }),
+          );
+        }
         setProviderUrl(null);
         setSelectedProvider(null);
         onVisibilityChanged(false);
@@ -68,7 +99,7 @@ export default function ProviderMutator({ onVisibilityChanged, visible = false, 
 
   return (
     <Modal
-      title="Adding a new Provider"
+      title={providerToEdit ? 'Editing an existing Provider' : 'Adding a new Provider'}
       visible={visible}
       onOk={() => onSubmit(true)}
       onCancel={() => onSubmit(false)}
@@ -85,19 +116,26 @@ export default function ProviderMutator({ onVisibilityChanged, visible = false, 
           description={validationMessage}
         />
       )}
-
-      <p>
-        Provider are the <IconLikeHeart style={{ color: '#ff0000' }} /> of Fredy. We're supporting multiple Provider
-        such as Immowelt, Kalaydo etc. Select a provider from the list below.
-        <br />
-        Fredy will then open the provider's url in a new tab.
-      </p>
-      <p>
-        You will need to configure your search parameter like you would do when you do a regular search on the
-        provider's website.
-        <br />
-        When the search results are shown on the website, copy the url and paste it into the textfield below.
-      </p>
+      {providerToEdit != null ? (
+        <p>
+          You can now edit the <strong>{providerToEdit.name}</strong> provider's URL in the input field below.
+        </p>
+      ) : (
+        <>
+          <p>
+            Provider are the <IconLikeHeart style={{ color: '#ff0000' }} /> of Fredy. We're supporting multiple Provider
+            such as Immowelt, Kalaydo etc. Select a provider from the list below.
+            <br />
+            Fredy will then open the provider's url in a new tab.
+          </p>
+          <p>
+            You will need to configure your search parameter like you would do when you do a regular search on the
+            provider's website.
+            <br />
+            When the search results are shown on the website, copy the url and paste it into the textfield below.
+          </p>
+        </>
+      )}
       <Banner
         fullMode={false}
         type="warning"
@@ -115,8 +153,9 @@ export default function ProviderMutator({ onVisibilityChanged, visible = false, 
 
       <Select
         filter
-        placeholder="Select a provider"
+        placeholder={'Select a provider'}
         className="providerMutator__fields"
+        disabled={providerToEdit != null}
         optionList={provider
           .map((pro) => {
             return {
@@ -131,7 +170,6 @@ export default function ProviderMutator({ onVisibilityChanged, visible = false, 
         onChange={(value) => {
           const selectedProvider = provider.find((pro) => pro.id === value);
           setSelectedProvider(selectedProvider);
-
           window.open(selectedProvider.baseUrl);
         }}
       />
@@ -139,10 +177,11 @@ export default function ProviderMutator({ onVisibilityChanged, visible = false, 
       <br />
       <Input
         type="text"
-        placeholder="Provider Url"
+        placeholder={'Provider Url'}
         width={10}
         className="providerMutator__fields"
-        onBlur={(e) => {
+        value={providerUrl}
+        onInput={(e) => {
           setProviderUrl(e.target.value);
         }}
       />

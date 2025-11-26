@@ -1,9 +1,9 @@
 import React from 'react';
 
 import { Empty, Table, Button } from '@douyinfe/semi-ui';
-import { IconDelete } from '@douyinfe/semi-icons';
+import { IconDelete, IconEdit } from '@douyinfe/semi-icons';
 
-export default function ProviderTable({ providerData = [], onRemove } = {}) {
+export default function ProviderTable({ providerData = [], onRemove, onEdit } = {}) {
   return (
     <Table
       pagination={false}
@@ -30,6 +30,8 @@ export default function ProviderTable({ providerData = [], onRemove } = {}) {
           render: (_, record) => {
             return (
               <div style={{ float: 'right' }}>
+                <Button type="secondary" icon={<IconEdit />} onClick={() => onEdit(record)} />
+                <div style={{ display: 'inline-block', width: '16px' }} />
                 <Button type="danger" icon={<IconDelete />} onClick={() => onRemove(record.url)} />
               </div>
             );
