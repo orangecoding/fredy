@@ -1,6 +1,6 @@
 {
   "name": "fredy",
-  "version": "14.3.5",
+  "version": "14.3.6",
   "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
   "scripts": {
     "prepare": "husky",
