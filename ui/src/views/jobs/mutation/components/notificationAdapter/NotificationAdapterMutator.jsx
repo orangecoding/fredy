@@ -7,6 +7,7 @@ import { useSelector } from '../../../../../services/state/store';
 import { Banner, Button, Form, Modal, Select, Switch } from '@douyinfe/semi-ui';
 
 import './NotificationAdapterMutator.less';
+import { useScreenWidth } from '../../../../../hooks/screenWidth.js';
 
 const sortAdapter = (a, b) => {
   if (a.name < b.name) {
@@ -71,6 +72,9 @@ export default function NotificationAdapterMutator({
   const [selectedAdapter, setSelectedAdapter] = useState(preFilledSelectedAdapter);
   const [validationMessage, setValidationMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
+
+  const width = useScreenWidth();
+  const isMobile = width <= 850;
 
   const onSubmit = (doStore) => {
     if (doStore) {
@@ -172,17 +176,18 @@ export default function NotificationAdapterMutator({
     <Modal
       title={title != null ? title : 'Adding a new Notification Adapter'}
       visible={visible}
-      style={{ width: '95%' }}
+      style={{ width: isMobile ? '95%' : '50rem' }}
+      onCancel={() => onSubmit(false)}
       footer={
         <div>
-          <Button type="secondary" disabled={selectedAdapter == null} style={{ float: 'left' }} onClick={() => onTry()}>
+          <Button type="secondary" disabled={selectedAdapter == null} style={{ float: 'left' }} onClick={onTry}>
             Try
           </Button>
-          <Button type="danger" onClick={() => onSubmit(true)}>
-            Save
-          </Button>
-          <Button type="primary" onClick={() => onSubmit(false)}>
+          <Button theme="light" type="tertiary" onClick={() => onSubmit(false)}>
             Cancel
+          </Button>
+          <Button theme="solid" type="primary" onClick={() => onSubmit(true)}>
+            Save
           </Button>
         </div>
       }
@@ -212,7 +217,7 @@ export default function NotificationAdapterMutator({
         <p>{description}</p>
       ) : (
         <p>
-          When Fredy found new listings, we like to report them to you. To do so, notification adapter can be
+          When Fredy finds new listings, we like to report them to you. To do so, notification adapter can be
           configured. <br />
           There are multiple ways how Fredy can send new listings to you. Chose your weapon...
         </p>

@@ -19,4 +19,4 @@ jobs:
           cache: 'yarn'
 
       - run: yarn install
-      - run: yarn test
+      - run: yarn testGH

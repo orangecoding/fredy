@@ -11,7 +11,15 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Divider, Input, Switch, Button, TagInput, Toast, Select } from '@douyinfe/semi-ui';
 import './JobMutation.less';
 import { SegmentPart } from '../../../components/segment/SegmentPart';
-import { IconBell, IconBriefcase, IconPaperclip, IconPlayCircle, IconPlusCircle, IconUser } from '@douyinfe/semi-icons';
+import {
+  IconBell,
+  IconBriefcase,
+  IconPaperclip,
+  IconPlayCircle,
+  IconPlusCircle,
+  IconUser,
+  IconClear,
+} from '@douyinfe/semi-icons';
 
 export default function JobMutator() {
   const jobs = useSelector((state) => state.jobs.jobs);
@@ -26,6 +34,7 @@ export default function JobMutator() {
   const defaultNotificationAdapter = jobToBeEdit?.notificationAdapter || [];
   const defaultEnabled = jobToBeEdit?.enabled ?? true;
 
+  const [providerToEdit, setProviderToEdit] = useState(null);
   const [providerCreationVisible, setProviderCreationVisibility] = useState(false);
   const [notificationCreationVisible, setNotificationCreationVisibility] = useState(false);
   const [editNotificationAdapter, setEditNotificationAdapter] = useState(null);
@@ -40,6 +49,12 @@ export default function JobMutator() {
 
   const isSavingEnabled = () => {
     return Boolean(notificationAdapterData.length && providerData.length && name);
+  };
+
+  const handleProviderEdit = (data) => {
+    setProviderData(
+      providerData.map((provider) => (provider.url === data.oldProviderToEdit.url ? data.newData : provider)),
+    );
   };
 
   const mutateJob = async () => {
@@ -70,6 +85,8 @@ export default function JobMutator() {
         onData={(data) => {
           setProviderData([...providerData, data]);
         }}
+        onEditData={handleProviderEdit}
+        providerToEdit={providerToEdit}
       />
 
       {notificationCreationVisible && (
@@ -119,7 +136,10 @@ export default function JobMutator() {
             type="primary"
             icon={<IconPlusCircle />}
             className="jobMutation__newButton"
-            onClick={() => setProviderCreationVisibility(true)}
+            onClick={() => {
+              setProviderToEdit(null);
+              setProviderCreationVisibility(true);
+            }}
           >
             Add new Provider
           </Button>
@@ -128,6 +148,10 @@ export default function JobMutator() {
             providerData={providerData}
             onRemove={(providerUrl) => {
               setProviderData(providerData.filter((provider) => provider.url !== providerUrl));
+            }}
+            onEdit={(provider) => {
+              setProviderCreationVisibility(true);
+              setProviderToEdit(provider);
             }}
           />
         </SegmentPart>
@@ -160,7 +184,7 @@ export default function JobMutator() {
         </SegmentPart>
         <Divider margin="1rem" />
         <SegmentPart
-          Icon={IconBell}
+          Icon={IconClear}
           name="Blacklist"
           helpText="If a listing contains one of these words, it will be filtered out. Type in a word, then hit enter."
         >
