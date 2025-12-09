@@ -24,6 +24,7 @@ import { format } from '../../../services/time/timeService.js';
 import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-illustrations';
 import { xhrDelete, xhrPost } from '../../../services/xhr.js';
 import { useNavigate } from 'react-router-dom';
+import { useFeature } from '../../../hooks/featureHook.js';
 
 const getColumns = (provider, setProviderFilter, jobs, setJobNameFilter) => {
   return [
@@ -239,6 +240,7 @@ export default function ListingsTable() {
   const jobs = useSelector((state) => state.jobs.jobs);
   const navigate = useNavigate();
 
+  const watchlistFeature = useFeature('WATCHLIST_MANAGEMENT') || false;
   const actions = useActions();
   const [page, setPage] = useState(1);
   const pageSize = 10;
@@ -350,14 +352,16 @@ export default function ListingsTable() {
         placeholder="Search"
         onChange={handleFilterChange}
       />
-      <Button
-        className="listingsTable__setupButton"
-        onClick={() => {
-          navigate('/listingManagement');
-        }}
-      >
-        Setup notification on listing changes
-      </Button>
+      {watchlistFeature && (
+        <Button
+          className="listingsTable__setupButton"
+          onClick={() => {
+            navigate('/watchlistManagement');
+          }}
+        >
+          Setup notifications on watchlist changes
+        </Button>
+      )}
       <Table
         rowKey="id"
         empty={empty}

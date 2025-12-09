@@ -5,7 +5,7 @@ import { Banner, Button, Checkbox, Space } from '@douyinfe/semi-ui';
 import NotificationAdapterMutator from '../../jobs/mutation/components/notificationAdapter/NotificationAdapterMutator.jsx';
 import Headline from '../../../components/headline/Headline.jsx';
 
-export default function ListingManagement() {
+export default function WatchlistManagement() {
   const [notificationChooserVisible, setNotificationChooserVisible] = useState(false);
   const [notificationAdapterData, setNotificationAdapterData] = useState([]);
   //TODO: Set default
@@ -29,7 +29,7 @@ export default function ListingManagement() {
         <Headline size={5} text="Notify me when:" style={{ marginTop: '1rem' }} />
 
         <Checkbox checked={activityChanges} onChange={(e) => setActivityChanges(e.target.checked)}>
-          Listing state changes
+          Listing state changes (e.g. listing becomes inactive)
         </Checkbox>
         <Checkbox checked={priceChanges} onChange={(e) => setPriceChanges(e.target.checked)}>
           Listing price changes

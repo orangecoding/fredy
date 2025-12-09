@@ -48,6 +48,16 @@ export const useFredyState = create(
             }
           },
         },
+        features: {
+          async getFeatures() {
+            try {
+              const response = await xhrGet('/api/features');
+              set((state) => ({ ...state.features, ...response.json }));
+            } catch (Exception) {
+              console.error('Error while trying to get resource for api/features. Error:', Exception);
+            }
+          },
+        },
         provider: {
           async getProvider() {
             try {
@@ -176,6 +186,7 @@ export const useFredyState = create(
           page: 1,
           result: [],
         },
+        features: {},
         generalSettings: { settings: {} },
         demoMode: { demoMode: false },
         versionUpdate: {},
@@ -192,6 +203,7 @@ export const useFredyState = create(
         versionUpdate: { ...effects.versionUpdate },
         listingsTable: { ...effects.listingsTable },
         provider: { ...effects.provider },
+        features: { ...effects.features },
         jobs: { ...effects.jobs },
         user: { ...effects.user },
       };

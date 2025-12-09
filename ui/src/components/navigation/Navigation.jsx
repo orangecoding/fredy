@@ -7,6 +7,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import './Navigate.less';
 import { useScreenWidth } from '../../hooks/screenWidth.js';
+import { useFeature } from '../../hooks/featureHook.js';
 
 export default function Navigation({ isAdmin }) {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ export default function Navigation({ isAdmin }) {
 
   const width = useScreenWidth();
   const collapsed = width <= 850;
+  const watchlistFeature = useFeature('WATCHLIST_MANAGEMENT') || false;
 
   const items = [
     { itemKey: '/jobs', text: 'Jobs', icon: <IconTerminal /> },
@@ -21,15 +23,19 @@ export default function Navigation({ isAdmin }) {
   ];
 
   if (isAdmin) {
+    const settingsItems = [
+      { itemKey: '/users', text: 'User Management' },
+      { itemKey: '/generalSettings', text: 'General Settings' },
+    ];
+    if (watchlistFeature) {
+      settingsItems.push({ itemKey: '/watchlistManagement', text: 'Watchlist Management' });
+    }
+
     items.push({
       itemKey: 'settings',
       text: 'Settings',
       icon: <IconSetting />,
-      items: [
-        { itemKey: '/users', text: 'User Management' },
-        { itemKey: '/listingManagement', text: 'Listing Management' },
-        { itemKey: '/generalSettings', text: 'General Settings' },
-      ],
+      items: settingsItems,
     });
   }
 
