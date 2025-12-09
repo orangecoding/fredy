@@ -1,12 +1,13 @@
 import React from 'react';
 import { Nav } from '@douyinfe/semi-ui';
-import { IconUser, IconStar, IconSetting, IconTerminal } from '@douyinfe/semi-icons';
+import { IconStar, IconSetting, IconTerminal } from '@douyinfe/semi-icons';
 import logoWhite from '../../assets/logo_white.png';
 import Logout from '../logout/Logout.jsx';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import './Navigate.less';
 import { useScreenWidth } from '../../hooks/screenWidth.js';
+import { useFeature } from '../../hooks/featureHook.js';
 
 export default function Navigation({ isAdmin }) {
   const navigate = useNavigate();
@@ -14,15 +15,28 @@ export default function Navigation({ isAdmin }) {
 
   const width = useScreenWidth();
   const collapsed = width <= 850;
+  const watchlistFeature = useFeature('WATCHLIST_MANAGEMENT') || false;
 
   const items = [
     { itemKey: '/jobs', text: 'Jobs', icon: <IconTerminal /> },
-    { itemKey: '/listings', text: 'Found Listings', icon: <IconStar /> },
+    { itemKey: '/listings', text: 'Listings', icon: <IconStar /> },
   ];
 
   if (isAdmin) {
-    items.push({ itemKey: '/users', text: 'User Management', icon: <IconUser /> });
-    items.push({ itemKey: '/generalSettings', text: 'General Settings', icon: <IconSetting /> });
+    const settingsItems = [
+      { itemKey: '/users', text: 'User Management' },
+      { itemKey: '/generalSettings', text: 'General Settings' },
+    ];
+    if (watchlistFeature) {
+      settingsItems.push({ itemKey: '/watchlistManagement', text: 'Watchlist Management' });
+    }
+
+    items.push({
+      itemKey: 'settings',
+      text: 'Settings',
+      icon: <IconSetting />,
+      items: settingsItems,
+    });
   }
 
   function parsePathName(name) {
@@ -32,7 +46,7 @@ export default function Navigation({ isAdmin }) {
 
   return (
     <Nav
-      style={{ height: '100%', width: collapsed ? '' : '13rem' }}
+      style={{ height: '100%', width: collapsed ? '' : '13.2rem' }}
       items={items}
       isCollapsed={collapsed}
       selectedKeys={[parsePathName(location.pathname)]}

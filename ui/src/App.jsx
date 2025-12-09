@@ -21,6 +21,7 @@ import Navigation from './components/navigation/Navigation.jsx';
 import { Layout } from '@douyinfe/semi-ui';
 import FredyFooter from './components/footer/FredyFooter.jsx';
 import ProcessingTimes from './views/jobs/ProcessingTimes.jsx';
+import WatchlistManagement from './views/listings/management/WatchlistManagement.jsx';
 
 export default function FredyApp() {
   const actions = useActions();
@@ -34,6 +35,7 @@ export default function FredyApp() {
     async function init() {
       await actions.user.getCurrentUser();
       if (!needsLogin()) {
+        await actions.features.getFeatures();
         await actions.provider.getProvider();
         await actions.jobs.getJobs();
         await actions.jobs.getProcessingTimes();
@@ -91,6 +93,7 @@ export default function FredyApp() {
               <Route path="/jobs/insights/:jobId" element={<JobInsight />} />
               <Route path="/jobs" element={<Jobs />} />
               <Route path="/listings" element={<Listings />} />
+              <Route path="/watchlistManagement" element={<WatchlistManagement />} />
 
               {/* Permission-aware routes */}
               <Route

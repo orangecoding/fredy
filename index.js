@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { checkIfConfigIsAccessible, config, getProviders, refreshConfig } from './lib/utils.js';
+import { checkIfConfigIsAccessible, getProviders, refreshConfig } from './lib/utils.js';
 import * as similarityCache from './lib/services/similarity-check/similarityCache.js';
 import * as jobStorage from './lib/services/storage/jobStorage.js';
 import FredyPipeline from './lib/FredyPipeline.js';
@@ -12,27 +12,33 @@ import { initTrackerCron } from './lib/services/crons/tracker-cron.js';
 import logger from './lib/services/logger.js';
 import { bus } from './lib/services/events/event-bus.js';
 import { initActiveCheckerCron } from './lib/services/crons/listing-alive-cron.js';
+import { getSettings } from './lib/services/storage/settingsStorage.js';
+import SqliteConnection from './lib/services/storage/SqliteConnection.js';
+
+//in the config, we store the path of the sqlite file, thus we must check if it is available
+const isConfigAccessible = await checkIfConfigIsAccessible();
+await SqliteConnection.init();
 
 // Load configuration before any other startup steps
 await refreshConfig();
-
-const isConfigAccessible = await checkIfConfigIsAccessible();
 
 if (!isConfigAccessible) {
   logger.error('Configuration exists, but is not accessible. Please check the file permission');
   process.exit(1);
 }
 
+// Run DB migrations once at startup and block until finished
+await runMigrations();
+
+const settings = await getSettings();
+
 // Ensure sqlite directory exists before loading anything else (based on config.sqlitepath)
-const rawDir = config.sqlitepath || '/db';
+const rawDir = settings.sqlitepath || '/db';
 const relDir = rawDir.startsWith('/') ? rawDir.slice(1) : rawDir;
 const absDir = path.isAbsolute(relDir) ? relDir : path.join(process.cwd(), relDir);
 if (!fs.existsSync(absDir)) {
   fs.mkdirSync(absDir, { recursive: true });
 }
-
-// Run DB migrations once at startup and block until finished
-await runMigrations();
 
 // Load provider modules once at startup
 const providers = await getProviders();
@@ -41,17 +47,17 @@ similarityCache.initSimilarityCache();
 similarityCache.startSimilarityCacheReloader();
 
 //assuming interval is always in minutes
-const INTERVAL = config.interval * 60 * 1000;
+const INTERVAL = settings.interval * 60 * 1000;
 
 // Initialize API only after migrations completed
 await import('./lib/api/api.js');
 
-if (config.demoMode) {
+if (settings.demoMode) {
   logger.info('Running in demo mode');
   cleanupDemoAtMidnight();
 }
 
-logger.info(`Started Fredy successfully. Ui can be accessed via http://localhost:${config.port}`);
+logger.info(`Started Fredy successfully. Ui can be accessed via http://localhost:${settings.port}`);
 
 ensureAdminUserExists();
 ensureDemoUserExists();
@@ -65,10 +71,10 @@ bus.on('jobs:runAll', () => {
 });
 
 const execute = () => {
-  const isDuringWorkingHoursOrNotSet = duringWorkingHoursOrNotSet(config, Date.now());
-  if (!config.demoMode) {
+  const isDuringWorkingHoursOrNotSet = duringWorkingHoursOrNotSet(settings, Date.now());
+  if (!settings.demoMode) {
     if (isDuringWorkingHoursOrNotSet) {
-      config.lastRun = Date.now();
+      settings.lastRun = Date.now();
       jobStorage
         .getJobs()
         .filter((job) => job.enabled)
