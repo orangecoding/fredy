@@ -32,6 +32,10 @@
     "url": "https://www.mcmakler.de/immobilien/results?placeId=62649&search=Leipzig%252C+Sachsen&propertyTypes=APARTMENT&page=0",
     "enabled": true
   },
+  "ohneMakler": {
+    "url": "https://www.ohne-makler.net/immobilien/wohnung-kaufen/nordrhein-westfalen/dusseldorf/",
+    "enabled": true
+  },
   "neubauKompass": {
     "url": "https://www.neubaukompass.de/neubau-immobilien/duesseldorf-region/eigentumswohnung/",
     "enabled": true

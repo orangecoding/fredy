@@ -1,6 +1,6 @@
 {
   "name": "fredy",
-  "version": "14.3.6",
+  "version": "14.4.0",
   "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
   "scripts": {
     "prepare": "husky",
@@ -57,14 +57,14 @@
     "Firefox ESR"
   ],
   "dependencies": {
-    "@douyinfe/semi-icons": "^2.88.3",
-    "@douyinfe/semi-ui": "2.88.3",
+    "@douyinfe/semi-icons": "^2.89.0",
+    "@douyinfe/semi-ui": "2.89.0",
     "@sendgrid/mail": "8.1.6",
-    "@visactor/react-vchart": "^2.0.9",
-    "@visactor/vchart": "^2.0.9",
+    "@visactor/react-vchart": "^2.0.10",
+    "@visactor/vchart": "^2.0.10",
     "@visactor/vchart-semi-theme": "^1.12.2",
-    "@vitejs/plugin-react": "5.1.1",
-    "better-sqlite3": "^12.4.6",
+    "@vitejs/plugin-react": "5.1.2",
+    "better-sqlite3": "^12.5.0",
     "body-parser": "2.2.1",
     "cheerio": "^1.1.2",
     "cookie-session": "2.1.1",
@@ -76,21 +76,21 @@
     "node-mailjet": "6.0.11",
     "p-throttle": "^8.1.0",
     "package-up": "^5.0.0",
-    "puppeteer": "^24.31.0",
+    "puppeteer": "^24.32.1",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
     "query-string": "9.3.1",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "react-router": "7.9.6",
-    "react-router-dom": "7.9.6",
+    "react-router": "7.10.1",
+    "react-router-dom": "7.10.1",
     "restana": "5.1.0",
     "semver": "^7.7.3",
     "serve-static": "2.2.0",
     "slack": "11.0.2",
-    "vite": "7.2.4",
+    "vite": "7.2.7",
     "x-var": "^3.0.1",
-    "zustand": "^5.0.8"
+    "zustand": "^5.0.9"
   },
   "devDependencies": {
     "@babel/core": "7.28.5",
@@ -108,6 +108,6 @@
     "lint-staged": "16.2.7",
     "mocha": "11.7.5",
     "nodemon": "^3.1.11",
-    "prettier": "3.7.1"
+    "prettier": "3.7.4"
   }
 }
