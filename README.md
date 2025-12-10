@@ -107,6 +107,10 @@ yarn run start:frontend  # in another terminal
 
 👉 Open <http://localhost:9998>
 
+### With Unraid
+
+Should you use [Unraid](https://unraid.net/), you can now install Fredy from the community store :)
+
 **Default Login:**
 - Username: `admin`
 - Password: `admin`
