@@ -1,7 +1,47 @@
+# Dependencies (will be installed fresh in container)
 node_modules/
-npm-debug.log
-test/
+
+# Database and config (mounted as volumes)
 db/
 conf/
+
+# Git
 .git/
 .github/
+.gitignore
+
+# IDE and editor
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Testing
+test/
+
+# Documentation
+doc/
+*.md
+!README.md
+
+# Development config files
+.babelrc
+.husky/
+.nvmrc
+.prettierrc
+.prettierignore
+eslint.config.js
+
+# Docker files (not needed inside container)
+Dockerfile
+docker-compose.yml
+docker-test.sh
+.dockerignore
+
+# Logs
+*.log
+npm-debug.log
+
+# Build artifacts (built fresh in container)
+dist/

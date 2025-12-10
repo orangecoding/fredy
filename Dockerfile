@@ -1,27 +1,58 @@
-FROM node:22-slim
+# ================================
+# Stage 1: Build stage
+# ================================
+FROM node:22-alpine AS builder
+
+WORKDIR /build
+
+# Install build dependencies needed for native modules (better-sqlite3)
+RUN apk add --no-cache python3 make g++
+
+# Copy package files first for better layer caching
+COPY package.json yarn.lock ./
+
+# Install all dependencies (including devDependencies for building)
+RUN yarn config set network-timeout 600000 \
+  && yarn --frozen-lockfile
+
+# Copy source files needed for build
+COPY index.html vite.config.js ./
+COPY ui ./ui
+COPY lib ./lib
+
+# Build frontend assets
+RUN yarn build:frontend
+
+# ================================
+# Stage 2: Production stage
+# ================================
+FROM node:22-alpine
 
 WORKDIR /fredy
 
-# Install Chromium and curl without extra recommended packages and clean apt cache
-# curl is needed for the health check
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends chromium curl \
-  && rm -rf /var/lib/apt/lists/*
+# Install Chromium and curl (for healthcheck)
+# Using Alpine's chromium package which is much smaller
+RUN apk add --no-cache chromium curl
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
-    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
-# Copy lockfiles first to leverage cache for dependencies
-COPY package.json yarn.lock .
+# Install build dependencies for native modules, then remove them after yarn install
+COPY package.json yarn.lock ./
 
-# Set Yarn timeout, install dependencies and PM2 globally
-RUN yarn config set network-timeout 600000 \
-  && yarn --frozen-lockfile \
-  && yarn global add pm2
+RUN apk add --no-cache --virtual .build-deps python3 make g++ \
+  && yarn config set network-timeout 600000 \
+  && yarn --frozen-lockfile --production \
+  && yarn cache clean \
+  && apk del .build-deps
 
-# Copy application source and build production assets
-COPY . .
-RUN yarn build:frontend
+# Copy built frontend from builder stage
+COPY --from=builder /build/ui/public ./ui/public
+
+# Copy application source (only what's needed at runtime)
+COPY index.js ./
+COPY index.html ./
+COPY lib ./lib
 
 # Prepare runtime directories and symlinks for data and config
 RUN mkdir -p /db /conf \
@@ -34,5 +65,4 @@ EXPOSE 9998
 VOLUME /db
 VOLUME /conf
 
-# Start application using PM2 runtime
-CMD ["pm2-runtime", "index.js"]
+CMD ["node", "index.js"]
