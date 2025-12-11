@@ -16,13 +16,15 @@
     "lint": "eslint .",
     "lint:fix": "yarn lint --fix",
     "migratedb": "node lib/services/storage/migrations/migrate.js",
-    "migratedb:overwrite": "x-var MIGRATION_ALLOW_CHECKSUM_UPDATE=true node lib/services/storage/migrations/migrate.js"
+    "migratedb:overwrite": "x-var MIGRATION_ALLOW_CHECKSUM_UPDATE=true node lib/services/storage/migrations/migrate.js",
+    "copyright": "node ./copyright.js"
   },
   "type": "module",
   "lint-staged": {
     "*.{js,jsx}": [
       "yarn lint",
-      "yarn format"
+      "yarn format",
+      "yarn copyright"
     ]
   },
   "main": "index.js",
@@ -45,7 +47,7 @@
   "bugs": {
     "url": "https://github.com/orangecoding/fredy/issues"
   },
-  "license": "MIT",
+  "license": "Apache-2.0",
   "engines": {
     "node": ">=22.0.0",
     "npm": ">=7.0.0"

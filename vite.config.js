@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2025 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 // https://vitejs.dev/config/

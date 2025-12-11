@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2025 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
 import { convertWebToMobile } from '../../../lib/services/immoscout/immoscout-web-translator.js';
 import { expect } from 'chai';
 import { readFile } from 'fs/promises';

@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2025 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
 import { readFile } from 'fs/promises';
 import esmock from 'esmock';
 import * as mockStore from './mocks/mockStore.js';

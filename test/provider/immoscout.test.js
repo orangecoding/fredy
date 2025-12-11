@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2025 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
 import { expect } from 'chai';
 import * as similarityCache from '../../lib/services/similarity-check/similarityCache.js';
 import { mockFredy, providerConfig } from '../utils.js';

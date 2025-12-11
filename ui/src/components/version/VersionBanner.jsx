@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2025 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
 import React from 'react';
 import { Collapse, Descriptions } from '@douyinfe/semi-ui';
 import { useSelector } from '../../services/state/store.js';
