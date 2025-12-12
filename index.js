@@ -87,15 +87,19 @@ const execute = () => {
           job.provider
             .filter((p) => providers.find((loaded) => loaded.metaInformation.id === p.id) != null)
             .forEach(async (prov) => {
-              const matchedProvider = providers.find((loaded) => loaded.metaInformation.id === prov.id);
-              matchedProvider.init(prov, job.blacklist);
-              await new FredyPipeline(
-                matchedProvider.config,
-                job.notificationAdapter,
-                prov.id,
-                job.id,
-                similarityCache,
-              ).execute();
+              try {
+                const matchedProvider = providers.find((loaded) => loaded.metaInformation.id === prov.id);
+                matchedProvider.init(prov, job.blacklist);
+                await new FredyPipeline(
+                  matchedProvider.config,
+                  job.notificationAdapter,
+                  prov.id,
+                  job.id,
+                  similarityCache,
+                ).execute();
+              } catch (error) {
+                logger.error(error);
+              }
             });
         });
     } else {
