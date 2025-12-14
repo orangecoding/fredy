@@ -66,7 +66,6 @@ export default function Jobs() {
         onJobRemoval={onJobRemoval}
         onListingRemoval={onListingRemoval}
         onJobStatusChanged={onJobStatusChanged}
-        onJobInsight={(jobId) => navigate(`/jobs/insights/${jobId}`)}
         onJobEdit={(jobId) => navigate(`/jobs/edit/${jobId}`)}
       />
     </div>

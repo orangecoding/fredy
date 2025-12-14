@@ -33,6 +33,16 @@ export const useFredyState = create(
     (set) => {
       // Async actions that directly set state (no separate reducer concept)
       const effects = {
+        dashboard: {
+          async getDashboard() {
+            try {
+              const response = await xhrGet('/api/dashboard');
+              set((state) => ({ dashboard: { ...state.dashboard, data: response.json } }));
+            } catch (Exception) {
+              console.error('Error while trying to get resource for /api/dashboard. Error:', Exception);
+            }
+          },
+        },
         notificationAdapter: {
           async getAdapter() {
             try {
@@ -88,27 +98,6 @@ export const useFredyState = create(
               set((state) => ({ jobs: { ...state.jobs, shareableUserList: Object.freeze(response.json) } }));
             } catch (Exception) {
               console.error(`Error while trying to get resource for api/jobs. Error:`, Exception);
-            }
-          },
-          async getProcessingTimes() {
-            try {
-              const response = await xhrGet('/api/jobs/processingTimes');
-              set((state) => ({ jobs: { ...state.jobs, processingTimes: Object.freeze(response.json) } }));
-            } catch (Exception) {
-              console.error(`Error while trying to get resource for api/processingTimes. Error:`, Exception);
-            }
-          },
-          async getInsightDataForJob(jobId) {
-            try {
-              const response = await xhrGet(`/api/jobs/insights/${jobId}`);
-              set((state) => ({
-                jobs: {
-                  ...state.jobs,
-                  insights: { ...state.jobs.insights, [jobId]: Object.freeze(response.json) },
-                },
-              }));
-            } catch (Exception) {
-              console.error(`Error while trying to get resource for api/jobs/insights. Error:`, Exception);
             }
           },
         },
@@ -185,6 +174,7 @@ export const useFredyState = create(
 
       // Initial state
       const initial = {
+        dashboard: { data: null },
         notificationAdapter: [],
         listingsTable: {
           totalNumber: 0,
@@ -196,12 +186,13 @@ export const useFredyState = create(
         demoMode: { demoMode: false },
         versionUpdate: {},
         provider: [],
-        jobs: { jobs: [], insights: {}, processingTimes: {}, shareableUserList: [] },
+        jobs: { jobs: [], shareableUserList: [] },
         user: { users: [], currentUser: null },
       };
 
       // Expose actions by grouping them per slice
       const actions = {
+        dashboard: { ...effects.dashboard },
         notificationAdapter: { ...effects.notificationAdapter },
         generalSettings: { ...effects.generalSettings },
         demoMode: { ...effects.demoMode },

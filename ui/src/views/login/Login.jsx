@@ -52,7 +52,7 @@ export default function Login() {
     Toast.success('Login successful!');
 
     await actions.user.getCurrentUser();
-    navigate('/jobs');
+    navigate('/dashboard');
   };
 
   return (

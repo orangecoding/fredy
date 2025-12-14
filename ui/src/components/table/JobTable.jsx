@@ -6,7 +6,7 @@
 import React from 'react';
 
 import { Button, Empty, Table, Switch, Popover } from '@douyinfe/semi-ui';
-import { IconAlertTriangle, IconDelete, IconDescend2, IconEdit, IconHistogram } from '@douyinfe/semi-icons';
+import { IconAlertTriangle, IconDelete, IconDescend2, IconEdit } from '@douyinfe/semi-icons';
 import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-illustrations';
 
 import './JobTable.less';
@@ -21,14 +21,7 @@ const empty = (
 
 const getPopoverContent = (text) => <article className="jobPopoverContent">{text}</article>;
 
-export default function JobTable({
-  jobs = {},
-  onJobRemoval,
-  onJobStatusChanged,
-  onJobEdit,
-  onJobInsight,
-  onListingRemoval,
-} = {}) {
+export default function JobTable({ jobs = {}, onJobRemoval, onJobStatusChanged, onJobEdit, onListingRemoval } = {}) {
   return (
     <Table
       pagination={false}
@@ -98,14 +91,6 @@ export default function JobTable({
           render: (_, job) => {
             return (
               <div className="interactions">
-                <Popover content={getPopoverContent('Job Insights')}>
-                  <Button
-                    type="primary"
-                    icon={<IconHistogram />}
-                    disabled={job.isOnlyShared}
-                    onClick={() => onJobInsight(job.id)}
-                  />
-                </Popover>
                 <Popover content={getPopoverContent('Edit a Job')}>
                   <Button
                     type="secondary"

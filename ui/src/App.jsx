@@ -10,7 +10,6 @@ import PermissionAwareRoute from './components/permission/PermissionAwareRoute';
 import GeneralSettings from './views/generalSettings/GeneralSettings';
 import JobMutation from './views/jobs/mutation/JobMutation';
 import UserMutator from './views/user/mutation/UserMutator';
-import JobInsight from './views/jobs/insights/JobInsight.jsx';
 import { useActions, useSelector } from './services/state/store';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './views/login/Login';
@@ -25,8 +24,8 @@ import Listings from './views/listings/Listings.jsx';
 import Navigation from './components/navigation/Navigation.jsx';
 import { Layout } from '@douyinfe/semi-ui';
 import FredyFooter from './components/footer/FredyFooter.jsx';
-import ProcessingTimes from './views/jobs/ProcessingTimes.jsx';
 import WatchlistManagement from './views/listings/management/WatchlistManagement.jsx';
+import Dashboard from './views/dashboard/Dashboard.jsx';
 
 export default function FredyApp() {
   const actions = useActions();
@@ -34,7 +33,6 @@ export default function FredyApp() {
   const currentUser = useSelector((state) => state.user.currentUser);
   const versionUpdate = useSelector((state) => state.versionUpdate.versionUpdate);
   const settings = useSelector((state) => state.generalSettings.settings);
-  const processingTimes = useSelector((state) => state.jobs.processingTimes);
 
   useEffect(() => {
     async function init() {
@@ -43,7 +41,6 @@ export default function FredyApp() {
         await actions.features.getFeatures();
         await actions.provider.getProvider();
         await actions.jobs.getJobs();
-        await actions.jobs.getProcessingTimes();
         await actions.jobs.getSharableUserList();
         await actions.notificationAdapter.getAdapter();
         await actions.generalSettings.getGeneralSettings();
@@ -88,14 +85,13 @@ export default function FredyApp() {
             </>
           )}
           {settings.analyticsEnabled === null && !settings.demoMode && <TrackingModal />}
-          {processingTimes != null && <ProcessingTimes processingTimes={processingTimes} />}
           <Divider />
           <div className="app__content">
             <Routes>
               <Route path="/403" element={<InsufficientPermission />} />
               <Route path="/jobs/new" element={<JobMutation />} />
               <Route path="/jobs/edit/:jobId" element={<JobMutation />} />
-              <Route path="/jobs/insights/:jobId" element={<JobInsight />} />
+              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/jobs" element={<Jobs />} />
               <Route path="/listings" element={<Listings />} />
               <Route path="/watchlistManagement" element={<WatchlistManagement />} />
@@ -134,7 +130,7 @@ export default function FredyApp() {
                 }
               />
 
-              <Route path="/" element={<Navigate to="/jobs" replace />} />
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
             </Routes>
           </div>
         </Content>
