@@ -7,11 +7,16 @@ import React from 'react';
 
 import { useActions, useSelector } from '../../services/state/store';
 
-import { Divider, TimePicker, Button, Checkbox, Input } from '@douyinfe/semi-ui';
+import { Divider, TimePicker, Button, Checkbox, Input, Modal } from '@douyinfe/semi-ui';
 import { InputNumber } from '@douyinfe/semi-ui';
 import { xhrPost } from '../../services/xhr';
 import { SegmentPart } from '../../components/segment/SegmentPart';
 import { Banner, Toast } from '@douyinfe/semi-ui';
+import {
+  downloadBackup as downloadBackupZip,
+  precheckRestore as clientPrecheckRestore,
+  restore as clientRestore,
+} from '../../services/backupRestoreClient';
 import {
   IconSave,
   IconCalendar,
@@ -52,6 +57,11 @@ const GeneralSettings = function GeneralSettings() {
   const [demoMode, setDemoMode] = React.useState(null);
   const [analyticsEnabled, setAnalyticsEnabled] = React.useState(null);
   const [sqlitePath, setSqlitePath] = React.useState(null);
+  const fileInputRef = React.useRef(null);
+  const [restoreModalVisible, setRestoreModalVisible] = React.useState(false);
+  const [precheckInfo, setPrecheckInfo] = React.useState(null);
+  const [restoreBusy, setRestoreBusy] = React.useState(false);
+  const [selectedRestoreFile, setSelectedRestoreFile] = React.useState(null);
 
   React.useEffect(() => {
     async function init() {
@@ -78,7 +88,7 @@ const GeneralSettings = function GeneralSettings() {
 
   const nullOrEmpty = (val) => val == null || val.length === 0;
 
-  const onStore = async () => {
+  const handleStore = async () => {
     if (nullOrEmpty(interval)) {
       Toast.error('Interval may not be empty.');
       return;
@@ -125,6 +135,60 @@ const GeneralSettings = function GeneralSettings() {
     }, 3000);
   };
 
+  const handleDownloadBackup = React.useCallback(async () => {
+    try {
+      await downloadBackupZip();
+    } catch (e) {
+      console.error(e);
+      Toast.error('Unexpected error while downloading backup.');
+    }
+  }, []);
+
+  const precheckRestore = React.useCallback(async (file) => {
+    try {
+      const data = await clientPrecheckRestore(file);
+      setPrecheckInfo(data);
+      setRestoreModalVisible(true);
+    } catch (e) {
+      console.error(e);
+      Toast.error('Failed to analyze backup.');
+    }
+  }, []);
+
+  const performRestore = React.useCallback(
+    async (force) => {
+      try {
+        setRestoreBusy(true);
+        await clientRestore(selectedRestoreFile, force);
+        Toast.success('Restore completed. Please restart the Fredy backend now!');
+      } catch (e) {
+        console.error(e);
+        Toast.error(e?.message || 'Unexpected error while restoring backup.');
+      } finally {
+        setRestoreBusy(false);
+      }
+    },
+    [selectedRestoreFile],
+  );
+
+  const handleSelectRestoreFile = React.useCallback(
+    async (ev) => {
+      const file = ev?.target?.files?.[0];
+      if (!file) return;
+      setSelectedRestoreFile(file);
+      await precheckRestore(file);
+      // reset the input to allow same file re-select
+      ev.target.value = '';
+    },
+    [precheckRestore],
+  );
+
+  const handleOpenFilePicker = React.useCallback(() => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  }, []);
+
   return (
     <div>
       {!loading && (
@@ -144,6 +208,28 @@ const GeneralSettings = function GeneralSettings() {
                 onChange={(value) => setInterval(value)}
                 suffix={'minutes'}
               />
+            </SegmentPart>
+            <Divider margin="1rem" />
+            <SegmentPart
+              name="Backup & Restore"
+              helpText="Download a zipped backup of your database or restore it from a backup zip."
+              Icon={IconSave}
+            >
+              <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                <Button theme="solid" icon={<IconSave />} onClick={handleDownloadBackup}>
+                  Download backup
+                </Button>
+                <input
+                  type="file"
+                  accept=".zip,application/zip"
+                  ref={fileInputRef}
+                  style={{ display: 'none' }}
+                  onChange={handleSelectRestoreFile}
+                />
+                <Button onClick={handleOpenFilePicker} theme="light" icon={<IconFolder />}>
+                  Restore from zip
+                </Button>
+              </div>
             </SegmentPart>
             <Divider margin="1rem" />
             <SegmentPart name="Port" helpText="Port on which Fredy is running." Icon={IconSignal}>
@@ -271,11 +357,54 @@ const GeneralSettings = function GeneralSettings() {
             </SegmentPart>
 
             <Divider margin="1rem" />
-            <Button type="primary" theme="solid" onClick={onStore} icon={<IconSave />}>
+            <Button type="primary" theme="solid" onClick={handleStore} icon={<IconSave />}>
               Save
             </Button>
           </div>
         </React.Fragment>
+      )}
+      {restoreModalVisible && (
+        <Modal
+          title="Restore database"
+          visible={restoreModalVisible}
+          onCancel={() => setRestoreModalVisible(false)}
+          onOk={() => performRestore(!precheckInfo?.compatible)}
+          okText={precheckInfo?.compatible ? 'Restore now' : 'Restore anyway'}
+          okType={precheckInfo?.compatible ? 'primary' : 'danger'}
+          confirmLoading={restoreBusy}
+        >
+          {precheckInfo?.severity === 'danger' && (
+            <Banner
+              type="danger"
+              fullMode={false}
+              closeIcon={null}
+              title={<div style={{ fontWeight: 600, fontSize: '14px' }}>Problem detected</div>}
+              description={<div>{precheckInfo?.message}</div>}
+            />
+          )}
+          {precheckInfo?.severity === 'warning' && (
+            <Banner
+              type="warning"
+              fullMode={false}
+              closeIcon={null}
+              title={<div style={{ fontWeight: 600, fontSize: '14px' }}>Automatic migrations will be applied</div>}
+              description={<div>{precheckInfo?.message}</div>}
+            />
+          )}
+          {precheckInfo?.severity === 'info' && (
+            <Banner
+              type="success"
+              fullMode={false}
+              closeIcon={null}
+              title={<div style={{ fontWeight: 600, fontSize: '14px' }}>Backup is compatible</div>}
+              description={<div>{precheckInfo?.message}</div>}
+            />
+          )}
+          <div style={{ marginTop: '0.5rem', fontSize: '12px', color: 'var(--semi-color-text-2)' }}>
+            Backup migration: {precheckInfo?.backupMigration ?? 'unknown'} | Required migration:{' '}
+            {precheckInfo?.requiredMigration ?? 'unknown'}
+          </div>
+        </Modal>
       )}
     </div>
   );

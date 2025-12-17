@@ -4,7 +4,6 @@
  */
 
 import fs from 'fs';
-import path from 'path';
 import { checkIfConfigIsAccessible, getProviders, refreshConfig } from './lib/utils.js';
 import * as similarityCache from './lib/services/similarity-check/similarityCache.js';
 import * as jobStorage from './lib/services/storage/jobStorage.js';
@@ -18,7 +17,7 @@ import logger from './lib/services/logger.js';
 import { bus } from './lib/services/events/event-bus.js';
 import { initActiveCheckerCron } from './lib/services/crons/listing-alive-cron.js';
 import { getSettings } from './lib/services/storage/settingsStorage.js';
-import SqliteConnection from './lib/services/storage/SqliteConnection.js';
+import SqliteConnection, { computeDbPath } from './lib/services/storage/SqliteConnection.js';
 
 //in the config, we store the path of the sqlite file, thus we must check if it is available
 const isConfigAccessible = await checkIfConfigIsAccessible();
@@ -38,11 +37,9 @@ await runMigrations();
 const settings = await getSettings();
 
 // Ensure sqlite directory exists before loading anything else (based on config.sqlitepath)
-const rawDir = settings.sqlitepath || '/db';
-const relDir = rawDir.startsWith('/') ? rawDir.slice(1) : rawDir;
-const absDir = path.isAbsolute(relDir) ? relDir : path.join(process.cwd(), relDir);
-if (!fs.existsSync(absDir)) {
-  fs.mkdirSync(absDir, { recursive: true });
+const { dir: sqliteDir } = await computeDbPath();
+if (!fs.existsSync(sqliteDir)) {
+  fs.mkdirSync(sqliteDir, { recursive: true });
 }
 
 // Load provider modules once at startup

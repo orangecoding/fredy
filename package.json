@@ -1,6 +1,6 @@
 {
   "name": "fredy",
-  "version": "16.1.0",
+  "version": "16.2.0",
   "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
   "scripts": {
     "prepare": "husky",
@@ -59,6 +59,7 @@
     "Firefox ESR"
   ],
   "dependencies": {
+    "adm-zip": "^0.5.16",
     "@douyinfe/semi-icons": "^2.89.0",
     "@douyinfe/semi-ui": "2.89.0",
     "@sendgrid/mail": "8.1.6",
@@ -87,9 +88,9 @@
     "react-router-dom": "7.10.1",
     "restana": "5.1.0",
     "semver": "^7.7.3",
-    "serve-static": "2.2.0",
+    "serve-static": "2.2.1",
     "slack": "11.0.2",
-    "vite": "7.2.7",
+    "vite": "7.3.0",
     "x-var": "^3.0.1",
     "zustand": "^5.0.9"
   },
@@ -105,7 +106,7 @@
     "esmock": "2.7.3",
     "history": "5.3.0",
     "husky": "9.1.7",
-    "less": "4.4.2",
+    "less": "4.5.1",
     "lint-staged": "16.2.7",
     "mocha": "11.7.5",
     "nodemon": "^3.1.11",
