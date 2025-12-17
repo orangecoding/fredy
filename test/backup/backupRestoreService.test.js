@@ -8,17 +8,21 @@ import esmock from 'esmock';
 
 describe('services/storage/backupRestoreService.js - precheck & filename', () => {
   let svc;
-  let admZipMock;
+  let setZipState;
   let calls;
 
   beforeEach(async () => {
     calls = { logger: { info: [], warn: [], error: [] } };
 
-    // Mock AdmZip with configurable state
-    let state = { hasDb: false, meta: null };
+    // Mock AdmZip with configurable state via globalThis (avoid esmock export name pitfalls)
+    globalThis.__ADM_ZIP_STATE__ = { hasDb: false, meta: null };
+    setZipState = (s) => {
+      globalThis.__ADM_ZIP_STATE__ = { ...globalThis.__ADM_ZIP_STATE__, ...s };
+    };
     class MockAdmZip {
       constructor() {}
       getEntry(name) {
+        const state = globalThis.__ADM_ZIP_STATE__ || {};
         if (name === 'listings.db') {
           if (state.hasDb) return { getData: () => Buffer.from('db') };
           return null;
@@ -30,12 +34,15 @@ describe('services/storage/backupRestoreService.js - precheck & filename', () =>
         return null;
       }
       getEntries() {
+        const state = globalThis.__ADM_ZIP_STATE__ || {};
         const arr = [];
         if (state.hasDb) arr.push({ entryName: 'listings.db', getData: () => Buffer.from('db') });
         return arr;
       }
     }
-    admZipMock = { default: MockAdmZip, __set: (s) => (state = { ...state, ...s }) };
+    const admZipMock = { default: MockAdmZip };
+    // Also expose for service via globalThis escape hatch
+    globalThis.__TEST_ADM_ZIP__ = MockAdmZip;
 
     const path = await import('node:path');
     const ROOT = path.resolve('.');
@@ -70,11 +77,13 @@ describe('services/storage/backupRestoreService.js - precheck & filename', () =>
 
     const utilsMock = { getPackageVersion: async () => '16.2.0' };
 
+    const admZipPath = path.join(ROOT, 'node_modules', 'adm-zip', 'adm-zip.js');
     const mod = await esmock(
       path.join(ROOT, 'lib', 'services', 'storage', 'backupRestoreService.js'),
       {},
       {
         'adm-zip': admZipMock,
+        [admZipPath]: admZipMock,
         [migratePath]: migrateMock,
         [sqlitePath]: sqliteMock,
         [loggerPath]: loggerMock,
@@ -94,7 +103,7 @@ describe('services/storage/backupRestoreService.js - precheck & filename', () =>
   });
 
   it('precheck: missing listings.db yields danger', async () => {
-    admZipMock.__set({ hasDb: false, meta: { dbMigration: 9 } });
+    setZipState({ hasDb: false, meta: { dbMigration: 9 } });
     const res = await svc.precheckRestore(Buffer.from('dummy'));
     expect(res.compatible).to.equal(false);
     expect(res.severity).to.equal('danger');
@@ -102,7 +111,7 @@ describe('services/storage/backupRestoreService.js - precheck & filename', () =>
   });
 
   it('precheck: older backup is compatible with warning', async () => {
-    admZipMock.__set({ hasDb: true, meta: { dbMigration: 5, fredyVersion: '16.0.0' } });
+    setZipState({ hasDb: true, meta: { dbMigration: 5, fredyVersion: '16.0.0' } });
     const res = await svc.precheckRestore(Buffer.from('zip'));
     expect(res.compatible).to.equal(true);
     expect(res.severity).to.equal('warning');
@@ -112,14 +121,14 @@ describe('services/storage/backupRestoreService.js - precheck & filename', () =>
   });
 
   it('precheck: equal backup is compatible with info', async () => {
-    admZipMock.__set({ hasDb: true, meta: { dbMigration: 10 } });
+    setZipState({ hasDb: true, meta: { dbMigration: 10 } });
     const res = await svc.precheckRestore(Buffer.from('zip'));
     expect(res.compatible).to.equal(true);
     expect(res.severity).to.equal('info');
   });
 
   it('precheck: newer backup yields danger', async () => {
-    admZipMock.__set({ hasDb: true, meta: { dbMigration: 11 } });
+    setZipState({ hasDb: true, meta: { dbMigration: 11 } });
     const res = await svc.precheckRestore(Buffer.from('zip'));
     expect(res.compatible).to.equal(false);
     expect(res.severity).to.equal('danger');
