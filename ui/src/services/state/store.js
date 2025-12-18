@@ -100,6 +100,14 @@ export const useFredyState = create(
               console.error(`Error while trying to get resource for api/jobs. Error:`, Exception);
             }
           },
+          setJobRunning(jobId, running) {
+            if (!jobId) return;
+            set((state) => {
+              const list = state.jobs.jobs || [];
+              const updated = list.map((j) => (j.id === jobId ? { ...j, running: !!running } : j));
+              return { jobs: { ...state.jobs, jobs: Object.freeze(updated) } };
+            });
+          },
         },
         user: {
           async getUsers() {

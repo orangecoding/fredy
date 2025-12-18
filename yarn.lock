@@ -997,34 +997,34 @@
   dependencies:
     tslib "^2.0.0"
 
-"@douyinfe/semi-animation-react@2.89.0":
-  version "2.89.0"
-  resolved "https://registry.yarnpkg.com/@douyinfe/semi-animation-react/-/semi-animation-react-2.89.0.tgz#be95b42a928ffe60b54d688dcf1d0f65e81b5bcc"
-  integrity sha512-6GSQMF2bIoWN2Bua4wYGCe//ltfE1/iNQRMF7+TybVMz9kBJU0gelFsvxxVnqpka994RuTvhe73CSWWdpLwjng==
+"@douyinfe/semi-animation-react@2.89.1":
+  version "2.89.1"
+  resolved "https://registry.yarnpkg.com/@douyinfe/semi-animation-react/-/semi-animation-react-2.89.1.tgz#cbbf6f5cfdfb870c20418441ab5f0ce6a5844146"
+  integrity sha512-SNEy7kujmLp7jUNzxsjEurkYmnd54OQRxedWJ8Taq3R/AhOGq6x1mP6E8EXHcBl3DgWMDdLv7YF9or/6Pom4XQ==
   dependencies:
-    "@douyinfe/semi-animation" "2.89.0"
-    "@douyinfe/semi-animation-styled" "2.89.0"
+    "@douyinfe/semi-animation" "2.89.1"
+    "@douyinfe/semi-animation-styled" "2.89.1"
     classnames "^2.2.6"
 
-"@douyinfe/semi-animation-styled@2.89.0":
-  version "2.89.0"
-  resolved "https://registry.yarnpkg.com/@douyinfe/semi-animation-styled/-/semi-animation-styled-2.89.0.tgz#72cd09f73abf5198bcfb47f6254c0f2799c146b2"
-  integrity sha512-y1wXswseGbJpPh3hJQ9aNjnMzecLh9eUERmSpQaWbDSdrzk65hBa91MMC2rk/wlIN0/Q6OAKU8FcMoSiBiuI0Q==
+"@douyinfe/semi-animation-styled@2.89.1":
+  version "2.89.1"
+  resolved "https://registry.yarnpkg.com/@douyinfe/semi-animation-styled/-/semi-animation-styled-2.89.1.tgz#9a8b5b66a0065f1b15573b85c911aaaa1e05dcf3"
+  integrity sha512-Zwl4EHn8IXWiqTAl3IIfbAWtmxH82B/BH2YqX88ASXqja8omJqMQ5ho1yYxzVFiurswz45RtoVm5tdt6M0d+MA==
 
-"@douyinfe/semi-animation@2.89.0":
-  version "2.89.0"
-  resolved "https://registry.yarnpkg.com/@douyinfe/semi-animation/-/semi-animation-2.89.0.tgz#a30de59827f6b8452100a5dd2a828aebe8cb86ec"
-  integrity sha512-y6an913b841V0BAdR5qSLYvoK5C2OAbNKImzM+FzWmbRQjzbOEYcF3bqi5AZhY4mYk7v05k2W7U6fmaXYNOS1Q==
+"@douyinfe/semi-animation@2.89.1":
+  version "2.89.1"
+  resolved "https://registry.yarnpkg.com/@douyinfe/semi-animation/-/semi-animation-2.89.1.tgz#bb8c341895a7439838f654a9b43a65ba256e2a04"
+  integrity sha512-7hKxLO//Ggxr7lYxIwJSQx+WQt9uYfuUnybn7Td/80/Jk3eIs+OJF9rN/8zmECANcxzZxHIuWjX5lfcQDDGhoA==
   dependencies:
     bezier-easing "^2.1.0"
 
-"@douyinfe/semi-foundation@2.89.0":
-  version "2.89.0"
-  resolved "https://registry.yarnpkg.com/@douyinfe/semi-foundation/-/semi-foundation-2.89.0.tgz#299b10ecb92289bd4158471d91a08dfc461b7ef2"
-  integrity sha512-Ryc2XywB3BVoUHETp5e7cY9x/ccweeKyCjqw/dcM16txeSpGxW7p1ykexGHRl3+dz1QcVrU4vp/ELD6GutC0Sg==
+"@douyinfe/semi-foundation@2.89.1":
+  version "2.89.1"
+  resolved "https://registry.yarnpkg.com/@douyinfe/semi-foundation/-/semi-foundation-2.89.1.tgz#9bce2d137974da975c7e44cf3620924efd10bee4"
+  integrity sha512-LP8vLQ/IyKGkzUoUX5/15A2SjTmCEWl/kiouvBeRpPvVyy/worTZe5XVd6ojlbFl0VIYWv4Jwy1w3kJHq4Ltvg==
   dependencies:
-    "@douyinfe/semi-animation" "2.89.0"
-    "@douyinfe/semi-json-viewer-core" "2.89.0"
+    "@douyinfe/semi-animation" "2.89.1"
+    "@douyinfe/semi-json-viewer-core" "2.89.1"
     "@mdx-js/mdx" "^3.0.1"
     async-validator "^3.5.0"
     classnames "^2.2.6"
@@ -1038,44 +1038,44 @@
     remark-gfm "^4.0.0"
     scroll-into-view-if-needed "^2.2.24"
 
-"@douyinfe/semi-icons@2.89.0", "@douyinfe/semi-icons@^2.89.0":
-  version "2.89.0"
-  resolved "https://registry.yarnpkg.com/@douyinfe/semi-icons/-/semi-icons-2.89.0.tgz#c9252981fde29668e3a88862948d09f71360a4fa"
-  integrity sha512-LfUhh/S0+3bOdD7jy1xg5F1y6mXrYtDiIsA1Hmuhy3zhNSpSKSwfqPiV3IxwRRmGXFWjgiSefKd99h5OmKMPHg==
+"@douyinfe/semi-icons@2.89.1", "@douyinfe/semi-icons@^2.89.1":
+  version "2.89.1"
+  resolved "https://registry.yarnpkg.com/@douyinfe/semi-icons/-/semi-icons-2.89.1.tgz#34635b5d515750ea281ec78190de71522847e2a4"
+  integrity sha512-K1xNbscHkGdx91xP5I6M/JKks/Xd2UzKGhLxBmyQ2D1Oboj95mJ+Dt15A8OGCcx2/n8shaJa2Ldw9JBPiXbNJg==
   dependencies:
     classnames "^2.2.6"
 
-"@douyinfe/semi-illustrations@2.89.0":
-  version "2.89.0"
-  resolved "https://registry.yarnpkg.com/@douyinfe/semi-illustrations/-/semi-illustrations-2.89.0.tgz#93611cfa572d79eb4bd50a1e13ee416161e6f41f"
-  integrity sha512-yAU4sSHr236E7ygTlwxupQkeF/W7EtfrUfRx3NUdGWuswMPAICz7d6Upa0XAZoCJ4skBZ5ItcQq9FfM+pw4wKg==
+"@douyinfe/semi-illustrations@2.89.1":
+  version "2.89.1"
+  resolved "https://registry.yarnpkg.com/@douyinfe/semi-illustrations/-/semi-illustrations-2.89.1.tgz#9ca1508af325d5362dbf802035022cb54e424c9c"
+  integrity sha512-3XEm3JIlCLZCKl/RmysYtIlqe6itbWf6u9nxaE6TWpSKJtSfA+wbyO2F3W2fvXkCJZopjk65BFLIFx/CAEqc5g==
 
-"@douyinfe/semi-json-viewer-core@2.89.0":
-  version "2.89.0"
-  resolved "https://registry.yarnpkg.com/@douyinfe/semi-json-viewer-core/-/semi-json-viewer-core-2.89.0.tgz#4254ce7d36c24f70267980f8e8a42faf6757f502"
-  integrity sha512-BGMJgg+tBFcwg3/7aJmtIXaHW+tSA6Tae3UfyhLYjUxcl6cFtYjtN0DAGwoia9KzUdNHoSAhl3GJVtGCBsmApQ==
+"@douyinfe/semi-json-viewer-core@2.89.1":
+  version "2.89.1"
+  resolved "https://registry.yarnpkg.com/@douyinfe/semi-json-viewer-core/-/semi-json-viewer-core-2.89.1.tgz#582a3c49a06913c287be531670e87120a2220af2"
+  integrity sha512-MSkbeoADyD1d4mERdmMNeqL0SBI2d8b9j/em7LDQp6tLzmfQEIHgPjjwvPthefHBPjUiikPSiSc9Iv/gPayhIQ==
   dependencies:
     jsonc-parser "^3.3.1"
 
-"@douyinfe/semi-theme-default@2.89.0":
-  version "2.89.0"
-  resolved "https://registry.yarnpkg.com/@douyinfe/semi-theme-default/-/semi-theme-default-2.89.0.tgz#eb1fed1939a16fb903f6845867007020d76a503b"
-  integrity sha512-mdL6Ui1XMGW9L5tYl9uG3MnmyHaIXnRVa7b4PB0Y8kfFGAVzls5XBjZT5ACVtwxlVZrU5BrJBFOXGER5p1FVDg==
+"@douyinfe/semi-theme-default@2.89.1":
+  version "2.89.1"
+  resolved "https://registry.yarnpkg.com/@douyinfe/semi-theme-default/-/semi-theme-default-2.89.1.tgz#57f596e610269d31e021fe6472440970305f9750"
+  integrity sha512-8GGPU4mfhUg9dwyVS+xEhXp7iNEaqEslyRwbaiUImjOwLZmpEbYST/gvYpXkpRltaWGZ7n82P3uVPyQZkIBLAg==
 
-"@douyinfe/semi-ui@2.89.0":
-  version "2.89.0"
-  resolved "https://registry.yarnpkg.com/@douyinfe/semi-ui/-/semi-ui-2.89.0.tgz#563adb7f33b9d888a882573024df2296be3c8bf4"
-  integrity sha512-XZ2yo2TgGWk8ubukJq7zbpKePpswQRq3nxeBlmL39SEben8AUfEq92vus0Hcmua5Y2wgi6TY2qWPgo+WEZCrkQ==
+"@douyinfe/semi-ui@2.89.1":
+  version "2.89.1"
+  resolved "https://registry.yarnpkg.com/@douyinfe/semi-ui/-/semi-ui-2.89.1.tgz#c0573f2531fe24d4830db9331e99295d75af2207"
+  integrity sha512-1jh9c1NwPEHYIPt+vCSF/TeXrhJ6g6/5745h8x2VZMA6+Epexv61eucTiMEz/HZzi9GC/u+K0GuwSS3CjJdEFA==
   dependencies:
     "@dnd-kit/core" "^6.0.8"
     "@dnd-kit/sortable" "^7.0.2"
     "@dnd-kit/utilities" "^3.2.1"
-    "@douyinfe/semi-animation" "2.89.0"
-    "@douyinfe/semi-animation-react" "2.89.0"
-    "@douyinfe/semi-foundation" "2.89.0"
-    "@douyinfe/semi-icons" "2.89.0"
-    "@douyinfe/semi-illustrations" "2.89.0"
-    "@douyinfe/semi-theme-default" "2.89.0"
+    "@douyinfe/semi-animation" "2.89.1"
+    "@douyinfe/semi-animation-react" "2.89.1"
+    "@douyinfe/semi-foundation" "2.89.1"
+    "@douyinfe/semi-icons" "2.89.1"
+    "@douyinfe/semi-illustrations" "2.89.1"
+    "@douyinfe/semi-theme-default" "2.89.1"
     "@tiptap/core" "^3.10.7"
     "@tiptap/extension-document" "^3.10.7"
     "@tiptap/extension-hard-break" "^3.10.7"
@@ -2363,10 +2363,10 @@ chownr@^1.1.1:
   resolved "https://registry.yarnpkg.com/chownr/-/chownr-1.1.4.tgz#6fc9d7b42d32a583596337666e7d08084da2cc6b"
   integrity sha512-jJ0bqzaylmJtVnNgzTeSOs8DPavpbYgEr/b0YL8/2GO3xJEhInFmhKMUnEJQjZumK7KXGFhUy89PrsJWlakBVg==
 
-chromium-bidi@11.0.0:
-  version "11.0.0"
-  resolved "https://registry.yarnpkg.com/chromium-bidi/-/chromium-bidi-11.0.0.tgz#193433d0722095abca0cada2fa0c5111b447bea3"
-  integrity sha512-cM3DI+OOb89T3wO8cpPSro80Q9eKYJ7hGVXoGS3GkDPxnYSqiv+6xwpIf6XERyJ9Tdsl09hmNmY94BkgZdVekw==
+chromium-bidi@12.0.1:
+  version "12.0.1"
+  resolved "https://registry.yarnpkg.com/chromium-bidi/-/chromium-bidi-12.0.1.tgz#3edb1420ab5a52004c10c223b928622c128b4f27"
+  integrity sha512-fGg+6jr0xjQhzpy5N4ErZxQ4wF7KLEvhGZXD6EgvZKDhu7iOhZXnZhcDxPJDcwTcrD48NPzOCo84RP2lv3Z+Cg==
   dependencies:
     mitt "^3.0.1"
     zod "^3.24.1"
@@ -5874,17 +5874,17 @@ punycode@^2.1.0:
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.3.1.tgz#027422e2faec0b25e1549c3e1bd8309b9133b6e5"
   integrity sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==
 
-puppeteer-core@24.33.0:
-  version "24.33.0"
-  resolved "https://registry.yarnpkg.com/puppeteer-core/-/puppeteer-core-24.33.0.tgz#c3e6adee5fd5dd77895d4cc14e0d17461048917a"
-  integrity sha512-tPTxVg+Qdj/8av4cy6szv3GlhxeOoNhiiMZ955fjxQyvPQE/6DjCa6ZyF/x0WJrlgBZtaLSP8TQgJb7FdLDXXA==
+puppeteer-core@24.33.1:
+  version "24.33.1"
+  resolved "https://registry.yarnpkg.com/puppeteer-core/-/puppeteer-core-24.33.1.tgz#80b9d79dd0597fd2b1de265aae4dd0d95df81c66"
+  integrity sha512-MZjFLeGMBFbSkc1xKfcv6hjFlfNi1bmQly++HyqxGPYzLIMY0mSYyjqkAzT1PtomTYHq7SEonciIKkeyHExA1g==
   dependencies:
     "@puppeteer/browsers" "2.11.0"
-    chromium-bidi "11.0.0"
+    chromium-bidi "12.0.1"
     debug "^4.4.3"
     devtools-protocol "0.0.1534754"
     typed-query-selector "^2.12.0"
-    webdriver-bidi-protocol "0.3.9"
+    webdriver-bidi-protocol "0.3.10"
     ws "^8.18.3"
 
 puppeteer-extra-plugin-stealth@^2.11.2:
@@ -5934,16 +5934,16 @@ puppeteer-extra@^3.3.6:
     debug "^4.1.1"
     deepmerge "^4.2.2"
 
-puppeteer@^24.33.0:
-  version "24.33.0"
-  resolved "https://registry.yarnpkg.com/puppeteer/-/puppeteer-24.33.0.tgz#5d0aba25f0038db2a3a996deb8c157d1842e8a21"
-  integrity sha512-nl3wsAztq5F8zybn4Tk41OCnYIzFIzGC6AN0WcF2KCUnWenajvRRPgBmS6LvNUV2HEeIzT2zRZHH0TgVxLDKew==
+puppeteer@^24.33.1:
+  version "24.33.1"
+  resolved "https://registry.yarnpkg.com/puppeteer/-/puppeteer-24.33.1.tgz#c84c9545633bc731b92caead463e77928dcf183e"
+  integrity sha512-2KiSIXk+zFzmYsScv+hx/I3TODFGPcNpyJsWMQk1EQ2y8KZ2X6225/NingyqYxekzceSUnq5qX39dUezVDZ9EQ==
   dependencies:
     "@puppeteer/browsers" "2.11.0"
-    chromium-bidi "11.0.0"
+    chromium-bidi "12.0.1"
     cosmiconfig "^9.0.0"
     devtools-protocol "0.0.1534754"
-    puppeteer-core "24.33.0"
+    puppeteer-core "24.33.1"
     typed-query-selector "^2.12.0"
 
 qs@^6.14.0:
@@ -6033,17 +6033,17 @@ react-resizable@^3.0.5:
     prop-types "15.x"
     react-draggable "^4.0.3"
 
-react-router-dom@7.10.1:
-  version "7.10.1"
-  resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-7.10.1.tgz#fddea814d30a3630c11d9ea539932482ff6f744c"
-  integrity sha512-JNBANI6ChGVjA5bwsUIwJk7LHKmqB4JYnYfzFwyp2t12Izva11elds2jx7Yfoup2zssedntwU0oZ5DEmk5Sdaw==
+react-router-dom@7.11.0:
+  version "7.11.0"
+  resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-7.11.0.tgz#2165f63e52798bd0eb138480c098ad058cdf3413"
+  integrity sha512-e49Ir/kMGRzFOOrYQBdoitq3ULigw4lKbAyKusnvtDu2t4dBX4AGYPrzNvorXmVuOyeakai6FUPW5MmibvVG8g==
   dependencies:
-    react-router "7.10.1"
+    react-router "7.11.0"
 
-react-router@7.10.1:
-  version "7.10.1"
-  resolved "https://registry.yarnpkg.com/react-router/-/react-router-7.10.1.tgz#e973146ed5f10a80783fdb3f27dbe37679557a7c"
-  integrity sha512-gHL89dRa3kwlUYtRQ+m8NmxGI6CgqN+k4XyGjwcFoQwwCWF6xXpOCUlDovkXClS0d0XJN/5q7kc5W3kiFEd0Yw==
+react-router@7.11.0:
+  version "7.11.0"
+  resolved "https://registry.yarnpkg.com/react-router/-/react-router-7.11.0.tgz#d3b91567fdbe910caf9064ea69b7b4d9264f2945"
+  integrity sha512-uI4JkMmjbWCZc01WVP2cH7ZfSzH91JAZUDd7/nIprDgWxBV1TkkmLToFh7EbMTcMak8URFRa2YoBL/W8GWnCTQ==
   dependencies:
     cookie "^1.0.1"
     set-cookie-parser "^2.6.0"
@@ -7258,10 +7258,10 @@ web-streams-polyfill@^3.0.3:
   resolved "https://registry.yarnpkg.com/web-streams-polyfill/-/web-streams-polyfill-3.3.3.tgz#2073b91a2fdb1fbfbd401e7de0ac9f8214cecb4b"
   integrity sha512-d2JWLCivmZYTSIoge9MsgFCZrt571BikcWGYkjC1khllbTeDlGqZ2D8vD8E/lJa8WGWbb7Plm8/XJYV7IJHZZw==
 
-webdriver-bidi-protocol@0.3.9:
-  version "0.3.9"
-  resolved "https://registry.yarnpkg.com/webdriver-bidi-protocol/-/webdriver-bidi-protocol-0.3.9.tgz#89abf021f2a557a2dd81772f9ce7172b01f8a0f0"
-  integrity sha512-uIYvlRQ0PwtZR1EzHlTMol1G0lAlmOe6wPykF9a77AK3bkpvZHzIVxRE2ThOx5vjy2zISe0zhwf5rzuUfbo1PQ==
+webdriver-bidi-protocol@0.3.10:
+  version "0.3.10"
+  resolved "https://registry.yarnpkg.com/webdriver-bidi-protocol/-/webdriver-bidi-protocol-0.3.10.tgz#437405564ff7e200371468f4f1eba1ff5537e119"
+  integrity sha512-5LAE43jAVLOhB/QqX4bwSiv0Hg1HBfMmOuwBSXHdvg4GMGu9Y0lIq7p4R/yySu6w74WmaR4GM4H9t2IwLW7hgw==
 
 whatwg-encoding@^3.1.1:
   version "3.1.1"

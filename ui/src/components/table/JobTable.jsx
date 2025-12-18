@@ -6,7 +6,7 @@
 import React from 'react';
 
 import { Button, Empty, Table, Switch, Popover } from '@douyinfe/semi-ui';
-import { IconAlertTriangle, IconDelete, IconDescend2, IconEdit } from '@douyinfe/semi-icons';
+import { IconAlertTriangle, IconDelete, IconDescend2, IconEdit, IconPlayCircle } from '@douyinfe/semi-icons';
 import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-illustrations';
 
 import './JobTable.less';
@@ -21,7 +21,14 @@ const empty = (
 
 const getPopoverContent = (text) => <article className="jobPopoverContent">{text}</article>;
 
-export default function JobTable({ jobs = {}, onJobRemoval, onJobStatusChanged, onJobEdit, onListingRemoval } = {}) {
+export default function JobTable({
+  jobs = {},
+  onJobRemoval,
+  onJobStatusChanged,
+  onJobEdit,
+  onListingRemoval,
+  onJobRun,
+} = {}) {
   return (
     <Table
       pagination={false}
@@ -91,6 +98,14 @@ export default function JobTable({ jobs = {}, onJobRemoval, onJobStatusChanged, 
           render: (_, job) => {
             return (
               <div className="interactions">
+                <Popover content={getPopoverContent('Run Job')}>
+                  <Button
+                    type="primary"
+                    icon={<IconPlayCircle />}
+                    disabled={job.isOnlyShared || job.running}
+                    onClick={() => onJobRun && onJobRun(job.id)}
+                  />
+                </Popover>
                 <Popover content={getPopoverContent('Edit a Job')}>
                   <Button
                     type="secondary"

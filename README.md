@@ -206,7 +206,7 @@ flowchart TD
         F2["Adapter 2"]
   end
 
-    A1 --> B["FredyPipeline"]
+    A1 --> B["FredyPipelineExecutioner"]
     A2 --> B
     A3 --> B
     B --> C1 & C2 & C3

@@ -34,7 +34,8 @@ WORKDIR /fredy
 # Using Alpine's chromium package which is much smaller
 RUN apk add --no-cache chromium curl
 
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
+ENV NODE_ENV=production \
+    PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
     PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
 # Install build dependencies for native modules, then remove them after yarn install
