@@ -164,7 +164,7 @@ export default function NotificationAdapterMutator({
               style={{ width: '100%' }}
               field={uiElement.label}
               type={uiElement.type}
-              value={uiElement.value || ''}
+              initValue={uiElement.value ?? ''}
               placeholder={uiElement.label}
               label={uiElement.label}
               onChange={(value) => {
