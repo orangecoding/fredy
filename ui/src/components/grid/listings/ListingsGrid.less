@@ -1,0 +1,83 @@
+.listingsGrid {
+  &__imageContainer {
+    position: relative;
+    height: 180px;
+    overflow: hidden;
+  }
+
+  &__watchButton {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background-color: white !important;
+    box-shadow: var(--semi-shadow-elevated);
+
+    &:hover {
+      background-color: var(--semi-color-fill-0) !important;
+    }
+  }
+
+  &__statusTag {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+  }
+
+  &__card {
+    height: 100%;
+    transition: transform 0.2s;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--semi-shadow-elevated);
+    }
+
+    &--inactive {
+      .listingsGrid__imageContainer,
+      .listingsGrid__content {
+        opacity: 0.6;
+      }
+    }
+  }
+
+  &__inactiveOverlay {
+    position: absolute;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 10;
+    color: var(--semi-color-danger);
+    font-weight: bold;
+    font-size: 1.3rem;
+    text-transform: uppercase;
+    transform: rotate(-30deg);
+    padding: 5px;
+    max-height: fit-content;
+    margin: auto;
+  }
+
+  &__titleLink {
+    color: inherit;
+    text-decoration: none;
+
+    &:hover {
+      color: var(--semi-color-primary);
+    }
+  }
+
+  &__title {
+    display: block;
+    height: 1.5em;
+  }
+
+  &__pagination {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+  }
+}

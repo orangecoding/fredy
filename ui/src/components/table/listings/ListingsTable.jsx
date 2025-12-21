@@ -17,9 +17,20 @@ import {
   Divider,
   Space,
   Select,
+  Radio,
+  RadioGroup,
 } from '@douyinfe/semi-ui';
 import { useActions, useSelector } from '../../../services/state/store.js';
-import { IconClose, IconDelete, IconSearch, IconStar, IconStarStroked, IconTick } from '@douyinfe/semi-icons';
+import {
+  IconClose,
+  IconDelete,
+  IconSearch,
+  IconStar,
+  IconStarStroked,
+  IconTick,
+  IconList,
+  IconGridView,
+} from '@douyinfe/semi-icons';
 import * as timeService from '../../../services/time/timeService.js';
 import debounce from 'lodash/debounce';
 import no_image from '../../../assets/no_image.jpg';
@@ -30,6 +41,7 @@ import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-i
 import { xhrDelete, xhrPost } from '../../../services/xhr.js';
 import { useNavigate } from 'react-router-dom';
 import { useFeature } from '../../../hooks/featureHook.js';
+import ListingsGrid from '../../grid/listings/ListingsGrid.jsx';
 
 const getColumns = (provider, setProviderFilter, jobs, setJobNameFilter) => {
   return [
@@ -248,7 +260,7 @@ export default function ListingsTable() {
   const watchlistFeature = useFeature('WATCHLIST_MANAGEMENT') || false;
   const actions = useActions();
   const [page, setPage] = useState(1);
-  const pageSize = 10;
+  const pageSize = 40;
   const [sortData, setSortData] = useState({});
   const [freeTextFilter, setFreeTextFilter] = useState(null);
   const [watchListFilter, setWatchListFilter] = useState(null);
@@ -256,6 +268,7 @@ export default function ListingsTable() {
   const [activityFilter, setActivityFilter] = useState(null);
   const [providerFilter, setProviderFilter] = useState(null);
   const [allFilters, setAllFilters] = useState([]);
+  const [viewMode, setViewMode] = useState('grid');
 
   const [imageWidth, setImageWidth] = useState('100%');
   const handlePageChange = (_page) => {
@@ -350,13 +363,30 @@ export default function ListingsTable() {
 
   return (
     <div>
-      <Input
-        prefix={<IconSearch />}
-        showClear
-        className="listingsTable__search"
-        placeholder="Search"
-        onChange={handleFilterChange}
-      />
+      <div className="listingsTable__toolbar">
+        <Space style={{ display: 'flex', alignItems: 'center', alignContent: 'center' }}>
+          <Input
+            prefix={<IconSearch />}
+            showClear
+            placeholder="Search"
+            onChange={handleFilterChange}
+            style={{ marginBottom: 0 }}
+          />
+          <RadioGroup
+            style={{ minWidth: '6.8rem' }}
+            type="button"
+            value={viewMode}
+            onChange={(e) => setViewMode(e.target.value)}
+          >
+            <Radio value="table">
+              <IconList />
+            </Radio>
+            <Radio value="grid">
+              <IconGridView />
+            </Radio>
+          </RadioGroup>
+        </Space>
+      </div>
       {watchlistFeature && (
         <Button
           className="listingsTable__setupButton"
@@ -367,51 +397,62 @@ export default function ListingsTable() {
           Setup notifications on watchlist changes
         </Button>
       )}
-      <Table
-        rowKey="id"
-        empty={empty}
-        hideExpandedColumn={false}
-        sticky={{ top: 5 }}
-        columns={columns}
-        expandedRowRender={expandRowRender}
-        dataSource={(tableData?.result || []).map((row) => {
-          return {
-            ...row,
-            reloadTable: loadTable,
-          };
-        })}
-        onChange={(changeSet) => {
-          if (changeSet?.extra?.changeType === 'filter') {
-            const transformed = changeSet.filters.map((f) => f.dataIndex);
-            const diff = diffArrays(allFilters, transformed);
-            setAllFilters(transformed);
-            diff.forEach((filter) => {
-              switch (Object.keys(filter)[0]) {
-                case 'isWatched':
-                  setWatchListFilter(Object.values(filter)[0]);
-                  break;
-                case 'is_active':
-                  setActivityFilter(Object.values(filter)[0]);
-                  break;
-                default:
-                  console.error('Unknown filter: ', filter.dataIndex);
-              }
-            });
-          } else if (changeSet?.extra?.changeType === 'sorter') {
-            setSortData({
-              field: changeSet.sorter.dataIndex,
-              direction: changeSet.sorter.sortOrder === 'ascend' ? 'asc' : 'desc',
-            });
-          }
-        }}
-        pagination={{
-          currentPage: page,
-          //for now fixed
-          pageSize,
-          total: tableData?.totalNumber || 0,
-          onPageChange: handlePageChange,
-        }}
-      />
+      {viewMode === 'table' ? (
+        <Table
+          rowKey="id"
+          empty={empty}
+          hideExpandedColumn={false}
+          sticky={{ top: 5 }}
+          columns={columns}
+          expandedRowRender={expandRowRender}
+          dataSource={(tableData?.result || []).map((row) => {
+            return {
+              ...row,
+              reloadTable: loadTable,
+            };
+          })}
+          onChange={(changeSet) => {
+            if (changeSet?.extra?.changeType === 'filter') {
+              const transformed = changeSet.filters.map((f) => f.dataIndex);
+              const diff = diffArrays(allFilters, transformed);
+              setAllFilters(transformed);
+              diff.forEach((filter) => {
+                switch (Object.keys(filter)[0]) {
+                  case 'isWatched':
+                    setWatchListFilter(Object.values(filter)[0]);
+                    break;
+                  case 'is_active':
+                    setActivityFilter(Object.values(filter)[0]);
+                    break;
+                  default:
+                    console.error('Unknown filter: ', filter.dataIndex);
+                }
+              });
+            } else if (changeSet?.extra?.changeType === 'sorter') {
+              setSortData({
+                field: changeSet.sorter.dataIndex,
+                direction: changeSet.sorter.sortOrder === 'ascend' ? 'asc' : 'desc',
+              });
+            }
+          }}
+          pagination={{
+            currentPage: page,
+            //for now fixed
+            pageSize,
+            total: tableData?.totalNumber || 0,
+            onPageChange: handlePageChange,
+          }}
+        />
+      ) : (
+        <ListingsGrid
+          data={tableData?.result || []}
+          total={tableData?.totalNumber || 0}
+          page={page}
+          pageSize={pageSize}
+          onPageChange={handlePageChange}
+          onReload={loadTable}
+        />
+      )}
     </div>
   );
 }

@@ -1,0 +1,43 @@
+.jobGrid {
+  &__card {
+    height: 100%;
+    transition: transform 0.2s;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--semi-shadow-elevated);
+    }
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+  }
+
+  &__title {
+    margin-bottom: 0 !important;
+  }
+
+  &__infoItem {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    
+    .semi-typography {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+  }
+}
+
+.jobPopoverContent {
+    padding: .4rem;
+    color: var(--semi-color-white);
+}
