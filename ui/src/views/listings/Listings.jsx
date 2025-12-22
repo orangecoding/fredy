@@ -5,8 +5,8 @@
 
 import React from 'react';
 
-import ListingsTable from '../../components/table/listings/ListingsTable.jsx';
+import ListingsGrid from '../../components/grid/listings/ListingsGrid.jsx';
 
 export default function Listings() {
-  return <ListingsTable />;
+  return <ListingsGrid />;
 }

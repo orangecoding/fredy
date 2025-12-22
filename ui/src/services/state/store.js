@@ -151,8 +151,8 @@ export const useFredyState = create(
             }
           },
         },
-        listingsTable: {
-          async getListingsTable({
+        listingsData: {
+          async getListingsData({
             page = 1,
             pageSize = 20,
             freeTextFilter = null,
@@ -171,7 +171,7 @@ export const useFredyState = create(
               });
               const response = await xhrGet(`/api/listings/table?${qryString}`);
               set((state) => ({
-                listingsTable: { ...state.listingsTable, ...response.json },
+                listingsData: { ...state.listingsData, ...response.json },
               }));
             } catch (Exception) {
               console.error('Error while trying to get resource for api/listings. Error:', Exception);
@@ -184,7 +184,7 @@ export const useFredyState = create(
       const initial = {
         dashboard: { data: null },
         notificationAdapter: [],
-        listingsTable: {
+        listingsData: {
           totalNumber: 0,
           page: 1,
           result: [],
@@ -205,7 +205,7 @@ export const useFredyState = create(
         generalSettings: { ...effects.generalSettings },
         demoMode: { ...effects.demoMode },
         versionUpdate: { ...effects.versionUpdate },
-        listingsTable: { ...effects.listingsTable },
+        listingsData: { ...effects.listingsData },
         provider: { ...effects.provider },
         features: { ...effects.features },
         jobs: { ...effects.jobs },

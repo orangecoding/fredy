@@ -3,8 +3,22 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import React from 'react';
-import { Card, Col, Row, Image, Button, Space, Typography, Pagination, Toast, Divider } from '@douyinfe/semi-ui';
+import React, { useState, useEffect, useMemo } from 'react';
+import {
+  Card,
+  Col,
+  Row,
+  Image,
+  Button,
+  Space,
+  Typography,
+  Pagination,
+  Toast,
+  Divider,
+  Input,
+  Select,
+  Popover,
+} from '@douyinfe/semi-ui';
 import {
   IconBriefcase,
   IconCart,
@@ -14,33 +28,197 @@ import {
   IconMapPin,
   IconStar,
   IconStarStroked,
+  IconSearch,
+  IconFilter,
 } from '@douyinfe/semi-icons';
 import no_image from '../../../assets/no_image.jpg';
 import * as timeService from '../../../services/time/timeService.js';
 import { xhrDelete, xhrPost } from '../../../services/xhr.js';
+import { useActions, useSelector } from '../../../services/state/store.js';
+import { useNavigate } from 'react-router-dom';
+import { useFeature } from '../../../hooks/featureHook.js';
+import debounce from 'lodash/debounce';
 
 import './ListingsGrid.less';
 
 const { Text } = Typography;
 
-const ListingsGrid = ({ data, total, page, pageSize, onPageChange, onReload }) => {
+const ListingsGrid = () => {
+  const listingsData = useSelector((state) => state.listingsData);
+  const providers = useSelector((state) => state.provider);
+  const jobs = useSelector((state) => state.jobs.jobs);
+  const actions = useActions();
+  const navigate = useNavigate();
+  const watchlistFeature = useFeature('WATCHLIST_MANAGEMENT') || false;
+
+  const [page, setPage] = useState(1);
+  const pageSize = 40;
+
+  const [sortField, setSortField] = useState('created_at');
+  const [sortDir, setSortDir] = useState('desc');
+  const [freeTextFilter, setFreeTextFilter] = useState(null);
+  const [watchListFilter, setWatchListFilter] = useState(null);
+  const [jobNameFilter, setJobNameFilter] = useState(null);
+  const [activityFilter, setActivityFilter] = useState(null);
+  const [providerFilter, setProviderFilter] = useState(null);
+  const [showFilterBar, setShowFilterBar] = useState(false);
+
+  const loadData = () => {
+    actions.listingsData.getListingsData({
+      page,
+      pageSize,
+      sortfield: sortField,
+      sortdir: sortDir,
+      freeTextFilter,
+      filter: { watchListFilter, jobNameFilter, activityFilter, providerFilter },
+    });
+  };
+
+  useEffect(() => {
+    loadData();
+  }, [page, sortField, sortDir, freeTextFilter, providerFilter, activityFilter, jobNameFilter, watchListFilter]);
+
+  const handleFilterChange = useMemo(() => debounce((value) => setFreeTextFilter(value), 500), []);
+
+  useEffect(() => {
+    return () => {
+      // cleanup debounced handler to avoid memory leaks
+      handleFilterChange.cancel && handleFilterChange.cancel();
+    };
+  }, [handleFilterChange]);
+
   const handleWatch = async (e, item) => {
     e.preventDefault();
     e.stopPropagation();
     try {
       await xhrPost('/api/listings/watch', { listingId: item.id });
       Toast.success(item.isWatched === 1 ? 'Listing removed from Watchlist' : 'Listing added to Watchlist');
-      onReload();
+      loadData();
     } catch (e) {
       console.error(e);
       Toast.error('Failed to operate Watchlist');
     }
   };
 
+  const handlePageChange = (_page) => {
+    setPage(_page);
+  };
+
   return (
     <div className="listingsGrid">
+      <div className="listingsGrid__searchbar">
+        <Input prefix={<IconSearch />} showClear placeholder="Search" onChange={handleFilterChange} />
+        <Popover content="Filter / Sort Results" style={{ color: 'white', padding: '.5rem' }}>
+          <Button
+            icon={<IconFilter />}
+            onClick={() => {
+              setShowFilterBar(!showFilterBar);
+            }}
+          />
+        </Popover>
+      </div>
+      {showFilterBar && (
+        <div className="listingsGrid__toolbar">
+          <Space wrap style={{ marginBottom: '1rem' }}>
+            <div className="listingsGrid__toolbar__card">
+              <div>
+                <Text strong>Filter by:</Text>
+              </div>
+              <div style={{ display: 'flex', gap: '.3rem' }}>
+                <Select
+                  placeholder="Status"
+                  showClear
+                  onChange={(val) => setActivityFilter(val)}
+                  value={activityFilter}
+                >
+                  <Select.Option value={true}>Active</Select.Option>
+                  <Select.Option value={false}>Not Active</Select.Option>
+                </Select>
+
+                <Select
+                  placeholder="Watchlist"
+                  showClear
+                  onChange={(val) => setWatchListFilter(val)}
+                  value={watchListFilter}
+                >
+                  <Select.Option value={true}>Watched</Select.Option>
+                  <Select.Option value={false}>Not Watched</Select.Option>
+                </Select>
+
+                <Select
+                  placeholder="Provider"
+                  showClear
+                  onChange={(val) => setProviderFilter(val)}
+                  value={providerFilter}
+                >
+                  {providers?.map((p) => (
+                    <Select.Option key={p.id} value={p.id}>
+                      {p.name}
+                    </Select.Option>
+                  ))}
+                </Select>
+
+                <Select
+                  placeholder="Job Name"
+                  showClear
+                  onChange={(val) => setJobNameFilter(val)}
+                  value={jobNameFilter}
+                >
+                  {jobs?.map((j) => (
+                    <Select.Option key={j.id} value={j.id}>
+                      {j.name}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </div>
+            </div>
+            <Divider layout="vertical" />
+
+            <div className="listingsGrid__toolbar__card">
+              <div>
+                <Text strong>Sort by:</Text>
+              </div>
+              <div style={{ display: 'flex', gap: '.3rem' }}>
+                <Select
+                  placeholder="Sort By"
+                  style={{ width: 140 }}
+                  value={sortField}
+                  onChange={(val) => setSortField(val)}
+                >
+                  <Select.Option value="job_name">Job Name</Select.Option>
+                  <Select.Option value="created_at">Listing Date</Select.Option>
+                  <Select.Option value="price">Price</Select.Option>
+                  <Select.Option value="provider">Provider</Select.Option>
+                </Select>
+
+                <Select
+                  placeholder="Direction"
+                  style={{ width: 120 }}
+                  value={sortDir}
+                  onChange={(val) => setSortDir(val)}
+                >
+                  <Select.Option value="asc">Ascending</Select.Option>
+                  <Select.Option value="desc">Descending</Select.Option>
+                </Select>
+              </div>
+            </div>
+          </Space>
+        </div>
+      )}
+
+      {watchlistFeature && (
+        <Button
+          className="listingsGrid__setupButton"
+          onClick={() => {
+            navigate('/watchlistManagement');
+          }}
+        >
+          Setup notifications on watchlist changes
+        </Button>
+      )}
+
       <Row gutter={[16, 16]}>
-        {data.map((item) => (
+        {(listingsData?.result || []).map((item) => (
           <Col key={item.id} xs={24} sm={12} md={8} lg={6} xl={4} xxl={6}>
             <Card
               className={`listingsGrid__card ${!item.is_active ? 'listingsGrid__card--inactive' : ''}`}
@@ -104,7 +282,7 @@ const ListingsGrid = ({ data, total, page, pageSize, onPageChange, onReload }) =
                 <Divider margin=".6rem" />
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Button
-                    title="Linkt to listing"
+                    title="Link to listing"
                     type="primary"
                     size="small"
                     onClick={async () => {
@@ -121,7 +299,7 @@ const ListingsGrid = ({ data, total, page, pageSize, onPageChange, onReload }) =
                       try {
                         await xhrDelete('/api/listings/', { ids: [item.id] });
                         Toast.success('Listing(s) successfully removed');
-                        onReload();
+                        loadData();
                       } catch (error) {
                         Toast.error(error);
                       }
@@ -138,8 +316,8 @@ const ListingsGrid = ({ data, total, page, pageSize, onPageChange, onReload }) =
         <Pagination
           currentPage={page}
           pageSize={pageSize}
-          total={total}
-          onPageChange={onPageChange}
+          total={listingsData?.totalNumber || 0}
+          onPageChange={handlePageChange}
           showSizeChanger={false}
         />
       </div>

@@ -5,6 +5,14 @@
     overflow: hidden;
   }
 
+  &__searchbar {
+    display: flex;
+    gap: .5rem;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
   &__watchButton {
     position: absolute;
     top: 8px;
@@ -79,5 +87,20 @@
     margin-top: 2rem;
     display: flex;
     justify-content: center;
+  }
+
+  &__toolbar {
+
+    &__card {
+      border-radius: 5px;
+      display: flex;
+      flex-direction: column;
+      gap: .3rem;
+      background: #232429;
+    }
+  }
+
+  &__setupButton {
+    margin-bottom: 1rem;
   }
 }
