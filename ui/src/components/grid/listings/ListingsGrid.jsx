@@ -18,6 +18,7 @@ import {
   Input,
   Select,
   Popover,
+  Empty,
 } from '@douyinfe/semi-ui';
 import {
   IconBriefcase,
@@ -35,11 +36,10 @@ import no_image from '../../../assets/no_image.jpg';
 import * as timeService from '../../../services/time/timeService.js';
 import { xhrDelete, xhrPost } from '../../../services/xhr.js';
 import { useActions, useSelector } from '../../../services/state/store.js';
-import { useNavigate } from 'react-router-dom';
-import { useFeature } from '../../../hooks/featureHook.js';
 import debounce from 'lodash/debounce';
 
 import './ListingsGrid.less';
+import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-illustrations';
 
 const { Text } = Typography;
 
@@ -48,8 +48,6 @@ const ListingsGrid = () => {
   const providers = useSelector((state) => state.provider);
   const jobs = useSelector((state) => state.jobs.jobs);
   const actions = useActions();
-  const navigate = useNavigate();
-  const watchlistFeature = useFeature('WATCHLIST_MANAGEMENT') || false;
 
   const [page, setPage] = useState(1);
   const pageSize = 40;
@@ -206,17 +204,13 @@ const ListingsGrid = () => {
         </div>
       )}
 
-      {watchlistFeature && (
-        <Button
-          className="listingsGrid__setupButton"
-          onClick={() => {
-            navigate('/watchlistManagement');
-          }}
-        >
-          Setup notifications on watchlist changes
-        </Button>
+      {(listingsData?.result || []).length === 0 && (
+        <Empty
+          image={<IllustrationNoResult />}
+          darkModeImage={<IllustrationNoResultDark />}
+          description="No listings available yet..."
+        />
       )}
-
       <Row gutter={[16, 16]}>
         {(listingsData?.result || []).map((item) => (
           <Col key={item.id} xs={24} sm={12} md={8} lg={6} xl={4} xxl={6}>
@@ -312,15 +306,17 @@ const ListingsGrid = () => {
           </Col>
         ))}
       </Row>
-      <div className="listingsGrid__pagination">
-        <Pagination
-          currentPage={page}
-          pageSize={pageSize}
-          total={listingsData?.totalNumber || 0}
-          onPageChange={handlePageChange}
-          showSizeChanger={false}
-        />
-      </div>
+      {(listingsData?.result || []).length > 0 && (
+        <div className="listingsGrid__pagination">
+          <Pagination
+            currentPage={page}
+            pageSize={pageSize}
+            total={listingsData?.totalNumber || 0}
+            onPageChange={handlePageChange}
+            showSizeChanger={false}
+          />
+        </div>
+      )}
     </div>
   );
 };
