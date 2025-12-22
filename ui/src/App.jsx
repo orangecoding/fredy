@@ -40,8 +40,8 @@ export default function FredyApp() {
       if (!needsLogin()) {
         await actions.features.getFeatures();
         await actions.provider.getProvider();
-        await actions.jobs.getJobs();
-        await actions.jobs.getSharableUserList();
+        await actions.jobsData.getJobs();
+        await actions.jobsData.getSharableUserList();
         await actions.notificationAdapter.getAdapter();
         await actions.generalSettings.getGeneralSettings();
         await actions.versionUpdate.getVersionUpdate();

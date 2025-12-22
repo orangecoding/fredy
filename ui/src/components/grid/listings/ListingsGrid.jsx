@@ -46,7 +46,7 @@ const { Text } = Typography;
 const ListingsGrid = () => {
   const listingsData = useSelector((state) => state.listingsData);
   const providers = useSelector((state) => state.provider);
-  const jobs = useSelector((state) => state.jobs.jobs);
+  const jobs = useSelector((state) => state.jobsData.jobs);
   const actions = useActions();
 
   const [page, setPage] = useState(1);

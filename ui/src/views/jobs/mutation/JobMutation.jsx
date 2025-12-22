@@ -27,8 +27,8 @@ import {
 } from '@douyinfe/semi-icons';
 
 export default function JobMutator() {
-  const jobs = useSelector((state) => state.jobs.jobs);
-  const shareableUserList = useSelector((state) => state.jobs.shareableUserList);
+  const jobs = useSelector((state) => state.jobsData.jobs);
+  const shareableUserList = useSelector((state) => state.jobsData.shareableUserList);
   const params = useParams();
 
   const jobToBeEdit = params.jobId == null ? null : jobs.find((job) => job.id === params.jobId);
@@ -73,7 +73,7 @@ export default function JobMutator() {
         enabled,
         jobId: jobToBeEdit?.id || null,
       });
-      await actions.jobs.getJobs();
+      await actions.jobsData.getJobs();
       Toast.success('Job successfully saved...');
       navigate('/jobs');
     } catch (Exception) {
