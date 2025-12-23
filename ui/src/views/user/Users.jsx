@@ -37,7 +37,7 @@ const Users = function Users() {
       await xhrDelete('/api/admin/users', { userId: userIdToBeRemoved });
       Toast.success('User successfully remove');
       setUserIdToBeRemoved(null);
-      await actions.jobs.getJobs();
+      await actions.jobsData.getJobs();
       await actions.user.getUsers();
     } catch (error) {
       Toast.error(error);

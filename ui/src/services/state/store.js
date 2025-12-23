@@ -83,19 +83,44 @@ export const useFredyState = create(
             }
           },
         },
-        jobs: {
+        jobsData: {
           async getJobs() {
             try {
               const response = await xhrGet('/api/jobs');
-              set((state) => ({ jobs: { ...state.jobs, jobs: Object.freeze(response.json) } }));
+              set((state) => ({ jobsData: { ...state.jobsData, jobs: Object.freeze(response.json) } }));
             } catch (Exception) {
               console.error(`Error while trying to get resource for api/jobs. Error:`, Exception);
+            }
+          },
+          async getJobsData({
+            page = 1,
+            pageSize = 20,
+            freeTextFilter = null,
+            sortfield = null,
+            sortdir = 'asc',
+            filter,
+          } = {}) {
+            try {
+              const qryString = queryString.stringify({
+                page,
+                pageSize,
+                freeTextFilter,
+                sortfield,
+                sortdir,
+                ...filter,
+              });
+              const response = await xhrGet(`/api/jobs/data?${qryString}`);
+              set((state) => ({
+                jobsData: { ...state.jobsData, ...response.json },
+              }));
+            } catch (Exception) {
+              console.error('Error while trying to get resource for api/jobs/data. Error:', Exception);
             }
           },
           async getSharableUserList() {
             try {
               const response = await xhrGet('/api/jobs/shareableUserList');
-              set((state) => ({ jobs: { ...state.jobs, shareableUserList: Object.freeze(response.json) } }));
+              set((state) => ({ jobsData: { ...state.jobsData, shareableUserList: Object.freeze(response.json) } }));
             } catch (Exception) {
               console.error(`Error while trying to get resource for api/jobs. Error:`, Exception);
             }
@@ -103,9 +128,12 @@ export const useFredyState = create(
           setJobRunning(jobId, running) {
             if (!jobId) return;
             set((state) => {
-              const list = state.jobs.jobs || [];
+              const list = state.jobsData.jobs || [];
               const updated = list.map((j) => (j.id === jobId ? { ...j, running: !!running } : j));
-              return { jobs: { ...state.jobs, jobs: Object.freeze(updated) } };
+              const result = (state.jobsData.result || []).map((j) =>
+                j.id === jobId ? { ...j, running: !!running } : j,
+              );
+              return { jobsData: { ...state.jobsData, jobs: Object.freeze(updated), result: Object.freeze(result) } };
             });
           },
         },
@@ -151,8 +179,8 @@ export const useFredyState = create(
             }
           },
         },
-        listingsTable: {
-          async getListingsTable({
+        listingsData: {
+          async getListingsData({
             page = 1,
             pageSize = 20,
             freeTextFilter = null,
@@ -171,7 +199,7 @@ export const useFredyState = create(
               });
               const response = await xhrGet(`/api/listings/table?${qryString}`);
               set((state) => ({
-                listingsTable: { ...state.listingsTable, ...response.json },
+                listingsData: { ...state.listingsData, ...response.json },
               }));
             } catch (Exception) {
               console.error('Error while trying to get resource for api/listings. Error:', Exception);
@@ -184,7 +212,7 @@ export const useFredyState = create(
       const initial = {
         dashboard: { data: null },
         notificationAdapter: [],
-        listingsTable: {
+        listingsData: {
           totalNumber: 0,
           page: 1,
           result: [],
@@ -194,7 +222,13 @@ export const useFredyState = create(
         demoMode: { demoMode: false },
         versionUpdate: {},
         provider: [],
-        jobs: { jobs: [], shareableUserList: [] },
+        jobsData: {
+          jobs: [],
+          shareableUserList: [],
+          totalNumber: 0,
+          page: 1,
+          result: [],
+        },
         user: { users: [], currentUser: null },
       };
 
@@ -205,10 +239,10 @@ export const useFredyState = create(
         generalSettings: { ...effects.generalSettings },
         demoMode: { ...effects.demoMode },
         versionUpdate: { ...effects.versionUpdate },
-        listingsTable: { ...effects.listingsTable },
+        listingsData: { ...effects.listingsData },
         provider: { ...effects.provider },
         features: { ...effects.features },
-        jobs: { ...effects.jobs },
+        jobsData: { ...effects.jobsData },
         user: { ...effects.user },
       };
 
