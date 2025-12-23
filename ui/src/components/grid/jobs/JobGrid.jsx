@@ -276,13 +276,10 @@ const JobGrid = () => {
               bodyStyle={{ padding: '16px' }}
               headerLine={true}
               title={
-                <Title heading={5} ellipsis={{ showTooltip: true }} className="jobGrid__title">
-                  {job.name}
-                </Title>
-              }
-            >
-              <div className="jobGrid__content">
                 <div className="jobGrid__header">
+                  <Title heading={5} ellipsis={{ showTooltip: true }} className="jobGrid__title">
+                    {job.name}
+                  </Title>
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     {job.isOnlyShared && (
                       <Popover
@@ -300,7 +297,9 @@ const JobGrid = () => {
                     </Tag>
                   )}
                 </div>
-
+              }
+            >
+              <div className="jobGrid__content">
                 <Space vertical align="start" spacing={4} style={{ width: '100%', marginTop: 12 }}>
                   <div className="jobGrid__infoItem">
                     <Text type="secondary" icon={<IconSearch />} size="small">
