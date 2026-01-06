@@ -1,6 +1,6 @@
 {
   "name": "fredy",
-  "version": "17.0.1",
+  "version": "17.0.2",
   "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
   "scripts": {
     "prepare": "husky",
@@ -60,8 +60,8 @@
   ],
   "dependencies": {
     "adm-zip": "^0.5.16",
-    "@douyinfe/semi-icons": "^2.89.1",
-    "@douyinfe/semi-ui": "2.89.1",
+    "@douyinfe/semi-icons": "^2.90.3",
+    "@douyinfe/semi-ui": "2.90.3",
     "@sendgrid/mail": "8.1.6",
     "@vitejs/plugin-react": "5.1.2",
     "better-sqlite3": "^12.5.0",
