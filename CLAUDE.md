@@ -95,6 +95,33 @@ SQLite database stored at path configured in `conf/config.json` (default: `/db`)
 1. Create `lib/notification/adapter/<name>.js` with `send()` and `config` exports
 2. Create `lib/notification/adapter/<name>.md` for documentation (rendered in UI)
 
+## Testing & Development
+
+### Playwright MCP for Provider Development
+
+When developing new providers, use Playwright MCP to interactively test on real websites:
+
+1. Navigate to the search results page
+2. Identify the listing container selector (`crawlContainer`)
+3. Test individual field selectors (`crawlFields`)
+4. Verify data extraction before writing code
+
+The Playwright plugin is enabled in `.claude/settings.json`. Screenshots are stored in `.playwright-mcp/` (gitignored).
+
+### Test Suite
+
+Provider tests hit real websites and verify extraction works:
+
+```bash
+yarn run test                    # All tests
+yarn run testGH                  # Exclude flaky provider tests (for CI)
+```
+
+Test structure:
+- `test/provider/testProvider.json` - Test URLs for each provider
+- `test/provider/<name>.test.js` - Integration tests per provider
+- `test/utils.js` - Mock utilities (storage, notifications)
+
 ## Notes
 - Node.js 22+ required
 - Default login: admin/admin

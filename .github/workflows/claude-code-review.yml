@@ -1,0 +1,60 @@
+name: Claude Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  claude-review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      id-token: write
+      actions: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Playwright
+        run: npx playwright install chromium
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Run Claude Code Review
+        id: claude-review
+        uses: anthropics/claude-code-action@v1
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          show_full_output: true
+          claude_args: |
+            --model claude-opus-4-5-20251101
+            --mcp-config '{"mcpServers": {"playwright": {"command": "npx", "args": ["-y", "@playwright/mcp@latest", "--headless"]}}}'
+            --allowedTools "Edit,Write,Read,Glob,Grep,Task,Bash(git:*),Bash(gh:*),Bash(yarn:*),Bash(npx:*),Bash(curl:*),Bash(sleep:*),mcp__playwright__*"
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
+
+            ## Before Reviewing
+
+            Check if this PR is linked to an issue. If so, read the issue first to understand the problem and evaluate whether the PR solves it.
+
+            ## Review
+
+            Provide constructive feedback on code quality, bugs, performance, and security.
+
+            When reviewing provider changes, consider using Playwright MCP in a subagent to verify scraping works on real websites.
+
+            Refer to CLAUDE.md for project conventions. Leave your review as a PR comment.
