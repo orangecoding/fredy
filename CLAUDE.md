@@ -1,12 +1,20 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Guidance for Claude Code (claude.ai/code) and other AI agents when working in this repository. Propose updates to CLAUDE.md as the project evolves.
 
 ## Project Overview
 
 Fredy-CH is a Swiss fork of [Fredy](https://github.com/orangecoding/fredy), a self-hosted real estate finder. This fork replaces the German providers with Swiss platforms (ImmoScout24.ch, Homegate, Flatfox, etc.) while keeping the core pipeline and notification adapters.
 
 Upstream sync: `git fetch upstream && git merge upstream/master`
+
+## Mission
+
+Finding an apartment in Switzerland is competitive and exhausting. You shouldn't have to manually refresh Homegate and ImmoScout every hour. Fredy-CH monitors Swiss platforms for you and notifies you instantly when new listings match your criteria.
+
+## Target User
+
+Someone searching for an apartment in Switzerland who wants to be first to respond to new listings—without constantly checking multiple websites.
 
 ## Common Commands
 
