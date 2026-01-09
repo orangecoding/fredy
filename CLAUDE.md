@@ -99,12 +99,24 @@ SQLite database stored at path configured in `conf/config.json` (default: `/db`)
 
 ### Playwright MCP for Provider Development
 
-When developing new providers, use Playwright MCP to interactively test on real websites:
+When developing new providers, **use a subagent** for Playwright exploration to preserve main conversation context. The subagent handles all the navigation, clicking, and DOM inspection, then returns a concise summary.
 
+Example subagent prompt:
+```
+Explore flatfox.ch search results page to find:
+1. Listing container selector (crawlContainer)
+2. Field selectors for: title, price, address, size, link, image
+3. Any public APIs in network requests
+Return a summary of selectors and endpoints found.
+```
+
+The subagent should:
 1. Navigate to the search results page
-2. Identify the listing container selector (`crawlContainer`)
-3. Test individual field selectors (`crawlFields`)
-4. Verify data extraction before writing code
+2. Handle cookie consent if needed
+3. Identify the listing container selector (`crawlContainer`)
+4. Test individual field selectors (`crawlFields`)
+5. Check network tab for API endpoints (often more reliable than scraping)
+6. Return findings as a concise summary
 
 The Playwright plugin is enabled in `.claude/settings.json`. Screenshots are stored in `.playwright-mcp/` (gitignored).
 
