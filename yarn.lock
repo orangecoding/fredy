@@ -997,34 +997,34 @@
   dependencies:
     tslib "^2.0.0"
 
-"@douyinfe/semi-animation-react@2.90.3":
-  version "2.90.3"
-  resolved "https://registry.yarnpkg.com/@douyinfe/semi-animation-react/-/semi-animation-react-2.90.3.tgz#dc55e082febfdae38c42caefb9928b1bb853647a"
-  integrity sha512-iivpAVysJqKUmpRp4gqXb/+x7A4DOWXNv8lNM841CC2EVpCnFh4yOgXvxYCELD1V70RcXcXMTOGwAukCO1HkCA==
+"@douyinfe/semi-animation-react@2.90.10":
+  version "2.90.10"
+  resolved "https://registry.yarnpkg.com/@douyinfe/semi-animation-react/-/semi-animation-react-2.90.10.tgz#46c489052cdb4219a21f7d4c4dca44dd40fb6f5d"
+  integrity sha512-xajEqbF1nZnFsocYJGhhOFPn9w1lOy7J6GBITKsMKpuBKq03TSKvZr9Sj7cMALEbPb8Ebp2y44t3e/9fQYpwlw==
   dependencies:
-    "@douyinfe/semi-animation" "2.90.3"
-    "@douyinfe/semi-animation-styled" "2.90.3"
+    "@douyinfe/semi-animation" "2.90.10"
+    "@douyinfe/semi-animation-styled" "2.90.10"
     classnames "^2.2.6"
 
-"@douyinfe/semi-animation-styled@2.90.3":
-  version "2.90.3"
-  resolved "https://registry.yarnpkg.com/@douyinfe/semi-animation-styled/-/semi-animation-styled-2.90.3.tgz#6a5758af4540b482fd9a5db4960cac0511fb1f27"
-  integrity sha512-PQfNfOWOKiKHcViJOQipPRYYLFQNhzdFn9O84Rky9KzhrkH5/6NsNPMKIPfIUNN15qNI1gQMPP2mQxRAXJQTNg==
+"@douyinfe/semi-animation-styled@2.90.10":
+  version "2.90.10"
+  resolved "https://registry.yarnpkg.com/@douyinfe/semi-animation-styled/-/semi-animation-styled-2.90.10.tgz#4d1cbebf90c60b1e79394dd87a79372114760cad"
+  integrity sha512-o1Oq/yMdX7DfLr1KiK/aDEEK/ZNa/WNmOh79wAyQe+jGVBBOFuyygfwZhYM1Gjp+vy0m/D+wb2S9L40+8JeWSw==
 
-"@douyinfe/semi-animation@2.90.3":
-  version "2.90.3"
-  resolved "https://registry.yarnpkg.com/@douyinfe/semi-animation/-/semi-animation-2.90.3.tgz#197a12e1b100e8d15dbf7c7e858ce828938837cc"
-  integrity sha512-NcLXV2KDpgxHbqS+/d1KAkYJVmSlV0n1gRwB3diM6EgOaGLZHGNXMCVBuN7mss9f2sF6GTTJRwcjH3VdcV5E9g==
+"@douyinfe/semi-animation@2.90.10":
+  version "2.90.10"
+  resolved "https://registry.yarnpkg.com/@douyinfe/semi-animation/-/semi-animation-2.90.10.tgz#b8f1f61ea8b3f548fc7c74cd6c93f196b3b9b0fb"
+  integrity sha512-eHG9LLtPtQfZP3shCkDXvixx8aHQ9wAeN8rrOFEMjJbApuAYtpArcm9nwmjTfYCWce1GZS64jrSt4apuSIKCHA==
   dependencies:
     bezier-easing "^2.1.0"
 
-"@douyinfe/semi-foundation@2.90.3":
-  version "2.90.3"
-  resolved "https://registry.yarnpkg.com/@douyinfe/semi-foundation/-/semi-foundation-2.90.3.tgz#f75b51bd6f7bf3d8da3d9a3ed99aa0e44a2d3626"
-  integrity sha512-p9dtZbvkLtMKQturVwxtlJqfIOzHHN8ujaVgR/T9bS1ojzW+3Nua22yTkl7baLKUk/fvS/841BP3aHNXUmk71A==
+"@douyinfe/semi-foundation@2.90.10":
+  version "2.90.10"
+  resolved "https://registry.yarnpkg.com/@douyinfe/semi-foundation/-/semi-foundation-2.90.10.tgz#4aeecd3afd675ba9fc64bb14592de130e1896e5e"
+  integrity sha512-4CARsSG9tghXkdBNyHT1G207vyIr+Y2RZS9zm37LpgrUezesw+znB8Z6mQIfxKrTDb7KezutubGJB/VUFNgj1w==
   dependencies:
-    "@douyinfe/semi-animation" "2.90.3"
-    "@douyinfe/semi-json-viewer-core" "2.90.3"
+    "@douyinfe/semi-animation" "2.90.10"
+    "@douyinfe/semi-json-viewer-core" "2.90.10"
     "@mdx-js/mdx" "^3.0.1"
     async-validator "^3.5.0"
     classnames "^2.2.6"
@@ -1038,44 +1038,44 @@
     remark-gfm "^4.0.0"
     scroll-into-view-if-needed "^2.2.24"
 
-"@douyinfe/semi-icons@2.90.3", "@douyinfe/semi-icons@^2.90.3":
-  version "2.90.3"
-  resolved "https://registry.yarnpkg.com/@douyinfe/semi-icons/-/semi-icons-2.90.3.tgz#9dc40a743951aed7ea5a709adc248f89a97ec3d9"
-  integrity sha512-1zeBiBtpnRTblJo1OWTRv1W0ULYdAb4XAF9K4AF7YSnYw+jvHn0zulaQyBqGsuCKeJlfOaCKSui/5HjDt1RgJg==
+"@douyinfe/semi-icons@2.90.10", "@douyinfe/semi-icons@^2.90.10":
+  version "2.90.10"
+  resolved "https://registry.yarnpkg.com/@douyinfe/semi-icons/-/semi-icons-2.90.10.tgz#7115167226ea2c7c70aad030f3df674668878c7c"
+  integrity sha512-8QY24bjsqW3Vpm3RCfsmYo8NBLa/9mJmRe2ycPazHq6YRM2xVgWyqkd7HWlJiRJy/4HDGVKxIwPlujDEHyDWLg==
   dependencies:
     classnames "^2.2.6"
 
-"@douyinfe/semi-illustrations@2.90.3":
-  version "2.90.3"
-  resolved "https://registry.yarnpkg.com/@douyinfe/semi-illustrations/-/semi-illustrations-2.90.3.tgz#03cb5f2edb909fe0f11ef907f4061597053ca7d3"
-  integrity sha512-RXTVyAwRNiFEa9jXSGANCpm8aN2K4iU1knffmVNaRirGmMc5h6b8Uq7ZkVezizegSW6ETtucpFa2NmJX53MpPg==
+"@douyinfe/semi-illustrations@2.90.10":
+  version "2.90.10"
+  resolved "https://registry.yarnpkg.com/@douyinfe/semi-illustrations/-/semi-illustrations-2.90.10.tgz#c74cbc2cc96370dba4784b1870000aff0b1abe86"
+  integrity sha512-xZ3MJLrW4YcdSyps/h83AEvrxggcXOZnc5ZwGE+K3IvCV7jjye/0L7dMG7iJEoOMaSDNF2MqQJSVUoDnHV+jBA==
 
-"@douyinfe/semi-json-viewer-core@2.90.3":
-  version "2.90.3"
-  resolved "https://registry.yarnpkg.com/@douyinfe/semi-json-viewer-core/-/semi-json-viewer-core-2.90.3.tgz#eb38c59377dd2954194f8474938bcea106e6e267"
-  integrity sha512-18d2TuNdwXPt08b+ODiBSehyuKrvdZuF+2hVYnL3R7KRDCdd/BMLbhqPmr9IA92aP3u/TQKjRjIKhgpqw6XCQw==
+"@douyinfe/semi-json-viewer-core@2.90.10":
+  version "2.90.10"
+  resolved "https://registry.yarnpkg.com/@douyinfe/semi-json-viewer-core/-/semi-json-viewer-core-2.90.10.tgz#659bcbb485ac1bd42e45e462b38abf4acc4ead03"
+  integrity sha512-0sLzUqR9JF5AxVWDjfpeZDqAi+olcb7ZM/hVKCQxPZEcF4VTQwB/cseg55Zbx3oMkC+xtLjicZy4ymfCLgW22Q==
   dependencies:
     jsonc-parser "^3.3.1"
 
-"@douyinfe/semi-theme-default@2.90.3":
-  version "2.90.3"
-  resolved "https://registry.yarnpkg.com/@douyinfe/semi-theme-default/-/semi-theme-default-2.90.3.tgz#a2ebde9d37bccb8ceec3ed9fdde0d18b573515f7"
-  integrity sha512-DfHJ/3jHaTMJfcuer8LTcrh84Vxixberpk0DyvzgwVD1T+zAOppElwWq0tGDc5lnDHMgCY4R9W4b0aUcLCB2qA==
+"@douyinfe/semi-theme-default@2.90.10":
+  version "2.90.10"
+  resolved "https://registry.yarnpkg.com/@douyinfe/semi-theme-default/-/semi-theme-default-2.90.10.tgz#b1f3e0fb3b5bf8d52c2492cd4393a68df0b07c70"
+  integrity sha512-q8liKStjQBuhGcADO5b86rvSW/ZxOhi5Ydgcr7D2/HyTsvkZA7R4spROAfwVGKGkc8juJvGqn2NirU2zwxAuMA==
 
-"@douyinfe/semi-ui@2.90.3":
-  version "2.90.3"
-  resolved "https://registry.yarnpkg.com/@douyinfe/semi-ui/-/semi-ui-2.90.3.tgz#465b0d94ae5316a57c8dd12a0c8d4c47061e2329"
-  integrity sha512-Ojrj2y6G/79A85khqP8IinZaPFIIC3kWO263ppYQm/3Vb+yvg1ih1XIFNkPrhqha4Hybs1g+1LxKhjdvkhURRg==
+"@douyinfe/semi-ui@2.90.10":
+  version "2.90.10"
+  resolved "https://registry.yarnpkg.com/@douyinfe/semi-ui/-/semi-ui-2.90.10.tgz#486c1551a7616a8a073b4343756be25147c73ab0"
+  integrity sha512-BclA5Ir1OEzZpS965T/y51KLIxEwRpJlyV/E2Pljsm98keSpc/kkoh9fKFiPMqTafgiuuey8XWStyC88tYZGEg==
   dependencies:
     "@dnd-kit/core" "^6.0.8"
     "@dnd-kit/sortable" "^7.0.2"
     "@dnd-kit/utilities" "^3.2.1"
-    "@douyinfe/semi-animation" "2.90.3"
-    "@douyinfe/semi-animation-react" "2.90.3"
-    "@douyinfe/semi-foundation" "2.90.3"
-    "@douyinfe/semi-icons" "2.90.3"
-    "@douyinfe/semi-illustrations" "2.90.3"
-    "@douyinfe/semi-theme-default" "2.90.3"
+    "@douyinfe/semi-animation" "2.90.10"
+    "@douyinfe/semi-animation-react" "2.90.10"
+    "@douyinfe/semi-foundation" "2.90.10"
+    "@douyinfe/semi-icons" "2.90.10"
+    "@douyinfe/semi-illustrations" "2.90.10"
+    "@douyinfe/semi-theme-default" "2.90.10"
     "@tiptap/core" "^3.10.7"
     "@tiptap/extension-document" "^3.10.7"
     "@tiptap/extension-hard-break" "^3.10.7"
@@ -2146,10 +2146,10 @@ bl@^4.0.3:
     inherits "^2.0.4"
     readable-stream "^3.4.0"
 
-body-parser@2.2.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/body-parser/-/body-parser-2.2.1.tgz#6df606b0eb0a6e3f783dde91dde182c24c82438c"
-  integrity sha512-nfDwkulwiZYQIGwxdy0RUmowMhKcFVcYXUU7m4QlKYim1rUtg83xm2yjZ40QjDuc291AJjjeSc9b++AWHSgSHw==
+body-parser@2.2.2:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/body-parser/-/body-parser-2.2.2.tgz#1a32cdb966beaf68de50a9dfbe5b58f83cb8890c"
+  integrity sha512-oP5VkATKlNwcgvxi0vM0p/D3n2C3EReYVX+DNYs5TjZFn/oQt2j+4sVJtSMr18pdRr8wjTcBl6LoV+FUwzPmNA==
   dependencies:
     bytes "^3.1.2"
     content-type "^1.0.5"
@@ -2157,7 +2157,7 @@ body-parser@2.2.1:
     http-errors "^2.0.0"
     iconv-lite "^0.7.0"
     on-finished "^2.4.1"
-    qs "^6.14.0"
+    qs "^6.14.1"
     raw-body "^3.0.1"
     type-is "^2.0.1"
 
@@ -5946,10 +5946,10 @@ puppeteer@^24.34.0:
     puppeteer-core "24.34.0"
     typed-query-selector "^2.12.0"
 
-qs@^6.14.0:
-  version "6.14.0"
-  resolved "https://registry.yarnpkg.com/qs/-/qs-6.14.0.tgz#c63fa40680d2c5c941412a0e899c89af60c0a930"
-  integrity sha512-YWWTjgABSKcvs/nWBi9PycY/JiPJqOD4JA6o9Sej2AtvSGarXxKC3OQSk4pAarbdQlKAh5D4FCQkJNkW+GAn3w==
+qs@^6.14.1:
+  version "6.14.1"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-6.14.1.tgz#a41d85b9d3902f31d27861790506294881871159"
+  integrity sha512-4EK3+xJl8Ts67nLYNwqw/dsFVnCf+qR7RgXSK9jEEm9unao3njwMDdmsdvoKBKHzxd7tCYz5e5M+SnMjdtXGQQ==
   dependencies:
     side-channel "^1.1.0"
 
@@ -6033,17 +6033,17 @@ react-resizable@^3.0.5:
     prop-types "15.x"
     react-draggable "^4.0.3"
 
-react-router-dom@7.11.0:
-  version "7.11.0"
-  resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-7.11.0.tgz#2165f63e52798bd0eb138480c098ad058cdf3413"
-  integrity sha512-e49Ir/kMGRzFOOrYQBdoitq3ULigw4lKbAyKusnvtDu2t4dBX4AGYPrzNvorXmVuOyeakai6FUPW5MmibvVG8g==
+react-router-dom@7.12.0:
+  version "7.12.0"
+  resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-7.12.0.tgz#0f2a059c6b2c4ae04474fe4171c59fb48b9fb8cf"
+  integrity sha512-pfO9fiBcpEfX4Tx+iTYKDtPbrSLLCbwJ5EqP+SPYQu1VYCXdy79GSj0wttR0U4cikVdlImZuEZ/9ZNCgoaxwBA==
   dependencies:
-    react-router "7.11.0"
+    react-router "7.12.0"
 
-react-router@7.11.0:
-  version "7.11.0"
-  resolved "https://registry.yarnpkg.com/react-router/-/react-router-7.11.0.tgz#d3b91567fdbe910caf9064ea69b7b4d9264f2945"
-  integrity sha512-uI4JkMmjbWCZc01WVP2cH7ZfSzH91JAZUDd7/nIprDgWxBV1TkkmLToFh7EbMTcMak8URFRa2YoBL/W8GWnCTQ==
+react-router@7.12.0:
+  version "7.12.0"
+  resolved "https://registry.yarnpkg.com/react-router/-/react-router-7.12.0.tgz#459a86862abbedd02e76e686751fe71f9fd73a4f"
+  integrity sha512-kTPDYPFzDVGIIGNLS5VJykK0HfHLY5MF3b+xj0/tTyNYL1gF1qs7u67Z9jEhQk2sQ98SUaHxlG31g1JtF7IfVw==
   dependencies:
     cookie "^1.0.1"
     set-cookie-parser "^2.6.0"
@@ -7234,10 +7234,10 @@ vfile@^6.0.0:
     "@types/unist" "^3.0.0"
     vfile-message "^4.0.0"
 
-vite@7.3.0:
-  version "7.3.0"
-  resolved "https://registry.yarnpkg.com/vite/-/vite-7.3.0.tgz#066c7a835993a66e82004eac3e185d0d157fd658"
-  integrity sha512-dZwN5L1VlUBewiP6H9s2+B3e3Jg96D0vzN+Ry73sOefebhYr9f94wwkMNN/9ouoU8pV1BqA1d1zGk8928cx0rg==
+vite@7.3.1:
+  version "7.3.1"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-7.3.1.tgz#7f6cfe8fb9074138605e822a75d9d30b814d6507"
+  integrity sha512-w+N7Hifpc3gRjZ63vYBXA56dvvRlNWRczTdmCBBa+CotUzAPf5b7YMdMR/8CQoeYE5LX3W4wj6RYTgonm1b9DA==
   dependencies:
     esbuild "^0.27.0"
     fdir "^6.5.0"
