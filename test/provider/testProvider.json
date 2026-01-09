@@ -1,4 +1,8 @@
 {
+  "flatfox": {
+    "url": "https://www.flatfox.ch/en/search/?east=7.533549&north=47.024424&object_category=APARTMENT&offer_type=RENT&south=46.909588&west=7.318974",
+    "enabled": true
+  },
   "einsAImmobilien": {
     "url": "https://www.1a-immobilienmarkt.de/suchen/duesseldorf/wohnung-kaufen.html?search=yes&cfid=98b39c7e-b403-4764-8f3c-57bf590923d0&data_hash=f46f89548257740094dd708996adcd68&sort_type=newest",
     "enabled": true,
