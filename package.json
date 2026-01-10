@@ -14,7 +14,7 @@
     "test": "node --import ./test/esmock-loader.mjs ./node_modules/mocha/bin/mocha.js --timeout 60000 test/**/*.test.js",
     "testGH": "node --import ./test/esmock-loader.mjs ./node_modules/mocha/bin/mocha.js --timeout 60000 --exclude test/provider/immonet.test.js --exclude test/provider/immobilienDe.test.js --exclude test/provider/immowelt.test.js test/**/*.test.js",
     "lint": "eslint .",
-    "lint:fix": "yarn lint --fix",
+    "lint:fix": "npm run lint -- --fix",
     "migratedb": "node lib/services/storage/migrations/migrate.js",
     "migratedb:overwrite": "x-var MIGRATION_ALLOW_CHECKSUM_UPDATE=true node lib/services/storage/migrations/migrate.js",
     "copyright": "node ./copyright.js"
@@ -22,9 +22,9 @@
   "type": "module",
   "lint-staged": {
     "*.{js,jsx}": [
-      "yarn lint",
-      "yarn format",
-      "yarn copyright"
+      "eslint",
+      "prettier --write",
+      "node ./copyright.js"
     ]
   },
   "main": "index.js",
@@ -59,11 +59,11 @@
     "Firefox ESR"
   ],
   "dependencies": {
-    "adm-zip": "^0.5.16",
     "@douyinfe/semi-icons": "^2.90.3",
     "@douyinfe/semi-ui": "2.90.3",
     "@sendgrid/mail": "8.1.6",
     "@vitejs/plugin-react": "5.1.2",
+    "adm-zip": "^0.5.16",
     "better-sqlite3": "^12.5.0",
     "body-parser": "2.2.1",
     "chart.js": "^4.5.1",
@@ -99,11 +99,13 @@
     "@babel/eslint-parser": "7.28.5",
     "@babel/preset-env": "7.28.5",
     "@babel/preset-react": "7.28.5",
+    "@eslint/js": "^9.39.2",
     "chai": "6.2.2",
     "eslint": "9.39.2",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-react": "7.37.5",
     "esmock": "2.7.3",
+    "globals": "^17.0.0",
     "history": "5.3.0",
     "husky": "9.1.7",
     "less": "4.5.1",

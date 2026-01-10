@@ -20,29 +20,29 @@ Someone searching for an apartment in Switzerland who wants to be first to respo
 
 ```bash
 # Install dependencies
-yarn
+npm install
 
 # Development (run both in separate terminals)
-yarn run start:backend:dev    # Backend with hot reload (nodemon)
-yarn run start:frontend:dev   # Frontend with Vite dev server
+npm run start:backend:dev    # Backend with hot reload (nodemon)
+npm run start:frontend:dev   # Frontend with Vite dev server
 
 # Production
-yarn run start:backend        # Starts backend on port 9998
-yarn run start:frontend       # Builds and serves frontend
+npm run start:backend        # Starts backend on port 9998
+npm run start:frontend       # Builds and serves frontend
 
 # Testing
-yarn run test                 # Run all tests with Mocha
-yarn run testGH               # Run tests excluding flaky provider tests (for CI)
+npm run test                 # Run all tests with Mocha
+npm run testGH               # Run tests excluding flaky provider tests (for CI)
 
 # Linting and formatting
-yarn run lint                 # ESLint
-yarn run lint:fix             # ESLint with auto-fix
-yarn run format               # Prettier formatting
-yarn run format:check         # Check formatting without changes
+npm run lint                 # ESLint
+npm run lint:fix             # ESLint with auto-fix
+npm run format               # Prettier formatting
+npm run format:check         # Check formatting without changes
 
 # Database migrations
-yarn run migratedb            # Run migrations
-yarn run migratedb:overwrite  # Run migrations with checksum update
+npm run migratedb            # Run migrations
+npm run migratedb:overwrite  # Run migrations with checksum update
 ```
 
 ## Architecture
@@ -97,17 +97,17 @@ SQLite database stored at path configured in `conf/config.json` (default: `/db`)
 
 ## Testing & Development
 
-### Playwright MCP for Provider Development
+### Playwright MCP
 
-Use a **subagent** for Playwright exploration - it preserves main conversation context. The subagent explores the site and returns a concise summary of selectors/APIs found.
+**Always use subagents for Playwright browser automation.** Direct Playwright usage fills context extremely fast (screenshots, DOM snapshots, navigation steps). Launch a subagent to do the browser work, then have it return a concise summary. This preserves main conversation context for actual development work.
 
 ### Test Suite
 
 Provider tests hit real websites and verify extraction works:
 
 ```bash
-yarn run test                    # All tests
-yarn run testGH                  # Exclude flaky provider tests (for CI)
+npm run test                     # All tests
+npm run testGH                   # Exclude flaky provider tests (for CI)
 ```
 
 Test structure:
