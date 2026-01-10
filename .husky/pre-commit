@@ -1,1 +1,2 @@
+bd hooks run pre-commit
 npx lint-staged
