@@ -5,6 +5,9 @@
 *.db-wal
 *.db-shm
 
+# bv (beads viewer) runtime files
+.bv.lock
+
 # Daemon runtime files
 daemon.lock
 daemon.log

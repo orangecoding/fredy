@@ -7,3 +7,6 @@ npm-debug.log
 .idea
 .vscode
 .playwright-mcp/
+
+# bv (beads viewer) local config and caches
+.bv/
