@@ -28,12 +28,14 @@ async function getAllFiles(dir = '.') {
   return files;
 }
 
+const COPYRIGHT_PATTERN = /^\/\*\s*\n\s*\*\s*Copyright \(c\) \d{4} by Christian Kellner\./;
+
 /* eslint-disable no-console */
 async function addCopyright(files) {
   for (let file of files) {
     try {
       let content = await fs.readFile(file, 'utf8');
-      if (!content.startsWith(COPYRIGHT)) {
+      if (!COPYRIGHT_PATTERN.test(content)) {
         await fs.writeFile(file, COPYRIGHT + content);
         console.log(`Added copyright to ${file}`);
       }
