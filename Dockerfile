@@ -63,7 +63,5 @@ RUN mkdir -p /db /conf \
   && ln -s /conf /fredy/conf
 
 EXPOSE 9998
-VOLUME /db
-VOLUME /conf
 
 CMD ["node", "index.js"]
