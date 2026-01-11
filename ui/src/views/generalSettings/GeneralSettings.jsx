@@ -1,4 +1,9 @@
 /*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+/*
  * Copyright (c) 2025 by Christian Kellner.
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
@@ -25,6 +30,7 @@ import {
   IconLineChartStroked,
   IconSearch,
   IconFolder,
+  IconGlobeStroke,
 } from '@douyinfe/semi-icons';
 import './GeneralSettings.less';
 
@@ -57,6 +63,9 @@ const GeneralSettings = function GeneralSettings() {
   const [demoMode, setDemoMode] = React.useState(null);
   const [analyticsEnabled, setAnalyticsEnabled] = React.useState(null);
   const [sqlitePath, setSqlitePath] = React.useState(null);
+  const [proxyUrl, setProxyUrl] = React.useState('');
+  const [proxyUsername, setProxyUsername] = React.useState('');
+  const [proxyPassword, setProxyPassword] = React.useState('');
   const fileInputRef = React.useRef(null);
   const [restoreModalVisible, setRestoreModalVisible] = React.useState(false);
   const [precheckInfo, setPrecheckInfo] = React.useState(null);
@@ -81,6 +90,9 @@ const GeneralSettings = function GeneralSettings() {
       setAnalyticsEnabled(settings?.analyticsEnabled || false);
       setDemoMode(settings?.demoMode || false);
       setSqlitePath(settings?.sqlitepath);
+      setProxyUrl(settings?.proxyUrl || '');
+      setProxyUsername(settings?.proxyUsername || '');
+      setProxyPassword(settings?.proxyPassword || '');
     }
 
     init();
@@ -119,6 +131,9 @@ const GeneralSettings = function GeneralSettings() {
         demoMode,
         analyticsEnabled,
         sqlitepath: sqlitePath,
+        proxyUrl,
+        proxyUsername,
+        proxyPassword,
       });
     } catch (exception) {
       console.error(exception);
@@ -354,6 +369,54 @@ const GeneralSettings = function GeneralSettings() {
                 {' '}
                 Enabled
               </Checkbox>
+            </SegmentPart>
+
+            <Divider margin="1rem" />
+
+            <SegmentPart
+              name="Proxy Settings"
+              helpText="Configure a residential proxy for providers that require it (e.g., ImmoScout24.ch). Leave empty to disable."
+              Icon={IconGlobeStroke}
+            >
+              <Banner
+                fullMode={false}
+                type="info"
+                closeIcon={null}
+                title={<div style={{ fontWeight: 600, fontSize: '14px', lineHeight: '20px' }}>When to use</div>}
+                style={{ marginBottom: '1rem' }}
+                description={
+                  <div>
+                    Some providers use anti-bot protection (like DataDome) that blocks automated requests. A residential
+                    proxy routes requests through real ISP IPs, making them appear as regular users. Providers like
+                    DataImpulse offer residential proxies starting at ~$1/GB.
+                  </div>
+                }
+              />
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                <Input
+                  type="text"
+                  placeholder="http://proxy.example.com:8080"
+                  value={proxyUrl}
+                  onChange={(value) => setProxyUrl(value)}
+                  prefix="URL"
+                />
+                <Input
+                  type="text"
+                  placeholder="Username (optional)"
+                  value={proxyUsername}
+                  onChange={(value) => setProxyUsername(value)}
+                  prefix="User"
+                />
+                <Input
+                  type="password"
+                  placeholder="Password (optional)"
+                  value={proxyPassword}
+                  onChange={(value) => setProxyPassword(value)}
+                  prefix="Pass"
+                  mode="password"
+                />
+              </div>
             </SegmentPart>
 
             <Divider margin="1rem" />
