@@ -112,6 +112,7 @@
     "lint-staged": "16.2.7",
     "mocha": "11.7.5",
     "nodemon": "^3.1.11",
-    "prettier": "3.7.4"
+    "prettier": "3.7.4",
+    "puppeteer-extra-plugin-user-data-dir": "^2.4.1"
   }
 }
