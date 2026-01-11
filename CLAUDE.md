@@ -115,6 +115,13 @@ Test structure:
 - `test/provider/<name>.test.js` - Integration tests per provider
 - `test/utils.js` - Mock utilities (storage, notifications)
 
+## Git Workflow
+
+- **Main branch is protected** — all changes require PRs
+- **beads-sync branch** — dedicated branch for `bd sync` commits
+- Feature work: create feature branch from master, PR when done
+- Beads sync: `bd sync` pushes to `beads-sync`, periodically merge to master via PR
+
 ## Notes
 - Node.js 22+ required
 - Default login: admin/admin
