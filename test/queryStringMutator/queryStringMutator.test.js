@@ -1,4 +1,9 @@
 /*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+/*
  * Copyright (c) 2025 by Christian Kellner.
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
@@ -14,7 +19,10 @@ const data = await readFile(new URL('./testData.json', import.meta.url));
 const testData = JSON.parse(data);
 
 let _provider = await Promise.all(
-  fs.readdirSync('./lib/provider/').map(async (integPath) => await import(`../../lib/provider/${integPath}`)),
+  fs
+    .readdirSync('./lib/provider/')
+    .filter((f) => f.endsWith('.js'))
+    .map(async (integPath) => await import(`../../lib/provider/${integPath}`)),
 );
 
 /**

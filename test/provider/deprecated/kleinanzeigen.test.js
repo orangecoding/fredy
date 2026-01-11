@@ -1,4 +1,9 @@
 /*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+/*
  * Copyright (c) 2025 by Christian Kellner.
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
@@ -7,20 +12,20 @@ import * as similarityCache from '../../lib/services/similarity-check/similarity
 import { get } from '../mocks/mockNotification.js';
 import { mockFredy, providerConfig } from '../utils.js';
 import { expect } from 'chai';
-import * as provider from '../../lib/provider/neubauKompass.js';
+import * as provider from '../../lib/provider/kleinanzeigen.js';
 
-describe('#neubauKompass testsuite()', () => {
-  provider.init(providerConfig.neubauKompass, [], []);
-  it('should test neubauKompass provider', async () => {
+describe('#kleinanzeigen testsuite()', () => {
+  it('should test kleinanzeigen provider', async () => {
     const Fredy = await mockFredy();
+    provider.init(providerConfig.kleinanzeigen, [], []);
     return await new Promise((resolve) => {
-      const fredy = new Fredy(provider.config, null, provider.metaInformation.id, 'neubauKompass', similarityCache);
+      const fredy = new Fredy(provider.config, null, provider.metaInformation.id, 'kleinanzeigen', similarityCache);
       fredy.execute().then((listing) => {
         expect(listing).to.be.a('array');
         const notificationObj = get();
-        expect(notificationObj.serviceName).to.equal('neubauKompass');
+        expect(notificationObj).to.be.a('object');
+        expect(notificationObj.serviceName).to.equal('kleinanzeigen');
         notificationObj.payload.forEach((notify) => {
-          expect(notify).to.be.a('object');
           /** check the actual structure **/
           expect(notify.id).to.be.a('string');
           expect(notify.title).to.be.a('string');
@@ -28,7 +33,7 @@ describe('#neubauKompass testsuite()', () => {
           expect(notify.address).to.be.a('string');
           /** check the values if possible **/
           expect(notify.title).to.be.not.empty;
-          expect(notify.link).that.does.include('https://www.neubaukompass.de');
+          expect(notify.link).that.does.include('https://www.kleinanzeigen.de');
           expect(notify.address).to.be.not.empty;
         });
         resolve();
