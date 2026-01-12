@@ -255,7 +255,7 @@ const ListingsGrid = () => {
                 </a>
                 <Space vertical align="start" spacing={2} style={{ width: '100%', marginTop: 8 }}>
                   <Text type="secondary" icon={<IconCart />} size="small">
-                    {item.price} €
+                    {item.price != null ? `CHF ${item.price.toLocaleString('de-CH')}` : '-'}
                   </Text>
                   <Text
                     type="secondary"
