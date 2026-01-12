@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (c) 2025 by Christian Kellner.
+ * Copyright (c) 2025-2026 by Christian Kellner.
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
@@ -67,6 +67,8 @@ const GeneralSettings = function GeneralSettings() {
   const [proxyUsername, setProxyUsername] = React.useState('');
   const [proxyPassword, setProxyPassword] = React.useState('');
   const [twoCaptchaApiKey, setTwoCaptchaApiKey] = React.useState('');
+  const [brightDataApiToken, setBrightDataApiToken] = React.useState('');
+  const [brightDataZone, setBrightDataZone] = React.useState('');
   const fileInputRef = React.useRef(null);
   const [restoreModalVisible, setRestoreModalVisible] = React.useState(false);
   const [precheckInfo, setPrecheckInfo] = React.useState(null);
@@ -83,21 +85,19 @@ const GeneralSettings = function GeneralSettings() {
   }, []);
 
   React.useEffect(() => {
-    async function init() {
-      setInterval(settings?.interval);
-      setPort(settings?.port);
-      setWorkingHourFrom(settings?.workingHours?.from);
-      setWorkingHourTo(settings?.workingHours?.to);
-      setAnalyticsEnabled(settings?.analyticsEnabled || false);
-      setDemoMode(settings?.demoMode || false);
-      setSqlitePath(settings?.sqlitepath);
-      setProxyUrl(settings?.proxyUrl || '');
-      setProxyUsername(settings?.proxyUsername || '');
-      setProxyPassword(settings?.proxyPassword || '');
-      setTwoCaptchaApiKey(settings?.twoCaptchaApiKey || '');
-    }
-
-    init();
+    setInterval(settings?.interval);
+    setPort(settings?.port);
+    setWorkingHourFrom(settings?.workingHours?.from);
+    setWorkingHourTo(settings?.workingHours?.to);
+    setAnalyticsEnabled(settings?.analyticsEnabled || false);
+    setDemoMode(settings?.demoMode || false);
+    setSqlitePath(settings?.sqlitepath);
+    setProxyUrl(settings?.proxyUrl || '');
+    setProxyUsername(settings?.proxyUsername || '');
+    setProxyPassword(settings?.proxyPassword || '');
+    setTwoCaptchaApiKey(settings?.twoCaptchaApiKey || '');
+    setBrightDataApiToken(settings?.brightDataApiToken || '');
+    setBrightDataZone(settings?.brightDataZone || '');
   }, [settings]);
 
   const nullOrEmpty = (val) => val == null || val.length === 0;
@@ -137,6 +137,8 @@ const GeneralSettings = function GeneralSettings() {
         proxyUsername,
         proxyPassword,
         twoCaptchaApiKey,
+        brightDataApiToken,
+        brightDataZone,
       });
     } catch (exception) {
       console.error(exception);
@@ -439,6 +441,25 @@ const GeneralSettings = function GeneralSettings() {
                   onChange={(value) => setTwoCaptchaApiKey(value)}
                   prefix="API Key"
                   mode="password"
+                />
+                <div
+                  style={{ fontSize: '13px', fontWeight: 600, color: 'var(--semi-color-text-1)', marginTop: '0.5rem' }}
+                >
+                  Bright Data Web Unlocker (Recommended)
+                </div>
+                <Input
+                  type="password"
+                  placeholder="API token from brightdata.com"
+                  value={brightDataApiToken}
+                  onChange={(value) => setBrightDataApiToken(value)}
+                  prefix="API Token"
+                  mode="password"
+                />
+                <Input
+                  placeholder="Zone name (e.g., immoscout)"
+                  value={brightDataZone}
+                  onChange={(value) => setBrightDataZone(value)}
+                  prefix="Zone"
                 />
               </div>
             </SegmentPart>
