@@ -27,6 +27,10 @@ bd.db
 # Must not be committed as paths would be wrong in other clones
 redirect
 
+# Sync lock and base file (temporary files during sync operations)
+.sync.lock
+sync_base.jsonl
+
 # Merge artifacts (temporary files from 3-way merge)
 beads.base.jsonl
 beads.base.meta.json
