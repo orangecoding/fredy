@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 by Christian Kellner.
+ * Copyright (c) 2026 by Christian Kellner.
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
@@ -30,12 +30,16 @@ async function getAllFiles(dir = '.') {
 
 /* eslint-disable no-console */
 async function addCopyright(files) {
+  const oldCopyrightRegex =
+    /^(\/\*\n \* Copyright \(c\) \d{4} by Christian Kellner\.\n \* Licensed under Apache-2.0 with Commons Clause and Attribution\/Naming Clause\n \*\/\n\n)+/;
   for (let file of files) {
     try {
       let content = await fs.readFile(file, 'utf8');
-      if (!content.startsWith(COPYRIGHT)) {
-        await fs.writeFile(file, COPYRIGHT + content);
-        console.log(`Added copyright to ${file}`);
+      const strippedContent = content.replace(oldCopyrightRegex, '');
+      const newContent = COPYRIGHT + strippedContent;
+      if (content !== newContent) {
+        await fs.writeFile(file, newContent);
+        console.log(`Added/Updated copyright in ${file}`);
       }
     } catch (err) {
       console.error(`Error processing ${file}: ${err}`);

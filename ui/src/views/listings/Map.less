@@ -1,0 +1,73 @@
+/*
+ * Copyright (c) 2025 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+.map-view-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 120px); /* Adjust based on header/footer height */
+  padding: 1rem;
+}
+
+.map-filter-bar {
+  margin-bottom: 1rem;
+}
+
+.map-container {
+  flex-grow: 1;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--semi-color-border);
+}
+
+.map-popup-content {
+  max-width: 250px;
+  color: var(--semi-color-text-0);
+
+  img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+  }
+
+  h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.1rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .info {
+    font-size: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+}
+
+/* Override MapLibre default popup styles to match application theme */
+.maplibregl-popup-content {
+  background-color: var(--semi-color-bg-1) !important;
+  color: var(--semi-color-text-0) !important;
+  border-radius: 8px !important;
+  box-shadow: var(--semi-shadow-elevated) !important;
+}
+
+.maplibregl-popup-tip {
+  border-top-color: var(--semi-color-bg-1) !important;
+  border-bottom-color: var(--semi-color-bg-1) !important;
+}
+
+.maplibregl-ctrl-group {
+    background: var(--semi-color-bg-1) !important;
+}
+
+.maplibregl-ctrl-group button {
+    background-color: var(--semi-color-bg-1) !important;
+    border-color: var(--semi-color-border) !important;
+}

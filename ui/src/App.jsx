@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 by Christian Kellner.
+ * Copyright (c) 2026 by Christian Kellner.
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
@@ -21,6 +21,7 @@ import TrackingModal from './components/tracking/TrackingModal.jsx';
 import { Banner, Divider } from '@douyinfe/semi-ui';
 import VersionBanner from './components/version/VersionBanner.jsx';
 import Listings from './views/listings/Listings.jsx';
+import MapView from './views/listings/Map.jsx';
 import Navigation from './components/navigation/Navigation.jsx';
 import { Layout } from '@douyinfe/semi-ui';
 import FredyFooter from './components/footer/FredyFooter.jsx';
@@ -94,6 +95,7 @@ export default function FredyApp() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/jobs" element={<Jobs />} />
               <Route path="/listings" element={<Listings />} />
+              <Route path="/map" element={<MapView />} />
               <Route path="/watchlistManagement" element={<WatchlistManagement />} />
 
               {/* Permission-aware routes */}

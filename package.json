@@ -59,11 +59,11 @@
     "Firefox ESR"
   ],
   "dependencies": {
-    "adm-zip": "^0.5.16",
     "@douyinfe/semi-icons": "^2.90.10",
     "@douyinfe/semi-ui": "2.90.10",
     "@sendgrid/mail": "8.1.6",
     "@vitejs/plugin-react": "5.1.2",
+    "adm-zip": "^0.5.16",
     "better-sqlite3": "^12.5.0",
     "body-parser": "2.2.2",
     "chart.js": "^4.5.1",
@@ -71,6 +71,7 @@
     "cookie-session": "2.1.1",
     "handlebars": "4.7.8",
     "lodash": "4.17.21",
+    "maplibre-gl": "^5.1.0",
     "nanoid": "5.1.6",
     "node-cron": "^4.2.1",
     "node-fetch": "3.3.2",

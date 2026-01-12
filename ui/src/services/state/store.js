@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 by Christian Kellner.
+ * Copyright (c) 2026 by Christian Kellner.
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
@@ -205,6 +205,28 @@ export const useFredyState = create(
               console.error('Error while trying to get resource for api/listings. Error:', Exception);
             }
           },
+          async getListingsForMap({ jobId, minPrice, maxPrice } = {}) {
+            try {
+              const qryString = queryString.stringify(
+                {
+                  jobId,
+                  minPrice,
+                  maxPrice,
+                },
+                { skipNull: true, skipEmptyString: true },
+              );
+              const response = await xhrGet(`/api/listings/map?${qryString}`);
+              set((state) => ({
+                listingsData: {
+                  ...state.listingsData,
+                  mapListings: response.json?.listings || [],
+                  maxPrice: response.json?.maxPrice || 0,
+                },
+              }));
+            } catch (Exception) {
+              console.error('Error while trying to get resource for api/listings/map. Error:', Exception);
+            }
+          },
         },
       };
 
@@ -216,6 +238,8 @@ export const useFredyState = create(
           totalNumber: 0,
           page: 1,
           result: [],
+          mapListings: [],
+          maxPrice: 0,
         },
         features: {},
         generalSettings: { settings: {} },
