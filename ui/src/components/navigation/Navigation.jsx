@@ -37,8 +37,8 @@ export default function Navigation({ isAdmin }) {
       text: 'Listings',
       icon: <IconStar />,
       items: [
-        { itemKey: '/listings', text: 'Table' },
-        { itemKey: '/map', text: 'Map' },
+        { itemKey: '/listings', text: 'Overview' },
+        { itemKey: '/map', text: 'Map View' },
       ],
     },
   ];
