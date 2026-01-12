@@ -99,7 +99,7 @@ SQLite database stored at path configured in `conf/config.json` (default: `/db`)
 
 ### Playwright MCP
 
-**Always use subagents for Playwright browser automation.** Direct Playwright usage fills context extremely fast (screenshots, DOM snapshots, navigation steps). Launch a subagent to do the browser work, then have it return a concise summary. This preserves main conversation context for actual development work.
+**Always use subagents for Playwright browser automation.** Direct Playwright usage fills context extremely fast (screenshots, DOM snapshots, navigation steps). Launch a subagent to do the browser work, then have it return a concise summary. This preserves main conversation context for actual development work. **Prefer `model: "haiku"`** for simple tasks (screenshots, clicking, form filling). Use sonnet for tasks requiring analysis or judgment.
 
 ### Test Suite
 
