@@ -122,6 +122,26 @@ Test structure:
 - Feature work: create feature branch from master, PR when done
 - Beads sync: `bd sync` pushes to `beads-sync`, periodically merge to master via PR
 
+## Worktrees & Beads
+
+### Creating Worktrees
+From main repo only:
+```bash
+git worktree add ../fredy-ch-<name> -b <name>/work
+```
+
+### Key Points
+- Beads is initialized in main repo only — worktrees share it automatically
+- Don't run `bd init` in worktrees
+- Don't create symlinks or copy `.beads/`
+- Run Claude instances from worktrees, not main repo
+
+### Removing Worktrees
+```bash
+git worktree remove ../fredy-ch-<name>
+git branch -D <name>/work  # if deleting branch too
+```
+
 ## Deployment
 
 Production runs on **Railway**. CLI available locally. Volume mounted at `/db`.
