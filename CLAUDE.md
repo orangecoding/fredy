@@ -124,7 +124,7 @@ Test structure:
 
 ## Deployment
 
-Production runs on **Railway** at https://fredy-ch-production.up.railway.app. Railway CLI available locally. Volume mounted at `/db`.
+Production runs on **Railway**. CLI available locally. Volume mounted at `/db`.
 
 ## Notes
 - Node.js 22+ required
