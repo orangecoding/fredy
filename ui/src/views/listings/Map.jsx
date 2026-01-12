@@ -221,6 +221,10 @@ export default function MapView() {
         listing.latitude !== -1 &&
         listing.longitude !== -1
       ) {
+        const capitalizedProvider = listing.provider
+          ? listing.provider.charAt(0).toUpperCase() + listing.provider.slice(1)
+          : 'N/A';
+
         const popup = new maplibregl.Popup({ offset: 25 }).setHTML(
           `<div class="map-popup-content">
             <img src="${listing.image_url || no_image}" alt="${listing.title}" />
@@ -229,6 +233,7 @@ export default function MapView() {
               <span><strong>Price:</strong> ${listing.price ? listing.price + ' €' : 'N/A'}</span>
               <span><strong>Address:</strong> ${listing.address || 'N/A'}</span>
               <span><strong>Job:</strong> ${listing.job_name || 'N/A'}</span>
+              <span><strong>Provider:</strong> ${capitalizedProvider}</span>
               <a href="${listing.link}" target="_blank" rel="noopener noreferrer">View Listing</a>
             </div>
           </div>`,
