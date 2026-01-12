@@ -189,6 +189,13 @@ export default function MapView() {
     }
   }, [show3dBuildings, style]);
 
+  const setMapStyle = (value) => {
+    setStyle(value);
+    if (value === 'SATELLITE') {
+      setShow3dBuildings(false);
+    }
+  };
+
   const fetchListings = async () => {
     actions.listingsData.getListingsForMap({
       jobId,
@@ -242,7 +249,7 @@ export default function MapView() {
       <div className="listingsGrid__searchbar map-filter-bar">
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexGrow: 1 }}>
           <Text strong>Map View</Text>
-          <Select placeholder="Style" style={{ width: 120 }} value={style} onChange={(val) => setStyle(val)}>
+          <Select placeholder="Style" style={{ width: 120 }} value={style} onChange={(val) => setMapStyle(val)}>
             <Select.Option value="STANDARD">Standard</Select.Option>
             <Select.Option value="SATELLITE">Satellite</Select.Option>
           </Select>
