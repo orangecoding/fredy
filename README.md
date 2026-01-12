@@ -119,7 +119,7 @@ Should you use [Unraid](https://unraid.net/), you can now install Fredy from the
 
 ## 📸 Screenshots
 
-| Fredy Main Overview                              | Job Configuration                                                     | Found Listings                                                              |
+| Fredy Maps View                                  | Dashboard                                               | Found Listings                                                              |
 |--------------------------------------------------|-----------------------------------------------------------------------|-----------------------------------------------------------------------------|
 | ![Screenshot showing Fredy](doc/screenshot1.png) | ![Screenshot showing job configuration in Fredy](doc/screenshot3.png) | ![Screenshot showing found listings in Fredy](doc/screenshot2.png) |
 

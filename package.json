@@ -1,6 +1,6 @@
 {
   "name": "fredy",
-  "version": "17.1.0",
+  "version": "18.0.0",
   "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
   "scripts": {
     "prepare": "husky",
@@ -59,25 +59,26 @@
     "Firefox ESR"
   ],
   "dependencies": {
-    "adm-zip": "^0.5.16",
-    "@douyinfe/semi-icons": "^2.90.10",
-    "@douyinfe/semi-ui": "2.90.10",
+    "@douyinfe/semi-icons": "^2.90.11",
+    "@douyinfe/semi-ui": "2.90.11",
     "@sendgrid/mail": "8.1.6",
     "@vitejs/plugin-react": "5.1.2",
-    "better-sqlite3": "^12.5.0",
+    "adm-zip": "^0.5.16",
+    "better-sqlite3": "^12.6.0",
     "body-parser": "2.2.2",
     "chart.js": "^4.5.1",
     "cheerio": "^1.1.2",
     "cookie-session": "2.1.1",
     "handlebars": "4.7.8",
     "lodash": "4.17.21",
+    "maplibre-gl": "^5.16.0",
     "nanoid": "5.1.6",
     "node-cron": "^4.2.1",
     "node-fetch": "3.3.2",
     "node-mailjet": "6.0.11",
     "p-throttle": "^8.1.0",
     "package-up": "^5.0.0",
-    "puppeteer": "^24.34.0",
+    "puppeteer": "^24.35.0",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
     "query-string": "9.3.1",
@@ -92,7 +93,7 @@
     "slack": "11.0.2",
     "vite": "7.3.1",
     "x-var": "^3.0.1",
-    "zustand": "^5.0.9"
+    "zustand": "^5.0.10"
   },
   "devDependencies": {
     "@babel/core": "7.28.5",
