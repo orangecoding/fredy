@@ -136,6 +136,14 @@ git worktree add ../fredy-ch-<name> -b <name>/work
 - Don't create symlinks or copy `.beads/`
 - Run Claude instances from worktrees, not main repo
 
+### Known Issue: `bd doctor` in Worktrees
+**`bd doctor` shows "No .beads/ directory found" error in worktrees — this is a false positive.**
+
+Other commands (`bd list`, `bd sync`, `bd ready`, etc.) work correctly because they find the main repo's `.beads/` automatically. Only `bd doctor` fails to detect worktree mode.
+
+- **Workaround**: Run `bd doctor` from the main repo (`fredy-ch/`), not from worktrees
+- **Tracking**: https://github.com/steveyegge/beads/issues/747
+
 ### Removing Worktrees
 ```bash
 git worktree remove ../fredy-ch-<name>
