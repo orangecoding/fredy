@@ -122,6 +122,10 @@ Test structure:
 - Feature work: create feature branch from master, PR when done
 - Beads sync: `bd sync` pushes to `beads-sync`, periodically merge to master via PR
 
+## Deployment
+
+Production runs on **Railway** at https://fredy-ch-production.up.railway.app. Railway CLI available locally. Volume mounted at `/db`.
+
 ## Notes
 - Node.js 22+ required
 - Default login: admin/admin
