@@ -7,9 +7,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useSelector, useActions } from '../../services/state/store.js';
-import { Select, Slider, Space, Typography, Button, Popover, Divider, Switch, Banner } from '@douyinfe/semi-ui';
+import { Select, Space, Typography, Button, Popover, Divider, Switch, Banner } from '@douyinfe/semi-ui';
 import { IconFilter } from '@douyinfe/semi-icons';
 import no_image from '../../assets/no_image.jpg';
+import RangeSlider from 'react-range-slider-input';
+import 'react-range-slider-input/dist/style.css';
 import './Map.less';
 
 const { Text } = Typography;
@@ -65,23 +67,31 @@ export default function MapView() {
   const markers = useRef([]);
   const actions = useActions();
   const listings = useSelector((state) => state.listingsData.mapListings);
-  const maxPriceFromStore = useSelector((state) => state.listingsData.maxPrice);
   const [style, setStyle] = useState('STANDARD');
   const [show3dBuildings, setShow3dBuildings] = useState(false);
 
   const jobs = useSelector((state) => state.jobsData.jobs);
   const [jobId, setJobId] = useState(null);
-  const [priceRange, setPriceRange] = useState([0, 100000]);
+  const [priceRange, setPriceRange] = useState([0, 0]);
   const [showFilterBar, setShowFilterBar] = useState(false);
 
-  const lastJobIdRef = useRef('__INITIAL__');
-
   useEffect(() => {
-    if (maxPriceFromStore > 0 && lastJobIdRef.current !== jobId) {
-      setPriceRange([0, maxPriceFromStore]);
-      lastJobIdRef.current = jobId;
-    }
-  }, [maxPriceFromStore, jobId]);
+    setPriceRange([0, getMaxPrice()]);
+  }, [listings]);
+
+  const getMaxPrice = () => {
+    return listings.reduce((max, item) => {
+      const price = Number(item.price);
+      return Number.isFinite(price) && price > max ? price : max;
+    }, -Infinity);
+  };
+
+  const filterListings = () => {
+    const min = priceRange[0];
+    const max = priceRange[1] && priceRange[1] > 0 ? priceRange[1] : getMaxPrice();
+
+    return listings.filter((listing) => listing.price && listing.price >= min && listing.price <= max);
+  };
 
   useEffect(() => {
     if (map.current) return;
@@ -97,11 +107,20 @@ export default function MapView() {
 
     map.current.addControl(
       new maplibregl.NavigationControl({
-        showCompass: false,
+        showCompass: true,
         visualizePitch: true,
         visualizeRoll: true,
       }),
       'top-right',
+    );
+
+    map.current.addControl(
+      new maplibregl.GeolocateControl({
+        positionOptions: {
+          enableHighAccuracy: true,
+        },
+        trackUserLocation: true,
+      }),
     );
 
     return () => {
@@ -199,14 +218,12 @@ export default function MapView() {
   const fetchListings = async () => {
     actions.listingsData.getListingsForMap({
       jobId,
-      minPrice: priceRange[0] > 0 ? priceRange[0] : null,
-      maxPrice: maxPriceFromStore > 0 && priceRange[1] < maxPriceFromStore ? priceRange[1] : null,
     });
   };
 
   useEffect(() => {
     fetchListings();
-  }, [jobId, priceRange]);
+  }, [jobId]);
 
   useEffect(() => {
     if (!map.current) return;
@@ -214,7 +231,7 @@ export default function MapView() {
     markers.current.forEach((marker) => marker.remove());
     markers.current = [];
 
-    listings.forEach((listing) => {
+    filterListings().forEach((listing) => {
       if (
         listing.latitude != null &&
         listing.longitude != null &&
@@ -247,7 +264,7 @@ export default function MapView() {
         markers.current.push(marker);
       }
     });
-  }, [listings]);
+  }, [listings, priceRange]);
 
   return (
     <div className="map-view-container">
@@ -285,7 +302,9 @@ export default function MapView() {
                   placeholder="Job"
                   showClear
                   style={{ width: 150 }}
-                  onChange={(val) => setJobId(val)}
+                  onChange={(val) => {
+                    setJobId(val);
+                  }}
                   value={jobId}
                 >
                   {jobs?.map((j) => (
@@ -302,13 +321,18 @@ export default function MapView() {
                 <Text strong>Price Range (€):</Text>
               </div>
               <div style={{ width: 250, padding: '0 10px' }}>
-                <Slider
-                  range
+                <div className="map__rangesliderLabels">
+                  <span>{priceRange[0]} €</span>
+                  <span>{priceRange[1]} €</span>
+                </div>
+                <RangeSlider
                   min={0}
-                  max={maxPriceFromStore || 100000}
+                  max={getMaxPrice()}
                   step={100}
                   value={priceRange}
-                  onChange={(val) => setPriceRange(val)}
+                  onInput={(val) => {
+                    setPriceRange(val);
+                  }}
                   tipFormatter={(val) => `${val} €`}
                 />
               </div>

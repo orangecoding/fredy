@@ -63,11 +63,22 @@
   border-bottom-color: var(--semi-color-bg-1) !important;
 }
 
-.maplibregl-ctrl-group {
-    background: var(--semi-color-bg-1) !important;
+.map {
+  &__rangesliderLabels{
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: .3rem;
+    font-size: .7rem;
+  }
 }
-
-.maplibregl-ctrl-group button {
-    background-color: var(--semi-color-bg-1) !important;
-    border-color: var(--semi-color-border) !important;
+.range-slider .range-slider__thumb {
+  position: absolute;
+  z-index: 3;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: #2196f3;
 }
