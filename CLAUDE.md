@@ -124,6 +124,9 @@ Test structure:
 
 ## Worktrees & Beads
 
+### Long-Running Tasks
+When gaining new insights on complex or multi-session tasks, write them into the issue's comments (`bd comments <id> --add "..."`) so context isn't lost when continuing later.
+
 ### Creating Worktrees
 From main repo only:
 ```bash

@@ -2,5 +2,13 @@
   "flatfox": {
     "url": "https://www.flatfox.ch/en/search/?east=7.533549&north=47.024424&object_category=APARTMENT&offer_type=RENT&south=46.909588&west=7.318974",
     "enabled": true
+  },
+  "anibis": {
+    "url": "https://www.anibis.ch/fr/q/immobilier-berne-appartements-louer/Ak8CqcmVhbEVzdGF0ZZSSkqtsaXN0aW5nVHlwZalhcGFydG1lbnSSqXByaWNlVHlwZaRSRU5UwMCRk6hsb2NhdGlvbq1nZW8tY2l0eS1iZXJuwA",
+    "enabled": true
+  },
+  "homegate": {
+    "url": "https://www.homegate.ch/rent/apartment/city-bern/matching-list",
+    "enabled": true
   }
 }
