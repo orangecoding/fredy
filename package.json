@@ -12,7 +12,7 @@
     "format": "prettier --write \"**/*.js\"",
     "format:check": "prettier --check \"**/*.js\"",
     "test": "node --import ./test/esmock-loader.mjs ./node_modules/mocha/bin/mocha.js --timeout 60000 test/**/*.test.js",
-    "testGH": "node --import ./test/esmock-loader.mjs ./node_modules/mocha/bin/mocha.js --timeout 60000 --exclude test/provider/immonet.test.js --exclude test/provider/immobilienDe.test.js --exclude test/provider/immowelt.test.js test/**/*.test.js",
+    "testGH": "node --import ./test/esmock-loader.mjs ./node_modules/mocha/bin/mocha.js --timeout 60000 --exclude test/provider/immonet.test.js --exclude test/provider/immobilienDe.test.js --exclude test/provider/immowelt.test.js --exclude test/provider/anibis.test.js test/**/*.test.js",
     "lint": "eslint .",
     "lint:fix": "npm run lint -- --fix",
     "migratedb": "node lib/services/storage/migrations/migrate.js",
