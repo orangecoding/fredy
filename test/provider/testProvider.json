@@ -10,5 +10,9 @@
   "homegate": {
     "url": "https://www.homegate.ch/rent/apartment/city-bern/matching-list",
     "enabled": true
+  },
+  "newhome": {
+    "url": "https://www.newhome.ch/en/rent/apartment/location-bern/list",
+    "enabled": true
   }
 }
