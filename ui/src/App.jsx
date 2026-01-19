@@ -8,6 +8,7 @@ import React, { useEffect } from 'react';
 import InsufficientPermission from './components/permission/InsufficientPermission';
 import PermissionAwareRoute from './components/permission/PermissionAwareRoute';
 import GeneralSettings from './views/generalSettings/GeneralSettings';
+import UserSettings from './views/userSettings/UserSettings';
 import JobMutation from './views/jobs/mutation/JobMutation';
 import UserMutator from './views/user/mutation/UserMutator';
 import { useActions, useSelector } from './services/state/store';
@@ -120,6 +121,14 @@ export default function FredyApp() {
                 element={
                   <PermissionAwareRoute currentUser={currentUser}>
                     <Users />
+                  </PermissionAwareRoute>
+                }
+              />
+              <Route
+                path="/userSettings"
+                element={
+                  <PermissionAwareRoute currentUser={currentUser} adminOnly={false}>
+                    <UserSettings />
                   </PermissionAwareRoute>
                 }
               />

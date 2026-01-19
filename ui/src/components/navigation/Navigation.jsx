@@ -46,6 +46,7 @@ export default function Navigation({ isAdmin }) {
   if (isAdmin) {
     const settingsItems = [
       { itemKey: '/users', text: 'User Management' },
+      { itemKey: '/userSettings', text: 'User Specific Settings' },
       { itemKey: '/generalSettings', text: 'General Settings' },
     ];
     if (watchlistFeature) {
@@ -57,6 +58,13 @@ export default function Navigation({ isAdmin }) {
       text: 'Settings',
       icon: <IconSetting />,
       items: settingsItems,
+    });
+  } else {
+    items.push({
+      itemKey: 'settings',
+      text: 'Settings',
+      icon: <IconSetting />,
+      items: [{ itemKey: '/userSettings', text: 'User Specific Settings' }],
     });
   }
 
