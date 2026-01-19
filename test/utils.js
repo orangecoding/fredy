@@ -15,6 +15,9 @@ export const mockFredy = async () => {
     '../lib/services/storage/listingsStorage.js': {
       ...mockStore,
     },
+    '../lib/services/storage/jobStorage.js': {
+      getJob: (jobKey) => ({ id: jobKey, userId: 'user1' }),
+    },
     '../lib/notification/notify.js': {
       send,
     },
