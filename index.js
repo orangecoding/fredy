@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 by Christian Kellner.
+ * Copyright (c) 2026 by Christian Kellner.
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
@@ -12,6 +12,7 @@ import { cleanupDemoAtMidnight } from './lib/services/crons/demoCleanup-cron.js'
 import { initTrackerCron } from './lib/services/crons/tracker-cron.js';
 import logger from './lib/services/logger.js';
 import { initActiveCheckerCron } from './lib/services/crons/listing-alive-cron.js';
+import { initGeocodingCron } from './lib/services/crons/geocoding-cron.js';
 import { getSettings } from './lib/services/storage/settingsStorage.js';
 import SqliteConnection, { computeDbPath } from './lib/services/storage/SqliteConnection.js';
 import { initJobExecutionService } from './lib/services/jobs/jobExecutionService.js';
@@ -61,6 +62,7 @@ ensureDemoUserExists();
 await initTrackerCron();
 //do not wait for this to finish, let it run in the background
 initActiveCheckerCron();
+initGeocodingCron();
 
 logger.info(`Started Fredy successfully. Ui can be accessed via http://localhost:${settings.port}`);
 
