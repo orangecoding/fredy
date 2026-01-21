@@ -26,6 +26,7 @@ import {
   IconDelete,
   IconDescend2,
   IconEdit,
+  IconCopy,
   IconPlayCircle,
   IconBriefcase,
   IconBell,
@@ -365,6 +366,17 @@ const JobGrid = () => {
                         icon={<IconEdit />}
                         disabled={job.isOnlyShared}
                         onClick={() => navigate(`/jobs/edit/${job.id}`)}
+                      />
+                    </div>
+                  </Popover>
+                  <Popover content={getPopoverContent('Clone Job')}>
+                    <div>
+                      <Button
+                        type="tertiary"
+                        theme="solid"
+                        icon={<IconCopy />}
+                        disabled={job.isOnlyShared}
+                        onClick={() => navigate('/jobs/new', { state: { cloneFrom: job.id } })}
                       />
                     </div>
                   </Popover>
