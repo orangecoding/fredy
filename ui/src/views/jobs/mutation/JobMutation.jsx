@@ -13,7 +13,7 @@ import Headline from '../../../components/headline/Headline';
 import { useActions, useSelector } from '../../../services/state/store';
 import { xhrPost } from '../../../services/xhr';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Divider, Input, Switch, Button, TagInput, Toast, Select } from '@douyinfe/semi-ui';
+import { Divider, Input, Switch, Button, TagInput, Toast, Select } from '@douyinfe/semi-ui-19';
 import './JobMutation.less';
 import { SegmentPart } from '../../../components/segment/SegmentPart';
 import {

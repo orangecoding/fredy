@@ -19,7 +19,7 @@ import {
   Select,
   Popover,
   Empty,
-} from '@douyinfe/semi-ui';
+} from '@douyinfe/semi-ui-19';
 import {
   IconBriefcase,
   IconCart,
@@ -108,12 +108,14 @@ const ListingsGrid = () => {
       <div className="listingsGrid__searchbar">
         <Input prefix={<IconSearch />} showClear placeholder="Search" onChange={handleFilterChange} />
         <Popover content="Filter / Sort Results" style={{ color: 'white', padding: '.5rem' }}>
-          <Button
-            icon={<IconFilter />}
-            onClick={() => {
-              setShowFilterBar(!showFilterBar);
-            }}
-          />
+          <div>
+            <Button
+              icon={<IconFilter />}
+              onClick={() => {
+                setShowFilterBar(!showFilterBar);
+              }}
+            />
+          </div>
         </Popover>
       </div>
       {showFilterBar && (

@@ -20,7 +20,7 @@ import {
   Pagination,
   Toast,
   Empty,
-} from '@douyinfe/semi-ui';
+} from '@douyinfe/semi-ui-19';
 import {
   IconAlertTriangle,
   IconDelete,
@@ -198,12 +198,14 @@ const JobGrid = () => {
         <div className="jobGrid__searchbar">
           <Input prefix={<IconSearch />} showClear placeholder="Search" onChange={handleFilterChange} />
           <Popover content="Filter / Sort Results" style={{ color: 'white', padding: '.5rem' }}>
-            <Button
-              icon={<IconFilter />}
-              onClick={() => {
-                setShowFilterBar(!showFilterBar);
-              }}
-            />
+            <div>
+              <Button
+                icon={<IconFilter />}
+                onClick={() => {
+                  setShowFilterBar(!showFilterBar);
+                }}
+              />
+            </div>
           </Popover>
         </div>
       </div>
@@ -287,7 +289,9 @@ const JobGrid = () => {
                           'This job has been shared with you by another user, therefor it is read-only.',
                         )}
                       >
-                        <IconAlertTriangle style={{ color: 'rgba(var(--semi-yellow-7), 1)', marginLeft: '8px' }} />
+                        <div>
+                          <IconAlertTriangle style={{ color: 'rgba(var(--semi-yellow-7), 1)', marginLeft: '8px' }} />
+                        </div>
                       </Popover>
                     )}
                   </div>
@@ -343,40 +347,48 @@ const JobGrid = () => {
 
                 <div className="jobGrid__actions">
                   <Popover content={getPopoverContent('Run Job')}>
-                    <Button
-                      type="primary"
-                      theme="solid"
-                      icon={<IconPlayCircle />}
-                      disabled={job.isOnlyShared || job.running}
-                      onClick={() => onJobRun(job.id)}
-                    />
+                    <div>
+                      <Button
+                        type="primary"
+                        theme="solid"
+                        icon={<IconPlayCircle />}
+                        disabled={job.isOnlyShared || job.running}
+                        onClick={() => onJobRun(job.id)}
+                      />
+                    </div>
                   </Popover>
                   <Popover content={getPopoverContent('Edit a Job')}>
-                    <Button
-                      type="secondary"
-                      theme="solid"
-                      icon={<IconEdit />}
-                      disabled={job.isOnlyShared}
-                      onClick={() => navigate(`/jobs/edit/${job.id}`)}
-                    />
+                    <div>
+                      <Button
+                        type="secondary"
+                        theme="solid"
+                        icon={<IconEdit />}
+                        disabled={job.isOnlyShared}
+                        onClick={() => navigate(`/jobs/edit/${job.id}`)}
+                      />
+                    </div>
                   </Popover>
                   <Popover content={getPopoverContent('Delete all found Listings of this Job')}>
-                    <Button
-                      type="danger"
-                      theme="solid"
-                      icon={<IconDescend2 />}
-                      disabled={job.isOnlyShared}
-                      onClick={() => onListingRemoval(job.id)}
-                    />
+                    <div>
+                      <Button
+                        type="danger"
+                        theme="solid"
+                        icon={<IconDescend2 />}
+                        disabled={job.isOnlyShared}
+                        onClick={() => onListingRemoval(job.id)}
+                      />
+                    </div>
                   </Popover>
                   <Popover content={getPopoverContent('Delete Job')}>
-                    <Button
-                      type="danger"
-                      theme="solid"
-                      icon={<IconDelete />}
-                      disabled={job.isOnlyShared}
-                      onClick={() => onJobRemoval(job.id)}
-                    />
+                    <div>
+                      <Button
+                        type="danger"
+                        theme="solid"
+                        icon={<IconDelete />}
+                        disabled={job.isOnlyShared}
+                        onClick={() => onJobRemoval(job.id)}
+                      />
+                    </div>
                   </Popover>
                 </div>
               </div>

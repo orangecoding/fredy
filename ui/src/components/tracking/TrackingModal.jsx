@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { Modal } from '@douyinfe/semi-ui';
+import { Modal } from '@douyinfe/semi-ui-19';
 import Logo from '../logo/Logo.jsx';
 import { xhrPost } from '../../services/xhr.js';
 

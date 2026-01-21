@@ -19,12 +19,12 @@ import Jobs from './views/jobs/Jobs';
 
 import './App.less';
 import TrackingModal from './components/tracking/TrackingModal.jsx';
-import { Banner, Divider } from '@douyinfe/semi-ui';
+import { Banner, Divider } from '@douyinfe/semi-ui-19';
 import VersionBanner from './components/version/VersionBanner.jsx';
 import Listings from './views/listings/Listings.jsx';
 import MapView from './views/listings/Map.jsx';
 import Navigation from './components/navigation/Navigation.jsx';
-import { Layout } from '@douyinfe/semi-ui';
+import { Layout } from '@douyinfe/semi-ui-19';
 import FredyFooter from './components/footer/FredyFooter.jsx';
 import WatchlistManagement from './views/listings/management/WatchlistManagement.jsx';
 import Dashboard from './views/dashboard/Dashboard.jsx';

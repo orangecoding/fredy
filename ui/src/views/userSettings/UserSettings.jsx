@@ -4,7 +4,7 @@
  */
 
 import React, { useEffect, useState, useMemo } from 'react';
-import { Divider, Button, AutoComplete, Toast, Typography, Banner } from '@douyinfe/semi-ui';
+import { Divider, Button, AutoComplete, Toast, Typography, Banner } from '@douyinfe/semi-ui-19';
 import { IconSave, IconHome } from '@douyinfe/semi-icons';
 import { xhrGet, xhrPost } from '../../services/xhr';
 import { SegmentPart } from '../../components/segment/SegmentPart';

@@ -4,9 +4,9 @@
  */
 
 import React from 'react';
-import { Collapse, Descriptions } from '@douyinfe/semi-ui';
+import { Collapse, Descriptions } from '@douyinfe/semi-ui-19';
 import { useSelector } from '../../services/state/store.js';
-import { MarkdownRender } from '@douyinfe/semi-ui';
+import { MarkdownRender } from '@douyinfe/semi-ui-19';
 
 import './VersionBanner.less';
 

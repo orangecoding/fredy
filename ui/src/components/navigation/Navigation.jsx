@@ -4,7 +4,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { Button, Nav } from '@douyinfe/semi-ui';
+import { Button, Nav } from '@douyinfe/semi-ui-19';
 import { IconStar, IconSetting, IconTerminal, IconHistogram, IconSidebar } from '@douyinfe/semi-icons';
 import logoWhite from '../../assets/logo_white.png';
 import heart from '../../assets/heart.png';

@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { Modal } from '@douyinfe/semi-ui';
+import { Modal } from '@douyinfe/semi-ui-19';
 const UserRemovalModal = function UserRemovalModal({ onOk, onCancel }) {
   return (
     <Modal title="Removing user" visible={true} closable={false} onOk={onOk} onCancel={onCancel}>
