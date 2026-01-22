@@ -8,6 +8,7 @@ import React, { useEffect } from 'react';
 import InsufficientPermission from './components/permission/InsufficientPermission';
 import PermissionAwareRoute from './components/permission/PermissionAwareRoute';
 import GeneralSettings from './views/generalSettings/GeneralSettings';
+import UserSettings from './views/userSettings/UserSettings';
 import JobMutation from './views/jobs/mutation/JobMutation';
 import UserMutator from './views/user/mutation/UserMutator';
 import { useActions, useSelector } from './services/state/store';
@@ -18,12 +19,12 @@ import Jobs from './views/jobs/Jobs';
 
 import './App.less';
 import TrackingModal from './components/tracking/TrackingModal.jsx';
-import { Banner, Divider } from '@douyinfe/semi-ui';
+import { Banner, Divider } from '@douyinfe/semi-ui-19';
 import VersionBanner from './components/version/VersionBanner.jsx';
 import Listings from './views/listings/Listings.jsx';
 import MapView from './views/listings/Map.jsx';
 import Navigation from './components/navigation/Navigation.jsx';
-import { Layout } from '@douyinfe/semi-ui';
+import { Layout } from '@douyinfe/semi-ui-19';
 import FredyFooter from './components/footer/FredyFooter.jsx';
 import WatchlistManagement from './views/listings/management/WatchlistManagement.jsx';
 import Dashboard from './views/dashboard/Dashboard.jsx';
@@ -120,6 +121,14 @@ export default function FredyApp() {
                 element={
                   <PermissionAwareRoute currentUser={currentUser}>
                     <Users />
+                  </PermissionAwareRoute>
+                }
+              />
+              <Route
+                path="/userSettings"
+                element={
+                  <PermissionAwareRoute currentUser={currentUser} adminOnly={false}>
+                    <UserSettings />
                   </PermissionAwareRoute>
                 }
               />

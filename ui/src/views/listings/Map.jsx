@@ -7,7 +7,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useSelector, useActions } from '../../services/state/store.js';
-import { Select, Space, Typography, Button, Popover, Divider, Switch, Banner } from '@douyinfe/semi-ui';
+import { Select, Space, Typography, Button, Popover, Divider, Switch, Banner } from '@douyinfe/semi-ui-19';
 import { IconFilter } from '@douyinfe/semi-icons';
 import no_image from '../../assets/no_image.jpg';
 import RangeSlider from 'react-range-slider-input';
@@ -281,12 +281,14 @@ export default function MapView() {
           </div>
         </div>
         <Popover content="Filter Results" style={{ color: 'white', padding: '.5rem' }}>
-          <Button
-            icon={<IconFilter />}
-            onClick={() => {
-              setShowFilterBar(!showFilterBar);
-            }}
-          />
+          <div>
+            <Button
+              icon={<IconFilter />}
+              onClick={() => {
+                setShowFilterBar(!showFilterBar);
+              }}
+            />
+          </div>
         </Popover>
       </div>
 

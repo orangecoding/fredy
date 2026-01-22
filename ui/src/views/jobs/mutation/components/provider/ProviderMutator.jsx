@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 
-import { Banner, Modal, Select, Input } from '@douyinfe/semi-ui';
+import { Banner, Modal, Select, Input } from '@douyinfe/semi-ui-19';
 import { transform } from '../../../../../services/transformer/providerTransformer';
 import { useSelector } from '../../../../../services/state/store';
 import { IconLikeHeart } from '@douyinfe/semi-icons';

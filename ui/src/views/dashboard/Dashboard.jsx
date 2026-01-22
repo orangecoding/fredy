@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { Button, Col, Row, Toast } from '@douyinfe/semi-ui';
+import { Button, Col, Row, Toast } from '@douyinfe/semi-ui-19';
 import {
   IconTerminal,
   IconStar,

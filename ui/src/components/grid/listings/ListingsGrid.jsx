@@ -19,7 +19,7 @@ import {
   Select,
   Popover,
   Empty,
-} from '@douyinfe/semi-ui';
+} from '@douyinfe/semi-ui-19';
 import {
   IconBriefcase,
   IconCart,
@@ -31,6 +31,7 @@ import {
   IconStarStroked,
   IconSearch,
   IconFilter,
+  IconActivity,
 } from '@douyinfe/semi-icons';
 import no_image from '../../../assets/no_image.jpg';
 import * as timeService from '../../../services/time/timeService.js';
@@ -107,12 +108,14 @@ const ListingsGrid = () => {
       <div className="listingsGrid__searchbar">
         <Input prefix={<IconSearch />} showClear placeholder="Search" onChange={handleFilterChange} />
         <Popover content="Filter / Sort Results" style={{ color: 'white', padding: '.5rem' }}>
-          <Button
-            icon={<IconFilter />}
-            onClick={() => {
-              setShowFilterBar(!showFilterBar);
-            }}
-          />
+          <div>
+            <Button
+              icon={<IconFilter />}
+              onClick={() => {
+                setShowFilterBar(!showFilterBar);
+              }}
+            />
+          </div>
         </Popover>
       </div>
       {showFilterBar && (
@@ -272,6 +275,15 @@ const ListingsGrid = () => {
                   <Text type="tertiary" size="small" icon={<IconBriefcase />}>
                     {item.provider.charAt(0).toUpperCase() + item.provider.slice(1)}
                   </Text>
+                  {item.distance_to_destination ? (
+                    <Text type="tertiary" size="small" icon={<IconActivity />}>
+                      {item.distance_to_destination} m to chosen address
+                    </Text>
+                  ) : (
+                    <Text type="tertiary" size="small" icon={<IconActivity />}>
+                      Distance cannot be calculated, provide an address
+                    </Text>
+                  )}
                 </Space>
                 <Divider margin=".6rem" />
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
