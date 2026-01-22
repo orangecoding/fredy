@@ -15,6 +15,12 @@ export const mockFredy = async () => {
     '../lib/services/storage/listingsStorage.js': {
       ...mockStore,
     },
+    '../lib/services/storage/settingsStorage.js': {
+      ...mockStore,
+    },
+    '../lib/services/geocoding/geoCodingService.js': {
+      geocodeAddress: mockStore.getGeocoordinatesByAddress,
+    },
     '../lib/services/storage/jobStorage.js': {
       getJob: (jobKey) => ({ id: jobKey, userId: 'user1' }),
     },
