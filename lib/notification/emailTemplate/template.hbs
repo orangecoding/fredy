@@ -1,0 +1,131 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Fredy found some new listings</title>
+    <style type="text/css">
+        body { margin:0; padding:0; background:#000000; }
+        table { border-collapse:collapse; }
+        img { border:0; outline:none; text-decoration:none; display:block; }
+        a { text-decoration:none; }
+        .container { width:100%; max-width:640px; margin:0 auto; }
+        .card { background:#111111; border:1px solid #222222; border-radius:8px; overflow:hidden; }
+        .divider { height:2px; line-height:2px; font-size:0; background:#00dc73; }
+        .h1 { font:700 18px/1.4 Arial, Helvetica, sans-serif; color:#ffffff; margin:0; }
+        .h2 { font:700 16px/1.4 Arial, Helvetica, sans-serif; color:#ffffff; margin:0; }
+        .p { font:400 14px/1.6 Arial, Helvetica, sans-serif; color:#d9d9d9; margin:0; }
+        .meta { font:400 13px/1.5 Arial, Helvetica, sans-serif; color:#bfbfbf; }
+        .btn { background:#00dc73; color:#0b0b0b; font:700 14px/1 Arial, Helvetica, sans-serif; padding:12px 18px; border-radius:6px; display:inline-block; }
+        .sp-8 { height:8px; line-height:8px; font-size:0; }
+        .sp-12 { height:12px; line-height:12px; font-size:0; }
+        .sp-16 { height:16px; line-height:16px; font-size:0; }
+        .sp-20 { height:20px; line-height:20px; font-size:0; }
+        .sp-24 { height:24px; line-height:24px; font-size:0; }
+        @media screen and (max-width:480px){
+            .container { width:100% !important; }
+            .stack { display:block !important; width:100% !important; }
+        }
+    </style>
+</head>
+<body style="background:#000000;">
+<table role="presentation" width="100%" bgcolor="#000000">
+    <tr>
+        <td align="center">
+            <table role="presentation" class="container" width="640">
+                <tr><td class="sp-20"></td></tr>
+                <tr>
+                    <td align="center">
+                        <table role="presentation" width="100%">
+                            <tr>
+                                <td align="center">
+                                    <h1 class="h1" style="text-align:center;">
+                                        Service {{serviceName}} found {{numberOfListings}} new listings
+                                    </h1>
+                                </td>
+                            </tr>
+                            <tr><td class="sp-12"></td></tr>
+                            <tr><td class="divider"></td></tr>
+                            <tr><td class="sp-16"></td></tr>
+                        </table>
+                    </td>
+                </tr>
+
+                {{#each listings}}
+                    <tr>
+                        <td>
+                            <table role="presentation" class="card" width="100%">
+                                {{#if this.hasImage}}
+                                    <tr>
+                                        <td>
+                                            <a href="{{this.link}}" target="_blank">
+                                                <img src="{{this.image}}" alt="{{this.title}}" width="640" style="width:100%;height:auto;background:#1a1a1a;" />
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {{/if}}
+                                <tr>
+                                    <td style="padding:16px 18px 0 18px;">
+                                        <a href="{{this.link}}" target="_blank" style="color:#ffffff;">
+                                            <h2 class="h2">{{this.title}}</h2>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr><td class="sp-8"></td></tr>
+                                <tr>
+                                    <td style="padding:0 18px;">
+                                        <table role="presentation" width="100%">
+                                            <tr>
+                                                <td class="stack" style="vertical-align:top; width:50%; padding-right:8px;">
+                                                    <p class="meta"><strong>Price</strong><br/>{{#if this.price}}{{this.price}}{{else}}unknown{{/if}}</p>
+                                                </td>
+                                                <td class="stack" style="vertical-align:top; width:50%; padding-left:8px;">
+                                                    <p class="meta"><strong>Size</strong><br/>{{#if this.size}}{{this.size}}{{else}}unknown{{/if}}</p>
+                                                </td>
+                                            </tr>
+                                            <tr><td class="sp-8"></td><td class="sp-8"></td></tr>
+                                            <tr>
+                                                <td colspan="2">
+                                                    <p class="meta"><strong>Address</strong><br/>{{#if this.address}}{{this.address}}{{else}}unknown{{/if}}</p>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr><td class="sp-16"></td></tr>
+                                <tr>
+                                    <td align="left" style="padding:0 18px 18px 18px;">
+                                        <!--[if mso]>
+                    <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" href="{{this.link}}" arcsize="8%" strokecolor="#00dc73" strokeweight="0" fillcolor="#00dc73" style="height:40px;v-text-anchor:middle;width:180px;">
+                      <w:anchorlock/>
+                      <center style="color:#0b0b0b;font-family:Arial;font-size:14px;font-weight:bold;">
+                        View Listing
+                      </center>
+                    </v:roundrect>
+                    <![endif]-->
+                                        <!--[if !mso]><!-- -->
+                                        <a href="{{this.link}}" class="btn" target="_blank">View Listing</a>
+                                        <!--<![endif]-->
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr><td class="sp-24"></td></tr>
+                {{/each}}
+
+                <tr><td class="divider"></td></tr>
+                <tr><td class="sp-16"></td></tr>
+                <tr>
+                    <td align="center">
+                        <p class="p" style="color:#9f9f9f;">Powered by Fredy</p>
+                    </td>
+                </tr>
+                <tr><td class="sp-20"></td></tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

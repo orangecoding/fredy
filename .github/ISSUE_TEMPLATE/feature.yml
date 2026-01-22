@@ -1,0 +1,51 @@
+name: Feature Request
+description: Suggest an improvement or new idea for Fredy
+title: "[Feature]: "
+labels: [enhancement]
+assignees: []
+
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Related Problem
+      description: Is your feature request related to a problem? Describe it clearly.
+      placeholder: "Example: It’s difficult to do X when Y happens..."
+    validations:
+      required: false
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Feature
+      description: Describe the feature you would like to see.
+      placeholder: "I would like Fredy to automatically..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: List any alternative solutions or workarounds you’ve tried or thought about.
+      placeholder: "Instead of this, I also considered..."
+    validations:
+      required: false
+
+  - type: textarea
+    id: benefits
+    attributes:
+      label: Benefits
+      description: Explain how this feature would improve Fredy or it's user experience.
+      placeholder: "This would save users time by..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Add any other context, examples, or screenshots that might help clarify your idea.
+      placeholder: "Any other relevant information..."
+    validations:
+      required: false

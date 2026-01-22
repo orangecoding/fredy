@@ -1,0 +1,26 @@
+services:
+  fredy:
+    container_name: fredy
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ghcr.io/orangecoding/fredy
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./conf:/conf
+      - ./db:/db
+    ports:
+      - "9998:9998"
+    restart: unless-stopped
+    # Resource limits to prevent runaway memory usage from Chromium
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "--show-error", "--max-time", "5", "http://localhost:9998/"]
+      interval: 120s
+      timeout: 10s
+      retries: 3
+      start_period: 30s

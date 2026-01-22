@@ -1,0 +1,23 @@
+.chartCard {
+  /* Use provided background with slight transparency and a brighter mix */
+  background: color-mix(in oklab, var(--card-bg, rgb(70 72 78)) 20%, white 80%);
+  border-radius: .6rem;
+  border: 1px solid color-mix(in oklab, var(--card-bg, rgb(70 72 78)) 35%, white 65%);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  /* Ensure base text has strong contrast */
+  color: var(--semi-color-text-0);
+
+  /* Semi Card header/title styling */
+  .semi-card-header .semi-card-header-title {
+    /* Derive a tinted title color with stronger contrast towards black */
+    color: color-mix(in oklab, var(--card-bg, rgb(70 72 78)) 60%, black 40%);
+    font-weight: 600;
+  }
+
+  &__no__data {
+    display: grid;
+    place-items: center;
+    height: 14rem;
+    opacity: .7;
+  }
+}

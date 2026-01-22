@@ -1,0 +1,22 @@
+{
+  "buyHouseInParts": {
+    "url": "https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/haus-kaufen?numberofrooms=1.0-10000.0&price=1.0-1000000.0E7&livingspace=1.0-10000.0&geocodes=1276010037,1276010014,1276010012&enteredFrom=result_list",
+    "type": "housebuy"
+  },
+  "buyHouse": {
+    "url": "https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/duesseldorf/haus-kaufen?numberofrooms=1.0-10000.0&price=1.0-1000000.0E7&livingspace=1.0-10000.0&enteredFrom=result_list",
+    "type": "housebuy"
+  },
+  "rentApartment": {
+    "url": "https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/duesseldorf/wohnung-mieten?numberofrooms=1.5-&price=1.0-1000000.0&livingspace=1.0-10000.0&pricetype=rentpermonth&enteredFrom=result_list",
+    "type": "apartmentrent"
+  },
+  "buyApartment": {
+    "url": "https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/duesseldorf/wohnung-kaufen?numberofrooms=1.5-10000.0&price=1.0-1000000.0&livingspace=1.0-10000.0&enteredFrom=result_list",
+    "type": "apartmentbuy"
+  },
+  "rentHouse": {
+    "url": "https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/duesseldorf/haus-mieten?enteredFrom=one_step_search",
+    "type": "houserent"
+  }
+}

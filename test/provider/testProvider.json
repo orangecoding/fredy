@@ -1,0 +1,59 @@
+{
+  "einsAImmobilien": {
+    "url": "https://www.1a-immobilienmarkt.de/suchen/duesseldorf/wohnung-kaufen.html?search=yes&cfid=98b39c7e-b403-4764-8f3c-57bf590923d0&data_hash=f46f89548257740094dd708996adcd68&sort_type=newest",
+    "enabled": true,
+    "id": "einsAImmobilien"
+  },
+  "immobilienDe": {
+    "url": "https://www.immobilien.de/Wohnen/Suchergebnisse-51797.html?search._digest=true&search._filter=wohnen&search.flaeche_von=50&search.objektart=wohnung&search.preis_bis=1200&search.typ=mieten&search.umkreis=15&search.wo=district%3A2434%2C2695%2C2621%2C2700%2C2967%2C2734%2C2909%2C2955%2C2392%2C2746%2C2767%2C2982%2C2904%2C2612%2C2892%2C2587%2C2871%2C2975%2C2591%2C2887%2C2569%2C2640%2C2735&sort_col=*created_ts&sort_dir=desc",
+    "enabled": true
+  },
+  "immonet": {
+    "url": "https://www.immonet.de/classified-search?distributionTypes=Buy,Buy_Auction,Compulsory_Auction&estateTypes=House,Apartment&locations=AD08DE2112&order=Default&m=homepage_new_search_classified_search_result",
+    "enabled": true
+  },
+  "immowelt": {
+    "url": "https://www.immowelt.de/classified-search?distributionTypes=Buy,Buy_Auction,Compulsory_Auction&estateTypes=House,Apartment&locations=AD08DE2350",
+    "enabled": true
+  },
+  "immoscout": {
+    "url": "https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/duesseldorf/wohnung-mieten?enteredFrom=one_step_search",
+    "enabled": true
+  },
+  "immoswp": {
+    "url": "https://immo.swp.de/suchergebnisse?l=M%C3%BCnchen&r=0km&_multiselect_r=0km&ut=private&t=apartment%3Arental&a=de.muenchen&pf=&pt=&rf=0&rt=0&sf=50&st=&yf=&yt=&ff=&ft=&s=most_recently_updated_first&pa=&o=&ad=&u=",
+    "enabled": true
+  },
+  "kleinanzeigen": {
+    "url": "https://www.kleinanzeigen.de/s-immobilien/duesseldorf/anzeige:angebote/wohnung/k0c195l2068r5",
+    "enabled": true
+  },
+  "mcMakler": {
+    "url": "https://www.mcmakler.de/immobilien/results?placeId=62649&search=Leipzig%252C+Sachsen&propertyTypes=APARTMENT&page=0",
+    "enabled": true
+  },
+  "ohneMakler": {
+    "url": "https://www.ohne-makler.net/immobilien/wohnung-kaufen/nordrhein-westfalen/dusseldorf/",
+    "enabled": true
+  },
+  "neubauKompass": {
+    "url": "https://www.neubaukompass.de/neubau-immobilien/duesseldorf-region/eigentumswohnung/",
+    "enabled": true
+  },
+  "regionalimmobilien24": {
+    "url": "https://www.regionalimmobilien24.de/rostock/rostock/kaufen/haus/-/-/-/?rd=5",
+    "enabled": true
+  },
+  "sparkasse": {
+    "url": "https://immobilien.sparkasse.de/immobilien/treffer?marketingType=buy&objectType=flat&perimeter=10&usageType=residential&zipCityEstateId=62782__Hamburg",
+    "enabled": true
+  },
+  "wgGesucht": {
+    "url": "https://www.wg-gesucht.de/wg-zimmer-in-Duesseldorf.30.0.1.0.html",
+    "enabled": true
+  },
+  "wohnungsboerse": {
+    "url": "https://www.wohnungsboerse.net/searches/index?estate_marketing_types=kauf%2C1&marketing_type=kauf&estate_types%5B0%5D=1&is_rendite=0&estate_id=&zipcodes%5B%5D=&cities%5B%5D=Duesseldorf&districts%5B%5D=&term=D%C3%BCsseldorf&umkreiskm=&pricetext=&minprice=&maxprice=&sizetext=&minsize=&maxsize=&roomstext=&minrooms=&maxrooms=",
+    "IsActive": true
+  }
+}

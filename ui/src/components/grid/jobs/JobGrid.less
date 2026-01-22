@@ -1,0 +1,69 @@
+.jobGrid {
+  &__card {
+    height: 100%;
+    transition: transform 0.2s;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--semi-shadow-elevated);
+    }
+  }
+
+  &__searchbar {
+    display: flex;
+    gap: .5rem;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  &__toolbar {
+    &__card {
+      border-radius: 5px;
+      display: flex;
+      flex-direction: column;
+      gap: .3rem;
+      background: #232429;
+      padding: 0.5rem;
+    }
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__title {
+    margin-bottom: 0 !important;
+  }
+
+  &__infoItem {
+    display: flex;
+    align-items: center;
+    width: 100%;
+
+    .semi-typography {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  &__pagination {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.jobPopoverContent {
+    padding: .4rem;
+    color: var(--semi-color-white);
+}
