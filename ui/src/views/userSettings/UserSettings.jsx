@@ -90,7 +90,7 @@ const UserSettings = () => {
       <SegmentPart
         name="Distance claculation"
         Icon={IconHome}
-        helpText="Your address is used to calculate the distance between your chosen location and each listing. The distance is computed using an approximate mathematical method and is intended to give you a rough indication of commute time. If you update your address, we will recalculate the distance for all active listings."
+        helpText="The address you enter is used to calculate the distance between your chosen location and each listing. The distance is computed using an approximate mathematical method and is intended to give you a rough indication of commute time. If you update your address, we will recalculate the distance for all active listings."
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '600px' }}>
           <AutoComplete

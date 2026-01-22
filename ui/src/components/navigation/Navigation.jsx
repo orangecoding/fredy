@@ -12,7 +12,6 @@ import Logout from '../logout/Logout.jsx';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import './Navigate.less';
-import { useFeature } from '../../hooks/featureHook.js';
 import { useScreenWidth } from '../../hooks/screenWidth.js';
 
 export default function Navigation({ isAdmin }) {
@@ -21,7 +20,6 @@ export default function Navigation({ isAdmin }) {
 
   const width = useScreenWidth();
   const [collapsed, setCollapsed] = useState(width <= 850);
-  const watchlistFeature = useFeature('WATCHLIST_MANAGEMENT') || false;
 
   useEffect(() => {
     if (width <= 850) {
@@ -49,9 +47,6 @@ export default function Navigation({ isAdmin }) {
       { itemKey: '/userSettings', text: 'User Specific Settings' },
       { itemKey: '/generalSettings', text: 'General Settings' },
     ];
-    if (watchlistFeature) {
-      settingsItems.push({ itemKey: '/watchlistManagement', text: 'Watchlist Management' });
-    }
 
     items.push({
       itemKey: 'settings',
