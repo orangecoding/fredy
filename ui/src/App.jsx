@@ -40,12 +40,12 @@ export default function FredyApp() {
     async function init() {
       await actions.user.getCurrentUser();
       if (!needsLogin()) {
-        await actions.features.getFeatures();
         await actions.provider.getProvider();
         await actions.jobsData.getJobs();
         await actions.jobsData.getSharableUserList();
         await actions.notificationAdapter.getAdapter();
         await actions.generalSettings.getGeneralSettings();
+        await actions.userSettings.getUserSettings();
         await actions.versionUpdate.getVersionUpdate();
       }
       setLoading(false);

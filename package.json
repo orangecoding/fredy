@@ -1,6 +1,6 @@
 {
   "name": "fredy",
-  "version": "19.0.0",
+  "version": "19.1.0",
   "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
   "scripts": {
     "prepare": "husky",
@@ -68,7 +68,7 @@
     "better-sqlite3": "^12.6.2",
     "body-parser": "2.2.2",
     "chart.js": "^4.5.1",
-    "cheerio": "^1.1.2",
+    "cheerio": "^1.2.0",
     "cookie-session": "2.1.1",
     "handlebars": "4.7.8",
     "lodash": "4.17.23",
@@ -87,8 +87,8 @@
     "react-chartjs-2": "^5.3.1",
     "react-dom": "19.2.3",
     "react-range-slider-input": "^3.3.2",
-    "react-router": "7.12.0",
-    "react-router-dom": "7.12.0",
+    "react-router": "7.13.0",
+    "react-router-dom": "7.13.0",
     "restana": "5.1.0",
     "semver": "^7.7.3",
     "serve-static": "2.2.1",
