@@ -6,6 +6,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { Divider, Button, AutoComplete, Toast, Typography, Banner } from '@douyinfe/semi-ui-19';
 import { IconSave, IconHome } from '@douyinfe/semi-icons';
+import { useSelector, useActions } from '../../services/state/store';
 import { xhrGet, xhrPost } from '../../services/xhr';
 import { SegmentPart } from '../../components/segment/SegmentPart';
 import debounce from 'lodash/debounce';
@@ -13,30 +14,17 @@ import debounce from 'lodash/debounce';
 const { Title } = Typography;
 
 const UserSettings = () => {
-  const [address, setAddress] = useState('');
-  const [coords, setCoords] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const actions = useActions();
+  const homeAddress = useSelector((state) => state.userSettings.settings.home_address);
+  const [address, setAddress] = useState(homeAddress?.address || '');
+  const [coords, setCoords] = useState(homeAddress?.coords || null);
   const [saving, setSaving] = useState(false);
   const [dataSource, setDataSource] = useState([]);
 
   useEffect(() => {
-    fetchUserSettings();
-  }, []);
-
-  const fetchUserSettings = async () => {
-    try {
-      const response = await xhrGet('/api/user/settings');
-      if (response.status === 200) {
-        const homeAddress = response.json.home_address;
-        setAddress(homeAddress?.address || '');
-        setCoords(homeAddress?.coords || null);
-      }
-    } catch {
-      Toast.error('Failed to fetch user settings');
-    } finally {
-      setLoading(false);
-    }
-  };
+    setAddress(homeAddress?.address || '');
+    setCoords(homeAddress?.coords || null);
+  }, [homeAddress]);
 
   const handleSave = async () => {
     setSaving(true);
@@ -44,6 +32,7 @@ const UserSettings = () => {
       const response = await xhrPost('/api/user/settings', { home_address: address });
       if (response.status === 200) {
         setCoords(response.json.coords);
+        await actions.userSettings.getUserSettings();
         Toast.success('Settings saved successfully');
       } else {
         Toast.error(response.json.error || 'Failed to save settings');
@@ -78,10 +67,6 @@ const UserSettings = () => {
     }
     debouncedSearch(value);
   };
-
-  if (loading) {
-    return null;
-  }
 
   return (
     <div className="user-settings">
