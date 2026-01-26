@@ -8,7 +8,7 @@ import { renderToString } from 'react-dom/server';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useSelector, useActions } from '../../services/state/store.js';
-import { distanceMeters, generateCircleCoords, getBoundsFromCenter } from './mapUtils.js';
+import { distanceMeters, generateCircleCoords, getBoundsFromCenter, getBoundsFromCoords } from './mapUtils.js';
 import { Select, Space, Typography, Button, Popover, Divider, Switch, Banner, Toast } from '@douyinfe/semi-ui-19';
 import { IconFilter, IconLink } from '@douyinfe/semi-icons';
 import { IconDelete } from '@douyinfe/semi-icons';
@@ -248,26 +248,42 @@ export default function MapView() {
   }, [jobId]);
 
   useEffect(() => {
-    if (!map.current || !homeAddress?.coords) return;
+    if (!map.current) return;
 
-    // We only want to zoom/fly when distanceFilter OR homeAddress actually change,
-    // not on every render. useEffect dependency array handles this.
-    if (distanceFilter > 0) {
-      const bounds = getBoundsFromCenter([homeAddress.coords.lng, homeAddress.coords.lat], distanceFilter);
+    if (homeAddress?.coords) {
+      // We only want to zoom/fly when distanceFilter OR homeAddress actually change,
+      // not on every render. useEffect dependency array handles this.
+      if (distanceFilter > 0) {
+        const bounds = getBoundsFromCenter([homeAddress.coords.lng, homeAddress.coords.lat], distanceFilter);
 
-      map.current.fitBounds(bounds, {
-        padding: 20,
-        maxZoom: 15,
-        duration: 1000,
-      });
+        map.current.fitBounds(bounds, {
+          padding: 20,
+          maxZoom: 15,
+          duration: 1000,
+        });
+      } else {
+        map.current.flyTo({
+          center: [homeAddress.coords.lng, homeAddress.coords.lat],
+          zoom: 12,
+          duration: 1000,
+        });
+      }
     } else {
-      map.current.flyTo({
-        center: [homeAddress.coords.lng, homeAddress.coords.lat],
-        zoom: 12,
-        duration: 1000,
-      });
+      const filtered = filterListings();
+      const coords = filtered
+        .filter((l) => l.latitude != null && l.longitude != null && l.latitude !== -1 && l.longitude !== -1)
+        .map((l) => [l.longitude, l.latitude]);
+
+      if (coords.length > 0) {
+        const bounds = getBoundsFromCoords(coords);
+        map.current.fitBounds(bounds, {
+          padding: 50,
+          maxZoom: 15,
+          duration: 1000,
+        });
+      }
     }
-  }, [homeAddress?.address, distanceFilter]);
+  }, [homeAddress?.address, distanceFilter, listings]);
 
   useEffect(() => {
     if (!map.current) return;
