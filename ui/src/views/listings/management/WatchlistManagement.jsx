@@ -6,7 +6,7 @@
 import React, { useState } from 'react';
 import { IconHorn } from '@douyinfe/semi-icons';
 import { SegmentPart } from '../../../components/segment/SegmentPart.jsx';
-import { Banner, Button, Checkbox, Space } from '@douyinfe/semi-ui';
+import { Banner, Button, Checkbox, Space } from '@douyinfe/semi-ui-19';
 import NotificationAdapterMutator from '../../jobs/mutation/components/notificationAdapter/NotificationAdapterMutator.jsx';
 import Headline from '../../../components/headline/Headline.jsx';
 

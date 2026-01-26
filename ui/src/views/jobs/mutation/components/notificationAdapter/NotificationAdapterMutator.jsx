@@ -9,7 +9,7 @@ import { transform } from '../../../../../services/transformer/notificationAdapt
 import { xhrPost } from '../../../../../services/xhr';
 import Help from './NotificationHelpDisplay';
 import { useSelector } from '../../../../../services/state/store';
-import { Banner, Button, Form, Modal, Select, Switch } from '@douyinfe/semi-ui';
+import { Banner, Button, Form, Modal, Select, Switch } from '@douyinfe/semi-ui-19';
 
 import './NotificationAdapterMutator.less';
 import { useScreenWidth } from '../../../../../hooks/screenWidth.js';

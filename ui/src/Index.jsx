@@ -7,8 +7,8 @@ import React from 'react';
 
 import { HashRouter } from 'react-router-dom';
 import { createRoot } from 'react-dom/client';
-import en_US from '@douyinfe/semi-ui/lib/es/locale/source/en_US';
-import { LocaleProvider } from '@douyinfe/semi-ui';
+import en_US from '@douyinfe/semi-ui-19/lib/es/locale/source/en_US';
+import { LocaleProvider } from '@douyinfe/semi-ui-19';
 import App from './App';
 import './Index.less';
 

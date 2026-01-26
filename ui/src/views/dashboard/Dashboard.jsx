@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { Button, Col, Row, Toast } from '@douyinfe/semi-ui';
+import { Button, Col, Row, Toast } from '@douyinfe/semi-ui-19';
 import {
   IconTerminal,
   IconStar,
@@ -136,7 +136,7 @@ export default function Dashboard() {
                 <KpiCard
                   title="Avg. Price"
                   color="purple"
-                  value={`${!kpis.avgPriceOfListings ? '---' : kpis.avgPriceOfListings} EUR`}
+                  value={`${!kpis.avgPriceOfListings ? '---' : kpis.avgPriceOfListings} €`}
                   icon={<IconNoteMoney />}
                   description="Avg. Price of listings"
                 />

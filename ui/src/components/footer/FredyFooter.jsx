@@ -6,7 +6,7 @@
 import React from 'react';
 import './FredyFooter.less';
 import { useSelector } from '../../services/state/store.js';
-import { Typography } from '@douyinfe/semi-ui';
+import { Typography } from '@douyinfe/semi-ui-19';
 
 export default function FredyFooter() {
   const { Text } = Typography;

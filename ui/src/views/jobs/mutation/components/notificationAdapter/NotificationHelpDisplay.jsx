@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { Banner, MarkdownRender } from '@douyinfe/semi-ui';
+import { Banner, MarkdownRender } from '@douyinfe/semi-ui-19';
 
 export default function Help({ readme }) {
   return (

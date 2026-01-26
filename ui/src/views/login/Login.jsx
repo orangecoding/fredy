@@ -10,7 +10,7 @@ import Logo from '../../components/logo/Logo';
 import { xhrPost } from '../../services/xhr';
 import { useNavigate } from 'react-router-dom';
 import { useActions, useSelector } from '../../services/state/store';
-import { Input, Button, Banner, Toast } from '@douyinfe/semi-ui';
+import { Input, Button, Banner, Toast } from '@douyinfe/semi-ui-19';
 
 import './login.less';
 import { IconUser, IconLock } from '@douyinfe/semi-icons';
