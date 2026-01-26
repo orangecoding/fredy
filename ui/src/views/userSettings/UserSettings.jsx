@@ -29,7 +29,7 @@ const UserSettings = () => {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const response = await xhrPost('/api/user/settings', { home_address: address });
+      const response = await xhrPost('/api/user/settings/home-address', { home_address: address });
       if (response.status === 200) {
         setCoords(response.json.coords);
         await actions.userSettings.getUserSettings();
@@ -81,6 +81,7 @@ const UserSettings = () => {
           <AutoComplete
             data={dataSource}
             value={address}
+            showClear
             onChange={(v) => setAddress(v)}
             onSearch={searchAddress}
             placeholder="Enter your home address"

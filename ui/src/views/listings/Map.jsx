@@ -4,16 +4,20 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react';
+import { renderToString } from 'react-dom/server';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useSelector, useActions } from '../../services/state/store.js';
 import { distanceMeters, generateCircleCoords, getBoundsFromCenter } from './mapUtils.js';
-import { Select, Space, Typography, Button, Popover, Divider, Switch, Banner } from '@douyinfe/semi-ui-19';
-import { IconFilter } from '@douyinfe/semi-icons';
+import { Select, Space, Typography, Button, Popover, Divider, Switch, Banner, Toast } from '@douyinfe/semi-ui-19';
+import { IconFilter, IconLink } from '@douyinfe/semi-icons';
+import { IconDelete } from '@douyinfe/semi-icons';
+
 import no_image from '../../assets/no_image.jpg';
 import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
 import './Map.less';
+import { xhrDelete } from '../../services/xhr.js';
 
 const { Text } = Typography;
 
@@ -96,6 +100,22 @@ export default function MapView() {
 
     return listings.filter((listing) => listing.price && listing.price >= min && listing.price <= max);
   };
+
+  useEffect(() => {
+    window.deleteListing = async (id) => {
+      try {
+        await xhrDelete('/api/listings/', { ids: [id] });
+        Toast.success('Listing successfully removed');
+        fetchListings();
+      } catch (error) {
+        Toast.error(error.message || 'Error deleting listing');
+      }
+    };
+
+    return () => {
+      delete window.deleteListing;
+    };
+  }, []);
 
   useEffect(() => {
     if (map.current) return;
@@ -325,8 +345,8 @@ export default function MapView() {
           ? listing.provider.charAt(0).toUpperCase() + listing.provider.slice(1)
           : 'N/A';
 
-        const popup = new maplibregl.Popup({ offset: 25 }).setHTML(
-          `<div class="map-popup-content">
+        const popupContent = `
+          <div class="map-popup-content">
             <img src="${listing.image_url || no_image}" alt="${listing.title}" />
             <h4>${listing.title}</h4>
             <div class="info">
@@ -334,10 +354,25 @@ export default function MapView() {
               <span><strong>Address:</strong> ${listing.address || 'N/A'}</span>
               <span><strong>Job:</strong> ${listing.job_name || 'N/A'}</span>
               <span><strong>Provider:</strong> ${capitalizedProvider}</span>
-              <a href="${listing.link}" target="_blank" rel="noopener noreferrer">View Listing</a>
+              <span><strong>Size:</strong> ${listing.size != null ? `${listing.size} m²` : 'N/A'}</span>
+              <div style="display: flex; gap: 8px; margin-top: 8px; justify-content: space-between;">
+                <div class="map-popup-content__linkButton">
+                  <a href="${listing.link}" target="_blank" rel="noopener noreferrer">
+                    ${renderToString(<IconLink />)}
+                  </a>
+                </div>
+                <button
+                  class="map-popup-content__deleteButton"
+                  title="Remove"
+                  onclick="deleteListing('${listing.id}')"
+                >
+                  ${renderToString(<IconDelete />)}
+                </button>
+              </div>
             </div>
-          </div>`,
-        );
+          </div>`;
+
+        const popup = new maplibregl.Popup({ offset: 25 }).setHTML(popupContent);
 
         let color = '#3FB1CE'; // Default blue-ish
         if (distanceFilter > 0 && homeAddress?.coords) {
