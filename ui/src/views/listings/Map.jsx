@@ -18,6 +18,7 @@ import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
 import './Map.less';
 import { xhrDelete } from '../../services/xhr.js';
+import { Link } from 'react-router';
 
 const { Text } = Typography;
 
@@ -503,7 +504,12 @@ export default function MapView() {
           type="warning"
           bordered
           closeIcon={null}
-          description="You have not set your home address yet. Please do so in the settings to use the distance filter."
+          description={
+            <span>
+              You have not set your home address yet. Please do so in the <Link to="/userSettings">user settings</Link>{' '}
+              to use the distance filter.
+            </span>
+          }
         />
       )}
 
