@@ -58,7 +58,7 @@ describe('#immoscout-mobile URL conversion', () => {
       const response = await fetch(url, {
         method: 'POST',
         headers: {
-          'User-Agent': 'ImmoScout_27.3_26.0_._',
+          'User-Agent': 'ImmoScout_27.12_26.2_._',
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -75,7 +75,9 @@ describe('#immoscout-mobile URL conversion', () => {
       expect(responseBody.totalResults).to.be.greaterThan(0);
       expect(responseBody.totalResults).to.be.greaterThan(0);
       expect(responseBody.resultListItems.length).to.greaterThan(0);
-      expect(responseBody.resultListItems[0].item.realEstateType).to.equal(type);
+      expect(responseBody.resultListItems.filter((r) => r.type === 'EXPOSE_RESULT')[0].item.realEstateType).to.equal(
+        type,
+      );
     }
   });
 });

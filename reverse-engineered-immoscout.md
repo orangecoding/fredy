@@ -41,7 +41,7 @@ Challenges:
 _Returns the total number of listings for the given query._
 
 ```
-curl -H "User-Agent: ImmoScout_27.3_26.0_._" \
+curl -H "User-Agent: ImmoScout_27.12_26.2_._" \
      -H "Accept: application/json" \
      "https://api.mobile.immobilienscout24.de/search/total?searchType=region&realestatetype=apartmentrent&pricetype=calculatedtotalrent&geocodes=%2Fde%2Fberlin%2Fberlin"
 ```
@@ -63,7 +63,7 @@ _The body is json encoded and contains data specifying additional results (adver
 ```
 curl -X POST 'https://api.mobile.immobilienscout24.de/search/list?pricetype=calculatedtotalrent&realestatetype=apartmentrent&searchType=region&geocodes=%2Fde%2Fberlin%2Fberlin&pagenumber=1' \
   -H "Connection: keep-alive" \
-  -H "User-Agent: ImmoScout_27.3_26.0_._" \
+  -H "User-Agent: ImmoScout_27.12_26.2_._" \
   -H "Accept: application/json" \
   -H "Content-Type: application/json" \
   -d '{"supportedResultListType":[],"userData":{}}'
@@ -78,7 +78,7 @@ curl -X POST 'https://api.mobile.immobilienscout24.de/search/list?pricetype=calc
 The response contains additional details not included in the listing response.
 
 ```
-curl -H "User-Agent: ImmoScout_27.3_26.0_._" \
+curl -H "User-Agent: ImmoScout_27.12_26.2_._" \
      -H "Accept: application/json" \
      "https://api.mobile.immobilienscout24.de/expose/158382494"
 ```
