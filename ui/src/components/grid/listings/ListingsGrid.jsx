@@ -19,7 +19,7 @@ import {
   Select,
   Popover,
   Empty,
-} from '@douyinfe/semi-ui';
+} from '@douyinfe/semi-ui-19';
 import {
   IconBriefcase,
   IconCart,
@@ -31,6 +31,7 @@ import {
   IconStarStroked,
   IconSearch,
   IconFilter,
+  IconActivity,
 } from '@douyinfe/semi-icons';
 import no_image from '../../../assets/no_image.jpg';
 import * as timeService from '../../../services/time/timeService.js';
@@ -102,17 +103,23 @@ const ListingsGrid = () => {
     setPage(_page);
   };
 
+  const cap = (val) => {
+    return String(val).charAt(0).toUpperCase() + String(val).slice(1);
+  };
+
   return (
     <div className="listingsGrid">
       <div className="listingsGrid__searchbar">
         <Input prefix={<IconSearch />} showClear placeholder="Search" onChange={handleFilterChange} />
         <Popover content="Filter / Sort Results" style={{ color: 'white', padding: '.5rem' }}>
-          <Button
-            icon={<IconFilter />}
-            onClick={() => {
-              setShowFilterBar(!showFilterBar);
-            }}
-          />
+          <div>
+            <Button
+              icon={<IconFilter />}
+              onClick={() => {
+                setShowFilterBar(!showFilterBar);
+              }}
+            />
+          </div>
         </Popover>
       </div>
       {showFilterBar && (
@@ -248,11 +255,9 @@ const ListingsGrid = () => {
               bodyStyle={{ padding: '12px' }}
             >
               <div className="listingsGrid__content">
-                <a href={item.url} target="_blank" rel="noopener noreferrer" className="listingsGrid__titleLink">
-                  <Text strong ellipsis={{ showTooltip: true }} className="listingsGrid__title">
-                    {item.title}
-                  </Text>
-                </a>
+                <Text strong ellipsis={{ showTooltip: true }} className="listingsGrid__title">
+                  {cap(item.title)}
+                </Text>
                 <Space vertical align="start" spacing={2} style={{ width: '100%', marginTop: 8 }}>
                   <Text type="secondary" icon={<IconCart />} size="small">
                     {item.price != null ? `CHF ${item.price.toLocaleString('de-CH')}` : '-'}
@@ -272,18 +277,23 @@ const ListingsGrid = () => {
                   <Text type="tertiary" size="small" icon={<IconBriefcase />}>
                     {item.provider.charAt(0).toUpperCase() + item.provider.slice(1)}
                   </Text>
+                  {item.distance_to_destination ? (
+                    <Text type="tertiary" size="small" icon={<IconActivity />}>
+                      {item.distance_to_destination} m to chosen address
+                    </Text>
+                  ) : (
+                    <Text type="tertiary" size="small" icon={<IconActivity />}>
+                      Distance cannot be calculated, provide an address
+                    </Text>
+                  )}
                 </Space>
                 <Divider margin=".6rem" />
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Button
-                    title="Link to listing"
-                    type="primary"
-                    size="small"
-                    onClick={async () => {
-                      window.open(item.link);
-                    }}
-                    icon={<IconLink />}
-                  />
+                  <div className="listingsGrid__linkButton">
+                    <a href={item.link} target="_blank" rel="noopener noreferrer">
+                      <IconLink />
+                    </a>
+                  </div>
 
                   <Button
                     title="Remove"

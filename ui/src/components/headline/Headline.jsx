@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { Typography } from '@douyinfe/semi-ui';
+import { Typography } from '@douyinfe/semi-ui-19';
 
 export default function Headline({ text, size = 3 } = {}) {
   const { Title } = Typography;

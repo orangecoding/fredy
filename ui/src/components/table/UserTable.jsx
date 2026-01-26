@@ -7,7 +7,7 @@ import React from 'react';
 
 import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-illustrations';
 import { format } from '../../services/time/timeService';
-import { Table, Button, Empty } from '@douyinfe/semi-ui';
+import { Table, Button, Empty } from '@douyinfe/semi-ui-19';
 import { IconDelete, IconEdit } from '@douyinfe/semi-icons';
 
 const empty = (

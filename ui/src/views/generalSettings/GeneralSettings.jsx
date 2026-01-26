@@ -12,11 +12,11 @@ import React from 'react';
 
 import { useActions, useSelector } from '../../services/state/store';
 
-import { Divider, TimePicker, Button, Checkbox, Input, Modal } from '@douyinfe/semi-ui';
-import { InputNumber } from '@douyinfe/semi-ui';
+import { Divider, TimePicker, Button, Checkbox, Input, Modal } from '@douyinfe/semi-ui-19';
+import { InputNumber } from '@douyinfe/semi-ui-19';
 import { xhrPost } from '../../services/xhr';
 import { SegmentPart } from '../../components/segment/SegmentPart';
-import { Banner, Toast } from '@douyinfe/semi-ui';
+import { Banner, Toast } from '@douyinfe/semi-ui-19';
 import {
   downloadBackup as downloadBackupZip,
   precheckRestore as clientPrecheckRestore,
