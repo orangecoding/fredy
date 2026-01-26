@@ -27,9 +27,12 @@ const sortAdapter = (a, b) => {
 const validate = (selectedAdapter) => {
   const results = [];
   for (let uiElement of Object.values(selectedAdapter.fields || [])) {
-    if (uiElement.value == null && !uiElement.optional) {
+    if (uiElement.value == null && !uiElement.optional && uiElement.type !== 'boolean') {
       results.push('All fields are mandatory and must be set.');
       continue;
+    }
+    if (uiElement.type === 'boolean' && typeof uiElement.value !== 'boolean') {
+      uiElement.value = false;
     }
     if (uiElement.type === 'number') {
       const numberValue = parseFloat(uiElement.value);
