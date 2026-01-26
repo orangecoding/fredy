@@ -103,6 +103,10 @@ const ListingsGrid = () => {
     setPage(_page);
   };
 
+  const cap = (val) => {
+    return String(val).charAt(0).toUpperCase() + String(val).slice(1);
+  };
+
   return (
     <div className="listingsGrid">
       <div className="listingsGrid__searchbar">
@@ -251,11 +255,9 @@ const ListingsGrid = () => {
               bodyStyle={{ padding: '12px' }}
             >
               <div className="listingsGrid__content">
-                <a href={item.url} target="_blank" rel="noopener noreferrer" className="listingsGrid__titleLink">
-                  <Text strong ellipsis={{ showTooltip: true }} className="listingsGrid__title">
-                    {item.title}
-                  </Text>
-                </a>
+                <Text strong ellipsis={{ showTooltip: true }} className="listingsGrid__title">
+                  {cap(item.title)}
+                </Text>
                 <Space vertical align="start" spacing={2} style={{ width: '100%', marginTop: 8 }}>
                   <Text type="secondary" icon={<IconCart />} size="small">
                     {item.price} €
@@ -287,15 +289,11 @@ const ListingsGrid = () => {
                 </Space>
                 <Divider margin=".6rem" />
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Button
-                    title="Link to listing"
-                    type="primary"
-                    size="small"
-                    onClick={async () => {
-                      window.open(item.link);
-                    }}
-                    icon={<IconLink />}
-                  />
+                  <div className="listingsGrid__linkButton">
+                    <a href={item.link} target="_blank" rel="noopener noreferrer">
+                      <IconLink />
+                    </a>
+                  </div>
 
                   <Button
                     title="Remove"
