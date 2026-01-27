@@ -14,13 +14,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'yarn'
+          cache: 'npm'
 
       - name: Install dependencies
-        run: yarn install
+        run: npm ci
 
       - name: Check formatting
-        run: yarn format:check
+        run: npm run format:check
 
       - name: Lint
-        run: yarn lint
+        run: npm run lint

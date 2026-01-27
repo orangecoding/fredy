@@ -16,7 +16,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'yarn'
+          cache: 'npm'
 
-      - run: yarn install
-      - run: yarn testGH
+      - run: npm ci
+      - run: npm run testGH
