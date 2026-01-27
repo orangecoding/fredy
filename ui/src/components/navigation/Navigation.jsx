@@ -4,7 +4,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { Button, Nav } from '@douyinfe/semi-ui';
+import { Button, Nav } from '@douyinfe/semi-ui-19';
 import { IconStar, IconSetting, IconTerminal, IconHistogram, IconSidebar } from '@douyinfe/semi-icons';
 import logoWhite from '../../assets/logo_white.png';
 import heart from '../../assets/heart.png';
@@ -12,7 +12,6 @@ import Logout from '../logout/Logout.jsx';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import './Navigate.less';
-import { useFeature } from '../../hooks/featureHook.js';
 import { useScreenWidth } from '../../hooks/screenWidth.js';
 
 export default function Navigation({ isAdmin }) {
@@ -21,7 +20,6 @@ export default function Navigation({ isAdmin }) {
 
   const width = useScreenWidth();
   const [collapsed, setCollapsed] = useState(width <= 850);
-  const watchlistFeature = useFeature('WATCHLIST_MANAGEMENT') || false;
 
   useEffect(() => {
     if (width <= 850) {
@@ -46,17 +44,22 @@ export default function Navigation({ isAdmin }) {
   if (isAdmin) {
     const settingsItems = [
       { itemKey: '/users', text: 'User Management' },
+      { itemKey: '/userSettings', text: 'User Specific Settings' },
       { itemKey: '/generalSettings', text: 'General Settings' },
     ];
-    if (watchlistFeature) {
-      settingsItems.push({ itemKey: '/watchlistManagement', text: 'Watchlist Management' });
-    }
 
     items.push({
       itemKey: 'settings',
       text: 'Settings',
       icon: <IconSetting />,
       items: settingsItems,
+    });
+  } else {
+    items.push({
+      itemKey: 'settings',
+      text: 'Settings',
+      icon: <IconSetting />,
+      items: [{ itemKey: '/userSettings', text: 'User Specific Settings' }],
     });
   }
 

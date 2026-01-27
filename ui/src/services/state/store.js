@@ -63,16 +63,6 @@ export const useFredyState = create(
             }
           },
         },
-        features: {
-          async getFeatures() {
-            try {
-              const response = await xhrGet('/api/features');
-              set((state) => ({ ...state.features, ...response.json }));
-            } catch (Exception) {
-              console.error('Error while trying to get resource for api/features. Error:', Exception);
-            }
-          },
-        },
         provider: {
           async getProvider() {
             try {
@@ -228,6 +218,16 @@ export const useFredyState = create(
             }
           },
         },
+        userSettings: {
+          async getUserSettings() {
+            try {
+              const response = await xhrGet('/api/user/settings');
+              set((state) => ({ userSettings: { ...state.userSettings, settings: response.json } }));
+            } catch (Exception) {
+              console.error('Error while trying to get resource for api/user/settings. Error:', Exception);
+            }
+          },
+        },
       };
 
       // Initial state
@@ -241,8 +241,8 @@ export const useFredyState = create(
           mapListings: [],
           maxPrice: 0,
         },
-        features: {},
         generalSettings: { settings: {} },
+        userSettings: { settings: {} },
         demoMode: { demoMode: false },
         versionUpdate: {},
         provider: [],
@@ -265,9 +265,9 @@ export const useFredyState = create(
         versionUpdate: { ...effects.versionUpdate },
         listingsData: { ...effects.listingsData },
         provider: { ...effects.provider },
-        features: { ...effects.features },
         jobsData: { ...effects.jobsData },
         user: { ...effects.user },
+        userSettings: { ...effects.userSettings },
       };
 
       return {

@@ -12,8 +12,8 @@ import ProviderMutator from './components/provider/ProviderMutator';
 import Headline from '../../../components/headline/Headline';
 import { useActions, useSelector } from '../../../services/state/store';
 import { xhrPost } from '../../../services/xhr';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Divider, Input, Switch, Button, TagInput, Toast, Select } from '@douyinfe/semi-ui';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import { Divider, Input, Switch, Button, TagInput, Toast, Select } from '@douyinfe/semi-ui-19';
 import './JobMutation.less';
 import { SegmentPart } from '../../../components/segment/SegmentPart';
 import {
@@ -30,14 +30,20 @@ export default function JobMutator() {
   const jobs = useSelector((state) => state.jobsData.jobs);
   const shareableUserList = useSelector((state) => state.jobsData.shareableUserList);
   const params = useParams();
+  const location = useLocation();
 
+  const cloneFromId = location.state?.cloneFrom;
+  const jobToClone = cloneFromId ? jobs.find((job) => job.id === cloneFromId) : null;
   const jobToBeEdit = params.jobId == null ? null : jobs.find((job) => job.id === params.jobId);
 
-  const defaultBlacklist = jobToBeEdit?.blacklist || [];
-  const defaultName = jobToBeEdit?.name || null;
-  const defaultProviderData = jobToBeEdit?.provider || [];
-  const defaultNotificationAdapter = jobToBeEdit?.notificationAdapter || [];
-  const defaultEnabled = jobToBeEdit?.enabled ?? true;
+  const sourceJob = jobToBeEdit || jobToClone;
+
+  const defaultBlacklist = sourceJob?.blacklist || [];
+  const defaultName = jobToClone ? `Copy of - ${sourceJob?.name}` : sourceJob?.name || null;
+  const defaultProviderData = sourceJob?.provider || [];
+  const defaultNotificationAdapter = sourceJob?.notificationAdapter || [];
+  const defaultEnabled = sourceJob?.enabled ?? true;
+  const defaultShareWithUsers = sourceJob?.shared_with_user ?? [];
 
   const [providerToEdit, setProviderToEdit] = useState(null);
   const [providerCreationVisible, setProviderCreationVisibility] = useState(false);
@@ -47,7 +53,7 @@ export default function JobMutator() {
   const [name, setName] = useState(defaultName);
   const [blacklist, setBlacklist] = useState(defaultBlacklist);
   const [notificationAdapterData, setNotificationAdapterData] = useState(defaultNotificationAdapter);
-  const [shareWithUsers, setShareWithUsers] = useState(jobToBeEdit?.shared_with_user ?? []);
+  const [shareWithUsers, setShareWithUsers] = useState(defaultShareWithUsers);
   const [enabled, setEnabled] = useState(defaultEnabled);
   const navigate = useNavigate();
   const actions = useActions();

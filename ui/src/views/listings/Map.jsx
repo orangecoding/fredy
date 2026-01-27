@@ -4,21 +4,27 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react';
+import { renderToString } from 'react-dom/server';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useSelector, useActions } from '../../services/state/store.js';
-import { Select, Space, Typography, Button, Popover, Divider, Switch, Banner } from '@douyinfe/semi-ui';
-import { IconFilter } from '@douyinfe/semi-icons';
+import { distanceMeters, generateCircleCoords, getBoundsFromCenter, getBoundsFromCoords } from './mapUtils.js';
+import { Select, Space, Typography, Button, Popover, Divider, Switch, Banner, Toast } from '@douyinfe/semi-ui-19';
+import { IconFilter, IconLink } from '@douyinfe/semi-icons';
+import { IconDelete } from '@douyinfe/semi-icons';
+
 import no_image from '../../assets/no_image.jpg';
 import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
 import './Map.less';
+import { xhrDelete } from '../../services/xhr.js';
+import { Link } from 'react-router';
 
 const { Text } = Typography;
 
-const GERMANY_BOUNDS = [
-  [5.866, 47.27], // Southwest coordinates
-  [15.042, 55.059], // Northeast coordinates
+const SWITZERLAND_BOUNDS = [
+  [5.956, 45.818], // Southwest coordinates (near Geneva)
+  [10.492, 47.808], // Northeast coordinates (near Lake Constance)
 ];
 
 const STYLES = {
@@ -65,8 +71,10 @@ export default function MapView() {
   const mapContainer = useRef(null);
   const map = useRef(null);
   const markers = useRef([]);
+  const homeMarker = useRef(null);
   const actions = useActions();
   const listings = useSelector((state) => state.listingsData.mapListings);
+  const homeAddress = useSelector((state) => state.userSettings.settings.home_address);
   const [style, setStyle] = useState('STANDARD');
   const [show3dBuildings, setShow3dBuildings] = useState(false);
 
@@ -74,6 +82,7 @@ export default function MapView() {
   const [jobId, setJobId] = useState(null);
   const [priceRange, setPriceRange] = useState([0, 0]);
   const [showFilterBar, setShowFilterBar] = useState(false);
+  const [distanceFilter, setDistanceFilter] = useState(0);
 
   useEffect(() => {
     setPriceRange([0, getMaxPrice()]);
@@ -94,14 +103,30 @@ export default function MapView() {
   };
 
   useEffect(() => {
+    window.deleteListing = async (id) => {
+      try {
+        await xhrDelete('/api/listings/', { ids: [id] });
+        Toast.success('Listing successfully removed');
+        actions.listingsData.getListingsForMap({ jobId });
+      } catch (error) {
+        Toast.error(error.message || 'Error deleting listing');
+      }
+    };
+
+    return () => {
+      delete window.deleteListing;
+    };
+  }, [jobId, actions]);
+
+  useEffect(() => {
     if (map.current) return;
 
     map.current = new maplibregl.Map({
       container: mapContainer.current,
       style: STYLES[style],
-      center: [10.4515, 51.1657], // Center of Germany
-      zoom: 4,
-      maxBounds: GERMANY_BOUNDS,
+      center: [8.2275, 46.8182], // Center of Switzerland
+      zoom: 7,
+      maxBounds: SWITZERLAND_BOUNDS,
       antialias: true,
     });
 
@@ -150,6 +175,7 @@ export default function MapView() {
     if (!map.current) return;
 
     const add3dLayer = () => {
+      if (!map.current || !map.current.isStyleLoaded()) return;
       if (show3dBuildings) {
         if (!map.current.getSource('openfreemap')) {
           map.current.addSource('openfreemap', {
@@ -201,11 +227,7 @@ export default function MapView() {
       }
     };
 
-    if (map.current.isStyleLoaded()) {
-      add3dLayer();
-    } else {
-      map.current.once('styledata', add3dLayer);
-    }
+    add3dLayer();
   }, [show3dBuildings, style]);
 
   const setMapStyle = (value) => {
@@ -228,8 +250,106 @@ export default function MapView() {
   useEffect(() => {
     if (!map.current) return;
 
+    if (homeAddress?.coords) {
+      // We only want to zoom/fly when distanceFilter OR homeAddress actually change,
+      // not on every render. useEffect dependency array handles this.
+      if (distanceFilter > 0) {
+        const bounds = getBoundsFromCenter([homeAddress.coords.lng, homeAddress.coords.lat], distanceFilter);
+
+        map.current.fitBounds(bounds, {
+          padding: 20,
+          maxZoom: 15,
+          duration: 1000,
+        });
+      } else {
+        map.current.flyTo({
+          center: [homeAddress.coords.lng, homeAddress.coords.lat],
+          zoom: 12,
+          duration: 1000,
+        });
+      }
+    } else {
+      const filtered = filterListings();
+      const coords = filtered
+        .filter((l) => l.latitude != null && l.longitude != null && l.latitude !== -1 && l.longitude !== -1)
+        .map((l) => [l.longitude, l.latitude]);
+
+      if (coords.length > 0) {
+        const bounds = getBoundsFromCoords(coords);
+        map.current.fitBounds(bounds, {
+          padding: 50,
+          maxZoom: 15,
+          duration: 1000,
+        });
+      }
+    }
+  }, [homeAddress?.address, distanceFilter, listings]);
+
+  useEffect(() => {
+    if (!map.current) return;
+
     markers.current.forEach((marker) => marker.remove());
     markers.current = [];
+
+    if (homeMarker.current) {
+      homeMarker.current.remove();
+      homeMarker.current = null;
+    }
+
+    if (homeAddress?.coords) {
+      homeMarker.current = new maplibregl.Marker({ color: 'red' })
+        .setLngLat([homeAddress.coords.lng, homeAddress.coords.lat])
+        .setPopup(
+          new maplibregl.Popup({ offset: 25 }).setHTML(
+            `<div class="map-popup-content"><h4>Home Address</h4><p>${homeAddress.address}</p></div>`,
+          ),
+        )
+        .addTo(map.current);
+    }
+
+    const addCircleLayer = () => {
+      if (!map.current || !map.current.isStyleLoaded()) return;
+      if (map.current.getLayer('distance-circle')) map.current.removeLayer('distance-circle');
+      if (map.current.getLayer('distance-circle-outline')) map.current.removeLayer('distance-circle-outline');
+      if (map.current.getSource('distance-circle-source')) map.current.removeSource('distance-circle-source');
+
+      if (distanceFilter > 0 && homeAddress?.coords) {
+        const ret = generateCircleCoords([homeAddress.coords.lng, homeAddress.coords.lat], distanceFilter);
+
+        map.current.addSource('distance-circle-source', {
+          type: 'geojson',
+          data: {
+            type: 'Feature',
+            geometry: {
+              type: 'Polygon',
+              coordinates: [ret],
+            },
+          },
+        });
+
+        map.current.addLayer({
+          id: 'distance-circle',
+          type: 'fill',
+          source: 'distance-circle-source',
+          paint: {
+            'fill-color': '#90EE90',
+            'fill-opacity': 0.3,
+          },
+        });
+
+        map.current.addLayer({
+          id: 'distance-circle-outline',
+          type: 'line',
+          source: 'distance-circle-source',
+          paint: {
+            'line-color': '#006400',
+            'line-width': 1,
+          },
+        });
+      }
+    };
+
+    addCircleLayer();
 
     filterListings().forEach((listing) => {
       if (
@@ -242,21 +362,49 @@ export default function MapView() {
           ? listing.provider.charAt(0).toUpperCase() + listing.provider.slice(1)
           : 'N/A';
 
-        const popup = new maplibregl.Popup({ offset: 25 }).setHTML(
-          `<div class="map-popup-content">
+        const popupContent = `
+          <div class="map-popup-content">
             <img src="${listing.image_url || no_image}" alt="${listing.title}" />
             <h4>${listing.title}</h4>
             <div class="info">
-              <span><strong>Price:</strong> ${listing.price ? listing.price + ' €' : 'N/A'}</span>
+              <span><strong>Price:</strong> ${listing.price ? listing.price + ' CHF' : 'N/A'}</span>
               <span><strong>Address:</strong> ${listing.address || 'N/A'}</span>
               <span><strong>Job:</strong> ${listing.job_name || 'N/A'}</span>
               <span><strong>Provider:</strong> ${capitalizedProvider}</span>
-              <a href="${listing.link}" target="_blank" rel="noopener noreferrer">View Listing</a>
+              <span><strong>Size:</strong> ${listing.size != null ? `${listing.size} m²` : 'N/A'}</span>
+              <div style="display: flex; gap: 8px; margin-top: 8px; justify-content: space-between;">
+                <div class="map-popup-content__linkButton">
+                  <a href="${listing.link}" target="_blank" rel="noopener noreferrer">
+                    ${renderToString(<IconLink />)}
+                  </a>
+                </div>
+                <button
+                  class="map-popup-content__deleteButton"
+                  title="Remove"
+                  onclick="deleteListing('${listing.id}')"
+                >
+                  ${renderToString(<IconDelete />)}
+                </button>
+              </div>
             </div>
-          </div>`,
-        );
+          </div>`;
 
-        const marker = new maplibregl.Marker()
+        const popup = new maplibregl.Popup({ offset: 25 }).setHTML(popupContent);
+
+        let color = '#3FB1CE'; // Default blue-ish
+        if (distanceFilter > 0 && homeAddress?.coords) {
+          const dist = distanceMeters(
+            homeAddress.coords.lat,
+            homeAddress.coords.lng,
+            listing.latitude,
+            listing.longitude,
+          );
+          if (dist <= distanceFilter * 1000) {
+            color = 'orange';
+          }
+        }
+
+        const marker = new maplibregl.Marker({ color })
           .setLngLat([listing.longitude, listing.latitude])
           .setPopup(popup)
           .addTo(map.current);
@@ -264,7 +412,7 @@ export default function MapView() {
         markers.current.push(marker);
       }
     });
-  }, [listings, priceRange]);
+  }, [listings, priceRange, homeAddress, distanceFilter]);
 
   return (
     <div className="map-view-container">
@@ -281,12 +429,14 @@ export default function MapView() {
           </div>
         </div>
         <Popover content="Filter Results" style={{ color: 'white', padding: '.5rem' }}>
-          <Button
-            icon={<IconFilter />}
-            onClick={() => {
-              setShowFilterBar(!showFilterBar);
-            }}
-          />
+          <div>
+            <Button
+              icon={<IconFilter />}
+              onClick={() => {
+                setShowFilterBar(!showFilterBar);
+              }}
+            />
+          </div>
         </Popover>
       </div>
 
@@ -318,12 +468,35 @@ export default function MapView() {
             <Divider layout="vertical" />
             <div className="listingsGrid__toolbar__card">
               <div>
-                <Text strong>Price Range (€):</Text>
+                <Text strong>Distance:</Text>
+              </div>
+              <div style={{ display: 'flex', gap: '.3rem', alignItems: 'center' }}>
+                <Select
+                  placeholder="Distance"
+                  style={{ width: 100 }}
+                  onChange={(val) => {
+                    setDistanceFilter(val);
+                  }}
+                  value={distanceFilter}
+                >
+                  <Select.Option value={0}>---</Select.Option>
+                  <Select.Option value={5}>5 km</Select.Option>
+                  <Select.Option value={10}>10 km</Select.Option>
+                  <Select.Option value={15}>15 km</Select.Option>
+                  <Select.Option value={20}>20 km</Select.Option>
+                  <Select.Option value={25}>25 km</Select.Option>
+                </Select>
+              </div>
+            </div>
+            <Divider layout="vertical" />
+            <div className="listingsGrid__toolbar__card">
+              <div>
+                <Text strong>Price Range (CHF):</Text>
               </div>
               <div style={{ width: 250, padding: '0 10px' }}>
                 <div className="map__rangesliderLabels">
-                  <span>{priceRange[0]} €</span>
-                  <span>{priceRange[1]} €</span>
+                  <span>{priceRange[0]} CHF</span>
+                  <span>{priceRange[1]} CHF</span>
                 </div>
                 <RangeSlider
                   min={0}
@@ -333,7 +506,7 @@ export default function MapView() {
                   onInput={(val) => {
                     setPriceRange(val);
                   }}
-                  tipFormatter={(val) => `${val} €`}
+                  tipFormatter={(val) => `${val} CHF`}
                 />
               </div>
             </div>
@@ -341,12 +514,27 @@ export default function MapView() {
         </div>
       )}
 
+      {!homeAddress && (
+        <Banner
+          fullMode={true}
+          type="warning"
+          bordered
+          closeIcon={null}
+          description={
+            <span>
+              You have not set your home address yet. Please do so in the <Link to="/userSettings">user settings</Link>{' '}
+              to use the distance filter.
+            </span>
+          }
+        />
+      )}
+
       <Banner
         fullMode={true}
         type="info"
         bordered
         closeIcon={null}
-        description="Keep in mind, only listings with proper adresses are being shown on this map."
+        description="Keep in mind, only listings with proper addresses are being shown on this map."
       />
 
       <div ref={mapContainer} className="map-container" />

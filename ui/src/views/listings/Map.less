@@ -43,10 +43,62 @@
   }
 
   .info {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     display: flex;
     flex-direction: column;
-    gap: 0.2rem;
+    gap: 0.1rem;
+  }
+
+  &__linkButton {
+    background: var(--semi-color-primary);
+    color: white;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 600;
+    height: 32px;
+    width: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+
+    a {
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      width: 100%;
+      height: 100%;
+    }
+
+    &:hover {
+      background: var(--semi-color-primary-hover);
+      cursor: pointer;
+    }
+  }
+
+  &__deleteButton {
+    background: var(--semi-color-danger);
+    color: white;
+    border: none;
+    font-size: 14px;
+    height: 32px;
+    width: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    cursor: pointer;
+    padding: 0;
+
+    &:hover {
+      background: var(--semi-color-danger-hover);
+    }
+
+    svg {
+      fill: currentColor;
+    }
   }
 }
 

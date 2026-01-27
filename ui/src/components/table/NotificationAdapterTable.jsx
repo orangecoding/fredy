@@ -5,7 +5,7 @@
 
 import React from 'react';
 
-import { Empty, Table, Button } from '@douyinfe/semi-ui';
+import { Empty, Table, Button } from '@douyinfe/semi-ui-19';
 import { IconDelete, IconEdit } from '@douyinfe/semi-icons';
 
 export default function NotificationAdapterTable({ notificationAdapter = [], onRemove, onEdit } = {}) {

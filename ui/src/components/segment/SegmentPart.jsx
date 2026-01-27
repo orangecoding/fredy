@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { Card } from '@douyinfe/semi-ui';
+import { Card } from '@douyinfe/semi-ui-19';
 
 import './SegmentParts.less';
 

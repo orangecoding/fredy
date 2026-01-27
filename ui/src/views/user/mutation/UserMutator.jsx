@@ -8,7 +8,7 @@ import React from 'react';
 import { xhrGet, xhrPost } from '../../../services/xhr';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useActions } from '../../../services/state/store';
-import { Divider, Input, Switch, Button, Toast } from '@douyinfe/semi-ui';
+import { Divider, Input, Switch, Button, Toast } from '@douyinfe/semi-ui-19';
 import './UserMutator.less';
 import { SegmentPart } from '../../../components/segment/SegmentPart';
 import { IconPlusCircle } from '@douyinfe/semi-icons';

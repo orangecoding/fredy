@@ -5,11 +5,11 @@
 
 import React from 'react';
 
-import { Toast } from '@douyinfe/semi-ui';
+import { Toast } from '@douyinfe/semi-ui-19';
 import UserTable from '../../components/table/UserTable';
 import { useActions, useSelector } from '../../services/state/store';
 import { IconPlus } from '@douyinfe/semi-icons';
-import { Button } from '@douyinfe/semi-ui';
+import { Button } from '@douyinfe/semi-ui-19';
 import UserRemovalModal from './UserRemovalModal';
 import { xhrDelete } from '../../services/xhr';
 import { useNavigate } from 'react-router-dom';
