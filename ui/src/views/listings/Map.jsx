@@ -367,7 +367,7 @@ export default function MapView() {
             <img src="${listing.image_url || no_image}" alt="${listing.title}" />
             <h4>${listing.title}</h4>
             <div class="info">
-              <span><strong>Price:</strong> ${listing.price ? listing.price + ' €' : 'N/A'}</span>
+              <span><strong>Price:</strong> ${listing.price ? listing.price + ' CHF' : 'N/A'}</span>
               <span><strong>Address:</strong> ${listing.address || 'N/A'}</span>
               <span><strong>Job:</strong> ${listing.job_name || 'N/A'}</span>
               <span><strong>Provider:</strong> ${capitalizedProvider}</span>
@@ -495,8 +495,8 @@ export default function MapView() {
               </div>
               <div style={{ width: 250, padding: '0 10px' }}>
                 <div className="map__rangesliderLabels">
-                  <span>{priceRange[0]} €</span>
-                  <span>{priceRange[1]} €</span>
+                  <span>{priceRange[0]} CHF</span>
+                  <span>{priceRange[1]} CHF</span>
                 </div>
                 <RangeSlider
                   min={0}
@@ -506,7 +506,7 @@ export default function MapView() {
                   onInput={(val) => {
                     setPriceRange(val);
                   }}
-                  tipFormatter={(val) => `${val} €`}
+                  tipFormatter={(val) => `${val} CHF`}
                 />
               </div>
             </div>
@@ -534,7 +534,7 @@ export default function MapView() {
         type="info"
         bordered
         closeIcon={null}
-        description="Keep in mind, only listings with proper adresses are being shown on this map."
+        description="Keep in mind, only listings with proper addresses are being shown on this map."
       />
 
       <div ref={mapContainer} className="map-container" />

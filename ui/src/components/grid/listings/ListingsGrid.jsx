@@ -279,7 +279,10 @@ const ListingsGrid = () => {
                   </Text>
                   {item.distance_to_destination ? (
                     <Text type="tertiary" size="small" icon={<IconActivity />}>
-                      {item.distance_to_destination} m to chosen address
+                      {item.distance_to_destination >= 1000
+                        ? `${(item.distance_to_destination / 1000).toFixed(1)} km`
+                        : `${Math.round(item.distance_to_destination)} m`}{' '}
+                      to chosen address
                     </Text>
                   ) : (
                     <Text type="tertiary" size="small" icon={<IconActivity />}>
