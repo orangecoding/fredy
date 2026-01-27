@@ -491,7 +491,7 @@ export default function MapView() {
             <Divider layout="vertical" />
             <div className="listingsGrid__toolbar__card">
               <div>
-                <Text strong>Price Range (€):</Text>
+                <Text strong>Price Range (CHF):</Text>
               </div>
               <div style={{ width: 250, padding: '0 10px' }}>
                 <div className="map__rangesliderLabels">
