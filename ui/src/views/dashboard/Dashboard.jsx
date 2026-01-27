@@ -136,7 +136,7 @@ export default function Dashboard() {
                 <KpiCard
                   title="Avg. Price"
                   color="purple"
-                  value={`${!kpis.avgPriceOfListings ? '---' : kpis.avgPriceOfListings} €`}
+                  value={`${!kpis.avgPriceOfListings ? '---' : kpis.avgPriceOfListings} CHF`}
                   icon={<IconNoteMoney />}
                   description="Avg. Price of listings"
                 />

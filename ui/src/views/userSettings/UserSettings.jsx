@@ -73,7 +73,7 @@ const UserSettings = () => {
       <Title heading={2}>User Specific Settings</Title>
       <Divider />
       <SegmentPart
-        name="Distance claculation"
+        name="Distance calculation"
         Icon={IconHome}
         helpText="The address you enter is used to calculate the distance between your chosen location and each listing. The distance is computed using an approximate mathematical method and is intended to give you a rough indication of commute time. If you update your address, we will recalculate the distance for all active listings."
       >

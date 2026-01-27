@@ -22,9 +22,9 @@ import { Link } from 'react-router';
 
 const { Text } = Typography;
 
-const GERMANY_BOUNDS = [
-  [5.866, 47.27], // Southwest coordinates
-  [15.042, 55.059], // Northeast coordinates
+const SWITZERLAND_BOUNDS = [
+  [5.956, 45.818], // Southwest coordinates (near Geneva)
+  [10.492, 47.808], // Northeast coordinates (near Lake Constance)
 ];
 
 const STYLES = {
@@ -107,7 +107,7 @@ export default function MapView() {
       try {
         await xhrDelete('/api/listings/', { ids: [id] });
         Toast.success('Listing successfully removed');
-        fetchListings();
+        actions.listingsData.getListingsForMap({ jobId });
       } catch (error) {
         Toast.error(error.message || 'Error deleting listing');
       }
@@ -116,7 +116,7 @@ export default function MapView() {
     return () => {
       delete window.deleteListing;
     };
-  }, []);
+  }, [jobId, actions]);
 
   useEffect(() => {
     if (map.current) return;
@@ -124,9 +124,9 @@ export default function MapView() {
     map.current = new maplibregl.Map({
       container: mapContainer.current,
       style: STYLES[style],
-      center: [10.4515, 51.1657], // Center of Germany
-      zoom: 4,
-      maxBounds: GERMANY_BOUNDS,
+      center: [8.2275, 46.8182], // Center of Switzerland
+      zoom: 7,
+      maxBounds: SWITZERLAND_BOUNDS,
       antialias: true,
     });
 
