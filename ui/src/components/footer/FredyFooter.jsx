@@ -6,19 +6,23 @@
 import React from 'react';
 import './FredyFooter.less';
 import { useSelector } from '../../services/state/store.js';
-import { Typography } from '@douyinfe/semi-ui-19';
+import { Typography, Layout, Space, Divider } from '@douyinfe/semi-ui-19';
 
 export default function FredyFooter() {
   const { Text } = Typography;
+  const { Footer } = Layout;
   const version = useSelector((state) => state.versionUpdate.versionUpdate);
+
   return (
-    <div className="fredyFooter">
-      <div className="fredyFooter__version">
-        <Text type="tertiary">Fredy V{version?.localFredyVersion || 'N/A'}</Text>
-      </div>
-      <div className="fredyFooter__copyRight">
-        <Text link={{ href: 'https://github.com/orangecoding', target: '_blank' }}>Made with ❤️</Text>
-      </div>
-    </div>
+    <Footer className="fredyFooter">
+      <Space split={<Divider layout="vertical" />}>
+        <Text type="tertiary" size="small">
+          Fredy V{version?.localFredyVersion || 'N/A'}
+        </Text>
+        <Text size="small" link={{ href: 'https://github.com/orangecoding', target: '_blank' }}>
+          Made with ❤️
+        </Text>
+      </Space>
+    </Footer>
   );
 }
