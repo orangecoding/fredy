@@ -315,7 +315,7 @@ export default function ListingDetail() {
             >
               {listing.isWatched === 1 ? 'Watched' : 'Watch'}
             </Button>
-            <Text link={{ href: listing.link }} icon={<IconLink />} underline>
+            <Text link={{ href: listing.link, target: '_blank' }} icon={<IconLink />} underline>
               Open listing
             </Text>
           </Space>

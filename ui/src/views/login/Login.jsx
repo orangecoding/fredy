@@ -62,6 +62,18 @@ export default function Login() {
         <div className="login__logoWrapper">
           <Logo width={250} white />
         </div>
+
+        {demoMode && (
+          <Banner
+            fullMode={true}
+            type="info"
+            bordered
+            closeIcon={null}
+            description="This is the demo version of Fredy. Use 'demo' as both the username and password to log in."
+            style={{ marginBottom: '1.5rem' }}
+          />
+        )}
+
         <form onSubmit={(e) => e.preventDefault()}>
           {error && <Banner type="danger" closeIcon={null} description={error} style={{ marginBottom: '1rem' }} />}
           <div className="login__inputGroup">
@@ -100,17 +112,6 @@ export default function Login() {
           <Button block type="primary" onClick={tryLogin} theme="solid" style={{ marginTop: '1rem' }}>
             Login
           </Button>
-
-          {demoMode && (
-            <Banner
-              fullMode={true}
-              type="info"
-              bordered
-              closeIcon={null}
-              description="This is the demo version of Fredy. Use 'demo' as both the username and password to log in."
-              style={{ marginTop: '1.5rem' }}
-            />
-          )}
         </form>
       </div>
     </div>
