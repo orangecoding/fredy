@@ -4,32 +4,80 @@
   align-items: center;
   width: 100%;
   height: 100%;
+  overflow: hidden;
+  position: relative;
 
   &__bgImage {
     background-size: cover;
-    filter: blur(8px);
-    -webkit-filter: blur(8px);
+    background-position: center;
+    filter: blur(10px) brightness(0.4);
+    -webkit-filter: blur(10px) brightness(0.4);
     position: absolute;
-    top: 0;
-    left: 0;
+    top: -20px;
+    left: -20px;
+    right: -20px;
+    bottom: -20px;
     z-index: 0;
-    right: 0;
-    bottom: 0;
   }
 
   &__loginWrapper {
-    border: 1px solid #555050;
-    border-radius: 30px;
-
+    position: relative;
     z-index: 1;
-    background-color: #151313ab;
+    background: rgba(20, 20, 25, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 3rem;
+    width: 90%;
+    max-width: 420px;
     display: flex;
     flex-direction: column;
-    padding: 2rem;
-    gap: 1rem;
+    align-items: center;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+
+  }
+
+  &__logoWrapper {
+    margin-bottom: 2.5rem;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+
+    .logo {
+      position: static !important;
+      max-width: 100%;
+      height: auto;
+    }
   }
 
   form {
-    z-index: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+
+  &__inputGroup {
+    width: 100%;
+  }
+
+  // Mobile responsiveness
+  @media (max-width: 480px) {
+    &__loginWrapper {
+      padding: 2rem 1.5rem;
+      width: 95%;
+      border-radius: 20px;
+      background: rgba(20, 20, 25, 0.85);
+
+      &::after {
+        opacity: 0.2;
+        filter: blur(10px);
+      }
+    }
+
+    &__logoWrapper {
+      margin-bottom: 1.5rem;
+    }
   }
 }
