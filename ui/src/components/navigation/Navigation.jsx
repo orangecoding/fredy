@@ -70,20 +70,18 @@ export default function Navigation({ isAdmin }) {
 
   return (
     <Nav
-      style={{ height: '100%' }}
+      style={{ height: '100%', maxWidth: collapsed ? '60px' : '240px' }}
       items={items}
       isCollapsed={collapsed}
       selectedKeys={[parsePathName(location.pathname)]}
       onSelect={(key) => {
         navigate(key.itemKey);
       }}
-      header={<img src={collapsed ? heart : logoWhite} width={collapsed ? '80' : '160'} alt="Fredy Logo" />}
+      header={<img src={collapsed ? heart : logoWhite} width={collapsed ? '30' : '120'} alt="Fredy Logo" />}
       footer={
         <Nav.Footer className="navigate__footer">
           <Logout text={!collapsed} />
-          <Button icon={<IconSidebar />} onClick={() => setCollapsed(!collapsed)}>
-            {!collapsed && 'Collapse'}
-          </Button>
+          <Button icon={<IconSidebar />} onClick={() => setCollapsed(!collapsed)} />
         </Nav.Footer>
       }
     />

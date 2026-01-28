@@ -1,92 +1,63 @@
-@import "DashboardCardColors.less";
-
-.color-variant(@bg, @border, @text) {
-  background-color: @bg;
-  border: 1px solid @border;
-  color: @text;
-}
-
 .dashboard-card {
-  box-sizing: border-box;
-  padding: .8rem;
-  border-radius: .5rem;
-  border-width: 1px;
-  font-weight: 600;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-  /* Make all KPI boxes the same size regardless of content/font */
   width: 100%;
-  max-width: none;
-  height: 10rem;
-  display: flex;
-  flex-direction: column;
+  height: 140px;
+  margin-bottom: 16px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  background-color: rgba(36, 36, 36, 0.9);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--semi-color-border);
 
-  &.blue {
-    .color-variant(@color-blue-bg, @color-blue-border, @color-blue-text);
-  }
+  &:hover {
+    transform: translateY(-4px);
+    background-color: rgba(36, 36, 36, 1);
 
-  &.orange {
-    .color-variant(@color-orange-bg, @color-orange-border, @color-orange-text);
-  } 
-  
-  &.green {
-    .color-variant(@color-green-bg, @color-green-border, @color-green-text);
-  }
-
-  &.purple {
-    .color-variant(@color-purple-bg, @color-purple-border, @color-purple-text);
-  }
-
-  &.gray {
-    .color-variant(@color-gray-bg, @color-gray-border, @color-gray-text);
-  }
-
-  &__header {
-    display: flex;
-    align-items: center;
-    gap: .6rem;
-    /* Keep header from growing content height */
-    min-height: 2rem;
-    overflow: hidden;
+    &.blue {
+      box-shadow: 0 8px 24px -5px var(--semi-color-primary);
+    }
+    &.orange {
+      box-shadow: 0 8px 24px -5px var(--semi-color-warning);
+    }
+    &.green {
+      box-shadow: 0 8px 24px -5px var(--semi-color-success);
+    }
+    &.purple {
+      box-shadow: 0 8px 24px -5px var(--semi-color-info);
+    }
   }
 
   &__icon {
-    border-radius: .6rem;
-    display: grid;
-    place-items: center;
-  }
-
-  &__title {
-    font-weight: 600;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   &__content {
-    margin-top: .4rem;
-    font-size: .7rem;
-    flex: 1 1 auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    overflow: hidden;
+    width: 100%;
   }
 
   &__value {
-    margin: 0;
-    font-size: 1.5rem;
-    line-height: 1.1;
-    color: #fff;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: var(--semi-color-text-0);
   }
 
-  &__desc {
-    opacity: .8;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  &.blue {
+    box-shadow: 0 4px 20px -5px var(--semi-color-primary);
   }
 
+  &.orange {
+    box-shadow: 0 4px 20px -5px var(--semi-color-warning);
+  }
+
+  &.green {
+    box-shadow: 0 4px 20px -5px var(--semi-color-success);
+  }
+
+  &.purple {
+    box-shadow: 0 4px 20px -5px var(--semi-color-info);
+  }
+
+  &.gray {
+  }
 }

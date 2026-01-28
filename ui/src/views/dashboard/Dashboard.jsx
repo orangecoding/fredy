@@ -41,10 +41,10 @@ export default function Dashboard() {
     <div className="dashboard">
       <Headline text="Dashboard" size={3} />
 
-      <Row gutter={16} className="dashboard__row">
+      <Row gutter={[16, 16]} className="dashboard__row">
         <Col span={12} xs={24} sm={24} md={24} lg={24} xl={12}>
           <SegmentPart name="General" Icon={IconTerminal}>
-            <Row gutter={16} className="dashboard__row">
+            <Row gutter={[16, 16]} className="dashboard__row">
               <Col span={12} xs={24} sm={12} md={12} lg={12} xl={12}>
                 <KpiCard
                   title="Search Interval"
@@ -104,7 +104,7 @@ export default function Dashboard() {
         </Col>
         <Col span={12} xs={24} sm={24} md={24} lg={24} xl={12}>
           <SegmentPart name="Overview" Icon={IconStar}>
-            <Row gutter={16} className="dashboard__row">
+            <Row gutter={[16, 16]} className="dashboard__row">
               <Col span={12} xs={24} sm={12} md={12} lg={12} xl={12}>
                 <KpiCard
                   title="Jobs"
