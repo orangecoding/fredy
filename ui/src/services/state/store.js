@@ -195,6 +195,18 @@ export const useFredyState = create(
               console.error('Error while trying to get resource for api/listings. Error:', Exception);
             }
           },
+          async getListing(listingId) {
+            try {
+              const response = await xhrGet(`/api/listings/${listingId}`);
+              set((state) => ({
+                listingsData: { ...state.listingsData, currentListing: response.json },
+              }));
+              return response.json;
+            } catch (Exception) {
+              console.error(`Error while trying to get resource for api/listings/${listingId}. Error:`, Exception);
+              throw Exception;
+            }
+          },
           async getListingsForMap({ jobId, minPrice, maxPrice } = {}) {
             try {
               const qryString = queryString.stringify(
@@ -239,6 +251,7 @@ export const useFredyState = create(
           page: 1,
           result: [],
           mapListings: [],
+          currentListing: null,
           maxPrice: 0,
         },
         generalSettings: { settings: {} },

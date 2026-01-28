@@ -185,31 +185,21 @@ const JobGrid = () => {
 
   return (
     <div className="jobGrid">
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <Button
-          style={{ width: '7rem', margin: 0 }}
-          type="primary"
-          icon={<IconPlusCircle />}
-          className="jobs__newButton"
-          onClick={() => navigate('/jobs/new')}
-        >
+      <Space vertical align="start" style={{ width: '100%', marginBottom: '16px' }} spacing="medium">
+        <Button type="primary" icon={<IconPlusCircle />} onClick={() => navigate('/jobs/new')}>
           New Job
         </Button>
-
-        <div className="jobGrid__searchbar">
+        <div className="jobGrid__searchbar" style={{ width: '100%' }}>
           <Input prefix={<IconSearch />} showClear placeholder="Search" onChange={handleFilterChange} />
-          <Popover content="Filter / Sort Results" style={{ color: 'white', padding: '.5rem' }}>
-            <div>
-              <Button
-                icon={<IconFilter />}
-                onClick={() => {
-                  setShowFilterBar(!showFilterBar);
-                }}
-              />
-            </div>
-          </Popover>
+          <Button
+            icon={<IconFilter />}
+            style={{ marginLeft: '8px' }}
+            onClick={() => {
+              setShowFilterBar(!showFilterBar);
+            }}
+          />
         </div>
-      </div>
+      </Space>
 
       {showFilterBar && (
         <div className="jobGrid__toolbar">
@@ -277,7 +267,6 @@ const JobGrid = () => {
             <Card
               className="jobGrid__card"
               bodyStyle={{ padding: '16px' }}
-              headerLine={true}
               title={
                 <div className="jobGrid__header">
                   <Title heading={5} ellipsis={{ showTooltip: true }} className="jobGrid__title">
@@ -351,6 +340,8 @@ const JobGrid = () => {
                     <div>
                       <Button
                         type="primary"
+                        style={{ background: '#21aa21b5' }}
+                        size="small"
                         theme="solid"
                         icon={<IconPlayCircle />}
                         disabled={job.isOnlyShared || job.running}
@@ -362,7 +353,7 @@ const JobGrid = () => {
                     <div>
                       <Button
                         type="secondary"
-                        theme="solid"
+                        size="small"
                         icon={<IconEdit />}
                         disabled={job.isOnlyShared}
                         onClick={() => navigate(`/jobs/edit/${job.id}`)}
@@ -373,7 +364,7 @@ const JobGrid = () => {
                     <div>
                       <Button
                         type="tertiary"
-                        theme="solid"
+                        size="small"
                         icon={<IconCopy />}
                         disabled={job.isOnlyShared}
                         onClick={() => navigate('/jobs/new', { state: { cloneFrom: job.id } })}
@@ -384,7 +375,7 @@ const JobGrid = () => {
                     <div>
                       <Button
                         type="danger"
-                        theme="solid"
+                        size="small"
                         icon={<IconDescend2 />}
                         disabled={job.isOnlyShared}
                         onClick={() => onListingRemoval(job.id)}
@@ -395,7 +386,7 @@ const JobGrid = () => {
                     <div>
                       <Button
                         type="danger"
-                        theme="solid"
+                        size="small"
                         icon={<IconDelete />}
                         disabled={job.isOnlyShared}
                         onClick={() => onJobRemoval(job.id)}

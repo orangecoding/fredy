@@ -32,7 +32,9 @@ import {
   IconSearch,
   IconFilter,
   IconActivity,
+  IconEyeOpened,
 } from '@douyinfe/semi-icons';
+import { useNavigate } from 'react-router-dom';
 import no_image from '../../../assets/no_image.jpg';
 import * as timeService from '../../../services/time/timeService.js';
 import { xhrDelete, xhrPost } from '../../../services/xhr.js';
@@ -49,6 +51,7 @@ const ListingsGrid = () => {
   const providers = useSelector((state) => state.provider);
   const jobs = useSelector((state) => state.jobsData.jobs);
   const actions = useActions();
+  const navigate = useNavigate();
 
   const [page, setPage] = useState(1);
   const pageSize = 40;
@@ -223,6 +226,8 @@ const ListingsGrid = () => {
           <Col key={item.id} xs={24} sm={12} md={8} lg={6} xl={4} xxl={6}>
             <Card
               className={`listingsGrid__card ${!item.is_active ? 'listingsGrid__card--inactive' : ''}`}
+              style={{ cursor: 'pointer' }}
+              onClick={() => navigate(`/listings/listing/${item.id}`)}
               cover={
                 <div style={{ position: 'relative' }}>
                   <div className="listingsGrid__imageContainer">
@@ -289,17 +294,26 @@ const ListingsGrid = () => {
                 </Space>
                 <Divider margin=".6rem" />
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <div className="listingsGrid__linkButton">
+                  <div className="listingsGrid__linkButton" onClick={(e) => e.stopPropagation()}>
                     <a href={item.link} target="_blank" rel="noopener noreferrer">
                       <IconLink />
                     </a>
                   </div>
 
                   <Button
+                    type="secondary"
+                    size="small"
+                    title="View Details"
+                    onClick={() => navigate(`/listings/listing/${item.id}`)}
+                    icon={<IconEyeOpened />}
+                  />
+
+                  <Button
                     title="Remove"
                     type="danger"
                     size="small"
-                    onClick={async () => {
+                    onClick={async (e) => {
+                      e.stopPropagation();
                       try {
                         await xhrDelete('/api/listings/', { ids: [item.id] });
                         Toast.success('Listing(s) successfully removed');
