@@ -340,6 +340,8 @@ const JobGrid = () => {
                     <div>
                       <Button
                         type="primary"
+                        style={{ background: '#21aa21b5' }}
+                        size="small"
                         theme="solid"
                         icon={<IconPlayCircle />}
                         disabled={job.isOnlyShared || job.running}
@@ -351,7 +353,7 @@ const JobGrid = () => {
                     <div>
                       <Button
                         type="secondary"
-                        theme="solid"
+                        size="small"
                         icon={<IconEdit />}
                         disabled={job.isOnlyShared}
                         onClick={() => navigate(`/jobs/edit/${job.id}`)}
@@ -362,7 +364,7 @@ const JobGrid = () => {
                     <div>
                       <Button
                         type="tertiary"
-                        theme="solid"
+                        size="small"
                         icon={<IconCopy />}
                         disabled={job.isOnlyShared}
                         onClick={() => navigate('/jobs/new', { state: { cloneFrom: job.id } })}
@@ -373,7 +375,7 @@ const JobGrid = () => {
                     <div>
                       <Button
                         type="danger"
-                        theme="solid"
+                        size="small"
                         icon={<IconDescend2 />}
                         disabled={job.isOnlyShared}
                         onClick={() => onListingRemoval(job.id)}
@@ -384,7 +386,7 @@ const JobGrid = () => {
                     <div>
                       <Button
                         type="danger"
-                        theme="solid"
+                        size="small"
                         icon={<IconDelete />}
                         disabled={job.isOnlyShared}
                         onClick={() => onJobRemoval(job.id)}

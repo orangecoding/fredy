@@ -7,8 +7,10 @@ import React from 'react';
 
 import { Empty, Table, Button } from '@douyinfe/semi-ui-19';
 import { IconDelete, IconEdit } from '@douyinfe/semi-icons';
+import { Typography } from '@douyinfe/semi-ui';
 
 export default function ProviderTable({ providerData = [], onRemove, onEdit } = {}) {
+  const { Text } = Typography;
   return (
     <Table
       pagination={false}
@@ -22,11 +24,7 @@ export default function ProviderTable({ providerData = [], onRemove, onEdit } = 
           title: 'URL',
           dataIndex: 'url',
           render: (_, data) => {
-            return (
-              <a href={data.url} target="_blank" rel="noopener noreferrer">
-                Visit site
-              </a>
-            );
+            return <Text link={{ href: data.url, target: '_blank' }}>Open Provider</Text>;
           },
         },
         {

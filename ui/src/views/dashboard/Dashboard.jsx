@@ -147,7 +147,7 @@ export default function Dashboard() {
       </Row>
 
       <SegmentPart name="Provider Insights" Icon={IconStar} helpText="Percentage of found listings over all providers">
-        <PieChartCard title="Jobs per Provider" data={pieData} isLoading={false} />
+        <PieChartCard data={pieData} />
       </SegmentPart>
     </div>
   );

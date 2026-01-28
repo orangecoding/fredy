@@ -6,8 +6,9 @@
 .map-view-container {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 120px); /* Adjust based on header/footer height */
-  padding: 1rem;
+  height: 100%;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 .map-filter-bar {
@@ -75,6 +76,29 @@
     &:hover {
       background: var(--semi-color-primary-hover);
       cursor: pointer;
+    }
+  }
+
+  &__detailsButton {
+    background: var(--semi-color-tertiary);
+    color: white;
+    border: none;
+    font-size: 14px;
+    height: 32px;
+    width: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    cursor: pointer;
+    padding: 0;
+
+    &:hover {
+      background: var(--semi-color-tertiary-hover);
+    }
+
+    svg {
+      fill: currentColor;
     }
   }
 

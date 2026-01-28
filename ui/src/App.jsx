@@ -28,6 +28,7 @@ import { Layout } from '@douyinfe/semi-ui-19';
 import FredyFooter from './components/footer/FredyFooter.jsx';
 import WatchlistManagement from './views/listings/management/WatchlistManagement.jsx';
 import Dashboard from './views/dashboard/Dashboard.jsx';
+import ListingDetail from './views/listings/ListingDetail.jsx';
 
 export default function FredyApp() {
   const actions = useActions();
@@ -71,7 +72,7 @@ export default function FredyApp() {
       <Sider>
         <Navigation isAdmin={isAdmin()} />
       </Sider>
-      <Layout>
+      <Layout className="app__main">
         <Content className="app__content">
           {versionUpdate?.newVersion && <VersionBanner />}
           {settings.demoMode && (
@@ -94,6 +95,7 @@ export default function FredyApp() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/jobs" element={<Jobs />} />
             <Route path="/listings" element={<Listings />} />
+            <Route path="/listings/listing/:listingId" element={<ListingDetail />} />
             <Route path="/map" element={<MapView />} />
             <Route path="/watchlistManagement" element={<WatchlistManagement />} />
 

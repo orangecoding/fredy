@@ -2,11 +2,25 @@
   height: 100vh;
   width: 100vw;
 
+  &__main {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
   &__content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
     padding: 24px;
     background-color: var(--semi-color-bg-0);
-    min-height: calc(100vh - 32px); // 32px is footer height
     box-sizing: border-box;
+
+    @media (max-width: 768px) {
+      padding: 12px;
+    }
   }
 }
 
