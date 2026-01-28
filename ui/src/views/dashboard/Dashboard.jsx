@@ -136,7 +136,14 @@ export default function Dashboard() {
                 <KpiCard
                   title="Avg. Price"
                   color="purple"
-                  value={`${!kpis.avgPriceOfListings ? '---' : kpis.avgPriceOfListings} €`}
+                  value={`${
+                    !kpis.avgPriceOfListings
+                      ? '---'
+                      : new Intl.NumberFormat('de-DE', {
+                          style: 'currency',
+                          currency: 'EUR',
+                        }).format(kpis.avgPriceOfListings)
+                  }`}
                   icon={<IconNoteMoney />}
                   description="Avg. Price of listings"
                 />

@@ -8,7 +8,6 @@ import { checkIfConfigIsAccessible, getProviders, refreshConfig } from './lib/ut
 import * as similarityCache from './lib/services/similarity-check/similarityCache.js';
 import { runMigrations } from './lib/services/storage/migrations/migrate.js';
 import { ensureDemoUserExists, ensureAdminUserExists } from './lib/services/storage/userStorage.js';
-import { cleanupDemoAtMidnight } from './lib/services/crons/demoCleanup-cron.js';
 import { initTrackerCron } from './lib/services/crons/tracker-cron.js';
 import logger from './lib/services/logger.js';
 import { initActiveCheckerCron } from './lib/services/crons/listing-alive-cron.js';
@@ -54,7 +53,6 @@ await import('./lib/api/api.js');
 
 if (settings.demoMode) {
   logger.info('Running in demo mode');
-  cleanupDemoAtMidnight();
 }
 
 ensureAdminUserExists();

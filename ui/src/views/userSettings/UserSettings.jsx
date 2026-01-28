@@ -33,7 +33,9 @@ const UserSettings = () => {
       if (response.status === 200) {
         setCoords(response.json.coords);
         await actions.userSettings.getUserSettings();
-        Toast.success('Settings saved successfully');
+        Toast.success(
+          'Settings saved successfully. We will now start calculating distances for you. This may take a while and runs in the background.',
+        );
       } else {
         Toast.error(response.json.error || 'Failed to save settings');
       }

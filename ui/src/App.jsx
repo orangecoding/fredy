@@ -124,14 +124,7 @@ export default function FredyApp() {
                 </PermissionAwareRoute>
               }
             />
-            <Route
-              path="/userSettings"
-              element={
-                <PermissionAwareRoute currentUser={currentUser} adminOnly={false}>
-                  <UserSettings />
-                </PermissionAwareRoute>
-              }
-            />
+            <Route path="/userSettings" element={<UserSettings />} />
             <Route
               path="/generalSettings"
               element={
