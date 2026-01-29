@@ -378,7 +378,10 @@ export default function MapView() {
 
         const popupContent = `
           <div class="map-popup-content">
-            <img src="${listing.image_url || no_image}" alt="${listing.title}" />
+            <img
+              src="${listing.image_url}"
+              onerror="this.onerror=null;this.src='${no_image}'"
+            />
             <h4>${listing.title}</h4>
             <div class="info">
               <span><strong>Price:</strong> ${listing.price ? listing.price + ' €' : 'N/A'}</span>

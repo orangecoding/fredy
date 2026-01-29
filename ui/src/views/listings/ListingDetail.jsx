@@ -324,7 +324,12 @@ export default function ListingDetail() {
         <Row>
           <Col span={24} lg={12}>
             <div className="listing-detail__image-container">
-              <Image src={listing.image_url || no_image} fallback={no_image} preview={true} />
+              <Image
+                src={listing.image_url}
+                fallback={no_image}
+                style={{ width: '100%', height: '100%' }}
+                preview={true}
+              />
             </div>
           </Col>
           <Col span={24} lg={12}>
