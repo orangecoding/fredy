@@ -8,12 +8,12 @@ import { Card } from '@douyinfe/semi-ui-19';
 
 import './SegmentParts.less';
 
-export const SegmentPart = ({ name, Icon = null, children, helpText = null }) => {
+export const SegmentPart = ({ name, Icon = null, children, helpText = null, className = '' }) => {
   const { Meta } = Card;
 
   return (
     <Card
-      className="segmentParts"
+      className={`segmentParts ${className}`}
       title={
         (helpText || name) && (
           <Meta title={name} description={helpText} avatar={Icon == null ? null : <Icon size="extra-extra-small" />} />

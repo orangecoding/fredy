@@ -20,7 +20,6 @@ import {
 import { useSelector, useActions } from '../../services/state/store';
 import KpiCard from '../../components/cards/KpiCard.jsx';
 import PieChartCard from '../../components/cards/PieChartCard.jsx';
-import Headline from '../../components/headline/Headline.jsx';
 
 import './Dashboard.less';
 import { SegmentPart } from '../../components/segment/SegmentPart.jsx';
@@ -39,8 +38,6 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard">
-      <Headline text="Dashboard" size={3} />
-
       <Row gutter={[16, 16]} className="dashboard__row">
         <Col span={12} xs={24} sm={24} md={24} lg={24} xl={12}>
           <SegmentPart name="General" Icon={IconTerminal}>
@@ -153,7 +150,12 @@ export default function Dashboard() {
         </Col>
       </Row>
 
-      <SegmentPart name="Provider Insights" Icon={IconStar} helpText="Percentage of found listings over all providers">
+      <SegmentPart
+        name="Provider Insights"
+        Icon={IconStar}
+        helpText="Percentage of found listings over all providers"
+        className="dashboard__provider-insights"
+      >
         <PieChartCard data={pieData} />
       </SegmentPart>
     </div>

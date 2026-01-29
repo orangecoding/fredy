@@ -4,14 +4,12 @@
  */
 
 import React, { useEffect, useState, useMemo } from 'react';
-import { Divider, Button, AutoComplete, Toast, Typography, Banner } from '@douyinfe/semi-ui-19';
+import { Divider, Button, AutoComplete, Toast, Banner } from '@douyinfe/semi-ui-19';
 import { IconSave, IconHome } from '@douyinfe/semi-icons';
 import { useSelector, useActions } from '../../services/state/store';
 import { xhrGet, xhrPost } from '../../services/xhr';
 import { SegmentPart } from '../../components/segment/SegmentPart';
 import debounce from 'lodash/debounce';
-
-const { Title } = Typography;
 
 const UserSettings = () => {
   const actions = useActions();
@@ -72,8 +70,6 @@ const UserSettings = () => {
 
   return (
     <div className="user-settings">
-      <Title heading={2}>User Specific Settings</Title>
-      <Divider />
       <SegmentPart
         name="Distance claculation"
         Icon={IconHome}
