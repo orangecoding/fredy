@@ -41,9 +41,10 @@ ENV NODE_ENV=production \
 # Install build dependencies for native modules, then remove them after npm install
 COPY package.json ./
 
-# HUSKY=0 disables husky's prepare script, allowing native modules to build
+# Install deps with ignore-scripts (skips husky), then rebuild native modules
 RUN apk add --no-cache --virtual .build-deps python3 make g++ \
-  && HUSKY=0 npm install --omit=dev \
+  && npm install --omit=dev --ignore-scripts \
+  && npm rebuild better-sqlite3 \
   && npm cache clean --force \
   && apk del .build-deps
 
