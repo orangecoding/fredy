@@ -41,8 +41,9 @@ ENV NODE_ENV=production \
 # Install build dependencies for native modules, then remove them after npm install
 COPY package.json ./
 
+# HUSKY=0 disables husky's prepare script, allowing native modules to build
 RUN apk add --no-cache --virtual .build-deps python3 make g++ \
-  && npm install --omit=dev --ignore-scripts \
+  && HUSKY=0 npm install --omit=dev \
   && npm cache clean --force \
   && apk del .build-deps
 
