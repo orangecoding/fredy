@@ -12,7 +12,8 @@ RUN apk add --no-cache python3 make g++
 COPY package.json package-lock.json ./
 
 # Install all dependencies (including devDependencies for building)
-RUN npm ci
+# Using npm install instead of npm ci to handle platform-specific optional deps
+RUN npm install
 
 # Copy source files needed for build
 COPY index.html vite.config.js ./
@@ -41,7 +42,7 @@ ENV NODE_ENV=production \
 COPY package.json package-lock.json ./
 
 RUN apk add --no-cache --virtual .build-deps python3 make g++ \
-  && npm ci --omit=dev --ignore-scripts \
+  && npm install --omit=dev --ignore-scripts \
   && npm cache clean --force \
   && apk del .build-deps
 
