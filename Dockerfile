@@ -9,10 +9,10 @@ WORKDIR /build
 RUN apk add --no-cache python3 make g++
 
 # Copy package files first for better layer caching
-COPY package.json package-lock.json ./
+COPY package.json ./
 
 # Install all dependencies (including devDependencies for building)
-# Using npm install instead of npm ci to handle platform-specific optional deps
+# Generate fresh lockfile for Linux platform to get correct native deps
 RUN npm install
 
 # Copy source files needed for build
@@ -39,7 +39,7 @@ ENV NODE_ENV=production \
     PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
 # Install build dependencies for native modules, then remove them after npm install
-COPY package.json package-lock.json ./
+COPY package.json ./
 
 RUN apk add --no-cache --virtual .build-deps python3 make g++ \
   && npm install --omit=dev --ignore-scripts \
