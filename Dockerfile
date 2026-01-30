@@ -9,11 +9,10 @@ WORKDIR /build
 RUN apk add --no-cache python3 make g++
 
 # Copy package files first for better layer caching
-COPY package.json yarn.lock ./
+COPY package.json package-lock.json ./
 
 # Install all dependencies (including devDependencies for building)
-RUN yarn config set network-timeout 600000 \
-  && yarn --frozen-lockfile
+RUN npm ci
 
 # Copy source files needed for build
 COPY index.html vite.config.js ./
@@ -21,7 +20,7 @@ COPY ui ./ui
 COPY lib ./lib
 
 # Build frontend assets
-RUN yarn build:frontend
+RUN npm run build:frontend
 
 # ================================
 # Stage 2: Production stage
@@ -38,13 +37,12 @@ ENV NODE_ENV=production \
     PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
     PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
-# Install build dependencies for native modules, then remove them after yarn install
-COPY package.json yarn.lock ./
+# Install build dependencies for native modules, then remove them after npm install
+COPY package.json package-lock.json ./
 
 RUN apk add --no-cache --virtual .build-deps python3 make g++ \
-  && yarn config set network-timeout 600000 \
-  && yarn --frozen-lockfile --production \
-  && yarn cache clean \
+  && npm ci --omit=dev --ignore-scripts \
+  && npm cache clean --force \
   && apk del .build-deps
 
 # Copy built frontend from builder stage
