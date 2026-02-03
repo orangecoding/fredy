@@ -19,6 +19,7 @@ import 'react-range-slider-input/dist/style.css';
 import './Map.less';
 import { xhrDelete } from '../../services/xhr.js';
 import { Link, useNavigate } from 'react-router-dom';
+import ListingDeletionModal from '../../components/ListingDeletionModal.jsx';
 
 const { Text } = Typography;
 
@@ -85,6 +86,22 @@ export default function MapView() {
   const [showFilterBar, setShowFilterBar] = useState(false);
   const [distanceFilter, setDistanceFilter] = useState(0);
 
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [listingToDelete, setListingToDelete] = useState(null);
+
+  const confirmListingDeletion = async (hardDelete) => {
+    try {
+      await xhrDelete('/api/listings/', { ids: [listingToDelete], hardDelete });
+      Toast.success('Listing successfully removed');
+      fetchListings();
+    } catch (error) {
+      Toast.error(error.message || 'Error deleting listing');
+    } finally {
+      setDeleteModalVisible(false);
+      setListingToDelete(null);
+    }
+  };
+
   useEffect(() => {
     setPriceRange([0, getMaxPrice()]);
   }, [listings]);
@@ -104,14 +121,9 @@ export default function MapView() {
   };
 
   useEffect(() => {
-    window.deleteListing = async (id) => {
-      try {
-        await xhrDelete('/api/listings/', { ids: [id] });
-        Toast.success('Listing successfully removed');
-        fetchListings();
-      } catch (error) {
-        Toast.error(error.message || 'Error deleting listing');
-      }
+    window.deleteListing = (id) => {
+      setListingToDelete(id);
+      setDeleteModalVisible(true);
     };
 
     window.viewDetails = (id) => {
@@ -562,6 +574,14 @@ export default function MapView() {
       />
 
       <div ref={mapContainer} className="map-container" />
+      <ListingDeletionModal
+        visible={deleteModalVisible}
+        onConfirm={confirmListingDeletion}
+        onCancel={() => {
+          setDeleteModalVisible(false);
+          setListingToDelete(null);
+        }}
+      />
     </div>
   );
 }
