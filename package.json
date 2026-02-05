@@ -1,6 +1,6 @@
 {
   "name": "fredy",
-  "version": "19.3.6",
+  "version": "19.3.7",
   "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
   "scripts": {
     "prepare": "husky",
@@ -17,7 +17,8 @@
     "lint:fix": "yarn lint --fix",
     "migratedb": "node lib/services/storage/migrations/migrate.js",
     "migratedb:overwrite": "x-var MIGRATION_ALLOW_CHECKSUM_UPDATE=true node lib/services/storage/migrations/migrate.js",
-    "copyright": "node ./copyright.js"
+    "copyright": "node ./copyright.js",
+    "release": "node ./tools/release/release.js"
   },
   "type": "module",
   "lint-staged": {
@@ -98,6 +99,7 @@
     "zustand": "^5.0.11"
   },
   "devDependencies": {
+    "chalk": "^5.6.2",
     "@babel/core": "7.29.0",
     "@babel/eslint-parser": "7.28.6",
     "@babel/preset-env": "7.29.0",
