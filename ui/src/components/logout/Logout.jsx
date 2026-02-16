@@ -3,7 +3,6 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import React from 'react';
 import { Button } from '@douyinfe/semi-ui-19';
 import { xhrPost } from '../../services/xhr';
 import { IconUser } from '@douyinfe/semi-icons';

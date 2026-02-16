@@ -3,7 +3,7 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import React, { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Divider, Button, AutoComplete, Toast, Banner } from '@douyinfe/semi-ui-19';
 import { IconSave, IconHome } from '@douyinfe/semi-icons';
 import { useSelector, useActions } from '../../services/state/store';

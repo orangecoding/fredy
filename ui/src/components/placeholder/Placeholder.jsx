@@ -3,8 +3,6 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import React from 'react';
-
 import './Placeholder.less';
 
 function getPlaceholder(rowCount, className) {

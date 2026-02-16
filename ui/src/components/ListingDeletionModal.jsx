@@ -3,7 +3,7 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Modal, Radio, RadioGroup, Typography } from '@douyinfe/semi-ui-19';
 
 const { Text } = Typography;

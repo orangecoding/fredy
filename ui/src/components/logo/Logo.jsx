@@ -3,7 +3,6 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import React from 'react';
 import logo from '../../assets/logo.png';
 import logoWhite from '../../assets/logo_white.png';
 
