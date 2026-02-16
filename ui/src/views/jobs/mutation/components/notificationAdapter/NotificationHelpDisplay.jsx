@@ -3,7 +3,6 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import React from 'react';
 import { Banner, MarkdownRender } from '@douyinfe/semi-ui-19';
 
 export default function Help({ readme }) {

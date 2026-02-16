@@ -3,7 +3,7 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { IconHorn } from '@douyinfe/semi-icons';
 import { SegmentPart } from '../../../components/segment/SegmentPart.jsx';
 import { Banner, Button, Checkbox, Space } from '@douyinfe/semi-ui-19';

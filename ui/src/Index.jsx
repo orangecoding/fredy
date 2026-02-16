@@ -3,8 +3,6 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import React from 'react';
-
 import { HashRouter } from 'react-router-dom';
 import { createRoot } from 'react-dom/client';
 import en_US from '@douyinfe/semi-ui-19/lib/es/locale/source/en_US';

@@ -3,8 +3,6 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import React from 'react';
-
 import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-illustrations';
 import { format } from '../../services/time/timeService';
 import { Table, Button, Empty } from '@douyinfe/semi-ui-19';

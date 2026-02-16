@@ -35,6 +35,7 @@ WORKDIR /fredy
 RUN apk add --no-cache chromium curl
 
 ENV NODE_ENV=production \
+    IS_DOCKER=true \
     PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
     PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 

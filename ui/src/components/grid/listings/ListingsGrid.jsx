@@ -3,7 +3,7 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import React, { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   Card,
   Col,
@@ -32,7 +32,10 @@ import {
   IconSearch,
   IconFilter,
   IconActivity,
+  IconEyeOpened,
 } from '@douyinfe/semi-icons';
+import { useNavigate } from 'react-router-dom';
+import ListingDeletionModal from '../../ListingDeletionModal.jsx';
 import no_image from '../../../assets/no_image.jpg';
 import * as timeService from '../../../services/time/timeService.js';
 import { xhrDelete, xhrPost } from '../../../services/xhr.js';
@@ -49,6 +52,7 @@ const ListingsGrid = () => {
   const providers = useSelector((state) => state.provider);
   const jobs = useSelector((state) => state.jobsData.jobs);
   const actions = useActions();
+  const navigate = useNavigate();
 
   const [page, setPage] = useState(1);
   const pageSize = 40;
@@ -61,6 +65,9 @@ const ListingsGrid = () => {
   const [activityFilter, setActivityFilter] = useState(null);
   const [providerFilter, setProviderFilter] = useState(null);
   const [showFilterBar, setShowFilterBar] = useState(false);
+
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [listingToDelete, setListingToDelete] = useState(null);
 
   const loadData = () => {
     actions.listingsData.getListingsData({
@@ -101,6 +108,19 @@ const ListingsGrid = () => {
 
   const handlePageChange = (_page) => {
     setPage(_page);
+  };
+
+  const confirmDeletion = async (hardDelete) => {
+    try {
+      await xhrDelete('/api/listings/', { ids: [listingToDelete], hardDelete });
+      Toast.success('Listing successfully removed');
+      loadData();
+    } catch (error) {
+      Toast.error(error.message || 'Error deleting listing');
+    } finally {
+      setDeleteModalVisible(false);
+      setListingToDelete(null);
+    }
   };
 
   const cap = (val) => {
@@ -223,6 +243,8 @@ const ListingsGrid = () => {
           <Col key={item.id} xs={24} sm={12} md={8} lg={6} xl={4} xxl={6}>
             <Card
               className={`listingsGrid__card ${!item.is_active ? 'listingsGrid__card--inactive' : ''}`}
+              style={{ cursor: 'pointer' }}
+              onClick={() => navigate(`/listings/listing/${item.id}`)}
               cover={
                 <div style={{ position: 'relative' }}>
                   <div className="listingsGrid__imageContainer">
@@ -292,24 +314,28 @@ const ListingsGrid = () => {
                 </Space>
                 <Divider margin=".6rem" />
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <div className="listingsGrid__linkButton">
+                  <div className="listingsGrid__linkButton" onClick={(e) => e.stopPropagation()}>
                     <a href={item.link} target="_blank" rel="noopener noreferrer">
                       <IconLink />
                     </a>
                   </div>
 
                   <Button
+                    type="secondary"
+                    size="small"
+                    title="View Details"
+                    onClick={() => navigate(`/listings/listing/${item.id}`)}
+                    icon={<IconEyeOpened />}
+                  />
+
+                  <Button
                     title="Remove"
                     type="danger"
                     size="small"
-                    onClick={async () => {
-                      try {
-                        await xhrDelete('/api/listings/', { ids: [item.id] });
-                        Toast.success('Listing(s) successfully removed');
-                        loadData();
-                      } catch (error) {
-                        Toast.error(error);
-                      }
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setListingToDelete(item.id);
+                      setDeleteModalVisible(true);
                     }}
                     icon={<IconDelete />}
                   />
@@ -330,6 +356,14 @@ const ListingsGrid = () => {
           />
         </div>
       )}
+      <ListingDeletionModal
+        visible={deleteModalVisible}
+        onConfirm={confirmDeletion}
+        onCancel={() => {
+          setDeleteModalVisible(false);
+          setListingToDelete(null);
+        }}
+      />
     </div>
   );
 };

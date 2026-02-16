@@ -3,15 +3,13 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import React, { useEffect, useState, useMemo } from 'react';
-import { Divider, Button, AutoComplete, Toast, Typography, Banner } from '@douyinfe/semi-ui-19';
+import { useEffect, useState, useMemo } from 'react';
+import { Divider, Button, AutoComplete, Toast, Banner } from '@douyinfe/semi-ui-19';
 import { IconSave, IconHome } from '@douyinfe/semi-icons';
 import { useSelector, useActions } from '../../services/state/store';
 import { xhrGet, xhrPost } from '../../services/xhr';
 import { SegmentPart } from '../../components/segment/SegmentPart';
 import debounce from 'lodash/debounce';
-
-const { Title } = Typography;
 
 const UserSettings = () => {
   const actions = useActions();
@@ -33,7 +31,9 @@ const UserSettings = () => {
       if (response.status === 200) {
         setCoords(response.json.coords);
         await actions.userSettings.getUserSettings();
-        Toast.success('Settings saved successfully');
+        Toast.success(
+          'Settings saved successfully. We will now start calculating distances for you. This may take a while and runs in the background.',
+        );
       } else {
         Toast.error(response.json.error || 'Failed to save settings');
       }
@@ -70,8 +70,6 @@ const UserSettings = () => {
 
   return (
     <div className="user-settings">
-      <Title heading={2}>User Specific Settings</Title>
-      <Divider />
       <SegmentPart
         name="Distance calculation"
         Icon={IconHome}

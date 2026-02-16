@@ -3,7 +3,7 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { renderToString } from 'react-dom/server';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -11,14 +11,15 @@ import { useSelector, useActions } from '../../services/state/store.js';
 import { distanceMeters, generateCircleCoords, getBoundsFromCenter, getBoundsFromCoords } from './mapUtils.js';
 import { Select, Space, Typography, Button, Popover, Divider, Switch, Banner, Toast } from '@douyinfe/semi-ui-19';
 import { IconFilter, IconLink } from '@douyinfe/semi-icons';
-import { IconDelete } from '@douyinfe/semi-icons';
+import { IconDelete, IconEyeOpened } from '@douyinfe/semi-icons';
 
 import no_image from '../../assets/no_image.jpg';
 import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
 import './Map.less';
 import { xhrDelete } from '../../services/xhr.js';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router-dom';
+import ListingDeletionModal from '../../components/ListingDeletionModal.jsx';
 
 const { Text } = Typography;
 
@@ -73,6 +74,7 @@ export default function MapView() {
   const markers = useRef([]);
   const homeMarker = useRef(null);
   const actions = useActions();
+  const navigate = useNavigate();
   const listings = useSelector((state) => state.listingsData.mapListings);
   const homeAddress = useSelector((state) => state.userSettings.settings.home_address);
   const [style, setStyle] = useState('STANDARD');
@@ -83,6 +85,22 @@ export default function MapView() {
   const [priceRange, setPriceRange] = useState([0, 0]);
   const [showFilterBar, setShowFilterBar] = useState(false);
   const [distanceFilter, setDistanceFilter] = useState(0);
+
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [listingToDelete, setListingToDelete] = useState(null);
+
+  const confirmListingDeletion = async (hardDelete) => {
+    try {
+      await xhrDelete('/api/listings/', { ids: [listingToDelete], hardDelete });
+      Toast.success('Listing successfully removed');
+      fetchListings();
+    } catch (error) {
+      Toast.error(error.message || 'Error deleting listing');
+    } finally {
+      setDeleteModalVisible(false);
+      setListingToDelete(null);
+    }
+  };
 
   useEffect(() => {
     setPriceRange([0, getMaxPrice()]);
@@ -103,20 +121,20 @@ export default function MapView() {
   };
 
   useEffect(() => {
-    window.deleteListing = async (id) => {
-      try {
-        await xhrDelete('/api/listings/', { ids: [id] });
-        Toast.success('Listing successfully removed');
-        actions.listingsData.getListingsForMap({ jobId });
-      } catch (error) {
-        Toast.error(error.message || 'Error deleting listing');
-      }
+    window.deleteListing = (id) => {
+      setListingToDelete(id);
+      setDeleteModalVisible(true);
+    };
+
+    window.viewDetails = (id) => {
+      navigate(`/listings/listing/${id}`);
     };
 
     return () => {
       delete window.deleteListing;
+      delete window.viewDetails;
     };
-  }, [jobId, actions]);
+  }, [navigate]);
 
   useEffect(() => {
     if (map.current) return;
@@ -349,7 +367,15 @@ export default function MapView() {
       }
     };
 
-    addCircleLayer();
+    const updateLayers = () => {
+      addCircleLayer();
+    };
+
+    if (map.current.isStyleLoaded()) {
+      updateLayers();
+    } else {
+      map.current.on('load', updateLayers);
+    }
 
     filterListings().forEach((listing) => {
       if (
@@ -364,7 +390,10 @@ export default function MapView() {
 
         const popupContent = `
           <div class="map-popup-content">
-            <img src="${listing.image_url || no_image}" alt="${listing.title}" />
+            <img
+              src="${listing.image_url}"
+              onerror="this.onerror=null;this.src='${no_image}'"
+            />
             <h4>${listing.title}</h4>
             <div class="info">
               <span><strong>Price:</strong> ${listing.price ? listing.price + ' CHF' : 'N/A'}</span>
@@ -378,6 +407,13 @@ export default function MapView() {
                     ${renderToString(<IconLink />)}
                   </a>
                 </div>
+                <button
+                  class="map-popup-content__detailsButton"
+                  title="View Details"
+                  onclick="viewDetails('${listing.id}')"
+                >
+                  ${renderToString(<IconEyeOpened />)}
+                </button>
                 <button
                   class="map-popup-content__deleteButton"
                   title="Remove"
@@ -538,6 +574,14 @@ export default function MapView() {
       />
 
       <div ref={mapContainer} className="map-container" />
+      <ListingDeletionModal
+        visible={deleteModalVisible}
+        onConfirm={confirmListingDeletion}
+        onCancel={() => {
+          setDeleteModalVisible(false);
+          setListingToDelete(null);
+        }}
+      />
     </div>
   );
 }

@@ -58,54 +58,62 @@ export default function Login() {
   return (
     <div className="login">
       <div className="login__bgImage" style={{ background: `url("${cityBackground}")` }} />
-      <Logo />
-      <form>
-        <div className="login__loginWrapper">
-          {error && <Banner type="danger" closeIcon={null} description={error} />}
-          <Input
-            size="large"
-            prefix={<IconUser />}
-            placeholder="Username"
-            value={username}
-            showClear
-            autoFocus
-            onChange={(value) => setUserName(value)}
-            onKeyPress={async (e) => {
-              if (e.key === 'Enter') {
-                await tryLogin();
-              }
-            }}
-          />
+      <div className="login__loginWrapper">
+        <div className="login__logoWrapper">
+          <Logo width={250} white />
+        </div>
 
-          <Input
-            size="large"
-            mode="password"
-            prefix={<IconLock />}
-            value={password}
-            placeholder="Password"
-            onChange={(value) => setPassword(value)}
-            onKeyPress={async (e) => {
-              if (e.key === 'Enter') {
-                await tryLogin();
-              }
-            }}
+        {demoMode && (
+          <Banner
+            fullMode={true}
+            type="info"
+            bordered
+            closeIcon={null}
+            description="This is the demo version of Fredy. Use 'demo' as both the username and password to log in."
+            style={{ marginBottom: '1.5rem' }}
           />
+        )}
 
-          <Button type="primary" onClick={tryLogin} theme="solid" style={{ marginTop: '1rem' }}>
+        <form onSubmit={(e) => e.preventDefault()}>
+          {error && <Banner type="danger" closeIcon={null} description={error} style={{ marginBottom: '1rem' }} />}
+          <div className="login__inputGroup">
+            <Input
+              size="large"
+              prefix={<IconUser />}
+              placeholder="Username"
+              value={username}
+              showClear
+              autoFocus
+              onChange={(value) => setUserName(value)}
+              onKeyPress={async (e) => {
+                if (e.key === 'Enter') {
+                  await tryLogin();
+                }
+              }}
+            />
+          </div>
+
+          <div className="login__inputGroup">
+            <Input
+              size="large"
+              mode="password"
+              prefix={<IconLock />}
+              value={password}
+              placeholder="Password"
+              onChange={(value) => setPassword(value)}
+              onKeyPress={async (e) => {
+                if (e.key === 'Enter') {
+                  await tryLogin();
+                }
+              }}
+            />
+          </div>
+
+          <Button block type="primary" onClick={tryLogin} theme="solid" style={{ marginTop: '1rem' }}>
             Login
           </Button>
-
-          {demoMode && (
-            <Banner
-              fullMode={true}
-              type="info"
-              bordered
-              closeIcon={null}
-              description="This is the demo version of Fredy. Use 'demo' as both the username and password to log in."
-            />
-          )}
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   );
 }
