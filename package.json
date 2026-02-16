@@ -99,6 +99,7 @@
     "zustand": "^5.0.11"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@babel/core": "7.29.0",
     "@babel/eslint-parser": "7.28.6",
     "@babel/preset-env": "7.29.0",
