@@ -3,7 +3,7 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { transform } from '../../../../../services/transformer/notificationAdapterTransformer';
 import { xhrPost } from '../../../../../services/xhr';

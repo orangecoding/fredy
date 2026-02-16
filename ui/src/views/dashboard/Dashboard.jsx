@@ -20,7 +20,6 @@ import {
 import { useSelector, useActions } from '../../services/state/store';
 import KpiCard from '../../components/cards/KpiCard.jsx';
 import PieChartCard from '../../components/cards/PieChartCard.jsx';
-import Headline from '../../components/headline/Headline.jsx';
 
 import './Dashboard.less';
 import { SegmentPart } from '../../components/segment/SegmentPart.jsx';
@@ -39,12 +38,10 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard">
-      <Headline text="Dashboard" size={3} />
-
-      <Row gutter={16} className="dashboard__row">
+      <Row gutter={[16, 16]} className="dashboard__row">
         <Col span={12} xs={24} sm={24} md={24} lg={24} xl={12}>
           <SegmentPart name="General" Icon={IconTerminal}>
-            <Row gutter={16} className="dashboard__row">
+            <Row gutter={[16, 16]} className="dashboard__row">
               <Col span={12} xs={24} sm={12} md={12} lg={12} xl={12}>
                 <KpiCard
                   title="Search Interval"
@@ -104,7 +101,7 @@ export default function Dashboard() {
         </Col>
         <Col span={12} xs={24} sm={24} md={24} lg={24} xl={12}>
           <SegmentPart name="Overview" Icon={IconStar}>
-            <Row gutter={16} className="dashboard__row">
+            <Row gutter={[16, 16]} className="dashboard__row">
               <Col span={12} xs={24} sm={12} md={12} lg={12} xl={12}>
                 <KpiCard
                   title="Jobs"
@@ -136,7 +133,14 @@ export default function Dashboard() {
                 <KpiCard
                   title="Avg. Price"
                   color="purple"
-                  value={`${!kpis.avgPriceOfListings ? '---' : kpis.avgPriceOfListings} CHF`}
+                  value={`${
+                    !kpis.avgPriceOfListings
+                      ? '---'
+                      : new Intl.NumberFormat('de-CH', {
+                          style: 'currency',
+                          currency: 'CHF',
+                        }).format(kpis.avgPriceOfListings)
+                  }`}
                   icon={<IconNoteMoney />}
                   description="Avg. Price of listings"
                 />
@@ -146,8 +150,13 @@ export default function Dashboard() {
         </Col>
       </Row>
 
-      <SegmentPart name="Provider Insights" Icon={IconStar} helpText="Percentage of found listings over all providers">
-        <PieChartCard title="Jobs per Provider" data={pieData} isLoading={false} />
+      <SegmentPart
+        name="Provider Insights"
+        Icon={IconStar}
+        helpText="Percentage of found listings over all providers"
+        className="dashboard__provider-insights"
+      >
+        <PieChartCard data={pieData} />
       </SegmentPart>
     </div>
   );

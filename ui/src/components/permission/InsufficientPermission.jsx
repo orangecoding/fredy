@@ -3,7 +3,6 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import React from 'react';
 import insufficientPermission from '../../assets/insufficient_permission.png';
 
 export default function InsufficientPermission() {

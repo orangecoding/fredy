@@ -3,7 +3,6 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import React from 'react';
 import { Typography } from '@douyinfe/semi-ui-19';
 
 export default function Headline({ text, size = 3 } = {}) {

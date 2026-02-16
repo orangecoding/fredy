@@ -1,11 +1,33 @@
 .dashboard {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
   &__row {
-    margin-bottom: 1rem;
-    /* Ensure grid items wrap to next line on narrow screens */
+    margin-bottom: 24px;
     flex-wrap: wrap;
-    /* Vertical gap of 1rem between wrapped grid items (no px) */
+
     .semi-col {
-      margin-bottom: 1rem;
+      margin-bottom: 0; // Handled by Row gutter
+    }
+  }
+
+  &__provider-insights {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin: 0 !important;
+
+    .semi-card-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      max-height: 300px;
+
+      > * {
+        flex: 1;
+      }
     }
   }
 }
