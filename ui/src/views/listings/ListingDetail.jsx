@@ -269,7 +269,7 @@ export default function ListingDetail() {
       value: listing.provider.charAt(0).toUpperCase() + listing.provider.slice(1),
       Icon: <IconBriefcase />,
     },
-    { key: 'Price', value: `${listing.price} €`, Icon: <IconCart /> },
+    { key: 'Price', value: `CHF ${listing.price}`, Icon: <IconCart /> },
     {
       key: 'Size',
       value: listing.size ? `${listing.size} m²` : 'N/A',
