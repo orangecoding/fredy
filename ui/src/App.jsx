@@ -11,7 +11,7 @@ import GeneralSettings from './views/generalSettings/GeneralSettings';
 import UserSettings from './views/userSettings/UserSettings';
 import JobMutation from './views/jobs/mutation/JobMutation';
 import UserMutator from './views/user/mutation/UserMutator';
-import { useActions, useSelector, useFredyState } from './services/state/store';
+import { useActions, useSelector } from './services/state/store';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './views/login/Login';
 import Users from './views/user/Users';
@@ -41,24 +41,21 @@ export default function FredyApp() {
   useEffect(() => {
     async function init() {
       await actions.user.getCurrentUser();
-      const user = useFredyState.getState().user.currentUser;
-      if (!user || Object.keys(user).length === 0) {
-        setLoading(false);
-        return;
+      if (!needsLogin()) {
+        await actions.provider.getProvider();
+        await actions.jobsData.getJobs();
+        await actions.jobsData.getSharableUserList();
+        await actions.notificationAdapter.getAdapter();
+        await actions.generalSettings.getGeneralSettings();
+        await actions.userSettings.getUserSettings();
+        await actions.versionUpdate.getVersionUpdate();
+        await actions.tracking.getTrackingPois();
       }
-      await actions.provider.getProvider();
-      await actions.jobsData.getJobs();
-      await actions.jobsData.getSharableUserList();
-      await actions.notificationAdapter.getAdapter();
-      await actions.generalSettings.getGeneralSettings();
-      await actions.userSettings.getUserSettings();
-      await actions.versionUpdate.getVersionUpdate();
-      await actions.tracking.getTrackingPois();
       setLoading(false);
     }
 
     init();
-  }, []);
+  }, [currentUser?.userId]);
 
   const needsLogin = () => {
     return currentUser == null || Object.keys(currentUser).length === 0;
@@ -68,7 +65,10 @@ export default function FredyApp() {
   const { Sider, Content } = Layout;
 
   return loading ? null : needsLogin() ? (
-    <Login />
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="*" element={<Navigate to="/login" replace />} />
+    </Routes>
   ) : (
     <Layout className="app">
       <Sider>
@@ -90,7 +90,7 @@ export default function FredyApp() {
             </>
           )}
           {settings.analyticsEnabled === null && !settings.demoMode && <TrackingModal />}
-          {!settings.demoMode && <NewsModal />}
+          <NewsModal />
           <Routes>
             <Route path="/403" element={<InsufficientPermission />} />
             <Route path="/jobs/new" element={<JobMutation />} />
@@ -137,7 +137,6 @@ export default function FredyApp() {
               }
             />
 
-            {/* Authenticated fallbacks */}
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
           </Routes>
         </Content>
