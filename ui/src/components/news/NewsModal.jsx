@@ -11,6 +11,8 @@ import { useActions, useSelector } from '../../services/state/store';
 
 import './NewsModal.less';
 
+const newsImages = import.meta.glob('../../assets/news/*', { eager: true, query: '?url', import: 'default' });
+
 const NewsModal = () => {
   const screenWidth = useScreenWidth();
   const newsHash = useSelector((state) => state.userSettings.settings.news_hash);
@@ -31,9 +33,9 @@ const NewsModal = () => {
     ),
     description: (
       <div style={{ textAlign: 'left' }}>
-        {item.image && (
+        {item.image && newsImages[`../../assets/news/${item.image}`] && (
           <img
-            src={`/ui/src/assets/news/${item.image}`}
+            src={newsImages[`../../assets/news/${item.image}`]}
             alt={item.title}
             style={{ width: '100%', marginBottom: 10, borderRadius: 4 }}
           />
