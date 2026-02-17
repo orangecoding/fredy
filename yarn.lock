@@ -1470,16 +1470,16 @@
   resolved "https://registry.npmjs.org/@pkgjs/parseargs/-/parseargs-0.11.0.tgz"
   integrity sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==
 
-"@puppeteer/browsers@2.12.0":
-  version "2.12.0"
-  resolved "https://registry.npmjs.org/@puppeteer/browsers/-/browsers-2.12.0.tgz"
-  integrity sha512-Xuq42yxcQJ54ti8ZHNzF5snFvtpgXzNToJ1bXUGQRaiO8t+B6UM8sTUJfvV+AJnqtkJU/7hdy6nbKyA12aHtRw==
+"@puppeteer/browsers@2.12.1":
+  version "2.12.1"
+  resolved "https://registry.yarnpkg.com/@puppeteer/browsers/-/browsers-2.12.1.tgz#eea8d90bab08e709550f5bf987b5af92f3286f1e"
+  integrity sha512-fXa6uXLxfslBlus3MEpW8S6S9fe5RwmAE5Gd8u3krqOwnkZJV3/lQJiY3LaFdTctLLqJtyMgEUGkbDnRNf6vbQ==
   dependencies:
     debug "^4.4.3"
     extract-zip "^2.0.1"
     progress "^2.0.3"
     proxy-agent "^6.5.0"
-    semver "^7.7.3"
+    semver "^7.7.4"
     tar-fs "^3.1.1"
     yargs "^17.7.2"
 
@@ -2617,10 +2617,10 @@ chownr@^1.1.1:
   resolved "https://registry.npmjs.org/chownr/-/chownr-1.1.4.tgz"
   integrity sha512-jJ0bqzaylmJtVnNgzTeSOs8DPavpbYgEr/b0YL8/2GO3xJEhInFmhKMUnEJQjZumK7KXGFhUy89PrsJWlakBVg==
 
-chromium-bidi@13.1.1:
-  version "13.1.1"
-  resolved "https://registry.npmjs.org/chromium-bidi/-/chromium-bidi-13.1.1.tgz"
-  integrity sha512-zB9MpoPd7VJwjowQqiW3FKOvQwffFMjQ8Iejp5ZW+sJaKLRhZX1sTxzl3Zt22TDB4zP0OOqs8lRoY7eAW5geyQ==
+chromium-bidi@14.0.0:
+  version "14.0.0"
+  resolved "https://registry.yarnpkg.com/chromium-bidi/-/chromium-bidi-14.0.0.tgz#15a12ab083ae519a49a724e94994ca0a9ced9c8e"
+  integrity sha512-9gYlLtS6tStdRWzrtXaTMnqcM4dudNegMXJxkR0I/CXObHalYeYcAMPrL19eroNZHtJ8DQmu1E+ZNOYu/IXMXw==
   dependencies:
     mitt "^3.0.1"
     zod "^3.24.1"
@@ -6223,17 +6223,17 @@ punycode@^2.1.0:
   resolved "https://registry.npmjs.org/punycode/-/punycode-2.3.1.tgz"
   integrity sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==
 
-puppeteer-core@24.37.2:
-  version "24.37.2"
-  resolved "https://registry.npmjs.org/puppeteer-core/-/puppeteer-core-24.37.2.tgz"
-  integrity sha512-nN8qwE3TGF2vA/+xemPxbesntTuqD9vCGOiZL2uh8HES3pPzLX20MyQjB42dH2rhQ3W3TljZ4ZaKZ0yX/abQuw==
+puppeteer-core@24.37.3:
+  version "24.37.3"
+  resolved "https://registry.yarnpkg.com/puppeteer-core/-/puppeteer-core-24.37.3.tgz#56f65d743eb99fe86b246b6af9ea3e94b0e4a4f9"
+  integrity sha512-fokQ8gv+hNgsRWqVuP5rUjGp+wzV5aMTP3fcm8ekNabmLGlJdFHas1OdMscAH9Gzq4Qcf7cfI/Pe6wEcAqQhqg==
   dependencies:
-    "@puppeteer/browsers" "2.12.0"
-    chromium-bidi "13.1.1"
+    "@puppeteer/browsers" "2.12.1"
+    chromium-bidi "14.0.0"
     debug "^4.4.3"
     devtools-protocol "0.0.1566079"
     typed-query-selector "^2.12.0"
-    webdriver-bidi-protocol "0.4.0"
+    webdriver-bidi-protocol "0.4.1"
     ws "^8.19.0"
 
 puppeteer-extra-plugin-stealth@^2.11.2:
@@ -6284,15 +6284,15 @@ puppeteer-extra@^3.3.6:
     deepmerge "^4.2.2"
 
 puppeteer@^24.37.2:
-  version "24.37.2"
-  resolved "https://registry.yarnpkg.com/puppeteer/-/puppeteer-24.37.2.tgz#059a486d1db6d16ea58c4456eba896b27946656f"
-  integrity sha512-FV1W/919ve0y0oiS/3Rp5XY4MUNUokpZOH/5M4MMDfrrvh6T9VbdKvAHrAFHBuCxvluDxhjra20W7Iz6HJUcIQ==
+  version "24.37.3"
+  resolved "https://registry.yarnpkg.com/puppeteer/-/puppeteer-24.37.3.tgz#68327e1f571887ed1ba7916d770e6028975a21db"
+  integrity sha512-AUGGWq0BhPM+IOS2U9A+ZREH3HDFkV1Y5HERYGDg5cbGXjoGsTCT7/A6VZRfNU0UJJdCclyEimZICkZW6pqJyw==
   dependencies:
-    "@puppeteer/browsers" "2.12.0"
-    chromium-bidi "13.1.1"
+    "@puppeteer/browsers" "2.12.1"
+    chromium-bidi "14.0.0"
     cosmiconfig "^9.0.0"
     devtools-protocol "0.0.1566079"
-    puppeteer-core "24.37.2"
+    puppeteer-core "24.37.3"
     typed-query-selector "^2.12.0"
 
 qs@^6.14.1:
@@ -6786,11 +6786,6 @@ semver@^7.3.5, semver@^7.5.3:
   version "7.7.2"
   resolved "https://registry.npmjs.org/semver/-/semver-7.7.2.tgz"
   integrity sha512-RF0Fw+rO5AMf9MAyaRXI4AV0Ulj5lMHqVxxdSgiVbixSCXoEmmX/jk0CuJw4+3SqroYO9VoUh+HcuJivvtJemA==
-
-semver@^7.7.3:
-  version "7.7.3"
-  resolved "https://registry.npmjs.org/semver/-/semver-7.7.3.tgz"
-  integrity sha512-SdsKMrI9TdgjdweUSR9MweHA4EJ8YxHn8DFaDisvhVlUOe4BF1tLD7GAj0lIqWVl+dPb/rExr0Btby5loQm20Q==
 
 semver@^7.7.4:
   version "7.7.4"
@@ -7643,10 +7638,10 @@ web-streams-polyfill@^3.0.3:
   resolved "https://registry.npmjs.org/web-streams-polyfill/-/web-streams-polyfill-3.3.3.tgz"
   integrity sha512-d2JWLCivmZYTSIoge9MsgFCZrt571BikcWGYkjC1khllbTeDlGqZ2D8vD8E/lJa8WGWbb7Plm8/XJYV7IJHZZw==
 
-webdriver-bidi-protocol@0.4.0:
-  version "0.4.0"
-  resolved "https://registry.npmjs.org/webdriver-bidi-protocol/-/webdriver-bidi-protocol-0.4.0.tgz"
-  integrity sha512-U9VIlNRrq94d1xxR9JrCEAx5Gv/2W7ERSv8oWRoNe/QYbfccS0V3h/H6qeNeCRJxXGMhhnkqvwNrvPAYeuP9VA==
+webdriver-bidi-protocol@0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/webdriver-bidi-protocol/-/webdriver-bidi-protocol-0.4.1.tgz#d411e7b8e158408d83bb166b0b4f1054fa3f077e"
+  integrity sha512-ARrjNjtWRRs2w4Tk7nqrf2gBI0QXWuOmMCx2hU+1jUt6d00MjMxURrhxhGbrsoiZKJrhTSTzbIrc554iKI10qw==
 
 whatwg-encoding@^3.1.1:
   version "3.1.1"
