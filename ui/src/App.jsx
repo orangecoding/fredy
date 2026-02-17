@@ -29,6 +29,7 @@ import FredyFooter from './components/footer/FredyFooter.jsx';
 import WatchlistManagement from './views/listings/management/WatchlistManagement.jsx';
 import Dashboard from './views/dashboard/Dashboard.jsx';
 import ListingDetail from './views/listings/ListingDetail.jsx';
+import NewsModal from './components/news/NewsModal.jsx';
 
 export default function FredyApp() {
   const actions = useActions();
@@ -48,6 +49,7 @@ export default function FredyApp() {
         await actions.generalSettings.getGeneralSettings();
         await actions.userSettings.getUserSettings();
         await actions.versionUpdate.getVersionUpdate();
+        await actions.tracking.getTrackingPois();
       }
       setLoading(false);
     }
@@ -88,6 +90,7 @@ export default function FredyApp() {
             </>
           )}
           {settings.analyticsEnabled === null && !settings.demoMode && <TrackingModal />}
+          <NewsModal />
           <Routes>
             <Route path="/403" element={<InsufficientPermission />} />
             <Route path="/jobs/new" element={<JobMutation />} />

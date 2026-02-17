@@ -6,8 +6,8 @@
 import { useEffect, useState, useMemo } from 'react';
 import { Divider, Button, AutoComplete, Toast, Banner } from '@douyinfe/semi-ui-19';
 import { IconSave, IconHome } from '@douyinfe/semi-icons';
-import { useSelector, useActions } from '../../services/state/store';
-import { xhrGet, xhrPost } from '../../services/xhr';
+import { useSelector, useActions, useIsLoading } from '../../services/state/store';
+import { xhrGet } from '../../services/xhr';
 import { SegmentPart } from '../../components/segment/SegmentPart';
 import debounce from 'lodash/debounce';
 
@@ -16,7 +16,7 @@ const UserSettings = () => {
   const homeAddress = useSelector((state) => state.userSettings.settings.home_address);
   const [address, setAddress] = useState(homeAddress?.address || '');
   const [coords, setCoords] = useState(homeAddress?.coords || null);
-  const [saving, setSaving] = useState(false);
+  const saving = useIsLoading(actions.userSettings.setHomeAddress);
   const [dataSource, setDataSource] = useState([]);
 
   useEffect(() => {
@@ -25,22 +25,15 @@ const UserSettings = () => {
   }, [homeAddress]);
 
   const handleSave = async () => {
-    setSaving(true);
     try {
-      const response = await xhrPost('/api/user/settings/home-address', { home_address: address });
-      if (response.status === 200) {
-        setCoords(response.json.coords);
-        await actions.userSettings.getUserSettings();
-        Toast.success(
-          'Settings saved successfully. We will now start calculating distances for you. This may take a while and runs in the background.',
-        );
-      } else {
-        Toast.error(response.json.error || 'Failed to save settings');
-      }
+      const responseJson = await actions.userSettings.setHomeAddress(address);
+      setCoords(responseJson.coords);
+      await actions.userSettings.getUserSettings();
+      Toast.success(
+        'Settings saved successfully. We will now start calculating distances for you. This may take a while and runs in the background.',
+      );
     } catch (error) {
       Toast.error(error.json?.error || 'Error while saving settings');
-    } finally {
-      setSaving(false);
     }
   };
 

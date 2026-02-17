@@ -8,7 +8,7 @@
  */
 import { create } from 'zustand';
 import { shallow } from 'zustand/shallow';
-import { xhrGet } from '../xhr.js';
+import { xhrGet, xhrPost } from '../xhr.js';
 import queryString from 'query-string';
 
 const logger = (config) => (set, get, api) =>
@@ -27,10 +27,21 @@ const logger = (config) => (set, get, api) =>
     api,
   );
 
+/**
+ * Middleware to track loading state of async actions.
+ */
+const loadingTracker = (config) => (set, get, api) => {
+  const wrappedSet = (partial, replace) => {
+    set(partial, replace);
+  };
+
+  return config(wrappedSet, get, api);
+};
+
 // Create the Zustand store with slices and actions
 export const useFredyState = create(
   logger(
-    (set) => {
+    loadingTracker((set) => {
       // Async actions that directly set state (no separate reducer concept)
       const effects = {
         dashboard: {
@@ -169,6 +180,23 @@ export const useFredyState = create(
             }
           },
         },
+        tracking: {
+          async getTrackingPois() {
+            try {
+              const response = await xhrGet('/api/tracking/trackingPois');
+              set((state) => ({ tracking: { ...state.tracking, pois: Object.freeze(response.json) } }));
+            } catch (Exception) {
+              console.error('Error while trying to get resource for api/tracking. Error:', Exception);
+            }
+          },
+          async trackPoi(poi) {
+            try {
+              await xhrPost('/api/tracking/poi', { poi });
+            } catch (Exception) {
+              console.error('Error while trying to track poi. Error:', Exception);
+            }
+          },
+        },
         listingsData: {
           async getListingsData({
             page = 1,
@@ -234,9 +262,46 @@ export const useFredyState = create(
           async getUserSettings() {
             try {
               const response = await xhrGet('/api/user/settings');
-              set((state) => ({ userSettings: { ...state.userSettings, settings: response.json } }));
+              set((state) => ({ userSettings: { ...state.userSettings, settings: response.json, loaded: true } }));
             } catch (Exception) {
               console.error('Error while trying to get resource for api/user/settings. Error:', Exception);
+              // Mark as loaded even on error to prevent blocking the UI
+              set((state) => ({ userSettings: { ...state.userSettings, loaded: true } }));
+            }
+          },
+          async setNewsHash(newsHash) {
+            try {
+              await xhrPost('/api/user/settings/news-hash', { news_hash: newsHash });
+              set((state) => ({
+                userSettings: {
+                  ...state.userSettings,
+                  settings: { ...state.userSettings.settings, news_hash: newsHash },
+                },
+              }));
+            } catch (Exception) {
+              console.error('Error while trying to update news hash. Error:', Exception);
+              throw Exception;
+            }
+          },
+          async setHomeAddress(address) {
+            try {
+              const response = await xhrPost('/api/user/settings/home-address', { home_address: address });
+              if (response.status === 200) {
+                set((state) => ({
+                  userSettings: {
+                    ...state.userSettings,
+                    settings: {
+                      ...state.userSettings.settings,
+                      home_address: { address, coords: response.json.coords },
+                    },
+                  },
+                }));
+                return response.json;
+              }
+              throw response;
+            } catch (Exception) {
+              console.error('Error while trying to update home address. Error:', Exception);
+              throw Exception;
             }
           },
         },
@@ -255,9 +320,10 @@ export const useFredyState = create(
           maxPrice: 0,
         },
         generalSettings: { settings: {} },
-        userSettings: { settings: {} },
+        userSettings: { settings: {}, loaded: false },
         demoMode: { demoMode: false },
         versionUpdate: {},
+        tracking: { pois: {} },
         provider: [],
         jobsData: {
           jobs: [],
@@ -276,6 +342,7 @@ export const useFredyState = create(
         generalSettings: { ...effects.generalSettings },
         demoMode: { ...effects.demoMode },
         versionUpdate: { ...effects.versionUpdate },
+        tracking: { ...effects.tracking },
         listingsData: { ...effects.listingsData },
         provider: { ...effects.provider },
         jobsData: { ...effects.jobsData },
@@ -283,12 +350,34 @@ export const useFredyState = create(
         userSettings: { ...effects.userSettings },
       };
 
+      // Wrap actions to track loading state
+      const wrappedActions = {};
+      Object.keys(actions).forEach((slice) => {
+        wrappedActions[slice] = {};
+        Object.keys(actions[slice]).forEach((actionName) => {
+          const originalAction = actions[slice][actionName];
+          if (typeof originalAction === 'function') {
+            wrappedActions[slice][actionName] = async (...args) => {
+              const fullActionName = `${slice}.${actionName}`;
+              set((state) => ({ loading: { ...state.loading, [fullActionName]: true } }));
+              try {
+                return await originalAction(...args);
+              } finally {
+                set((state) => ({ loading: { ...state.loading, [fullActionName]: false } }));
+              }
+            };
+          } else {
+            wrappedActions[slice][actionName] = originalAction;
+          }
+        });
+      });
+
       return {
         ...initial,
-        __actions: { actions },
+        loading: {},
+        __actions: { actions: wrappedActions },
       };
-    },
-    { name: 'fredy' },
+    }),
   ),
 );
 
@@ -311,4 +400,28 @@ export function useSelector(selector, equalityFn = shallow) {
  */
 export function useActions() {
   return useFredyState((s) => s.__actions.actions);
+}
+
+/**
+ * Hook to check if a specific action is currently loading.
+ * @param {Function} action - The action function from useActions()
+ * @returns {boolean}
+ */
+export function useIsLoading(action) {
+  const actions = useActions();
+  const loading = useSelector((state) => state.loading);
+
+  // Find the action name by comparing the function
+  let actionPath = null;
+  for (const slice in actions) {
+    for (const name in actions[slice]) {
+      if (actions[slice][name] === action) {
+        actionPath = `${slice}.${name}`;
+        break;
+      }
+    }
+    if (actionPath) break;
+  }
+
+  return !!loading[actionPath];
 }
