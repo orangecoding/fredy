@@ -80,7 +80,7 @@
     "node-mailjet": "6.0.11",
     "p-throttle": "^8.1.0",
     "package-up": "^5.0.0",
-    "puppeteer": "^24.37.2",
+    "puppeteer": "^24.37.3",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
     "query-string": "9.3.1",
