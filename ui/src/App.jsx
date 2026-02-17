@@ -90,7 +90,7 @@ export default function FredyApp() {
             </>
           )}
           {settings.analyticsEnabled === null && !settings.demoMode && <TrackingModal />}
-          <NewsModal />
+          {!settings.demoMode && <NewsModal />}
           <Routes>
             <Route path="/403" element={<InsufficientPermission />} />
             <Route path="/jobs/new" element={<JobMutation />} />
