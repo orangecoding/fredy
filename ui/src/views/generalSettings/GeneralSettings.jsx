@@ -63,10 +63,6 @@ const GeneralSettings = function GeneralSettings() {
   const [demoMode, setDemoMode] = React.useState(null);
   const [analyticsEnabled, setAnalyticsEnabled] = React.useState(null);
   const [sqlitePath, setSqlitePath] = React.useState(null);
-  const [proxyUrl, setProxyUrl] = React.useState('');
-  const [proxyUsername, setProxyUsername] = React.useState('');
-  const [proxyPassword, setProxyPassword] = React.useState('');
-  const [twoCaptchaApiKey, setTwoCaptchaApiKey] = React.useState('');
   const [brightDataApiToken, setBrightDataApiToken] = React.useState('');
   const [brightDataZone, setBrightDataZone] = React.useState('');
   const fileInputRef = React.useRef(null);
@@ -92,10 +88,6 @@ const GeneralSettings = function GeneralSettings() {
     setAnalyticsEnabled(settings?.analyticsEnabled || false);
     setDemoMode(settings?.demoMode || false);
     setSqlitePath(settings?.sqlitepath);
-    setProxyUrl(settings?.proxyUrl || '');
-    setProxyUsername(settings?.proxyUsername || '');
-    setProxyPassword(settings?.proxyPassword || '');
-    setTwoCaptchaApiKey(settings?.twoCaptchaApiKey || '');
     setBrightDataApiToken(settings?.brightDataApiToken || '');
     setBrightDataZone(settings?.brightDataZone || '');
   }, [settings]);
@@ -133,10 +125,6 @@ const GeneralSettings = function GeneralSettings() {
         demoMode,
         analyticsEnabled,
         sqlitepath: sqlitePath,
-        proxyUrl,
-        proxyUsername,
-        proxyPassword,
-        twoCaptchaApiKey,
         brightDataApiToken,
         brightDataZone,
       });
@@ -379,8 +367,8 @@ const GeneralSettings = function GeneralSettings() {
             <Divider margin="1rem" />
 
             <SegmentPart
-              name="Anti-Bot Settings"
-              helpText="Configure proxy and captcha solving for providers with anti-bot protection (e.g., ImmoScout24.ch)."
+              name="Bright Data Settings"
+              helpText="Configure Bright Data Web Unlocker for providers with anti-bot protection (e.g., ImmoScout24.ch)."
               Icon={IconGlobeStroke}
             >
               <Banner
@@ -391,62 +379,13 @@ const GeneralSettings = function GeneralSettings() {
                 style={{ marginBottom: '1rem' }}
                 description={
                   <div>
-                    Some providers use anti-bot protection (like DataDome) that blocks automated requests. A residential
-                    proxy routes requests through real ISP IPs, and 2Captcha solves any captcha challenges that appear.
-                    <br />
-                    <br />
-                    Recommended providers: <b>DataImpulse</b> (~$1/GB residential proxy), <b>2Captcha</b> (~$1.45/1000
-                    captchas)
+                    Some providers use anti-bot protection that blocks automated requests. Bright Data Web Unlocker
+                    handles proxy rotation and captcha solving automatically.
                   </div>
                 }
               />
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                <div
-                  style={{ fontSize: '13px', fontWeight: 600, color: 'var(--semi-color-text-1)', marginTop: '0.5rem' }}
-                >
-                  Residential Proxy
-                </div>
-                <Input
-                  type="text"
-                  placeholder="http://proxy.example.com:8080"
-                  value={proxyUrl}
-                  onChange={(value) => setProxyUrl(value)}
-                  prefix="URL"
-                />
-                <Input
-                  type="text"
-                  placeholder="Username (optional)"
-                  value={proxyUsername}
-                  onChange={(value) => setProxyUsername(value)}
-                  prefix="User"
-                />
-                <Input
-                  type="password"
-                  placeholder="Password (optional)"
-                  value={proxyPassword}
-                  onChange={(value) => setProxyPassword(value)}
-                  prefix="Pass"
-                  mode="password"
-                />
-                <div
-                  style={{ fontSize: '13px', fontWeight: 600, color: 'var(--semi-color-text-1)', marginTop: '0.5rem' }}
-                >
-                  Captcha Solver (2Captcha)
-                </div>
-                <Input
-                  type="password"
-                  placeholder="API key from 2captcha.com"
-                  value={twoCaptchaApiKey}
-                  onChange={(value) => setTwoCaptchaApiKey(value)}
-                  prefix="API Key"
-                  mode="password"
-                />
-                <div
-                  style={{ fontSize: '13px', fontWeight: 600, color: 'var(--semi-color-text-1)', marginTop: '0.5rem' }}
-                >
-                  Bright Data Web Unlocker (Recommended)
-                </div>
                 <Input
                   type="password"
                   placeholder="API token from brightdata.com"
