@@ -14,12 +14,6 @@
     "shouldBecome": "https://www.wg-gesucht.de/1-zimmer-wohnungen-in-Dusseldorf.30.1.1.0.html?sort_column=0&sort_order=0",
     "id": "wgGesucht"
   },
-
-  {
-    "url": "https://www.immonet.de/immobiliensuche/sel.do?sortby=0&suchart=1&objecttype=1&marketingtype=2&parentcat=1&locationname=d%C3%BCsseldorf",
-    "shouldBecome": "https://www.immonet.de/immobiliensuche/sel.do?sortby=19&suchart=1&objecttype=1&marketingtype=2&parentcat=1&locationname=d%C3%BCsseldorf",
-    "id": "immonet"
-  },
   {
     "url": "https://www.neubaukompass.de/neubau-immobilien/berlin-region/",
     "shouldBecome": "https://www.neubaukompass.de/neubau-immobilien/berlin-region/?Sortierung=Id&Richtung=DESC",
