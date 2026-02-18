@@ -137,8 +137,8 @@ export default function Dashboard() {
                     !kpis.avgPriceOfListings
                       ? '---'
                       : new Intl.NumberFormat('de-DE', {
-                          style: 'currency',
-                          currency: 'EUR',
+                          style: 'decimal',
+                          maximumFractionDigits: 0,
                         }).format(kpis.avgPriceOfListings)
                   }`}
                   icon={<IconNoteMoney />}
