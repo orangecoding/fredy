@@ -23,9 +23,11 @@ import ListingDeletionModal from '../../components/ListingDeletionModal.jsx';
 
 const { Text } = Typography;
 
-const GERMANY_BOUNDS = [
-  [5.866, 47.27], // Southwest coordinates
-  [15.042, 55.059], // Northeast coordinates
+// Default bounds covering central Europe (Germany + Switzerland + Austria).
+// The map auto-fits to listing coordinates when available.
+const DEFAULT_BOUNDS = [
+  [5.866, 45.818], // Southwest (covers Switzerland)
+  [16.6, 55.059], // Northeast (covers Germany)
 ];
 
 const STYLES = {
@@ -142,9 +144,8 @@ export default function MapView() {
     map.current = new maplibregl.Map({
       container: mapContainer.current,
       style: STYLES[style],
-      center: [10.4515, 51.1657], // Center of Germany
-      zoom: 4,
-      maxBounds: GERMANY_BOUNDS,
+      bounds: DEFAULT_BOUNDS,
+      fitBoundsOptions: { padding: 20 },
       antialias: true,
     });
 
@@ -396,7 +397,7 @@ export default function MapView() {
             />
             <h4>${listing.title}</h4>
             <div class="info">
-              <span><strong>Price:</strong> ${listing.price ? listing.price + ' €' : 'N/A'}</span>
+              <span><strong>Price:</strong> ${listing.price || 'N/A'}</span>
               <span><strong>Address:</strong> ${listing.address || 'N/A'}</span>
               <span><strong>Job:</strong> ${listing.job_name || 'N/A'}</span>
               <span><strong>Provider:</strong> ${capitalizedProvider}</span>
@@ -527,12 +528,12 @@ export default function MapView() {
             <Divider layout="vertical" />
             <div className="listingsGrid__toolbar__card">
               <div>
-                <Text strong>Price Range (€):</Text>
+                <Text strong>Price Range:</Text>
               </div>
               <div style={{ width: 250, padding: '0 10px' }}>
                 <div className="map__rangesliderLabels">
-                  <span>{priceRange[0]} €</span>
-                  <span>{priceRange[1]} €</span>
+                  <span>{priceRange[0]}</span>
+                  <span>{priceRange[1]}</span>
                 </div>
                 <RangeSlider
                   min={0}
@@ -542,7 +543,7 @@ export default function MapView() {
                   onInput={(val) => {
                     setPriceRange(val);
                   }}
-                  tipFormatter={(val) => `${val} €`}
+                  tipFormatter={(val) => `${val}`}
                 />
               </div>
             </div>

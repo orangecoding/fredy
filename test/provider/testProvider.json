@@ -55,5 +55,9 @@
   "wohnungsboerse": {
     "url": "https://www.wohnungsboerse.net/searches/index?estate_marketing_types=kauf%2C1&marketing_type=kauf&estate_types%5B0%5D=1&is_rendite=0&estate_id=&zipcodes%5B%5D=&cities%5B%5D=Duesseldorf&districts%5B%5D=&term=D%C3%BCsseldorf&umkreiskm=&pricetext=&minprice=&maxprice=&sizetext=&minsize=&maxsize=&roomstext=&minrooms=&maxrooms=",
     "IsActive": true
+  },
+  "flatfox": {
+    "url": "https://www.flatfox.ch/en/search/?east=7.533549&north=47.024424&object_category=APARTMENT&offer_type=RENT&south=46.909588&west=7.318974",
+    "enabled": true
   }
 }

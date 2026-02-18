@@ -282,7 +282,7 @@ const ListingsGrid = () => {
                 </Text>
                 <Space vertical align="start" spacing={2} style={{ width: '100%', marginTop: 8 }}>
                   <Text type="secondary" icon={<IconCart />} size="small">
-                    {item.price} €
+                    {item.price} {providers?.find((p) => p.id === item.provider)?.currency || '€'}
                   </Text>
                   <Text
                     type="secondary"
@@ -301,7 +301,10 @@ const ListingsGrid = () => {
                   </Text>
                   {item.distance_to_destination ? (
                     <Text type="tertiary" size="small" icon={<IconActivity />}>
-                      {item.distance_to_destination} m to chosen address
+                      {item.distance_to_destination >= 1000
+                        ? `${(item.distance_to_destination / 1000).toFixed(1)} km`
+                        : `${Math.round(item.distance_to_destination)} m`}{' '}
+                      to chosen address
                     </Text>
                   ) : (
                     <Text type="tertiary" size="small" icon={<IconActivity />}>

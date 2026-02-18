@@ -258,6 +258,9 @@ export default function ListingDetail() {
 
   if (!listing) return null;
 
+  const providersList = useSelector((state) => state.provider);
+  const providerCurrency = providersList?.find((p) => p.id === listing.provider)?.currency || '€';
+
   const data = [
     {
       key: 'Job',
@@ -269,7 +272,7 @@ export default function ListingDetail() {
       value: listing.provider.charAt(0).toUpperCase() + listing.provider.slice(1),
       Icon: <IconBriefcase />,
     },
-    { key: 'Price', value: `${listing.price} €`, Icon: <IconCart /> },
+    { key: 'Price', value: `${listing.price} ${providerCurrency}`, Icon: <IconCart /> },
     {
       key: 'Size',
       value: listing.size ? `${listing.size} m²` : 'N/A',
@@ -361,7 +364,11 @@ export default function ListingDetail() {
                   <Space align="center">
                     <IconActivity style={{ fontSize: '18px', color: 'var(--semi-color-primary)' }} />
                     <Text strong>Distance to home:</Text>
-                    <Tag color="blue">{listing.distance_to_destination} m</Tag>
+                    <Tag color="blue">
+                      {listing.distance_to_destination >= 1000
+                        ? `${(listing.distance_to_destination / 1000).toFixed(1)} km`
+                        : `${Math.round(listing.distance_to_destination)} m`}
+                    </Tag>
                   </Space>
                 </>
               )}

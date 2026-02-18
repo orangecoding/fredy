@@ -25,6 +25,7 @@ import {
   IconLineChartStroked,
   IconSearch,
   IconFolder,
+  IconLock,
 } from '@douyinfe/semi-icons';
 import './GeneralSettings.less';
 
@@ -57,6 +58,8 @@ const GeneralSettings = function GeneralSettings() {
   const [demoMode, setDemoMode] = React.useState(null);
   const [analyticsEnabled, setAnalyticsEnabled] = React.useState(null);
   const [sqlitePath, setSqlitePath] = React.useState(null);
+  const [brightDataApiToken, setBrightDataApiToken] = React.useState('');
+  const [brightDataZone, setBrightDataZone] = React.useState('');
   const fileInputRef = React.useRef(null);
   const [restoreModalVisible, setRestoreModalVisible] = React.useState(false);
   const [precheckInfo, setPrecheckInfo] = React.useState(null);
@@ -81,6 +84,8 @@ const GeneralSettings = function GeneralSettings() {
       setAnalyticsEnabled(settings?.analyticsEnabled || false);
       setDemoMode(settings?.demoMode || false);
       setSqlitePath(settings?.sqlitepath);
+      setBrightDataApiToken(settings?.brightDataApiToken || '');
+      setBrightDataZone(settings?.brightDataZone || '');
     }
 
     init();
@@ -119,6 +124,8 @@ const GeneralSettings = function GeneralSettings() {
         demoMode,
         analyticsEnabled,
         sqlitepath: sqlitePath,
+        brightDataApiToken: brightDataApiToken || null,
+        brightDataZone: brightDataZone || null,
       });
     } catch (exception) {
       console.error(exception);
@@ -331,6 +338,50 @@ const GeneralSettings = function GeneralSettings() {
                 {' '}
                 Enabled
               </Checkbox>
+            </SegmentPart>
+
+            <Divider margin="1rem" />
+
+            <SegmentPart
+              name="Bright Data (optional)"
+              helpText="Some providers (e.g., Flatfox, ImmoScout24.ch) require a Bright Data Web Unlocker to bypass bot protection or geo-restrictions. Leave empty if you only use providers that don't need it."
+              Icon={IconLock}
+            >
+              <Banner
+                fullMode={false}
+                type="info"
+                closeIcon={null}
+                title={
+                  <div style={{ fontWeight: 600, fontSize: '14px', lineHeight: '20px' }}>When do you need this?</div>
+                }
+                style={{ marginBottom: '1rem' }}
+                description={
+                  <div>
+                    Bright Data is only required for Swiss providers that use geo-restricted APIs or have bot protection
+                    (DataDome). German providers work without it. You can get API credentials at{' '}
+                    <a href="https://brightdata.com" target="_blank" rel="noopener noreferrer">
+                      brightdata.com
+                    </a>
+                    .
+                  </div>
+                }
+              />
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxWidth: '600px' }}>
+                <Input
+                  type="password"
+                  placeholder="API Token"
+                  value={brightDataApiToken}
+                  onChange={(value) => setBrightDataApiToken(value)}
+                  insetLabel="API Token"
+                />
+                <Input
+                  type="text"
+                  placeholder="Zone name (e.g., web_unlocker1)"
+                  value={brightDataZone}
+                  onChange={(value) => setBrightDataZone(value)}
+                  insetLabel="Zone"
+                />
+              </div>
             </SegmentPart>
 
             <Divider margin="1rem" />
