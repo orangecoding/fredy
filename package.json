@@ -1,6 +1,6 @@
 {
   "name": "fredy",
-  "version": "19.5.1",
+  "version": "19.5.2",
   "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
   "scripts": {
     "prepare": "husky",
@@ -90,6 +90,7 @@
     "react-range-slider-input": "^3.3.2",
     "react-router": "7.13.0",
     "react-router-dom": "7.13.0",
+    "resend": "^6.9.2",
     "restana": "5.1.0",
     "semver": "^7.7.4",
     "serve-static": "2.2.1",
