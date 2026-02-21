@@ -20,53 +20,9 @@ import './Map.less';
 import { xhrDelete } from '../../services/xhr.js';
 import { Link, useNavigate } from 'react-router-dom';
 import ListingDeletionModal from '../../components/ListingDeletionModal.jsx';
+import Map from '../../components/map/Map.jsx';
 
 const { Text } = Typography;
-
-const GERMANY_BOUNDS = [
-  [5.866, 47.27], // Southwest coordinates
-  [15.042, 55.059], // Northeast coordinates
-];
-
-const STYLES = {
-  STANDARD: 'https://tiles.openfreemap.org/styles/bright',
-  SATELLITE: {
-    version: 8,
-    sources: {
-      'satellite-tiles': {
-        type: 'raster',
-        tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],
-        tileSize: 256,
-        attribution:
-          'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
-      },
-      'satellite-labels': {
-        type: 'raster',
-        tiles: [
-          'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
-        ],
-        tileSize: 256,
-        attribution: '© Esri',
-      },
-    },
-    layers: [
-      {
-        id: 'satellite-tiles',
-        type: 'raster',
-        source: 'satellite-tiles',
-        minzoom: 0,
-        maxzoom: 19,
-      },
-      {
-        id: 'satellite-labels',
-        type: 'raster',
-        source: 'satellite-labels',
-        minzoom: 0,
-        maxzoom: 19,
-      },
-    ],
-  },
-};
 
 export default function MapView() {
   const mapContainer = useRef(null);
@@ -136,117 +92,24 @@ export default function MapView() {
     };
   }, [navigate]);
 
+  // Get map instance reference after MapComponent renders
   useEffect(() => {
-    if (map.current) return;
-
-    map.current = new maplibregl.Map({
-      container: mapContainer.current,
-      style: STYLES[style],
-      center: [10.4515, 51.1657], // Center of Germany
-      zoom: 4,
-      maxBounds: GERMANY_BOUNDS,
-      antialias: true,
-    });
-
-    map.current.addControl(
-      new maplibregl.NavigationControl({
-        showCompass: true,
-        visualizePitch: true,
-        visualizeRoll: true,
-      }),
-      'top-right',
-    );
-
-    map.current.addControl(
-      new maplibregl.GeolocateControl({
-        positionOptions: {
-          enableHighAccuracy: true,
-        },
-        trackUserLocation: true,
-      }),
-    );
-
-    return () => {
-      map.current.remove();
-    };
+    if (mapContainer.current && !map.current) {
+      // Wait for MapComponent to initialize the map
+      const checkMapReady = () => {
+        if (mapContainer.current?.map) {
+          map.current = mapContainer.current.map;
+        } else {
+          setTimeout(checkMapReady, 100);
+        }
+      };
+      checkMapReady();
+    }
   }, []);
 
-  useEffect(() => {
-    if (map.current) {
-      map.current.setStyle(STYLES[style]);
-    }
-  }, [style]);
-
-  useEffect(() => {
-    if (show3dBuildings && style !== 'STANDARD') {
-      setStyle('STANDARD');
-    }
-  }, [show3dBuildings, style]);
-
-  useEffect(() => {
-    if (!map.current) return;
-
-    map.current.setPitch(show3dBuildings ? 45 : 0);
-  }, [show3dBuildings]);
-
-  useEffect(() => {
-    if (!map.current) return;
-
-    const add3dLayer = () => {
-      if (!map.current || !map.current.isStyleLoaded()) return;
-      if (show3dBuildings) {
-        if (!map.current.getSource('openfreemap')) {
-          map.current.addSource('openfreemap', {
-            type: 'vector',
-            url: 'https://tiles.openfreemap.org/planet',
-          });
-        }
-        if (!map.current.getLayer('3d-buildings')) {
-          const layers = map.current.getStyle().layers;
-          let labelLayerId;
-          for (let i = 0; i < layers.length; i++) {
-            if (layers[i].type === 'symbol' && layers[i].layout?.['text-field']) {
-              labelLayerId = layers[i].id;
-              break;
-            }
-          }
-          map.current.addLayer(
-            {
-              id: '3d-buildings',
-              source: 'openfreemap',
-              'source-layer': 'building',
-              type: 'fill-extrusion',
-              minzoom: 15,
-              filter: ['!=', ['get', 'hide_3d'], true],
-              paint: {
-                'fill-extrusion-color': [
-                  'interpolate',
-                  ['linear'],
-                  ['get', 'render_height'],
-                  0,
-                  'lightgray',
-                  200,
-                  'royalblue',
-                  400,
-                  'lightblue',
-                ],
-                'fill-extrusion-height': ['interpolate', ['linear'], ['zoom'], 15, 0, 16, ['get', 'render_height']],
-                'fill-extrusion-base': ['case', ['>=', ['get', 'zoom'], 16], ['get', 'render_min_height'], 0],
-                'fill-extrusion-opacity': 0.6,
-              },
-            },
-            labelLayerId,
-          );
-        }
-      } else {
-        if (map.current.getLayer('3d-buildings')) {
-          map.current.removeLayer('3d-buildings');
-        }
-      }
-    };
-
-    add3dLayer();
-  }, [show3dBuildings, style]);
+  const handleMapReady = (mapInstance) => {
+    map.current = mapInstance;
+  };
 
   const setMapStyle = (value) => {
     setStyle(value);
@@ -573,7 +436,7 @@ export default function MapView() {
         description="Keep in mind, only listings with proper adresses are being shown on this map."
       />
 
-      <div ref={mapContainer} className="map-container" />
+      <Map mapContainerRef={mapContainer} style={style} show3dBuildings={show3dBuildings} onMapReady={handleMapReady} />
       <ListingDeletionModal
         visible={deleteModalVisible}
         onConfirm={confirmListingDeletion}

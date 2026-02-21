@@ -63,6 +63,7 @@
     "@douyinfe/semi-icons": "^2.91.0",
     "@douyinfe/semi-ui": "2.91.0",
     "@douyinfe/semi-ui-19": "^2.91.0",
+    "@mapbox/mapbox-gl-draw": "^1.5.1",
     "@sendgrid/mail": "8.1.6",
     "@vitejs/plugin-react": "5.1.4",
     "adm-zip": "^0.5.16",

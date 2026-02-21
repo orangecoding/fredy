@@ -9,6 +9,7 @@ import NotificationAdapterMutator from './components/notificationAdapter/Notific
 import NotificationAdapterTable from '../../../components/table/NotificationAdapterTable';
 import ProviderTable from '../../../components/table/ProviderTable';
 import ProviderMutator from './components/provider/ProviderMutator';
+import AreaFilter from './components/areaFilter/AreaFilter';
 import Headline from '../../../components/headline/Headline';
 import { useActions, useSelector } from '../../../services/state/store';
 import { xhrPost } from '../../../services/xhr';
@@ -55,6 +56,7 @@ export default function JobMutator() {
   const [notificationAdapterData, setNotificationAdapterData] = useState(defaultNotificationAdapter);
   const [shareWithUsers, setShareWithUsers] = useState(defaultShareWithUsers);
   const [enabled, setEnabled] = useState(defaultEnabled);
+  const [areaFilterData, setAreaFilterData] = useState(sourceJob?.areaFilter || null);
   const navigate = useNavigate();
   const actions = useActions();
 
@@ -76,6 +78,7 @@ export default function JobMutator() {
         shareWithUsers,
         name,
         blacklist,
+        areaFilter: areaFilterData,
         enabled,
         jobId: jobToBeEdit?.id || null,
       });
@@ -204,6 +207,13 @@ export default function JobMutator() {
             placeholder="Add a word for filtering..."
             onChange={(v) => setBlacklist([...v])}
           />
+        </SegmentPart>
+        <Divider margin="1rem" />
+        <SegmentPart
+          name="Area Filter"
+          helpText="Define a geographic area on the map to filter listings. Only listings within this area will be shown."
+        >
+          <AreaFilter areaData={areaFilterData} onChange={(data) => setAreaFilterData(data)} />
         </SegmentPart>
         <Divider margin="1rem" />
         <SegmentPart
