@@ -3,7 +3,7 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
+import { useEffect, useRef } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
@@ -55,35 +55,17 @@ export const STYLES = {
   },
 };
 
-export default forwardRef(function Map(
-  {
-    style = 'STANDARD',
-    show3dBuildings = false,
-    onMapReady = null,
-    enableDrawing = false,
-    initialSpatialFilter = null,
-    onDrawingChange = null,
-  },
-  ref,
-) {
+export default function Map({
+  style = 'STANDARD',
+  show3dBuildings = false,
+  onMapReady = null,
+  enableDrawing = false,
+  initialSpatialFilter = null,
+  onDrawingChange = null,
+}) {
   const mapContainerRef = useRef(null);
   const mapRef = useRef(null);
   const drawRef = useRef(null);
-
-  // Expose methods to parent via ref
-  useImperativeHandle(ref, () => ({
-    getDrawingData: () => {
-      if (drawRef.current) {
-        return drawRef.current.getAll();
-      }
-      return null;
-    },
-    setDrawingData: (data) => {
-      if (drawRef.current && data) {
-        drawRef.current.set(data);
-      }
-    },
-  }));
 
   // Initialize map - ONLY when container changes, never reinitialize
   useEffect(() => {
@@ -228,4 +210,4 @@ export default forwardRef(function Map(
   }, [show3dBuildings]);
 
   return <div ref={mapContainerRef} className="map-container" />;
-});
+}
