@@ -3,11 +3,11 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
-import { fixMapboxDrawCompatibility, addDrawingControl } from './MapDrawingExtension.js';
+import { fixMapboxDrawCompatibility, addDrawingControl, setupAreaFilterEventListeners } from './MapDrawingExtension.js';
 import './Map.less';
 
 export const GERMANY_BOUNDS = [
@@ -55,18 +55,39 @@ export const STYLES = {
   },
 };
 
-export default function Map({
-  mapContainerRef,
-  style = 'STANDARD',
-  show3dBuildings = false,
-  onMapReady = null,
-  enableDrawing = false,
-}) {
+export default forwardRef(function Map(
+  {
+    style = 'STANDARD',
+    show3dBuildings = false,
+    onMapReady = null,
+    enableDrawing = false,
+    initialSpatialFilter = null,
+    onDrawingChange = null,
+  },
+  ref,
+) {
+  const mapContainerRef = useRef(null);
   const mapRef = useRef(null);
+  const drawRef = useRef(null);
 
-  // Initialize map
+  // Expose methods to parent via ref
+  useImperativeHandle(ref, () => ({
+    getDrawingData: () => {
+      if (drawRef.current) {
+        return drawRef.current.getAll();
+      }
+      return null;
+    },
+    setDrawingData: (data) => {
+      if (drawRef.current && data) {
+        drawRef.current.set(data);
+      }
+    },
+  }));
+
+  // Initialize map - ONLY when container changes, never reinitialize
   useEffect(() => {
-    if (mapRef.current) return;
+    if (mapRef.current) return; // Map already exists, don't reinitialize
 
     mapRef.current = new maplibregl.Map({
       container: mapContainerRef.current,
@@ -98,7 +119,7 @@ export default function Map({
     // Initialize drawing extension only if enabled
     if (enableDrawing) {
       fixMapboxDrawCompatibility();
-      addDrawingControl(mapRef.current);
+      drawRef.current = addDrawingControl(mapRef.current);
     }
 
     // Call onMapReady callback if provided
@@ -107,10 +128,31 @@ export default function Map({
     }
 
     return () => {
-      mapRef.current.remove();
-      mapRef.current = null;
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
     };
-  }, [mapContainerRef, onMapReady, enableDrawing]);
+  }, [mapContainerRef]); // ONLY depend on mapContainerRef - nothing else!
+
+  // Load spatial filter and setup area filter event listeners
+  useEffect(() => {
+    if (!mapRef.current || !drawRef.current || !enableDrawing) return;
+
+    // Load initial spatial filter if provided
+    if (initialSpatialFilter) {
+      try {
+        drawRef.current.set(initialSpatialFilter);
+      } catch (error) {
+        console.error('Error loading spatial filter:', error);
+      }
+    }
+
+    // Setup drawing event listeners
+    const cleanup = setupAreaFilterEventListeners(mapRef.current, drawRef.current, onDrawingChange);
+
+    return cleanup;
+  }, [initialSpatialFilter, onDrawingChange, enableDrawing]);
 
   // Handle style changes
   useEffect(() => {
@@ -186,4 +228,4 @@ export default function Map({
   }, [show3dBuildings]);
 
   return <div ref={mapContainerRef} className="map-container" />;
-}
+});

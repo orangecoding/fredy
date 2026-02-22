@@ -3,7 +3,7 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { Fragment, useState } from 'react';
+import { Fragment, useState, useCallback } from 'react';
 
 import NotificationAdapterMutator from './components/notificationAdapter/NotificationAdapterMutator';
 import NotificationAdapterTable from '../../../components/table/NotificationAdapterTable';
@@ -45,6 +45,7 @@ export default function JobMutator() {
   const defaultNotificationAdapter = sourceJob?.notificationAdapter || [];
   const defaultEnabled = sourceJob?.enabled ?? true;
   const defaultShareWithUsers = sourceJob?.shared_with_user ?? [];
+  const defaultSpatialFilter = sourceJob?.spatialFilter || null;
 
   const [providerToEdit, setProviderToEdit] = useState(null);
   const [providerCreationVisible, setProviderCreationVisibility] = useState(false);
@@ -56,9 +57,14 @@ export default function JobMutator() {
   const [notificationAdapterData, setNotificationAdapterData] = useState(defaultNotificationAdapter);
   const [shareWithUsers, setShareWithUsers] = useState(defaultShareWithUsers);
   const [enabled, setEnabled] = useState(defaultEnabled);
-  const [areaFilterData, setAreaFilterData] = useState(sourceJob?.areaFilter || null);
+  const [spatialFilter, setSpatialFilter] = useState(defaultSpatialFilter);
   const navigate = useNavigate();
   const actions = useActions();
+
+  // Memoize the spatial filter change handler to prevent map reinitializations
+  const handleSpatialFilterChange = useCallback((data) => {
+    setSpatialFilter(data);
+  }, []);
 
   const isSavingEnabled = () => {
     return Boolean(notificationAdapterData.length && providerData.length && name);
@@ -78,7 +84,7 @@ export default function JobMutator() {
         shareWithUsers,
         name,
         blacklist,
-        areaFilter: areaFilterData,
+        spatialFilter,
         enabled,
         jobId: jobToBeEdit?.id || null,
       });
@@ -211,9 +217,9 @@ export default function JobMutator() {
         <Divider margin="1rem" />
         <SegmentPart
           name="Area Filter"
-          helpText="Define a geographic area on the map to filter listings. Only listings within this area will be shown."
+          helpText="Define a geographic area on the map to filter listings. After drawing, you need to click on a free area of the map to apply the filter. You can also draw multiple areas."
         >
-          <AreaFilter areaData={areaFilterData} onChange={(data) => setAreaFilterData(data)} />
+          <AreaFilter spatialFilter={spatialFilter} onChange={handleSpatialFilterChange} />
         </SegmentPart>
         <Divider margin="1rem" />
         <SegmentPart

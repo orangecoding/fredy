@@ -3,26 +3,18 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { useRef } from 'react';
 import Map from '../../../../../components/map/Map.jsx';
 import './AreaFilter.less';
 
-export default function AreaFilter() {
-  const mapContainer = useRef(null);
-  const map = useRef(null);
-
-  const handleMapReady = (mapInstance) => {
-    map.current = mapInstance;
-  };
-
+export default function AreaFilter({ spatialFilter = null, onChange = null }) {
   return (
     <div className="areaFilter-container">
       <Map
-        mapContainerRef={mapContainer}
         style="STANDARD"
         show3dBuildings={false}
-        onMapReady={handleMapReady}
         enableDrawing={true}
+        initialSpatialFilter={spatialFilter}
+        onDrawingChange={onChange}
       />
     </div>
   );

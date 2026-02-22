@@ -149,3 +149,29 @@ export function addDrawingControl(map) {
   map.addControl(draw, 'top-left');
   return draw;
 }
+
+export function setupAreaFilterEventListeners(map, draw, onDrawingChange) {
+  if (!map || !draw) return () => {};
+
+  const handleDrawChange = () => {
+    if (draw) {
+      const data = draw.getAll();
+      if (onDrawingChange) {
+        onDrawingChange(data);
+      }
+    }
+  };
+
+  map.on('draw.create', handleDrawChange);
+  map.on('draw.update', handleDrawChange);
+  map.on('draw.delete', handleDrawChange);
+
+  // Return cleanup function
+  return () => {
+    if (map) {
+      map.off('draw.create', handleDrawChange);
+      map.off('draw.update', handleDrawChange);
+      map.off('draw.delete', handleDrawChange);
+    }
+  };
+}
