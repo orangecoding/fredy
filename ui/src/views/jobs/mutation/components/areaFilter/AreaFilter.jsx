@@ -8,7 +8,7 @@ import './AreaFilter.less';
 
 export default function AreaFilter({ spatialFilter = null, onChange = null }) {
   return (
-    <div className="areaFilter-container">
+    <div className="areaFilter">
       <Map
         style="STANDARD"
         show3dBuildings={false}

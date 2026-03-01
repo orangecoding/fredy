@@ -217,7 +217,7 @@ export default function JobMutator() {
         <Divider margin="1rem" />
         <SegmentPart
           name="Area Filter"
-          helpText="Define a geographic area on the map to filter listings. After drawing, you need to click on a free area of the map to apply the filter. You can also draw multiple areas."
+          helpText="Define multiple geographic areas on the map to filter listings. Start drawing by clicking on the square symbol in the top left corner of the map. Click on the map to add points of the polygon. Select the first point to close the polygon. After that, click on a free area of the map to apply this polygon (the color will change from yellow to blue). To delete a polygon, select it first and then click on the trash symbol."
         >
           <AreaFilter spatialFilter={spatialFilter} onChange={handleSpatialFilterChange} />
         </SegmentPart>
