@@ -17,6 +17,7 @@ describe('#regionalimmobilien24 testsuite()', () => {
     const fredy = new Fredy(
       provider.config,
       null,
+      null,
       provider.metaInformation.id,
       'regionalimmobilien24',
       similarityCache,
