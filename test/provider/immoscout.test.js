@@ -14,7 +14,7 @@ describe('#immoscout provider testsuite()', () => {
   it('should test immoscout provider', async () => {
     const Fredy = await mockFredy();
     return await new Promise((resolve) => {
-      const fredy = new Fredy(provider.config, null, provider.metaInformation.id, '', similarityCache);
+      const fredy = new Fredy(provider.config, null, null, provider.metaInformation.id, '', similarityCache);
       fredy.execute().then((listings) => {
         expect(listings).to.be.a('array');
         const notificationObj = get();

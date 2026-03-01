@@ -14,7 +14,7 @@ describe('#immoswp testsuite()', () => {
   it('should test immoswp provider', async () => {
     const Fredy = await mockFredy();
     return await new Promise((resolve) => {
-      const fredy = new Fredy(provider.config, null, provider.metaInformation.id, 'immoswp', similarityCache);
+      const fredy = new Fredy(provider.config, null, null, provider.metaInformation.id, 'immoswp', similarityCache);
       fredy.execute().then((listing) => {
         expect(listing).to.be.a('array');
         const notificationObj = get();

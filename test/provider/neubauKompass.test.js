@@ -14,7 +14,14 @@ describe('#neubauKompass testsuite()', () => {
   it('should test neubauKompass provider', async () => {
     const Fredy = await mockFredy();
     return await new Promise((resolve) => {
-      const fredy = new Fredy(provider.config, null, provider.metaInformation.id, 'neubauKompass', similarityCache);
+      const fredy = new Fredy(
+        provider.config,
+        null,
+        null,
+        provider.metaInformation.id,
+        'neubauKompass',
+        similarityCache,
+      );
       fredy.execute().then((listing) => {
         expect(listing).to.be.a('array');
         const notificationObj = get();
