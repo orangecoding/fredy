@@ -4,8 +4,8 @@
  */
 
 import { useEffect, useState, useMemo } from 'react';
-import { Divider, Button, AutoComplete, Toast, Banner } from '@douyinfe/semi-ui-19';
-import { IconSave, IconHome } from '@douyinfe/semi-icons';
+import { Divider, Button, AutoComplete, Toast, Banner, Switch } from '@douyinfe/semi-ui-19';
+import { IconSave, IconHome, IconSearch } from '@douyinfe/semi-icons';
 import { useSelector, useActions, useIsLoading } from '../../services/state/store';
 import { xhrGet } from '../../services/xhr';
 import { SegmentPart } from '../../components/segment/SegmentPart';
@@ -14,6 +14,7 @@ import debounce from 'lodash/debounce';
 const UserSettings = () => {
   const actions = useActions();
   const homeAddress = useSelector((state) => state.userSettings.settings.home_address);
+  const immoscoutDetails = useSelector((state) => state.userSettings.settings.immoscout_details);
   const [address, setAddress] = useState(homeAddress?.address || '');
   const [coords, setCoords] = useState(homeAddress?.coords || null);
   const saving = useIsLoading(actions.userSettings.setHomeAddress);
@@ -81,6 +82,33 @@ const UserSettings = () => {
           {coords && coords.lat === -1 && (
             <Banner type="danger" description="Address found but could not be geocoded accurately." closeIcon={null} />
           )}
+        </div>
+      </SegmentPart>
+      <Divider />
+      <SegmentPart
+        name="ImmoScout Details"
+        Icon={IconSearch}
+        helpText="When enabled, Fredy will fetch additional details (description, attributes, agent info) for each listing from ImmoScout. This provides richer notifications but makes an extra API call per listing."
+      >
+        <Banner
+          type="warning"
+          description="Enabling this feature significantly increases the number of API requests to ImmoScout. This raises the likelihood of being detected and rate-limited or blocked. Use at your own risk."
+          closeIcon={null}
+          style={{ marginBottom: '12px', maxWidth: '600px' }}
+        />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <Switch
+            checked={!!immoscoutDetails}
+            onChange={async (checked) => {
+              try {
+                await actions.userSettings.setImmoscoutDetails(checked);
+                Toast.success('ImmoScout details setting updated.');
+              } catch {
+                Toast.error('Failed to update setting.');
+              }
+            }}
+          />
+          <span>Fetch detailed ImmoScout listings</span>
         </div>
       </SegmentPart>
       <Divider />

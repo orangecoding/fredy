@@ -27,9 +27,12 @@ const sortAdapter = (a, b) => {
 const validate = (selectedAdapter) => {
   const results = [];
   for (let uiElement of Object.values(selectedAdapter.fields || [])) {
-    if (uiElement.value == null && !uiElement.optional) {
+    if (uiElement.value == null && !uiElement.optional && uiElement.type !== 'boolean') {
       results.push('All fields are mandatory and must be set.');
       continue;
+    }
+    if (uiElement.type === 'boolean' && typeof uiElement.value !== 'boolean') {
+      uiElement.value = false;
     }
     if (uiElement.type === 'number') {
       const numberValue = parseFloat(uiElement.value);
@@ -153,12 +156,15 @@ export default function NotificationAdapterMutator({
       return (
         <Form key={key}>
           {uiElement.type === 'boolean' ? (
-            <Switch
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+              <Switch
               checked={uiElement.value || false}
               onChange={(checked) => {
                 setValue(selectedAdapter, uiElement, key, checked);
               }}
             />
+              {uiElement.label}
+            </div>
           ) : (
             <Form.Input
               style={{ width: '100%' }}
