@@ -3,7 +3,7 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 import { Banner, Modal, Select, Input } from '@douyinfe/semi-ui-19';
 import { transform } from '../../../../../services/transformer/providerTransformer';

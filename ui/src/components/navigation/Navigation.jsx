@@ -3,7 +3,7 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Nav } from '@douyinfe/semi-ui-19';
 import { IconStar, IconSetting, IconTerminal, IconHistogram, IconSidebar } from '@douyinfe/semi-icons';
 import logoWhite from '../../assets/logo_white.png';
@@ -70,20 +70,18 @@ export default function Navigation({ isAdmin }) {
 
   return (
     <Nav
-      style={{ height: '100%' }}
+      style={{ height: '100%', maxWidth: collapsed ? '60px' : '240px' }}
       items={items}
       isCollapsed={collapsed}
       selectedKeys={[parsePathName(location.pathname)]}
       onSelect={(key) => {
         navigate(key.itemKey);
       }}
-      header={<img src={collapsed ? heart : logoWhite} width={collapsed ? '80' : '160'} alt="Fredy Logo" />}
+      header={<img src={collapsed ? heart : logoWhite} width={collapsed ? '30' : '120'} alt="Fredy Logo" />}
       footer={
         <Nav.Footer className="navigate__footer">
           <Logout text={!collapsed} />
-          <Button icon={<IconSidebar />} onClick={() => setCollapsed(!collapsed)}>
-            {!collapsed && 'Collapse'}
-          </Button>
+          <Button icon={<IconSidebar />} onClick={() => setCollapsed(!collapsed)} />
         </Nav.Footer>
       }
     />

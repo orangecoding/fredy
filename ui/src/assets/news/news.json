@@ -1,0 +1,21 @@
+{
+  "key": "00e6b81777a275f5a140fc9101cb943810db6a69f6eb3927319c5aee0c876509",
+  "content":
+[
+  {
+    "title": "Welcome to Fredy",
+    "text": "Thanks for choosing Fredy!<br/>With Fredy you can quickly set up scraping jobs that run automatically every few minutes and continuously search platforms like ImmoScout and similar sites for new listings that match your criteria. Instead of manually refreshing pages and risking to miss out on good offers, Fredy monitors the market in the background and notifies you as soon as something relevant appears.",
+    "image": "1.png"
+  },
+  {
+    "title": "Stay in Control with the Grid View",
+    "text": "The grid view gives you a clean and structured overview of all matching listings. You can instantly compare prices, sizes, locations and key details without leaving Fredy. Open listings in a focused detail view, bookmark interesting ones and keep track of what you have already checked.",
+    "image": "2.png"
+  },
+  {
+    "title": "Explore Listings on the Map",
+    "text": "Switch to the map view to understand the bigger picture. See exactly where listings are located and evaluate neighborhoods at a glance. This helps you spot hidden gems, avoid unwanted areas and make faster, better decisions based on location.<br/>If you want Fredy to calculate commute times for you, head over to the User-Specific Settings and add your home address.",
+    "image": "3.png"
+  }
+]
+}

@@ -3,7 +3,7 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { transform } from '../../../../../services/transformer/notificationAdapterTransformer';
 import { xhrPost } from '../../../../../services/xhr';
@@ -203,27 +203,6 @@ export default function NotificationAdapterMutator({
         </div>
       }
     >
-      {validationMessage != null && (
-        <Banner
-          fullMode={false}
-          type="danger"
-          closeIcon={null}
-          title={<div style={{ fontWeight: 600, fontSize: '14px', lineHeight: '20px' }}>Error</div>}
-          style={{ marginBottom: '1rem' }}
-          description={<p dangerouslySetInnerHTML={{ __html: validationMessage }} />}
-        />
-      )}
-      {successMessage != null && (
-        <Banner
-          fullMode={false}
-          type="success"
-          closeIcon={null}
-          title={<div style={{ fontWeight: 600, fontSize: '14px', lineHeight: '20px' }}>Yay!</div>}
-          style={{ marginBottom: '1rem' }}
-          description={<p dangerouslySetInnerHTML={{ __html: successMessage }} />}
-        />
-      )}
-
       {description != null ? (
         <p>{description}</p>
       ) : (
@@ -270,6 +249,28 @@ export default function NotificationAdapterMutator({
           <br />
           {selectedAdapter.readme != null && <Help readme={selectedAdapter.readme} />}
           <br />
+
+          {validationMessage != null && (
+            <Banner
+              fullMode={false}
+              type="danger"
+              closeIcon={null}
+              title={<div style={{ fontWeight: 600, fontSize: '14px', lineHeight: '20px' }}>Error</div>}
+              style={{ marginBottom: '1rem' }}
+              description={<p dangerouslySetInnerHTML={{ __html: validationMessage }} />}
+            />
+          )}
+          {successMessage != null && (
+            <Banner
+              fullMode={false}
+              type="success"
+              closeIcon={null}
+              title={<div style={{ fontWeight: 600, fontSize: '14px', lineHeight: '20px' }}>Yay!</div>}
+              style={{ marginBottom: '1rem' }}
+              description={<p dangerouslySetInnerHTML={{ __html: successMessage }} />}
+            />
+          )}
+
           {getFieldsFor(selectedAdapter)}
         </>
       )}

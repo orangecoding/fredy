@@ -3,17 +3,23 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { renderToString } from 'react-dom/server';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useSelector, useActions } from '../../services/state/store.js';
-import { distanceMeters, generateCircleCoords, getBoundsFromCenter } from './mapUtils.js';
-import { Select, Space, Typography, Button, Popover, Divider, Switch, Banner } from '@douyinfe/semi-ui-19';
-import { IconFilter } from '@douyinfe/semi-icons';
+import { distanceMeters, generateCircleCoords, getBoundsFromCenter, getBoundsFromCoords } from './mapUtils.js';
+import { Select, Space, Typography, Button, Popover, Divider, Switch, Banner, Toast } from '@douyinfe/semi-ui-19';
+import { IconFilter, IconLink } from '@douyinfe/semi-icons';
+import { IconDelete, IconEyeOpened } from '@douyinfe/semi-icons';
+
 import no_image from '../../assets/no_image.jpg';
 import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
 import './Map.less';
+import { xhrDelete } from '../../services/xhr.js';
+import { Link, useNavigate } from 'react-router-dom';
+import ListingDeletionModal from '../../components/ListingDeletionModal.jsx';
 
 const { Text } = Typography;
 
@@ -68,6 +74,7 @@ export default function MapView() {
   const markers = useRef([]);
   const homeMarker = useRef(null);
   const actions = useActions();
+  const navigate = useNavigate();
   const listings = useSelector((state) => state.listingsData.mapListings);
   const homeAddress = useSelector((state) => state.userSettings.settings.home_address);
   const [style, setStyle] = useState('STANDARD');
@@ -78,6 +85,22 @@ export default function MapView() {
   const [priceRange, setPriceRange] = useState([0, 0]);
   const [showFilterBar, setShowFilterBar] = useState(false);
   const [distanceFilter, setDistanceFilter] = useState(0);
+
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [listingToDelete, setListingToDelete] = useState(null);
+
+  const confirmListingDeletion = async (hardDelete) => {
+    try {
+      await xhrDelete('/api/listings/', { ids: [listingToDelete], hardDelete });
+      Toast.success('Listing successfully removed');
+      fetchListings();
+    } catch (error) {
+      Toast.error(error.message || 'Error deleting listing');
+    } finally {
+      setDeleteModalVisible(false);
+      setListingToDelete(null);
+    }
+  };
 
   useEffect(() => {
     setPriceRange([0, getMaxPrice()]);
@@ -96,6 +119,22 @@ export default function MapView() {
 
     return listings.filter((listing) => listing.price && listing.price >= min && listing.price <= max);
   };
+
+  useEffect(() => {
+    window.deleteListing = (id) => {
+      setListingToDelete(id);
+      setDeleteModalVisible(true);
+    };
+
+    window.viewDetails = (id) => {
+      navigate(`/listings/listing/${id}`);
+    };
+
+    return () => {
+      delete window.deleteListing;
+      delete window.viewDetails;
+    };
+  }, [navigate]);
 
   useEffect(() => {
     if (map.current) return;
@@ -227,26 +266,42 @@ export default function MapView() {
   }, [jobId]);
 
   useEffect(() => {
-    if (!map.current || !homeAddress?.coords) return;
+    if (!map.current) return;
 
-    // We only want to zoom/fly when distanceFilter OR homeAddress actually change,
-    // not on every render. useEffect dependency array handles this.
-    if (distanceFilter > 0) {
-      const bounds = getBoundsFromCenter([homeAddress.coords.lng, homeAddress.coords.lat], distanceFilter);
+    if (homeAddress?.coords) {
+      // We only want to zoom/fly when distanceFilter OR homeAddress actually change,
+      // not on every render. useEffect dependency array handles this.
+      if (distanceFilter > 0) {
+        const bounds = getBoundsFromCenter([homeAddress.coords.lng, homeAddress.coords.lat], distanceFilter);
 
-      map.current.fitBounds(bounds, {
-        padding: 20,
-        maxZoom: 15,
-        duration: 1000,
-      });
+        map.current.fitBounds(bounds, {
+          padding: 20,
+          maxZoom: 15,
+          duration: 1000,
+        });
+      } else {
+        map.current.flyTo({
+          center: [homeAddress.coords.lng, homeAddress.coords.lat],
+          zoom: 12,
+          duration: 1000,
+        });
+      }
     } else {
-      map.current.flyTo({
-        center: [homeAddress.coords.lng, homeAddress.coords.lat],
-        zoom: 12,
-        duration: 1000,
-      });
+      const filtered = filterListings();
+      const coords = filtered
+        .filter((l) => l.latitude != null && l.longitude != null && l.latitude !== -1 && l.longitude !== -1)
+        .map((l) => [l.longitude, l.latitude]);
+
+      if (coords.length > 0) {
+        const bounds = getBoundsFromCoords(coords);
+        map.current.fitBounds(bounds, {
+          padding: 50,
+          maxZoom: 15,
+          duration: 1000,
+        });
+      }
     }
-  }, [homeAddress?.address, distanceFilter]);
+  }, [homeAddress?.address, distanceFilter, listings]);
 
   useEffect(() => {
     if (!map.current) return;
@@ -312,7 +367,15 @@ export default function MapView() {
       }
     };
 
-    addCircleLayer();
+    const updateLayers = () => {
+      addCircleLayer();
+    };
+
+    if (map.current.isStyleLoaded()) {
+      updateLayers();
+    } else {
+      map.current.on('load', updateLayers);
+    }
 
     filterListings().forEach((listing) => {
       if (
@@ -325,19 +388,44 @@ export default function MapView() {
           ? listing.provider.charAt(0).toUpperCase() + listing.provider.slice(1)
           : 'N/A';
 
-        const popup = new maplibregl.Popup({ offset: 25 }).setHTML(
-          `<div class="map-popup-content">
-            <img src="${listing.image_url || no_image}" alt="${listing.title}" />
+        const popupContent = `
+          <div class="map-popup-content">
+            <img
+              src="${listing.image_url}"
+              onerror="this.onerror=null;this.src='${no_image}'"
+            />
             <h4>${listing.title}</h4>
             <div class="info">
               <span><strong>Price:</strong> ${listing.price ? listing.price + ' €' : 'N/A'}</span>
               <span><strong>Address:</strong> ${listing.address || 'N/A'}</span>
               <span><strong>Job:</strong> ${listing.job_name || 'N/A'}</span>
               <span><strong>Provider:</strong> ${capitalizedProvider}</span>
-              <a href="${listing.link}" target="_blank" rel="noopener noreferrer">View Listing</a>
+              <span><strong>Size:</strong> ${listing.size != null ? `${listing.size} m²` : 'N/A'}</span>
+              <div style="display: flex; gap: 8px; margin-top: 8px; justify-content: space-between;">
+                <div class="map-popup-content__linkButton">
+                  <a href="${listing.link}" target="_blank" rel="noopener noreferrer">
+                    ${renderToString(<IconLink />)}
+                  </a>
+                </div>
+                <button
+                  class="map-popup-content__detailsButton"
+                  title="View Details"
+                  onclick="viewDetails('${listing.id}')"
+                >
+                  ${renderToString(<IconEyeOpened />)}
+                </button>
+                <button
+                  class="map-popup-content__deleteButton"
+                  title="Remove"
+                  onclick="deleteListing('${listing.id}')"
+                >
+                  ${renderToString(<IconDelete />)}
+                </button>
+              </div>
             </div>
-          </div>`,
-        );
+          </div>`;
+
+        const popup = new maplibregl.Popup({ offset: 25 }).setHTML(popupContent);
 
         let color = '#3FB1CE'; // Default blue-ish
         if (distanceFilter > 0 && homeAddress?.coords) {
@@ -468,7 +556,12 @@ export default function MapView() {
           type="warning"
           bordered
           closeIcon={null}
-          description="You have not set your home address yet. Please do so in the settings to use the distance filter."
+          description={
+            <span>
+              You have not set your home address yet. Please do so in the <Link to="/userSettings">user settings</Link>{' '}
+              to use the distance filter.
+            </span>
+          }
         />
       )}
 
@@ -481,6 +574,14 @@ export default function MapView() {
       />
 
       <div ref={mapContainer} className="map-container" />
+      <ListingDeletionModal
+        visible={deleteModalVisible}
+        onConfirm={confirmListingDeletion}
+        onCancel={() => {
+          setDeleteModalVisible(false);
+          setListingToDelete(null);
+        }}
+      />
     </div>
   );
 }

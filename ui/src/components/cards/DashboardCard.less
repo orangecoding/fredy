@@ -1,92 +1,80 @@
-@import "DashboardCardColors.less";
-
-.color-variant(@bg, @border, @text) {
-  background-color: @bg;
-  border: 1px solid @border;
-  color: @text;
-}
-
 .dashboard-card {
-  box-sizing: border-box;
-  padding: .8rem;
-  border-radius: .5rem;
-  border-width: 1px;
-  font-weight: 600;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-  /* Make all KPI boxes the same size regardless of content/font */
   width: 100%;
-  max-width: none;
-  height: 10rem;
-  display: flex;
-  flex-direction: column;
+  height: 140px;
+  margin-bottom: 16px;
+  transition: transform 0.2s;
+  background-color: rgba(36, 36, 36, 0.9);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--semi-color-border);
+  --pulse-color: rgba(255, 255, 255, 0.1);
+  position: relative;
+  z-index: 1;
+  overflow: visible;
 
-  &.blue {
-    .color-variant(@color-blue-bg, @color-blue-border, @color-blue-text);
-  }
-
-  &.orange {
-    .color-variant(@color-orange-bg, @color-orange-border, @color-orange-text);
-  } 
-  
-  &.green {
-    .color-variant(@color-green-bg, @color-green-border, @color-green-text);
-  }
-
-  &.purple {
-    .color-variant(@color-purple-bg, @color-purple-border, @color-purple-text);
-  }
-
-  &.gray {
-    .color-variant(@color-gray-bg, @color-gray-border, @color-gray-text);
-  }
-
-  &__header {
-    display: flex;
-    align-items: center;
-    gap: .6rem;
-    /* Keep header from growing content height */
-    min-height: 2rem;
-    overflow: hidden;
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: inherit;
+    box-shadow: 0 4px 25px -2px var(--pulse-color);
+    opacity: 0;
+    animation: pulse 5s infinite ease-in-out;
+    pointer-events: none;
+    z-index: -1;
+    will-change: opacity;
   }
 
   &__icon {
-    border-radius: .6rem;
-    display: grid;
-    place-items: center;
-  }
-
-  &__title {
-    font-weight: 600;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   &__content {
-    margin-top: .4rem;
-    font-size: .7rem;
-    flex: 1 1 auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    overflow: hidden;
+    width: 100%;
   }
 
   &__value {
-    margin: 0;
-    font-size: 1.5rem;
-    line-height: 1.1;
-    color: #fff;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: var(--semi-color-text-0);
   }
 
-  &__desc {
-    opacity: .8;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  &.blue {
+    --pulse-color: var(--semi-color-primary);
+    box-shadow: 0 4px 20px -5px var(--pulse-color);
   }
 
+  &.orange {
+    --pulse-color: var(--semi-color-warning);
+    box-shadow: 0 4px 20px -5px var(--pulse-color);
+  }
+
+  &.green {
+    --pulse-color: var(--semi-color-success);
+    box-shadow: 0 4px 20px -5px var(--pulse-color);
+  }
+
+  &.purple {
+    --pulse-color: var(--semi-color-info);
+    box-shadow: 0 4px 20px -5px var(--pulse-color);
+  }
+
+  &.gray {
+    --pulse-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 20px -5px var(--pulse-color);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }

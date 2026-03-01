@@ -3,7 +3,6 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import React from 'react';
 import { Collapse, Descriptions } from '@douyinfe/semi-ui-19';
 import { useSelector } from '../../services/state/store.js';
 import { MarkdownRender } from '@douyinfe/semi-ui-19';

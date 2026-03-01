@@ -3,7 +3,7 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import {
   Card,
   Col,
@@ -35,6 +35,7 @@ import {
   IconPlusCircle,
 } from '@douyinfe/semi-icons';
 import { useNavigate } from 'react-router-dom';
+import ListingDeletionModal from '../../ListingDeletionModal.jsx';
 import { useActions, useSelector } from '../../../services/state/store.js';
 import { xhrDelete, xhrPut, xhrPost } from '../../../services/xhr.js';
 import debounce from 'lodash/debounce';
@@ -59,6 +60,9 @@ const JobGrid = () => {
   const [freeTextFilter, setFreeTextFilter] = useState(null);
   const [activityFilter, setActivityFilter] = useState(null);
   const [showFilterBar, setShowFilterBar] = useState(false);
+
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [pendingDeletion, setPendingDeletion] = useState(null); // { type: 'job'|'listings', jobId }
 
   const pendingJobIdRef = useRef(null);
   const evtSourceRef = useRef(null);
@@ -125,24 +129,35 @@ const JobGrid = () => {
     };
   }, [handleFilterChange]);
 
-  const onJobRemoval = async (jobId) => {
-    try {
-      await xhrDelete('/api/jobs', { jobId });
-      Toast.success('Job successfully removed');
-      loadData();
-      actions.jobsData.getJobs(); // refresh select list too
-    } catch (error) {
-      Toast.error(error);
-    }
+  const onJobRemoval = (jobId) => {
+    setPendingDeletion({ type: 'job', jobId });
+    setDeleteModalVisible(true);
   };
 
-  const onListingRemoval = async (jobId) => {
+  const onListingRemoval = (jobId) => {
+    setPendingDeletion({ type: 'listings', jobId });
+    setDeleteModalVisible(true);
+  };
+
+  const confirmDeletion = async (hardDelete) => {
+    const { type, jobId } = pendingDeletion;
     try {
-      await xhrDelete('/api/listings/job', { jobId });
-      Toast.success('Listings successfully removed');
+      if (type === 'job') {
+        await xhrDelete('/api/jobs', { jobId });
+        Toast.success('Job and listings successfully removed');
+      } else if (type === 'listings') {
+        await xhrDelete('/api/listings/job', { jobId, hardDelete });
+        Toast.success('Listings successfully removed');
+      }
       loadData();
+      if (type === 'job') {
+        actions.jobsData.getJobs(); // refresh select list too
+      }
     } catch (error) {
-      Toast.error(error);
+      Toast.error(error.message || 'Error performing deletion');
+    } finally {
+      setDeleteModalVisible(false);
+      setPendingDeletion(null);
     }
   };
 
@@ -185,31 +200,21 @@ const JobGrid = () => {
 
   return (
     <div className="jobGrid">
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <Button
-          style={{ width: '7rem', margin: 0 }}
-          type="primary"
-          icon={<IconPlusCircle />}
-          className="jobs__newButton"
-          onClick={() => navigate('/jobs/new')}
-        >
+      <Space vertical align="start" style={{ width: '100%', marginBottom: '16px' }} spacing="medium">
+        <Button type="primary" icon={<IconPlusCircle />} onClick={() => navigate('/jobs/new')}>
           New Job
         </Button>
-
-        <div className="jobGrid__searchbar">
+        <div className="jobGrid__searchbar" style={{ width: '100%' }}>
           <Input prefix={<IconSearch />} showClear placeholder="Search" onChange={handleFilterChange} />
-          <Popover content="Filter / Sort Results" style={{ color: 'white', padding: '.5rem' }}>
-            <div>
-              <Button
-                icon={<IconFilter />}
-                onClick={() => {
-                  setShowFilterBar(!showFilterBar);
-                }}
-              />
-            </div>
-          </Popover>
+          <Button
+            icon={<IconFilter />}
+            style={{ marginLeft: '8px' }}
+            onClick={() => {
+              setShowFilterBar(!showFilterBar);
+            }}
+          />
         </div>
-      </div>
+      </Space>
 
       {showFilterBar && (
         <div className="jobGrid__toolbar">
@@ -277,7 +282,6 @@ const JobGrid = () => {
             <Card
               className="jobGrid__card"
               bodyStyle={{ padding: '16px' }}
-              headerLine={true}
               title={
                 <div className="jobGrid__header">
                   <Title heading={5} ellipsis={{ showTooltip: true }} className="jobGrid__title">
@@ -351,6 +355,8 @@ const JobGrid = () => {
                     <div>
                       <Button
                         type="primary"
+                        style={{ background: '#21aa21b5' }}
+                        size="small"
                         theme="solid"
                         icon={<IconPlayCircle />}
                         disabled={job.isOnlyShared || job.running}
@@ -362,7 +368,7 @@ const JobGrid = () => {
                     <div>
                       <Button
                         type="secondary"
-                        theme="solid"
+                        size="small"
                         icon={<IconEdit />}
                         disabled={job.isOnlyShared}
                         onClick={() => navigate(`/jobs/edit/${job.id}`)}
@@ -373,7 +379,7 @@ const JobGrid = () => {
                     <div>
                       <Button
                         type="tertiary"
-                        theme="solid"
+                        size="small"
                         icon={<IconCopy />}
                         disabled={job.isOnlyShared}
                         onClick={() => navigate('/jobs/new', { state: { cloneFrom: job.id } })}
@@ -384,7 +390,7 @@ const JobGrid = () => {
                     <div>
                       <Button
                         type="danger"
-                        theme="solid"
+                        size="small"
                         icon={<IconDescend2 />}
                         disabled={job.isOnlyShared}
                         onClick={() => onListingRemoval(job.id)}
@@ -395,7 +401,7 @@ const JobGrid = () => {
                     <div>
                       <Button
                         type="danger"
-                        theme="solid"
+                        size="small"
                         icon={<IconDelete />}
                         disabled={job.isOnlyShared}
                         onClick={() => onJobRemoval(job.id)}
@@ -419,6 +425,21 @@ const JobGrid = () => {
           />
         </div>
       )}
+      <ListingDeletionModal
+        visible={deleteModalVisible}
+        title={pendingDeletion?.type === 'job' ? 'Delete Job' : 'Delete Listings'}
+        showOptions={pendingDeletion?.type !== 'job'}
+        message={
+          pendingDeletion?.type === 'job'
+            ? 'Are you sure you want to delete this job? All associated listings will be removed from the database.'
+            : 'How would you like to delete the selected listing(s)?'
+        }
+        onConfirm={confirmDeletion}
+        onCancel={() => {
+          setDeleteModalVisible(false);
+          setPendingDeletion(null);
+        }}
+      />
     </div>
   );
 };
