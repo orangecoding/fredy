@@ -12,9 +12,16 @@ import * as provider from '../../lib/provider/mcMakler.js';
 describe('#mcMakler testsuite()', () => {
   it('should test mcMakler provider', async () => {
     const Fredy = await mockFredy();
+    const mockedJob = {
+      id: 'mcMakler',
+      notificationAdapter: null,
+      spatialFilter: null,
+      specFilter: null,
+    };
     provider.init(providerConfig.mcMakler, []);
 
-    const fredy = new Fredy(provider.config, null, null, provider.metaInformation.id, 'mcMakler', similarityCache);
+    const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache);
+
     const listing = await fredy.execute();
 
     expect(listing).to.be.a('array');

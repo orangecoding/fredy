@@ -13,8 +13,16 @@ describe('#immobilien.de testsuite()', () => {
   provider.init(providerConfig.immobilienDe, [], []);
   it('should test immobilien.de provider', async () => {
     const Fredy = await mockFredy();
+    const mockedJob = {
+      id: 'test1',
+      notificationAdapter: null,
+      spatialFilter: null,
+      specFilter: null,
+    };
+
     return await new Promise((resolve) => {
-      const fredy = new Fredy(provider.config, null, null, provider.metaInformation.id, 'test1', similarityCache);
+      const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache);
+
       fredy.execute().then((listing) => {
         expect(listing).to.be.a('array');
         const notificationObj = get();
