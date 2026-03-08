@@ -34,6 +34,8 @@ import {
   IconFilter,
   IconActivity,
   IconEyeOpened,
+  IconGridView,
+  IconExpand,
 } from '@douyinfe/semi-icons';
 import { useNavigate } from 'react-router-dom';
 import ListingDeletionModal from '../../ListingDeletionModal.jsx';
@@ -207,6 +209,13 @@ const ListingsGrid = () => {
                     </Select.Option>
                   ))}
                 </Select>
+                <Divider layout="vertical" style={{ height: '24px', margin: '0 8px' }} />
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <Switch checked={filterByJobSettings} onChange={(val) => setFilterByJobSettings(val)} size="small" />
+                  <Text size="small" style={{ marginLeft: '8px' }}>
+                    Job Settings
+                  </Text>
+                </div>
               </div>
             </div>
             <Divider layout="vertical" />
@@ -237,18 +246,6 @@ const ListingsGrid = () => {
                   <Select.Option value="asc">Ascending</Select.Option>
                   <Select.Option value="desc">Descending</Select.Option>
                 </Select>
-              </div>
-            </div>
-            <Divider layout="vertical" />
-            <div className="listingsGrid__toolbar__card">
-              <div>
-                <Text strong>Options:</Text>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', height: '32px' }}>
-                <Switch checked={filterByJobSettings} onChange={(val) => setFilterByJobSettings(val)} size="small" />
-                <Text size="small" style={{ marginLeft: '8px' }}>
-                  Filter by Job Settings
-                </Text>
               </div>
             </div>
           </Space>
@@ -305,9 +302,21 @@ const ListingsGrid = () => {
                   {cap(item.title)}
                 </Text>
                 <Space vertical align="start" spacing={2} style={{ width: '100%', marginTop: 8 }}>
-                  <Text type="secondary" icon={<IconCart />} size="small">
-                    {item.price} €
-                  </Text>
+                  <Space spacing={12} wrap>
+                    <Text type="secondary" icon={<IconCart />} size="small">
+                      {item.price} €
+                    </Text>
+                    {item.size && (
+                      <Text type="secondary" icon={<IconExpand />} size="small">
+                        {item.size} m²
+                      </Text>
+                    )}
+                    {item.rooms && (
+                      <Text type="secondary" icon={<IconGridView />} size="small">
+                        {item.rooms} Rooms
+                      </Text>
+                    )}
+                  </Space>
                   <Text
                     type="secondary"
                     icon={<IconMapPin />}
@@ -317,12 +326,14 @@ const ListingsGrid = () => {
                   >
                     {item.address || 'No address provided'}
                   </Text>
-                  <Text type="tertiary" size="small" icon={<IconClock />}>
-                    {timeService.format(item.created_at, false)}
-                  </Text>
-                  <Text type="tertiary" size="small" icon={<IconBriefcase />}>
-                    {item.provider.charAt(0).toUpperCase() + item.provider.slice(1)}
-                  </Text>
+                  <Space spacing={12} wrap>
+                    <Text type="tertiary" size="small" icon={<IconBriefcase />}>
+                      {item.provider.charAt(0).toUpperCase() + item.provider.slice(1)}
+                    </Text>
+                    <Text type="tertiary" size="small" icon={<IconClock />}>
+                      {timeService.format(item.created_at, false)}
+                    </Text>
+                  </Space>
                   {item.distance_to_destination ? (
                     <Text type="tertiary" size="small" icon={<IconActivity />}>
                       {item.distance_to_destination} m to chosen address

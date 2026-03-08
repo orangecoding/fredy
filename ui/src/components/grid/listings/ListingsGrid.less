@@ -45,6 +45,7 @@
     }
 
     &--inactive {
+
       .listingsGrid__imageContainer,
       .listingsGrid__content {
         opacity: 0.6;
@@ -133,6 +134,18 @@
 
     &:hover {
       background: var(--semi-color-primary-hover);
+    }
+  }
+
+  // Ensure icons and text are vertically aligned
+  .semi-typography {
+    display: inline-flex;
+    align-items: center;
+
+    .semi-typography-icon {
+      display: flex;
+      align-items: center;
+      margin-top: 1px; // Minor nudge if needed, but flex should handle most
     }
   }
 }
