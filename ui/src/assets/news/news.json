@@ -1,21 +1,20 @@
 {
-  "key": "00e6b81777a275f5a140fc9101cb943810db6a69f6eb3927319c5aee0c876509",
+  "key": "00e6b81777a275f5a140fc9101cb943810db6a69f6eb3927319c5aee0c876510",
   "content":
 [
   {
-    "title": "Welcome to Fredy",
-    "text": "Thanks for choosing Fredy!<br/>With Fredy you can quickly set up scraping jobs that run automatically every few minutes and continuously search platforms like ImmoScout and similar sites for new listings that match your criteria. Instead of manually refreshing pages and risking to miss out on good offers, Fredy monitors the market in the background and notifies you as soon as something relevant appears.",
+    "title": "Listings can now be filtered by location",
+    "text": "Thanks to https://github.com/strech345 for adding a new feature that allows you to filter listings based on their their location. When creating a job, you can now create multiple areas in which Fredy searches for new listings",
     "image": "1.png"
   },
   {
-    "title": "Stay in Control with the Grid View",
-    "text": "The grid view gives you a clean and structured overview of all matching listings. You can instantly compare prices, sizes, locations and key details without leaving Fredy. Open listings in a focused detail view, bookmark interesting ones and keep track of what you have already checked.",
+    "title": "More details from the Immoscout Provider",
+    "text": "https://github.com/MindCollaps added a new user-setting. When enabled Fredy will pull way more information for each listing from Immoscout.",
     "image": "2.png"
   },
   {
-    "title": "Explore Listings on the Map",
-    "text": "Switch to the map view to understand the bigger picture. See exactly where listings are located and evaluate neighborhoods at a glance. This helps you spot hidden gems, avoid unwanted areas and make faster, better decisions based on location.<br/>If you want Fredy to calculate commute times for you, head over to the User-Specific Settings and add your home address.",
-    "image": "3.png"
+    "title": "Listings now marked as invisible if filtered",
+    "text": "So far, when a listing was filtered e.g. due to being a duplicate, it was not send to you, but still shown on the map. This was now fixed."
   }
 ]
 }
