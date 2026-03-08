@@ -3,12 +3,13 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { Fragment, useState } from 'react';
+import { Fragment, useState, useCallback } from 'react';
 
 import NotificationAdapterMutator from './components/notificationAdapter/NotificationAdapterMutator';
 import NotificationAdapterTable from '../../../components/table/NotificationAdapterTable';
 import ProviderTable from '../../../components/table/ProviderTable';
 import ProviderMutator from './components/provider/ProviderMutator';
+import AreaFilter from './components/areaFilter/AreaFilter';
 import Headline from '../../../components/headline/Headline';
 import { useActions, useSelector } from '../../../services/state/store';
 import { xhrPost } from '../../../services/xhr';
@@ -44,6 +45,7 @@ export default function JobMutator() {
   const defaultNotificationAdapter = sourceJob?.notificationAdapter || [];
   const defaultEnabled = sourceJob?.enabled ?? true;
   const defaultShareWithUsers = sourceJob?.shared_with_user ?? [];
+  const defaultSpatialFilter = sourceJob?.spatialFilter || null;
 
   const [providerToEdit, setProviderToEdit] = useState(null);
   const [providerCreationVisible, setProviderCreationVisibility] = useState(false);
@@ -55,8 +57,14 @@ export default function JobMutator() {
   const [notificationAdapterData, setNotificationAdapterData] = useState(defaultNotificationAdapter);
   const [shareWithUsers, setShareWithUsers] = useState(defaultShareWithUsers);
   const [enabled, setEnabled] = useState(defaultEnabled);
+  const [spatialFilter, setSpatialFilter] = useState(defaultSpatialFilter);
   const navigate = useNavigate();
   const actions = useActions();
+
+  // Memoize the spatial filter change handler to prevent map reinitializations
+  const handleSpatialFilterChange = useCallback((data) => {
+    setSpatialFilter(data);
+  }, []);
 
   const isSavingEnabled = () => {
     return Boolean(notificationAdapterData.length && providerData.length && name);
@@ -76,6 +84,7 @@ export default function JobMutator() {
         shareWithUsers,
         name,
         blacklist,
+        spatialFilter,
         enabled,
         jobId: jobToBeEdit?.id || null,
       });
@@ -204,6 +213,13 @@ export default function JobMutator() {
             placeholder="Add a word for filtering..."
             onChange={(v) => setBlacklist([...v])}
           />
+        </SegmentPart>
+        <Divider margin="1rem" />
+        <SegmentPart
+          name="Area Filter"
+          helpText="Define multiple geographic areas on the map to filter listings. Start drawing by clicking on the square symbol in the top left corner of the map. Click on the map to add points of the polygon. Select the first point to close the polygon. After that, click on a free area of the map to apply this polygon (the color will change from yellow to blue). To delete a polygon, select it first and then click on the trash symbol."
+        >
+          <AreaFilter spatialFilter={spatialFilter} onChange={handleSpatialFilterChange} />
         </SegmentPart>
         <Divider margin="1rem" />
         <SegmentPart

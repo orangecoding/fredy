@@ -14,7 +14,7 @@ describe('#mcMakler testsuite()', () => {
     const Fredy = await mockFredy();
     provider.init(providerConfig.mcMakler, []);
 
-    const fredy = new Fredy(provider.config, null, provider.metaInformation.id, 'mcMakler', similarityCache);
+    const fredy = new Fredy(provider.config, null, null, provider.metaInformation.id, 'mcMakler', similarityCache);
     const listing = await fredy.execute();
 
     expect(listing).to.be.a('array');

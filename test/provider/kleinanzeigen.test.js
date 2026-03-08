@@ -14,7 +14,14 @@ describe('#kleinanzeigen testsuite()', () => {
     const Fredy = await mockFredy();
     provider.init(providerConfig.kleinanzeigen, [], []);
     return await new Promise((resolve) => {
-      const fredy = new Fredy(provider.config, null, provider.metaInformation.id, 'kleinanzeigen', similarityCache);
+      const fredy = new Fredy(
+        provider.config,
+        null,
+        null,
+        provider.metaInformation.id,
+        'kleinanzeigen',
+        similarityCache,
+      );
       fredy.execute().then((listing) => {
         expect(listing).to.be.a('array');
         const notificationObj = get();
