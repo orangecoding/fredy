@@ -19,6 +19,7 @@ import {
   Select,
   Popover,
   Empty,
+  Switch,
 } from '@douyinfe/semi-ui-19';
 import {
   IconBriefcase,
@@ -64,6 +65,7 @@ const ListingsGrid = () => {
   const [jobNameFilter, setJobNameFilter] = useState(null);
   const [activityFilter, setActivityFilter] = useState(null);
   const [providerFilter, setProviderFilter] = useState(null);
+  const [filterByJobSettings, setFilterByJobSettings] = useState(true);
   const [showFilterBar, setShowFilterBar] = useState(false);
 
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
@@ -76,13 +78,23 @@ const ListingsGrid = () => {
       sortfield: sortField,
       sortdir: sortDir,
       freeTextFilter,
-      filter: { watchListFilter, jobNameFilter, activityFilter, providerFilter },
+      filter: { watchListFilter, jobNameFilter, activityFilter, providerFilter, filterByJobSettings },
     });
   };
 
   useEffect(() => {
     loadData();
-  }, [page, sortField, sortDir, freeTextFilter, providerFilter, activityFilter, jobNameFilter, watchListFilter]);
+  }, [
+    page,
+    sortField,
+    sortDir,
+    freeTextFilter,
+    providerFilter,
+    activityFilter,
+    jobNameFilter,
+    watchListFilter,
+    filterByJobSettings,
+  ]);
 
   const handleFilterChange = useMemo(() => debounce((value) => setFreeTextFilter(value), 500), []);
 
@@ -225,6 +237,18 @@ const ListingsGrid = () => {
                   <Select.Option value="asc">Ascending</Select.Option>
                   <Select.Option value="desc">Descending</Select.Option>
                 </Select>
+              </div>
+            </div>
+            <Divider layout="vertical" />
+            <div className="listingsGrid__toolbar__card">
+              <div>
+                <Text strong>Options:</Text>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', height: '32px' }}>
+                <Switch checked={filterByJobSettings} onChange={(val) => setFilterByJobSettings(val)} size="small" />
+                <Text size="small" style={{ marginLeft: '8px' }}>
+                  Filter by Job Settings
+                </Text>
               </div>
             </div>
           </Space>
