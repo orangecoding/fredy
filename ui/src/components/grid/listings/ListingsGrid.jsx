@@ -213,7 +213,7 @@ const ListingsGrid = () => {
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <Switch checked={filterByJobSettings} onChange={(val) => setFilterByJobSettings(val)} size="small" />
                   <Text size="small" style={{ marginLeft: '8px' }}>
-                    Job Settings
+                    Job Filters
                   </Text>
                 </div>
               </div>
