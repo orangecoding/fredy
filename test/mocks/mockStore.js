@@ -24,4 +24,8 @@ export function getUserSettings(userId) {
 export const updateListingDistance = (id, distance) => {
   // noop
 };
+export const deletedIds = [];
+export const deleteListingsById = (ids) => {
+  deletedIds.push(...ids);
+};
 /* eslint-enable no-unused-vars */

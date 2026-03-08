@@ -304,6 +304,20 @@ export const useFredyState = create(
               throw Exception;
             }
           },
+          async setImmoscoutDetails(enabled) {
+            try {
+              await xhrPost('/api/user/settings/immoscout-details', { immoscout_details: enabled });
+              set((state) => ({
+                userSettings: {
+                  ...state.userSettings,
+                  settings: { ...state.userSettings.settings, immoscout_details: enabled },
+                },
+              }));
+            } catch (Exception) {
+              console.error('Error while trying to update immoscout details setting. Error:', Exception);
+              throw Exception;
+            }
+          },
         },
       };
 
