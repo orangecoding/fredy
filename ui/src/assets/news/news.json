@@ -1,20 +1,11 @@
 {
-  "key": "00e6b81777a275f5a140fc9101cb943810db6a69f6eb3927319c5aee0c876510",
+  "key": "00e6b81777a275f5a140fc9101cb943810db6a69f6eb3927319c5aee0c876511",
   "content":
 [
   {
-    "title": "Listings can now be filtered by location",
-    "text": "Thanks to https://github.com/strech345 for adding a new feature that allows you to filter listings based on their their location. When creating a job, you can now create multiple areas in which Fredy searches for new listings",
-    "image": "1.png"
-  },
-  {
-    "title": "More details from the Immoscout Provider",
-    "text": "https://github.com/MindCollaps added a new user-setting. When enabled Fredy will pull way more information for each listing from Immoscout.",
-    "image": "2.png"
-  },
-  {
-    "title": "Listings now marked as invisible if filtered",
-    "text": "So far, when a listing was filtered e.g. due to being a duplicate, it was not send to you, but still shown on the map. This was now fixed."
+    "title": "Fredy goes AI",
+    "text": "With Fredy v20.0.0, we are introducing Fredy’s own MCP server. This brings a powerful new capability: you can connect your local LLM directly to Fredy and explore the data it collects in a much more flexible way.<br/><br/>The MCP server exposes Fredy’s tools and findings through a structured interface, allowing your LLM to query listings, inspect collected details, and analyze results programmatically. Instead of manually searching through the data, you can simply ask your model questions and let it dig into what Fredy has discovered for you.<br/><br/>In practice, this means your local LLM can interact with Fredy almost like an assistant: investigating properties, summarizing listings, filtering results, or helping you identify interesting opportunities based on the data Fredy gathered.",
+    "media": "news.mp4"
   }
 ]
 }

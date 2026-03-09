@@ -1,6 +1,6 @@
 {
   "name": "fredy",
-  "version": "19.6.0",
+  "version": "20.0.0",
   "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
   "scripts": {
     "prepare": "husky",
@@ -14,6 +14,7 @@
     "test": "node --import ./test/esmock-loader.mjs ./node_modules/mocha/bin/mocha.js --timeout 60000 test/**/*.test.js",
     "testGH": "node --import ./test/esmock-loader.mjs ./node_modules/mocha/bin/mocha.js --timeout 60000 --exclude test/provider/immonet.test.js --exclude test/provider/immobilienDe.test.js --exclude test/provider/immowelt.test.js test/**/*.test.js",
     "lint": "eslint .",
+    "mcp:stdio": "node mcp/stdio.js",
     "lint:fix": "yarn lint --fix",
     "migratedb": "node lib/services/storage/migrations/migrate.js",
     "migratedb:overwrite": "x-var MIGRATION_ALLOW_CHECKSUM_UPDATE=true node lib/services/storage/migrations/migrate.js",
@@ -66,6 +67,7 @@
     "@mapbox/mapbox-gl-draw": "^1.5.1",
     "@sendgrid/mail": "8.1.6",
     "@vitejs/plugin-react": "5.1.4",
+    "@modelcontextprotocol/sdk": "^1.27.0",
     "adm-zip": "^0.5.16",
     "better-sqlite3": "^12.6.2",
     "body-parser": "2.2.2",

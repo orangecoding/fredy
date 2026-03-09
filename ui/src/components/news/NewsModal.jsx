@@ -11,7 +11,7 @@ import { useActions, useSelector } from '../../services/state/store';
 
 import './NewsModal.less';
 
-const newsImages = import.meta.glob('../../assets/news/*', { eager: true, query: '?url', import: 'default' });
+const newsMedia = import.meta.glob('../../assets/news/*', { eager: true, query: '?url', import: 'default' });
 
 const NewsModal = () => {
   const screenWidth = useScreenWidth();
@@ -20,7 +20,7 @@ const NewsModal = () => {
   const pois = useSelector((state) => state.tracking.pois);
   const actions = useActions();
 
-  if (newsConfig == null || newsConfig.length === 0 || screenWidth <= 768) {
+  if (newsConfig == null || newsConfig.content == null || newsConfig.content.length === 0 || screenWidth <= 768) {
     return null;
   }
 
@@ -33,13 +33,20 @@ const NewsModal = () => {
     ),
     description: (
       <div style={{ textAlign: 'left' }}>
-        {item.image && newsImages[`../../assets/news/${item.image}`] && (
-          <img
-            src={newsImages[`../../assets/news/${item.image}`]}
-            alt={item.title}
-            style={{ width: '100%', marginBottom: 10, borderRadius: 4 }}
-          />
-        )}
+        {item.media &&
+          newsMedia[`../../assets/news/${item.media}`] &&
+          (item.media.includes('mp4') ? (
+            <video controls width="500">
+              <source src={newsMedia[`../../assets/news/${item.media}`]} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          ) : (
+            <img
+              src={newsMedia[`../../assets/news/${item.media}`]}
+              alt={item.title}
+              style={{ width: '100%', marginBottom: 10, borderRadius: 4 }}
+            />
+          ))}
         <p dangerouslySetInnerHTML={{ __html: item.text }} />
       </div>
     ),
@@ -61,7 +68,7 @@ const NewsModal = () => {
       onFinish={() => handleClose(pois.WELCOME_FINISHED)}
       onSkip={() => handleClose(pois.WELCOME_SKIPPED)}
       modalProps={{
-        width: '10rem',
+        width: '850px',
       }}
     />
   );
