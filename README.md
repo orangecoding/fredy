@@ -159,7 +159,7 @@ Jobs run automatically at the interval you configure (see
 Starting with **V20**, Fredy ships with a built-in **MCP Server **. This allows you to connect Fredy to LLMs (like Claude, ChatGPT, or local models via LM Studio) and query your real estate data using natural language.
 The local LLM can even enrich existing listings by checking the listing online.   
 
-For more information on how to set it up and use it, please refer to the [MCP Readme](mcp/README.md).
+For more information on how to set it up and use it, please refer to the [MCP Readme](lib/mcp/README.md).
 
 ------------------------------------------------------------------------
 
