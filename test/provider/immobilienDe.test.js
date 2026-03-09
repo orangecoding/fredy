@@ -14,7 +14,7 @@ describe('#immobilien.de testsuite()', () => {
   it('should test immobilien.de provider', async () => {
     const Fredy = await mockFredy();
     return await new Promise((resolve) => {
-      const fredy = new Fredy(provider.config, null, provider.metaInformation.id, 'test1', similarityCache);
+      const fredy = new Fredy(provider.config, null, null, provider.metaInformation.id, 'test1', similarityCache);
       fredy.execute().then((listing) => {
         expect(listing).to.be.a('array');
         const notificationObj = get();

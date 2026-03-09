@@ -38,6 +38,17 @@ export default function UserTable({ user = [], onUserRemoval, onUserEdit } = {})
           dataIndex: 'numberOfJobs',
         },
         {
+          title: 'MCP Token',
+          dataIndex: 'mcpToken',
+          render: (value) => {
+            return (
+              <span style={{ fontFamily: 'monospace', fontSize: '0.85em', wordBreak: 'break-all' }}>
+                {value || '---'}
+              </span>
+            );
+          },
+        },
+        {
           title: '',
           dataIndex: 'tools',
           render: (value, user) => {

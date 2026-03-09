@@ -14,7 +14,7 @@ describe('#immowelt testsuite()', () => {
     const Fredy = await mockFredy();
     provider.init(providerConfig.immowelt, [], []);
 
-    const fredy = new Fredy(provider.config, null, provider.metaInformation.id, 'immowelt', similarityCache);
+    const fredy = new Fredy(provider.config, null, null, provider.metaInformation.id, 'immowelt', similarityCache);
     const listing = await fredy.execute();
 
     expect(listing).to.be.a('array');
