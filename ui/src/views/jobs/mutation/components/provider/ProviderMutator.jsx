@@ -141,21 +141,7 @@ export default function ProviderMutator({
           </p>
         </>
       )}
-      <Banner
-        fullMode={false}
-        type="warning"
-        closeIcon={null}
-        title={<div style={{ fontWeight: 600, fontSize: '14px', lineHeight: '20px' }}>Warning</div>}
-        style={{ marginBottom: '1rem' }}
-        description={
-          <div>
-            <p>
-              Currently, our Immoscout implementation does not support drawing shapes on a map. Use a radius instead.
-            </p>
-          </div>
-        }
-      />
-
+      
       <Select
         filter
         placeholder="Select a provider"
