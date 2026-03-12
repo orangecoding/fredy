@@ -12,16 +12,16 @@ import * as provider from '../../lib/provider/kleinanzeigen.js';
 describe('#kleinanzeigen testsuite()', () => {
   it('should test kleinanzeigen provider', async () => {
     const Fredy = await mockFredy();
+    const mockedJob = {
+      id: 'kleinanzeigen',
+      notificationAdapter: null,
+      spatialFilter: null,
+      specFilter: null,
+    };
     provider.init(providerConfig.kleinanzeigen, [], []);
     return await new Promise((resolve) => {
-      const fredy = new Fredy(
-        provider.config,
-        null,
-        null,
-        provider.metaInformation.id,
-        'kleinanzeigen',
-        similarityCache,
-      );
+      const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache);
+
       fredy.execute().then((listing) => {
         expect(listing).to.be.a('array');
         const notificationObj = get();

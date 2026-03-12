@@ -12,16 +12,16 @@ import * as provider from '../../lib/provider/regionalimmobilien24.js';
 describe('#regionalimmobilien24 testsuite()', () => {
   it('should test regionalimmobilien24 provider', async () => {
     const Fredy = await mockFredy();
+    const mockedJob = {
+      id: 'regionalimmobilien24',
+      notificationAdapter: null,
+      spatialFilter: null,
+      specFilter: null,
+    };
     provider.init(providerConfig.regionalimmobilien24, []);
 
-    const fredy = new Fredy(
-      provider.config,
-      null,
-      null,
-      provider.metaInformation.id,
-      'regionalimmobilien24',
-      similarityCache,
-    );
+    const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache);
+
     const listing = await fredy.execute();
 
     expect(listing).to.be.a('array');

@@ -12,9 +12,16 @@ import * as provider from '../../lib/provider/immowelt.js';
 describe('#immowelt testsuite()', () => {
   it('should test immowelt provider', async () => {
     const Fredy = await mockFredy();
+    const mockedJob = {
+      id: 'immowelt',
+      notificationAdapter: null,
+      spatialFilter: null,
+      specFilter: null,
+    };
     provider.init(providerConfig.immowelt, [], []);
 
-    const fredy = new Fredy(provider.config, null, null, provider.metaInformation.id, 'immowelt', similarityCache);
+    const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache);
+
     const listing = await fredy.execute();
 
     expect(listing).to.be.a('array');

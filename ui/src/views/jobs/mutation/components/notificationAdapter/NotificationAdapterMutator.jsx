@@ -158,11 +158,11 @@ export default function NotificationAdapterMutator({
           {uiElement.type === 'boolean' ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
               <Switch
-              checked={uiElement.value || false}
-              onChange={(checked) => {
-                setValue(selectedAdapter, uiElement, key, checked);
-              }}
-            />
+                checked={uiElement.value || false}
+                onChange={(checked) => {
+                  setValue(selectedAdapter, uiElement, key, checked);
+                }}
+              />
               {uiElement.label}
             </div>
           ) : (
