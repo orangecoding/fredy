@@ -6,7 +6,7 @@
 import * as similarityCache from '../../lib/services/similarity-check/similarityCache.js';
 import { get } from '../mocks/mockNotification.js';
 import { mockFredy, providerConfig } from '../utils.js';
-import { expect } from 'chai';
+import { expect } from 'vitest';
 import * as provider from '../../lib/provider/regionalimmobilien24.js';
 
 describe('#regionalimmobilien24 testsuite()', () => {
@@ -24,22 +24,22 @@ describe('#regionalimmobilien24 testsuite()', () => {
     );
     const listing = await fredy.execute();
 
-    expect(listing).to.be.a('array');
+    expect(listing).toBeInstanceOf(Array);
     const notificationObj = get();
-    expect(notificationObj).to.be.a('object');
-    expect(notificationObj.serviceName).to.equal('regionalimmobilien24');
+    expect(notificationObj).toBeTypeOf('object');
+    expect(notificationObj.serviceName).toBe('regionalimmobilien24');
     notificationObj.payload.forEach((notify) => {
       /** check the actual structure **/
-      expect(notify.id).to.be.a('string');
-      expect(notify.price).to.be.a('string');
-      expect(notify.size).to.be.a('string');
-      expect(notify.title).to.be.a('string');
-      expect(notify.link).to.be.a('string');
-      expect(notify.address).to.be.a('string');
+      expect(notify.id).toBeTypeOf('string');
+      expect(notify.price).toBeTypeOf('string');
+      expect(notify.size).toBeTypeOf('string');
+      expect(notify.title).toBeTypeOf('string');
+      expect(notify.link).toBeTypeOf('string');
+      expect(notify.address).toBeTypeOf('string');
       /** check the values if possible **/
-      expect(notify.size).that.does.include('m²');
-      expect(notify.title).to.be.not.empty;
-      expect(notify.address).to.be.not.empty;
+      expect(notify.size).toContain('m²');
+      expect(notify.title).not.toBe('');
+      expect(notify.address).not.toBe('');
     });
   });
 });

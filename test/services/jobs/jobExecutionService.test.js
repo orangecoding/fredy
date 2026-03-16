@@ -3,8 +3,7 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { expect } from 'chai';
-import esmock from 'esmock';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { EventEmitter } from 'node:events';
 
 describe('services/jobs/jobExecutionService', () => {
@@ -22,45 +21,39 @@ describe('services/jobs/jobExecutionService', () => {
     const brokerPath = root + '/lib/services/sse/sse-broker.js';
     const utilsPath = root + '/lib/utils.js';
     const loggerPath = root + '/lib/services/logger.js';
+    const notifyPath = root + '/lib/notification/notify.js';
 
-    // esmock the service with all its collaborators
-    const mod = await esmock(
-      svcPath,
-      {},
-      {
-        [busPath]: { bus },
-        [jobStoragePath]: {
-          getJob: (id) => state.jobsById[id] || null,
-          getJobs: () => state.jobsList.slice(),
-        },
-        [userStoragePath]: {
-          getUsers: () => state.users.slice(),
-          getUser: (id) => state.users.find((u) => u.id === id) || null,
-        },
-        [brokerPath]: {
-          sendToUsers: (...args) => calls.sent.push(args),
-        },
-        [utilsPath]: {
-          duringWorkingHoursOrNotSet: () => false, // avoid startup run
-        },
-        [loggerPath]: {
-          debug: () => {},
-          info: () => {},
-          warn: () => {},
-          error: () => {},
-        },
-        [root + '/lib/services/jobs/run-state.js']: {
-          isRunning: () => false,
-          markRunning: (id) => {
-            calls.markRunning.push(id);
-            return true;
-          },
-          markFinished: () => {},
-        },
+    vi.resetModules();
+    vi.doMock(busPath, () => ({ bus }));
+    vi.doMock(jobStoragePath, () => ({
+      getJob: (id) => state.jobsById[id] || null,
+      getJobs: () => state.jobsList.slice(),
+    }));
+    vi.doMock(userStoragePath, () => ({
+      getUsers: () => state.users.slice(),
+      getUser: (id) => state.users.find((u) => u.id === id) || null,
+    }));
+    vi.doMock(brokerPath, () => ({
+      sendToUsers: (...args) => calls.sent.push(args),
+    }));
+    vi.doMock(utilsPath, () => ({
+      duringWorkingHoursOrNotSet: () => false,
+    }));
+    vi.doMock(loggerPath, () => {
+      const m = { debug: () => {}, info: () => {}, warn: () => {}, error: () => {} };
+      return { default: m };
+    });
+    vi.doMock(notifyPath, () => ({ send: async () => [] }));
+    vi.doMock(root + '/lib/services/jobs/run-state.js', () => ({
+      isRunning: () => false,
+      markRunning: (id) => {
+        calls.markRunning.push(id);
+        return true;
       },
-    );
+      markFinished: () => {},
+    }));
 
-    // call initializer with minimal deps
+    const mod = await import(svcPath);
     mod.initJobExecutionService({ providers: [], settings: { demoMode: false }, intervalMs: 0 });
     return mod;
   }
@@ -87,13 +80,13 @@ describe('services/jobs/jobExecutionService', () => {
 
     bus.emit('jobs:status', { jobId: 'j1', running: true });
 
-    expect(calls.sent.length).to.equal(1, 'sendToUsers should be called once');
+    expect(calls.sent.length, 'sendToUsers should be called once').toBe(1);
     const [recipients, event, data] = calls.sent[0];
-    expect(event).to.equal('jobStatus');
-    expect(data).to.deep.equal({ jobId: 'j1', running: true });
+    expect(event).toBe('jobStatus');
+    expect(data).toEqual({ jobId: 'j1', running: true });
     const got = new Set(recipients);
     const expected = new Set(['owner1', 'u2', 'a1']);
-    expect(got).to.deep.equal(expected);
+    expect(got).toEqual(expected);
   });
 
   it('runs all jobs for admin; only own jobs for regular user', async () => {
@@ -113,12 +106,12 @@ describe('services/jobs/jobExecutionService', () => {
     bus.emit('jobs:runAll', { userId: 'u1' });
     // allow microtasks to flush
     await new Promise((r) => setTimeout(r, 0));
-    expect(new Set(calls.markRunning)).to.deep.equal(new Set(['j1']));
+    expect(new Set(calls.markRunning)).toEqual(new Set(['j1']));
 
     // Admin: all jobs
     calls.markRunning = [];
     bus.emit('jobs:runAll', { userId: 'admin' });
     await new Promise((r) => setTimeout(r, 0));
-    expect(new Set(calls.markRunning)).to.deep.equal(new Set(['j1', 'j2']));
+    expect(new Set(calls.markRunning)).toEqual(new Set(['j1', 'j2']));
   });
 });

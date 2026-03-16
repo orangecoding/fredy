@@ -3,7 +3,7 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { expect } from 'chai';
+import { expect } from 'vitest';
 import { mockFredy } from './utils.js';
 import * as mockStore from './mocks/mockStore.js';
 
@@ -34,7 +34,7 @@ describe('Issue reproduction: listings filtered by similarity or area should be 
       // Might throw NoNewListingsWarning if all are filtered out
     }
 
-    expect(mockStore.deletedIds).to.include('1');
+    expect(mockStore.deletedIds).toContain('1');
   });
 
   it('should call deleteListingsById when listings are filtered by area', async () => {
@@ -84,6 +84,6 @@ describe('Issue reproduction: listings filtered by similarity or area should be 
       // Might throw NoNewListingsWarning if all are filtered out
     }
 
-    expect(mockStore.deletedIds).to.include('2');
+    expect(mockStore.deletedIds).toContain('2');
   });
 });

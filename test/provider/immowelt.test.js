@@ -6,7 +6,7 @@
 import * as similarityCache from '../../lib/services/similarity-check/similarityCache.js';
 import { get } from '../mocks/mockNotification.js';
 import { mockFredy, providerConfig } from '../utils.js';
-import { expect } from 'chai';
+import { expect } from 'vitest';
 import * as provider from '../../lib/provider/immowelt.js';
 
 describe('#immowelt testsuite()', () => {
@@ -17,24 +17,24 @@ describe('#immowelt testsuite()', () => {
     const fredy = new Fredy(provider.config, null, null, provider.metaInformation.id, 'immowelt', similarityCache);
     const listing = await fredy.execute();
 
-    expect(listing).to.be.a('array');
+    expect(listing).toBeInstanceOf(Array);
     const notificationObj = get();
-    expect(notificationObj).to.be.a('object');
-    expect(notificationObj.serviceName).to.equal('immowelt');
+    expect(notificationObj).toBeTypeOf('object');
+    expect(notificationObj.serviceName).toBe('immowelt');
     notificationObj.payload.forEach((notify) => {
       /** check the actual structure **/
-      expect(notify.id).to.be.a('string');
-      expect(notify.price).to.be.a('string');
-      expect(notify.title).to.be.a('string');
-      expect(notify.link).to.be.a('string');
-      expect(notify.address).to.be.a('string');
+      expect(notify.id).toBeTypeOf('string');
+      expect(notify.price).toBeTypeOf('string');
+      expect(notify.title).toBeTypeOf('string');
+      expect(notify.link).toBeTypeOf('string');
+      expect(notify.address).toBeTypeOf('string');
       /** check the values if possible **/
       if (notify.size != null && notify.size.trim().toLowerCase() !== 'k.a.') {
-        expect(notify.size).that.does.include('m²');
+        expect(notify.size).toContain('m²');
       }
-      expect(notify.title).to.be.not.empty;
-      expect(notify.link).that.does.include('https://www.immowelt.de');
-      expect(notify.address).to.be.not.empty;
+      expect(notify.title).not.toBe('');
+      expect(notify.link).toContain('https://www.immowelt.de');
+      expect(notify.address).not.toBe('');
     });
   });
 });
