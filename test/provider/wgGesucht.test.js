@@ -6,7 +6,7 @@
 import * as similarityCache from '../../lib/services/similarity-check/similarityCache.js';
 import { get } from '../mocks/mockNotification.js';
 import { mockFredy, providerConfig } from '../utils.js';
-import { expect } from 'chai';
+import { expect } from 'vitest';
 import * as provider from '../../lib/provider/wgGesucht.js';
 
 describe('#wgGesucht testsuite()', () => {
@@ -24,17 +24,17 @@ describe('#wgGesucht testsuite()', () => {
       const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache);
 
       fredy.execute().then((listing) => {
-        expect(listing).to.be.a('array');
+        expect(listing).toBeInstanceOf(Array);
         const notificationObj = get();
-        expect(notificationObj.serviceName).to.equal('wgGesucht');
+        expect(notificationObj.serviceName).toBe('wgGesucht');
         notificationObj.payload.forEach((notify) => {
-          expect(notify).to.be.a('object');
+          expect(notify).toBeTypeOf('object');
           /** check the actual structure **/
-          expect(notify.id).to.be.a('string');
-          expect(notify.title).to.be.a('string');
-          expect(notify.details).to.be.a('string');
-          expect(notify.price).to.be.a('string');
-          expect(notify.link).to.be.a('string');
+          expect(notify.id).toBeTypeOf('string');
+          expect(notify.title).toBeTypeOf('string');
+          expect(notify.details).toBeTypeOf('string');
+          expect(notify.price).toBeTypeOf('string');
+          expect(notify.link).toBeTypeOf('string');
         });
         resolve();
       });

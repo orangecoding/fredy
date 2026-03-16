@@ -4,7 +4,7 @@
  */
 
 import { convertWebToMobile } from '../../../lib/services/immoscout/immoscout-web-translator.js';
-import { expect } from 'chai';
+import { expect } from 'vitest';
 import { readFile } from 'fs/promises';
 
 export const testData = JSON.parse(await readFile(new URL('./testdata.json', import.meta.url)));
@@ -18,7 +18,7 @@ describe('#immoscout-mobile URL conversion', () => {
       'https://api.mobile.immobilienscout24.de/search/list?apartmenttypes=halfbasement,penthouse,other,loft,groundfloor,terracedflat,raisedgroundfloor,roofstorey,apartment,maisonette&constructionyear=1920-2026&energyefficiencyclasses=a,b,c,d,e,f,g,h,a_plus&equipment=parking,cellar,builtInKitchen,lift,garden,guestToilet,balcony&exclusioncriteria=projectlisting,swapflat&floor=2-7&geocodes=%2Fde%2Fberlin%2Fberlin&haspromotion=false&heatingtypes=central,selfcontainedcentral&livingspace=10.0-25.0&numberofrooms=2.0-5.0&petsallowedtypes=no,yes,negotiable&price=10.0-100.0&pricetype=calculatedtotalrent&realestatetype=apartmentrent&searchType=region';
 
     const actualMobileUrl = convertWebToMobile(webUrl);
-    expect(actualMobileUrl).to.equal(expectedMobileUrl);
+    expect(actualMobileUrl).toBe(expectedMobileUrl);
   });
 
   // Test URL conversion of web-only SEO path
@@ -27,27 +27,27 @@ describe('#immoscout-mobile URL conversion', () => {
 
     const converted = convertWebToMobile(webUrl);
     const queryParams = new URL(converted).searchParams;
-    expect(queryParams.get('equipment').split(',')).to.include.members(['garden', 'balcony']);
+    expect(queryParams.get('equipment').split(',')).toEqual(expect.arrayContaining(['garden', 'balcony']));
   });
 
   // Test URL conversion with unsupported query parameters
   it('should remove unsupported query parameters', () => {
     const webUrl = 'https://www.immobilienscout24.de/Suche/de/berlin/berlin/wohnung-mieten?minimuminternetspeed=100000';
     const converted = convertWebToMobile(webUrl);
-    expect(converted).that.does.not.include('minimuminternetspeed');
+    expect(converted).not.toContain('minimuminternetspeed');
   });
 
   // Test URL conversion with invalid URL
   it('should throw an error for invalid URL', () => {
     const invalidUrl = 'invalid-url';
 
-    expect(() => convertWebToMobile(invalidUrl)).to.throw('Invalid URL: invalid-url');
+    expect(() => convertWebToMobile(invalidUrl)).toThrow('Invalid URL: invalid-url');
   });
 
   // Test URL conversion with unexpected path format
   it('should throw an error for unexpected path format', () => {
     const webUrl = 'https://www.immobilienscout24.de/invalid/path/format';
-    expect(() => convertWebToMobile(webUrl)).to.throw('Unexpected path format: /invalid/path/format');
+    expect(() => convertWebToMobile(webUrl)).toThrow('Unexpected path format: /invalid/path/format');
   });
 
   it('shouldFindResultsForEveryTestData', async () => {
@@ -70,14 +70,12 @@ describe('#immoscout-mobile URL conversion', () => {
         console.error('Error fetching data from ImmoScout Mobile API:', response.statusText);
       }
 
-      expect([null, true]).to.include(response.ok);
+      expect([null, true]).toContain(response.ok);
       const responseBody = await response.json();
-      expect(responseBody.totalResults).to.be.greaterThan(0);
-      expect(responseBody.totalResults).to.be.greaterThan(0);
-      expect(responseBody.resultListItems.length).to.greaterThan(0);
-      expect(responseBody.resultListItems.filter((r) => r.type === 'EXPOSE_RESULT')[0].item.realEstateType).to.equal(
-        type,
-      );
+      expect(responseBody.totalResults).toBeGreaterThan(0);
+      expect(responseBody.totalResults).toBeGreaterThan(0);
+      expect(responseBody.resultListItems.length).toBeGreaterThan(0);
+      expect(responseBody.resultListItems.filter((r) => r.type === 'EXPOSE_RESULT')[0].item.realEstateType).toBe(type);
     }
   });
 });

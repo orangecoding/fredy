@@ -41,7 +41,7 @@
     "enabled": true
   },
   "sparkasse": {
-    "url": "https://immobilien.sparkasse.de/immobilien/treffer?marketingType=buy&objectType=flat&perimeter=10&usageType=residential&zipCityEstateId=62782__Hamburg",
+    "url": "https://immobilien.sparkasse.de/immobilien/treffer?estateTypeGroupingId=403&marketingType=buy&perimeter=10&usageType=residential&zipCityEstateId=51.22422%2F6.78006%2F0__D%C3%BCsseldorf",
     "enabled": true
   },
   "wgGesucht": {

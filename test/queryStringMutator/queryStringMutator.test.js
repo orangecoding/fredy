@@ -4,7 +4,7 @@
  */
 
 import fs from 'fs';
-import { expect } from 'chai';
+import { expect } from 'vitest';
 import { readFile } from 'fs/promises';
 import mutator from '../../lib/services/queryStringMutator.js';
 import queryString from 'query-string';
@@ -33,8 +33,8 @@ describe('queryStringMutator', () => {
       const expectedParams = queryString.parseUrl(test.shouldBecome);
       const actualParams = queryString.parseUrl(fixedUrl);
       //check if all new params are existing
-      expect(Object.keys(expectedParams.query)).to.include.members(Object.keys(actualParams.query));
-      expect(Object.values(expectedParams.query)).to.include.members(Object.values(actualParams.query));
+      expect(Object.keys(expectedParams.query)).toEqual(expect.arrayContaining(Object.keys(actualParams.query)));
+      expect(Object.values(expectedParams.query)).toEqual(expect.arrayContaining(Object.values(actualParams.query)));
     }
   });
 });

@@ -5,7 +5,7 @@
 
 import { isOneOf, duringWorkingHoursOrNotSet } from '../../lib/utils.js';
 import assert from 'assert';
-import { expect } from 'chai';
+import { expect } from 'vitest';
 
 const fakeWorkingHoursConfig = (from, to) => ({
   workingHours: {
@@ -25,19 +25,19 @@ describe('utils', () => {
   });
   describe('#duringWorkingHoursOrNotSet()', () => {
     it('should be false', () => {
-      expect(duringWorkingHoursOrNotSet(fakeWorkingHoursConfig('12:00', '13:00'), 0)).to.be.false;
+      expect(duringWorkingHoursOrNotSet(fakeWorkingHoursConfig('12:00', '13:00'), 0)).toBe(false);
     });
     it('should be true', () => {
-      expect(duringWorkingHoursOrNotSet(fakeWorkingHoursConfig('10:00', '16:00'), 1622026740000)).to.be.true;
+      expect(duringWorkingHoursOrNotSet(fakeWorkingHoursConfig('10:00', '16:00'), 1622026740000)).toBe(true);
     });
     it('should be true if nothing set', () => {
-      expect(duringWorkingHoursOrNotSet(fakeWorkingHoursConfig(null, null), 1622026740000)).to.be.true;
+      expect(duringWorkingHoursOrNotSet(fakeWorkingHoursConfig(null, null), 1622026740000)).toBe(true);
     });
     it('should be true if only to is set', () => {
-      expect(duringWorkingHoursOrNotSet(fakeWorkingHoursConfig(null, '13:00'), 1622026740000)).to.be.true;
+      expect(duringWorkingHoursOrNotSet(fakeWorkingHoursConfig(null, '13:00'), 1622026740000)).toBe(true);
     });
     it('should be true if only from is set', () => {
-      expect(duringWorkingHoursOrNotSet(fakeWorkingHoursConfig('12:00', null), 1622026740000)).to.be.true;
+      expect(duringWorkingHoursOrNotSet(fakeWorkingHoursConfig('12:00', null), 1622026740000)).toBe(true);
     });
     it('should handle working hours that cross midnight (e.g., 05:00 → 00:30)', () => {
       const cfg = fakeWorkingHoursConfig('05:00', '00:30');
@@ -49,9 +49,9 @@ describe('utils', () => {
         d.setMilliseconds(0);
         return d.getTime();
       };
-      expect(duringWorkingHoursOrNotSet(cfg, mkTs(23, 0))).to.be.true; // 23:00 => within window
-      expect(duringWorkingHoursOrNotSet(cfg, mkTs(1, 0))).to.be.false; // 01:00 => outside window
-      expect(duringWorkingHoursOrNotSet(cfg, mkTs(6, 0))).to.be.true; // 06:00 => within window
+      expect(duringWorkingHoursOrNotSet(cfg, mkTs(23, 0))).toBe(true); // 23:00 => within window
+      expect(duringWorkingHoursOrNotSet(cfg, mkTs(1, 0))).toBe(false); // 01:00 => outside window
+      expect(duringWorkingHoursOrNotSet(cfg, mkTs(6, 0))).toBe(true); // 06:00 => within window
     });
   });
 });

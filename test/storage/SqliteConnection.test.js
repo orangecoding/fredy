@@ -3,8 +3,7 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { expect } from 'chai';
-import esmock from 'esmock';
+import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 // We explicitly avoid touching the real filesystem or creating a real DB file.
 // better-sqlite3 is fully mocked and operates in-memory via our stubs.
@@ -78,15 +77,10 @@ describe('SqliteConnection', () => {
       };
     };
 
-    // esmock the module with our stubs
-    SqliteConnection = await esmock(
-      '../../lib/services/storage/SqliteConnection.js',
-      {},
-      {
-        fs: fsMock,
-        'better-sqlite3': { default: BetterSqlite3Mock },
-      },
-    );
+    vi.resetModules();
+    vi.doMock('fs', () => ({ default: fsMock, ...fsMock }));
+    vi.doMock('better-sqlite3', () => ({ default: BetterSqlite3Mock }));
+    SqliteConnection = (await import('../../lib/services/storage/SqliteConnection.js')).default;
   });
 
   afterEach(() => {
@@ -98,9 +92,9 @@ describe('SqliteConnection', () => {
     const db1 = SqliteConnection.getConnection();
     const db2 = SqliteConnection.getConnection();
 
-    expect(db1).to.equal(db2);
+    expect(db1).toBe(db2);
     // journal_mode, synchronous, cache_size, foreign_keys, optimize
-    expect(calls.db.pragma).to.deep.equal([
+    expect(calls.db.pragma).toEqual([
       'journal_mode = WAL',
       'synchronous = NORMAL',
       'cache_size = -64000',
@@ -108,21 +102,21 @@ describe('SqliteConnection', () => {
       'optimize',
     ]);
     // mkdirSync should not be called because existsSync returned true
-    expect(calls.fs.mkdirSync).to.have.length(0);
+    expect(calls.fs.mkdirSync).toHaveLength(0);
   });
 
   it('executes query and execute helpers', () => {
     const rows = SqliteConnection.query('SELECT 1', {});
-    expect(rows).to.be.an('array');
-    expect(rows[0]).to.deep.equal({ x: 1 });
+    expect(rows).toBeInstanceOf(Array);
+    expect(rows[0]).toEqual({ x: 1 });
 
     const info = SqliteConnection.execute('UPDATE x SET y=1 WHERE id=@id', { id: 5 });
-    expect(info).to.have.property('changes', 1);
+    expect(info).toHaveProperty('changes', 1);
   });
 
   it('tableExists uses sqlite_master get()', () => {
     const exists = SqliteConnection.tableExists('users');
-    expect(exists).to.equal(true);
+    expect(exists).toBe(true);
   });
 
   it('withTransaction wraps callback', () => {
@@ -131,17 +125,17 @@ describe('SqliteConnection', () => {
       db.prepare('SELECT inside').all({});
       return 42;
     });
-    expect(result).to.equal(42);
-    expect(calls.db.prepare).to.include('SELECT inside');
+    expect(result).toBe(42);
+    expect(calls.db.prepare).toContain('SELECT inside');
   });
 
   it('optimize() delegates to PRAGMA optimize and close() calls it again then closes', () => {
     SqliteConnection.optimize();
     // It will use the existing connection and call pragma('optimize')
-    expect(calls.db.pragma).to.include('optimize');
+    expect(calls.db.pragma).toContain('optimize');
 
     SqliteConnection.close();
     // close increments close counter
-    expect(calls.db.close).to.equal(1);
+    expect(calls.db.close).toBe(1);
   });
 });

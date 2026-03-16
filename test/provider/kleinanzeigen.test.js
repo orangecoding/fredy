@@ -6,7 +6,7 @@
 import * as similarityCache from '../../lib/services/similarity-check/similarityCache.js';
 import { get } from '../mocks/mockNotification.js';
 import { mockFredy, providerConfig } from '../utils.js';
-import { expect } from 'chai';
+import { expect } from 'vitest';
 import * as provider from '../../lib/provider/kleinanzeigen.js';
 
 describe('#kleinanzeigen testsuite()', () => {
@@ -23,20 +23,20 @@ describe('#kleinanzeigen testsuite()', () => {
       const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache);
 
       fredy.execute().then((listing) => {
-        expect(listing).to.be.a('array');
+        expect(listing).toBeInstanceOf(Array);
         const notificationObj = get();
-        expect(notificationObj).to.be.a('object');
-        expect(notificationObj.serviceName).to.equal('kleinanzeigen');
+        expect(notificationObj).toBeTypeOf('object');
+        expect(notificationObj.serviceName).toBe('kleinanzeigen');
         notificationObj.payload.forEach((notify) => {
           /** check the actual structure **/
-          expect(notify.id).to.be.a('string');
-          expect(notify.title).to.be.a('string');
-          expect(notify.link).to.be.a('string');
-          expect(notify.address).to.be.a('string');
+          expect(notify.id).toBeTypeOf('string');
+          expect(notify.title).toBeTypeOf('string');
+          expect(notify.link).toBeTypeOf('string');
+          expect(notify.address).toBeTypeOf('string');
           /** check the values if possible **/
-          expect(notify.title).to.be.not.empty;
-          expect(notify.link).that.does.include('https://www.kleinanzeigen.de');
-          expect(notify.address).to.be.not.empty;
+          expect(notify.title).not.toBe('');
+          expect(notify.link).toContain('https://www.kleinanzeigen.de');
+          expect(notify.address).not.toBe('');
         });
         resolve();
       });
