@@ -1082,19 +1082,12 @@
     debug "^4.3.1"
     minimatch "^10.2.4"
 
-"@eslint/config-helpers@^0.5.2":
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/@eslint/config-helpers/-/config-helpers-0.5.2.tgz#314c7b03d02a371ad8c0a7f6821d5a8a8437ba9d"
-  integrity sha512-a5MxrdDXEvqnIq+LisyCX6tQMPF/dSJpCfBgBauY+pNZ28yCtSsTvyTYrMhaI+LK26bVyCJfJkT0u8KIj2i1dQ==
+"@eslint/config-helpers@^0.5.3":
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/@eslint/config-helpers/-/config-helpers-0.5.3.tgz#721fe6bbb90d74b0c80d6ff2428e5bbcb002becb"
+  integrity sha512-lzGN0onllOZCGroKJmRwY6QcEHxbjBw1gwB8SgRSqK8YbbtEXMvKynsXc3553ckIEBxsbMBU7oOZXKIPGZNeZw==
   dependencies:
-    "@eslint/core" "^1.1.0"
-
-"@eslint/core@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@eslint/core/-/core-1.1.0.tgz#51f5cd970e216fbdae6721ac84491f57f965836d"
-  integrity sha512-/nr9K9wkr3P1EzFTdFdMoLuo1PmIxjmwvPozwoSodjNBdefGujXQUF93u1DDZpEaTuDvMsIQddsd35BwtrW9Xw==
-  dependencies:
-    "@types/json-schema" "^7.0.15"
+    "@eslint/core" "^1.1.1"
 
 "@eslint/core@^1.1.1":
   version "1.1.1"
@@ -1276,7 +1269,7 @@
   resolved "https://registry.npmjs.org/@maplibre/geojson-vt/-/geojson-vt-5.0.4.tgz"
   integrity sha512-KGg9sma45S+stfH9vPCJk1J0lSDLWZgCT9Y8u8qWZJyjFlP8MNP1WGTxIMYJZjDvVT3PDn05kN1C95Sut1HpgQ==
 
-"@maplibre/geojson-vt@^6.0.3":
+"@maplibre/geojson-vt@^6.0.4":
   version "6.0.4"
   resolved "https://registry.yarnpkg.com/@maplibre/geojson-vt/-/geojson-vt-6.0.4.tgz#f028fa633594c067b4c24030c1c282c0dd6cc835"
   integrity sha512-HYv3POhMRCdhP3UPPATM/hfcy6/WuVIf5FKboH8u/ZuFMTnAIcSVlq5nfOqroLokd925w2QtE7YwquFOIacwVQ==
@@ -1296,10 +1289,10 @@
     rw "^1.3.3"
     tinyqueue "^3.0.0"
 
-"@maplibre/mlt@^1.1.7":
-  version "1.1.7"
-  resolved "https://registry.yarnpkg.com/@maplibre/mlt/-/mlt-1.1.7.tgz#cb8d6ede486f5e48a33dd1f373fa5d908ce8062f"
-  integrity sha512-HZSsXrgn2V6T3o0qklMwKERfKaAxjO8shmiFnVygCtXTg4SPKWVX+U99RkvxUfCsjYBEcT4ltor8lSlBSCca7Q==
+"@maplibre/mlt@^1.1.8":
+  version "1.1.8"
+  resolved "https://registry.yarnpkg.com/@maplibre/mlt/-/mlt-1.1.8.tgz#ad1f7169197e5c64eace4f61c168dcd202076e03"
+  integrity sha512-8vtfYGidr1rNkv5IwIoU2lfe3Oy+Wa8HluzQYcQi9cveU9K3pweAal/poQj4GJ0K/EW4bTQp2wVAs09g2yDRZg==
   dependencies:
     "@mapbox/point-geometry" "^1.1.0"
 
@@ -3502,15 +3495,15 @@ eslint-visitor-keys@^5.0.1:
   resolved "https://registry.yarnpkg.com/eslint-visitor-keys/-/eslint-visitor-keys-5.0.1.tgz#9e3c9489697824d2d4ce3a8ad12628f91e9f59be"
   integrity sha512-tD40eHxA35h0PEIZNeIjkHoDR4YjjJp34biM0mDvplBe//mB+IHCqHDGV7pxF+7MklTvighcCPPZC7ynWyjdTA==
 
-eslint@10.0.3:
-  version "10.0.3"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-10.0.3.tgz#360a7de7f2706eb8a32caa17ca983f0089efe694"
-  integrity sha512-COV33RzXZkqhG9P2rZCFl9ZmJ7WL+gQSCRzE7RhkbclbQPtLAWReL7ysA0Sh4c8Im2U9ynybdR56PV0XcKvqaQ==
+eslint@10.1.0:
+  version "10.1.0"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-10.1.0.tgz#9ca98e654e642ab2e1af6d1e9d8613857ac341b4"
+  integrity sha512-S9jlY/ELKEUwwQnqWDO+f+m6sercqOPSqXM5Go94l7DOmxHVDgmSFGWEzeE/gwgTAr0W103BWt0QLe/7mabIvA==
   dependencies:
     "@eslint-community/eslint-utils" "^4.8.0"
     "@eslint-community/regexpp" "^4.12.2"
     "@eslint/config-array" "^0.23.3"
-    "@eslint/config-helpers" "^0.5.2"
+    "@eslint/config-helpers" "^0.5.3"
     "@eslint/core" "^1.1.1"
     "@eslint/plugin-kit" "^0.6.1"
     "@humanfs/node" "^0.16.6"
@@ -3523,7 +3516,7 @@ eslint@10.0.3:
     escape-string-regexp "^4.0.0"
     eslint-scope "^9.1.2"
     eslint-visitor-keys "^5.0.1"
-    espree "^11.1.1"
+    espree "^11.2.0"
     esquery "^1.7.0"
     esutils "^2.0.2"
     fast-deep-equal "^3.1.3"
@@ -3538,7 +3531,7 @@ eslint@10.0.3:
     natural-compare "^1.4.0"
     optionator "^0.9.3"
 
-espree@^11.1.1:
+espree@^11.2.0:
   version "11.2.0"
   resolved "https://registry.yarnpkg.com/espree/-/espree-11.2.0.tgz#01d5e47dc332aaba3059008362454a8cc34ccaa5"
   integrity sha512-7p3DrVEIopW1B1avAGLuCSh1jubc01H2JHc8B4qqGblmg5gI9yumBgACjWo4JlIc04ufug4xJ3SQI8HkS/Rgzw==
@@ -4988,10 +4981,10 @@ make-dir@^2.1.0:
     pify "^4.0.1"
     semver "^5.6.0"
 
-maplibre-gl@^5.20.2:
-  version "5.20.2"
-  resolved "https://registry.yarnpkg.com/maplibre-gl/-/maplibre-gl-5.20.2.tgz#9dec242f0858f3bc30fd5c44404ed9e23e63adaf"
-  integrity sha512-0UzMWOe+GZmIUmOA99yTI1vRh15YcGnHxADVB2s+JF3etpjj2/MBCqbPEuu4BP9mLsJWJcpHH0Nzr9uuimmbuQ==
+maplibre-gl@^5.21.0:
+  version "5.21.0"
+  resolved "https://registry.yarnpkg.com/maplibre-gl/-/maplibre-gl-5.21.0.tgz#2d2bc81196d4b922a00c4cc7f90175f53eb7a2d3"
+  integrity sha512-n0v4J/Ge0EG8ix/z3TY3ragtJYMqzbtSnj1riOC0OwQbzwp0lUF2maS1ve1z8HhitQCKtZZiZJhb8to36aMMfQ==
   dependencies:
     "@mapbox/jsonlint-lines-primitives" "^2.0.2"
     "@mapbox/point-geometry" "^1.1.0"
@@ -4999,9 +4992,9 @@ maplibre-gl@^5.20.2:
     "@mapbox/unitbezier" "^0.0.1"
     "@mapbox/vector-tile" "^2.0.4"
     "@mapbox/whoots-js" "^3.1.0"
-    "@maplibre/geojson-vt" "^6.0.3"
+    "@maplibre/geojson-vt" "^6.0.4"
     "@maplibre/maplibre-gl-style-spec" "^24.7.0"
-    "@maplibre/mlt" "^1.1.7"
+    "@maplibre/mlt" "^1.1.8"
     "@maplibre/vt-pbf" "^4.3.0"
     "@types/geojson" "^7946.0.16"
     earcut "^3.0.2"
