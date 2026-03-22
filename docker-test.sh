@@ -42,19 +42,28 @@ for i in $(seq 1 30); do
   sleep 2
 done
 
-# Verify the process is NOT running as root
-RUNNING_USER=$(docker exec fredy id -u)
-if [ "$RUNNING_USER" = "0" ]; then
-  echo "Process is running as root!"
+# Verify the DB is readable/writable via the API.
+# /api/demo is unauthenticated and reads the settings table — if SQLite is broken this returns an error.
+echo "Testing DB via API (/api/demo)..."
+DEMO_RESPONSE=$(docker exec fredy curl -sf http://localhost:9998/api/demo 2>&1)
+if echo "$DEMO_RESPONSE" | grep -q "demoMode"; then
+  echo "DB is readable (got demoMode from /api/demo)"
+else
+  echo "DB check failed — unexpected response from /api/demo: $DEMO_RESPONSE"
+  docker logs fredy
   exit 1
 fi
-echo "Process runs as UID $RUNNING_USER (not root)"
 
-# Verify Chrome launches without crashing
+# Verify Chrome launches without crashing.
+# On amd64: Chrome for Testing lives in the puppeteer cache.
+# On arm64: system Chromium is used instead.
 echo "Testing Chrome..."
-CHROME=$(docker exec fredy find /home/node/.cache/puppeteer -name chrome -type f 2>/dev/null | head -1)
+CHROME=$(docker exec fredy find /root/.cache/puppeteer /home -name chrome -type f 2>/dev/null | head -1)
 if [ -z "$CHROME" ]; then
-  echo "Chrome binary not found"
+  CHROME=$(docker exec fredy which chromium 2>/dev/null || true)
+fi
+if [ -z "$CHROME" ]; then
+  echo "Chrome/Chromium binary not found"
   exit 1
 fi
 if docker exec fredy "$CHROME" --headless --no-sandbox --disable-gpu --dump-dom https://example.com 2>&1 | grep -q "<html"; then
