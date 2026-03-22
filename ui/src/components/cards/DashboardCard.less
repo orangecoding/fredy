@@ -1,12 +1,14 @@
+@import './DashboardCardColors.less';
+
 .dashboard-card {
   width: 100%;
   height: 140px;
   margin-bottom: 16px;
-  transition: transform 0.2s;
-  background-color: rgba(36, 36, 36, 0.9);
-  backdrop-filter: blur(8px);
-  border: 1px solid var(--semi-color-border);
-  --pulse-color: rgba(255, 255, 255, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  background-color: #181b26;
+  border: 1px solid #262a3a;
+  border-radius: 10px;
+  --pulse-color: rgba(255, 255, 255, 0.08);
   position: relative;
   z-index: 1;
   overflow: visible;
@@ -27,11 +29,24 @@
     will-change: opacity;
   }
 
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px -8px var(--pulse-color);
+  }
+
   &__icon {
     font-size: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
+    color: var(--card-accent, #94a3b8);
+  }
+
+  &__title {
+    color: var(--semi-color-text-2) !important;
+    font-size: 12px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
   &__content {
@@ -41,32 +56,51 @@
   &__value {
     font-weight: 700;
     margin-bottom: 4px;
-    color: var(--semi-color-text-0);
+    color: var(--card-accent, var(--semi-color-text-0));
+  }
+
+  &__desc {
+    color: var(--semi-color-text-3) !important;
   }
 
   &.blue {
-    --pulse-color: var(--semi-color-primary);
-    box-shadow: 0 4px 20px -5px var(--pulse-color);
+    --pulse-color: @color-blue-border;
+    --card-accent: @color-blue-text;
+    background-color: @color-blue-bg;
+    border-color: @color-blue-border;
+    box-shadow: 0 2px 16px -6px @color-blue-border;
   }
 
   &.orange {
-    --pulse-color: var(--semi-color-warning);
-    box-shadow: 0 4px 20px -5px var(--pulse-color);
+    --pulse-color: @color-orange-border;
+    --card-accent: @color-orange-text;
+    background-color: @color-orange-bg;
+    border-color: @color-orange-border;
+    box-shadow: 0 2px 16px -6px @color-orange-border;
   }
 
   &.green {
-    --pulse-color: var(--semi-color-success);
-    box-shadow: 0 4px 20px -5px var(--pulse-color);
+    --pulse-color: @color-green-border;
+    --card-accent: @color-green-text;
+    background-color: @color-green-bg;
+    border-color: @color-green-border;
+    box-shadow: 0 2px 16px -6px @color-green-border;
   }
 
   &.purple {
-    --pulse-color: var(--semi-color-info);
-    box-shadow: 0 4px 20px -5px var(--pulse-color);
+    --pulse-color: @color-purple-border;
+    --card-accent: @color-purple-text;
+    background-color: @color-purple-bg;
+    border-color: @color-purple-border;
+    box-shadow: 0 2px 16px -6px @color-purple-border;
   }
 
   &.gray {
-    --pulse-color: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 20px -5px var(--pulse-color);
+    --pulse-color: @color-gray-border;
+    --card-accent: @color-gray-text;
+    background-color: @color-gray-bg;
+    border-color: @color-gray-border;
+    box-shadow: 0 2px 16px -6px @color-gray-border;
   }
 }
 
@@ -75,6 +109,6 @@
     opacity: 0.1;
   }
   50% {
-    opacity: 0.5;
+    opacity: 0.4;
   }
 }

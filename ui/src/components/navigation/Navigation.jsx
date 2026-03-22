@@ -42,24 +42,21 @@ export default function Navigation({ isAdmin }) {
   ];
 
   if (isAdmin) {
-    const settingsItems = [
-      { itemKey: '/users', text: 'User Management' },
-      { itemKey: '/userSettings', text: 'User Specific Settings' },
-      { itemKey: '/generalSettings', text: 'General Settings' },
-    ];
-
     items.push({
       itemKey: 'settings',
       text: 'Settings',
       icon: <IconSetting />,
-      items: settingsItems,
+      items: [
+        { itemKey: '/users', text: 'User Management' },
+        { itemKey: '/generalSettings', text: 'Settings' },
+      ],
     });
   } else {
     items.push({
       itemKey: 'settings',
       text: 'Settings',
       icon: <IconSetting />,
-      items: [{ itemKey: '/userSettings', text: 'User Specific Settings' }],
+      items: [{ itemKey: '/generalSettings', text: 'Settings' }],
     });
   }
 
