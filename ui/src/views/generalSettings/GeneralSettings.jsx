@@ -264,66 +264,6 @@ const GeneralSettings = function GeneralSettings() {
             <TabPane
               tab={
                 <span>
-                  <IconRefresh size="small" style={{ marginRight: 6 }} />
-                  Execution
-                </span>
-              }
-              itemKey="execution"
-            >
-              <div className="generalSettings__tab-content">
-                <SectionHeader
-                  title="Search Interval"
-                  description="Interval in minutes for running queries against configured services. Do not go below 5 minutes to avoid being detected as a bot."
-                />
-                <InputNumber
-                  min={5}
-                  max={1440}
-                  placeholder="Interval in minutes"
-                  value={interval}
-                  formatter={(value) => `${value}`.replace(/\D/g, '')}
-                  onChange={(value) => setInterval(value)}
-                  suffix={'minutes'}
-                  style={{ maxWidth: 200 }}
-                />
-
-                <Divider className="generalSettings__divider" />
-
-                <SectionHeader
-                  title="Working Hours"
-                  description="Fredy will only search for listings during these hours. Leave empty to search around the clock."
-                />
-                <div className="generalSettings__timePickerContainer">
-                  <TimePicker
-                    format={'HH:mm'}
-                    insetLabel="From"
-                    value={formatFromTBackend(workingHourFrom)}
-                    placeholder=""
-                    onChange={(val) => {
-                      setWorkingHourFrom(val == null ? null : formatFromTimestamp(val));
-                    }}
-                  />
-                  <TimePicker
-                    format={'HH:mm'}
-                    insetLabel="Until"
-                    value={formatFromTBackend(workingHourTo)}
-                    placeholder=""
-                    onChange={(val) => {
-                      setWorkingHourTo(val == null ? null : formatFromTimestamp(val));
-                    }}
-                  />
-                </div>
-
-                <div className="generalSettings__save-row">
-                  <Button type="primary" theme="solid" onClick={handleStore} icon={<IconSave />}>
-                    Save
-                  </Button>
-                </div>
-              </div>
-            </TabPane>
-
-            <TabPane
-              tab={
-                <span>
                   <IconSignal size="small" style={{ marginRight: 6 }} />
                   System
                 </span>
@@ -404,6 +344,66 @@ const GeneralSettings = function GeneralSettings() {
                 <Checkbox checked={demoMode} onChange={(e) => setDemoMode(e.target.checked)}>
                   Enable demo mode
                 </Checkbox>
+
+                <div className="generalSettings__save-row">
+                  <Button type="primary" theme="solid" onClick={handleStore} icon={<IconSave />}>
+                    Save
+                  </Button>
+                </div>
+              </div>
+            </TabPane>
+
+            <TabPane
+              tab={
+                <span>
+                  <IconRefresh size="small" style={{ marginRight: 6 }} />
+                  Execution
+                </span>
+              }
+              itemKey="execution"
+            >
+              <div className="generalSettings__tab-content">
+                <SectionHeader
+                  title="Search Interval"
+                  description="Interval in minutes for running queries against configured services. Do not go below 5 minutes to avoid being detected as a bot."
+                />
+                <InputNumber
+                  min={5}
+                  max={1440}
+                  placeholder="Interval in minutes"
+                  value={interval}
+                  formatter={(value) => `${value}`.replace(/\D/g, '')}
+                  onChange={(value) => setInterval(value)}
+                  suffix={'minutes'}
+                  style={{ maxWidth: 200 }}
+                />
+
+                <Divider className="generalSettings__divider" />
+
+                <SectionHeader
+                  title="Working Hours"
+                  description="Fredy will only search for listings during these hours. Leave empty to search around the clock."
+                />
+                <div className="generalSettings__timePickerContainer">
+                  <TimePicker
+                    format={'HH:mm'}
+                    insetLabel="From"
+                    value={formatFromTBackend(workingHourFrom)}
+                    placeholder=""
+                    onChange={(val) => {
+                      setWorkingHourFrom(val == null ? null : formatFromTimestamp(val));
+                    }}
+                  />
+                  <TimePicker
+                    format={'HH:mm'}
+                    insetLabel="Until"
+                    value={formatFromTBackend(workingHourTo)}
+                    placeholder=""
+                    onChange={(val) => {
+                      setWorkingHourTo(val == null ? null : formatFromTimestamp(val));
+                    }}
+                  />
+                </div>
 
                 <div className="generalSettings__save-row">
                   <Button type="primary" theme="solid" onClick={handleStore} icon={<IconSave />}>
