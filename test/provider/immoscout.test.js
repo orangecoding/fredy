@@ -15,13 +15,13 @@ describe('#immoscout provider testsuite()', () => {
     const Fredy = await mockFredy();
     const mockedJob = {
       id: '',
-      notificationAdapter: null,
+      notificationAdapter: [],
       spatialFilter: null,
       specFilter: null,
     };
 
     return await new Promise((resolve) => {
-      const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache);
+      const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache, undefined);
       fredy.execute().then((listings) => {
         expect(listings).toBeInstanceOf(Array);
         const notificationObj = get();
@@ -31,12 +31,14 @@ describe('#immoscout provider testsuite()', () => {
           /** check the actual structure **/
           expect(notify.id).toBeTypeOf('string');
           expect(notify.price).toBeTypeOf('string');
+          expect(notify.price).toContain('€');
           expect(notify.size).toBeTypeOf('string');
+          expect(notify.size).toContain('m²');
           expect(notify.title).toBeTypeOf('string');
           expect(notify.link).toBeTypeOf('string');
           expect(notify.address).toBeTypeOf('string');
           /** check the values if possible **/
-          expect(notify.size).not.toBe('');
+          expect(notify.size).toBeTypeOf('string');
           expect(notify.title).not.toBe('');
           expect(notify.link).toContain('https://www.immobilienscout24.de/');
         });

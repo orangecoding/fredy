@@ -8,7 +8,9 @@ import { readFile } from 'fs/promises';
 import * as mockStore from './mocks/mockStore.js';
 import { send } from './mocks/mockNotification.js';
 
-export const providerConfig = JSON.parse(await readFile(new URL('./provider/testProvider.json', import.meta.url)));
+export const providerConfig = JSON.parse(
+  await readFile(new URL('./provider/testProvider.json', import.meta.url), 'utf-8'),
+);
 
 vi.mock('../lib/services/storage/listingsStorage.js', () => mockStore);
 vi.mock('../lib/services/storage/settingsStorage.js', () => mockStore);
@@ -20,7 +22,10 @@ vi.mock('../lib/services/storage/jobStorage.js', () => ({
 }));
 vi.mock('../lib/notification/notify.js', () => ({ send }));
 
+/**
+ * @returns {Promise<typeof import('../lib/FredyPipelineExecutioner.js').default>}
+ */
 export const mockFredy = async () => {
   const mod = await import('../lib/FredyPipelineExecutioner.js');
-  return mod.default ?? mod;
+  return mod.default;
 };

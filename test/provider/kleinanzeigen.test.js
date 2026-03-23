@@ -20,7 +20,7 @@ describe('#kleinanzeigen testsuite()', () => {
     };
     provider.init(providerConfig.kleinanzeigen, [], []);
     return await new Promise((resolve) => {
-      const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache);
+      const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache, undefined);
 
       fredy.execute().then((listing) => {
         expect(listing).toBeInstanceOf(Array);

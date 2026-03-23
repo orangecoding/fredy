@@ -20,7 +20,7 @@ describe('#ohneMakler testsuite()', () => {
     };
     provider.init(providerConfig.ohneMakler, []);
 
-    const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache);
+    const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache, undefined);
 
     const listing = await fredy.execute();
 
@@ -32,12 +32,14 @@ describe('#ohneMakler testsuite()', () => {
       /** check the actual structure **/
       expect(notify.id).toBeTypeOf('string');
       expect(notify.price).toBeTypeOf('string');
+      expect(notify.price).toContain('€');
       expect(notify.size).toBeTypeOf('string');
+      expect(notify.size).toContain('m²');
       expect(notify.title).toBeTypeOf('string');
       expect(notify.link).toBeTypeOf('string');
       expect(notify.address).toBeTypeOf('string');
       /** check the values if possible **/
-      expect(notify.size).toContain('m²');
+      expect(notify.size).toBeTypeOf('string');
       expect(notify.title).not.toBe('');
       expect(notify.address).not.toBe('');
     });
