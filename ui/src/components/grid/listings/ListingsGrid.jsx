@@ -10,16 +10,16 @@ import {
   Row,
   Image,
   Button,
-  Space,
   Typography,
   Pagination,
   Toast,
   Divider,
   Input,
   Select,
-  Popover,
   Empty,
-  Switch,
+  Radio,
+  RadioGroup,
+  Space,
 } from '@douyinfe/semi-ui-19';
 import {
   IconBriefcase,
@@ -31,11 +31,10 @@ import {
   IconStar,
   IconStarStroked,
   IconSearch,
-  IconFilter,
   IconActivity,
   IconEyeOpened,
-  IconGridView,
-  IconExpand,
+  IconArrowUp,
+  IconArrowDown,
 } from '@douyinfe/semi-icons';
 import { useNavigate } from 'react-router-dom';
 import ListingDeletionModal from '../../ListingDeletionModal.jsx';
@@ -64,12 +63,10 @@ const ListingsGrid = () => {
   const [sortDir, setSortDir] = useState('desc');
   const [freeTextFilter, setFreeTextFilter] = useState(null);
   const [watchListFilter, setWatchListFilter] = useState(null);
+  const [filterByJobSettings, setFilterByJobSettings] = useState(true);
   const [jobNameFilter, setJobNameFilter] = useState(null);
   const [activityFilter, setActivityFilter] = useState(null);
   const [providerFilter, setProviderFilter] = useState(null);
-  const [filterByJobSettings, setFilterByJobSettings] = useState(true);
-  const [showFilterBar, setShowFilterBar] = useState(false);
-
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [listingToDelete, setListingToDelete] = useState(null);
 
@@ -143,114 +140,97 @@ const ListingsGrid = () => {
 
   return (
     <div className="listingsGrid">
-      <div className="listingsGrid__searchbar">
-        <Input prefix={<IconSearch />} showClear placeholder="Search" onChange={handleFilterChange} />
-        <Popover content="Filter / Sort Results" style={{ color: 'white', padding: '.5rem' }}>
-          <div>
-            <Button
-              icon={<IconFilter />}
-              onClick={() => {
-                setShowFilterBar(!showFilterBar);
-              }}
-            />
-          </div>
-        </Popover>
+      <div className="listingsGrid__topbar">
+        <Input
+          className="listingsGrid__topbar__search"
+          prefix={<IconSearch />}
+          showClear
+          placeholder="Search"
+          onChange={handleFilterChange}
+        />
+
+        <RadioGroup
+          type="button"
+          buttonSize="middle"
+          value={activityFilter === null ? 'all' : String(activityFilter)}
+          onChange={(e) => {
+            const v = e.target.value;
+            setActivityFilter(v === 'all' ? null : v === 'true');
+          }}
+        >
+          <Radio value="all">All</Radio>
+          <Radio value="true">Active</Radio>
+          <Radio value="false">Inactive</Radio>
+        </RadioGroup>
+
+        <RadioGroup
+          type="button"
+          buttonSize="middle"
+          value={watchListFilter === null ? 'all' : String(watchListFilter)}
+          onChange={(e) => {
+            const v = e.target.value;
+            setWatchListFilter(v === 'all' ? null : v === 'true');
+          }}
+        >
+          <Radio value="all">All</Radio>
+          <Radio value="true">Watched</Radio>
+          <Radio value="false">Unwatched</Radio>
+        </RadioGroup>
+
+        <RadioGroup
+          type="button"
+          buttonSize="middle"
+          value={filterByJobSettings ? 'true' : 'false'}
+          onChange={(e) => {
+            const v = e.target.value;
+            setFilterByJobSettings(v === 'true');
+          }}
+        >
+          <Radio value="false">All</Radio>
+          <Radio value="true">Job Filtered</Radio>
+        </RadioGroup>
+
+        <Select
+          placeholder="Provider"
+          showClear
+          onChange={(val) => setProviderFilter(val)}
+          value={providerFilter}
+          style={{ width: 130 }}
+        >
+          {providers?.map((p) => (
+            <Select.Option key={p.id} value={p.id}>
+              {p.name}
+            </Select.Option>
+          ))}
+        </Select>
+
+        <Select
+          placeholder="Job"
+          showClear
+          onChange={(val) => setJobNameFilter(val)}
+          value={jobNameFilter}
+          style={{ width: 130 }}
+        >
+          {jobs?.map((j) => (
+            <Select.Option key={j.id} value={j.id}>
+              {j.name}
+            </Select.Option>
+          ))}
+        </Select>
+
+        <Select prefix="Sort by" style={{ width: 185 }} value={sortField} onChange={(val) => setSortField(val)}>
+          <Select.Option value="job_name">Job Name</Select.Option>
+          <Select.Option value="created_at">Listing Date</Select.Option>
+          <Select.Option value="price">Price</Select.Option>
+          <Select.Option value="provider">Provider</Select.Option>
+        </Select>
+
+        <Button
+          icon={sortDir === 'asc' ? <IconArrowUp /> : <IconArrowDown />}
+          onClick={() => setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))}
+          title={sortDir === 'asc' ? 'Ascending' : 'Descending'}
+        />
       </div>
-      {showFilterBar && (
-        <div className="listingsGrid__toolbar">
-          <Space wrap style={{ marginBottom: '1rem' }}>
-            <div className="listingsGrid__toolbar__card">
-              <div>
-                <Text strong>Filter by:</Text>
-              </div>
-              <div style={{ display: 'flex', gap: '.3rem' }}>
-                <Select
-                  placeholder="Status"
-                  showClear
-                  onChange={(val) => setActivityFilter(val)}
-                  value={activityFilter}
-                >
-                  <Select.Option value={true}>Active</Select.Option>
-                  <Select.Option value={false}>Not Active</Select.Option>
-                </Select>
-
-                <Select
-                  placeholder="Watchlist"
-                  showClear
-                  onChange={(val) => setWatchListFilter(val)}
-                  value={watchListFilter}
-                >
-                  <Select.Option value={true}>Watched</Select.Option>
-                  <Select.Option value={false}>Not Watched</Select.Option>
-                </Select>
-
-                <Select
-                  placeholder="Provider"
-                  showClear
-                  onChange={(val) => setProviderFilter(val)}
-                  value={providerFilter}
-                >
-                  {providers?.map((p) => (
-                    <Select.Option key={p.id} value={p.id}>
-                      {p.name}
-                    </Select.Option>
-                  ))}
-                </Select>
-
-                <Select
-                  placeholder="Job Name"
-                  showClear
-                  onChange={(val) => setJobNameFilter(val)}
-                  value={jobNameFilter}
-                >
-                  {jobs?.map((j) => (
-                    <Select.Option key={j.id} value={j.id}>
-                      {j.name}
-                    </Select.Option>
-                  ))}
-                </Select>
-                <Divider layout="vertical" style={{ height: '24px', margin: '0 8px' }} />
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <Switch checked={filterByJobSettings} onChange={(val) => setFilterByJobSettings(val)} size="small" />
-                  <Text size="small" style={{ marginLeft: '8px' }}>
-                    Job Filters
-                  </Text>
-                </div>
-              </div>
-            </div>
-            <Divider layout="vertical" />
-
-            <div className="listingsGrid__toolbar__card">
-              <div>
-                <Text strong>Sort by:</Text>
-              </div>
-              <div style={{ display: 'flex', gap: '.3rem' }}>
-                <Select
-                  placeholder="Sort By"
-                  style={{ width: 140 }}
-                  value={sortField}
-                  onChange={(val) => setSortField(val)}
-                >
-                  <Select.Option value="job_name">Job Name</Select.Option>
-                  <Select.Option value="created_at">Listing Date</Select.Option>
-                  <Select.Option value="price">Price</Select.Option>
-                  <Select.Option value="provider">Provider</Select.Option>
-                </Select>
-
-                <Select
-                  placeholder="Direction"
-                  style={{ width: 120 }}
-                  value={sortDir}
-                  onChange={(val) => setSortDir(val)}
-                >
-                  <Select.Option value="asc">Ascending</Select.Option>
-                  <Select.Option value="desc">Descending</Select.Option>
-                </Select>
-              </div>
-            </div>
-          </Space>
-        </div>
-      )}
 
       {(listingsData?.result || []).length === 0 && (
         <Empty
@@ -261,7 +241,7 @@ const ListingsGrid = () => {
       )}
       <Row gutter={[16, 16]}>
         {(listingsData?.result || []).map((item) => (
-          <Col key={item.id} xs={24} sm={12} md={8} lg={6} xl={4} xxl={6}>
+          <Col key={item.id} xs={24} sm={12} md={12} lg={8} xl={8} xxl={6}>
             <Card
               className={`listingsGrid__card ${!item.is_active ? 'listingsGrid__card--inactive' : ''}`}
               style={{ cursor: 'pointer' }}
@@ -301,22 +281,11 @@ const ListingsGrid = () => {
                 <Text strong ellipsis={{ showTooltip: true }} className="listingsGrid__title">
                   {cap(item.title)}
                 </Text>
-                <Space vertical align="start" spacing={2} style={{ width: '100%', marginTop: 8 }}>
-                  <Space spacing={12} wrap>
-                    <Text type="secondary" icon={<IconCart />} size="small">
-                      {item.price} €
-                    </Text>
-                    {item.size && (
-                      <Text type="secondary" icon={<IconExpand />} size="small">
-                        {item.size} m²
-                      </Text>
-                    )}
-                    {item.rooms && (
-                      <Text type="secondary" icon={<IconGridView />} size="small">
-                        {item.rooms} Rooms
-                      </Text>
-                    )}
-                  </Space>
+                <div className="listingsGrid__price">
+                  <IconCart size="small" />
+                  {item.price} €
+                </div>
+                <div className="listingsGrid__meta">
                   <Text
                     type="secondary"
                     icon={<IconMapPin />}
@@ -340,18 +309,17 @@ const ListingsGrid = () => {
                     </Text>
                   ) : (
                     <Text type="tertiary" size="small" icon={<IconActivity />}>
-                      Distance cannot be calculated, provide an address
+                      Distance cannot be calculated
                     </Text>
                   )}
-                </Space>
+                </div>
                 <Divider margin=".6rem" />
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div className="listingsGrid__actions">
                   <div className="listingsGrid__linkButton" onClick={(e) => e.stopPropagation()}>
                     <a href={item.link} target="_blank" rel="noopener noreferrer">
                       <IconLink />
                     </a>
                   </div>
-
                   <Button
                     type="secondary"
                     size="small"
@@ -359,7 +327,6 @@ const ListingsGrid = () => {
                     onClick={() => navigate(`/listings/listing/${item.id}`)}
                     icon={<IconEyeOpened />}
                   />
-
                   <Button
                     title="Remove"
                     type="danger"

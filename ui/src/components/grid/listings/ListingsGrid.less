@@ -1,3 +1,5 @@
+@import '../../cards/DashboardCardColors.less';
+
 .listingsGrid {
   &__imageContainer {
     position: relative;
@@ -5,12 +7,34 @@
     overflow: hidden;
   }
 
-  &__searchbar {
+  &__topbar {
     display: flex;
-    gap: .5rem;
+    flex-wrap: wrap;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1rem;
+    gap: 8px;
+    margin-bottom: 16px;
+
+    .listingsGrid__topbar__search {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    @media (max-width: 768px) {
+      .listingsGrid__topbar__search {
+        width: 100%;
+        flex: unset;
+      }
+
+      .semi-radio-group {
+        flex: 1;
+      }
+
+      .semi-select {
+        flex: 1;
+        min-width: 100px;
+        width: auto !important;
+      }
+    }
   }
 
   &__watchButton {
@@ -94,17 +118,27 @@
     justify-content: center;
   }
 
-  &__toolbar {
-    &__card {
-      border-radius: var(--semi-border-radius-medium);
-      display: flex;
-      flex-direction: column;
-      gap: .3rem;
-      background: rgba(36, 36, 36, 0.9);
-      backdrop-filter: blur(8px);
-      padding: 0.5rem;
-      border: 1px solid var(--semi-color-border);
-    }
+  &__price {
+    font-size: 18px;
+    font-weight: 700;
+    color: @color-green-text;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin: 8px 0 6px;
+  }
+
+  &__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    width: 100%;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 
   &__setupButton {
