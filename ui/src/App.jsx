@@ -8,7 +8,6 @@ import React, { useEffect } from 'react';
 import InsufficientPermission from './components/permission/InsufficientPermission';
 import PermissionAwareRoute from './components/permission/PermissionAwareRoute';
 import GeneralSettings from './views/generalSettings/GeneralSettings';
-import UserSettings from './views/userSettings/UserSettings';
 import JobMutation from './views/jobs/mutation/JobMutation';
 import UserMutator from './views/user/mutation/UserMutator';
 import { useActions, useSelector } from './services/state/store';
@@ -127,15 +126,8 @@ export default function FredyApp() {
                 </PermissionAwareRoute>
               }
             />
-            <Route path="/userSettings" element={<UserSettings />} />
-            <Route
-              path="/generalSettings"
-              element={
-                <PermissionAwareRoute currentUser={currentUser}>
-                  <GeneralSettings />
-                </PermissionAwareRoute>
-              }
-            />
+            <Route path="/userSettings" element={<Navigate to="/generalSettings" replace />} />
+            <Route path="/generalSettings" element={<GeneralSettings />} />
 
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
           </Routes>

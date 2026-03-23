@@ -9,12 +9,13 @@ import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useSelector, useActions } from '../../services/state/store.js';
 import { distanceMeters, generateCircleCoords, getBoundsFromCenter, getBoundsFromCoords } from './mapUtils.js';
-import { Select, Space, Typography, Button, Popover, Divider, Switch, Banner, Toast } from '@douyinfe/semi-ui-19';
-import { IconFilter, IconLink } from '@douyinfe/semi-icons';
+import { Select, Typography, Switch, Banner, Toast } from '@douyinfe/semi-ui-19';
+import { IconLink } from '@douyinfe/semi-icons';
 import { IconDelete, IconEyeOpened } from '@douyinfe/semi-icons';
 
 import no_image from '../../assets/no_image.jpg';
-import RangeSlider from 'react-range-slider-input';
+import _RangeSlider from 'react-range-slider-input';
+const RangeSlider = _RangeSlider?.default ?? _RangeSlider;
 import 'react-range-slider-input/dist/style.css';
 import './Map.less';
 import { xhrDelete } from '../../services/xhr.js';
@@ -39,7 +40,6 @@ export default function MapView() {
   const jobs = useSelector((state) => state.jobsData.jobs);
   const [jobId, setJobId] = useState(null);
   const [priceRange, setPriceRange] = useState([0, 0]);
-  const [showFilterBar, setShowFilterBar] = useState(false);
   const [distanceFilter, setDistanceFilter] = useState(0);
 
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
@@ -92,10 +92,8 @@ export default function MapView() {
     };
   }, [navigate]);
 
-  // Get map instance reference after MapComponent renders
   useEffect(() => {
     if (mapContainer.current && !map.current) {
-      // Wait for MapComponent to initialize the map
       const checkMapReady = () => {
         if (mapContainer.current?.map) {
           map.current = mapContainer.current.map;
@@ -132,8 +130,6 @@ export default function MapView() {
     if (!map.current) return;
 
     if (homeAddress?.coords) {
-      // We only want to zoom/fly when distanceFilter OR homeAddress actually change,
-      // not on every render. useEffect dependency array handles this.
       if (distanceFilter > 0) {
         const bounds = getBoundsFromCenter([homeAddress.coords.lng, homeAddress.coords.lat], distanceFilter);
 
@@ -290,7 +286,7 @@ export default function MapView() {
 
         const popup = new maplibregl.Popup({ offset: 25 }).setHTML(popupContent);
 
-        let color = '#3FB1CE'; // Default blue-ish
+        let color = '#3FB1CE';
         if (distanceFilter > 0 && homeAddress?.coords) {
           const dist = distanceMeters(
             homeAddress.coords.lat,
@@ -315,114 +311,17 @@ export default function MapView() {
 
   return (
     <div className="map-view-container">
-      <div className="listingsGrid__searchbar map-filter-bar">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexGrow: 1 }}>
-          <Text strong>Map View</Text>
-          <Select placeholder="Style" style={{ width: 120 }} value={style} onChange={(val) => setMapStyle(val)}>
-            <Select.Option value="STANDARD">Standard</Select.Option>
-            <Select.Option value="SATELLITE">Satellite</Select.Option>
-          </Select>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginLeft: '1rem' }}>
-            <Text strong>3D Buildings</Text>
-            <Switch size="small" checked={show3dBuildings} onChange={(v) => setShow3dBuildings(v)} />
-          </div>
-        </div>
-        <Popover content="Filter Results" style={{ color: 'white', padding: '.5rem' }}>
-          <div>
-            <Button
-              icon={<IconFilter />}
-              onClick={() => {
-                setShowFilterBar(!showFilterBar);
-              }}
-            />
-          </div>
-        </Popover>
-      </div>
-
-      {showFilterBar && (
-        <div className="listingsGrid__toolbar">
-          <Space wrap style={{ marginBottom: '1rem' }}>
-            <div className="listingsGrid__toolbar__card">
-              <div>
-                <Text strong>Filter by:</Text>
-              </div>
-              <div style={{ display: 'flex', gap: '.3rem', alignItems: 'center' }}>
-                <Select
-                  placeholder="Job"
-                  showClear
-                  style={{ width: 150 }}
-                  onChange={(val) => {
-                    setJobId(val);
-                  }}
-                  value={jobId}
-                >
-                  {jobs?.map((j) => (
-                    <Select.Option key={j.id} value={j.id}>
-                      {j.name}
-                    </Select.Option>
-                  ))}
-                </Select>
-              </div>
-            </div>
-            <Divider layout="vertical" />
-            <div className="listingsGrid__toolbar__card">
-              <div>
-                <Text strong>Distance:</Text>
-              </div>
-              <div style={{ display: 'flex', gap: '.3rem', alignItems: 'center' }}>
-                <Select
-                  placeholder="Distance"
-                  style={{ width: 100 }}
-                  onChange={(val) => {
-                    setDistanceFilter(val);
-                  }}
-                  value={distanceFilter}
-                >
-                  <Select.Option value={0}>---</Select.Option>
-                  <Select.Option value={5}>5 km</Select.Option>
-                  <Select.Option value={10}>10 km</Select.Option>
-                  <Select.Option value={15}>15 km</Select.Option>
-                  <Select.Option value={20}>20 km</Select.Option>
-                  <Select.Option value={25}>25 km</Select.Option>
-                </Select>
-              </div>
-            </div>
-            <Divider layout="vertical" />
-            <div className="listingsGrid__toolbar__card">
-              <div>
-                <Text strong>Price Range (€):</Text>
-              </div>
-              <div style={{ width: 250, padding: '0 10px' }}>
-                <div className="map__rangesliderLabels">
-                  <span>{priceRange[0]} €</span>
-                  <span>{priceRange[1]} €</span>
-                </div>
-                <RangeSlider
-                  min={0}
-                  max={getMaxPrice()}
-                  step={100}
-                  value={priceRange}
-                  onInput={(val) => {
-                    setPriceRange(val);
-                  }}
-                  tipFormatter={(val) => `${val} €`}
-                />
-              </div>
-            </div>
-          </Space>
-        </div>
-      )}
-
       {!homeAddress && (
         <Banner
           fullMode={true}
           type="warning"
           bordered
           closeIcon={null}
+          style={{ marginBottom: '8px' }}
           description={
             <span>
-              You have not set your home address yet. Please do so in the <Link to="/userSettings">user settings</Link>{' '}
-              to use the distance filter.
+              No home address set. Configure it in <Link to="/userSettings">user settings</Link> to use the distance
+              filter.
             </span>
           }
         />
@@ -433,10 +332,103 @@ export default function MapView() {
         type="info"
         bordered
         closeIcon={null}
-        description="Keep in mind, only listings with proper adresses are being shown on this map."
+        style={{ marginBottom: '8px' }}
+        description="Only listings with valid addresses are shown on this map."
       />
 
-      <Map mapContainerRef={mapContainer} style={style} show3dBuildings={show3dBuildings} onMapReady={handleMapReady} />
+      <div className="map-view-container__map-wrapper">
+        <Map
+          mapContainerRef={mapContainer}
+          style={style}
+          show3dBuildings={show3dBuildings}
+          onMapReady={handleMapReady}
+        />
+
+        {/* Floating filter panel */}
+        <div className="map-view-container__floating-panel">
+          <div className="map-view-container__panel-row">
+            <Text size="small" strong style={{ color: '#8892a4' }}>
+              Job
+            </Text>
+            <Select
+              placeholder="All jobs"
+              showClear
+              size="small"
+              onChange={(val) => setJobId(val)}
+              value={jobId}
+              style={{ width: 160 }}
+            >
+              {jobs?.map((j) => (
+                <Select.Option key={j.id} value={j.id}>
+                  {j.name}
+                </Select.Option>
+              ))}
+            </Select>
+          </div>
+
+          <div className="map-view-container__panel-row">
+            <Text size="small" strong style={{ color: '#8892a4' }}>
+              Distance
+            </Text>
+            <Select
+              placeholder="None"
+              size="small"
+              onChange={(val) => setDistanceFilter(val)}
+              value={distanceFilter}
+              style={{ width: 100 }}
+            >
+              <Select.Option value={0}>None</Select.Option>
+              <Select.Option value={5}>5 km</Select.Option>
+              <Select.Option value={10}>10 km</Select.Option>
+              <Select.Option value={15}>15 km</Select.Option>
+              <Select.Option value={20}>20 km</Select.Option>
+              <Select.Option value={25}>25 km</Select.Option>
+            </Select>
+          </div>
+
+          <div className="map-view-container__panel-row">
+            <Text size="small" strong style={{ color: '#8892a4' }}>
+              Price (€)
+            </Text>
+            <div className="map-view-container__price-slider">
+              <div className="map__rangesliderLabels">
+                <span>{priceRange[0]}</span>
+                <span>{priceRange[1]}</span>
+              </div>
+              <RangeSlider
+                min={0}
+                max={getMaxPrice()}
+                step={100}
+                value={priceRange}
+                onInput={(val) => setPriceRange(val)}
+              />
+            </div>
+          </div>
+
+          <div className="map-view-container__panel-row">
+            <Text size="small" strong style={{ color: '#8892a4' }}>
+              Style
+            </Text>
+            <Select size="small" value={style} onChange={(val) => setMapStyle(val)} style={{ width: 110 }}>
+              <Select.Option value="STANDARD">Standard</Select.Option>
+              <Select.Option value="SATELLITE">Satellite</Select.Option>
+            </Select>
+          </div>
+
+          <div className="map-view-container__panel-row">
+            <Text size="small" strong style={{ color: '#8892a4' }}>
+              3D Buildings
+            </Text>
+            <Switch
+              size="small"
+              checked={show3dBuildings}
+              onChange={(v) => setShow3dBuildings(v)}
+              disabled={style === 'SATELLITE'}
+            />
+          </div>
+        </div>
+      </div>
+
       <ListingDeletionModal
         visible={deleteModalVisible}
         onConfirm={confirmListingDeletion}
