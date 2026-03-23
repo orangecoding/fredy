@@ -15,7 +15,7 @@ describe('#einsAImmobilien testsuite()', () => {
     const Fredy = await mockFredy();
     const mockedJob = {
       id: 'einsAImmobilien',
-      notificationAdapter: [],
+      notificationAdapter: null,
       spatialFilter: null,
       specFilter: null,
     };

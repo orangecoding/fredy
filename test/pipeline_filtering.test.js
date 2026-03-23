@@ -27,7 +27,7 @@ describe('Issue reproduction: listings filtered by similarity or area should be 
 
     const mockedJob = {
       id: 'test-job',
-      notificationAdapter: [],
+      notificationAdapter: null,
       specFilter: null,
       spatialFilter: null,
     };
@@ -76,7 +76,7 @@ describe('Issue reproduction: listings filtered by similarity or area should be 
 
     const mockedJob = {
       id: 'test-job',
-      notificationAdapter: [],
+      notificationAdapter: null,
       specFilter: null,
       spatialFilter: spatialFilter,
     };

@@ -15,7 +15,7 @@ describe('#wgGesucht testsuite()', () => {
     const Fredy = await mockFredy();
     const mockedJob = {
       id: 'wgGesucht',
-      notificationAdapter: [],
+      notificationAdapter: null,
       spatialFilter: null,
       specFilter: null,
     };

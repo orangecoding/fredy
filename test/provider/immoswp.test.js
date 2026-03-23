@@ -15,7 +15,7 @@ describe('#immoswp testsuite()', () => {
     const Fredy = await mockFredy();
     const mockedJob = {
       id: 'immoswp',
-      notificationAdapter: [],
+      notificationAdapter: null,
       spatialFilter: null,
       specFilter: null,
     };

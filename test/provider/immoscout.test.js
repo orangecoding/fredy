@@ -15,7 +15,7 @@ describe('#immoscout provider testsuite()', () => {
     const Fredy = await mockFredy();
     const mockedJob = {
       id: '',
-      notificationAdapter: [],
+      notificationAdapter: null,
       spatialFilter: null,
       specFilter: null,
     };
