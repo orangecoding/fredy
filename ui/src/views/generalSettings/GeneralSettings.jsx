@@ -10,7 +10,6 @@ import { useActions, useSelector, useIsLoading } from '../../services/state/stor
 import {
   Tabs,
   TabPane,
-  Divider,
   TimePicker,
   Button,
   Checkbox,
@@ -24,6 +23,7 @@ import {
 import { InputNumber } from '@douyinfe/semi-ui-19';
 import { xhrPost, xhrGet } from '../../services/xhr';
 import { Toast } from '@douyinfe/semi-ui-19';
+import { SegmentPart } from '../../components/segment/SegmentPart';
 import {
   downloadBackup as downloadBackupZip,
   precheckRestore as clientPrecheckRestore,
@@ -33,22 +33,7 @@ import { IconSave, IconRefresh, IconSignal, IconHome, IconFolder } from '@douyin
 import debounce from 'lodash/debounce';
 import './GeneralSettings.less';
 
-const { Title, Text } = Typography;
-
-function SectionHeader({ title, description }) {
-  return (
-    <div className="generalSettings__sectionHeader">
-      <Title heading={5} className="generalSettings__sectionTitle">
-        {title}
-      </Title>
-      {description && (
-        <Text type="tertiary" size="small">
-          {description}
-        </Text>
-      )}
-    </div>
-  );
-}
+const { Text } = Typography;
 
 function formatFromTimestamp(ts) {
   const date = new Date(ts);
@@ -271,79 +256,54 @@ const GeneralSettings = function GeneralSettings() {
               itemKey="system"
             >
               <div className="generalSettings__tab-content">
-                <SectionHeader title="Port" description="The port on which Fredy is running." />
-                <InputNumber
-                  min={0}
-                  max={99999}
-                  placeholder="Port"
-                  value={port}
-                  formatter={(value) => `${value}`.replace(/\D/g, '')}
-                  onChange={(value) => setPort(value)}
-                  style={{ maxWidth: 160 }}
-                />
-
-                <Divider className="generalSettings__divider" />
-
-                <SectionHeader
-                  title="SQLite Database Path"
-                  description="The directory where Fredy stores its SQLite database files."
-                />
-                <Banner
-                  fullMode={false}
-                  type="warning"
-                  closeIcon={null}
-                  style={{ marginBottom: '12px', maxWidth: 480 }}
-                  description="Changing this path may result in data loss. Restart Fredy immediately after saving."
-                />
-                <Input
-                  type="text"
-                  placeholder="Database folder path"
-                  value={sqlitePath}
-                  onChange={(value) => setSqlitePath(value)}
-                  style={{ maxWidth: 480 }}
-                />
-
-                <Divider className="generalSettings__divider" />
-
-                <SectionHeader
-                  title="Backup & Restore"
-                  description="Download a zipped backup of your database or restore from a backup zip."
-                />
-                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
-                  <Button theme="solid" icon={<IconSave />} onClick={handleDownloadBackup}>
-                    Download Backup
-                  </Button>
-                  <input
-                    type="file"
-                    accept=".zip,application/zip"
-                    ref={fileInputRef}
-                    style={{ display: 'none' }}
-                    onChange={handleSelectRestoreFile}
+                <SegmentPart name="Port" helpText="The port on which Fredy is running.">
+                  <InputNumber
+                    min={0}
+                    max={99999}
+                    placeholder="Port"
+                    value={port}
+                    formatter={(value) => `${value}`.replace(/\D/g, '')}
+                    onChange={(value) => setPort(value)}
+                    style={{ maxWidth: 160 }}
                   />
-                  <Button onClick={handleOpenFilePicker} theme="light" icon={<IconFolder />}>
-                    Restore from Zip
-                  </Button>
-                </div>
+                </SegmentPart>
 
-                <Divider className="generalSettings__divider" />
+                <SegmentPart
+                  name="SQLite Database Path"
+                  helpText="The directory where Fredy stores its SQLite database files."
+                >
+                  <Banner
+                    fullMode={false}
+                    type="warning"
+                    closeIcon={null}
+                    style={{ marginBottom: '12px' }}
+                    description="Changing this path may result in data loss. Restart Fredy immediately after saving."
+                  />
+                  <Input
+                    type="text"
+                    placeholder="Database folder path"
+                    value={sqlitePath}
+                    onChange={(value) => setSqlitePath(value)}
+                  />
+                </SegmentPart>
 
-                <SectionHeader
-                  title="Analytics"
-                  description="Anonymous usage data to help improve Fredy — provider names, adapter names, OS, Node version, and architecture."
-                />
-                <Checkbox checked={analyticsEnabled} onChange={(e) => setAnalyticsEnabled(e.target.checked)}>
-                  Enable analytics
-                </Checkbox>
+                <SegmentPart
+                  name="Analytics"
+                  helpText="Anonymous usage data to help improve Fredy — provider names, adapter names, OS, Node version, and architecture."
+                >
+                  <Checkbox checked={analyticsEnabled} onChange={(e) => setAnalyticsEnabled(e.target.checked)}>
+                    Enable analytics
+                  </Checkbox>
+                </SegmentPart>
 
-                <Divider className="generalSettings__divider" />
-
-                <SectionHeader
-                  title="Demo Mode"
-                  description="In demo mode, Fredy will not search for real estates and all data resets to defaults at midnight."
-                />
-                <Checkbox checked={demoMode} onChange={(e) => setDemoMode(e.target.checked)}>
-                  Enable demo mode
-                </Checkbox>
+                <SegmentPart
+                  name="Demo Mode"
+                  helpText="In demo mode, Fredy will not search for real estates and all data resets to defaults at midnight."
+                >
+                  <Checkbox checked={demoMode} onChange={(e) => setDemoMode(e.target.checked)}>
+                    Enable demo mode
+                  </Checkbox>
+                </SegmentPart>
 
                 <div className="generalSettings__save-row">
                   <Button type="primary" theme="solid" onClick={handleStore} icon={<IconSave />}>
@@ -363,53 +323,86 @@ const GeneralSettings = function GeneralSettings() {
               itemKey="execution"
             >
               <div className="generalSettings__tab-content">
-                <SectionHeader
-                  title="Search Interval"
-                  description="Interval in minutes for running queries against configured services. Do not go below 5 minutes to avoid being detected as a bot."
-                />
-                <InputNumber
-                  min={5}
-                  max={1440}
-                  placeholder="Interval in minutes"
-                  value={interval}
-                  formatter={(value) => `${value}`.replace(/\D/g, '')}
-                  onChange={(value) => setInterval(value)}
-                  suffix={'minutes'}
-                  style={{ maxWidth: 200 }}
-                />
-
-                <Divider className="generalSettings__divider" />
-
-                <SectionHeader
-                  title="Working Hours"
-                  description="Fredy will only search for listings during these hours. Leave empty to search around the clock."
-                />
-                <div className="generalSettings__timePickerContainer">
-                  <TimePicker
-                    format={'HH:mm'}
-                    insetLabel="From"
-                    value={formatFromTBackend(workingHourFrom)}
-                    placeholder=""
-                    onChange={(val) => {
-                      setWorkingHourFrom(val == null ? null : formatFromTimestamp(val));
-                    }}
+                <SegmentPart
+                  name="Search Interval"
+                  helpText="Interval in minutes for running queries against configured services. Do not go below 5 minutes to avoid being detected as a bot."
+                >
+                  <InputNumber
+                    min={5}
+                    max={1440}
+                    placeholder="Interval in minutes"
+                    value={interval}
+                    formatter={(value) => `${value}`.replace(/\D/g, '')}
+                    onChange={(value) => setInterval(value)}
+                    suffix={'minutes'}
+                    style={{ maxWidth: 200 }}
                   />
-                  <TimePicker
-                    format={'HH:mm'}
-                    insetLabel="Until"
-                    value={formatFromTBackend(workingHourTo)}
-                    placeholder=""
-                    onChange={(val) => {
-                      setWorkingHourTo(val == null ? null : formatFromTimestamp(val));
-                    }}
-                  />
-                </div>
+                </SegmentPart>
+
+                <SegmentPart
+                  name="Working Hours"
+                  helpText="Fredy will only search for listings during these hours. Leave empty to search around the clock."
+                >
+                  <div className="generalSettings__timePickerContainer">
+                    <TimePicker
+                      format={'HH:mm'}
+                      insetLabel="From"
+                      value={formatFromTBackend(workingHourFrom)}
+                      placeholder=""
+                      onChange={(val) => {
+                        setWorkingHourFrom(val == null ? null : formatFromTimestamp(val));
+                      }}
+                    />
+                    <TimePicker
+                      format={'HH:mm'}
+                      insetLabel="Until"
+                      value={formatFromTBackend(workingHourTo)}
+                      placeholder=""
+                      onChange={(val) => {
+                        setWorkingHourTo(val == null ? null : formatFromTimestamp(val));
+                      }}
+                    />
+                  </div>
+                </SegmentPart>
 
                 <div className="generalSettings__save-row">
                   <Button type="primary" theme="solid" onClick={handleStore} icon={<IconSave />}>
                     Save
                   </Button>
                 </div>
+              </div>
+            </TabPane>
+
+            <TabPane
+              tab={
+                <span>
+                  <IconFolder size="small" style={{ marginRight: 6 }} />
+                  Backup & Restore
+                </span>
+              }
+              itemKey="backup"
+            >
+              <div className="generalSettings__tab-content">
+                <SegmentPart
+                  name="Backup & Restore"
+                  helpText="Download a zipped backup of your database or restore from a backup zip."
+                >
+                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                    <Button theme="solid" icon={<IconSave />} onClick={handleDownloadBackup}>
+                      Download Backup
+                    </Button>
+                    <input
+                      type="file"
+                      accept=".zip,application/zip"
+                      ref={fileInputRef}
+                      style={{ display: 'none' }}
+                      onChange={handleSelectRestoreFile}
+                    />
+                    <Button onClick={handleOpenFilePicker} theme="light" icon={<IconFolder />}>
+                      Restore from Zip
+                    </Button>
+                  </div>
+                </SegmentPart>
               </div>
             </TabPane>
 
@@ -423,54 +416,54 @@ const GeneralSettings = function GeneralSettings() {
               itemKey="userSettings"
             >
               <div className="generalSettings__tab-content">
-                <SectionHeader
-                  title="Home Address"
-                  description="Used to calculate distances between your location and each listing. Updating this recalculates distances for all active listings."
-                />
-                <AutoComplete
-                  data={dataSource}
-                  value={address}
-                  showClear
-                  onChange={(v) => setAddress(v)}
-                  onSearch={searchAddress}
-                  placeholder="Enter your home address"
-                  style={{ width: '100%', maxWidth: 480 }}
-                />
-                {coords && coords.lat === -1 && (
+                <SegmentPart
+                  name="Home Address"
+                  helpText="Used to calculate distances between your location and each listing. Updating this recalculates distances for all active listings."
+                >
+                  <AutoComplete
+                    data={dataSource}
+                    value={address}
+                    showClear
+                    onChange={(v) => setAddress(v)}
+                    onSearch={searchAddress}
+                    placeholder="Enter your home address"
+                    style={{ width: '100%' }}
+                  />
+                  {coords && coords.lat === -1 && (
+                    <Banner
+                      type="danger"
+                      description="Address found but could not be geocoded accurately."
+                      closeIcon={null}
+                      style={{ marginTop: 8 }}
+                    />
+                  )}
+                </SegmentPart>
+
+                <SegmentPart
+                  name="ImmoScout Details"
+                  helpText="Fetch additional details (description, attributes, agent info) for ImmoScout listings. Makes an extra API call per listing."
+                >
                   <Banner
-                    type="danger"
-                    description="Address found but could not be geocoded accurately."
+                    type="warning"
+                    description="Enabling this significantly increases API requests to ImmoScout, raising the chance of rate limiting or blocking. Use at your own risk."
                     closeIcon={null}
-                    style={{ marginTop: 8, maxWidth: 480 }}
+                    style={{ marginBottom: 12 }}
                   />
-                )}
-
-                <Divider className="generalSettings__divider" />
-
-                <SectionHeader
-                  title="ImmoScout Details"
-                  description="Fetch additional details (description, attributes, agent info) for ImmoScout listings. Makes an extra API call per listing."
-                />
-                <Banner
-                  type="warning"
-                  description="Enabling this significantly increases API requests to ImmoScout, raising the chance of rate limiting or blocking. Use at your own risk."
-                  closeIcon={null}
-                  style={{ marginBottom: 12, maxWidth: 480 }}
-                />
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <Switch
-                    checked={!!immoscoutDetails}
-                    onChange={async (checked) => {
-                      try {
-                        await actions.userSettings.setImmoscoutDetails(checked);
-                        Toast.success('ImmoScout details setting updated.');
-                      } catch {
-                        Toast.error('Failed to update setting.');
-                      }
-                    }}
-                  />
-                  <Text>Fetch detailed ImmoScout listings</Text>
-                </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <Switch
+                      checked={!!immoscoutDetails}
+                      onChange={async (checked) => {
+                        try {
+                          await actions.userSettings.setImmoscoutDetails(checked);
+                          Toast.success('ImmoScout details setting updated.');
+                        } catch {
+                          Toast.error('Failed to update setting.');
+                        }
+                      }}
+                    />
+                    <Text>Fetch detailed ImmoScout listings</Text>
+                  </div>
+                </SegmentPart>
 
                 <div className="generalSettings__save-row">
                   <Button
