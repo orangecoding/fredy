@@ -173,6 +173,7 @@ export default function NotificationAdapterMutator({
               initValue={uiElement.value ?? ''}
               placeholder={uiElement.label}
               label={uiElement.label}
+              extraText={uiElement.description}
               onChange={(value) => {
                 setValue(selectedAdapter, uiElement, key, value);
               }}
