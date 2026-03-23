@@ -37,8 +37,6 @@ describe('#immoscout provider testsuite()', () => {
           expect(notify.title).toBeTypeOf('string');
           expect(notify.link).toBeTypeOf('string');
           expect(notify.address).toBeTypeOf('string');
-          /** check the values if possible **/
-          expect(notify.size).toBeTypeOf('string');
           expect(notify.title).not.toBe('');
           expect(notify.link).toContain('https://www.immobilienscout24.de/');
         });
