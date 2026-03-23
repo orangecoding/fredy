@@ -1,3 +1,5 @@
+@import '../../cards/DashboardCardColors.less';
+
 .jobGrid {
   &__card {
     height: 100%;
@@ -11,6 +13,92 @@
       transform: translateY(-4px);
       box-shadow: 0 0 15px -3px rgb(78 78 78 / 70%);
       background-color: rgba(36, 36, 36, 1);
+    }
+
+    &__header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    &__name {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    &__dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background-color: var(--semi-color-text-3);
+
+      &--active {
+        background-color: #21aa21;
+      }
+    }
+
+    &__stats {
+      display: flex;
+      gap: 8px;
+    }
+
+    &__stat {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid transparent;
+      border-radius: var(--semi-border-radius-small);
+      padding: 10px 4px 8px;
+
+      &__number {
+        font-size: 22px;
+        font-weight: 600;
+        color: var(--semi-color-text-0);
+        line-height: 1.2;
+      }
+
+      &__label {
+        font-size: 11px;
+        color: var(--semi-color-text-3);
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        margin-top: 4px;
+      }
+
+      &--blue {
+        background: @color-blue-bg;
+        border-color: @color-blue-border;
+        .jobGrid__card__stat__number { color: @color-blue-text; }
+        .jobGrid__card__stat__label { color: @color-blue-text; opacity: 0.7; }
+      }
+
+      &--orange {
+        background: @color-orange-bg;
+        border-color: @color-orange-border;
+        .jobGrid__card__stat__number { color: @color-orange-text; }
+        .jobGrid__card__stat__label { color: @color-orange-text; opacity: 0.7; }
+      }
+
+      &--purple {
+        background: @color-purple-bg;
+        border-color: @color-purple-border;
+        .jobGrid__card__stat__number { color: @color-purple-text; }
+        .jobGrid__card__stat__label { color: @color-purple-text; opacity: 0.7; }
+      }
+    }
+
+    &__footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
   }
 
@@ -50,32 +138,13 @@
     }
   }
 
-  &__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
   &__title {
     margin-bottom: 0 !important;
   }
 
-  &__infoItem {
-    display: flex;
-    align-items: center;
-    width: 100%;
-
-    .semi-typography {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-  }
-
   &__actions {
     display: flex;
-    justify-content: space-between;
-    gap: 8px;
+    gap: 6px;
   }
 
   &__pagination {
