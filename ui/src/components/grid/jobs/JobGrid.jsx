@@ -20,6 +20,8 @@ import {
   Pagination,
   Toast,
   Empty,
+  Radio,
+  RadioGroup,
 } from '@douyinfe/semi-ui-19';
 import {
   IconAlertTriangle,
@@ -31,8 +33,9 @@ import {
   IconBriefcase,
   IconBell,
   IconSearch,
-  IconFilter,
   IconPlusCircle,
+  IconArrowUp,
+  IconArrowDown,
 } from '@douyinfe/semi-icons';
 import { useNavigate } from 'react-router-dom';
 import ListingDeletionModal from '../../ListingDeletionModal.jsx';
@@ -59,8 +62,6 @@ const JobGrid = () => {
   const [sortDir, setSortDir] = useState('asc');
   const [freeTextFilter, setFreeTextFilter] = useState(null);
   const [activityFilter, setActivityFilter] = useState(null);
-  const [showFilterBar, setShowFilterBar] = useState(false);
-
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [pendingDeletion, setPendingDeletion] = useState(null); // { type: 'job'|'listings', jobId }
 
@@ -200,73 +201,45 @@ const JobGrid = () => {
 
   return (
     <div className="jobGrid">
-      <Space vertical align="start" style={{ width: '100%', marginBottom: '16px' }} spacing="medium">
+      <div className="jobGrid__topbar">
         <Button type="primary" icon={<IconPlusCircle />} onClick={() => navigate('/jobs/new')}>
           New Job
         </Button>
-        <div className="jobGrid__searchbar" style={{ width: '100%' }}>
-          <Input prefix={<IconSearch />} showClear placeholder="Search" onChange={handleFilterChange} />
-          <Button
-            icon={<IconFilter />}
-            style={{ marginLeft: '8px' }}
-            onClick={() => {
-              setShowFilterBar(!showFilterBar);
-            }}
-          />
-        </div>
-      </Space>
 
-      {showFilterBar && (
-        <div className="jobGrid__toolbar">
-          <Space wrap style={{ marginBottom: '1rem' }}>
-            <div className="jobGrid__toolbar__card">
-              <div>
-                <Text strong>Filter by:</Text>
-              </div>
-              <div style={{ display: 'flex', gap: '.3rem' }}>
-                <Select
-                  placeholder="Status"
-                  showClear
-                  onChange={(val) => setActivityFilter(val)}
-                  value={activityFilter}
-                  style={{ width: 140 }}
-                >
-                  <Select.Option value={true}>Active</Select.Option>
-                  <Select.Option value={false}>Not Active</Select.Option>
-                </Select>
-              </div>
-            </div>
-            <Divider layout="vertical" />
-            <div className="jobGrid__toolbar__card">
-              <div>
-                <Text strong>Sort by:</Text>
-              </div>
-              <div style={{ display: 'flex', gap: '.3rem' }}>
-                <Select
-                  placeholder="Sort By"
-                  style={{ width: 160 }}
-                  value={sortField}
-                  onChange={(val) => setSortField(val)}
-                >
-                  <Select.Option value="name">Name</Select.Option>
-                  <Select.Option value="numberOfFoundListings">Number of Listings</Select.Option>
-                  <Select.Option value="enabled">Status</Select.Option>
-                </Select>
+        <Input
+          className="jobGrid__topbar__search"
+          prefix={<IconSearch />}
+          showClear
+          placeholder="Search"
+          onChange={handleFilterChange}
+        />
 
-                <Select
-                  placeholder="Direction"
-                  style={{ width: 120 }}
-                  value={sortDir}
-                  onChange={(val) => setSortDir(val)}
-                >
-                  <Select.Option value="asc">Ascending</Select.Option>
-                  <Select.Option value="desc">Descending</Select.Option>
-                </Select>
-              </div>
-            </div>
-          </Space>
-        </div>
-      )}
+        <RadioGroup
+          type="button"
+          buttonSize="middle"
+          value={activityFilter === null ? 'all' : String(activityFilter)}
+          onChange={(e) => {
+            const v = e.target.value;
+            setActivityFilter(v === 'all' ? null : v === 'true');
+          }}
+        >
+          <Radio value="all">All</Radio>
+          <Radio value="true">Active</Radio>
+          <Radio value="false">Inactive</Radio>
+        </RadioGroup>
+
+        <Select prefix="Sort by" style={{ width: 200 }} value={sortField} onChange={(val) => setSortField(val)}>
+          <Select.Option value="name">Name</Select.Option>
+          <Select.Option value="numberOfFoundListings">Number of Listings</Select.Option>
+          <Select.Option value="enabled">Status</Select.Option>
+        </Select>
+
+        <Button
+          icon={sortDir === 'asc' ? <IconArrowUp /> : <IconArrowDown />}
+          onClick={() => setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))}
+          title={sortDir === 'asc' ? 'Ascending' : 'Descending'}
+        />
+      </div>
 
       {(jobsData?.result || []).length === 0 && (
         <Empty
@@ -278,7 +251,7 @@ const JobGrid = () => {
 
       <Row gutter={[16, 16]}>
         {(jobsData?.result || []).map((job) => (
-          <Col key={job.id} xs={24} sm={12} md={8} lg={6} xl={4} xxl={6}>
+          <Col key={job.id} xs={24} sm={12} md={12} lg={8} xl={8} xxl={6}>
             <Card
               className="jobGrid__card"
               bodyStyle={{ padding: '16px' }}

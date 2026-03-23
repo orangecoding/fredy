@@ -14,24 +14,39 @@
     }
   }
 
-  &__searchbar {
+  &__topbar {
     display: flex;
-    gap: .5rem;
+    flex-wrap: nowrap;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-  }
+    gap: 8px;
+    margin-bottom: 16px;
 
-  &__toolbar {
-    &__card {
-      border-radius: var(--semi-border-radius-medium);
-      display: flex;
-      flex-direction: column;
-      gap: .3rem;
-      background: rgba(36, 36, 36, 0.9);
-      backdrop-filter: blur(8px);
-      padding: 0.5rem;
-      border: 1px solid var(--semi-color-border);
+    .jobGrid__topbar__search {
+      flex: 1;
+      min-width: 0;
+    }
+
+    @media (max-width: 768px) {
+      flex-wrap: wrap;
+
+      .semi-button:first-child {
+        flex-shrink: 0;
+      }
+
+      .jobGrid__topbar__search {
+        flex: 1;
+        min-width: 160px;
+      }
+
+      .semi-radio-group {
+        flex: 1;
+      }
+
+      .semi-select {
+        flex: 1;
+        min-width: 100px;
+        width: auto !important;
+      }
     }
   }
 
