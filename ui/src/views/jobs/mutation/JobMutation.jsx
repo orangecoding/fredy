@@ -24,8 +24,14 @@ import {
   IconPlayCircle,
   IconPlusCircle,
   IconUser,
-  IconClear,
+  IconFilter,
 } from '@douyinfe/semi-icons';
+
+const SPEC_FILTERS = [
+  { key: 'maxPrice', translation: 'Max Price' },
+  { key: 'minSize', translation: 'Min Size (m²)' },
+  { key: 'minRooms', translation: 'Min Rooms' },
+];
 
 export default function JobMutator() {
   const jobs = useSelector((state) => state.jobsData.jobs);
@@ -46,6 +52,7 @@ export default function JobMutator() {
   const defaultEnabled = sourceJob?.enabled ?? true;
   const defaultShareWithUsers = sourceJob?.shared_with_user ?? [];
   const defaultSpatialFilter = sourceJob?.spatialFilter || null;
+  const defaultSpecFilter = sourceJob?.specFilter || null;
 
   const [providerToEdit, setProviderToEdit] = useState(null);
   const [providerCreationVisible, setProviderCreationVisibility] = useState(false);
@@ -58,6 +65,7 @@ export default function JobMutator() {
   const [shareWithUsers, setShareWithUsers] = useState(defaultShareWithUsers);
   const [enabled, setEnabled] = useState(defaultEnabled);
   const [spatialFilter, setSpatialFilter] = useState(defaultSpatialFilter);
+  const [specFilter, setSpecFilter] = useState(defaultSpecFilter);
   const navigate = useNavigate();
   const actions = useActions();
 
@@ -65,6 +73,12 @@ export default function JobMutator() {
   const handleSpatialFilterChange = useCallback((data) => {
     setSpatialFilter(data);
   }, []);
+
+  const handleSpecFilterChange = (key, value) => {
+    if (!SPEC_FILTERS.map(({ key }) => key).includes(key)) return;
+
+    setSpecFilter({ ...specFilter, [key]: value ? parseFloat(value) : null });
+  };
 
   const isSavingEnabled = () => {
     return Boolean(notificationAdapterData.length && providerData.length && name);
@@ -85,6 +99,7 @@ export default function JobMutator() {
         name,
         blacklist,
         spatialFilter,
+        specFilter,
         enabled,
         jobId: jobToBeEdit?.id || null,
       });
@@ -204,7 +219,7 @@ export default function JobMutator() {
         </SegmentPart>
         <Divider margin="1rem" />
         <SegmentPart
-          Icon={IconClear}
+          Icon={IconFilter}
           name="Blacklist"
           helpText="If a listing contains one of these words, it will be filtered out. Type in a word, then hit enter."
         >
@@ -216,6 +231,27 @@ export default function JobMutator() {
         </SegmentPart>
         <Divider margin="1rem" />
         <SegmentPart
+          Icon={IconFilter}
+          name="Criteria Filter"
+          helpText="Filter listings by specific criteria. Only numbers are allowed. You can leave fields empty if you don't want to filter by them."
+        >
+          <div className="jobMutation__specFilter">
+            {SPEC_FILTERS.map((filter) => (
+              <div key={filter.key} className="jobMutation__specFilterItem">
+                <div className="jobMutation__specFilterLabel">{filter.translation}</div>
+                <Input
+                  type="number"
+                  placeholder="Add a number"
+                  value={specFilter?.[filter.key]}
+                  onChange={(value) => handleSpecFilterChange(filter.key, value)}
+                />
+              </div>
+            ))}
+          </div>
+        </SegmentPart>
+        <Divider margin="1rem" />
+        <SegmentPart
+          Icon={IconFilter}
           name="Area Filter"
           helpText="Define multiple geographic areas on the map to filter listings. Start drawing by clicking on the square symbol in the top left corner of the map. Click on the map to add points of the polygon. Select the first point to close the polygon. After that, click on a free area of the map to apply this polygon (the color will change from yellow to blue). To delete a polygon, select it first and then click on the trash symbol."
         >

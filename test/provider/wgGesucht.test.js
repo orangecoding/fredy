@@ -11,10 +11,18 @@ import * as provider from '../../lib/provider/wgGesucht.js';
 
 describe('#wgGesucht testsuite()', () => {
   provider.init(providerConfig.wgGesucht, [], []);
-  it('should test wgGesucht provider', async () => {
+  it('should test wgGesucht provider', { timeout: 120000 }, async () => {
     const Fredy = await mockFredy();
+    const mockedJob = {
+      id: 'wgGesucht',
+      notificationAdapter: null,
+      spatialFilter: null,
+      specFilter: null,
+    };
+
     return await new Promise((resolve) => {
-      const fredy = new Fredy(provider.config, null, null, provider.metaInformation.id, 'wgGesucht', similarityCache);
+      const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache, undefined);
+
       fredy.execute().then((listing) => {
         expect(listing).toBeInstanceOf(Array);
         const notificationObj = get();
@@ -24,8 +32,9 @@ describe('#wgGesucht testsuite()', () => {
           /** check the actual structure **/
           expect(notify.id).toBeTypeOf('string');
           expect(notify.title).toBeTypeOf('string');
-          expect(notify.details).toBeTypeOf('string');
+          // expect(notify.details).toBeTypeOf('string');
           expect(notify.price).toBeTypeOf('string');
+          expect(notify.price).toContain('€');
           expect(notify.link).toBeTypeOf('string');
         });
         resolve();

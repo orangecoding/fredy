@@ -19,6 +19,7 @@ import {
   Empty,
   Radio,
   RadioGroup,
+  Space,
 } from '@douyinfe/semi-ui-19';
 import {
   IconBriefcase,
@@ -62,6 +63,7 @@ const ListingsGrid = () => {
   const [sortDir, setSortDir] = useState('desc');
   const [freeTextFilter, setFreeTextFilter] = useState(null);
   const [watchListFilter, setWatchListFilter] = useState(null);
+  const [filterByJobSettings, setFilterByJobSettings] = useState(true);
   const [jobNameFilter, setJobNameFilter] = useState(null);
   const [activityFilter, setActivityFilter] = useState(null);
   const [providerFilter, setProviderFilter] = useState(null);
@@ -75,13 +77,23 @@ const ListingsGrid = () => {
       sortfield: sortField,
       sortdir: sortDir,
       freeTextFilter,
-      filter: { watchListFilter, jobNameFilter, activityFilter, providerFilter },
+      filter: { watchListFilter, jobNameFilter, activityFilter, providerFilter, filterByJobSettings },
     });
   };
 
   useEffect(() => {
     loadData();
-  }, [page, sortField, sortDir, freeTextFilter, providerFilter, activityFilter, jobNameFilter, watchListFilter]);
+  }, [
+    page,
+    sortField,
+    sortDir,
+    freeTextFilter,
+    providerFilter,
+    activityFilter,
+    jobNameFilter,
+    watchListFilter,
+    filterByJobSettings,
+  ]);
 
   const handleFilterChange = useMemo(() => debounce((value) => setFreeTextFilter(value), 500), []);
 
@@ -163,6 +175,19 @@ const ListingsGrid = () => {
           <Radio value="all">All</Radio>
           <Radio value="true">Watched</Radio>
           <Radio value="false">Unwatched</Radio>
+        </RadioGroup>
+
+        <RadioGroup
+          type="button"
+          buttonSize="middle"
+          value={filterByJobSettings ? 'true' : 'false'}
+          onChange={(e) => {
+            const v = e.target.value;
+            setFilterByJobSettings(v === 'true');
+          }}
+        >
+          <Radio value="false">All</Radio>
+          <Radio value="true">Job Filtered</Radio>
         </RadioGroup>
 
         <Select
@@ -270,12 +295,14 @@ const ListingsGrid = () => {
                   >
                     {item.address || 'No address provided'}
                   </Text>
-                  <Text type="tertiary" size="small" icon={<IconClock />}>
-                    {timeService.format(item.created_at, false)}
-                  </Text>
-                  <Text type="tertiary" size="small" icon={<IconBriefcase />}>
-                    {item.provider.charAt(0).toUpperCase() + item.provider.slice(1)}
-                  </Text>
+                  <Space spacing={12} wrap>
+                    <Text type="tertiary" size="small" icon={<IconBriefcase />}>
+                      {item.provider.charAt(0).toUpperCase() + item.provider.slice(1)}
+                    </Text>
+                    <Text type="tertiary" size="small" icon={<IconClock />}>
+                      {timeService.format(item.created_at, false)}
+                    </Text>
+                  </Space>
                   {item.distance_to_destination ? (
                     <Text type="tertiary" size="small" icon={<IconActivity />}>
                       {item.distance_to_destination} m to chosen address

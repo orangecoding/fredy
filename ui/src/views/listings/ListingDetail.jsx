@@ -31,7 +31,8 @@ import {
   IconLink,
   IconStar,
   IconStarStroked,
-  IconRealSize,
+  IconExpand,
+  IconGridView,
 } from '@douyinfe/semi-icons';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -259,6 +260,17 @@ export default function ListingDetail() {
   if (!listing) return null;
 
   const data = [
+    { key: 'Price', value: `${listing.price} €`, Icon: <IconCart /> },
+    {
+      key: 'Size',
+      value: listing.size ? `${listing.size} m²` : 'N/A',
+      Icon: <IconExpand />,
+    },
+    {
+      key: 'Rooms',
+      value: listing.rooms ? `${listing.rooms} Rooms` : 'N/A',
+      Icon: <IconGridView />,
+    },
     {
       key: 'Job',
       value: listing.job_name,
@@ -268,12 +280,6 @@ export default function ListingDetail() {
       key: 'Provider',
       value: listing.provider.charAt(0).toUpperCase() + listing.provider.slice(1),
       Icon: <IconBriefcase />,
-    },
-    { key: 'Price', value: `${listing.price} €`, Icon: <IconCart /> },
-    {
-      key: 'Size',
-      value: listing.size ? `${listing.size} m²` : 'N/A',
-      Icon: <IconRealSize />,
     },
     {
       key: 'Added',
