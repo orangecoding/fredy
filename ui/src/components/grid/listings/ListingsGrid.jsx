@@ -48,6 +48,26 @@ import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-i
 
 const { Text } = Typography;
 
+const STORAGE_KEY = 'listingsFilters';
+
+const loadFilters = () => {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
+};
+
+const saveFilters = (patch) => {
+  try {
+    const current = loadFilters();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...current, ...patch }));
+  } catch {
+    // localStorage unavailable – silently ignore
+  }
+};
+
 const ListingsGrid = () => {
   const listingsData = useSelector((state) => state.listingsData);
   const providers = useSelector((state) => state.provider);
@@ -55,18 +75,25 @@ const ListingsGrid = () => {
   const actions = useActions();
   const navigate = useNavigate();
 
-  const [page, setPage] = useState(1);
+  const saved = useMemo(() => loadFilters(), []);
+
+  const [page, setPage] = useState(saved.page || 1);
   const pageSize = 40;
 
-  const [sortField, setSortField] = useState('created_at');
-  const [sortDir, setSortDir] = useState('desc');
+  const [sortField, setSortField] = useState(saved.sortField || 'created_at');
+  const [sortDir, setSortDir] = useState(saved.sortDir || 'desc');
   const [freeTextFilter, setFreeTextFilter] = useState(null);
-  const [watchListFilter, setWatchListFilter] = useState(null);
-  const [jobNameFilter, setJobNameFilter] = useState(null);
-  const [activityFilter, setActivityFilter] = useState(null);
-  const [providerFilter, setProviderFilter] = useState(null);
+  const [watchListFilter, setWatchListFilter] = useState(saved.watchListFilter ?? null);
+  const [jobNameFilter, setJobNameFilter] = useState(saved.jobNameFilter ?? null);
+  const [activityFilter, setActivityFilter] = useState(saved.activityFilter ?? null);
+  const [providerFilter, setProviderFilter] = useState(saved.providerFilter ?? null);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [listingToDelete, setListingToDelete] = useState(null);
+
+  // Persist filter changes to localStorage
+  useEffect(() => {
+    saveFilters({ page, sortField, sortDir, watchListFilter, jobNameFilter, activityFilter, providerFilter });
+  }, [page, sortField, sortDir, watchListFilter, jobNameFilter, activityFilter, providerFilter]);
 
   const loadData = () => {
     actions.listingsData.getListingsData({
