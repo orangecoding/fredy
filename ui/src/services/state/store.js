@@ -318,6 +318,20 @@ export const useFredyState = create(
               throw Exception;
             }
           },
+          async setKleinanzeigenDetails(enabled) {
+            try {
+              await xhrPost('/api/user/settings/kleinanzeigen-details', { kleinanzeigen_details: enabled });
+              set((state) => ({
+                userSettings: {
+                  ...state.userSettings,
+                  settings: { ...state.userSettings.settings, kleinanzeigen_details: enabled },
+                },
+              }));
+            } catch (Exception) {
+              console.error('Error while trying to update kleinanzeigen details setting. Error:', Exception);
+              throw Exception;
+            }
+          },
         },
       };
 

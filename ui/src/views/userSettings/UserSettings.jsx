@@ -15,6 +15,7 @@ const UserSettings = () => {
   const actions = useActions();
   const homeAddress = useSelector((state) => state.userSettings.settings.home_address);
   const immoscoutDetails = useSelector((state) => state.userSettings.settings.immoscout_details);
+  const kleinanzeigenDetails = useSelector((state) => state.userSettings.settings.kleinanzeigen_details);
   const [address, setAddress] = useState(homeAddress?.address || '');
   const [coords, setCoords] = useState(homeAddress?.coords || null);
   const saving = useIsLoading(actions.userSettings.setHomeAddress);
@@ -109,6 +110,33 @@ const UserSettings = () => {
             }}
           />
           <span>Fetch detailed ImmoScout listings</span>
+        </div>
+      </SegmentPart>
+      <Divider />
+      <SegmentPart
+        name="Kleinanzeigen Details"
+        Icon={IconSearch}
+        helpText="When enabled, Fredy will fetch the individual listing page for each Kleinanzeigen result to extract a more detailed address and description. This makes an extra request per listing."
+      >
+        <Banner
+          type="warning"
+          description="Enabling this feature significantly increases the number of requests to Kleinanzeigen. This raises the likelihood of being detected and rate-limited or blocked. Use at your own risk."
+          closeIcon={null}
+          style={{ marginBottom: '12px', maxWidth: '600px' }}
+        />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <Switch
+            checked={!!kleinanzeigenDetails}
+            onChange={async (checked) => {
+              try {
+                await actions.userSettings.setKleinanzeigenDetails(checked);
+                Toast.success('Kleinanzeigen details setting updated.');
+              } catch {
+                Toast.error('Failed to update setting.');
+              }
+            }}
+          />
+          <span>Fetch detailed Kleinanzeigen listings</span>
         </div>
       </SegmentPart>
       <Divider />
