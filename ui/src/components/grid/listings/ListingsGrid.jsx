@@ -5,6 +5,12 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import {
+  useSearchParamState,
+  parseNumber,
+  parseString,
+  parseNullableBoolean,
+} from '../../../hooks/useSearchParamState.js';
+import {
   Card,
   Col,
   Row,
@@ -35,7 +41,7 @@ import {
   IconArrowUp,
   IconArrowDown,
 } from '@douyinfe/semi-icons';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import ListingDeletionModal from '../../ListingDeletionModal.jsx';
 import no_image from '../../../assets/no_image.jpg';
 import * as timeService from '../../../services/time/timeService.js';
@@ -54,17 +60,18 @@ const ListingsGrid = () => {
   const jobs = useSelector((state) => state.jobsData.jobs);
   const actions = useActions();
   const navigate = useNavigate();
+  const sp = useSearchParams();
 
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useSearchParamState(sp, 'page', 1, parseNumber);
   const pageSize = 40;
 
-  const [sortField, setSortField] = useState('created_at');
-  const [sortDir, setSortDir] = useState('desc');
-  const [freeTextFilter, setFreeTextFilter] = useState(null);
-  const [watchListFilter, setWatchListFilter] = useState(null);
-  const [jobNameFilter, setJobNameFilter] = useState(null);
-  const [activityFilter, setActivityFilter] = useState(null);
-  const [providerFilter, setProviderFilter] = useState(null);
+  const [sortField, setSortField] = useSearchParamState(sp, 'sort', 'created_at', parseString);
+  const [sortDir, setSortDir] = useSearchParamState(sp, 'dir', 'desc', parseString);
+  const [freeTextFilter, setFreeTextFilter] = useSearchParamState(sp, 'q', null, parseString);
+  const [watchListFilter, setWatchListFilter] = useSearchParamState(sp, 'watch', null, parseNullableBoolean);
+  const [jobNameFilter, setJobNameFilter] = useSearchParamState(sp, 'job', null, parseString);
+  const [activityFilter, setActivityFilter] = useSearchParamState(sp, 'active', null, parseNullableBoolean);
+  const [providerFilter, setProviderFilter] = useSearchParamState(sp, 'provider', null, parseString);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [listingToDelete, setListingToDelete] = useState(null);
 
@@ -83,7 +90,7 @@ const ListingsGrid = () => {
     loadData();
   }, [page, sortField, sortDir, freeTextFilter, providerFilter, activityFilter, jobNameFilter, watchListFilter]);
 
-  const handleFilterChange = useMemo(() => debounce((value) => setFreeTextFilter(value), 500), []);
+  const handleFilterChange = useMemo(() => debounce((value) => setFreeTextFilter(value || null), 500), []);
 
   useEffect(() => {
     return () => {
@@ -134,6 +141,7 @@ const ListingsGrid = () => {
           prefix={<IconSearch />}
           showClear
           placeholder="Search"
+          defaultValue={freeTextFilter ?? ''}
           onChange={handleFilterChange}
         />
 
