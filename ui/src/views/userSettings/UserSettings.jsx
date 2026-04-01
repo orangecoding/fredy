@@ -14,7 +14,7 @@ import debounce from 'lodash/debounce';
 const UserSettings = () => {
   const actions = useActions();
   const homeAddress = useSelector((state) => state.userSettings.settings.home_address);
-  const immoscoutDetails = useSelector((state) => state.userSettings.settings.immoscout_details);
+  const providerDetails = useSelector((state) => state.userSettings.settings.provider_details);
   const kleinanzeigenDetails = useSelector((state) => state.userSettings.settings.kleinanzeigen_details);
   const [address, setAddress] = useState(homeAddress?.address || '');
   const [coords, setCoords] = useState(homeAddress?.coords || null);
@@ -87,29 +87,29 @@ const UserSettings = () => {
       </SegmentPart>
       <Divider />
       <SegmentPart
-        name="ImmoScout Details"
+        name="Provider Details"
         Icon={IconSearch}
-        helpText="When enabled, Fredy will fetch additional details (description, attributes, agent info) for each listing from ImmoScout. This provides richer notifications but makes an extra API call per listing."
+        helpText="When enabled, Fredy will fetch additional details (description, attributes, agent info) for each listing from Provider that have been prepared for this. This provides richer notifications but makes an extra API call per listing."
       >
         <Banner
           type="warning"
-          description="Enabling this feature significantly increases the number of API requests to ImmoScout. This raises the likelihood of being detected and rate-limited or blocked. Use at your own risk."
+          description="Enabling this feature significantly increases the number of API requests to the provider. This raises the likelihood of being detected and rate-limited or blocked. Use at your own risk."
           closeIcon={null}
           style={{ marginBottom: '12px', maxWidth: '600px' }}
         />
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <Switch
-            checked={!!immoscoutDetails}
+            checked={!!providerDetails}
             onChange={async (checked) => {
               try {
-                await actions.userSettings.setImmoscoutDetails(checked);
-                Toast.success('ImmoScout details setting updated.');
+                await actions.userSettings.setProviderDetails(checked);
+                Toast.success('Provider details setting updated.');
               } catch {
                 Toast.error('Failed to update setting.');
               }
             }}
           />
-          <span>Fetch detailed ImmoScout listings</span>
+          <span>Fetch detailed Provider listings</span>
         </div>
       </SegmentPart>
       <Divider />
