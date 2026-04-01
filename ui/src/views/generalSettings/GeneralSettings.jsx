@@ -72,8 +72,7 @@ const GeneralSettings = function GeneralSettings() {
 
   // User settings state
   const homeAddress = useSelector((state) => state.userSettings.settings.home_address);
-  const immoscoutDetails = useSelector((state) => state.userSettings.settings.immoscout_details);
-  const kleinanzeigenDetails = useSelector((state) => state.userSettings.settings.kleinanzeigen_details);
+  const providerDetails = useSelector((state) => state.userSettings.settings.provider_details);
   const [address, setAddress] = useState(homeAddress?.address || '');
   const [coords, setCoords] = useState(homeAddress?.coords || null);
   const saving = useIsLoading(actions.userSettings.setHomeAddress);
@@ -441,54 +440,28 @@ const GeneralSettings = function GeneralSettings() {
                 </SegmentPart>
 
                 <SegmentPart
-                  name="ImmoScout Details"
-                  helpText="Fetch additional details (description, attributes, agent info) for ImmoScout listings. Makes an extra API call per listing."
+                  name="Provider Details"
+                  helpText="Fetch additional details (description, attributes, agent info) for listings. Needs an extra API call per listing."
                 >
                   <Banner
                     type="warning"
-                    description="Enabling this significantly increases API requests to ImmoScout, raising the chance of rate limiting or blocking. Use at your own risk."
+                    description="Enabling this significantly increases API requests to providers that have implemented this feature, raising the chance of rate limiting or blocking. Use at your own risk."
                     closeIcon={null}
                     style={{ marginBottom: 12 }}
                   />
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                     <Switch
-                      checked={!!immoscoutDetails}
+                      checked={!!providerDetails}
                       onChange={async (checked) => {
                         try {
-                          await actions.userSettings.setImmoscoutDetails(checked);
-                          Toast.success('ImmoScout details setting updated.');
+                          await actions.userSettings.setProviderDetails(checked);
+                          Toast.success('Provider details setting updated.');
                         } catch {
                           Toast.error('Failed to update setting.');
                         }
                       }}
                     />
-                    <Text>Fetch detailed ImmoScout listings</Text>
-                  </div>
-                </SegmentPart>
-
-                <SegmentPart
-                  name="Kleinanzeigen Details"
-                  helpText="Fetch the individual listing page for each Kleinanzeigen result to extract a more detailed address and description. Makes an extra request per listing."
-                >
-                  <Banner
-                    type="warning"
-                    description="Enabling this significantly increases requests to Kleinanzeigen, raising the chance of rate limiting or blocking. Use at your own risk."
-                    closeIcon={null}
-                    style={{ marginBottom: 12 }}
-                  />
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <Switch
-                      checked={!!kleinanzeigenDetails}
-                      onChange={async (checked) => {
-                        try {
-                          await actions.userSettings.setKleinanzeigenDetails(checked);
-                          Toast.success('Kleinanzeigen details setting updated.');
-                        } catch {
-                          Toast.error('Failed to update setting.');
-                        }
-                      }}
-                    />
-                    <Text>Fetch detailed Kleinanzeigen listings</Text>
+                    <Text>Fetch detailed Provider listings</Text>
                   </div>
                 </SegmentPart>
 

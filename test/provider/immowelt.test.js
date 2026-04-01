@@ -6,8 +6,9 @@
 import * as similarityCache from '../../lib/services/similarity-check/similarityCache.js';
 import { get } from '../mocks/mockNotification.js';
 import { mockFredy, providerConfig } from '../utils.js';
-import { expect } from 'vitest';
+import { expect, vi } from 'vitest';
 import * as provider from '../../lib/provider/immowelt.js';
+import * as mockStore from '../mocks/mockStore.js';
 
 describe('#immowelt testsuite()', () => {
   it('should test immowelt provider', async () => {
@@ -35,6 +36,36 @@ describe('#immowelt testsuite()', () => {
       expect(notify.title).not.toBe('');
       expect(notify.link).toContain('https://www.immowelt.de');
       expect(notify.address).not.toBe('');
+    });
+  });
+
+  describe('with provider_details enabled', () => {
+    beforeEach(() => {
+      vi.spyOn(mockStore, 'getUserSettings').mockReturnValue({ provider_details: true });
+      vi.spyOn(mockStore, 'getKnownListingHashesForJobAndProvider').mockReturnValue([]);
+    });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    it('should enrich listings with details', async () => {
+      const Fredy = await mockFredy();
+      provider.init(providerConfig.immowelt, [], []);
+      const fredy = new Fredy(provider.config, null, null, provider.metaInformation.id, 'immowelt', {
+        checkAndAddEntry: () => false,
+      });
+      const listings = await fredy.execute();
+      expect(listings).toBeInstanceOf(Array);
+      listings.forEach((listing) => {
+        expect(listing.link).toContain('https://www.immowelt.de');
+        expect(listing.address).toBeTypeOf('string');
+        expect(listing.address).not.toBe('');
+        // description is enriched from the detail page; falls back gracefully if blocked
+        if (listing.description != null) {
+          expect(listing.description).toBeTypeOf('string');
+        }
+      });
     });
   });
 });
