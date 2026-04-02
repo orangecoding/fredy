@@ -76,7 +76,6 @@
     "cheerio": "^1.2.0",
     "cookie-session": "2.1.1",
     "handlebars": "4.7.9",
-    "lodash": "4.17.23",
     "maplibre-gl": "^5.21.1",
     "nanoid": "5.1.7",
     "node-cron": "^4.2.1",

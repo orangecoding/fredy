@@ -30,7 +30,7 @@ import {
   restore as clientRestore,
 } from '../../services/backupRestoreClient';
 import { IconSave, IconRefresh, IconSignal, IconHome, IconFolder } from '@douyinfe/semi-icons';
-import debounce from 'lodash/debounce';
+import { debounce } from '../../utils';
 import './GeneralSettings.less';
 
 const { Text } = Typography;

@@ -14,7 +14,7 @@ describe('#kleinanzeigen testsuite()', () => {
   it('should test kleinanzeigen provider', async () => {
     const Fredy = await mockFredy();
     provider.init(providerConfig.kleinanzeigen, [], []);
-    return await new Promise((resolve) => {
+    return await new Promise((resolve, reject) => {
       const fredy = new Fredy(
         provider.config,
         null,
@@ -24,6 +24,11 @@ describe('#kleinanzeigen testsuite()', () => {
         similarityCache,
       );
       fredy.execute().then((listing) => {
+        if (listing == null || listing.length === 0) {
+          reject('Listings is empty!');
+          return;
+        }
+
         expect(listing).toBeInstanceOf(Array);
         const notificationObj = get();
         expect(notificationObj).toBeTypeOf('object');

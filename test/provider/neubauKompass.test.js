@@ -13,7 +13,7 @@ describe('#neubauKompass testsuite()', () => {
   provider.init(providerConfig.neubauKompass, [], []);
   it('should test neubauKompass provider', async () => {
     const Fredy = await mockFredy();
-    return await new Promise((resolve) => {
+    return await new Promise((resolve, reject) => {
       const fredy = new Fredy(
         provider.config,
         null,
@@ -23,6 +23,11 @@ describe('#neubauKompass testsuite()', () => {
         similarityCache,
       );
       fredy.execute().then((listing) => {
+        if (listing == null || listing.length === 0) {
+          reject('Listings is empty!');
+          return;
+        }
+
         expect(listing).toBeInstanceOf(Array);
         const notificationObj = get();
         expect(notificationObj.serviceName).toBe('neubauKompass');
