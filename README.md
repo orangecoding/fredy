@@ -163,6 +163,14 @@ For more information on how to set it up and use it, please refer to the [MCP Re
 
 ------------------------------------------------------------------------
 
+## 🌐 Proxy Support
+
+Fredy can route all outbound traffic through an HTTP proxy — both plain HTTP requests and Puppeteer browser sessions. Set `FREDY_PROXY_URL` as an environment variable or configure it in the Web UI settings.
+
+See the [Proxy Documentation](doc/PROXY.md) for setup instructions, Docker examples, and how to run provider tests with a proxy.
+
+------------------------------------------------------------------------
+
 ## Immoscout
 
 Immoscout has implemented advanced bot detection. In order to work around this, we are using a reversed engineered version of their mobile api. See [Immoscout Reverse Engineering Documentation](https://github.com/orangecoding/fredy/blob/master/reverse-engineered-immoscout.md)
