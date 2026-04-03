@@ -40,6 +40,12 @@ export const parseNullableBoolean = {
  * @param {*} defaultValue - value when param is absent
  * @param {{ parse: (s: string) => *, stringify: (v: *) => string|null }} [options]
  */
+// WeakMap to store pending batched updates per setSearchParams function.
+// This lets multiple useSearchParamState hooks on the same component batch
+// their changes into a single setSearchParams call, preventing them from
+// overwriting each other.
+const pendingUpdates = new WeakMap();
+
 export function useSearchParamState([searchParams, setSearchParams], key, defaultValue, options = {}) {
   const { parse = (v) => v, stringify = (v) => String(v) } = options;
 
@@ -48,21 +54,42 @@ export function useSearchParamState([searchParams, setSearchParams], key, defaul
 
   const setValue = useCallback(
     (newValue) => {
-      setSearchParams(
-        (prev) => {
-          const next = new URLSearchParams(prev);
-          const serialized = stringify(newValue);
-          if (newValue === defaultValue || newValue === null || newValue === undefined || serialized === null) {
-            next.delete(key);
-          } else {
-            next.set(key, serialized);
-          }
-          return next;
-        },
-        { replace: true },
-      );
+      // Collect the change
+      if (!pendingUpdates.has(setSearchParams)) {
+        pendingUpdates.set(setSearchParams, new Map());
+
+        // Schedule a single flush at the end of the current microtask
+        queueMicrotask(() => {
+          const updates = pendingUpdates.get(setSearchParams);
+          pendingUpdates.delete(setSearchParams);
+          if (!updates || updates.size === 0) return;
+
+          setSearchParams(
+            (prev) => {
+              const next = new URLSearchParams(prev);
+              for (const [k, entry] of updates) {
+                if (entry.remove) {
+                  next.delete(k);
+                } else {
+                  next.set(k, entry.serialized);
+                }
+              }
+              return next;
+            },
+            { replace: true },
+          );
+        });
+      }
+
+      const batch = pendingUpdates.get(setSearchParams);
+      const serialized = stringify(newValue);
+      if (newValue === defaultValue || newValue === null || newValue === undefined || serialized === null) {
+        batch.set(key, { remove: true });
+      } else {
+        batch.set(key, { remove: false, serialized });
+      }
     },
-    [key, defaultValue, stringify],
+    [key, defaultValue, stringify, setSearchParams],
   );
 
   return [value, setValue];
