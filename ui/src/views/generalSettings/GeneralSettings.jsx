@@ -29,7 +29,7 @@ import {
   precheckRestore as clientPrecheckRestore,
   restore as clientRestore,
 } from '../../services/backupRestoreClient';
-import { IconSave, IconRefresh, IconSignal, IconHome, IconFolder } from '@douyinfe/semi-icons';
+import { IconSave, IconRefresh, IconSignal, IconHome, IconFolder, IconLink } from '@douyinfe/semi-icons';
 import debounce from 'lodash/debounce';
 import './GeneralSettings.less';
 
@@ -69,6 +69,7 @@ const GeneralSettings = function GeneralSettings() {
   const [precheckInfo, setPrecheckInfo] = React.useState(null);
   const [restoreBusy, setRestoreBusy] = React.useState(false);
   const [selectedRestoreFile, setSelectedRestoreFile] = React.useState(null);
+  const [proxyUrl, setProxyUrl] = React.useState('');
 
   // User settings state
   const homeAddress = useSelector((state) => state.userSettings.settings.home_address);
@@ -96,6 +97,7 @@ const GeneralSettings = function GeneralSettings() {
       setAnalyticsEnabled(settings?.analyticsEnabled || false);
       setDemoMode(settings?.demoMode || false);
       setSqlitePath(settings?.sqlitepath);
+      setProxyUrl(settings?.proxyUrl || '');
     }
 
     init();
@@ -139,6 +141,7 @@ const GeneralSettings = function GeneralSettings() {
         demoMode,
         analyticsEnabled,
         sqlitepath: sqlitePath,
+        proxyUrl: proxyUrl || null,
       });
     } catch (exception) {
       console.error(exception);
@@ -403,6 +406,36 @@ const GeneralSettings = function GeneralSettings() {
                     </Button>
                   </div>
                 </SegmentPart>
+              </div>
+            </TabPane>
+
+            <TabPane
+              tab={
+                <span>
+                  <IconLink size="small" style={{ marginRight: 6 }} />
+                  Network
+                </span>
+              }
+              itemKey="network"
+            >
+              <div className="generalSettings__tab-content">
+                <SegmentPart
+                  name="Proxy URL"
+                  helpText="Routes scraping requests through a proxy. Notifications and geocoding are not affected."
+                >
+                  <Input
+                    type="text"
+                    placeholder="http://username:password@host:port"
+                    value={proxyUrl}
+                    onChange={(value) => setProxyUrl(value)}
+                  />
+                </SegmentPart>
+
+                <div className="generalSettings__save-row">
+                  <Button type="primary" theme="solid" onClick={handleStore} icon={<IconSave />}>
+                    Save
+                  </Button>
+                </div>
               </div>
             </TabPane>
 
