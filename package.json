@@ -13,6 +13,8 @@
     "format:check": "prettier --check \"**/*.js\"",
     "test": "vitest run",
     "testGH": "vitest run --config vitest.gh.config.js",
+    "test:provider": "vitest run --config vitest.provider.config.js",
+    "test:provider:proxy": "node --env-file=.env.test node_modules/vitest/vitest.mjs run --config vitest.provider.config.js",
     "lint": "eslint .",
     "mcp:stdio": "node lib/mcp/stdio.js",
     "lint:fix": "yarn lint --fix",

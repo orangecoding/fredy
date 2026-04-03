@@ -21,6 +21,10 @@ export function getUserSettings(userId) {
   return null;
 }
 
+export function getSettings() {
+  return {};
+}
+
 export const updateListingDistance = (id, distance) => {
   // noop
 };
