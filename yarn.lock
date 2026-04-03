@@ -7721,6 +7721,11 @@ undici@^7.19.0:
   resolved "https://registry.npmjs.org/undici/-/undici-7.21.0.tgz"
   integrity sha512-Hn2tCQpoDt1wv23a68Ctc8Cr/BHpUSfaPYrkajTXOS9IKpxVRx/X5m1K2YkbK2ipgZgxXSgsUinl3x+2YdSSfg==
 
+undici@^8.0.1:
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/undici/-/undici-8.0.1.tgz#6fbc65d4d49deee769896cb1eb28058a2db80ce9"
+  integrity sha512-6qdTUr+jabXmYKeYkv/+pIvO7d0bs1k9uy+5PFnXr4segNVwILH1KExhwRh3/iGa6gSLmySK3hTnSs3k7ZPnjQ==
+
 unicode-canonical-property-names-ecmascript@^2.0.0:
   version "2.0.1"
   resolved "https://registry.npmjs.org/unicode-canonical-property-names-ecmascript/-/unicode-canonical-property-names-ecmascript-2.0.1.tgz"
