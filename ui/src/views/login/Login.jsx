@@ -10,7 +10,7 @@ import Logo from '../../components/logo/Logo';
 import { xhrPost } from '../../services/xhr';
 import { useNavigate } from 'react-router-dom';
 import { useActions, useSelector } from '../../services/state/store';
-import { Input, Button, Banner, Toast } from '@douyinfe/semi-ui-19';
+import { Input, Button, Banner } from '@douyinfe/semi-ui-19';
 
 import './login.less';
 import { IconUser, IconLock } from '@douyinfe/semi-icons';
@@ -45,11 +45,9 @@ export default function Login() {
       });
       /* eslint-disable no-unused-vars */
     } catch (ignored) {
-      Toast.error('Login unsuccessful…');
+      setError('Login unsuccessful. Please check your username and password.');
       return;
     }
-
-    Toast.success('Login successful!');
 
     await actions.user.getCurrentUser();
     navigate('/dashboard');

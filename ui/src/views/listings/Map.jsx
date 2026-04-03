@@ -4,24 +4,25 @@
  */
 
 import { useEffect, useRef, useState } from 'react';
+import { parseBoolean, parseNumber, parseString, useSearchParamState } from '../../hooks/useSearchParamState.js';
 import { renderToString } from 'react-dom/server';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { useSelector, useActions } from '../../services/state/store.js';
+import { useActions, useSelector } from '../../services/state/store.js';
 import { distanceMeters, generateCircleCoords, getBoundsFromCenter, getBoundsFromCoords } from './mapUtils.js';
-import { Select, Typography, Switch, Banner, Toast } from '@douyinfe/semi-ui-19';
-import { IconLink } from '@douyinfe/semi-icons';
-import { IconDelete, IconEyeOpened } from '@douyinfe/semi-icons';
+import { Banner, Select, Switch, Toast, Typography } from '@douyinfe/semi-ui-19';
+import { IconDelete, IconEyeOpened, IconLink } from '@douyinfe/semi-icons';
 
 import no_image from '../../assets/no_image.jpg';
 import _RangeSlider from 'react-range-slider-input';
-const RangeSlider = _RangeSlider?.default ?? _RangeSlider;
 import 'react-range-slider-input/dist/style.css';
 import './Map.less';
 import { xhrDelete } from '../../services/xhr.js';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import ListingDeletionModal from '../../components/ListingDeletionModal.jsx';
 import Map from '../../components/map/Map.jsx';
+
+const RangeSlider = _RangeSlider?.default ?? _RangeSlider;
 
 const { Text } = Typography;
 
@@ -32,15 +33,21 @@ export default function MapView() {
   const homeMarker = useRef(null);
   const actions = useActions();
   const navigate = useNavigate();
+  const sp = useSearchParams();
+  const [searchParams, setSearchParams] = sp;
   const listings = useSelector((state) => state.listingsData.mapListings);
   const homeAddress = useSelector((state) => state.userSettings.settings.home_address);
-  const [style, setStyle] = useState('STANDARD');
-  const [show3dBuildings, setShow3dBuildings] = useState(false);
 
   const jobs = useSelector((state) => state.jobsData.jobs);
-  const [jobId, setJobId] = useState(null);
-  const [priceRange, setPriceRange] = useState([0, 0]);
-  const [distanceFilter, setDistanceFilter] = useState(0);
+  const [jobId, setJobId] = useSearchParamState(sp, 'job', null, parseString);
+  const [distanceFilter, setDistanceFilter] = useSearchParamState(sp, 'distance', 0, parseNumber);
+  const [style] = useSearchParamState(sp, 'style', 'STANDARD', parseString);
+  const [show3dBuildings, setShow3dBuildings] = useSearchParamState(sp, 'buildings', false, parseBoolean);
+
+  // Price range: stored as priceMin/priceMax URL params; default max derived from loaded listings
+  const urlPriceMin = searchParams.has('priceMin') ? Number(searchParams.get('priceMin')) : null;
+  const urlPriceMax = searchParams.has('priceMax') ? Number(searchParams.get('priceMax')) : null;
+  const [priceRange, setPriceRange] = useState([urlPriceMin ?? 0, urlPriceMax ?? 0]);
 
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [listingToDelete, setListingToDelete] = useState(null);
@@ -59,14 +66,17 @@ export default function MapView() {
   };
 
   useEffect(() => {
-    setPriceRange([0, getMaxPrice()]);
+    // Only reset to full range when no URL override is set
+    if (urlPriceMax === null) {
+      setPriceRange([0, getMaxPrice()]);
+    }
   }, [listings]);
 
   const getMaxPrice = () => {
-    return listings.reduce((max, item) => {
+    return listings.reduce((acc, item) => {
       const price = Number(item.price);
-      return Number.isFinite(price) && price > max ? price : max;
-    }, -Infinity);
+      return Number.isFinite(price) && price > acc ? price : acc;
+    }, 0);
   };
 
   const filterListings = () => {
@@ -109,11 +119,45 @@ export default function MapView() {
     map.current = mapInstance;
   };
 
-  const setMapStyle = (value) => {
-    setStyle(value);
-    if (value === 'SATELLITE') {
-      setShow3dBuildings(false);
-    }
+  const handleMapStyle = (value) => {
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        if (value === 'STANDARD') {
+          next.delete('style');
+        } else {
+          next.set('style', value);
+        }
+        if (value === 'SATELLITE') {
+          next.delete('buildings');
+        }
+        return next;
+      },
+      { replace: true },
+    );
+  };
+
+  const handlePriceRange = (val) => {
+    const maxPrice = getMaxPrice();
+    if (maxPrice <= 0) return; // skip until listings are loaded
+    setPriceRange(val);
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        if (val[0] === 0) {
+          next.delete('priceMin');
+        } else {
+          next.set('priceMin', String(val[0]));
+        }
+        if (val[1] === 0 || val[1] >= maxPrice) {
+          next.delete('priceMax');
+        } else {
+          next.set('priceMax', String(val[1]));
+        }
+        return next;
+      },
+      { replace: true },
+    );
   };
 
   const fetchListings = async () => {
@@ -395,13 +439,7 @@ export default function MapView() {
                 <span>{priceRange[0]}</span>
                 <span>{priceRange[1]}</span>
               </div>
-              <RangeSlider
-                min={0}
-                max={getMaxPrice()}
-                step={100}
-                value={priceRange}
-                onInput={(val) => setPriceRange(val)}
-              />
+              <RangeSlider min={0} max={getMaxPrice()} step={100} value={priceRange} onInput={handlePriceRange} />
             </div>
           </div>
 
@@ -409,7 +447,7 @@ export default function MapView() {
             <Text size="small" strong style={{ color: '#8892a4' }}>
               Style
             </Text>
-            <Select size="small" value={style} onChange={(val) => setMapStyle(val)} style={{ width: 110 }}>
+            <Select size="small" value={style} onChange={(val) => handleMapStyle(val)} style={{ width: 110 }}>
               <Select.Option value="STANDARD">Standard</Select.Option>
               <Select.Option value="SATELLITE">Satellite</Select.Option>
             </Select>

@@ -12,6 +12,18 @@ export default defineConfig({
     chunkSizeWarningLimit: 9999999,
     outDir: './ui/public',
     emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules/maplibre-gl')) {
+            return 'maplibre-gl';
+          }
+        },
+      },
+    },
+  },
+  optimizeDeps: {
+    include: ['maplibre-gl'],
   },
   plugins: [react()],
   server: {
