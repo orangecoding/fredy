@@ -207,14 +207,17 @@ export const useFredyState = create(
             filter,
           }) {
             try {
-              const qryString = queryString.stringify({
-                page,
-                pageSize,
-                freeTextFilter,
-                sortfield,
-                sortdir,
-                ...filter,
-              });
+              const qryString = queryString.stringify(
+                {
+                  page,
+                  pageSize,
+                  freeTextFilter,
+                  sortfield,
+                  sortdir,
+                  ...filter,
+                },
+                { skipNull: true, skipEmptyString: true },
+              );
               const response = await xhrGet(`/api/listings/table?${qryString}`);
               set((state) => ({
                 listingsData: { ...state.listingsData, ...response.json },

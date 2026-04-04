@@ -90,7 +90,14 @@ const ListingsGrid = () => {
     loadData();
   }, [page, sortField, sortDir, freeTextFilter, providerFilter, activityFilter, jobNameFilter, watchListFilter]);
 
-  const handleFilterChange = useMemo(() => debounce((value) => setFreeTextFilter(value || null), 500), []);
+  const handleFilterChange = useMemo(
+    () =>
+      debounce((value) => {
+        setFreeTextFilter(value || null);
+        setPage(1);
+      }, 500),
+    [],
+  );
 
   useEffect(() => {
     return () => {
@@ -152,6 +159,7 @@ const ListingsGrid = () => {
           onChange={(e) => {
             const v = e.target.value;
             setActivityFilter(v === 'all' ? null : v === 'true');
+            setPage(1);
           }}
         >
           <Radio value="all">All</Radio>
@@ -166,6 +174,7 @@ const ListingsGrid = () => {
           onChange={(e) => {
             const v = e.target.value;
             setWatchListFilter(v === 'all' ? null : v === 'true');
+            setPage(1);
           }}
         >
           <Radio value="all">All</Radio>
@@ -176,7 +185,10 @@ const ListingsGrid = () => {
         <Select
           placeholder="Provider"
           showClear
-          onChange={(val) => setProviderFilter(val)}
+          onChange={(val) => {
+            setProviderFilter(val);
+            setPage(1);
+          }}
           value={providerFilter}
           style={{ width: 130 }}
         >
@@ -190,7 +202,10 @@ const ListingsGrid = () => {
         <Select
           placeholder="Job"
           showClear
-          onChange={(val) => setJobNameFilter(val)}
+          onChange={(val) => {
+            setJobNameFilter(val);
+            setPage(1);
+          }}
           value={jobNameFilter}
           style={{ width: 130 }}
         >
