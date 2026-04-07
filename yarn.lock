@@ -7897,10 +7897,10 @@ vfile@^6.0.0:
     "@types/unist" "^3.0.0"
     vfile-message "^4.0.0"
 
-vite@8.0.6:
-  version "8.0.6"
-  resolved "https://registry.yarnpkg.com/vite/-/vite-8.0.6.tgz#be071dcc8ff7c1c6cfc73ada928e537d68bcf253"
-  integrity sha512-jeOXoY6N8rOfit/mZADMd0misLqjRdWBB3/S23ZQNuPcbVsfMBJutWD8b4ftdczMOsNyMBnKro0Z1Kt0HIqq5Q==
+vite@8.0.7:
+  version "8.0.7"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-8.0.7.tgz#e3028877022e04bcfb67180738f256108256aa13"
+  integrity sha512-P1PbweD+2/udplnThz3btF4cf6AgPky7kk23RtHUkJIU5BIxwPprhRGmOAHs6FTI7UiGbTNrgNP6jSYD6JaRnw==
   dependencies:
     lightningcss "^1.32.0"
     picomatch "^4.0.4"

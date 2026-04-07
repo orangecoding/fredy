@@ -1,6 +1,6 @@
 {
   "name": "fredy",
-  "version": "20.1.2",
+  "version": "20.2.0",
   "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
   "scripts": {
     "prepare": "husky",
@@ -99,7 +99,7 @@
     "semver": "^7.7.4",
     "serve-static": "2.2.1",
     "slack": "11.0.2",
-    "vite": "8.0.6",
+    "vite": "8.0.7",
     "x-var": "^3.0.1",
     "zustand": "^5.0.12"
   },
