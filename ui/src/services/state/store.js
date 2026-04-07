@@ -304,13 +304,13 @@ export const useFredyState = create(
               throw Exception;
             }
           },
-          async setProviderDetails(enabled) {
+          async setProviderDetails(providers) {
             try {
-              await xhrPost('/api/user/settings/provider-details', { provider_details: enabled });
+              await xhrPost('/api/user/settings/provider-details', { provider_details: providers });
               set((state) => ({
                 userSettings: {
                   ...state.userSettings,
-                  settings: { ...state.userSettings.settings, provider_details: enabled },
+                  settings: { ...state.userSettings.settings, provider_details: providers },
                 },
               }));
             } catch (Exception) {

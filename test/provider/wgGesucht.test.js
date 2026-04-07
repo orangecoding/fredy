@@ -41,7 +41,7 @@ describe('#wgGesucht testsuite()', () => {
 
   describe('with provider_details enabled', () => {
     beforeEach(() => {
-      vi.spyOn(mockStore, 'getUserSettings').mockReturnValue({ provider_details: true });
+      vi.spyOn(mockStore, 'getUserSettings').mockReturnValue({ provider_details: [provider.metaInformation.id] });
       vi.spyOn(mockStore, 'getKnownListingHashesForJobAndProvider').mockReturnValue([]);
     });
 
