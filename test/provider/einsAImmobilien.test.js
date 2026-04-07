@@ -13,7 +13,7 @@ describe('#einsAImmobilien testsuite()', () => {
   provider.init(providerConfig.einsAImmobilien, [], []);
   it('should test einsAImmobilien provider', async () => {
     const Fredy = await mockFredy();
-    return await new Promise((resolve) => {
+    return await new Promise((resolve, reject) => {
       const fredy = new Fredy(
         provider.config,
         null,
@@ -23,6 +23,10 @@ describe('#einsAImmobilien testsuite()', () => {
         similarityCache,
       );
       fredy.execute().then((listings) => {
+        if (listings == null || listings.length === 0) {
+          reject('Listings is empty!');
+          return;
+        }
         expect(listings).toBeInstanceOf(Array);
         const notificationObj = get();
         expect(notificationObj).toBeTypeOf('object');

@@ -13,9 +13,14 @@ describe('#immoswp testsuite()', () => {
   provider.init(providerConfig.immoswp, [], []);
   it('should test immoswp provider', async () => {
     const Fredy = await mockFredy();
-    return await new Promise((resolve) => {
+    return await new Promise((resolve, reject) => {
       const fredy = new Fredy(provider.config, null, null, provider.metaInformation.id, 'immoswp', similarityCache);
       fredy.execute().then((listing) => {
+        if (listing == null || listing.length === 0) {
+          reject('Listings is empty!');
+          return;
+        }
+
         expect(listing).toBeInstanceOf(Array);
         const notificationObj = get();
         expect(notificationObj).toBeTypeOf('object');

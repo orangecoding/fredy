@@ -17,6 +17,10 @@ describe('#ohneMakler testsuite()', () => {
     const fredy = new Fredy(provider.config, null, null, provider.metaInformation.id, 'ohneMakler', similarityCache);
     const listing = await fredy.execute();
 
+    if (listing == null || listing.length === 0) {
+      throw new Error('Listings is empty!');
+    }
+
     expect(listing).toBeInstanceOf(Array);
     const notificationObj = get();
     expect(notificationObj).toBeTypeOf('object');
