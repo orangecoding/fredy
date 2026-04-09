@@ -46,8 +46,7 @@ describe('Issue reproduction: listings filtered by similarity or area should be 
     expect(mockStore.deletedIds).toContain('1');
   });
 
-  // TODO: fix this test
-  it.skip('should call deleteListingsById when listings are filtered by area', async () => {
+  it('should call deleteListingsById when listings are filtered by area', async () => {
     const Fredy = await mockFredy();
 
     const mockSimilarityCache = {
