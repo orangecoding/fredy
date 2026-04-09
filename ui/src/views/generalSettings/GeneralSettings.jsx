@@ -15,9 +15,8 @@ import {
   Checkbox,
   Input,
   Modal,
-  Typography,
   AutoComplete,
-  Switch,
+  Select,
   Banner,
 } from '@douyinfe/semi-ui-19';
 import { InputNumber } from '@douyinfe/semi-ui-19';
@@ -30,10 +29,8 @@ import {
   restore as clientRestore,
 } from '../../services/backupRestoreClient';
 import { IconSave, IconRefresh, IconSignal, IconHome, IconFolder } from '@douyinfe/semi-icons';
-import debounce from 'lodash/debounce';
+import { debounce } from '../../utils';
 import './GeneralSettings.less';
-
-const { Text } = Typography;
 
 function formatFromTimestamp(ts) {
   const date = new Date(ts);
@@ -72,7 +69,8 @@ const GeneralSettings = function GeneralSettings() {
 
   // User settings state
   const homeAddress = useSelector((state) => state.userSettings.settings.home_address);
-  const immoscoutDetails = useSelector((state) => state.userSettings.settings.immoscout_details);
+  const providerDetails = useSelector((state) => state.userSettings.settings.provider_details);
+  const allProviders = useSelector((state) => state.provider);
   const [address, setAddress] = useState(homeAddress?.address || '');
   const [coords, setCoords] = useState(homeAddress?.coords || null);
   const saving = useIsLoading(actions.userSettings.setHomeAddress);
@@ -376,39 +374,6 @@ const GeneralSettings = function GeneralSettings() {
             <TabPane
               tab={
                 <span>
-                  <IconFolder size="small" style={{ marginRight: 6 }} />
-                  Backup & Restore
-                </span>
-              }
-              itemKey="backup"
-            >
-              <div className="generalSettings__tab-content">
-                <SegmentPart
-                  name="Backup & Restore"
-                  helpText="Download a zipped backup of your database or restore from a backup zip."
-                >
-                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
-                    <Button theme="solid" icon={<IconSave />} onClick={handleDownloadBackup}>
-                      Download Backup
-                    </Button>
-                    <input
-                      type="file"
-                      accept=".zip,application/zip"
-                      ref={fileInputRef}
-                      style={{ display: 'none' }}
-                      onChange={handleSelectRestoreFile}
-                    />
-                    <Button onClick={handleOpenFilePicker} theme="light" icon={<IconFolder />}>
-                      Restore from Zip
-                    </Button>
-                  </div>
-                </SegmentPart>
-              </div>
-            </TabPane>
-
-            <TabPane
-              tab={
-                <span>
                   <IconHome size="small" style={{ marginRight: 6 }} />
                   User Settings
                 </span>
@@ -440,29 +405,30 @@ const GeneralSettings = function GeneralSettings() {
                 </SegmentPart>
 
                 <SegmentPart
-                  name="ImmoScout Details"
-                  helpText="Fetch additional details (description, attributes, agent info) for ImmoScout listings. Makes an extra API call per listing."
+                  name="Provider Details"
+                  helpText="Fetch additional details (description, attributes, agent info) for listings. Needs an extra API call per listing."
                 >
                   <Banner
                     type="warning"
-                    description="Enabling this significantly increases API requests to ImmoScout, raising the chance of rate limiting or blocking. Use at your own risk."
+                    description="Enabling this significantly increases API requests to providers that have implemented this feature, raising the chance of rate limiting or blocking. Use at your own risk."
                     closeIcon={null}
                     style={{ marginBottom: 12 }}
                   />
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <Switch
-                      checked={!!immoscoutDetails}
-                      onChange={async (checked) => {
-                        try {
-                          await actions.userSettings.setImmoscoutDetails(checked);
-                          Toast.success('ImmoScout details setting updated.');
-                        } catch {
-                          Toast.error('Failed to update setting.');
-                        }
-                      }}
-                    />
-                    <Text>Fetch detailed ImmoScout listings</Text>
-                  </div>
+                  <Select
+                    multiple
+                    style={{ width: '100%' }}
+                    value={Array.isArray(providerDetails) ? providerDetails : []}
+                    optionList={(allProviders ?? []).map((p) => ({ label: p.name, value: p.id }))}
+                    placeholder="Select providers to fetch details from..."
+                    onChange={async (selected) => {
+                      try {
+                        await actions.userSettings.setProviderDetails(selected);
+                        Toast.success('Provider details setting updated.');
+                      } catch {
+                        Toast.error('Failed to update setting.');
+                      }
+                    }}
+                  />
                 </SegmentPart>
 
                 <div className="generalSettings__save-row">
@@ -476,6 +442,39 @@ const GeneralSettings = function GeneralSettings() {
                     Save
                   </Button>
                 </div>
+              </div>
+            </TabPane>
+
+            <TabPane
+              tab={
+                <span>
+                  <IconFolder size="small" style={{ marginRight: 6 }} />
+                  Backup & Restore
+                </span>
+              }
+              itemKey="backup"
+            >
+              <div className="generalSettings__tab-content">
+                <SegmentPart
+                  name="Backup & Restore"
+                  helpText="Download a zipped backup of your database or restore from a backup zip."
+                >
+                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                    <Button theme="solid" icon={<IconSave />} onClick={handleDownloadBackup}>
+                      Download Backup
+                    </Button>
+                    <input
+                      type="file"
+                      accept=".zip,application/zip"
+                      ref={fileInputRef}
+                      style={{ display: 'none' }}
+                      onChange={handleSelectRestoreFile}
+                    />
+                    <Button onClick={handleOpenFilePicker} theme="light" icon={<IconFolder />}>
+                      Restore from Zip
+                    </Button>
+                  </div>
+                </SegmentPart>
               </div>
             </TabPane>
           </Tabs>

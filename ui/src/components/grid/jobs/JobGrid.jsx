@@ -41,7 +41,7 @@ import { useNavigate } from 'react-router-dom';
 import ListingDeletionModal from '../../ListingDeletionModal.jsx';
 import { useActions, useSelector } from '../../../services/state/store.js';
 import { xhrDelete, xhrPut, xhrPost } from '../../../services/xhr.js';
-import debounce from 'lodash/debounce';
+import { debounce } from '../../../utils';
 import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-illustrations';
 
 import './JobGrid.less';

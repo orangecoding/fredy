@@ -24,6 +24,10 @@ describe('#regionalimmobilien24 testsuite()', () => {
 
     const listing = await fredy.execute();
 
+    if (listing == null || listing.length === 0) {
+      throw new Error('Listings is empty!');
+    }
+
     expect(listing).toBeInstanceOf(Array);
     const notificationObj = get();
     expect(notificationObj).toBeTypeOf('object');

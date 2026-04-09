@@ -6,8 +6,9 @@
 import * as similarityCache from '../../lib/services/similarity-check/similarityCache.js';
 import { get } from '../mocks/mockNotification.js';
 import { mockFredy, providerConfig } from '../utils.js';
-import { expect } from 'vitest';
+import { expect, vi } from 'vitest';
 import * as provider from '../../lib/provider/sparkasse.js';
+import * as mockStore from '../mocks/mockStore.js';
 
 describe('#sparkasse testsuite()', () => {
   it('should test sparkasse provider', async () => {
@@ -23,6 +24,10 @@ describe('#sparkasse testsuite()', () => {
     const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache, undefined);
 
     const listing = await fredy.execute();
+
+    if (listing == null || listing.length === 0) {
+      throw new Error('Listings is empty!');
+    }
 
     expect(listing).toBeInstanceOf(Array);
     const notificationObj = get();
@@ -42,6 +47,43 @@ describe('#sparkasse testsuite()', () => {
       expect(notify.size).toBeTypeOf('string');
       expect(notify.title).not.toBe('');
       expect(notify.address).not.toBe('');
+    });
+  });
+
+  describe('with provider_details enabled', () => {
+    beforeEach(() => {
+      vi.spyOn(mockStore, 'getUserSettings').mockReturnValue({ provider_details: [provider.metaInformation.id] });
+      vi.spyOn(mockStore, 'getKnownListingHashesForJobAndProvider').mockReturnValue([]);
+    });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    it('should enrich listings with details', async () => {
+      const Fredy = await mockFredy();
+      provider.init(providerConfig.sparkasse, []);
+      const mockedJob = { id: 'sparkasse', notificationAdapter: null, specFilter: null, spatialFilter: null };
+
+      const fredy = new Fredy(
+        provider.config,
+        mockedJob,
+        provider.metaInformation.id,
+        { checkAndAddEntry: () => false },
+        undefined,
+      );
+      const listings = await fredy.execute();
+      expect(listings).toBeInstanceOf(Array);
+      listings.forEach((listing) => {
+        expect(listing.link).toContain('https://immobilien.sparkasse.de');
+        expect(listing.address).toBeTypeOf('string');
+        expect(listing.address).not.toBe('');
+        // description is enriched from the detail page; falls back gracefully if bot-detected
+        if (listing.description != null) {
+          expect(listing.description).toBeTypeOf('string');
+          expect(listing.description).not.toBe('');
+        }
+      });
     });
   });
 });

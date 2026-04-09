@@ -20,10 +20,15 @@ describe('#wohnungsboerse testsuite()', () => {
       specFilter: null,
     };
 
-    return await new Promise((resolve) => {
+    return await new Promise((resolve, reject) => {
       const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache, undefined);
 
       fredy.execute().then((listings) => {
+        if (listings == null || listings.length === 0) {
+          reject('Listings is empty!');
+          return;
+        }
+
         expect(listings).toBeInstanceOf(Array);
         const notificationObj = get();
         expect(notificationObj).toBeTypeOf('object');

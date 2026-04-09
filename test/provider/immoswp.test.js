@@ -20,10 +20,15 @@ describe('#immoswp testsuite()', () => {
       specFilter: null,
     };
 
-    return await new Promise((resolve) => {
+    return await new Promise((resolve, reject) => {
       const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache, undefined);
 
       fredy.execute().then((listing) => {
+        if (listing == null || listing.length === 0) {
+          reject('Listings is empty!');
+          return;
+        }
+
         expect(listing).toBeInstanceOf(Array);
         const notificationObj = get();
         expect(notificationObj).toBeTypeOf('object');
