@@ -13,9 +13,16 @@ import * as mockStore from '../mocks/mockStore.js';
 describe('#sparkasse testsuite()', () => {
   it('should test sparkasse provider', async () => {
     const Fredy = await mockFredy();
+    const mockedJob = {
+      id: 'sparkasse',
+      notificationAdapter: null,
+      spatialFilter: null,
+      specFilter: null,
+    };
     provider.init(providerConfig.sparkasse, []);
 
-    const fredy = new Fredy(provider.config, null, null, provider.metaInformation.id, 'sparkasse', similarityCache);
+    const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache, undefined);
+
     const listing = await fredy.execute();
 
     if (listing == null || listing.length === 0) {
@@ -30,11 +37,14 @@ describe('#sparkasse testsuite()', () => {
       /** check the actual structure **/
       expect(notify.id).toBeTypeOf('string');
       expect(notify.price).toBeTypeOf('string');
+      expect(notify.price).toContain('€');
+      expect(notify.size).toBeTypeOf('string');
+      expect(notify.size).toContain('m²');
       expect(notify.title).toBeTypeOf('string');
       expect(notify.link).toBeTypeOf('string');
       expect(notify.address).toBeTypeOf('string');
       /** check the values if possible **/
-      expect(notify.size).toContain('m²');
+      expect(notify.size).toBeTypeOf('string');
       expect(notify.title).not.toBe('');
       expect(notify.address).not.toBe('');
     });
@@ -53,9 +63,15 @@ describe('#sparkasse testsuite()', () => {
     it('should enrich listings with details', async () => {
       const Fredy = await mockFredy();
       provider.init(providerConfig.sparkasse, []);
-      const fredy = new Fredy(provider.config, null, null, provider.metaInformation.id, 'sparkasse', {
-        checkAndAddEntry: () => false,
-      });
+      const mockedJob = { id: 'sparkasse', notificationAdapter: null, specFilter: null, spatialFilter: null };
+
+      const fredy = new Fredy(
+        provider.config,
+        mockedJob,
+        provider.metaInformation.id,
+        { checkAndAddEntry: () => false },
+        undefined,
+      );
       const listings = await fredy.execute();
       expect(listings).toBeInstanceOf(Array);
       listings.forEach((listing) => {

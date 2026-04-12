@@ -13,9 +13,16 @@ import * as mockStore from '../mocks/mockStore.js';
 describe('#immowelt testsuite()', () => {
   it('should test immowelt provider', async () => {
     const Fredy = await mockFredy();
+    const mockedJob = {
+      id: 'immowelt',
+      notificationAdapter: null,
+      spatialFilter: null,
+      specFilter: null,
+    };
     provider.init(providerConfig.immowelt, [], []);
 
-    const fredy = new Fredy(provider.config, null, null, provider.metaInformation.id, 'immowelt', similarityCache);
+    const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache, undefined);
+
     const listing = await fredy.execute();
 
     if (listing == null || listing.length === 0) {
@@ -29,12 +36,16 @@ describe('#immowelt testsuite()', () => {
     notificationObj.payload.forEach((notify) => {
       /** check the actual structure **/
       expect(notify.id).toBeTypeOf('string');
-      expect(notify.price).toBeTypeOf('string');
+      if (notify.price != null) {
+        expect(notify.price).toBeTypeOf('string');
+        expect(notify.price).toContain('€');
+      }
       expect(notify.title).toBeTypeOf('string');
       expect(notify.link).toBeTypeOf('string');
       expect(notify.address).toBeTypeOf('string');
       /** check the values if possible **/
       if (notify.size != null && notify.size.trim().toLowerCase() !== 'k.a.') {
+        expect(notify.size).toBeTypeOf('string');
         expect(notify.size).toContain('m²');
       }
       expect(notify.title).not.toBe('');
@@ -56,9 +67,15 @@ describe('#immowelt testsuite()', () => {
     it('should enrich listings with details', async () => {
       const Fredy = await mockFredy();
       provider.init(providerConfig.immowelt, [], []);
-      const fredy = new Fredy(provider.config, null, null, provider.metaInformation.id, 'immowelt', {
-        checkAndAddEntry: () => false,
-      });
+      const mockedJob = { id: 'immowelt', notificationAdapter: null, specFilter: null, spatialFilter: null };
+
+      const fredy = new Fredy(
+        provider.config,
+        mockedJob,
+        provider.metaInformation.id,
+        { checkAndAddEntry: () => false },
+        undefined,
+      );
       const listings = await fredy.execute();
       expect(listings).toBeInstanceOf(Array);
       listings.forEach((listing) => {

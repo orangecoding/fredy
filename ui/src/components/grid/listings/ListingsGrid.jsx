@@ -25,6 +25,7 @@ import {
   Empty,
   Radio,
   RadioGroup,
+  Space,
 } from '@douyinfe/semi-ui-19';
 import {
   IconBriefcase,
@@ -293,12 +294,14 @@ const ListingsGrid = () => {
                   >
                     {item.address || 'No address provided'}
                   </Text>
-                  <Text type="tertiary" size="small" icon={<IconClock />}>
-                    {timeService.format(item.created_at, false)}
-                  </Text>
-                  <Text type="tertiary" size="small" icon={<IconBriefcase />}>
-                    {item.provider.charAt(0).toUpperCase() + item.provider.slice(1)}
-                  </Text>
+                  <Space spacing={12} wrap>
+                    <Text type="tertiary" size="small" icon={<IconBriefcase />}>
+                      {item.provider.charAt(0).toUpperCase() + item.provider.slice(1)}
+                    </Text>
+                    <Text type="tertiary" size="small" icon={<IconClock />}>
+                      {timeService.format(item.created_at, false)}
+                    </Text>
+                  </Space>
                   {item.distance_to_destination ? (
                     <Text type="tertiary" size="small" icon={<IconActivity />}>
                       {item.distance_to_destination} m to chosen address

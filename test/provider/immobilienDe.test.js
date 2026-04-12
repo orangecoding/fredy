@@ -13,8 +13,15 @@ import * as mockStore from '../mocks/mockStore.js';
 describe('#immobilien.de testsuite()', () => {
   provider.init(providerConfig.immobilienDe, [], []);
   it('should test immobilien.de provider', async () => {
+    const mockedJob = {
+      id: 'test1',
+      notificationAdapter: null,
+      spatialFilter: null,
+      specFilter: null,
+    };
+
     const Fredy = await mockFredy();
-    const fredy = new Fredy(provider.config, null, null, provider.metaInformation.id, 'test1', similarityCache);
+    const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache, undefined);
     const listing = await fredy.execute();
 
     if (listing == null || listing.length === 0) {
@@ -55,9 +62,15 @@ describe('#immobilien.de testsuite()', () => {
     it('should enrich listings with details', async () => {
       const Fredy = await mockFredy();
       provider.init(providerConfig.immobilienDe, [], []);
-      const fredy = new Fredy(provider.config, null, null, provider.metaInformation.id, 'test1', {
-        checkAndAddEntry: () => false,
-      });
+      const mockedJob = { id: 'test1', notificationAdapter: null, specFilter: null, spatialFilter: null };
+
+      const fredy = new Fredy(
+        provider.config,
+        mockedJob,
+        provider.metaInformation.id,
+        { checkAndAddEntry: () => false },
+        undefined,
+      );
       const listings = await fredy.execute();
       if (listings == null) return;
       expect(listings).toBeInstanceOf(Array);

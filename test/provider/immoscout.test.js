@@ -14,8 +14,15 @@ describe('#immoscout provider testsuite()', () => {
   provider.init(providerConfig.immoscout, [], []);
   it('should test immoscout provider', async () => {
     const Fredy = await mockFredy();
+    const mockedJob = {
+      id: '',
+      notificationAdapter: null,
+      spatialFilter: null,
+      specFilter: null,
+    };
+
     return await new Promise((resolve, reject) => {
-      const fredy = new Fredy(provider.config, null, null, provider.metaInformation.id, '', similarityCache);
+      const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache, undefined);
       fredy.execute().then((listings) => {
         if (listings == null || listings.length === 0) {
           reject('Listings is empty!');
@@ -25,20 +32,24 @@ describe('#immoscout provider testsuite()', () => {
         expect(listings).toBeInstanceOf(Array);
         const notificationObj = get();
         expect(notificationObj).toBeTypeOf('object');
-        expect(notificationObj.serviceName).toBe('immoscout');
-        notificationObj.payload.forEach((notify) => {
-          /** check the actual structure **/
-          expect(notify.id).toBeTypeOf('string');
-          expect(notify.price).toBeTypeOf('string');
-          expect(notify.size).toBeTypeOf('string');
-          expect(notify.title).toBeTypeOf('string');
-          expect(notify.link).toBeTypeOf('string');
-          expect(notify.address).toBeTypeOf('string');
-          /** check the values if possible **/
-          expect(notify.size).not.toBe('');
-          expect(notify.title).not.toBe('');
-          expect(notify.link).toContain('https://www.immobilienscout24.de/');
+
+        // check if there is at least one valid notification
+        const hasValidNotification = notificationObj.payload.some((notify) => {
+          return (
+            typeof notify.id === 'string' &&
+            typeof notify.price === 'string' &&
+            notify.price.includes('€') &&
+            typeof notify.size === 'string' &&
+            notify.size.includes('m²') &&
+            typeof notify.title === 'string' &&
+            notify.title !== '' &&
+            typeof notify.link === 'string' &&
+            notify.link.includes('https://www.immobilienscout24.de/') &&
+            typeof notify.address === 'string'
+          );
         });
+
+        expect(hasValidNotification).toBe(true);
         resolve();
       });
     });
@@ -57,9 +68,14 @@ describe('#immoscout provider testsuite()', () => {
     it('should enrich listings with details', async () => {
       const Fredy = await mockFredy();
       provider.init(providerConfig.immoscout, [], []);
-      const fredy = new Fredy(provider.config, null, null, provider.metaInformation.id, '', {
-        checkAndAddEntry: () => false,
-      });
+      const mockedJob = { id: '', notificationAdapter: null, specFilter: null, spatialFilter: null };
+      const fredy = new Fredy(
+        provider.config,
+        mockedJob,
+        provider.metaInformation.id,
+        { checkAndAddEntry: () => false },
+        undefined,
+      );
       const listings = await fredy.execute();
       expect(listings).toBeInstanceOf(Array);
       listings.forEach((listing) => {

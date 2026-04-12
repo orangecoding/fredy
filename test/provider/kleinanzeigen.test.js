@@ -13,16 +13,16 @@ import * as mockStore from '../mocks/mockStore.js';
 describe('#kleinanzeigen testsuite()', () => {
   it('should test kleinanzeigen provider', async () => {
     const Fredy = await mockFredy();
+    const mockedJob = {
+      id: 'kleinanzeigen',
+      notificationAdapter: null,
+      spatialFilter: null,
+      specFilter: null,
+    };
     provider.init(providerConfig.kleinanzeigen, [], []);
     return await new Promise((resolve, reject) => {
-      const fredy = new Fredy(
-        provider.config,
-        null,
-        null,
-        provider.metaInformation.id,
-        'kleinanzeigen',
-        similarityCache,
-      );
+      const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache, undefined);
+
       fredy.execute().then((listing) => {
         if (listing == null || listing.length === 0) {
           reject('Listings is empty!');
@@ -62,9 +62,15 @@ describe('#kleinanzeigen testsuite()', () => {
     it('should enrich listings with details', async () => {
       const Fredy = await mockFredy();
       provider.init(providerConfig.kleinanzeigen, [], []);
-      const fredy = new Fredy(provider.config, null, null, provider.metaInformation.id, 'kleinanzeigen', {
-        checkAndAddEntry: () => false,
-      });
+      const mockedJob = { id: 'kleinanzeigen', notificationAdapter: null, specFilter: null, spatialFilter: null };
+
+      const fredy = new Fredy(
+        provider.config,
+        mockedJob,
+        provider.metaInformation.id,
+        { checkAndAddEntry: () => false },
+        undefined,
+      );
       const listings = await fredy.execute();
       expect(listings).toBeInstanceOf(Array);
       listings.forEach((listing) => {
