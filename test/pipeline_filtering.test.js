@@ -22,7 +22,7 @@ describe('Issue reproduction: listings filtered by similarity or area should be 
       normalize: (l) => l,
       filter: () => true,
       crawlFields: { id: 'id', title: 'title', address: 'address', price: 'price' },
-      fieldNames: ['id', 'title', 'address', 'price'],
+      requiredFieldNames: ['id', 'title', 'address', 'price'],
     };
 
     const mockedJob = {
@@ -97,7 +97,7 @@ describe('Issue reproduction: listings filtered by similarity or area should be 
       normalize: (l) => l,
       filter: () => true,
       crawlFields: { id: 'id', title: 'title', address: 'address', price: 'price' },
-      fieldNames: ['id', 'title', 'address', 'price'],
+      requiredFieldNames: ['id', 'title', 'address', 'price'],
     };
 
     const fredy = new Fredy(providerConfig, mockedJob, 'test-provider', mockSimilarityCache, undefined);

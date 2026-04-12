@@ -15,6 +15,7 @@ export default mergeConfig(
         'test/provider/immonet.test.js',
         'test/provider/immobilienDe.test.js',
         'test/provider/immowelt.test.js',
+        'test/provider/sparkasse.test.js',
       ],
     },
   }),
