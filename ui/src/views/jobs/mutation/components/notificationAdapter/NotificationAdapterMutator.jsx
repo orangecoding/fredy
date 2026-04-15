@@ -156,14 +156,21 @@ export default function NotificationAdapterMutator({
       return (
         <Form key={key}>
           {uiElement.type === 'boolean' ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-              <Switch
-                checked={uiElement.value || false}
-                onChange={(checked) => {
-                  setValue(selectedAdapter, uiElement, key, checked);
-                }}
-              />
-              {uiElement.label}
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                <Switch
+                  checked={uiElement.value || false}
+                  onChange={(checked) => {
+                    setValue(selectedAdapter, uiElement, key, checked);
+                  }}
+                />
+                {uiElement.label}
+              </div>
+              {uiElement.description && (
+                <div className="semi-form-field-extra" style={{ marginTop: '4px' }}>
+                  {uiElement.description}
+                </div>
+              )}
             </div>
           ) : (
             <Form.Input
