@@ -1,6 +1,6 @@
 {
   "name": "fredy",
-  "version": "20.3.1",
+  "version": "20.3.2",
   "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
   "scripts": {
     "prepare": "husky",
@@ -61,13 +61,13 @@
     "Firefox ESR"
   ],
   "dependencies": {
-    "@douyinfe/semi-icons": "^2.94.1",
-    "@douyinfe/semi-ui": "2.94.1",
-    "@douyinfe/semi-ui-19": "^2.94.1",
+    "@douyinfe/semi-icons": "^2.95.0",
+    "@douyinfe/semi-ui": "2.95.0",
+    "@douyinfe/semi-ui-19": "^2.95.0",
     "@mapbox/mapbox-gl-draw": "^1.5.1",
     "@modelcontextprotocol/sdk": "^1.29.0",
     "@sendgrid/mail": "8.1.6",
-    "@turf/boolean-point-in-polygon": "^7.3.4",
+    "@turf/boolean-point-in-polygon": "^7.3.5",
     "@vitejs/plugin-react": "6.0.1",
     "adm-zip": "^0.5.17",
     "better-sqlite3": "^12.9.0",
@@ -95,11 +95,11 @@
     "react-router": "7.14.1",
     "react-router-dom": "7.14.1",
     "resend": "^6.12.0",
-    "restana": "5.1.0",
+    "restana": "5.2.0",
     "semver": "^7.7.4",
     "serve-static": "2.2.1",
     "slack": "11.0.2",
-    "vite": "8.0.8",
+    "vite": "8.0.9",
     "x-var": "^3.0.1",
     "zustand": "^5.0.12"
   },
@@ -110,7 +110,7 @@
     "@babel/preset-react": "7.28.5",
     "@eslint/js": "^10.0.1",
     "chalk": "^5.6.2",
-    "eslint": "10.2.0",
+    "eslint": "10.2.1",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-react": "7.37.5",
     "globals": "^17.5.0",
