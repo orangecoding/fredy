@@ -127,18 +127,18 @@ export default function Dashboard() {
         </Col>
         <Col xs={24} sm={12} md={12} lg={6} xl={6}>
           <KpiCard
-            title="Avg. Price"
+            title="Median Price"
             color="purple"
             value={`${
-              !kpis.avgPriceOfListings
+              !kpis.medianPriceOfListings
                 ? '---'
                 : new Intl.NumberFormat('de-DE', {
                     style: 'currency',
                     currency: 'EUR',
-                  }).format(kpis.avgPriceOfListings)
+                  }).format(kpis.medianPriceOfListings)
             }`}
             icon={<IconNoteMoney />}
-            description="Avg. Price of listings"
+            description="Median Price of listings"
           />
         </Col>
       </Row>
