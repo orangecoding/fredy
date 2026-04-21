@@ -19,4 +19,4 @@ jobs:
           cache: 'yarn'
 
       - run: yarn install
-      - run: yarn testGH
+      - run: yarn test:offline

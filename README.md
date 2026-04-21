@@ -188,9 +188,24 @@ You should now be able to access _Fredy_ from your browser. Check your Terminal 
 
 ### Run Tests
 
+## "Online" tests
+These tests are directly executed against the actual providers.
 ``` bash
 yarn run test
 ```
+
+## "Offline" tests
+These tests are using the test fixtures instead of the actual providers. Much faster and "good enough" to test the core functionality.
+``` bash
+yarn run test:offline
+```
+
+## Download new fixtures
+If you have to refresh the fixtures (every once in a while needed because the providers change their code), run this command:
+``` bash
+yarn run download-fixtures
+```
+
 
 ------------------------------------------------------------------------
 

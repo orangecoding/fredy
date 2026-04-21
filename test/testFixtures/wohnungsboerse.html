@@ -1,0 +1,1824 @@
+
+    <div id="tooltips"></div>
+    <div class="fixed inset-0 z-[1120] hidden w-full h-full overflow-y-auto bg-opacity-50 bg-fg-muted modal-overlay md:px-4 " id="adblock-modal">
+    <div class="relative md:py-4 mx-auto w-100">
+        <div class="rounded-lg bg-bg shadow-40">
+        <div class="mt-3 text-center">
+        <div class="w-12 h-12 mx-auto rounded-full before:text-warning before:icon-error before:text-3xl">
+            
+        </div>
+        <h3 class="font-bold tracking-tight text-h4 lg:text-h3">Achtung!</h3>        <div class="py-3 mt-2 px-7">
+            <p class="">
+                Sie haben einen AdBlocker aktiviert. Um unsere Webseite vollständig nutzen zu können, deaktivieren Sie bitte Ihren Adblocker für diese Seite.
+            </p>
+        </div>
+        <div class="items-center px-4 py-3">
+            <button class="btn rounded-lg inline-flex items-center justify-center cursor-pointer text-white bg-primary lg:hover:bg-primary-muted active:bg-primary-emphasis disabled:!bg-fg-disabled disabled:!text-fg-on-disabled ok-btn" onclick="abConfirm();">OK</button>        </div>
+    </div>
+        </div>
+    </div>
+</div>
+
+    <div id="fb-root"></div>
+    <div class="flex-col h-full lg:flex">
+                    <header class="items-center hidden h-24 bg-bg lg:flex shrink-0">
+    <div class="container hidden lg:block">
+        <a href="/" class="inline-block mx-1 my-3"><img src="/img/2022/logo_header.svg" alt="wohnungsboerse.net" width="326" height="36" class="img-fluid"></a>
+    </div>
+</header>
+
+<nav class="relative z-10 hidden bg-secondary print:hidden lg:flex shrink-0" id="main-nav">
+    <div class="container flex justify-between ">
+        <ul class="flex items-center">
+            <li>
+                <a href="javascript:void(0);" data-toggle="menu-1" class="flex items-center h-16 px-4 font-bold text-fg-on-dark hover:underline hover:underline-offset-8 hover:decoration-2 hover:decoration-fg-on-dark">Kostenlos inserieren</a>
+                <div class="submenu left-0 hidden w-full p-5 bg-bg lg:absolute shadow-sm" id="menu-1">
+                    <div class="container grid grid-cols-3 space-x-4">
+                        <div>
+    <span class="mx-4 font-bold text-fg">Vermieten</span>    <ul>
+                    <li class="px-4 rounded-lg hover:bg-bg-canvas"><a href="https://www.wohnungsboerse.net/vermietung/wohnung-vermieten" class="block leading-14 border-b-1 border-b-fg-light ">Wohnung vermieten</a></li>
+                    <li class="px-4 rounded-lg hover:bg-bg-canvas"><a href="https://www.wohnungsboerse.net/vermietung/haus-vermieten" class="block leading-14 border-b-1 border-b-fg-light ">Haus vermieten</a></li>
+                    <li class="px-4 rounded-lg hover:bg-bg-canvas"><a href="https://www.wohnungsboerse.net/vermietung/nachmieter-gesucht" class="block leading-14 border-b-1 border-b-fg-light ">Nachmieter:in suchen</a></li>
+                    <li class="px-4 rounded-lg hover:bg-bg-canvas"><a href="https://www.wohnungsboerse.net/mietgesuche" class="block leading-14 border-b-1 border-b-fg-light ">Mietgesuche ansehen</a></li>
+            </ul>
+</div>                        <div>
+    <span class="mx-4 font-bold text-fg">Verkaufen</span>    <ul>
+                    <li class="px-4 rounded-lg hover:bg-bg-canvas"><a href="https://www.wohnungsboerse.net/verkaufen/immobilien-haus" class="block leading-14 border-b-1 border-b-fg-light ">Immobilie online inserieren</a></li>
+                    <li class="px-4 rounded-lg hover:bg-bg-canvas"><a href="https://www.wohnungsboerse.net/kaufgesuche" class="block leading-14 border-b-1 border-b-fg-light ">Kaufgesuche ansehen</a></li>
+                    <li class="px-4 rounded-lg hover:bg-bg-canvas"><a href="https://www.wohnungsboerse.net/maklersuche" class="block leading-14 border-b-1 border-b-fg-light ">Makler:innen finden</a></li>
+            </ul>
+</div>                    </div>
+                </div>
+            </li>
+            <li>
+                <a href="javascript:void(0);" data-toggle="menu-2" class="flex items-center h-16 px-4 font-bold text-fg-on-dark hover:underline hover:underline-offset-8 hover:decoration-2 hover:decoration-fg-on-dark">Suchen</a>
+                <div class="submenu left-0 hidden w-full p-5 bg-bg lg:absolute shadow-sm" id="menu-2">
+                    <div class="container grid grid-cols-3 space-x-4">
+                        <div>
+    <span class="mx-4 font-bold text-fg">Mieten</span>    <ul>
+                    <li class="px-4 rounded-lg hover:bg-bg-canvas"><a href="https://www.wohnungsboerse.net/wohnung-mieten-provisionsfrei" class="block leading-14 border-b-1 border-b-fg-light ">Wohnung mieten</a></li>
+                    <li class="px-4 rounded-lg hover:bg-bg-canvas"><a href="https://www.wohnungsboerse.net/haus-mieten" class="block leading-14 border-b-1 border-b-fg-light ">Haus mieten</a></li>
+                    <li class="px-4 rounded-lg hover:bg-bg-canvas"><a href="https://www.wohnungsboerse.net/zimmervermietung-wg-gesucht" class="block leading-14 border-b-1 border-b-fg-light ">WG-Zimmer finden</a></li>
+            </ul>
+</div>                        <div>
+    <span class="mx-4 font-bold text-fg">Kaufen</span>    <ul>
+                    <li class="px-4 rounded-lg hover:bg-bg-canvas"><a href="https://www.wohnungsboerse.net/wohnung-kaufen" class="block leading-14 border-b-1 border-b-fg-light ">Wohnung kaufen</a></li>
+                    <li class="px-4 rounded-lg hover:bg-bg-canvas"><a href="https://www.wohnungsboerse.net/haus-kaufen" class="block leading-14 border-b-1 border-b-fg-light ">Haus kaufen</a></li>
+            </ul>
+</div>                        <div>
+    <span class="mx-4 font-bold text-fg">Suchen</span>    <ul>
+                    <li class="px-4 rounded-lg hover:bg-bg-canvas"><a href="https://www.wohnungsboerse.net/mietgesuche-immobiliengesuche-aufgeben" class="block leading-14 border-b-1 border-b-fg-light ">Suchanzeige kostenlos aufgeben</a></li>
+            </ul>
+</div>                    </div>
+                </div>
+            </li>
+            <li>
+                <a href="javascript:void(0);" data-toggle="menu-3" class="flex items-center h-16 px-4 font-bold text-fg-on-dark hover:underline hover:underline-offset-8 hover:decoration-2 hover:decoration-fg-on-dark">Mietspiegel &amp; Immobilienpreise</a>
+                <div class="submenu left-0 hidden w-full p-5 bg-bg lg:absolute shadow-sm" id="menu-3">
+                    <div class="container grid grid-cols-3 space-x-4">
+                        <div>
+    <span class="mx-4 font-bold text-fg">Deutschland</span>    <ul>
+                    <li class="px-4 rounded-lg hover:bg-bg-canvas"><a href="https://www.wohnungsboerse.net/mietspiegel-mietpreise" class="block leading-14 border-b-1 border-b-fg-light ">Mietspiegel</a></li>
+                    <li class="px-4 rounded-lg hover:bg-bg-canvas"><a href="https://www.wohnungsboerse.net/immobilienpreise" class="block leading-14 border-b-1 border-b-fg-light ">Immobilienpreise</a></li>
+                    <li class="px-4 rounded-lg hover:bg-bg-canvas"><a href="https://www.wohnungsboerse.net/immobilienbewertung" class="block leading-14 border-b-1 border-b-fg-light ">Kostenlose Immobilienbewertung</a></li>
+            </ul>
+</div>                        <div>
+    <span class="mx-4 font-bold text-fg">Österreich</span>    <ul>
+                    <li class="px-4 rounded-lg hover:bg-bg-canvas"><a href="https://www.wohnungsboerse.net/mietspiegel-mietpreise-oesterreich" class="block leading-14 border-b-1 border-b-fg-light ">Mietpreise in Österreich</a></li>
+                    <li class="px-4 rounded-lg hover:bg-bg-canvas"><a href="https://www.wohnungsboerse.net/immobilienpreise-oesterreich" class="block leading-14 border-b-1 border-b-fg-light ">Immobilienpreise in Österreich</a></li>
+            </ul>
+</div>                    </div>
+                </div>
+            </li>
+            <li>
+                <a href="javascript:void(0);" data-toggle="menu-4" class="flex items-center h-16 px-4 font-bold text-fg-on-dark hover:underline hover:underline-offset-8 hover:decoration-2 hover:decoration-fg-on-dark">Service</a>
+                <div class="submenu left-0 hidden w-full p-5 bg-bg lg:absolute shadow-sm" id="menu-4">
+                    <div class="container grid grid-cols-2 space-x-4">
+                        <div>
+    <span class="mx-4 font-bold text-fg">Mieten &amp; Vermieten</span>    <ul>
+                    <li class="px-4 rounded-lg hover:bg-bg-canvas"><a href="https://www.wohnungsboerse.net/Mietvertraege-Mietvertrag-Kuendigungsfrist-pwib_id-vertraege.html" class="block leading-14 border-b-1 border-b-fg-light ">Mietverträge &amp; Vorlagen</a></li>
+                    <li class="px-4 rounded-lg hover:bg-bg-canvas"><a href="https://www.wohnungsboerse.net/wohnungsuebergabeprotokoll" class="block leading-14 border-b-1 border-b-fg-light ">Wohnungsübergabeprotokoll</a></li>
+                    <li class="px-4 rounded-lg hover:bg-bg-canvas"><a href="https://www.wohnungsboerse.net/mieterselbstauskunft" class="block leading-14 border-b-1 border-b-fg-light ">Mieterselbstauskunft</a></li>
+                    <li class="px-4 rounded-lg hover:bg-bg-canvas"><a href="https://www.wohnungsboerse.net/vermieterbescheinigung" class="block leading-14 border-b-1 border-b-fg-light ">Vermieterbescheinigung</a></li>
+                    <li class="px-4 rounded-lg hover:bg-bg-canvas"><a href="https://www.wohnungsboerse.net/mietminderung" class="block leading-14 border-b-1 border-b-fg-light ">Mietminderung</a></li>
+            </ul>
+</div>                        <div>
+    <span class="mx-4 font-bold text-fg">Umziehen</span>    <ul>
+                    <li class="px-4 rounded-lg hover:bg-bg-canvas"><a href="https://www.wohnungsboerse.net/umziehen/umzugscheckliste" class="block leading-14 border-b-1 border-b-fg-light ">Umzug Checkliste</a></li>
+                    <li class="px-4 rounded-lg hover:bg-bg-canvas"><a href="https://www.wohnungsboerse.net/umziehen/umzugsunternehmen" class="block leading-14 border-b-1 border-b-fg-light ">Günstigste Umzugsfirma in deiner Region finden</a></li>
+                    <li class="px-4 rounded-lg hover:bg-bg-canvas"><a href="https://www.wohnungsboerse.net/kuendigung-wohnung-muster" class="block leading-14 border-b-1 border-b-fg-light ">Mietvertrag kündigen</a></li>
+                    <li class="px-4 rounded-lg hover:bg-bg-canvas"><a href="https://www.wohnungsboerse.net/kuendigungsfrist-wohnung" class="block leading-14 border-b-1 border-b-fg-light ">Kündigungsfristen bei Wohnungsmietverträgen</a></li>
+            </ul>
+</div>                    </div>
+                </div>
+            </li>
+            <li>
+                <a href="https://www.wohnungsboerse.net/immobilienbewertung" class="flex items-center h-16 px-4 font-bold text-fg-on-dark hover:underline hover:underline-offset-8 hover:decoration-2 hover:decoration-fg-on-dark">Immobilienbewertung</a>
+            </li>
+        </ul>
+        <div>
+            <ul class="relative flex items-center">
+                <li>
+                    <div class="flex items-center">
+                                                    <a class="btn rounded-lg inline-flex items-center justify-center cursor-pointer bg-bg border-2 border-bg text-fg lg:hover:bg-transparent lg:hover:border-fg-on-dark lg:hover:text-fg-on-dark active:bg-bg active:text-fg disabled:!bg-bg-subtle disabled:!text-fg-on-disabled disabled:!border-bg-subtle mr-2" href="https://www.wohnungsboerse.net/vermietung/wohnung-vermieten" title="Immobilie inserieren">Anzeige aufgeben</a>                            <a href="javascript:void(0);" data-toggle="menu-member" class="flex items-center h-16 px-4 font-bold text-fg-on-dark before:text-white before:text-xl before:icon-profile before:mr-2 group"><span class="group-hover:underline group-hover:underline-offset-8 group-hover:decoration-2 group-hover:decoration-fg-on-dark">Anmelden</span></a>
+                                            </div>
+                    <div class="absolute right-0 z-10 hidden p-5 bg-white shadow-80 rounded-b-md w-80 submenu" id="menu-member">
+            <form id="loginForm" method="post" action="https://www.wohnungsboerse.net/login" target="_top">
+            <input type="hidden" name="_token" value="SrpLUnMy4MCkyR09RibETRrQNXfWYYG7t3oQ9Ahv" autocomplete="off">            <input name="_method" value="POST" type="hidden">
+            <label class="font-bold" for="user_username">
+    Benutzername
+</label>
+            <input type="text" class="w-full h-12 px-2 rounded-lg border-1 placeholder:text-input-placeholder focus:outline-none focus:border-input-border-focus border-input-border" name="email" id="user_username" value="">
+
+            <label class="font-bold block mt-4" for="user_passwd">
+    Passwort
+</label>
+            <input type="password" class="w-full h-12 px-2 rounded-lg border-1 placeholder:text-input-placeholder focus:outline-none focus:border-input-border-focus border-input-border" name="password" id="user_passwd" value="">
+
+
+            <a class="btn rounded-lg inline-flex items-center justify-center cursor-pointer text-secondary lg:hover:text-secondary-muted active:text-secondary-emphasis disabled:!text-secondary-disabled px-0" href="https://www.wohnungsboerse.net/forgot-password" rel="nofollow" target="_top">Passwort vergessen?</a>
+            <button class="btn rounded-lg inline-flex items-center justify-center cursor-pointer text-white bg-primary lg:hover:bg-primary-muted active:bg-primary-emphasis disabled:!bg-fg-disabled disabled:!text-fg-on-disabled w-full mt-3" type="submit">Anmelden</button>        </form>
+        <div class="mt-4 text-center">
+                        <hr class="mt-4 mb-4 border-fg-light">
+            <div class="font-bold text-fg-muted">Neu hier?</div>
+            <a class="btn rounded-lg inline-flex items-center justify-center cursor-pointer text-secondary lg:hover:text-secondary-muted active:text-secondary-emphasis disabled:!text-secondary-disabled mx-auto" href="https://www.wohnungsboerse.net/register" rel="nofollow" target="_top">Kostenlos registrieren</a>        </div>
+    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<div class="flex items-center justify-between bg-white lg:hidden h-16 relative z-[1101] shadow-20 print:shadow-none">
+    <label class="relative flex items-center justify-center w-16 h-16 cursor-pointer print:hidden menu-toggle rounded-0 collapsed before:text-primary before:icon-menu before:text-3xl" for="mobile-menu"></label>
+    <a href="https://www.wohnungsboerse.net" class="flex justify-center px-3 py-1 lg:h-16" rel="nofollow" target="_top" title="wohnungsboerse.net"><img src="/img/2022/logo_header.svg" alt="wohnungsboerse.net" width="326" height="36" class="img-fluid"></a>
+
+            <a href="https://www.wohnungsboerse.net/login" class="flex items-center justify-center w-16 h-16 no-underline print:hidden lg:hidden before:icon-profile before:text-fg before:text-2xl" rel="nofollow" target="_top" title="Login"></a>
+    </div>
+<div id="menu-wrapper" class="absolute hidden w-full overflow-hidden transition-opacity opacity-0 lg:hidden">
+    <input type="checkbox" id="mobile-menu" name="mobile-menu" class="hidden menu-checkbox" autocomplete="off">
+    <div class="absolute top-0 left-0 w-full h-full overflow-hidden transition-transform -translate-x-full menu bg-bg md:w-100 md:-translate-x-100">
+        <div class="flex items-center justify-center w-full h-full">
+    <img src="/img/2022/loading.svg" width="40" height="40" loading="lazy" class="animate-spin">
+</div>
+    </div>
+</div>
+                <main class="grow">
+            <noscript>
+                <section class="md:px-4 lg:container"><div class="p-4 text-center bg-error text-bg">
+                        <b>Bitte aktiviere JavaScript!</b><br />
+                        Der Funktionsumfang und die Benutzerfreundlichkeit dieser Seite ist im Moment stark eingeschränkt,
+                        da JavaScript nicht aktiviert ist.
+                    </div></section>
+            </noscript>
+                                                            <nav class="px-4 lg:container">
+                            </nav>
+
+            
+            <section class="container sticky top-0 hidden z-1 lg:block">
+                <div id="left-sky" class="min-h-[600px] h-full absolute left-0">
+              <s24-ad-slot ad-unit-path="/4467/wohnungsboerse_net/Resultlist/Left_Banner_1" size-map-0x0="" size-map-1405x0="120x600" size-map-1485x0="120x600,160x600" size-map-1560x0="120x600,160x600,200x600" size-map-1760x0="120x600,160x600,200x600,300x600" class="absolute right-0">
+      </s24-ad-slot>
+    </div>
+<div id="right-sky" class="min-h-[600px] h-full absolute right-0">
+              <s24-ad-slot ad-unit-path="/4467/wohnungsboerse_net/Resultlist/Right_Banner_1" size-map-0x0="" size-map-1405x0="120x600" size-map-1485x0="120x600,160x600" size-map-1560x0="120x600,160x600,200x600" size-map-1760x0="120x600,160x600,200x600,300x600" class="absolute left-0">
+      </s24-ad-slot>
+    </div>
+            </section>
+            <section class="md:px-4 lg:container px-4"><div class="pt-6 pb-4 search-header lg:pt-8 lg:pb-6">
+    <div class="mb-4 lg:mb-5">
+                                        <div class="breadcrumb" itemscope="" itemtype="http://schema.org/BreadcrumbList">
+                            <span itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem">
+              <a class="underline text-secondary visited:text-secondary-emphasis hover:text-secondary-muted font-bold no-underline" href="https://www.wohnungsboerse.net/wohnung-kaufen" itemprop="item"><span itemprop="name">Wohnung kaufen</span></a>              <meta itemprop="position" content="1">
+            </span>
+                          /
+                                                  <span itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem">
+              <a class="underline text-secondary visited:text-secondary-emphasis hover:text-secondary-muted font-bold no-underline" href="https://www.wohnungsboerse.net/Nordrhein-Westfalen/Duesseldorf/Eigentumswohnung" itemprop="item"><span itemprop="name">Eigentumswohnung Düsseldorf</span></a>              <meta itemprop="position" content="2">
+            </span>
+                                </div>
+
+                        </div>        <h1 class="font-bold tracking-tighter text-h3 lg:text-h2 inline">Eigentumswohnungen  Düsseldorf</h1>    <span class="font-bold tracking-tighter text-h3 lg:text-h2 font-normal results-text">: <span class="whitespace-nowrap"><span>1162</span> Ergebnisse</span></span></div>
+
+    <div class="fixed inset-0 z-[1120] hidden w-full h-full overflow-y-auto bg-opacity-50 bg-fg-muted modal-overlay md:px-4 " id="filter-modal">
+    <div class="relative md:py-4 mx-auto max-w-184">
+        <div class="rounded-lg bg-bg shadow-40">
+        <div class="flex items-center justify-between h-16 pl-4 ">
+                    <h3 class="font-bold tracking-tight text-h4 lg:text-h3">Filter</h3>                <button class="flex items-center justify-center w-12 h-12 ok-btn before:icon-close before:text-xl"></button>
+    </div>
+    <div class="collapse-search">
+            <form method="get" action="https://www.wohnungsboerse.net/searches/index" id="searchform" class="estate-count-searchform">
+                <input type="hidden" value="1" name="isSearch">
+                <input type="hidden" value="DE" name="country">
+                <input type="hidden" value="1" name="page">
+                                <div class="px-4 overflow-y-auto lg:px-8 md:h-[calc(100dvh-180px)] h-[calc(100dvh-148px)] inner-search">
+                    <div class="p-4 rounded-lg bg-bg-canvas">
+                        <div>
+                            <label class="font-bold block mb-1" for="SearchEstateMarketingTypes-selectized">
+    Was?
+</label>
+                            <select class="selectize min-h-12 selectized" id="SearchEstateMarketingTypes" name="estate_marketing_types" tabindex="-1" style="display: none;"><option value="kauf,1" selected="selected">Wohnung kaufen</option></select><div class="selectize-control selectize min-h-12 single"><div class="selectize-input items full has-options has-items"><div class="item" data-value="kauf,1">Wohnung kaufen</div><input type="select-one" autocomplete="new-password" autofill="no" tabindex="" id="SearchEstateMarketingTypes-selectized" style="width: 4px;"></div><div class="selectize-dropdown single selectize min-h-12" style="display: none;"><div class="selectize-dropdown-content" tabindex="-1"></div></div></div>
+
+                            <input type="hidden" name="marketing_type" id="SearchMarketingType" value="kauf">
+                            <input type="hidden" name="estate_types[]" id="SearchEstateType" value="1">
+                        </div>
+                        <div class="mt-4">
+                            <label class="font-bold block mb-1" for="SearchZipcodeCity">
+    Wo?
+</label>
+                                                            
+                                                                    <input type="hidden" id="cities" name="cities[]" value="Duesseldorf">
+                                
+                                                                    <input type="hidden" id="zipcodes" name="zipcodes[]" value="">
+                                
+                                
+                                <div class="relative autoComplete_wrapper">
+    <input disabled="" type="search" class="w-full h-12 px-2 rounded-lg border-1 placeholder:text-input-placeholder focus:outline-none focus:border-input-border-focus border-input-border-disabled text-input-border-disabled bg-body autocomplete aria-expanded:border-b-0 aria-expanded:rounded-b-none appearance-none bg-bg" autocomplete="off" data-autocomplete-mode="content_aware" placeholder="Ort oder PLZ" value="Düsseldorf" name="term" id="SearchZipcodeCity" aria-controls="autoComplete_list_1" aria-autocomplete="both" role="combobox" aria-owns="autoComplete_list_1" aria-haspopup="true" aria-expanded="false"><ul id="autoComplete_list_1" role="listbox" hidden=""></ul>
+
+</div>                                                    </div>
+                        <div class="mt-4">
+                                                            <label class="font-bold block mb-1">
+    Stadtteil
+</label>
+                                <select multiple="multiple" class="selectize-multiple SearchDistrict selectized" id="SearchDistrict" name="districts[]" tabindex="-1" style="display: none;"></select><div class="selectize-control selectize-multiple SearchDistrict multi plugin-remove_button"><div class="selectize-input items not-full has-options"><input type="select-one" autocomplete="new-password" autofill="no" tabindex="" id="SearchDistrict-selectized" placeholder="Alle Stadtteile" style="width: 91.875px;"></div><div class="selectize-dropdown multi selectize-multiple SearchDistrict plugin-remove_button" style="display: none; width: 0px; top: 0px; left: 0px;"><div class="selectize-dropdown-content" tabindex="-1"></div></div></div>
+
+                                                    </div>
+                                                    <div class="mt-4">
+                                <label class="font-bold block mb-1">
+    Umkreis
+</label>
+                                <select class="selectize min-h-12 peer selectized" id="SearchUmkreis" name="umkreiskm" tabindex="-1" style="display: none;"><option value="" selected="selected">+0 km</option></select><div class="selectize-control selectize min-h-12 peer single"><div class="selectize-input items full has-options has-items"><div class="item" data-value="">+0 km</div><input type="select-one" autocomplete="new-password" autofill="no" tabindex="0" id="SearchUmkreis-selectized" style="width: 4px;"></div><div class="selectize-dropdown single selectize min-h-12 peer" style="display: none; width: 0px; top: 48px; left: 0px;"><div class="selectize-dropdown-content" tabindex="-1"></div></div></div>
+
+                                <div class="hidden mt-2 text-caption text-fg-muted peer-disabled:block">
+                                    Bei der Suche von mehr als einem Stadtteil ist die Umkreisssuche nicht verfügbar
+                                </div>
+                            </div>
+                                            </div>
+
+                    <div class="p-4 mt-4 rounded-lg lg:mt-10 bg-bg-canvas" id="properties">
+                        <div class="mb-4">
+                            <label class="font-bold block mb-1" for="SearchPricetext">
+    Preis in €
+</label>
+                            <div class="flex items-center space-x-2">
+                                <input type="text" class="w-full h-12 px-2 rounded-lg border-1 placeholder:text-input-placeholder focus:outline-none focus:border-input-border-focus border-input-border" name="minprice" id="SearchMinprice" placeholder="von" value="">
+
+                                <span class="before:icon-remove before:text-fg-subtle"></span>
+                                <input type="text" class="w-full h-12 px-2 rounded-lg border-1 placeholder:text-input-placeholder focus:outline-none focus:border-input-border-focus border-input-border" name="maxprice" id="SearchMaxprice" placeholder="bis" value="">
+
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="font-bold block mb-1" for="SearchSizetext">
+    Fläche in m²
+</label>
+                            <div class="flex items-center space-x-2">
+                                <input type="text" class="w-full h-12 px-2 rounded-lg border-1 placeholder:text-input-placeholder focus:outline-none focus:border-input-border-focus border-input-border" name="minsize" id="SearchMinsize" placeholder="von" value="">
+
+                                <span class="before:icon-remove before:text-fg-subtle"></span>
+                                <input type="text" class="w-full h-12 px-2 rounded-lg border-1 placeholder:text-input-placeholder focus:outline-none focus:border-input-border-focus border-input-border" name="maxsize" id="SearchMaxsize" placeholder="bis" value="">
+
+                            </div>
+                        </div>
+                        <div>
+                            <label class="font-bold block mb-1" for="SearchRoomstext">
+    Zimmer
+</label>
+                            <div class="flex items-center space-x-2">
+                                <input type="text" class="w-full h-12 px-2 rounded-lg border-1 placeholder:text-input-placeholder focus:outline-none focus:border-input-border-focus border-input-border" name="minrooms" id="SearchMinrooms" placeholder="von" value="">
+
+                                <span class="before:icon-remove before:text-fg-subtle"></span>
+                                <input type="text" class="w-full h-12 px-2 rounded-lg border-1 placeholder:text-input-placeholder focus:outline-none focus:border-input-border-focus border-input-border" name="maxrooms" id="SearchMaxrooms" placeholder="bis" value="">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 mt-4 rounded-lg lg:mt-10 bg-bg-canvas">
+                        <label class="font-bold block mb-1" for="SearchEstateSubTypes-selectized">
+    Objekttyp
+</label>
+                        <div class="mb-6 MarketingEstateSubTypes">
+                            <select multiple="multiple" class="selectize-multiple selectized" name="EstateSubTypes[]" id="SearchEstateSubTypes" tabindex="-1" style="display: none;"></select><div class="selectize-control selectize-multiple multi plugin-remove_button"><div class="selectize-input items not-full"><input type="select-one" autocomplete="new-password" autofill="no" tabindex="0" id="SearchEstateSubTypes-selectized" placeholder="Objekttypen" style="width: 79.4531px;"></div><div class="selectize-dropdown multi selectize-multiple plugin-remove_button" style="display: none; width: 0px; top: 0px; left: 0px;"><div class="selectize-dropdown-content" tabindex="-1"><div class="option active" data-selectable="" data-value="159">Apartment</div><div class="option " data-selectable="" data-value="17">Atelier</div><div class="option " data-selectable="" data-value="108">Betreutes Wohnen</div><div class="option " data-selectable="" data-value="2">Dachgeschosswohnung</div><div class="option " data-selectable="" data-value="18">Eigentumswohnung</div><div class="option " data-selectable="" data-value="88">Erdgeschosswohnung</div><div class="option " data-selectable="" data-value="89">Etagenwohnung</div><div class="option " data-selectable="" data-value="102">Hochparterre-Wohnung</div><div class="option " data-selectable="" data-value="3">Loft</div><div class="option " data-selectable="" data-value="4">Maisonette-Wohnung</div><div class="option " data-selectable="" data-value="5">Penthouse</div><div class="option " data-selectable="" data-value="157">Pflegeheim</div><div class="option " data-selectable="" data-value="156">Seniorenheim</div><div class="option " data-selectable="" data-value="101">Souterrainwohnung</div><div class="option " data-selectable="" data-value="19">Terrassenwohnung</div><div class="option " data-selectable="" data-value="111">Wohn- und Geschäftsgebäude</div><div class="option " data-selectable="" data-value="87">Wohnanlage</div><div class="option " data-selectable="" data-value="107">Wohnimmobilie (sonstige)</div></div></div></div>
+
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2">
+                                                            <label class="font-bold flex items-center min-h-12 !font-normal cursor-pointer" for="furnishing_1">
+    <div class="flex items-start">
+        <input id="furnishing_1" class="border-2 w-5 h-5 text-secondary rounded-sm mr-2 mt-0.5 form-checkbox focus:ring-0 focus:outline-none focus:border-input-border-focus cursor-pointer border-fg-subtle" type="checkbox" value="1" name="furnishings[]">
+        <span class="">Möbliert</span>
+    </div>
+</label>
+
+                                                                                            <label class="font-bold flex items-center min-h-12 !font-normal cursor-pointer" for="furnishing_2">
+    <div class="flex items-start">
+        <input id="furnishing_2" class="border-2 w-5 h-5 text-secondary rounded-sm mr-2 mt-0.5 form-checkbox focus:ring-0 focus:outline-none focus:border-input-border-focus cursor-pointer border-fg-subtle" type="checkbox" value="2" name="furnishings[]">
+        <span class="">Balkon</span>
+    </div>
+</label>
+
+                                                                                            <label class="font-bold flex items-center min-h-12 !font-normal cursor-pointer" for="furnishing_4">
+    <div class="flex items-start">
+        <input id="furnishing_4" class="border-2 w-5 h-5 text-secondary rounded-sm mr-2 mt-0.5 form-checkbox focus:ring-0 focus:outline-none focus:border-input-border-focus cursor-pointer border-fg-subtle" type="checkbox" value="4" name="furnishings[]">
+        <span class="">Garten</span>
+    </div>
+</label>
+
+                                                                                            <label class="font-bold flex items-center min-h-12 !font-normal cursor-pointer" for="furnishing_7">
+    <div class="flex items-start">
+        <input id="furnishing_7" class="border-2 w-5 h-5 text-secondary rounded-sm mr-2 mt-0.5 form-checkbox focus:ring-0 focus:outline-none focus:border-input-border-focus cursor-pointer border-fg-subtle" type="checkbox" value="7" name="furnishings[]">
+        <span class="">Wintergarten</span>
+    </div>
+</label>
+
+                                                                                            <label class="font-bold flex items-center min-h-12 !font-normal cursor-pointer" for="furnishing_6">
+    <div class="flex items-start">
+        <input id="furnishing_6" class="border-2 w-5 h-5 text-secondary rounded-sm mr-2 mt-0.5 form-checkbox focus:ring-0 focus:outline-none focus:border-input-border-focus cursor-pointer border-fg-subtle" type="checkbox" value="6" name="furnishings[]">
+        <span class="">Dachterrasse</span>
+    </div>
+</label>
+
+                                                                                            <label class="font-bold flex items-center min-h-12 !font-normal cursor-pointer" for="furnishing_3">
+    <div class="flex items-start">
+        <input id="furnishing_3" class="border-2 w-5 h-5 text-secondary rounded-sm mr-2 mt-0.5 form-checkbox focus:ring-0 focus:outline-none focus:border-input-border-focus cursor-pointer border-fg-subtle" type="checkbox" value="3" name="furnishings[]">
+        <span class="">Terrasse</span>
+    </div>
+</label>
+
+                                                                                            <label class="font-bold flex items-center min-h-12 !font-normal cursor-pointer" for="furnishing_5">
+    <div class="flex items-start">
+        <input id="furnishing_5" class="border-2 w-5 h-5 text-secondary rounded-sm mr-2 mt-0.5 form-checkbox focus:ring-0 focus:outline-none focus:border-input-border-focus cursor-pointer border-fg-subtle" type="checkbox" value="5" name="furnishings[]">
+        <span class="">Loggia</span>
+    </div>
+</label>
+
+                                                                                            <label class="font-bold flex items-center min-h-12 !font-normal cursor-pointer" for="furnishing_9">
+    <div class="flex items-start">
+        <input id="furnishing_9" class="border-2 w-5 h-5 text-secondary rounded-sm mr-2 mt-0.5 form-checkbox focus:ring-0 focus:outline-none focus:border-input-border-focus cursor-pointer border-fg-subtle" type="checkbox" value="9" name="furnishings[]">
+        <span class="">Separate Küche</span>
+    </div>
+</label>
+
+                                                                                            <label class="font-bold flex items-center min-h-12 !font-normal cursor-pointer" for="furnishing_8">
+    <div class="flex items-start">
+        <input id="furnishing_8" class="border-2 w-5 h-5 text-secondary rounded-sm mr-2 mt-0.5 form-checkbox focus:ring-0 focus:outline-none focus:border-input-border-focus cursor-pointer border-fg-subtle" type="checkbox" value="8" name="furnishings[]">
+        <span class="">Wohnküche</span>
+    </div>
+</label>
+
+                                                                                            <label class="font-bold flex items-center min-h-12 !font-normal cursor-pointer" for="furnishing_11">
+    <div class="flex items-start">
+        <input id="furnishing_11" class="border-2 w-5 h-5 text-secondary rounded-sm mr-2 mt-0.5 form-checkbox focus:ring-0 focus:outline-none focus:border-input-border-focus cursor-pointer border-fg-subtle" type="checkbox" value="11" name="furnishings[]">
+        <span class="">Einbauküche</span>
+    </div>
+</label>
+
+                                                                                            <label class="font-bold flex items-center min-h-12 !font-normal cursor-pointer" for="furnishing_16">
+    <div class="flex items-start">
+        <input id="furnishing_16" class="border-2 w-5 h-5 text-secondary rounded-sm mr-2 mt-0.5 form-checkbox focus:ring-0 focus:outline-none focus:border-input-border-focus cursor-pointer border-fg-subtle" type="checkbox" value="16" name="furnishings[]">
+        <span class="">Keller</span>
+    </div>
+</label>
+
+                                                                                            <label class="font-bold flex items-center min-h-12 !font-normal cursor-pointer" for="furnishing_13">
+    <div class="flex items-start">
+        <input id="furnishing_13" class="border-2 w-5 h-5 text-secondary rounded-sm mr-2 mt-0.5 form-checkbox focus:ring-0 focus:outline-none focus:border-input-border-focus cursor-pointer border-fg-subtle" type="checkbox" value="13" name="furnishings[]">
+        <span class="">Garage</span>
+    </div>
+</label>
+
+                                                                                            <label class="font-bold flex items-center min-h-12 !font-normal cursor-pointer" for="furnishing_31">
+    <div class="flex items-start">
+        <input id="furnishing_31" class="border-2 w-5 h-5 text-secondary rounded-sm mr-2 mt-0.5 form-checkbox focus:ring-0 focus:outline-none focus:border-input-border-focus cursor-pointer border-fg-subtle" type="checkbox" value="31" name="furnishings[]">
+        <span class="">Wohnen auf Zeit</span>
+    </div>
+</label>
+
+                                                                                            <label class="font-bold flex items-center min-h-12 !font-normal cursor-pointer" for="furnishing_19">
+    <div class="flex items-start">
+        <input id="furnishing_19" class="border-2 w-5 h-5 text-secondary rounded-sm mr-2 mt-0.5 form-checkbox focus:ring-0 focus:outline-none focus:border-input-border-focus cursor-pointer border-fg-subtle" type="checkbox" value="19" name="furnishings[]">
+        <span class="">Altbau</span>
+    </div>
+</label>
+
+                                                                                            <label class="font-bold flex items-center min-h-12 !font-normal cursor-pointer" for="furnishing_20">
+    <div class="flex items-start">
+        <input id="furnishing_20" class="border-2 w-5 h-5 text-secondary rounded-sm mr-2 mt-0.5 form-checkbox focus:ring-0 focus:outline-none focus:border-input-border-focus cursor-pointer border-fg-subtle" type="checkbox" value="20" name="furnishings[]">
+        <span class="">Neubau</span>
+    </div>
+</label>
+
+                                                                                            <label class="font-bold flex items-center min-h-12 !font-normal cursor-pointer" for="furnishing_29">
+    <div class="flex items-start">
+        <input id="furnishing_29" class="border-2 w-5 h-5 text-secondary rounded-sm mr-2 mt-0.5 form-checkbox focus:ring-0 focus:outline-none focus:border-input-border-focus cursor-pointer border-fg-subtle" type="checkbox" value="29" name="furnishings[]">
+        <span class="">Behindertengerecht</span>
+    </div>
+</label>
+
+                                                                                            <label class="font-bold flex items-center min-h-12 !font-normal cursor-pointer" for="furnishing_27">
+    <div class="flex items-start">
+        <input id="furnishing_27" class="border-2 w-5 h-5 text-secondary rounded-sm mr-2 mt-0.5 form-checkbox focus:ring-0 focus:outline-none focus:border-input-border-focus cursor-pointer border-fg-subtle" type="checkbox" value="27" name="furnishings[]">
+        <span class="">Tiere erlaubt</span>
+    </div>
+</label>
+
+                                                                                            <label class="font-bold flex items-center min-h-12 !font-normal cursor-pointer" for="furnishing_26">
+    <div class="flex items-start">
+        <input id="furnishing_26" class="border-2 w-5 h-5 text-secondary rounded-sm mr-2 mt-0.5 form-checkbox focus:ring-0 focus:outline-none focus:border-input-border-focus cursor-pointer border-fg-subtle" type="checkbox" value="26" name="furnishings[]">
+        <span class="">WG geeignet</span>
+    </div>
+</label>
+
+                                                                                        <label class="font-bold flex items-center min-h-12 !font-normal cursor-pointer" for="provisionsfrei">
+    <div class="flex items-start">
+        <input id="provisionsfrei" class="border-2 w-5 h-5 text-secondary rounded-sm mr-2 mt-0.5 form-checkbox focus:ring-0 focus:outline-none focus:border-input-border-focus cursor-pointer border-fg-subtle" type="checkbox" value="1" name="provisionsfrei">
+        <span class="">Provisionsfrei</span>
+    </div>
+</label>
+                            <label class="font-bold flex items-center min-h-12 !font-normal cursor-pointer" for="private_offer">
+    <div class="flex items-start">
+        <input id="private_offer" class="border-2 w-5 h-5 text-secondary rounded-sm mr-2 mt-0.5 form-checkbox focus:ring-0 focus:outline-none focus:border-input-border-focus cursor-pointer border-fg-subtle" type="checkbox" value="1" name="private_offer">
+        <span class="">Von privat</span>
+    </div>
+</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="px-4 py-4 lg:px-8 border-t-1 border-fg-light">
+                    <button class="btn rounded-lg inline-flex items-center justify-center cursor-pointer text-white bg-primary lg:hover:bg-primary-muted active:bg-primary-emphasis disabled:!bg-fg-disabled disabled:!text-fg-on-disabled w-full after:icon-chevron_right estate-count-button" title="Jetzt Wohnung finden" id="SearchFind" onclick="jQuery('#searchform').submit();">1162 Treffer</button>                </div>
+            </form>
+        </div>
+        </div>
+    </div>
+</div>
+
+    <div class="grid gap-4 mb-6 lg:grid-cols-3 md:grid-cols-2">
+                    <button class="btn rounded-lg inline-flex items-center justify-center cursor-pointer text-white bg-primary lg:hover:bg-primary-muted active:bg-primary-emphasis disabled:!bg-fg-disabled disabled:!text-fg-on-disabled w-full before:icon-filter after:icon-chevron_right" data-toggle="expand-button">Filter anpassen</button>                <div class="fixed inset-0 z-[1120] hidden w-full h-full overflow-y-auto bg-opacity-50 bg-fg-muted modal-overlay md:px-4 " id="rankingLayer">
+    <div class="relative md:py-4 mx-auto md:w-160">
+        <div class="rounded-lg bg-bg shadow-40">
+        <div class="flex items-center justify-between h-16 pl-4 ">
+                    <h3 class="font-bold tracking-tight text-h4 lg:text-h3">Ranking und Sortierung der Ergebnislisten</h3>                <button class="flex items-center justify-center w-12 h-12 ok-btn before:icon-close before:text-xl"></button>
+    </div>
+    <p class="px-4 pb-4">
+        Eine detaillierte Erklärung unserer Sortierungslogik für die Standardsortierung und allen weiteren Sortierungsoptionen findest Du <a class="underline text-secondary visited:text-secondary-emphasis hover:text-secondary-muted" href="https://www.wohnungsboerse.net/agb-ranking" target="_blank">hier</a> in unseren AGB.
+    </p>
+        </div>
+    </div>
+</div>
+
+<div class="sorting flex justify-between">
+    <select tabindex="-1" class="sorting-select w-full selectized" style="display: none;"><option value="https://www.wohnungsboerse.net/searches/index?estate_marketing_types=kauf%2C1&amp;marketing_type=kauf&amp;estate_types%5B0%5D=1&amp;is_rendite=0&amp;cities%5B0%5D=Duesseldorf&amp;term=D%C3%BCsseldorf&amp;sort=estates.modified&amp;direction=DESC" selected="selected">Neueste Angebote zuerst</option></select><div class="selectize-control sorting-select w-full single"><div class="selectize-input items full has-options has-items"><div class="item" data-value="https://www.wohnungsboerse.net/searches/index?estate_marketing_types=kauf%2C1&amp;marketing_type=kauf&amp;estate_types%5B0%5D=1&amp;is_rendite=0&amp;cities%5B0%5D=Duesseldorf&amp;term=D%C3%BCsseldorf&amp;sort=estates.modified&amp;direction=DESC">Neueste Angebote zuerst</div><input type="select-one" autocomplete="new-password" autofill="no" tabindex="-1" style="width: 4px;"></div><div class="selectize-dropdown single sorting-select w-full" style="display: none;"><div class="selectize-dropdown-content" tabindex="-1"></div></div></div>
+    <button class="before:icon-info before:text-fg before:hover:text-fg-muted before:text-2xl h-12 min-w-[48px]" data-toggle="ranking-modal">
+
+</button></div>
+    </div>
+        
+            <div class="relative estate-list">
+            
+            <div id="ajax-estate-list" class="mt-8">
+                
+                <section class="mt-6 search_result_container">
+                                
+        
+        
+        <a href="https://www.wohnungsboerse.net/immodetail-k/39814920" title="Diese sympathische 2-Zimmerwohnung, in ruhiger und dennoch zentraler Lage im beliebten Stadtteil Unterbilk, unweit des Rheins, befindet sich im 3.OG eines 5 geschössigen, unterkellerten, Mehrfamilienhaus aus dem Jahre 1952.
+Im Laufe der Jahre haben Teilmodernisierungen stattgefunden. (Sicherheitswohnungstür, Fenster zur Innenhofseite, Elektrik, Bad).
+Betreten wird die Wohnunng durch eine gut proportionierte Diele.
+Zur Linken befindet sich der grosszügig angelegte Wohn-/Essbereich.
+Nach Umbauarbeiten wurden der Balkon und die Abstellkammer dem Wohnraum angeschlossen, mit einer allseitig umschliessenden Fensteranlage versehen und eine Küche integriert.
+Zur Rechten geht es in das 15qm große Schlafzimmer. Dazwischen befindet sich das Bad mit Waschtisch, Einbaudusche und WC.
+Die Beheizung erfolgt aktuell über Nachtspeicheröfen.
+Der Wohnung ist ein Kellerraum zugewiesen.
+Versorgungsleitungen: Strom, Gas, Wasser, Kabel FS, Kanal, Telefon sind als Hausanschlüsse vorhanden.
+Die Wohnung ist seit 2018 an einen solventen Mieter vermietet.
+Die letzte Mietanpassung erfolgte zum 01.03.2026 und beträgt 557,17€ kalt.
+Das Hausgelt beträgt 81,80€.
+Hervorangende Lage in ruhiger Seitenstr., unweit des Medienhafen und der Rheinuferpromenade. Durch die durchgeführte Verkehrsberuhigung hat sich der Stadtteil zu einem gefragten Viertel.
+Gute Bus - und Bahnanbindungen,
+Geschäftsgebiet „Lorettostraße“ in unmittelbarer Nähe." rel="" target="_blank" class=" estate_39814920 bg-bg rounded-lg overflow-hidden shadow-20 sm:p-2 mb-4 relative flex flex-col justify-between sm:grid sm:grid-cols-12 sm:gap-x-4">
+                        <div class="overflow-hidden h-36 sm:col-span-6 lg:col-span-4 sm:h-60">
+                                <span class="block w-full h-full bg-center bg-cover bg-estate-slider">
+                    <img src="https://www.wohnungsboerse.net/assets/estates/400x400/xV0j0kja1F0G8WcUrdo7mWHVCM0nnj17VYdvWlxE.jpg?id=50391609" onload="jQuery(this).removeClass('opacity-0')" loading="lazy" class="object-cover object-center w-full h-full transition-opacity" alt="Vermietete 2-Zimmerwohnung in Düsseldorf Unterbilk">
+                </span>
+            </div>
+            <div class="p-4 sm:px-0 sm:pb-0 sm:col-span-6 lg:col-span-7">
+                <h3 class="font-bold tracking-tight text-h4 lg:text-h3 text-fg sm:col-span-12 nounderline line-clamp-2">Vermietete 2-Zimmerwohnung in Düsseldorf Unterbilk</h3>                <div class="mt-2 text-caption before:icon-location_marker before:text-secondary line-clamp-1 sm:col-span-12">
+                    Düsseldorf - Unterbilk
+                </div>
+
+                <div class="flex justify-between px-2 py-4 mt-2 text-center divide-x rounded-lg lg:w-80 sm:mt-4 divide-bg-muted bg-bg-canvas divide-solid">
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Kaufpreis</dt>
+                        <dd class="text-base font-bold">158.000&nbsp;€</dd>
+                    </dl>
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Zimmer</dt>
+                        <dd class="text-base font-bold">
+                            2<span class="inline sm:hidden"> Zi.</span>
+                                                    </dd>
+                    </dl>
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Fläche</dt>
+                        <dd class="text-base font-bold">44 m²</dd>
+                    </dl>
+                </div>
+
+                <div class="hidden mt-1 space-x-2 sm:block h-7 sm:col-span-12">
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Keller</span>
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Altbau</span>
+                                    </div>
+            </div>
+            <div class="hidden w-12 lg:flex lg:col-span-1 lg:items-center lg:justify-self-end lg:justify-center after:icon-chevron_right after:text-xl after:text-fg-subtle">
+            </div>
+            <div class="hidden col-span-12 sm:block text-caption text-fg-muted">
+                            </div>
+        </a>
+
+
+                    
+            
+                                                
+        
+        
+        <a href="https://www.wohnungsboerse.net/immodetail-k/38704066" title="Diese gepflegte 2-Zimmer-Wohnung liegt im Hochparterre eines ruhigen Mehrfamilienhauses aus dem Jahr 1993 in Düsseldorf-Angermund, nur wenige Minuten vom Flughafen Düsseldorf entfernt. Die ruhige Lage im Grünen kombiniert mit einer hervorragenden Verkehrsanbindung macht sie ideal für Pendler, Geschäftsleute oder Paare.  
+
+Objektdetails 
+• Wohnfläche: ca. 76 m² 
+• Zimmer: 2 (Wohnzimmer, Schlafzimmer) 
+• Etage: Hochparterre (nur wenige Stufen am Hauseingang) 
+• Baujahr: 1993 
+• Kaufpreis: 398.000 € 
+• Heizung: Gas-Brennwertheizung (neu 2023), gemeinschaftlich 
+• Energieverbrauchskennwert: 101 kWh/(m²·a), Verbrauchsausweis 
+• Energieträger: Erdgas 
+• Eﬃzienzklasse: D   
+
+Ausstattung 
+• Südlich ausgerichtete Terrasse mit ca. 15 m²
+• Ebenerdiger Zugang von Wohnzimmer zur Terrasse und zum Gartenanteil, stufenlos und bequem 
+• Balkon mit Nordausrichtung (am Schlafzimmer) 
+• Echtes Eichenparkett im Schiﬀsboden-Verband im Wohnzimmer 
+• Großzügiges Wohnzimmer mit Terrassenzugang 
+• Ruhiges Schlafzimmer nach Norden, inkl. Einbauschränken 
+• Badezimmer mit Vollbad &amp;amp; bodengleicher Dusche 
+• Separate Gäste-Toilette 
+• Einbauküche inkl. Geräte 
+• Kellerraum &amp;amp; Gemeinschaftswaschküche mit eigenem Wasser- &amp;amp; Stromanschluss 
+• Tiefgaragenstellplatz inklusive  
+
+Lage 
+• Düsseldorf Angermund 
+• grüne und ruhige Umgebung
+• gute Flughafenanbindung
+• ÖPNV S1 ca. 5-10 Min fußläufig, Bus vor der Haustür" rel="" target="_blank" class=" estate_38704066 bg-bg rounded-lg overflow-hidden shadow-20 sm:p-2 mb-4 relative flex flex-col justify-between sm:grid sm:grid-cols-12 sm:gap-x-4">
+                        <div class="overflow-hidden h-36 sm:col-span-6 lg:col-span-4 sm:h-60">
+                                <span class="block w-full h-full bg-center bg-cover bg-estate-slider">
+                    <img src="https://www.wohnungsboerse.net/assets/estates/400x400/yiDJHefFBTeOeKA91M2o2N1fw4PI0lenEzlX54Fd.jpg?id=49275103" onload="jQuery(this).removeClass('opacity-0')" loading="lazy" class="object-cover object-center w-full h-full transition-opacity" alt="Lichtdurchflutete 2-Zimmer-Wohnung mit Südterrasse, Balkon &amp; Tiefgaragenstellplatz, Toplage in Düsseldorf-Angermund">
+                </span>
+            </div>
+            <div class="p-4 sm:px-0 sm:pb-0 sm:col-span-6 lg:col-span-7">
+                <h3 class="font-bold tracking-tight text-h4 lg:text-h3 text-fg sm:col-span-12 nounderline line-clamp-2">Lichtdurchflutete 2-Zimmer-Wohnung mit Südterrasse, Balkon &amp; Tiefgaragenstellplatz, Toplage in Düsseldorf-Angermund</h3>                <div class="mt-2 text-caption before:icon-location_marker before:text-secondary line-clamp-1 sm:col-span-12">
+                    Düsseldorf - Angermund
+                </div>
+
+                <div class="flex justify-between px-2 py-4 mt-2 text-center divide-x rounded-lg lg:w-80 sm:mt-4 divide-bg-muted bg-bg-canvas divide-solid">
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Kaufpreis</dt>
+                        <dd class="text-base font-bold">398.000&nbsp;€</dd>
+                    </dl>
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Zimmer</dt>
+                        <dd class="text-base font-bold">
+                            2<span class="inline sm:hidden"> Zi.</span>
+                                                    </dd>
+                    </dl>
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Fläche</dt>
+                        <dd class="text-base font-bold">76 m²</dd>
+                    </dl>
+                </div>
+
+                <div class="hidden mt-1 space-x-2 sm:block h-7 sm:col-span-12">
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Balkon</span>
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Terrasse</span>
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Garten</span>
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Einbauküche</span>
+                                                            </div>
+            </div>
+            <div class="hidden w-12 lg:flex lg:col-span-1 lg:items-center lg:justify-self-end lg:justify-center after:icon-chevron_right after:text-xl after:text-fg-subtle">
+            </div>
+            <div class="hidden col-span-12 sm:block text-caption text-fg-muted">
+                            </div>
+        </a>
+
+
+                    
+            
+                                                
+        
+        
+        <a href="https://www.wohnungsboerse.net/immodetail-k/37421406" title="-	5 Jahre Mietgarantie,
+-	48 qm und 49 qm Einheiten,
+-	hohe Abschreibung + plus Denkmal + Sanierungsoption,
+-	AfA von 8,3 %: Attraktive steuerliche Abschreibungsmöglichkeiten für Kapitalanleger,
+-	Kaufpreis: NUR ab 4.816, - €/qm – deutlich unter dem aktuellen Durchschnittspreis in dieser Lage.
+-	Kaufnebenkosten werden vollständig vom Verkäufer übernommen – keine zusätzlichen Belastungen für den Käufer!
+-	Sanierungsoption: 20.000 für Sanierung Verwendung in Leistung oder Auszahlung
+-	WICHTIG: Alle künftigen Sanierungen in 12 Jahre Rückerstattung wegen Denkmalschutz
+
+Lagebeschreibung – Urbaner Charme trifft auf Wachstumspotenzial
+Die Immobilie befindet sich in begehrter innerstädtischer Lage im aufstrebenden Düsseldorfer Stadtteil Oberbilk – nur wenige Minuten vom pulsierenden Zentrum entfernt. Die Lage überzeugt durch eine ideale Mischung aus Urbanität, hervorragender Infrastruktur und Zukunftschancen.
+
+Einmaliges sehr lukratives Objekt auch für Ersteinsteiger als Kapitalanleger!!
+
+NEU - EINZIGARTIG!
+Mehr Rendite - Ein Investment – Zwei Vermögensquellen!!
+
+Weitere Objekte auf Anfrage verfügbar!
+NEU – mehrere Wohneinheiten in Leipzig 
+
+Mehr Infos auf Anfrage.
+Ich freue mich auf Eure Anfragen.
+TIPP!! Erfolgreiche Weiterempfehlungen werden lukrativ honoriert!
+
+Es gelten unsere AGB.
+Die Flächen- und Maßangaben sind ca.-Werte, wenn sie nicht eindeutig angegeben sind. 
+Sämtliche enthaltene Angaben und Abmessungen erfolgen im Auftrag des Kooperationspartners von HomeCheck-Immobilien" rel="" target="_blank" class=" estate_37421406 bg-bg rounded-lg overflow-hidden shadow-20 sm:p-2 mb-4 relative flex flex-col justify-between sm:grid sm:grid-cols-12 sm:gap-x-4">
+                        <div class="overflow-hidden h-36 sm:col-span-6 lg:col-span-4 sm:h-60">
+                                <span class="block w-full h-full bg-center bg-cover bg-estate-slider">
+                    <img src="https://www.wohnungsboerse.net/assets/estates/400x400/5oWOcKhK4aUea7oXw7bwxZ3T4LrZDqyTL5OO8jP5.jpg?id=48551391" onload="jQuery(this).removeClass('opacity-0')" loading="lazy" class="object-cover object-center w-full h-full transition-opacity" alt="Kapitalanlage in Düsseldorf Oberbilk – MFH mit DENKMAL Bescheinigung - - nur noch sehr wenige Einheiten verfügbar!! –">
+                </span>
+            </div>
+            <div class="p-4 sm:px-0 sm:pb-0 sm:col-span-6 lg:col-span-7">
+                <h3 class="font-bold tracking-tight text-h4 lg:text-h3 text-fg sm:col-span-12 nounderline line-clamp-2">Kapitalanlage in Düsseldorf Oberbilk – MFH mit DENKMAL Bescheinigung - - nur noch sehr wenige Einheiten verfügbar!! –</h3>                <div class="mt-2 text-caption before:icon-location_marker before:text-secondary line-clamp-1 sm:col-span-12">
+                    Düsseldorf - Oberbilk
+                </div>
+
+                <div class="flex justify-between px-2 py-4 mt-2 text-center divide-x rounded-lg lg:w-80 sm:mt-4 divide-bg-muted bg-bg-canvas divide-solid">
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Kaufpreis</dt>
+                        <dd class="text-base font-bold">233.000&nbsp;€</dd>
+                    </dl>
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Zimmer</dt>
+                        <dd class="text-base font-bold">
+                            2<span class="inline sm:hidden"> Zi.</span>
+                                                    </dd>
+                    </dl>
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Fläche</dt>
+                        <dd class="text-base font-bold">48 m²</dd>
+                    </dl>
+                </div>
+
+                <div class="hidden mt-1 space-x-2 sm:block h-7 sm:col-span-12">
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Altbau</span>
+                                    </div>
+            </div>
+            <div class="hidden w-12 lg:flex lg:col-span-1 lg:items-center lg:justify-self-end lg:justify-center after:icon-chevron_right after:text-xl after:text-fg-subtle">
+            </div>
+            <div class="hidden col-span-12 sm:block text-caption text-fg-muted">
+                            </div>
+        </a>
+
+
+                    
+            
+                                <div class=" text-center mb-4">
+        <s24-ad-slot ad-unit-path="/4467/wohnungsboerse_net/Resultlist/List_Content_Banner_1" ad-label-center="true" ad-label-text="Anzeige" ad-label-top="true" size-map-0x0="300x250,320x240,320x100,fluid" size-map-738x0="728x90,fluid" size-map-810x0="800x250,728x90,fluid" size-map-980x0="800x250,728x90,970x250,fluid" class="!inline-flex"></s24-ad-slot>
+    </div>
+                
+        
+        
+        <a href="https://www.wohnungsboerse.net/immodetail-k/37367021" title="Objektbeschreibung
+Das 13-Parteien-Wohnhaus wurde im Jahr 1962 in solider Bauweise errichtet und im Jahr 2014 umfangreich saniert und umgebaut.​
+
+Die Wohnungsgrößen liegen zwischen ca. 50 bis 115 m². Das Dachgeschoss ist kernsaniert und ausgebaut.​
+
+Die Fußböden sind teilweise mit Laminat, Parkett oder Fliesen ausgelegt. Die Bäder verfügen über eine Badewanne oder Dusche, WC und Handwaschbecken.​
+
+Ausstattung
+Neue Haustür mit Gegensprechanlage
+
+Neue Briefkastenanlage
+
+Neuer Aufzug
+
+Kunststofffenster mit Isolierverglasung
+
+Balkone und Terrassen
+
+Zentralheizung
+
+Komplettsanierung des Badezimmers im Jahr 2022​
+
+Sonstiges
+Die Wohnung ist derzeit an eine solide, langjährige Mieterin vermietet und eignet sich daher ideal als Kapitalanlage.
+
+Lagebeschreibung
+Düsseldorf-Friedrichstadt zählt zu den gefragten Stadtteilen der Landeshauptstadt. Schöne Altbauten mit ihren beliebten Hinterhöfen, die um die Grünanlagen erbaut wurden, prägen das Stadtbild, besonders rund um den Fürstenplatz. Hier haben sich aufgrund der urbanen Atmosphäre inzwischen viele Kreative niedergelassen.​
+
+Die Grünanlagen „Schwanenspiegel“ und „Kaiserteich“ sind fußläufig erreichbar. Einkaufsmöglichkeiten finden Sie auf der Friedrichstraße oder in den nahe gelegenen Bilker Arkaden. Kindergärten und Schulen sind in unmittelbarer Umgebung vorhanden. Die Königsallee und die Altstadt sind fußläufig in nur wenigen Minuten zu erreichen. Haltestellen des ÖPNV befinden sich unmittelbar am Objekt." rel="" target="_blank" class=" estate_37367021 bg-bg rounded-lg overflow-hidden shadow-20 sm:p-2 mb-4 relative flex flex-col justify-between sm:grid sm:grid-cols-12 sm:gap-x-4">
+                        <div class="overflow-hidden h-36 sm:col-span-6 lg:col-span-4 sm:h-60">
+                                <span class="block w-full h-full bg-center bg-cover bg-estate-slider">
+                    <img src="https://www.wohnungsboerse.net/assets/estates/400x400/dHkhMdDOUsD1dpwue5PmMDZ5iWjLoT4yYSbJlYa3.jpg?id=47935566" onload="jQuery(this).removeClass('opacity-0')" loading="lazy" class="object-cover object-center w-full h-full transition-opacity" alt="Attraktive Kapitalanlage mit modernisiertem Bad in zentraler Lage von Düsseldorf-Friedrichstadt">
+                </span>
+            </div>
+            <div class="p-4 sm:px-0 sm:pb-0 sm:col-span-6 lg:col-span-7">
+                <h3 class="font-bold tracking-tight text-h4 lg:text-h3 text-fg sm:col-span-12 nounderline line-clamp-2">Attraktive Kapitalanlage mit modernisiertem Bad in zentraler Lage von Düsseldorf-Friedrichstadt</h3>                <div class="mt-2 text-caption before:icon-location_marker before:text-secondary line-clamp-1 sm:col-span-12">
+                    Düsseldorf - Friedrichstadt
+                </div>
+
+                <div class="flex justify-between px-2 py-4 mt-2 text-center divide-x rounded-lg lg:w-80 sm:mt-4 divide-bg-muted bg-bg-canvas divide-solid">
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Kaufpreis</dt>
+                        <dd class="text-base font-bold">330.000&nbsp;€</dd>
+                    </dl>
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Zimmer</dt>
+                        <dd class="text-base font-bold">
+                            3<span class="inline sm:hidden"> Zi.</span>
+                                                    </dd>
+                    </dl>
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Fläche</dt>
+                        <dd class="text-base font-bold">65 m²</dd>
+                    </dl>
+                </div>
+
+                <div class="hidden mt-1 space-x-2 sm:block h-7 sm:col-span-12">
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Balkon</span>
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Keller</span>
+                                    </div>
+            </div>
+            <div class="hidden w-12 lg:flex lg:col-span-1 lg:items-center lg:justify-self-end lg:justify-center after:icon-chevron_right after:text-xl after:text-fg-subtle">
+            </div>
+            <div class="hidden col-span-12 sm:block text-caption text-fg-muted">
+                            </div>
+        </a>
+
+
+                    
+            
+                                                
+        
+        
+        <a href="https://www.wohnungsboerse.net/immodetail-k/34675693" title="Willkommen zu einem tollen Immobilienangebot in Düsseldorf-Derendorf! Diese charmante Eigentumswohnung präsentiert sich als eine hervorragende Investitionsmöglichkeit mit vielseitigen Vorzügen. Mit einer Wohnfläche von ca. 41 m² bietet sie Komfort, Funktionalität und eine erstklassige Lage. Das Gebäude, erbaut im Jahr 1971, besticht durch solide Bauweise und eine gepflegte Atmosphäre. Ein Aufzug steht den Bewohnern zur Verfügung, um bequem die einzelnen Etagen zu erreichen. Die Wohnung befindet sich im vermieteten Zustand, was sie besonders attraktiv für Kapitalanleger macht. Beim Betreten der Wohnung erwartet Sie ein einladendes Ambiente mit durchdachter Raumaufteilung. Das Zimmer ist geschickt gestaltet und bietet Platz für eine gemütliche Essecke sowie eine Schlafnische, die für erholsame Nächte sorgt. Der Zugang zum kleinen Balkon ermöglicht Ihnen entspannte Momente an der frischen Luft. Das Badezimmer ist mit einer Badewanne und einem Fenster ausgestattet, was für Komfort und Helligkeit sorgt. Eine separate Einbauküche bietet ausreichend Platz zum Kochen und Zubereiten Ihrer Lieblingsgerichte. Ein praktischer Abstellraum sowie ein Keller bieten zusätzlichen Stauraum für Ihre persönlichen Gegenstände. Das monatliche Hausgeld beträgt 359 Euro und umfasst bereits verschiedene Nebenkosten, was eine transparente und unkomplizierte Abwicklung gewährleistet. Kontaktieren Sie mich noch heute, um einen Besichtigungstermin zu vereinbaren." rel="" target="_blank" class=" estate_34675693 bg-bg rounded-lg overflow-hidden shadow-20 sm:p-2 mb-4 relative flex flex-col justify-between sm:grid sm:grid-cols-12 sm:gap-x-4">
+                        <div class="overflow-hidden h-36 sm:col-span-6 lg:col-span-4 sm:h-60">
+                                <span class="block w-full h-full bg-center bg-cover bg-estate-slider">
+                    <img src="https://www.wohnungsboerse.net/assets/estates/400x400/270/p6ROxQWvFEtYvYLMsaVchafx8PPLLJNrcKekUuwS.jpg?id=45210646" onload="jQuery(this).removeClass('opacity-0')" loading="lazy" class="object-cover object-center w-full h-full transition-opacity" alt="* HALLO, ich bin es! Deine neue ETW in Düsseldorf-Derendorf *">
+                </span>
+            </div>
+            <div class="p-4 sm:px-0 sm:pb-0 sm:col-span-6 lg:col-span-7">
+                <h3 class="font-bold tracking-tight text-h4 lg:text-h3 text-fg sm:col-span-12 nounderline line-clamp-2">* HALLO, ich bin es! Deine neue ETW in Düsseldorf-Derendorf *</h3>                <div class="mt-2 text-caption before:icon-location_marker before:text-secondary line-clamp-1 sm:col-span-12">
+                    Düsseldorf - Derendorf
+                </div>
+
+                <div class="flex justify-between px-2 py-4 mt-2 text-center divide-x rounded-lg lg:w-80 sm:mt-4 divide-bg-muted bg-bg-canvas divide-solid">
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Kaufpreis</dt>
+                        <dd class="text-base font-bold">159.000&nbsp;€</dd>
+                    </dl>
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Zimmer</dt>
+                        <dd class="text-base font-bold">
+                            1<span class="inline sm:hidden"> Zi.</span>
+                                                    </dd>
+                    </dl>
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Fläche</dt>
+                        <dd class="text-base font-bold">41 m²</dd>
+                    </dl>
+                </div>
+
+                <div class="hidden mt-1 space-x-2 sm:block h-7 sm:col-span-12">
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Balkon</span>
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Einbauküche</span>
+                                    </div>
+            </div>
+            <div class="hidden w-12 lg:flex lg:col-span-1 lg:items-center lg:justify-self-end lg:justify-center after:icon-chevron_right after:text-xl after:text-fg-subtle">
+            </div>
+            <div class="hidden col-span-12 sm:block text-caption text-fg-muted">
+                            </div>
+        </a>
+
+
+                                    <br><br>
+                <section class="md:px-4 lg:container flex px-4 space-x-4 md:items-center justify-evenly md:h-28"><div class="md:flex md:items-center">
+        <div class="mb-5 md:mb-0 md:mr-16">
+            <span class="text-base md:text-h4">Nicht vergessen:</span>
+            <p class="font-bold tracking-tight text-h4 lg:text-h3 p-0 m-0 font-21-30 font-weight-bold">SCHUFA-BonitätsCheck hier anfordern</p>        </div>
+        <a class="btn rounded-lg inline-flex items-center justify-center cursor-pointer bg-transparent ring-2 ring-fg text-fg lg:hover:bg-fg lg:hover:text-primary-on-primary active:bg-transparent active:text-fg active:ring-fg disabled:!bg-fg-disabled disabled:!text-fg-on-disabled disabled:!ring-fg-disabled" href="https://bonitaetscheck.immobilienscout24.de/?utm_medium=cooperation&amp;utm_source=wohnungsboerse.net&amp;utm_campaign=r_con_renter_solvencycheck&amp;utm_content=link_solvency" target="_blank" title="SCHUFA-BonitätsCheck hier anfordern">Zur SCHUFA-Auskunft</a>    </div></section>
+                <br><br>
+            
+            
+                                                
+        
+        
+        <a href="https://www.wohnungsboerse.net/immodetail-k/34518196" title="Traumhaft schöne Vorzugsimmobilie in Düsseldorf. Zum Verkauf steht eine großzügige „Smart-Wohnung“ mit modernster Technologie in Düsseldorf Heerdt, nahe dem Rhein, im berühmten „Papillon-Gebäude“, einer Architektur-Ikone die 2016 fertiggestellt wurde.
+
+Aus einem alten Hochbunker entstand eines der schönsten Luxus-Objekte, das bereits auf der internationalen Immobilienmesse MIPIM in Cannes 2016 als weltbestes seiner Kategorie ausgezeichnet wurde. Atemberaubende Perspektiven und Spiegelungen zeichnen dieses architektonische Meisterwerk und jedes seiner Wohneinheiten aus.
+
+Das Domizil liegt im zweiten Stock und verfügt über ein Smarthome-System, mit dem Sie die ganze Wohnung mit allen technischen Raffinessen, wie z.B. die Jalousien, bequem über das Smartphone steuen können.
+
+Auf 122 Quadratmetern erwartet Sie eine luxuriöse und komplett eingerichtete Wohnung, mit ganz besonderem Ambiente. Hochwertige Holzböden, eine hochwertige, maßgeschneiderte Einbauküche, mit alles Extras und eine eigene Sauna verleihen dieser Traumwohnung eine besonders edle Note.
+
+Im Masterbad erwartet Sie eine Jacuzzi-Eckwanne, eine Walk-in-Dusche und ein Doppelwaschbecken. Hier befindet sich auch Ihre private Sauna, mit modernem Steuerungssystem.
+
+Eines der Highlights ist die riesige (70 qm) Dachterasse mit hochwertigem und wetterfesten Bodenbelägen. Ein Höchstmaß an Lebensqualität bietet das vielbewunderte Parksystem. Ein Carloftparkplatz mit eigenem Auto-Aufzug direkt neben Ihre Wohnung." rel="" target="_blank" class=" estate_34518196 bg-bg rounded-lg overflow-hidden shadow-20 sm:p-2 mb-4 relative flex flex-col justify-between sm:grid sm:grid-cols-12 sm:gap-x-4">
+                        <div class="overflow-hidden h-36 sm:col-span-6 lg:col-span-4 sm:h-60">
+                                <span class="block w-full h-full bg-center bg-cover bg-estate-slider">
+                    <img src="https://www.wohnungsboerse.net/assets/estates/400x400/2KhszNGlSH8kUuvA7xiYjgujp2zemS7g7Ps1OxoA.jpg?id=45051149" onload="jQuery(this).removeClass('opacity-0')" loading="lazy" class="object-cover object-center w-full h-full transition-opacity" alt="Loftähnliche Luxus-Wohnung mit modernster Smart-Technologie in Düsseldorf">
+                </span>
+            </div>
+            <div class="p-4 sm:px-0 sm:pb-0 sm:col-span-6 lg:col-span-7">
+                <h3 class="font-bold tracking-tight text-h4 lg:text-h3 text-fg sm:col-span-12 nounderline line-clamp-2">Loftähnliche Luxus-Wohnung mit modernster Smart-Technologie in Düsseldorf</h3>                <div class="mt-2 text-caption before:icon-location_marker before:text-secondary line-clamp-1 sm:col-span-12">
+                    Düsseldorf - Heerdt
+                </div>
+
+                <div class="flex justify-between px-2 py-4 mt-2 text-center divide-x rounded-lg lg:w-80 sm:mt-4 divide-bg-muted bg-bg-canvas divide-solid">
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Kaufpreis</dt>
+                        <dd class="text-base font-bold">1.550.000&nbsp;€</dd>
+                    </dl>
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Zimmer</dt>
+                        <dd class="text-base font-bold">
+                            3.5<span class="inline sm:hidden"> Zi.</span>
+                                                    </dd>
+                    </dl>
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Fläche</dt>
+                        <dd class="text-base font-bold">122 m²</dd>
+                    </dl>
+                </div>
+
+                <div class="hidden mt-1 space-x-2 sm:block h-7 sm:col-span-12">
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Terrasse</span>
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Dachterrasse</span>
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Keller</span>
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Neubau</span>
+                                                            </div>
+            </div>
+            <div class="hidden w-12 lg:flex lg:col-span-1 lg:items-center lg:justify-self-end lg:justify-center after:icon-chevron_right after:text-xl after:text-fg-subtle">
+            </div>
+            <div class="hidden col-span-12 sm:block text-caption text-fg-muted">
+                            </div>
+        </a>
+
+
+                    
+            
+                                                
+        
+        
+        <a href="https://www.wohnungsboerse.net/immodetail-k/34084263" title="Bei der hier angebotenen Wohnung handelt es sich um ein ca. 38 m2 großes Apartment mit Balkon und einem Tiefgagenstellplatz.
+
+Das Mehrfamilienhaus wurde 1994 auf einem ca. 1751m großen Grundstück mit 40 Wohneinheiten errichtet. Die Wohnung erscheint durch die große Fensterfront sehr hell sonnendurchlässig und freundlich.
+
+Vor der Eingangsdiele aus gefangen Sie in das Duschbad und den Wohn-/ und Essbereich mit offener Küche.
+
+Der Wohnbereich überzeugt durch die vorhandene Einbauküche, den direkten Zugang zum Süd-Balkon und einer sehr geräumigen Schlafnische mit ausreichend Platz für einen Kleiderschrank und einen Schreibtisch.
+
+Das Duschbad, das Sie von der Eingangsdiele aus erreichen, ist weiß gefliest und mit Waschbecken, Dusche und WC ausgestattet.
+
+Bei ernsthaftes interesse können Sie mir eine Anfrage mit ihren vollständigen Kontaktdaten, inkl. einer Telefonnummer unter der ich Sie tagsüber erreichen können.
+Die Wohnung ist zur Zeit vermietet. Die Miete beträgt 750 Euro monatlich.
+Da die Wohnung zur Zeit vermietet ist, kann die Wohnung erst besichtigt werden nach Vorlage eines Bonitätsnachweises bzw. gesicherte Finanzierungszusage.
+
+Der Mietvertrag kann für eigenen Bedarf gekündigt werden.
+
+Ausstattung
++Tiefaragenstellplatz
++Keller
++Waschkeller
++Balkon
++Bad mit Dusche
++Einbauküche
++Kunststofffenster mit Rollläden
++Laminatfußboden
++Aufzug" rel="" target="_blank" class=" estate_34084263 bg-bg rounded-lg overflow-hidden shadow-20 sm:p-2 mb-4 relative flex flex-col justify-between sm:grid sm:grid-cols-12 sm:gap-x-4">
+                        <div class="overflow-hidden h-36 sm:col-span-6 lg:col-span-4 sm:h-60">
+                                <span class="block w-full h-full bg-center bg-cover bg-estate-slider">
+                    <img src="https://www.wohnungsboerse.net/assets/estates/400x400/GoKRpTdAoUqT66BpC0wk0jACkExx9cr62KRrdZFG.jpg?id=44609094" onload="jQuery(this).removeClass('opacity-0')" loading="lazy" class="object-cover object-center w-full h-full transition-opacity opacity-0" alt="Eigentumswohnung in Düsseldorf-Urdenbach zu verkaufen">
+                </span>
+            </div>
+            <div class="p-4 sm:px-0 sm:pb-0 sm:col-span-6 lg:col-span-7">
+                <h3 class="font-bold tracking-tight text-h4 lg:text-h3 text-fg sm:col-span-12 nounderline line-clamp-2">Eigentumswohnung in Düsseldorf-Urdenbach zu verkaufen</h3>                <div class="mt-2 text-caption before:icon-location_marker before:text-secondary line-clamp-1 sm:col-span-12">
+                    Düsseldorf - Urdenbach
+                </div>
+
+                <div class="flex justify-between px-2 py-4 mt-2 text-center divide-x rounded-lg lg:w-80 sm:mt-4 divide-bg-muted bg-bg-canvas divide-solid">
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Kaufpreis</dt>
+                        <dd class="text-base font-bold">185.000&nbsp;€</dd>
+                    </dl>
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Zimmer</dt>
+                        <dd class="text-base font-bold">
+                            1<span class="inline sm:hidden"> Zi.</span>
+                                                    </dd>
+                    </dl>
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Fläche</dt>
+                        <dd class="text-base font-bold">38 m²</dd>
+                    </dl>
+                </div>
+
+                <div class="hidden mt-1 space-x-2 sm:block h-7 sm:col-span-12">
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Balkon</span>
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Einbauküche</span>
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Keller</span>
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Neubau</span>
+                                                            </div>
+            </div>
+            <div class="hidden w-12 lg:flex lg:col-span-1 lg:items-center lg:justify-self-end lg:justify-center after:icon-chevron_right after:text-xl after:text-fg-subtle">
+            </div>
+            <div class="hidden col-span-12 sm:block text-caption text-fg-muted">
+                            </div>
+        </a>
+
+
+                    
+            
+                                <div class=" text-center mb-4">
+        <s24-ad-slot ad-unit-path="/4467/wohnungsboerse_net/Resultlist/List_Content_Banner_2" ad-label-center="true" ad-label-text="Anzeige" ad-label-top="true" size-map-0x0="300x250,320x240,320x100,fluid" size-map-738x0="728x90,fluid" size-map-810x0="800x250,728x90,fluid" size-map-980x0="800x250,728x90,970x250,fluid" class="!inline-flex"></s24-ad-slot>
+    </div>
+                
+        
+        
+        <a href="https://www.wohnungsboerse.net/immodetail-k/28929200" title="Es handelt sich bei der Wohnung um ein gepflegtes Objekt in einem Mehrfamilienhaus. Sie befindet sich im oberen Stockwerk, welches über das Treppenhaus (ohne Aufzug) zu erreichen ist. 
+Die Maisonette-Dachgeschosswohnung mit Dachschrägen ist aufgeteilt auf 2 Ebenen. 
+Auf der 5. Etage befinden sich neben einem kleinen Flur, ein Schlafzimmer mit Einbauschrank, ein Bad mit Duschwanne sowie ein Gäste-/Kinder-/Arbeitszimmer mit Balkon. Dieser ist nach Süden ausgerichtet mit Blick über die Dächer der Stadt. Hier können ganztags Sonnenstrahlen in absoluter Ruhe zum Hinterhof genossen werden. 
+Über eine Treppe geht es in die 6. Etage mit Küche sowie einem offenem und lichtdurchfluteten Wohn-/Essbereich. Die Einbauküche verfügt über Markengeräte inklusive Spülmaschine und Waschmaschine und ist im Preis enthalten. 
+Zur Wohnung gehört ein abschließbares Kellerabteil mit ca. 2,5 qm. 
+Das Objekt kann provisionsfrei übernommen werden." rel="" target="_blank" class=" estate_28929200 bg-bg rounded-lg overflow-hidden shadow-20 sm:p-2 mb-4 relative flex flex-col justify-between sm:grid sm:grid-cols-12 sm:gap-x-4">
+                        <div class="overflow-hidden h-36 sm:col-span-6 lg:col-span-4 sm:h-60">
+                                <span class="block w-full h-full bg-center bg-cover bg-estate-slider">
+                    <img src="https://www.wohnungsboerse.net/assets/estates/400x400/01a9869c20d1dae4f19c8f46dc921828.jpg?id=38992897" onload="jQuery(this).removeClass('opacity-0')" loading="lazy" class="object-cover object-center w-full h-full transition-opacity opacity-0" alt="Maisonette-Dachgeschosswohnung mit 3 Zimmern ***provisionsfrei***">
+                </span>
+            </div>
+            <div class="p-4 sm:px-0 sm:pb-0 sm:col-span-6 lg:col-span-7">
+                <h3 class="font-bold tracking-tight text-h4 lg:text-h3 text-fg sm:col-span-12 nounderline line-clamp-2">Maisonette-Dachgeschosswohnung mit 3 Zimmern ***provisionsfrei***</h3>                <div class="mt-2 text-caption before:icon-location_marker before:text-secondary line-clamp-1 sm:col-span-12">
+                    Düsseldorf - Pempelfort
+                </div>
+
+                <div class="flex justify-between px-2 py-4 mt-2 text-center divide-x rounded-lg lg:w-80 sm:mt-4 divide-bg-muted bg-bg-canvas divide-solid">
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Kaufpreis</dt>
+                        <dd class="text-base font-bold">389.000&nbsp;€</dd>
+                    </dl>
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Zimmer</dt>
+                        <dd class="text-base font-bold">
+                            3<span class="inline sm:hidden"> Zi.</span>
+                                                    </dd>
+                    </dl>
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Fläche</dt>
+                        <dd class="text-base font-bold">80 m²</dd>
+                    </dl>
+                </div>
+
+                <div class="hidden mt-1 space-x-2 sm:block h-7 sm:col-span-12">
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Balkon</span>
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Einbauküche</span>
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Keller</span>
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">WG geeignet</span>
+                                    </div>
+            </div>
+            <div class="hidden w-12 lg:flex lg:col-span-1 lg:items-center lg:justify-self-end lg:justify-center after:icon-chevron_right after:text-xl after:text-fg-subtle">
+            </div>
+            <div class="hidden col-span-12 sm:block text-caption text-fg-muted">
+                            </div>
+        </a>
+
+
+                    
+                            <div class="h-auto pb-6 mb-4 overflow-hidden rounded-lg sm:grid sm:grid-cols-12 bg-bg shadow-20 sm:gap-4 lg:h-72 sm:pb-0">
+        <div class="flex items-center justify-center h-40 py-8 sm:col-span-6 lg:col-span-4 sm:h-auto lg:py-0">
+            <a href="javascript:void(0);" rel="nofollow" class="block h-full">
+                <img src="/img/2024/serps/Finance.jpg" loading="lazy" alt="Maisonette-Dachgeschosswohnung mit 3 Zimmern ***provisionsfrei***" class="h-full">
+            </a>
+        </div>
+        <div class="flex flex-col justify-center px-4 mt-6 sm:pb-6 lg:pb-0 sm:col-span-6 lg:col-span-8 lg:mt-0">
+            <h3 class="font-bold tracking-tighter text-h3 lg:text-h2 text-center sm:text-left">Wie viel kannst du dir leisten? Vergleiche kostenlos Finanzierungsangebote!</h3>            <div class="mt-4 lg:grid lg:grid-cols-12 lg:gap-4 lg:mt-7">
+                <div class="lg:col-span-9">
+                    <a target="_blank" href="https://www.immobilienscout24.de/baufinanzierung/finanzierungsangebote/?utm_medium=cooperation&amp;utm_source=wohnungsboerse&amp;utm_campaign=SERP_teaser_mortgage" class="btn rounded-lg inline-flex items-center justify-center cursor-pointer text-fg bg-green lg:hover:bg-green-muted active:bg-green-emphasis disabled:!bg-green-disabled disabled:!text-fg-on-disabled w-full lg:col-span-6">
+                        Kostenlos Angebote vergleichen
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+            
+                                                
+        
+        
+        <a href="https://www.wohnungsboerse.net/immodetail-k/26908008" title="Das Objekt wird aktuell saniert, daher stehen leider noch keine Fotos zur Verfügung.
+Angeboten wird das Objekt provisionsfrei, sodass der Käufer sich hier die Maklerkosten sparen kann.
+Zum 01.06 wird die Wohnung fertiggestellt und kann dann bezogen werden." rel="" target="_blank" class=" estate_26908008 bg-bg rounded-lg overflow-hidden shadow-20 sm:p-2 mb-4 relative flex flex-col justify-between sm:grid sm:grid-cols-12 sm:gap-x-4">
+                        <div class="overflow-hidden h-36 sm:col-span-6 lg:col-span-4 sm:h-60">
+                                <span class="block w-full h-full bg-center bg-cover bg-estate-slider">
+                    <img src="" onload="jQuery(this).removeClass('opacity-0')" loading="lazy" class="object-cover object-center w-full h-full transition-opacity opacity-0" alt="Provisionsfreie 3 - Zimmerwohnung in Düsseldorf Bilk">
+                </span>
+            </div>
+            <div class="p-4 sm:px-0 sm:pb-0 sm:col-span-6 lg:col-span-7">
+                <h3 class="font-bold tracking-tight text-h4 lg:text-h3 text-fg sm:col-span-12 nounderline line-clamp-2">Provisionsfreie 3 - Zimmerwohnung in Düsseldorf Bilk</h3>                <div class="mt-2 text-caption before:icon-location_marker before:text-secondary line-clamp-1 sm:col-span-12">
+                    Düsseldorf - Bilk
+                </div>
+
+                <div class="flex justify-between px-2 py-4 mt-2 text-center divide-x rounded-lg lg:w-80 sm:mt-4 divide-bg-muted bg-bg-canvas divide-solid">
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Kaufpreis</dt>
+                        <dd class="text-base font-bold">475.000&nbsp;€</dd>
+                    </dl>
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Zimmer</dt>
+                        <dd class="text-base font-bold">
+                            3<span class="inline sm:hidden"> Zi.</span>
+                                                    </dd>
+                    </dl>
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Fläche</dt>
+                        <dd class="text-base font-bold">90 m²</dd>
+                    </dl>
+                </div>
+
+                <div class="hidden mt-1 space-x-2 sm:block h-7 sm:col-span-12">
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Balkon</span>
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Einbauküche</span>
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Keller</span>
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Altbau</span>
+                                                            </div>
+            </div>
+            <div class="hidden w-12 lg:flex lg:col-span-1 lg:items-center lg:justify-self-end lg:justify-center after:icon-chevron_right after:text-xl after:text-fg-subtle">
+            </div>
+            <div class="hidden col-span-12 sm:block text-caption text-fg-muted">
+                            </div>
+        </a>
+
+
+                    
+            
+                                                
+        
+        
+        <a href="https://www.wohnungsboerse.net/immodetail-k/25484279" title="Es handelt sich um eine sanierte Wohnung über 3 Etagen. In der untersten Ebene befindet sich der Flur, das Gäste-WC sowie auf ca. 75 qm der Wohn- Essbereich mit neuer Küche und Balkon / Terrasse mit Blick ins Grüne. In der mittleren Ebene befinden sich 3 Schlafzimmer und 2 Bäder. Im DG sind 2 weitere Zimmer vorhanden. Die Hauptwohnung hat eine Größe von ca. 220 qm. Dazu gibt es noch ein kleines Apartment mit Dusche/WC von 25qm im Untergeschoss.
+Diese familienfreundliche Wohnung liegt in einer der Top Lagen Düsseldorfs, dem Zooviertel. Grüne Gärten und Villen umgeben die Wohnung, die sich in einem 3 Parteienhaus befindet. Diese seltene Gelegenheit kommt nur zum Verkauf, weil die Eigentümer ins Ausland ziehen." rel="" target="_blank" class=" estate_25484279 bg-bg rounded-lg overflow-hidden shadow-20 sm:p-2 mb-4 relative flex flex-col justify-between sm:grid sm:grid-cols-12 sm:gap-x-4">
+                        <div class="overflow-hidden h-36 sm:col-span-6 lg:col-span-4 sm:h-60">
+                                <span class="block w-full h-full bg-center bg-cover bg-estate-slider">
+                    <img src="" onload="jQuery(this).removeClass('opacity-0')" loading="lazy" class="object-cover object-center w-full h-full transition-opacity opacity-0" alt="Top Lage im Zooviertel von Düsseldorf">
+                </span>
+            </div>
+            <div class="p-4 sm:px-0 sm:pb-0 sm:col-span-6 lg:col-span-7">
+                <h3 class="font-bold tracking-tight text-h4 lg:text-h3 text-fg sm:col-span-12 nounderline line-clamp-2">Top Lage im Zooviertel von Düsseldorf</h3>                <div class="mt-2 text-caption before:icon-location_marker before:text-secondary line-clamp-1 sm:col-span-12">
+                    Düsseldorf - Düsseltal
+                </div>
+
+                <div class="flex justify-between px-2 py-4 mt-2 text-center divide-x rounded-lg lg:w-80 sm:mt-4 divide-bg-muted bg-bg-canvas divide-solid">
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Kaufpreis</dt>
+                        <dd class="text-base font-bold">1.450.000&nbsp;€</dd>
+                    </dl>
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Zimmer</dt>
+                        <dd class="text-base font-bold">
+                            5<span class="inline sm:hidden"> Zi.</span>
+                                                    </dd>
+                    </dl>
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Fläche</dt>
+                        <dd class="text-base font-bold">245 m²</dd>
+                    </dl>
+                </div>
+
+                <div class="hidden mt-1 space-x-2 sm:block h-7 sm:col-span-12">
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Balkon</span>
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Terrasse</span>
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Einbauküche</span>
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Keller</span>
+                                    </div>
+            </div>
+            <div class="hidden w-12 lg:flex lg:col-span-1 lg:items-center lg:justify-self-end lg:justify-center after:icon-chevron_right after:text-xl after:text-fg-subtle">
+            </div>
+            <div class="hidden col-span-12 sm:block text-caption text-fg-muted">
+                            </div>
+        </a>
+
+
+                    
+            
+                                                
+        
+        
+        <a href="https://www.wohnungsboerse.net/immodetail-k/39849629" title="Dieses exquisite 1-Zimmer Apartment mit ca. 35 m² Wohnfläche befindet sich im 4. Obergeschoss eines gepflegten Mehrfamilienhauses in Düsseldorf-Pempelfort. Die Wohnung wurde im Jahr 2026 zuletzt modernisiert und besticht durch eine anspruchsvolle Innenausstattung, die ein stilvolles Wohnambiente schafft. Das Apartment verfügt über ein Badezimmer und ist ideal für Singles oder junge Berufstätige, die das urbane Leben schätzen. Die Verfügbarkeit ist ab dem 17.04.2026 gegeben." rel="" target="_blank" class=" estate_39849629 bg-bg rounded-lg overflow-hidden shadow-20 sm:p-2 mb-4 relative flex flex-col justify-between sm:grid sm:grid-cols-12 sm:gap-x-4">
+                        <div class="overflow-hidden h-36 sm:col-span-6 lg:col-span-4 sm:h-60">
+                                <span class="block w-full h-full bg-center bg-cover bg-estate-slider">
+                    <img src="https://www.wohnungsboerse.net/assets/estates/400x400/40594bfacba4e272d6b95c47bc983aaa.jpg?id=50427208" onload="jQuery(this).removeClass('opacity-0')" loading="lazy" class="object-cover object-center w-full h-full transition-opacity opacity-0" alt="Ohne Makler - Charmantes 1-Zimmer Apartment im 4. OG in Düsseldorf-Pempelfort">
+                </span>
+            </div>
+            <div class="p-4 sm:px-0 sm:pb-0 sm:col-span-6 lg:col-span-7">
+                <h3 class="font-bold tracking-tight text-h4 lg:text-h3 text-fg sm:col-span-12 nounderline line-clamp-2">Ohne Makler - Charmantes 1-Zimmer Apartment im 4. OG in Düsseldorf-Pempelfort</h3>                <div class="mt-2 text-caption before:icon-location_marker before:text-secondary line-clamp-1 sm:col-span-12">
+                    Düsseldorf - Pempelfort
+                </div>
+
+                <div class="flex justify-between px-2 py-4 mt-2 text-center divide-x rounded-lg lg:w-80 sm:mt-4 divide-bg-muted bg-bg-canvas divide-solid">
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Kaufpreis</dt>
+                        <dd class="text-base font-bold">200.000&nbsp;€</dd>
+                    </dl>
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Zimmer</dt>
+                        <dd class="text-base font-bold">
+                            1<span class="inline sm:hidden"> Zi.</span>
+                                                    </dd>
+                    </dl>
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Fläche</dt>
+                        <dd class="text-base font-bold">35 m²</dd>
+                    </dl>
+                </div>
+
+                <div class="hidden mt-1 space-x-2 sm:block h-7 sm:col-span-12">
+                                    </div>
+            </div>
+            <div class="hidden w-12 lg:flex lg:col-span-1 lg:items-center lg:justify-self-end lg:justify-center after:icon-chevron_right after:text-xl after:text-fg-subtle">
+            </div>
+            <div class="hidden col-span-12 sm:block text-caption text-fg-muted">
+                            </div>
+        </a>
+
+
+                    
+            
+                                <div class=" text-center mb-4">
+        <s24-ad-slot ad-unit-path="/4467/wohnungsboerse_net/Resultlist/List_Content_Banner_3" ad-label-center="true" ad-label-text="Anzeige" ad-label-top="true" size-map-0x0="300x250,320x240,320x100,fluid" size-map-738x0="728x90,fluid" size-map-810x0="800x250,728x90,fluid" size-map-980x0="800x250,728x90,970x250,fluid" class="!inline-flex"></s24-ad-slot>
+    </div>
+                
+        
+        
+        <a href="https://www.wohnungsboerse.net/immodetail-k/39864820" title="Charmante Altbauwohnung mit Gartenanteil in zentraler Lage von Düsseldorf-Oberbilk.&amp;lt;br /&amp;gt;&amp;lt;br /&amp;gt;Diese großzügig geschnittene und umfassend modernisierte Altbauwohnung vereint klassischen Charme mit zeitgemäßem Wohnkomfort. Sie befindet sich im Hochparterre eines sehr gepflegten Mehrfamilienhauses aus dem Baujahr 1912 und überzeugt durch eine helle, freundliche Atmosphäre sowie eine durchdachte Raumaufteilung.&amp;lt;br /&amp;gt;&amp;lt;br /&amp;gt;Bereits beim Betreten der Wohnung empfängt Sie ein großzügiger Flurbereich, von dem aus alle zentralen Räume erreichbar sind. Das Herzstück der Wohnung bildet die große Wohnküche mit direktem Zugang zum Balkon – ein idealer Ort für geselliges Beisammensein. Neben der Wohnküche stehen ein separates WC sowie ein hell gefliestes Duschbad zur Verfügung. Zwei weitere Zimmer, die über die Wohnküche erreichbar sind, bieten eine Blick in den grünen Gartenbereich und eignen sich ideal als Wohn- , Kinder- oder Schlafzimmer. Ein weiteres Zimmer ist zur Straßenseite ausgerichtet und eignet sich ebenfalls flexibel als Schlaf-, Arbeits- oder Gästezimmer.&amp;lt;br /&amp;gt;&amp;lt;br /&amp;gt;Im Zuge einer umfangreichen Modernisierung vor rund zehn Jahren wurde die gesamte Elektrik erneuert, Wände frisch verputzt und gestrichen sowie der originale Holzboden fachgerecht aufgearbeitet, abgeschliffen und versiegelt. Eine moderne Einbauküche mit hochwertigen Elektrogeräten – inklusive Spülmaschine, Kühl-Gefrierkombination und Mikrowelle – ist bereits vorhanden und im Kaufpreis enthalten.&amp;lt;br /&amp;gt;&amp;lt;br /&amp;gt;Zu den besonderen Highlights dieser Immobilie zählen die für Altbauten typische Deckenhöhe von über drei Metern, stilvolle originale Türen sowie der eigene Gartenanteil – eine seltene Kombination, die das Herz von Altbauliebhabern höherschlagen lässt. Zusätzlich verfügt die Wohnung über dreifach verglaste Fenster sowie eine im Jahr 2020 erneuerte Heiztherme, die für zeitgemäße Energieeffizienz und Wohnkomfort sorgt.&amp;lt;br /&amp;gt;&amp;lt;br /&amp;gt;Auch das Gebäude selbst wurde in den vergangenen Jahren umfangreich und hochwertig modernisiert. So erfolgten in den Jahren 2017/2018 eine umfassende Dachsanierung inklusive Dämmung mit einem Investitionsvolumen von über 150.000 €. In diesem Zuge wurden ebenfalls moderne, dreifach verglaste Fenster eingebaut, die zur hervorragenden Energieeffizienz und zum hohen Wohnkomfort beitragen.&amp;lt;br /&amp;gt;&amp;lt;br /&amp;gt;Das Gebäude wurde dabei mit viel Liebe zum Detail saniert, wobei besonderer Wert auf den Erhalt historischer Stilelemente gelegt wurde. So beeindrucken im Eingangsbereich stuckverzierte Decken, ein elegantes Marmorentrée mit Sisalläufer sowie ein originaler Treppenaufgang mit kunstvollen Holzornamenten.&amp;lt;br /&amp;gt;&amp;lt;br /&amp;gt;Hinter dem Haus erstreckt sich ein ruhig gelegener, grün angelegter Garten mit Rasenflächen, der exklusiv zwei Wohneinheiten zur Verfügung steht.&amp;lt;br /&amp;gt;&amp;lt;br /&amp;gt;Die Wohnung ist derzeit vermietet und eignet sich daher ideal als attraktive Kapitalanlage mit stabilen Mieteinnahmen. Gleichzeitig bietet sie auch für Eigennutzer eine interessante Perspektive. Es handelt sich bereits seit vielen Jahren um eine Eigentumswohnung, was für eine gewachsene und stabile Eigentümerstruktur spricht." rel="" target="_blank" class=" estate_39864820 bg-bg rounded-lg overflow-hidden shadow-20 sm:p-2 mb-4 relative flex flex-col justify-between sm:grid sm:grid-cols-12 sm:gap-x-4">
+                            <div class="absolute left-0 px-3 py-1 font-bold bg-yellow top-2 text-caption">NEU</div>
+                        <div class="overflow-hidden h-36 sm:col-span-6 lg:col-span-4 sm:h-60">
+                                <span class="block w-full h-full bg-center bg-cover bg-estate-slider">
+                    <img src="https://www.wohnungsboerse.net/assets/estates/400x400/150dc710fe784728940e4fd9f4ebd0c6.jpg?id=50442480" onload="jQuery(this).removeClass('opacity-0')" loading="lazy" class="object-cover object-center w-full h-full transition-opacity opacity-0" alt="Stilvolle Altbauwohnung mit eigenem Garten - Nähe Volksgarten in Düsseldorf">
+                </span>
+            </div>
+            <div class="p-4 sm:px-0 sm:pb-0 sm:col-span-6 lg:col-span-7">
+                <h3 class="font-bold tracking-tight text-h4 lg:text-h3 text-fg sm:col-span-12 nounderline line-clamp-2">Stilvolle Altbauwohnung mit eigenem Garten - Nähe Volksgarten in Düsseldorf</h3>                <div class="mt-2 text-caption before:icon-location_marker before:text-secondary line-clamp-1 sm:col-span-12">
+                    Düsseldorf - Oberbilk
+                </div>
+
+                <div class="flex justify-between px-2 py-4 mt-2 text-center divide-x rounded-lg lg:w-80 sm:mt-4 divide-bg-muted bg-bg-canvas divide-solid">
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Kaufpreis</dt>
+                        <dd class="text-base font-bold">359.000&nbsp;€</dd>
+                    </dl>
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Zimmer</dt>
+                        <dd class="text-base font-bold">
+                            3<span class="inline sm:hidden"> Zi.</span>
+                                                    </dd>
+                    </dl>
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Fläche</dt>
+                        <dd class="text-base font-bold">77 m²</dd>
+                    </dl>
+                </div>
+
+                <div class="hidden mt-1 space-x-2 sm:block h-7 sm:col-span-12">
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Balkon</span>
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Garten</span>
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Einbauküche</span>
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Keller</span>
+                                                            </div>
+            </div>
+            <div class="hidden w-12 lg:flex lg:col-span-1 lg:items-center lg:justify-self-end lg:justify-center after:icon-chevron_right after:text-xl after:text-fg-subtle">
+            </div>
+            <div class="hidden col-span-12 sm:block text-caption text-fg-muted">
+                            </div>
+        </a>
+
+
+                    
+            
+                                                
+        
+        
+        <a href="https://www.wohnungsboerse.net/immodetail-k/39864805" title="Diese außergewöhnliche Residenz in privilegierter erster Rheinlage vereint zeitlose Eleganz, modernen Wohnkomfort und eine der begehrtesten Adressen der Region. Ein Zuhause für höchste Ansprüche: stilvoll, repräsentativ und mit unvergleichlicher Lebensqualität. Bereits beim Betreten beeindruckt die Wohnung durch ihren großzügigen, offenen Grundriss sowie lichtdurchflutete Räume, die ein exklusives Wohnambiente schaffen. Das weitläufige Wohn- und Esszimmer bildet das Herzstück der Immobilie und bietet den idealen Rahmen für stilvolle Empfänge, gesellige Abende oder entspannte Stunden am Kamin. Hochwertige Materialien und eine moderne Ausstattung unterstreichen den luxuriösen Charakter dieser besonderen Immobilie. Ein absolutes Highlight ist der beeindruckende, nahezu über die gesamte Wohnungsbreite verlaufende Balkon mit unverbaubarem Panoramablick auf den Rhein. Genießen Sie hier spektakuläre Sonnenuntergänge, beobachten Sie vorbeiziehende Schiffe oder verbringen Sie unvergessliche Momente in exklusiver Atmosphäre direkt am Wasser. Das großzügig gestaltete Badezimmer mit privater Sauna verwandelt den Alltag in ein persönliches Spa-Erlebnis und bietet höchsten Komfort im eigenen Zuhause. Ein eigener Tiefgaragenstellplatz ergänzt dieses exklusive Angebot und sorgt für Sicherheit sowie maximalen Komfort. Die direkte Lage am Rhein verbindet Ruhe, Natur und Prestige mit einer hervorragenden Infrastruktur. Erstklassige Restaurants, stilvolle Cafés, exklusive Einkaufsmöglichkeiten sowie optimale Verkehrsanbindungen befinden sich in unmittelbarer Nähe. Eine seltene Gelegenheit, luxuriöses Wohnen in absoluter Bestlage zu genießen." rel="" target="_blank" class=" estate_39864805 bg-bg rounded-lg overflow-hidden shadow-20 sm:p-2 mb-4 relative flex flex-col justify-between sm:grid sm:grid-cols-12 sm:gap-x-4">
+                            <div class="absolute left-0 px-3 py-1 font-bold bg-yellow top-2 text-caption">NEU</div>
+                        <div class="overflow-hidden h-36 sm:col-span-6 lg:col-span-4 sm:h-60">
+                                <span class="block w-full h-full bg-center bg-cover bg-estate-slider">
+                    <img src="https://www.wohnungsboerse.net/assets/estates/400x400/941b9ffbaf854851bdb85db5b6ddb52c.jpg?id=50442465" onload="jQuery(this).removeClass('opacity-0')" loading="lazy" class="object-cover object-center w-full h-full transition-opacity opacity-0" alt="Luxuswohnung in erster Rheinlage: Exklusiv wohnen mit Panoramablick">
+                </span>
+            </div>
+            <div class="p-4 sm:px-0 sm:pb-0 sm:col-span-6 lg:col-span-7">
+                <h3 class="font-bold tracking-tight text-h4 lg:text-h3 text-fg sm:col-span-12 nounderline line-clamp-2">Luxuswohnung in erster Rheinlage: Exklusiv wohnen mit Panoramablick</h3>                <div class="mt-2 text-caption before:icon-location_marker before:text-secondary line-clamp-1 sm:col-span-12">
+                    Düsseldorf - Wittlaer
+                </div>
+
+                <div class="flex justify-between px-2 py-4 mt-2 text-center divide-x rounded-lg lg:w-80 sm:mt-4 divide-bg-muted bg-bg-canvas divide-solid">
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Kaufpreis</dt>
+                        <dd class="text-base font-bold">1.280.000&nbsp;€</dd>
+                    </dl>
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Zimmer</dt>
+                        <dd class="text-base font-bold">
+                            3<span class="inline sm:hidden"> Zi.</span>
+                                                    </dd>
+                    </dl>
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Fläche</dt>
+                        <dd class="text-base font-bold">157 m²</dd>
+                    </dl>
+                </div>
+
+                <div class="hidden mt-1 space-x-2 sm:block h-7 sm:col-span-12">
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Balkon</span>
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Garten</span>
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Einbauküche</span>
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Keller</span>
+                                    </div>
+            </div>
+            <div class="hidden w-12 lg:flex lg:col-span-1 lg:items-center lg:justify-self-end lg:justify-center after:icon-chevron_right after:text-xl after:text-fg-subtle">
+            </div>
+            <div class="hidden col-span-12 sm:block text-caption text-fg-muted">
+                            </div>
+        </a>
+
+
+                    
+            
+                                                
+        
+        
+        <a href="https://www.wohnungsboerse.net/immodetail-k/39858076" title="Diese attraktive und sehr praktisch geschnittene 1-Zimmer-Wohnung mit ca. 29,56 m² Wohnfläche befindet sich im 2. Obergeschoss eines umfassend modernisierten und äußerst gepflegten Mehrfamilienhauses im begehrten Düsseldorfer Medienhafen. Das hochwertig modernisierte Gebäude mit saniertem Treppenhaus zählt zu den exklusivsten Adressen der Stadt und beherbergt eines der eindrucksvollsten Penthouse-Wohnungen Düsseldorfs!&amp;lt;br /&amp;gt;&amp;lt;br /&amp;gt;Die Wohnung überzeugt durch eine durchdachte Raumaufteilung sowie ihre Möblierung und ist aktuell befristet bis März 2027 an eine sehr zuverlässige Mieterin vermietet. Dadurch eignet sie sich ideal als sofortige Kapitalanlage mit gesicherten Mieteinnahmen.&amp;lt;br /&amp;gt;&amp;lt;br /&amp;gt;Aufteilung:&amp;lt;br /&amp;gt;&amp;lt;br /&amp;gt;Flur: ca. 4,15 m²&amp;lt;br /&amp;gt;Küche: ca. 3,46 m²&amp;lt;br /&amp;gt;Wohn-/Schlafbereich: ca. 18,64 m²&amp;lt;br /&amp;gt;Badezimmer: ca. 3,32 m²&amp;lt;br /&amp;gt;&amp;lt;br /&amp;gt;Die monatliche Kaltmiete beträgt 815 €, zuzüglich 160 € umlagefähiger Nebenkosten, sodass sich eine Warmmiete von 975 € ergibt.&amp;lt;br /&amp;gt;&amp;lt;br /&amp;gt;Ein weiterer Vorteil: Der Verkauf erfolgt provisionsfrei direkt vom Eigentümer.&amp;lt;br /&amp;gt;&amp;lt;br /&amp;gt;Energieangaben (gemäß GEG)&amp;lt;br /&amp;gt;Energieausweistyp: Verbrauchsausweis&amp;lt;br /&amp;gt;Endenergieverbrauch: 129,6 kWh/(m²·a)&amp;lt;br /&amp;gt;Energieeffizienzklasse: D&amp;lt;br /&amp;gt;Primärenergieverbrauch: 168,5 kWh/(m²·a)&amp;lt;br /&amp;gt;Sonstiges&amp;lt;br /&amp;gt;&amp;lt;br /&amp;gt;Die Wohnung wird direkt vom Eigentümer verkauft - es fällt keine Maklerprovision an." rel="" target="_blank" class=" estate_39858076 bg-bg rounded-lg overflow-hidden shadow-20 sm:p-2 mb-4 relative flex flex-col justify-between sm:grid sm:grid-cols-12 sm:gap-x-4">
+                        <div class="overflow-hidden h-36 sm:col-span-6 lg:col-span-4 sm:h-60">
+                                <span class="block w-full h-full bg-center bg-cover bg-estate-slider">
+                    <img src="https://www.wohnungsboerse.net/assets/estates/400x400/5a63851eb45cdc23f1b9254f7fea2968.jpg?id=50435710" onload="jQuery(this).removeClass('opacity-0')" loading="lazy" class="object-cover object-center w-full h-full transition-opacity opacity-0" alt="Renditestarke Kapitalanlage am Düsseldorfer Hafen - vis-à-vis Gehry-Bauten, möbliert, provisionsfrei">
+                </span>
+            </div>
+            <div class="p-4 sm:px-0 sm:pb-0 sm:col-span-6 lg:col-span-7">
+                <h3 class="font-bold tracking-tight text-h4 lg:text-h3 text-fg sm:col-span-12 nounderline line-clamp-2">Renditestarke Kapitalanlage am Düsseldorfer Hafen - vis-à-vis Gehry-Bauten, möbliert, provisionsfrei</h3>                <div class="mt-2 text-caption before:icon-location_marker before:text-secondary line-clamp-1 sm:col-span-12">
+                    Düsseldorf - Unterbilk
+                </div>
+
+                <div class="flex justify-between px-2 py-4 mt-2 text-center divide-x rounded-lg lg:w-80 sm:mt-4 divide-bg-muted bg-bg-canvas divide-solid">
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Kaufpreis</dt>
+                        <dd class="text-base font-bold">214.900&nbsp;€</dd>
+                    </dl>
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Zimmer</dt>
+                        <dd class="text-base font-bold">
+                            1<span class="inline sm:hidden"> Zi.</span>
+                                                    </dd>
+                    </dl>
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Fläche</dt>
+                        <dd class="text-base font-bold">30 m²</dd>
+                    </dl>
+                </div>
+
+                <div class="hidden mt-1 space-x-2 sm:block h-7 sm:col-span-12">
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Möbliert</span>
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Einbauküche</span>
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Keller</span>
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Behindertengerecht</span>
+                                    </div>
+            </div>
+            <div class="hidden w-12 lg:flex lg:col-span-1 lg:items-center lg:justify-self-end lg:justify-center after:icon-chevron_right after:text-xl after:text-fg-subtle">
+            </div>
+            <div class="hidden col-span-12 sm:block text-caption text-fg-muted">
+                            </div>
+        </a>
+
+
+                    
+            
+                                                
+        
+        
+        <a href="https://www.wohnungsboerse.net/immodetail-k/39864746" title="Diese äußerst charmante Altbauwohnung befindet sich in begehrter Innenstadtlage in einem sehr gepflegten Mehrfamilienhaus aus dem Ursprungsjahr 1911. Das historische Gebäude überzeugt durch seinen klassischen Altbaucharakter und einen insgesamt sehr guten Erhaltungszustand.&amp;lt;br /&amp;gt;&amp;lt;br /&amp;gt;Die ca. 128 qm große Wohnung wurde vor rund zehn Jahren umfassend modernisiert und verbindet heute stilvoll den Charme der Jahrhundertwende mit modernem Wohnkomfort. Hohe, altbautypische Decken, großzügige Raumdimensionen sowie ein gepflegter Holzboden unterstreichen den besonderen Charakter dieser Immobilie und sorgen für ein außergewöhnlich angenehmes Wohngefühl.&amp;lt;br /&amp;gt;&amp;lt;br /&amp;gt;Derzeit verfügt die Wohnung über drei großzügig geschnittene Zimmer, eine separate Küche, ein modernes Badezimmer sowie ein zusätzliches Gäste WC. Die sehr durchdachte Grundrissgestaltung bietet darüber hinaus das Potenzial, die Wohnung mit überschaubarem Aufwand zu einer Vier Zimmer Wohnung zu erweitern. Somit kann die Anzahl der Schlafzimmer flexibel von aktuell zwei auf drei erhöht werden, was die Immobilie auch für Familien oder Paare mit erhöhtem Platzbedarf besonders attraktiv macht.&amp;lt;br /&amp;gt;&amp;lt;br /&amp;gt;Das Wohnzimmer sowie der separate Essbereich präsentieren sich lichtdurchflutet und bieten vielfältige Einrichtungsmöglichkeiten. Großzügige Fensterflächen sorgen für eine freundliche Wohnatmosphäre und betonen die Großzügigkeit der Räume. Die abgeschlossene Küche ist funktional geschnitten, bietet ausreichend Arbeits-/ und Stauraum und ist klar vom Wohnbereich getrennt.&amp;lt;br /&amp;gt;&amp;lt;br /&amp;gt;Das modern ausgestattete Badezimmer überzeugt mit einer zeitlosen Gestaltung, hochwertigen Sanitärobjekten und einer separaten Dusche. Ein zusätzliches Gäste-WC ergänzt den Wohnkomfort auf angenehme Weise.&amp;lt;br /&amp;gt;&amp;lt;br /&amp;gt;Ein besonderes Highlight ist der Balkon, der zum ruhig gelegenen Innenhof ausgerichtet ist. Er bietet eine geschützte Rückzugsmöglichkeit mitten in der Stadt und lädt zum Entspannen ein.&amp;lt;br /&amp;gt;&amp;lt;br /&amp;gt;Insgesamt handelt es sich um eine sehr gepflegte, stilvolle Altbauwohnung mit ca. 128 qm Wohnfläche, hervorragender Raumaufteilung, vielseitigem Nutzungspotenzial und attraktiver Innenstadtlage. Eine Immobilie, die klassischen Altbauflair und zeitgemäßes Wohnen auf überzeugende Weise vereint." rel="" target="_blank" class=" estate_39864746 bg-bg rounded-lg overflow-hidden shadow-20 sm:p-2 mb-4 relative flex flex-col justify-between sm:grid sm:grid-cols-12 sm:gap-x-4">
+                            <div class="absolute left-0 px-3 py-1 font-bold bg-yellow top-2 text-caption">NEU</div>
+                        <div class="overflow-hidden h-36 sm:col-span-6 lg:col-span-4 sm:h-60">
+                                <span class="block w-full h-full bg-center bg-cover bg-estate-slider">
+                    <img src="https://www.wohnungsboerse.net/assets/estates/400x400/984999d2d1dc024640644ae01edc3b6d.jpg?id=50442406" onload="jQuery(this).removeClass('opacity-0')" loading="lazy" class="object-cover object-center w-full h-full transition-opacity opacity-0" alt="Charmante 3 bis 4-Zimmer-Altbau-Wohnung in gefragter Innenstadtlage">
+                </span>
+            </div>
+            <div class="p-4 sm:px-0 sm:pb-0 sm:col-span-6 lg:col-span-7">
+                <h3 class="font-bold tracking-tight text-h4 lg:text-h3 text-fg sm:col-span-12 nounderline line-clamp-2">Charmante 3 bis 4-Zimmer-Altbau-Wohnung in gefragter Innenstadtlage</h3>                <div class="mt-2 text-caption before:icon-location_marker before:text-secondary line-clamp-1 sm:col-span-12">
+                    Düsseldorf - Derendorf
+                </div>
+
+                <div class="flex justify-between px-2 py-4 mt-2 text-center divide-x rounded-lg lg:w-80 sm:mt-4 divide-bg-muted bg-bg-canvas divide-solid">
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Kaufpreis</dt>
+                        <dd class="text-base font-bold">649.000&nbsp;€</dd>
+                    </dl>
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Zimmer</dt>
+                        <dd class="text-base font-bold">
+                            3<span class="inline sm:hidden"> Zi.</span>
+                                                    </dd>
+                    </dl>
+                    <dl class="px-2 lg:px-4 grow">
+                        <dt class="hidden text-caption sm:block">Fläche</dt>
+                        <dd class="text-base font-bold">128 m²</dd>
+                    </dl>
+                </div>
+
+                <div class="hidden mt-1 space-x-2 sm:block h-7 sm:col-span-12">
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Balkon</span>
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Einbauküche</span>
+                                                                    <span class="before:icon-check_circle before:text-green before:mr-1 before:text-base before:relative before:top-0.5 text-caption h-full">Altbau</span>
+                                    </div>
+            </div>
+            <div class="hidden w-12 lg:flex lg:col-span-1 lg:items-center lg:justify-self-end lg:justify-center after:icon-chevron_right after:text-xl after:text-fg-subtle">
+            </div>
+            <div class="hidden col-span-12 sm:block text-caption text-fg-muted">
+                            </div>
+        </a>
+
+
+                    
+            
+                        </section>
+
+<script type="application/ld+json">[
+    {
+      "@context": "http://schema.org",
+      "@type": "Product",
+      "name": "Eigentumswohnung Düsseldorf, Wohnung kaufen bei wohnungsboerse.net",
+      "offers": {
+        "@type": "AggregateOffer",
+        "priceCurrency": "EUR",
+        "offerCount": 0,
+        "lowPrice": "65000",
+        "highPrice": "6250000"
+      }
+    }
+  ]
+</script>
+
+                <div class="flex justify-center mb-3 paging"><nav role="navigation" aria-label="Pagination Navigation" class="flex items-center justify-center">
+        <div class="flex justify-between flex-1 sm:hidden gap-x-2">
+                            <div class="w-12"></div>
+                <div class="w-12"></div>
+                <div class="w-6"></div>
+                            <div>
+                    <span class="inline-flex items-center justify-center w-12 h-12 font-bold border-2 border-transparent rounded-full bg-secondary text-fg-on-dark">
+                    1
+                    </span>
+                </div>
+            
+                <span aria-disabled="true">
+                    <span class="inline-flex items-center justify-center h-12 font-bold text-secondary">...</span>
+                </span>
+                <div>
+                    <a href="https://www.wohnungsboerse.net/searches/index?estate_marketing_types=kauf%2C1&amp;marketing_type=kauf&amp;estate_types%5B0%5D=1&amp;is_rendite=0&amp;cities%5B0%5D=Duesseldorf&amp;term=D%C3%BCsseldorf&amp;page=78" class="inline-flex items-center justify-center w-12 h-12 font-bold border-2 border-transparent rounded-full text-secondary bg-bg hover:bg-secondary-subtle hover:border-secondary">
+                    78
+                    </a>
+                </div>
+                                        <a href="https://www.wohnungsboerse.net/searches/index?estate_marketing_types=kauf%2C1&amp;marketing_type=kauf&amp;estate_types%5B0%5D=1&amp;is_rendite=0&amp;cities%5B0%5D=Duesseldorf&amp;term=D%C3%BCsseldorf&amp;page=2" class="inline-flex items-center justify-center w-12 h-12 text-5xl after:icon-chevron_right after:text-secondary">
+                </a>
+                    </div>
+
+        <div class="relative z-0 hidden sm:inline-flex gap-x-2">
+            
+            
+            
+                            
+                
+                
+                                                                                        <span aria-current="page">
+                                <span class="inline-flex items-center justify-center w-12 h-12 font-bold border-2 border-transparent rounded-full bg-secondary text-fg-on-dark">1</span>
+                            </span>
+                                                                                                <a href="https://www.wohnungsboerse.net/searches/index?estate_marketing_types=kauf%2C1&amp;marketing_type=kauf&amp;estate_types%5B0%5D=1&amp;is_rendite=0&amp;cities%5B0%5D=Duesseldorf&amp;term=D%C3%BCsseldorf&amp;page=2" class="inline-flex items-center justify-center w-12 h-12 font-bold border-2 border-transparent rounded-full text-secondary bg-bg hover:bg-secondary-subtle hover:border-secondary" aria-label="Go to page 2">
+                                2
+                            </a>
+                                                                                                <a href="https://www.wohnungsboerse.net/searches/index?estate_marketing_types=kauf%2C1&amp;marketing_type=kauf&amp;estate_types%5B0%5D=1&amp;is_rendite=0&amp;cities%5B0%5D=Duesseldorf&amp;term=D%C3%BCsseldorf&amp;page=3" class="inline-flex items-center justify-center w-12 h-12 font-bold border-2 border-transparent rounded-full text-secondary bg-bg hover:bg-secondary-subtle hover:border-secondary" aria-label="Go to page 3">
+                                3
+                            </a>
+                                                                                                <a href="https://www.wohnungsboerse.net/searches/index?estate_marketing_types=kauf%2C1&amp;marketing_type=kauf&amp;estate_types%5B0%5D=1&amp;is_rendite=0&amp;cities%5B0%5D=Duesseldorf&amp;term=D%C3%BCsseldorf&amp;page=4" class="inline-flex items-center justify-center w-12 h-12 font-bold border-2 border-transparent rounded-full text-secondary bg-bg hover:bg-secondary-subtle hover:border-secondary" aria-label="Go to page 4">
+                                4
+                            </a>
+                                                                                                <a href="https://www.wohnungsboerse.net/searches/index?estate_marketing_types=kauf%2C1&amp;marketing_type=kauf&amp;estate_types%5B0%5D=1&amp;is_rendite=0&amp;cities%5B0%5D=Duesseldorf&amp;term=D%C3%BCsseldorf&amp;page=5" class="inline-flex items-center justify-center w-12 h-12 font-bold border-2 border-transparent rounded-full text-secondary bg-bg hover:bg-secondary-subtle hover:border-secondary" aria-label="Go to page 5">
+                                5
+                            </a>
+                                                                                                <a href="https://www.wohnungsboerse.net/searches/index?estate_marketing_types=kauf%2C1&amp;marketing_type=kauf&amp;estate_types%5B0%5D=1&amp;is_rendite=0&amp;cities%5B0%5D=Duesseldorf&amp;term=D%C3%BCsseldorf&amp;page=6" class="inline-flex items-center justify-center w-12 h-12 font-bold border-2 border-transparent rounded-full text-secondary bg-bg hover:bg-secondary-subtle hover:border-secondary" aria-label="Go to page 6">
+                                6
+                            </a>
+                                                                                        
+                                    <span aria-disabled="true">
+                        <span class="inline-flex items-center justify-center h-12 font-bold text-secondary">...</span>
+                    </span>
+                
+                
+                                            
+                
+                
+                                                                                        <a href="https://www.wohnungsboerse.net/searches/index?estate_marketing_types=kauf%2C1&amp;marketing_type=kauf&amp;estate_types%5B0%5D=1&amp;is_rendite=0&amp;cities%5B0%5D=Duesseldorf&amp;term=D%C3%BCsseldorf&amp;page=77" class="inline-flex items-center justify-center w-12 h-12 font-bold border-2 border-transparent rounded-full text-secondary bg-bg hover:bg-secondary-subtle hover:border-secondary" aria-label="Go to page 77">
+                                77
+                            </a>
+                                                                                                <a href="https://www.wohnungsboerse.net/searches/index?estate_marketing_types=kauf%2C1&amp;marketing_type=kauf&amp;estate_types%5B0%5D=1&amp;is_rendite=0&amp;cities%5B0%5D=Duesseldorf&amp;term=D%C3%BCsseldorf&amp;page=78" class="inline-flex items-center justify-center w-12 h-12 font-bold border-2 border-transparent rounded-full text-secondary bg-bg hover:bg-secondary-subtle hover:border-secondary" aria-label="Go to page 78">
+                                78
+                            </a>
+                                                                        
+            
+                            <a href="https://www.wohnungsboerse.net/searches/index?estate_marketing_types=kauf%2C1&amp;marketing_type=kauf&amp;estate_types%5B0%5D=1&amp;is_rendite=0&amp;cities%5B0%5D=Duesseldorf&amp;term=D%C3%BCsseldorf&amp;page=2" rel="next" class="inline-flex items-center justify-center w-12 h-12 text-5xl after:icon-chevron_right after:text-secondary" aria-label="Next &amp;raquo;">
+                </a>
+                    </div>
+    </nav>
+</div>
+            </div>
+        </div>
+    
+    <div class="mt-6 mb-4 text-center">
+        <s24-ad-slot ad-unit-path="/4467/wohnungsboerse_net/Resultlist/List_Bottom_Banner" ad-label-center="true" ad-label-text="Anzeige" ad-label-top="true" size-map-0x0="300x250,320x240,320x100,fluid" size-map-738x0="728x90,fluid" size-map-810x0="800x250,728x90,fluid" size-map-980x0="800x250,728x90,970x250,fluid" class="!inline-flex"></s24-ad-slot>
+    </div></section>
+            <div id="wrapfabtest">
+                <div class="adBanner"></div>
+            </div>
+                    </main>
+        <footer class="relative py-6 lg:py-16 bg-secondary print:hidden" itemtype="http://schema.org/WPFooter" itemscope="itemscope">
+            <section class="md:px-4 lg:container"><div class="block lg:flex lg:items-center lg:justify-between">
+                    <div class="text-center lg:text-left">
+                        <a href="/" class="inline-block" title="wohnungsboerse.net"><img src="/img/2022/logo_footer.svg" alt="wohnungsboerse.net" width="212" height="48" loading="lazy"></a>
+                    </div>
+                    <div class="flex flex-wrap items-center justify-center space-x-5">
+                        <a href="/datenschutz" rel="" class="no-underline text-fg-on-dark visited:text-fg-on-dark hover:text-fg-on-dark hover:underline visited:hover:text-fg-on-dark leading-12">Datenschutz</a>
+<a href="/impressum" rel="" class="no-underline text-fg-on-dark visited:text-fg-on-dark hover:text-fg-on-dark hover:underline visited:hover:text-fg-on-dark leading-12">Impressum</a>
+<a href="/agb" rel="" class="no-underline text-fg-on-dark visited:text-fg-on-dark hover:text-fg-on-dark hover:underline visited:hover:text-fg-on-dark leading-12">AGB</a>
+<a href="/kontakt" rel="" class="no-underline text-fg-on-dark visited:text-fg-on-dark hover:text-fg-on-dark hover:underline visited:hover:text-fg-on-dark leading-12">Kontakt</a><div class="block w-full md:hidden"></div>
+
+<a href="/sitemap.html" rel="" class="no-underline text-fg-on-dark visited:text-fg-on-dark hover:text-fg-on-dark hover:underline visited:hover:text-fg-on-dark leading-12">Sitemap</a>
+<a href="javascript:void(0);" onclick="UC_UI.showSecondLayer();" class="no-underline text-fg-on-dark visited:text-fg-on-dark hover:underline hover:text-fg-on-dark visited:hover:text-fg-on-dark leading-12">Privacy Manager</a>
+                    </div>
+                </div>
+                <div class="flex flex-col mt-4 lg:items-center lg:justify-between lg:flex-row">
+                    <div class="order-1 text-center lg:order-0">
+                        <a href="https://www.facebook.com/wohnungsboerse.net" title="Jetzt Fan auf Facebook werden" rel="nofollow noreferrer" target="_blank" class="inline-block w-12 text-xl text-center no-underline leading-12 text-fg-on-dark before:icon-social_fb before:text-fg-on-dark"></a>
+                    </div>
+                    <div class="space-x-2 text-center lg:text-right order-0 lg:order-1">
+                        <a href="https://play.google.com/store/apps/details?id=net.wohnungsboerse.www.pwa&amp;pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1" target="_blank" rel="nofollow" class="inline-block"><img src="/img/2022/play_store_badge.svg" loading="lazy" width="162" height="48" alt="Google Play Store"></a>
+                        
+                    </div>
+                </div></section>
+        </footer>
+    </div>
+
+    
+                                    
+    
+    <script src="https://tracking.immobilienscout24.de/immobilienscout/is24-de-satellite/tr.js?cP--svc_module_name=wohnungsboerse&amp;cP--svc_satellite_website=true&amp;cP--countername=wohnungsboerse.searches.index" async=""></script>
+
+
+            <script type="text/javascript">
+            window.IS24 = window.IS24 || {};
+            IS24.webMetrics = {
+                page: "wohnungsboerse",
+                stage: "pro"
+            };
+        </script>
+        <script type="text/javascript" src="https://www.static-immobilienscout24.de/web-metrics/main.js" async=""></script>
+    
+    <script src="https://www.wohnungsboerse.net/js/jquery.min.js" defer=""></script>
+    <script src="https://www.wohnungsboerse.net/js/app.js" defer=""></script>
+    <script src="https://www.wohnungsboerse.net/js/main.js" defer=""></script>
+    
+        <script src="https://www.wohnungsboerse.net/js/selectize.min.js" defer=""></script>
+    <script src="https://www.wohnungsboerse.net/js/components/searchForm.js" defer=""></script>
+    <script src="https://www.wohnungsboerse.net/js/pages/estates.js" defer=""></script>
+    <script src="https://www.wohnungsboerse.net/js/autoComplete.min.js" defer=""></script>
+    <script src="https://www.wohnungsboerse.net/js/components/autocompleteWrapper.js" defer=""></script>
+
+            <script src="https://osa.s24-media.immobilienscout24.de/osa-LATEST.js" defer=""></script>
+    
+    <script defer="">document.addEventListener('DOMContentLoaded', function(){
+ jQuery("[data-toggle='expand-button']").on('click', function() {
+ openModal("#filter-modal", this);
+ });
+ jQuery("[data-toggle='ranking-modal']").on('click', function() {
+ openModal("#rankingLayer", this);
+ });
+ var colSearch = new CollapsibleSearch();
+ colSearch.updateEstateCount = false;
+ colSearch.init(jQuery('.collapse-search'));
+ var estateSubtypes = [];
+ jQuery('#SearchEstateMarketingTypes').on('change', function() {
+ loadSearchFormEstateSubtypes(estateSubtypes);
+ });
+ estateSubtypes.push({
+ 'id': '159',
+ 'label': 'Apartment',
+ 'estateTypeCode': 'whg',
+ 'estateSubTypeCode': 'apartment'
+ });
+ estateSubtypes.push({
+ 'id': '158',
+ 'label': 'Apartmenthaus',
+ 'estateTypeCode': 'haus',
+ 'estateSubTypeCode': 'apartmenthaus'
+ });
+ estateSubtypes.push({
+ 'id': '17',
+ 'label': 'Atelier',
+ 'estateTypeCode': 'whg',
+ 'estateSubTypeCode': 'atelier'
+ });
+ estateSubtypes.push({
+ 'id': '6',
+ 'label': 'Bauernhaus',
+ 'estateTypeCode': 'haus',
+ 'estateSubTypeCode': 'bauernhaus'
+ });
+ estateSubtypes.push({
+ 'id': '22',
+ 'label': 'Bauernhof',
+ 'estateTypeCode': 'haus',
+ 'estateSubTypeCode': 'bauernhof'
+ });
+ estateSubtypes.push({
+ 'id': '108',
+ 'label': 'Betreutes Wohnen',
+ 'estateTypeCode': 'whg',
+ 'estateSubTypeCode': 'betreutes wohnen'
+ });
+ estateSubtypes.push({
+ 'id': '7',
+ 'label': 'Bungalow',
+ 'estateTypeCode': 'haus',
+ 'estateSubTypeCode': 'bungalow'
+ });
+ estateSubtypes.push({
+ 'id': '117',
+ 'label': 'Chalet',
+ 'estateTypeCode': 'haus',
+ 'estateSubTypeCode': 'chalet'
+ });
+ estateSubtypes.push({
+ 'id': '2',
+ 'label': 'Dachgeschosswohnung',
+ 'estateTypeCode': 'whg',
+ 'estateSubTypeCode': 'dachgeschoss'
+ });
+ estateSubtypes.push({
+ 'id': '8',
+ 'label': 'Doppelhaus',
+ 'estateTypeCode': 'haus',
+ 'estateSubTypeCode': 'doppelhaus'
+ });
+ estateSubtypes.push({
+ 'id': '9',
+ 'label': 'Doppelhaushälfte',
+ 'estateTypeCode': 'haus',
+ 'estateSubTypeCode': 'doppelhaushlfte'
+ });
+ estateSubtypes.push({
+ 'id': '18',
+ 'label': 'Eigentumswohnung',
+ 'estateTypeCode': 'whg',
+ 'estateSubTypeCode': 'eigentumswohnung'
+ });
+ estateSubtypes.push({
+ 'id': '92',
+ 'label': 'Ein- / Zweifamilienhaus',
+ 'estateTypeCode': 'haus',
+ 'estateSubTypeCode': 'einzweifamilienhaus'
+ });
+ estateSubtypes.push({
+ 'id': '10',
+ 'label': 'Einfamilienhaus',
+ 'estateTypeCode': 'haus',
+ 'estateSubTypeCode': 'einfamilienhaus'
+ });
+ estateSubtypes.push({
+ 'id': '104',
+ 'label': 'Einfamilienhaus (freistehend)',
+ 'estateTypeCode': 'haus',
+ 'estateSubTypeCode': 'einfamilienhaus(freistehend)'
+ });
+ estateSubtypes.push({
+ 'id': '26',
+ 'label': 'Einfamilienhaus mit Einliegerwohnung',
+ 'estateTypeCode': 'haus',
+ 'estateSubTypeCode': 'einfamilienhausmiteinliegerwohnung'
+ });
+ estateSubtypes.push({
+ 'id': '88',
+ 'label': 'Erdgeschosswohnung',
+ 'estateTypeCode': 'whg',
+ 'estateSubTypeCode': 'erdgeschoss'
+ });
+ estateSubtypes.push({
+ 'id': '89',
+ 'label': 'Etagenwohnung',
+ 'estateTypeCode': 'whg',
+ 'estateSubTypeCode': 'etagenwohnung'
+ });
+ estateSubtypes.push({
+ 'id': '15',
+ 'label': 'Fachwerkhaus',
+ 'estateTypeCode': 'haus',
+ 'estateSubTypeCode': 'fachwerkhaus'
+ });
+ estateSubtypes.push({
+ 'id': '115',
+ 'label': 'Ferienhaus',
+ 'estateTypeCode': 'haus',
+ 'estateSubTypeCode': 'ferienhaus'
+ });
+ estateSubtypes.push({
+ 'id': '160',
+ 'label': 'Finca',
+ 'estateTypeCode': 'haus',
+ 'estateSubTypeCode': 'finca'
+ });
+ estateSubtypes.push({
+ 'id': '162',
+ 'label': 'Herrenhaus',
+ 'estateTypeCode': 'haus',
+ 'estateSubTypeCode': 'herrenhaus'
+ });
+ estateSubtypes.push({
+ 'id': '102',
+ 'label': 'Hochparterre-Wohnung',
+ 'estateTypeCode': 'whg',
+ 'estateSubTypeCode': 'hochparterre'
+ });
+ estateSubtypes.push({
+ 'id': '16',
+ 'label': 'Holzhaus',
+ 'estateTypeCode': 'haus',
+ 'estateSubTypeCode': 'holzhaus'
+ });
+ estateSubtypes.push({
+ 'id': '11',
+ 'label': 'Landhaus',
+ 'estateTypeCode': 'haus',
+ 'estateSubTypeCode': 'landhaus'
+ });
+ estateSubtypes.push({
+ 'id': '3',
+ 'label': 'Loft',
+ 'estateTypeCode': 'whg',
+ 'estateSubTypeCode': 'loft'
+ });
+ estateSubtypes.push({
+ 'id': '4',
+ 'label': 'Maisonette-Wohnung',
+ 'estateTypeCode': 'whg',
+ 'estateSubTypeCode': 'maisonette'
+ });
+ estateSubtypes.push({
+ 'id': '12',
+ 'label': 'Mehrfamilienhaus',
+ 'estateTypeCode': 'haus',
+ 'estateSubTypeCode': 'mehrfamilienhaus'
+ });
+ estateSubtypes.push({
+ 'id': '5',
+ 'label': 'Penthouse',
+ 'estateTypeCode': 'whg',
+ 'estateSubTypeCode': 'penthouse'
+ });
+ estateSubtypes.push({
+ 'id': '157',
+ 'label': 'Pflegeheim',
+ 'estateTypeCode': 'whg',
+ 'estateSubTypeCode': 'pflegeheim'
+ });
+ estateSubtypes.push({
+ 'id': '103',
+ 'label': 'Reiheneckhaus',
+ 'estateTypeCode': 'haus',
+ 'estateSubTypeCode': 'reiheneckhaus'
+ });
+ estateSubtypes.push({
+ 'id': '112',
+ 'label': 'Reihenendhaus',
+ 'estateTypeCode': 'haus',
+ 'estateSubTypeCode': 'reihenendhaus'
+ });
+ estateSubtypes.push({
+ 'id': '14',
+ 'label': 'Reihenhaus',
+ 'estateTypeCode': 'haus',
+ 'estateSubTypeCode': 'reihenhaus'
+ });
+ estateSubtypes.push({
+ 'id': '105',
+ 'label': 'Reihenmittelhaus',
+ 'estateTypeCode': 'haus',
+ 'estateSubTypeCode': 'reihenmittelhaus'
+ });
+ estateSubtypes.push({
+ 'id': '161',
+ 'label': 'Rustico',
+ 'estateTypeCode': 'haus',
+ 'estateSubTypeCode': 'rustico'
+ });
+ estateSubtypes.push({
+ 'id': '156',
+ 'label': 'Seniorenheim',
+ 'estateTypeCode': 'whg',
+ 'estateSubTypeCode': 'seniorenheim'
+ });
+ estateSubtypes.push({
+ 'id': '101',
+ 'label': 'Souterrainwohnung',
+ 'estateTypeCode': 'whg',
+ 'estateSubTypeCode': 'souterrain'
+ });
+ estateSubtypes.push({
+ 'id': '113',
+ 'label': 'Stadthaus',
+ 'estateTypeCode': 'haus',
+ 'estateSubTypeCode': 'stadthaus'
+ });
+ estateSubtypes.push({
+ 'id': '19',
+ 'label': 'Terrassenwohnung',
+ 'estateTypeCode': 'whg',
+ 'estateSubTypeCode': 'terrassenwohnung'
+ });
+ estateSubtypes.push({
+ 'id': '13',
+ 'label': 'Villa',
+ 'estateTypeCode': 'haus',
+ 'estateSubTypeCode': 'villa'
+ });
+ estateSubtypes.push({
+ 'id': '111',
+ 'label': 'Wohn- und Geschäftsgebäude',
+ 'estateTypeCode': 'whg',
+ 'estateSubTypeCode': 'wohn- und geschäftsgebäude'
+ });
+ estateSubtypes.push({
+ 'id': '86',
+ 'label': 'Wohn- und Geschäftshaus',
+ 'estateTypeCode': 'haus',
+ 'estateSubTypeCode': 'wohnundgeschftshaus'
+ });
+ estateSubtypes.push({
+ 'id': '87',
+ 'label': 'Wohnanlage',
+ 'estateTypeCode': 'whg',
+ 'estateSubTypeCode': 'wohnanlage'
+ });
+ estateSubtypes.push({
+ 'id': '27',
+ 'label': 'Wohnen',
+ 'estateTypeCode': 'haus',
+ 'estateSubTypeCode': 'wohnen'
+ });
+ estateSubtypes.push({
+ 'id': '107',
+ 'label': 'Wohnimmobilie (sonstige)',
+ 'estateTypeCode': 'whg',
+ 'estateSubTypeCode': 'wohnimmobilie(sonstige)'
+ });
+ estateSubtypes.push({
+ 'id': '20',
+ 'label': 'Zweifamilienhaus',
+ 'estateTypeCode': 'haus',
+ 'estateSubTypeCode': 'zweifamilienhaus'
+ });
+ var estateSubtypesSelected = [];
+ jQuery("#SearchEstateSubTypes").selectize({
+ valueField: 'id',
+ labelField: 'label',
+ searchField: 'label',
+ items: estateSubtypesSelected,
+ placeholder: 'Objekttypen',
+ create: false,
+ plugins: ["remove_button"],
+ onChange: function() {
+ colSearch._updateInputs();
+ }
+ });
+ loadSearchFormEstateSubtypes(estateSubtypes, estateSubtypesSelected);
+ colSearch.updateEstateCount = true;
+ window.setTimeout(function() { trackLink('2026-04-21 13:21',
+ 'searchform_homepage',
+ 'search_executed',
+ 'search_execute',
+ 'search',
+ {
+ geo_bln: 'Nordrhein-Westfalen',
+ geo_krs: 'Duesseldorf',
+ geo_land: 'Deutschland',
+ geo_ot: '',
+ obj_ityp: 'wohnung_kauf'
+ }
+ );
+ }, 2000);
+ });</script>
+
+
+<div style="position: absolute; width: 0px; height: 0px; overflow: hidden;"><span style="position: absolute; width: auto; padding: 0px; white-space: pre; letter-spacing: 0px; font-size: 13px; font-family: Nunito, sans-serif; font-weight: 400; text-transform: none;">Objekttypen</span></div><iframe name="__tcfapiLocator" style="display: none;"></iframe><div aria-hidden="true" id="usercentrics-root" data-created-at="1776770502190" style="visibility: hidden;"></div>
