@@ -61,6 +61,7 @@ const GeneralSettings = function GeneralSettings() {
   const [demoMode, setDemoMode] = React.useState(null);
   const [analyticsEnabled, setAnalyticsEnabled] = React.useState(null);
   const [sqlitePath, setSqlitePath] = React.useState(null);
+  const [baseUrl, setBaseUrl] = React.useState('');
   const fileInputRef = React.useRef(null);
   const [restoreModalVisible, setRestoreModalVisible] = React.useState(false);
   const [precheckInfo, setPrecheckInfo] = React.useState(null);
@@ -94,6 +95,7 @@ const GeneralSettings = function GeneralSettings() {
       setAnalyticsEnabled(settings?.analyticsEnabled || false);
       setDemoMode(settings?.demoMode || false);
       setSqlitePath(settings?.sqlitepath);
+      setBaseUrl(settings?.baseUrl ?? '');
     }
 
     init();
@@ -137,6 +139,7 @@ const GeneralSettings = function GeneralSettings() {
         demoMode,
         analyticsEnabled,
         sqlitepath: sqlitePath,
+        baseUrl,
       });
     } catch (exception) {
       console.error(exception);
@@ -264,6 +267,13 @@ const GeneralSettings = function GeneralSettings() {
                     onChange={(value) => setPort(value)}
                     style={{ maxWidth: 160 }}
                   />
+                </SegmentPart>
+
+                <SegmentPart
+                  name="Base URL"
+                  helpText="Public URL where Fredy is reachable (e.g. http://192.168.1.10:9998). Used for 'Open in Fredy' links in notifications."
+                >
+                  <Input type="text" placeholder="Base-Url" value={baseUrl} onChange={(value) => setBaseUrl(value)} />
                 </SegmentPart>
 
                 <SegmentPart
