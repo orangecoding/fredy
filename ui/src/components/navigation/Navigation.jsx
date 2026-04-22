@@ -65,20 +65,31 @@ export default function Navigation({ isAdmin }) {
     return '/' + split[0];
   }
 
+  const sidebarWidth = collapsed ? '60px' : '220px';
+
   return (
     <Nav
-      style={{ height: '100%', maxWidth: collapsed ? '60px' : '240px' }}
+      style={{ height: '100%', width: sidebarWidth, minWidth: sidebarWidth, maxWidth: sidebarWidth }}
       items={items}
       isCollapsed={collapsed}
       selectedKeys={[parsePathName(location.pathname)]}
       onSelect={(key) => {
         navigate(key.itemKey);
       }}
-      header={<img src={collapsed ? heart : logoWhite} width={collapsed ? '30' : '120'} alt="Fredy Logo" />}
+      header={
+        <div className="navigate__header">
+          <img src={collapsed ? heart : logoWhite} width={collapsed ? 30 : 160} alt="Fredy Logo" />
+        </div>
+      }
       footer={
         <Nav.Footer className="navigate__footer">
           <Logout text={!collapsed} />
-          <Button icon={<IconSidebar />} onClick={() => setCollapsed(!collapsed)} />
+          <Button
+            icon={<IconSidebar />}
+            onClick={() => setCollapsed(!collapsed)}
+            theme="borderless"
+            style={{ color: '#505050' }}
+          />
         </Nav.Footer>
       }
     />
