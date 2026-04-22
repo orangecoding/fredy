@@ -2,44 +2,29 @@
 
 .dashboard-card {
   width: 100%;
-  height: 140px;
-  margin-bottom: 16px;
-  transition: transform 0.2s, box-shadow 0.2s;
-  background-color: #181b26;
-  border: 1px solid #232735;
-  border-radius: 10px;
-  --pulse-color: rgba(255, 255, 255, 0.08);
+  height: 112px;
+  border-radius: @radius-card !important;
+  border: 1px solid @color-border !important;
+  background-color: @color-surface !important;
+  transition: box-shadow @transition-card;
   position: relative;
-  z-index: 1;
   overflow: visible;
 
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-radius: inherit;
-    box-shadow: 0 4px 25px -2px var(--pulse-color);
-    opacity: 0;
-    animation: pulse 5s infinite ease-in-out;
-    pointer-events: none;
-    z-index: -1;
-    will-change: opacity;
+  &:hover {
+    box-shadow: 0 4px 24px -2px rgba(255,255,255,0.06);
   }
 
   &__icon {
-    font-size: 20px;
+    font-size: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--card-accent, #94a3b8);
+    color: var(--card-accent, @color-gray-text);
   }
 
   &__title {
-    color: var(--semi-color-text-2) !important;
-    font-size: 12px !important;
+    color: rgba(148, 163, 184, 0.7) !important;
+    font-size: @text-xs !important;
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
@@ -49,61 +34,45 @@
   }
 
   &__value {
+    font-size: 1.2rem;
     font-weight: 700;
     margin-bottom: 4px;
-    color: var(--card-accent, var(--semi-color-text-0));
+    color: var(--card-accent, @color-text);
   }
 
   &__desc {
-    color: var(--semi-color-text-3) !important;
+    color: @color-faint !important;
+    font-size: @text-xs;
   }
 
   &.blue {
-    --pulse-color: @color-blue-border;
     --card-accent: @color-blue-text;
-    background-color: @color-blue-bg;
-    border-color: @color-blue-border;
-    box-shadow: 0 2px 16px -6px @color-blue-border;
+    background-color: @color-blue-bg !important;
+    border-color: @color-blue-border !important;
+    &:hover { box-shadow: 0 4px 24px -2px @color-blue-border; }
   }
-
   &.orange {
-    --pulse-color: @color-orange-border;
     --card-accent: @color-orange-text;
-    background-color: @color-orange-bg;
-    border-color: @color-orange-border;
-    box-shadow: 0 2px 16px -6px @color-orange-border;
+    background-color: @color-orange-bg !important;
+    border-color: @color-orange-border !important;
+    &:hover { box-shadow: 0 4px 24px -2px @color-orange-border; }
   }
-
   &.green {
-    --pulse-color: @color-green-border;
     --card-accent: @color-green-text;
-    background-color: @color-green-bg;
-    border-color: @color-green-border;
-    box-shadow: 0 2px 16px -6px @color-green-border;
+    background-color: @color-green-bg !important;
+    border-color: @color-green-border !important;
+    &:hover { box-shadow: 0 4px 24px -2px @color-green-border; }
   }
-
   &.purple {
-    --pulse-color: @color-purple-border;
     --card-accent: @color-purple-text;
-    background-color: @color-purple-bg;
-    border-color: @color-purple-border;
-    box-shadow: 0 2px 16px -6px @color-purple-border;
+    background-color: @color-purple-bg !important;
+    border-color: @color-purple-border !important;
+    &:hover { box-shadow: 0 4px 24px -2px @color-purple-border; }
   }
-
   &.gray {
-    --pulse-color: @color-gray-border;
     --card-accent: @color-gray-text;
-    background-color: @color-gray-bg;
-    border-color: @color-gray-border;
-    box-shadow: 0 2px 16px -6px @color-gray-border;
-  }
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 0.1;
-  }
-  50% {
-    opacity: 0.4;
+    background-color: @color-gray-bg !important;
+    border-color: @color-gray-border !important;
+    &:hover { box-shadow: 0 4px 24px -2px @color-gray-border; }
   }
 }

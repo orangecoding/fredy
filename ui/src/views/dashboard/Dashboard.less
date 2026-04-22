@@ -1,3 +1,5 @@
+@import '../../tokens.less';
+
 .dashboard {
   display: flex;
   flex-direction: column;
@@ -5,11 +7,11 @@
 
   &__section-label {
     display: block;
-    font-size: 11px !important;
-    font-weight: 600 !important;
+    font-size: @text-xs;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: #5a6478 !important;
+    color: @color-faint;
     margin-bottom: 10px;
     margin-top: 4px;
   }
@@ -22,9 +24,8 @@
   &__pie-wrapper {
     background: #23242a;
     border: 1px solid #37404e;
-
-    border-radius: 10px;
-    padding: 24px;
+    border-radius: @radius-card;
+    padding: 28px;
     max-height: 320px;
     flex: 1;
     display: flex;
