@@ -29,7 +29,7 @@
     align-items: center;
     justify-content: center;
     gap: 6px;
-    padding: 1rem 8px 10px;
+    padding: 1rem 8px 10px !important;
     margin-top: auto;
     flex-shrink: 0;
     border-top: 1px solid @color-border;
@@ -38,7 +38,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 1rem 8px 10px;
+      padding: 1rem 8px 10px !important;
       gap: 6px;
     }
   }
@@ -180,10 +180,10 @@
   }
 }
 
-// Ensure Semi Nav.Footer has no extra padding so the border spans full width
+// Semi Nav.Footer — full width, no extra padding (our BEM class controls it)
 .semi-navigation-footer {
-  padding: 0 !important;
   width: 100% !important;
+  box-sizing: border-box !important;
 }
 
 // Collapsed submenu popup panel
