@@ -18,6 +18,7 @@ import { Divider, Input, Switch, Button, TagInput, Toast, Select } from '@douyin
 import './JobMutation.less';
 import { SegmentPart } from '../../../components/segment/SegmentPart';
 import {
+  IconArrowLeft,
   IconBell,
   IconBriefcase,
   IconPaperclip,
@@ -144,7 +145,19 @@ export default function JobMutator() {
         />
       )}
 
-      <Headline text={jobToBeEdit ? 'Edit Job' : 'Create new Job'} />
+      <Headline
+        text={jobToBeEdit ? 'Edit Job' : 'Create new Job'}
+        actions={
+          <Button
+            icon={<IconArrowLeft />}
+            onClick={() => navigate('/jobs')}
+            theme="borderless"
+            style={{ color: '#909090' }}
+          >
+            Back
+          </Button>
+        }
+      />
       <form>
         <SegmentPart name="Name" Icon={IconPaperclip}>
           <Input

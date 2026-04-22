@@ -30,6 +30,7 @@ import {
 } from '../../services/backupRestoreClient';
 import { IconSave, IconRefresh, IconSignal, IconHome, IconFolder } from '@douyinfe/semi-icons';
 import { debounce } from '../../utils';
+import Headline from '../../components/headline/Headline.jsx';
 import './GeneralSettings.less';
 
 function formatFromTimestamp(ts) {
@@ -244,6 +245,7 @@ const GeneralSettings = function GeneralSettings() {
 
   return (
     <div className="generalSettings">
+      <Headline text="Settings" />
       {!loading && (
         <>
           <Tabs type="line">

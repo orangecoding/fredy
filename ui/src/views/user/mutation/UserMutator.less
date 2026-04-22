@@ -1,3 +1,13 @@
+@import '../../../tokens.less';
+
 .userMutator {
-  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+
+  &__actions {
+    display: flex;
+    gap: @space-2;
+    margin-top: @space-2;
+    justify-content: flex-start;
+  }
 }

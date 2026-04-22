@@ -1,17 +1,73 @@
+@import '../../tokens.less';
+
 .generalSettings {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
   &__tab-content {
-    padding: 20px 0;
-    max-width: 860px;
+    padding: @space-4 0;
   }
 
   &__timePickerContainer {
     display: flex;
-    align-items: baseline;
-    gap: 1rem;
+    gap: @space-3;
     flex-wrap: wrap;
+    align-items: center;
   }
 
   &__save-row {
-    margin-top: 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: @space-2;
   }
+}
+
+// InputNumber fix
+.semi-input-number {
+  background: @color-elevated !important;
+  border: 1px solid @color-border-bright !important;
+  border-radius: @radius-input !important;
+  color: @color-text !important;
+}
+
+.semi-input-number-button-up,
+.semi-input-number-button-down {
+  background: rgba(255,255,255,0.06) !important;
+  border-color: @color-border-bright !important;
+  color: @color-muted !important;
+
+  &:hover {
+    background: rgba(255,255,255,0.12) !important;
+    color: @color-text !important;
+  }
+}
+
+// TimePicker fix — scoped so it doesn't pollute modal headers
+.semi-timepicker .semi-input-wrapper,
+.semi-timepicker .semi-input-inset-label-wrapper {
+  background: @color-elevated !important;
+  border: 1px solid @color-border-bright !important;
+  border-radius: @radius-input !important;
+  color: @color-text !important;
+}
+
+// Tabs styling
+.semi-tabs-bar-line .semi-tabs-tab {
+  color: @color-faint;
+  font-size: @text-base;
+  transition: color @transition-fast;
+
+  &:hover {
+    color: @color-muted;
+  }
+
+  &.semi-tabs-tab-active {
+    color: @color-text !important;
+  }
+}
+
+.semi-tabs-bar-line .semi-tabs-ink-bar {
+  background-color: @color-accent !important;
+  height: 2px;
 }

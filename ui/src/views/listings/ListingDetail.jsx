@@ -41,6 +41,7 @@ import * as timeService from '../../services/time/timeService.js';
 import { distanceMeters, getBoundsFromCoords } from './mapUtils.js';
 import { xhrPost } from '../../services/xhr.js';
 
+import Headline from '../../components/headline/Headline.jsx';
 import './ListingDetail.less';
 
 const { Title, Text } = Typography;
@@ -278,7 +279,7 @@ export default function ListingDetail() {
     },
     {
       key: 'Provider',
-      value: listing.provider.charAt(0).toUpperCase() + listing.provider.slice(1),
+      value: listing.provider ? listing.provider.charAt(0).toUpperCase() + listing.provider.slice(1) : 'Unknown',
       Icon: <IconBriefcase />,
     },
     {
@@ -290,40 +291,45 @@ export default function ListingDetail() {
 
   return (
     <div className="listing-detail">
-      <div className="listing-detail__back">
-        <Button icon={<IconArrowLeft />} onClick={() => navigate(-1)} theme="borderless">
-          Back
-        </Button>
-      </div>
+      <Headline
+        text={listing?.title || 'Listing Detail'}
+        actions={
+          <Button icon={<IconArrowLeft />} onClick={() => navigate(-1)} theme="borderless" style={{ color: '#909090' }}>
+            Back
+          </Button>
+        }
+      />
 
       <Card className="listing-detail__card">
         <div className="listing-detail__header">
-          <Space vertical align="start" spacing="tight">
-            <Title heading={2} className="listing-detail__title">
-              {listing.title}
-            </Title>
-            <Space align="center">
-              <IconMapPin style={{ fontSize: '18px', color: 'var(--semi-color-primary)' }} />
-              <Text type="secondary">{listing.address || 'No address provided'}</Text>
-            </Space>
+          <Space align="center">
+            <IconMapPin style={{ fontSize: '18px', color: 'var(--semi-color-primary)' }} />
+            {listing.address ? (
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(listing.address)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="listing-detail__address-link"
+              >
+                {listing.address}
+              </a>
+            ) : (
+              <Text type="secondary">No address provided</Text>
+            )}
           </Space>
           <Space wrap className="listing-detail__header-actions">
             <Button
-              icon={
-                listing.isWatched === 1 ? (
-                  <IconStar style={{ color: 'var(--semi-color-warning)' }} />
-                ) : (
-                  <IconStarStroked />
-                )
-              }
+              icon={listing.isWatched === 1 ? <IconStar /> : <IconStarStroked />}
               onClick={handleWatch}
-              theme="light"
+              theme="borderless"
+              className={`listing-detail__watch-btn${listing.isWatched === 1 ? ' listing-detail__watch-btn--active' : ''}`}
             >
               {listing.isWatched === 1 ? 'Watched' : 'Watch'}
             </Button>
-            <Text link={{ href: listing.link, target: '_blank' }} icon={<IconLink />} underline>
+            <a href={listing.link} target="_blank" rel="noopener noreferrer" className="listing-detail__open-btn">
+              <IconLink style={{ marginRight: 6 }} />
               Open listing
-            </Text>
+            </a>
           </Space>
         </div>
 

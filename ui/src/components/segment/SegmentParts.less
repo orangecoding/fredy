@@ -1,7 +1,89 @@
+@import '../../tokens.less';
+
 .segmentParts {
-  border: 1px solid #323232 !important;
-  border-radius: .9rem !important;
-  color: rgba(var(--semi-grey-8), 1);
-  background: rgb(53, 54, 60);
-  margin: 0 0 1rem 0;
+  background: rgba(255,255,255,0.03) !important;
+  border: 1px solid @color-border !important;
+  border-radius: @radius-card !important;
+  margin-bottom: @space-4;
+
+  // Semi Card header
+  .semi-card-header {
+    border-bottom: 1px solid @color-border !important;
+    padding: 16px 20px !important;
+  }
+
+  .semi-card-header-wrapper {
+    padding: 0 !important;
+  }
+
+  .semi-card-meta-title {
+    font-weight: 700 !important;
+    color: @color-text !important;
+    font-size: @text-base !important;
+  }
+
+  .semi-card-meta-description {
+    color: #b8b8b8 !important;
+    font-size: @text-sm !important;
+    margin-top: 2px;
+  }
+
+  .semi-card-body {
+    padding: 16px 20px !important;
+  }
+
+  // Semi input focus — subtle, not accent
+  .semi-input-wrapper:focus-within,
+  .semi-select:focus-within {
+    border-color: @color-border-bright !important;
+    box-shadow: none !important;
+  }
+
+  // Icon in card header
+  .semi-card-meta-avatar {
+    color: @color-accent !important;
+    display: flex;
+    align-items: center;
+  }
+
+  // Inputs inside segment cards
+  .semi-input,
+  .semi-input-number-wrapper {
+    background: rgba(255,255,255,0.06) !important;
+    border: 1px solid rgba(255,255,255,0.10) !important;
+    border-radius: @radius-input !important;
+  }
+
+  // TagInput
+  .semi-tagInput-wrapper {
+    background: transparent !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+    border-radius: @radius-input !important;
+    min-height: 38px;
+    outline: none !important;
+    &:focus-within {
+      border-color: @color-border-bright !important;
+      box-shadow: none !important;
+    }
+  }
+  .semi-tagInput {
+    background: transparent !important;
+  }
+  // Tag chips inside TagInput
+  .semi-tag {
+    background: @color-elevated !important;
+    border: 1px solid @color-border-bright !important;
+    color: @color-text !important;
+    border-radius: @radius-chip !important;
+    font-size: @text-sm !important;
+    height: 24px !important;
+    line-height: 22px !important;
+  }
+  .semi-tag-close {
+    color: @color-muted !important;
+    &:hover {
+      color: @color-text !important;
+      background: transparent !important;
+    }
+  }
 }

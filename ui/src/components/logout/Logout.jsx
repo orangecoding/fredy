@@ -3,25 +3,20 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { Button } from '@douyinfe/semi-ui-19';
 import { xhrPost } from '../../services/xhr';
 import { IconUser } from '@douyinfe/semi-icons';
 
 const Logout = function Logout({ text }) {
+  const handleLogout = async () => {
+    await xhrPost('/api/login/logout');
+    location.reload();
+  };
+
   return (
-    <div>
-      <Button
-        icon={<IconUser />}
-        type="danger"
-        theme="solid"
-        onClick={async () => {
-          await xhrPost('/api/login/logout');
-          location.reload();
-        }}
-      >
-        {text && 'Logout'}
-      </Button>
-    </div>
+    <button className={`navigate__logout-btn${!text ? ' navigate__logout-btn--icon-only' : ''}`} onClick={handleLogout}>
+      <IconUser size="default" />
+      {text && 'Logout'}
+    </button>
   );
 };
 

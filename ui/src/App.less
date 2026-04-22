@@ -1,3 +1,5 @@
+@import './tokens.less';
+
 .app {
   height: 100vh;
   width: 100vw;
@@ -14,18 +16,14 @@
     overflow-y: auto;
     overflow-x: hidden;
     position: relative;
-    padding: 24px;
-    background-color: var(--semi-color-bg-0);
+    padding: @space-6;
+    background-color: transparent;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
 
     @media (max-width: 768px) {
-      padding: 12px;
+      padding: @space-3;
     }
   }
-}
-
-.semi-icon:not(.semi-tabs-bar .semi-tabs-tab .semi-icon) {
-  vertical-align: middle;
 }

@@ -5,15 +5,11 @@
 
 import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-illustrations';
 import { format } from '../../services/time/timeService';
-import { Table, Button, Empty } from '@douyinfe/semi-ui-19';
+import { Table, Button, Empty, Tag } from '@douyinfe/semi-ui-19';
 import { IconDelete, IconEdit } from '@douyinfe/semi-icons';
 
 const empty = (
-  <Empty
-    image={<IllustrationNoResult />}
-    darkModeImage={<IllustrationNoResultDark />}
-    description={'No users found.'}
-  />
+  <Empty image={<IllustrationNoResult />} darkModeImage={<IllustrationNoResultDark />} description="No users found." />
 );
 
 export default function UserTable({ user = [], onUserRemoval, onUserEdit } = {}) {
@@ -23,47 +19,73 @@ export default function UserTable({ user = [], onUserRemoval, onUserEdit } = {})
       empty={empty}
       columns={[
         {
-          title: 'Username',
+          title: 'User',
           dataIndex: 'username',
+          render: (value, record) => (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <span style={{ color: '#efefef', fontWeight: 500 }}>{value}</span>
+              {record.isAdmin && (
+                <Tag
+                  size="small"
+                  style={{
+                    background: 'rgba(224,74,56,0.12)',
+                    border: '1px solid rgba(224,74,56,0.35)',
+                    color: '#e04a38',
+                    borderRadius: 9999,
+                    fontSize: 10,
+                    fontWeight: 600,
+                    letterSpacing: '0.04em',
+                    padding: '0 8px',
+                  }}
+                >
+                  ADMIN
+                </Tag>
+              )}
+            </div>
+          ),
         },
         {
           title: 'Last login',
           dataIndex: 'lastLogin',
-          render: (value) => {
-            return format(value);
-          },
+          render: (value) => format(value),
         },
         {
-          title: 'Number of jobs',
+          title: 'Jobs',
           dataIndex: 'numberOfJobs',
         },
         {
           title: 'MCP Token',
           dataIndex: 'mcpToken',
-          render: (value) => {
-            return (
-              <span style={{ fontFamily: 'monospace', fontSize: '0.85em', wordBreak: 'break-all' }}>
-                {value || '---'}
-              </span>
-            );
-          },
+          render: (value) => (
+            <span
+              style={{
+                fontFamily: 'JetBrains Mono, monospace',
+                fontSize: '0.85em',
+                wordBreak: 'break-all',
+                color: '#505050',
+              }}
+            >
+              {value || '---'}
+            </span>
+          ),
         },
         {
           title: '',
           dataIndex: 'tools',
-          render: (value, user) => {
-            return (
-              <div style={{ float: 'right' }}>
-                <Button
-                  type="danger"
-                  icon={<IconDelete />}
-                  onClick={() => onUserRemoval(user.id)}
-                  style={{ marginRight: '1rem' }}
-                />
-                <Button type="primary" icon={<IconEdit />} onClick={() => onUserEdit(user.id)} />
-              </div>
-            );
-          },
+          render: (_, record) => (
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+              <Button
+                style={{
+                  background: 'transparent',
+                  border: '1px solid rgba(251,113,133,0.2)',
+                  color: '#fb7185',
+                }}
+                icon={<IconDelete />}
+                onClick={() => onUserRemoval(record.id)}
+              />
+              <Button type="primary" theme="solid" icon={<IconEdit />} onClick={() => onUserEdit(record.id)} />
+            </div>
+          ),
         },
       ]}
       dataSource={user}

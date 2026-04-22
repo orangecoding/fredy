@@ -1,22 +1,16 @@
-@import '../../cards/DashboardCardColors.less';
+@import '../../../tokens.less';
 
 .listingsGrid {
-  &__imageContainer {
-    position: relative;
-    height: 180px;
-    overflow: hidden;
-  }
-
   &__topbar {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
-    gap: 8px;
-    margin-bottom: 16px;
+    gap: @space-3;
+    margin-bottom: @space-4;
+    flex-wrap: wrap;
 
-    .listingsGrid__topbar__search {
-      flex: 1;
+    &__search {
       min-width: 200px;
+      flex: 1;
     }
 
     @media (max-width: 768px) {
@@ -37,149 +31,151 @@
     }
   }
 
-  &__watchButton {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    background-color: white !important;
-    box-shadow: var(--semi-shadow-elevated);
-
-    &:hover {
-      background-color: var(--semi-color-fill-0) !important;
-    }
-  }
-
-  &__statusTag {
-    position: absolute;
-    bottom: 8px;
-    left: 8px;
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 12px;
   }
 
   &__card {
-    height: 100%;
-    transition: transform 0.2s, box-shadow 0.2s;
-    background-color: rgba(36, 36, 36, 0.9);
-    backdrop-filter: blur(8px);
-    border: 1px solid var(--semi-color-border);
+    background: @color-elevated !important;
+    border: 1px solid @color-border !important;
+    border-radius: @radius-card !important;
+    overflow: hidden;
+    transition: transform @transition-card, box-shadow @transition-card;
+    display: flex;
+    flex-direction: column;
 
     &:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--semi-shadow-elevated);
-      background-color: rgba(36, 36, 36, 1);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px -4px rgba(0,0,0,0.6);
     }
 
-    &--inactive {
+    &__image-wrapper {
+      position: relative;
+      height: 160px;
+      overflow: hidden;
+      flex-shrink: 0;
 
-      .listingsGrid__imageContainer,
-      .listingsGrid__content {
-        opacity: 0.6;
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+    }
+
+    &__inactive-watermark {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.35);
+
+      span {
+        font-size: 18px;
+        font-weight: 800;
+        color: rgba(251,113,133,0.9);
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        transform: rotate(-30deg);
+        border: 2px solid rgba(251,113,133,0.5);
+        padding: 4px 12px;
+        border-radius: @radius-chip;
+        backdrop-filter: blur(2px);
+      }
+    }
+
+    &__star {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(0,0,0,0.5);
+      border: none;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background @transition-fast;
+      padding: 0;
+
+      &:hover {
+        background: rgba(0,0,0,0.75);
+      }
+
+      svg {
+        color: @color-accent;
+        font-size: 14px;
+      }
+    }
+
+    &__body {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+    }
+
+    &__title {
+      font-weight: 700;
+      font-size: @text-sm;
+      color: @color-text;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    &__price {
+      font-size: @text-base;
+      font-weight: 600;
+      color: @color-success;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    &__meta {
+      font-size: @text-xs;
+      color: @color-muted;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+
+      .semi-icon {
+        font-size: 11px;
+        color: @color-faint;
+      }
+    }
+
+    &__provider {
+      font-size: @text-xs;
+      color: @color-faint;
+    }
+
+    &__actions {
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 12px;
+      border-top: 1px solid @color-border;
+      gap: 4px;
+      margin-top: auto;
+
+      button {
+        flex: 1;
+        border: none !important;
+        border-radius: @radius-chip !important;
       }
     }
   }
 
-  &__inactiveOverlay {
-    position: absolute;
-    top: 70px;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-    z-index: 10;
-    color: var(--semi-color-danger);
-    font-weight: bold;
-    font-size: 1.3rem;
-    text-transform: uppercase;
-    transform: rotate(-30deg);
-    padding: 5px;
-    max-height: fit-content;
-    margin: auto;
-  }
-
-  &__titleLink {
-    color: inherit;
-    text-decoration: none;
-
-    &:hover {
-      color: var(--semi-color-primary);
-    }
-  }
-
-  &__title {
-    display: block;
-    height: 1.5em;
-  }
-
   &__pagination {
-    margin-top: 2rem;
+    margin-top: @space-4;
     display: flex;
     justify-content: center;
-  }
-
-  &__price {
-    font-size: 18px;
-    font-weight: 700;
-    color: @color-green-text;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    margin: 8px 0 6px;
-  }
-
-  &__meta {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    width: 100%;
-  }
-
-  &__actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  &__setupButton {
-    margin-bottom: 1rem;
-  }
-
-  &__linkButton {
-    background: var(--semi-color-primary);
-    font-size: 14px;
-    line-height: 20px;
-    font-weight: 600;
-    height: 24px;
-    width: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 3px;
-
-    a {
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      height: 100%;
-    }
-
-    &:hover {
-      background: var(--semi-color-primary-hover);
-    }
-  }
-
-  // Ensure icons and text are vertically aligned
-  .semi-typography {
-    display: inline-flex;
-    align-items: center;
-
-    .semi-typography-icon {
-      display: flex;
-      align-items: center;
-      margin-top: 1px; // Minor nudge if needed, but flex should handle most
-    }
   }
 }
