@@ -71,6 +71,23 @@ body {
   vertical-align: middle;
 }
 
+// Suppress focus outlines — Semi uses --semi-color-primary (our red) for all rings
+button:focus,
+button:focus-visible,
+.semi-button:focus,
+.semi-button:focus-visible,
+.semi-input-wrapper:focus-within,
+.semi-select:focus-within,
+[tabindex]:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.semi-input-wrapper-focus {
+  border-color: @color-border-bright !important;
+  box-shadow: none !important;
+}
+
 // Semi Modal dark theme overrides
 .semi-modal-content {
   background: #161616 !important;

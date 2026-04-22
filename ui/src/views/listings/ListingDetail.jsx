@@ -304,25 +304,32 @@ export default function ListingDetail() {
         <div className="listing-detail__header">
           <Space align="center">
             <IconMapPin style={{ fontSize: '18px', color: 'var(--semi-color-primary)' }} />
-            <Text type="secondary">{listing.address || 'No address provided'}</Text>
+            {listing.address ? (
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(listing.address)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="listing-detail__address-link"
+              >
+                {listing.address}
+              </a>
+            ) : (
+              <Text type="secondary">No address provided</Text>
+            )}
           </Space>
           <Space wrap className="listing-detail__header-actions">
             <Button
-              icon={
-                listing.isWatched === 1 ? (
-                  <IconStar style={{ color: 'var(--semi-color-warning)' }} />
-                ) : (
-                  <IconStarStroked />
-                )
-              }
+              icon={listing.isWatched === 1 ? <IconStar /> : <IconStarStroked />}
               onClick={handleWatch}
-              theme="light"
+              theme="borderless"
+              className={`listing-detail__watch-btn${listing.isWatched === 1 ? ' listing-detail__watch-btn--active' : ''}`}
             >
               {listing.isWatched === 1 ? 'Watched' : 'Watch'}
             </Button>
-            <Text link={{ href: listing.link, target: '_blank' }} icon={<IconLink />} underline>
+            <a href={listing.link} target="_blank" rel="noopener noreferrer" className="listing-detail__open-btn">
+              <IconLink style={{ marginRight: 6 }} />
               Open listing
-            </Text>
+            </a>
           </Space>
         </div>
 
