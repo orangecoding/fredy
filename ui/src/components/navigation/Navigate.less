@@ -35,8 +35,9 @@
 
     &--collapsed {
       flex-direction: column;
-      padding: 6px 8px;
       align-items: center;
+      padding: 1rem 8px 8px;
+      gap: 4px;
     }
   }
 
@@ -66,11 +67,13 @@
 
     &--icon-only {
       flex: none;
-      width: 100%;
+      width: 32px;
+      height: 32px;
       justify-content: center;
       padding: 0;
       border: none;
       background: transparent;
+      border-radius: @radius-btn;
 
       &:hover {
         background: rgba(251,113,133,0.08);
@@ -134,6 +137,11 @@
 
 // Collapsed state — icons perfectly centered
 .semi-navigation-collapsed {
+  // Text span is display:block and takes up flex space — must be removed so justify-content:center works
+  .semi-navigation-item-text {
+    display: none !important;
+  }
+
   .semi-navigation-item,
   .semi-navigation-sub-title {
     margin: 2px 0 !important;
