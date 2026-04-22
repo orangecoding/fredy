@@ -279,7 +279,7 @@ export default function ListingDetail() {
     },
     {
       key: 'Provider',
-      value: listing.provider.charAt(0).toUpperCase() + listing.provider.slice(1),
+      value: listing.provider ? listing.provider.charAt(0).toUpperCase() + listing.provider.slice(1) : 'Unknown',
       Icon: <IconBriefcase />,
     },
     {

@@ -67,7 +67,7 @@ body {
 ::-webkit-scrollbar-thumb { background: @color-border-bright; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: @color-muted; }
 
-.semi-icon:not(.semi-tabs-bar .semi-tabs-tab .semi-icon) {
+.semi-icon:not(.semi-tabs-bar .semi-tabs-tab .semi-icon):not(.semi-checkbox .semi-icon) {
   vertical-align: middle;
 }
 
@@ -80,9 +80,10 @@ body {
 }
 
 .semi-modal-header {
-  background: #1a1a1a !important;
+  background: transparent !important;
   border-bottom: 1px solid @color-border !important;
   border-radius: 14px 14px 0 0 !important;
+  padding: 20px 24px 16px !important;
 }
 
 .semi-modal-mask {

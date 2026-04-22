@@ -82,7 +82,7 @@ export default function Navigation({ isAdmin }) {
         </div>
       }
       footer={
-        <Nav.Footer className="navigate__footer">
+        <Nav.Footer className={`navigate__footer${collapsed ? ' navigate__footer--collapsed' : ''}`}>
           <Logout text={!collapsed} />
           <button
             className="navigate__toggle-btn"

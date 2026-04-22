@@ -25,16 +25,16 @@
 
 // InputNumber fix
 .semi-input-number {
-  background: rgba(255,255,255,0.06) !important;
-  border: 1px solid rgba(255,255,255,0.10) !important;
-  border-radius: 6px !important;
-  color: var(--semi-color-text-0) !important;
+  background: @color-elevated !important;
+  border: 1px solid @color-border-bright !important;
+  border-radius: @radius-input !important;
+  color: @color-text !important;
 }
 
 .semi-input-number-button-up,
 .semi-input-number-button-down {
-  background: rgba(255,255,255,0.08) !important;
-  border-color: rgba(255,255,255,0.10) !important;
+  background: rgba(255,255,255,0.06) !important;
+  border-color: @color-border-bright !important;
   color: @color-muted !important;
 
   &:hover {
@@ -43,12 +43,13 @@
   }
 }
 
-// TimePicker fix
+// TimePicker fix — scoped so it doesn't pollute modal headers
 .semi-timepicker .semi-input-wrapper,
-.semi-input-inset-label-wrapper {
-  background: rgba(255,255,255,0.06) !important;
-  border: 1px solid rgba(255,255,255,0.10) !important;
-  border-radius: 6px !important;
+.semi-timepicker .semi-input-inset-label-wrapper {
+  background: @color-elevated !important;
+  border: 1px solid @color-border-bright !important;
+  border-radius: @radius-input !important;
+  color: @color-text !important;
 }
 
 // Tabs styling

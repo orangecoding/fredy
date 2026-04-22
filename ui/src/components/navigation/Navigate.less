@@ -25,13 +25,55 @@
 
   &__footer {
     display: flex;
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
+    align-items: center;
     gap: 4px;
     padding: 8px;
     margin-top: auto;
     flex-shrink: 0;
     border-top: 1px solid @color-border;
+
+    &--collapsed {
+      flex-direction: column;
+    }
+  }
+
+  &__logout-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 32px;
+    padding: 0 10px;
+    border: 1px solid rgba(251,113,133,0.25);
+    background: rgba(251,113,133,0.06);
+    color: #fb7185;
+    border-radius: @radius-btn;
+    cursor: pointer;
+    font-size: @text-sm;
+    font-weight: 500;
+    font-family: @font-ui;
+    transition: background @transition-fast, border-color @transition-fast;
+    white-space: nowrap;
+    overflow: hidden;
+
+    &:hover {
+      background: rgba(251,113,133,0.12);
+      border-color: rgba(251,113,133,0.4);
+    }
+
+    &--icon-only {
+      flex: none;
+      width: 100%;
+      justify-content: center;
+      padding: 0;
+      border: none;
+      background: transparent;
+
+      &:hover {
+        background: rgba(251,113,133,0.08);
+      }
+    }
   }
 
   &__toggle-btn {
@@ -39,6 +81,8 @@
     align-items: center;
     justify-content: center;
     height: 32px;
+    width: 32px;
+    flex-shrink: 0;
     border: none;
     background: transparent;
     color: @color-faint;
@@ -86,22 +130,50 @@
   color: @color-muted !important;
 }
 
-// Collapsed state - ensure icons are fully visible and centered
+// Collapsed state — icons centered
 .semi-navigation-collapsed {
-  .semi-navigation-item {
+  .semi-navigation-item,
+  .semi-navigation-sub-title {
     margin: 2px 4px !important;
     padding: 0 !important;
+    height: 36px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
   }
 
-  .semi-navigation-item-inner {
+  .semi-navigation-item-inner,
+  .semi-navigation-sub-title-inner {
     padding: 0 !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     width: 100% !important;
     min-width: 0 !important;
+  }
+}
+
+// Collapsed submenu popup panel
+.semi-navigation-sub-collapse,
+.semi-popover-content .semi-navigation-sub {
+  background: @color-elevated !important;
+  border: 1px solid @color-border !important;
+  border-radius: @radius-card !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5) !important;
+  overflow: hidden !important;
+
+  .semi-navigation-item {
+    margin: 2px 6px !important;
+    color: @color-muted !important;
+
+    &:hover {
+      background: @color-surface !important;
+      color: @color-text !important;
+    }
+
+    &.semi-navigation-item-selected {
+      background: rgba(224,74,56,0.12) !important;
+      color: @color-text !important;
+    }
   }
 }

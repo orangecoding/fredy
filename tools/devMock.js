@@ -8,7 +8,7 @@
  * Vite proxies /api to this. Run with: node tools/devMock.js
  */
 
-const http = require('http');
+import http from 'node:http';
 const now = Date.now();
 
 const users = [{ id: 1, username: 'admin', isAdmin: true, lastLogin: now, numberOfJobs: 2, mcpToken: 'tok_abc123' }];
@@ -54,13 +54,18 @@ const listings = [
     address: 'Leopoldstr. 42, München',
     provider: 'ImmobilienScout24',
     createdAt: now - 3600000,
+    created_at: now - 3600000,
     image_url: null,
     link: 'https://example.com/l1',
     is_active: true,
     isWatched: 0,
     jobId: 'job1',
+    job_name: 'Munich Apartments',
     size: 72,
     rooms: 3,
+    description: 'Schöne 3-Zimmer-Wohnung in bester Lage in Schwabing. Balkon, Parkett, moderne Küche.',
+    latitude: 48.1598,
+    longitude: 11.5876,
   },
   {
     id: 'l2',
@@ -69,13 +74,18 @@ const listings = [
     address: 'Rosenheimer Str. 15, München',
     provider: 'ImmobilienScout24',
     createdAt: now - 7200000,
+    created_at: now - 7200000,
     image_url: null,
     link: 'https://example.com/l2',
     is_active: true,
     isWatched: 1,
     jobId: 'job1',
+    job_name: 'Munich Apartments',
     size: 55,
     rooms: 2,
+    description: 'Helle 2-Zimmer-Wohnung nahe Ostbahnhof. Ruhige Lage, gute Anbindung.',
+    latitude: 48.1285,
+    longitude: 11.6005,
   },
   {
     id: 'l3',
@@ -84,13 +94,18 @@ const listings = [
     address: 'Kastanienallee 28, Berlin',
     provider: 'Immowelt',
     createdAt: now - 86400000,
+    created_at: now - 86400000,
     image_url: null,
     link: 'https://example.com/l3',
     is_active: false,
     isWatched: 0,
     jobId: 'job2',
+    job_name: 'Berlin Rentals',
     size: 65,
     rooms: 2,
+    description: 'Charmante Altbauwohnung in Prenzlauer Berg. Hohe Decken, Stuck, Holzdielen.',
+    latitude: 52.5397,
+    longitude: 13.4098,
   },
   {
     id: 'l4',
@@ -99,13 +114,18 @@ const listings = [
     address: 'Karl-Liebknecht-Str. 5, Berlin',
     provider: 'Immowelt',
     createdAt: now - 172800000,
+    created_at: now - 172800000,
     image_url: null,
     link: 'https://example.com/l4',
     is_active: true,
     isWatched: 1,
     jobId: 'job2',
+    job_name: 'Berlin Rentals',
     size: 95,
     rooms: 4,
+    description: 'Moderner Neubau im Herzen von Berlin Mitte. Fußbodenheizung, Aufzug, Tiefgarage.',
+    latitude: 52.5219,
+    longitude: 13.4132,
   },
 ];
 
@@ -168,6 +188,20 @@ const server = http.createServer((req, res) => {
     const user = users.find((u) => u.id === parseInt(userMatch[1]));
     res.writeHead(user ? 200 : 404);
     res.end(JSON.stringify(user || { message: 'Not found' }));
+    return;
+  }
+
+  const listingMatch = path.match(/^\/api\/listings\/([^/]+)$/);
+  if (
+    req.method === 'GET' &&
+    listingMatch &&
+    !path.includes('/table') &&
+    !path.includes('/map') &&
+    !path.includes('/watch')
+  ) {
+    const listing = listings.find((l) => l.id === listingMatch[1]);
+    res.writeHead(listing ? 200 : 404);
+    res.end(JSON.stringify(listing || { message: 'Not found' }));
     return;
   }
 
