@@ -26,11 +26,30 @@
   &__footer {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 8px;
+    align-items: stretch;
+    gap: 4px;
+    padding: 8px;
     margin-top: auto;
     flex-shrink: 0;
+    border-top: 1px solid @color-border;
+  }
+
+  &__toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 32px;
+    border: none;
+    background: transparent;
+    color: @color-faint;
+    cursor: pointer;
+    border-radius: @radius-btn;
+    transition: background @transition-fast, color @transition-fast;
+
+    &:hover {
+      background: rgba(255,255,255,0.06);
+      color: @color-muted;
+    }
   }
 }
 
@@ -65,4 +84,24 @@
 
 .semi-navigation-sub-title {
   color: @color-muted !important;
+}
+
+// Collapsed state - ensure icons are fully visible and centered
+.semi-navigation-collapsed {
+  .semi-navigation-item {
+    margin: 2px 4px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .semi-navigation-item-inner {
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
 }

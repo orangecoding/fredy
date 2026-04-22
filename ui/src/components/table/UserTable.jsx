@@ -5,23 +5,12 @@
 
 import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-illustrations';
 import { format } from '../../services/time/timeService';
-import { Table, Button, Empty, Tag, Avatar } from '@douyinfe/semi-ui-19';
+import { Table, Button, Empty, Tag } from '@douyinfe/semi-ui-19';
 import { IconDelete, IconEdit } from '@douyinfe/semi-icons';
 
 const empty = (
   <Empty image={<IllustrationNoResult />} darkModeImage={<IllustrationNoResultDark />} description="No users found." />
 );
-
-function getInitials(name) {
-  if (!name) return '?';
-  return name
-    .split(' ')
-    .filter(Boolean)
-    .map((n) => n[0])
-    .join('')
-    .toUpperCase()
-    .slice(0, 2);
-}
 
 export default function UserTable({ user = [], onUserRemoval, onUserEdit } = {}) {
   return (
@@ -34,19 +23,6 @@ export default function UserTable({ user = [], onUserRemoval, onUserEdit } = {})
           dataIndex: 'username',
           render: (value, record) => (
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <Avatar
-                size="small"
-                style={{
-                  background: record.isAdmin ? 'rgba(224,74,56,0.15)' : 'rgba(148,163,184,0.12)',
-                  border: `1px solid ${record.isAdmin ? 'rgba(224,74,56,0.4)' : 'rgba(148,163,184,0.2)'}`,
-                  color: record.isAdmin ? '#e04a38' : '#94a3b8',
-                  fontSize: 11,
-                  fontWeight: 700,
-                  flexShrink: 0,
-                }}
-              >
-                {getInitials(value)}
-              </Avatar>
               <span style={{ color: '#efefef', fontWeight: 500 }}>{value}</span>
               {record.isAdmin && (
                 <Tag

@@ -23,6 +23,34 @@
   }
 }
 
+// InputNumber fix
+.semi-input-number {
+  background: rgba(255,255,255,0.06) !important;
+  border: 1px solid rgba(255,255,255,0.10) !important;
+  border-radius: 6px !important;
+  color: var(--semi-color-text-0) !important;
+}
+
+.semi-input-number-button-up,
+.semi-input-number-button-down {
+  background: rgba(255,255,255,0.08) !important;
+  border-color: rgba(255,255,255,0.10) !important;
+  color: @color-muted !important;
+
+  &:hover {
+    background: rgba(255,255,255,0.12) !important;
+    color: @color-text !important;
+  }
+}
+
+// TimePicker fix
+.semi-timepicker .semi-input-wrapper,
+.semi-input-inset-label-wrapper {
+  background: rgba(255,255,255,0.06) !important;
+  border: 1px solid rgba(255,255,255,0.10) !important;
+  border-radius: 6px !important;
+}
+
 // Tabs styling
 .semi-tabs-bar-line .semi-tabs-tab {
   color: @color-faint;

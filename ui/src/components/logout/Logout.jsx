@@ -9,19 +9,22 @@ import { IconUser } from '@douyinfe/semi-icons';
 
 const Logout = function Logout({ text }) {
   return (
-    <div>
-      <Button
-        icon={<IconUser />}
-        type="danger"
-        theme="solid"
-        onClick={async () => {
-          await xhrPost('/api/login/logout');
-          location.reload();
-        }}
-      >
-        {text && 'Logout'}
-      </Button>
-    </div>
+    <Button
+      icon={<IconUser />}
+      theme="borderless"
+      style={{
+        color: '#fb7185',
+        justifyContent: text ? 'flex-start' : 'center',
+        width: '100%',
+        fontWeight: 500,
+      }}
+      onClick={async () => {
+        await xhrPost('/api/login/logout');
+        location.reload();
+      }}
+    >
+      {text && 'Logout'}
+    </Button>
   );
 };
 

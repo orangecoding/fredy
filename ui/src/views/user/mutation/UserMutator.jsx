@@ -118,12 +118,14 @@ const UserMutator = function UserMutator() {
           <Switch checked={isAdmin} onChange={(checked) => setIsAdmin(checked)} />
         </SegmentPart>
         <Divider margin="1rem" />
-        <Button type="danger" style={{ marginRight: '1rem' }} onClick={() => navigate('/users')}>
-          Cancel
-        </Button>
-        <Button type="primary" icon={<IconPlusCircle />} onClick={saveUser}>
-          Save
-        </Button>
+        <div className="userMutator__actions">
+          <Button size="small" theme="borderless" style={{ color: '#909090' }} onClick={() => navigate('/users')}>
+            Cancel
+          </Button>
+          <Button size="small" type="primary" theme="solid" icon={<IconPlusCircle />} onClick={saveUser}>
+            Save
+          </Button>
+        </div>
       </form>
     </>
   );
