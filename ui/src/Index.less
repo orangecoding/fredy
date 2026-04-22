@@ -1,16 +1,85 @@
+@import './tokens.less';
+
 body,
 html {
   margin: 0;
   height: 100%;
   width: 100%;
-  background-color: #232429;
+  font-family: @font-ui;
+  background-color: @color-base;
+  background-image: radial-gradient(ellipse at 60% 0%, rgba(224,74,56,0.05) 0%, transparent 55%);
+  background-attachment: fixed;
 }
 
+body {
+  // Semi UI theme overrides
+  --semi-color-bg-0: #0d0d0d;
+  --semi-color-bg-1: #161616;
+  --semi-color-bg-2: #1e1e1e;
+  --semi-color-bg-3: #2a2a2a;
+  --semi-color-border: #2a2a2a;
+  --semi-color-primary: #e04a38;
+  --semi-color-primary-hover: #c13827;
+  --semi-color-primary-active: #c13827;
+  --semi-color-primary-light-default: rgba(224,74,56,0.12);
+  --semi-color-primary-light-hover: rgba(224,74,56,0.18);
+  --semi-color-primary-light-active: rgba(224,74,56,0.22);
+  --semi-color-text-0: #efefef;
+  --semi-color-text-1: #efefef;
+  --semi-color-text-2: #909090;
+  --semi-color-text-3: #505050;
+  --semi-color-fill-0: rgba(255,255,255,0.04);
+  --semi-color-fill-1: rgba(255,255,255,0.06);
+  --semi-color-fill-2: rgba(255,255,255,0.08);
+  --semi-font-family: 'Outfit', system-ui, sans-serif;
+}
+
+// Semi table row overrides
 .semi-table-row-head {
-  background-color: #2b2b2b !important;
-  color: #fff !important;
+  background-color: rgba(255,255,255,0.06) !important;
+}
+.semi-table-row-head .semi-table-row-cell {
+  background-color: rgba(255,255,255,0.06) !important;
+  color: @color-muted !important;
+  font-size: @text-xs;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.semi-table-row-cell {
+  background-color: @color-surface !important;
+}
+.semi-table-tbody .semi-table-row:nth-child(even) .semi-table-row-cell {
+  background-color: @color-base !important;
+}
+.semi-table-tbody .semi-table-row:hover .semi-table-row-cell {
+  background-color: @color-elevated !important;
 }
 
-.semi-table-row-cell {
-  background-color: #333333 !important;
+// Scrollbar
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: @color-surface; }
+::-webkit-scrollbar-thumb { background: @color-border-bright; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: @color-muted; }
+
+.semi-icon:not(.semi-tabs-bar .semi-tabs-tab .semi-icon) {
+  vertical-align: middle;
+}
+
+// Semi Modal dark theme overrides
+.semi-modal-content {
+  background: #161616 !important;
+  border: 1px solid @color-border !important;
+  border-radius: 14px !important;
+}
+
+.semi-modal-header {
+  background: linear-gradient(135deg, #1e1e1e 0%, #161616 100%) !important;
+  border-bottom: 1px solid @color-border !important;
+  border-left: 3px solid @color-accent !important;
+  border-radius: 14px 14px 0 0 !important;
+}
+
+.semi-modal-mask {
+  background: rgba(0,0,0,0.7) !important;
+  backdrop-filter: blur(4px);
 }
