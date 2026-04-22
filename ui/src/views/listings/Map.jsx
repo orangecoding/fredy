@@ -356,129 +356,129 @@ export default function MapView() {
 
   return (
     <>
-    <Headline text="Map View" />
-    <div className="map-view-container">
-      {!homeAddress && (
+      <Headline text="Map View" />
+      <div className="map-view-container">
+        {!homeAddress && (
+          <Banner
+            fullMode={true}
+            type="warning"
+            bordered
+            closeIcon={null}
+            style={{ marginBottom: '8px' }}
+            description={
+              <span>
+                No home address set. Configure it in <Link to="/userSettings">user settings</Link> to use the distance
+                filter.
+              </span>
+            }
+          />
+        )}
+
         <Banner
           fullMode={true}
-          type="warning"
+          type="info"
           bordered
           closeIcon={null}
           style={{ marginBottom: '8px' }}
-          description={
-            <span>
-              No home address set. Configure it in <Link to="/userSettings">user settings</Link> to use the distance
-              filter.
-            </span>
-          }
-        />
-      )}
-
-      <Banner
-        fullMode={true}
-        type="info"
-        bordered
-        closeIcon={null}
-        style={{ marginBottom: '8px' }}
-        description="Only listings with valid addresses are shown on this map."
-      />
-
-      <div className="map-view-container__map-wrapper">
-        <Map
-          mapContainerRef={mapContainer}
-          style={style}
-          show3dBuildings={show3dBuildings}
-          onMapReady={handleMapReady}
+          description="Only listings with valid addresses are shown on this map."
         />
 
-        {/* Floating filter panel */}
-        <div className="map-view-container__floating-panel">
-          <div className="map-view-container__panel-row">
-            <Text size="small" strong style={{ color: '#8892a4' }}>
-              Job
-            </Text>
-            <Select
-              placeholder="All jobs"
-              showClear
-              size="small"
-              onChange={(val) => setJobId(val)}
-              value={jobId}
-              style={{ width: 160 }}
-            >
-              {jobs?.map((j) => (
-                <Select.Option key={j.id} value={j.id}>
-                  {j.name}
-                </Select.Option>
-              ))}
-            </Select>
-          </div>
+        <div className="map-view-container__map-wrapper">
+          <Map
+            mapContainerRef={mapContainer}
+            style={style}
+            show3dBuildings={show3dBuildings}
+            onMapReady={handleMapReady}
+          />
 
-          <div className="map-view-container__panel-row">
-            <Text size="small" strong style={{ color: '#8892a4' }}>
-              Distance
-            </Text>
-            <Select
-              placeholder="None"
-              size="small"
-              onChange={(val) => setDistanceFilter(val)}
-              value={distanceFilter}
-              style={{ width: 100 }}
-            >
-              <Select.Option value={0}>None</Select.Option>
-              <Select.Option value={5}>5 km</Select.Option>
-              <Select.Option value={10}>10 km</Select.Option>
-              <Select.Option value={15}>15 km</Select.Option>
-              <Select.Option value={20}>20 km</Select.Option>
-              <Select.Option value={25}>25 km</Select.Option>
-            </Select>
-          </div>
+          {/* Floating filter panel */}
+          <div className="map-view-container__floating-panel">
+            <div className="map-view-container__panel-row">
+              <Text size="small" strong style={{ color: '#8892a4' }}>
+                Job
+              </Text>
+              <Select
+                placeholder="All jobs"
+                showClear
+                size="small"
+                onChange={(val) => setJobId(val)}
+                value={jobId}
+                style={{ width: 160 }}
+              >
+                {jobs?.map((j) => (
+                  <Select.Option key={j.id} value={j.id}>
+                    {j.name}
+                  </Select.Option>
+                ))}
+              </Select>
+            </div>
 
-          <div className="map-view-container__panel-row">
-            <Text size="small" strong style={{ color: '#8892a4' }}>
-              Price (€)
-            </Text>
-            <div className="map-view-container__price-slider">
-              <div className="map__rangesliderLabels">
-                <span>{priceRange[0]}</span>
-                <span>{priceRange[1]}</span>
+            <div className="map-view-container__panel-row">
+              <Text size="small" strong style={{ color: '#8892a4' }}>
+                Distance
+              </Text>
+              <Select
+                placeholder="None"
+                size="small"
+                onChange={(val) => setDistanceFilter(val)}
+                value={distanceFilter}
+                style={{ width: 100 }}
+              >
+                <Select.Option value={0}>None</Select.Option>
+                <Select.Option value={5}>5 km</Select.Option>
+                <Select.Option value={10}>10 km</Select.Option>
+                <Select.Option value={15}>15 km</Select.Option>
+                <Select.Option value={20}>20 km</Select.Option>
+                <Select.Option value={25}>25 km</Select.Option>
+              </Select>
+            </div>
+
+            <div className="map-view-container__panel-row">
+              <Text size="small" strong style={{ color: '#8892a4' }}>
+                Price (€)
+              </Text>
+              <div className="map-view-container__price-slider">
+                <div className="map__rangesliderLabels">
+                  <span>{priceRange[0]}</span>
+                  <span>{priceRange[1]}</span>
+                </div>
+                <RangeSlider min={0} max={getMaxPrice()} step={100} value={priceRange} onInput={handlePriceRange} />
               </div>
-              <RangeSlider min={0} max={getMaxPrice()} step={100} value={priceRange} onInput={handlePriceRange} />
+            </div>
+
+            <div className="map-view-container__panel-row">
+              <Text size="small" strong style={{ color: '#8892a4' }}>
+                Style
+              </Text>
+              <Select size="small" value={style} onChange={(val) => handleMapStyle(val)} style={{ width: 110 }}>
+                <Select.Option value="STANDARD">Standard</Select.Option>
+                <Select.Option value="SATELLITE">Satellite</Select.Option>
+              </Select>
+            </div>
+
+            <div className="map-view-container__panel-row">
+              <Text size="small" strong style={{ color: '#8892a4' }}>
+                3D Buildings
+              </Text>
+              <Switch
+                size="small"
+                checked={show3dBuildings}
+                onChange={(v) => setShow3dBuildings(v)}
+                disabled={style === 'SATELLITE'}
+              />
             </div>
           </div>
-
-          <div className="map-view-container__panel-row">
-            <Text size="small" strong style={{ color: '#8892a4' }}>
-              Style
-            </Text>
-            <Select size="small" value={style} onChange={(val) => handleMapStyle(val)} style={{ width: 110 }}>
-              <Select.Option value="STANDARD">Standard</Select.Option>
-              <Select.Option value="SATELLITE">Satellite</Select.Option>
-            </Select>
-          </div>
-
-          <div className="map-view-container__panel-row">
-            <Text size="small" strong style={{ color: '#8892a4' }}>
-              3D Buildings
-            </Text>
-            <Switch
-              size="small"
-              checked={show3dBuildings}
-              onChange={(v) => setShow3dBuildings(v)}
-              disabled={style === 'SATELLITE'}
-            />
-          </div>
         </div>
-      </div>
 
-      <ListingDeletionModal
-        visible={deleteModalVisible}
-        onConfirm={confirmListingDeletion}
-        onCancel={() => {
-          setDeleteModalVisible(false);
-          setListingToDelete(null);
-        }}
-      />
-    </div>
+        <ListingDeletionModal
+          visible={deleteModalVisible}
+          onConfirm={confirmListingDeletion}
+          onCancel={() => {
+            setDeleteModalVisible(false);
+            setListingToDelete(null);
+          }}
+        />
+      </div>
     </>
   );
 }
