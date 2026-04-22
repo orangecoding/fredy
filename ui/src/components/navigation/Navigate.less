@@ -185,15 +185,13 @@
   box-sizing: border-box !important;
 }
 
-// Collapsed submenu popup panel
-.semi-navigation-sub-collapse,
-.semi-popover-content .semi-navigation-sub {
+// Collapsed submenu popup — actual class used by Semi UI is .semi-navigation-popover
+.semi-navigation-popover {
   background: @color-elevated !important;
   border: 1px solid @color-border !important;
   border-radius: @radius-card !important;
   box-shadow: 0 8px 24px rgba(0,0,0,0.5) !important;
   overflow: hidden !important;
-  padding: 4px 0 !important;
 
   .semi-navigation-item {
     margin: 2px 6px !important;
@@ -202,12 +200,12 @@
     border-radius: @radius-btn !important;
 
     &:hover {
-      background: @color-surface !important;
+      background: rgba(255,255,255,0.06) !important;
       color: @color-text !important;
     }
 
     &.semi-navigation-item-selected,
-    &[aria-selected="true"] {
+    &.semi-dropdown-item-active {
       background: rgba(224,74,56,0.10) !important;
       border: none !important;
       color: @color-text !important;
