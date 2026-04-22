@@ -35,6 +35,8 @@
 
     &--collapsed {
       flex-direction: column;
+      padding: 6px 8px;
+      align-items: center;
     }
   }
 
@@ -130,12 +132,13 @@
   color: @color-muted !important;
 }
 
-// Collapsed state — icons centered
+// Collapsed state — icons perfectly centered
 .semi-navigation-collapsed {
   .semi-navigation-item,
   .semi-navigation-sub-title {
-    margin: 2px 4px !important;
+    margin: 2px 0 !important;
     padding: 0 !important;
+    width: 100% !important;
     height: 36px !important;
     display: flex !important;
     align-items: center !important;
@@ -145,6 +148,7 @@
   .semi-navigation-item-inner,
   .semi-navigation-sub-title-inner {
     padding: 0 !important;
+    margin: 0 !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -152,14 +156,24 @@
     min-width: 0 !important;
   }
 
+  // Semi adds margin-right to icons for text spacing — remove it when collapsed
   .semi-navigation-item-icon,
   .semi-navigation-sub-title-icon {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     margin: 0 !important;
-    width: 100% !important;
+    margin-right: 0 !important;
+    padding: 0 !important;
+    width: auto !important;
+    min-width: 0 !important;
   }
+}
+
+// Ensure Semi Nav.Footer has no extra padding so the border spans full width
+.semi-navigation-footer {
+  padding: 0 !important;
+  width: 100% !important;
 }
 
 // Collapsed submenu popup panel
