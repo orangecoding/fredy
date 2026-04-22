@@ -21,6 +21,7 @@ import { xhrDelete } from '../../services/xhr.js';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import ListingDeletionModal from '../../components/ListingDeletionModal.jsx';
 import Map from '../../components/map/Map.jsx';
+import Headline from '../../components/headline/Headline.jsx';
 
 const RangeSlider = _RangeSlider?.default ?? _RangeSlider;
 
@@ -354,6 +355,8 @@ export default function MapView() {
   }, [listings, priceRange, homeAddress, distanceFilter]);
 
   return (
+    <>
+    <Headline text="Map View" />
     <div className="map-view-container">
       {!homeAddress && (
         <Banner
@@ -476,5 +479,6 @@ export default function MapView() {
         }}
       />
     </div>
+    </>
   );
 }

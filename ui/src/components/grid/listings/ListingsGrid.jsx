@@ -220,7 +220,12 @@ const ListingsGrid = () => {
             key={item.id}
             className="listingsGrid__card"
             style={{ cursor: 'pointer' }}
+            role="button"
+            tabIndex={0}
             onClick={() => navigate(`/listings/listing/${item.id}`)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') navigate(`/listings/listing/${item.id}`);
+            }}
           >
             <div className="listingsGrid__card__image-wrapper">
               <img
@@ -236,6 +241,7 @@ const ListingsGrid = () => {
                 </div>
               )}
               <button
+                type="button"
                 className="listingsGrid__card__star"
                 onClick={(e) => handleWatch(e, item)}
                 aria-label={item.isWatched === 1 ? 'Remove from watchlist' : 'Add to watchlist'}
