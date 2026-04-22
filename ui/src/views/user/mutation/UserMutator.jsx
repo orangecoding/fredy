@@ -12,7 +12,7 @@ import { Divider, Input, Switch, Button, Toast } from '@douyinfe/semi-ui-19';
 import './UserMutator.less';
 import { SegmentPart } from '../../../components/segment/SegmentPart';
 import { IconPlusCircle, IconArrowLeft } from '@douyinfe/semi-icons';
-import { Headline } from '../../../components/headline/Headline.jsx';
+import Headline from '../../../components/headline/Headline.jsx';
 
 const UserMutator = function UserMutator() {
   const params = useParams();
