@@ -6,9 +6,8 @@
 import { useState } from 'react';
 import { IconHorn } from '@douyinfe/semi-icons';
 import { SegmentPart } from '../../../components/segment/SegmentPart.jsx';
-import { Banner, Button, Checkbox, Space } from '@douyinfe/semi-ui-19';
+import { Banner, Button, Checkbox, Space, Typography } from '@douyinfe/semi-ui-19';
 import NotificationAdapterMutator from '../../jobs/mutation/components/notificationAdapter/NotificationAdapterMutator.jsx';
-import Headline from '../../../components/headline/Headline.jsx';
 
 export default function WatchlistManagement() {
   const [notificationChooserVisible, setNotificationChooserVisible] = useState(false);
@@ -31,7 +30,9 @@ export default function WatchlistManagement() {
           description="You’ll receive notifications only for listings that are on your watch list. To add listings to it, open the 'Listings' section and tag the ones you want to follow."
         />
         <Space />
-        <Headline size={5} text="Notify me when:" style={{ marginTop: '1rem' }} />
+        <Typography.Title heading={5} style={{ marginTop: '1rem' }}>
+          Notify me when:
+        </Typography.Title>
 
         <Checkbox checked={activityChanges} onChange={(e) => setActivityChanges(e.target.checked)}>
           Listing state changes (e.g. listing becomes inactive)
@@ -41,7 +42,9 @@ export default function WatchlistManagement() {
         </Checkbox>
 
         <Space />
-        <Headline size={5} text="Notify me with:" style={{ marginTop: '1rem' }} />
+        <Typography.Title heading={5} style={{ marginTop: '1rem' }}>
+          Notify me with:
+        </Typography.Title>
         <Button onClick={() => setNotificationChooserVisible(true)}>Select notification method</Button>
 
         <NotificationAdapterMutator
