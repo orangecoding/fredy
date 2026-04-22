@@ -1,0 +1,27 @@
+@import '../../tokens.less';
+
+.page-heading {
+  margin-bottom: @space-6;
+  margin-top: 0;
+
+  &__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  &__title {
+    font-size: @text-lg !important;
+    font-weight: 700 !important;
+    color: @color-text !important;
+    margin: 0 !important;
+    line-height: 1.2;
+  }
+
+  &__line {
+    height: 1px;
+    background: linear-gradient(90deg, rgba(224,74,56,0.5) 0%, rgba(224,74,56,0) 100%);
+    width: 100%;
+  }
+}
