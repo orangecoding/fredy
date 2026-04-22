@@ -1,7 +1,49 @@
+@import '../../tokens.less';
+
 .segmentParts {
-  border: 1px solid #323232 !important;
-  border-radius: .9rem !important;
-  color: rgba(var(--semi-grey-8), 1);
-  background: rgb(53, 54, 60);
-  margin: 0 0 1rem 0;
+  background: rgba(255,255,255,0.03) !important;
+  border: 1px solid @color-border !important;
+  border-radius: @radius-card !important;
+  margin-bottom: @space-4;
+
+  // Semi Card header
+  .semi-card-header {
+    border-bottom: 1px solid @color-border !important;
+    padding: 16px 20px !important;
+  }
+
+  .semi-card-header-wrapper {
+    padding: 0 !important;
+  }
+
+  .semi-card-meta-title {
+    font-weight: 700 !important;
+    color: @color-text !important;
+    font-size: @text-base !important;
+  }
+
+  .semi-card-meta-description {
+    color: #b8b8b8 !important;
+    font-size: @text-sm !important;
+    margin-top: 2px;
+  }
+
+  .semi-card-body {
+    padding: 16px 20px !important;
+  }
+
+  // Semi input focus accent
+  .semi-input-wrapper:focus-within,
+  .semi-select:focus-within {
+    border-color: rgba(224,74,56,0.6) !important;
+    box-shadow: none !important;
+  }
+
+  // Inputs inside segment cards
+  .semi-input,
+  .semi-input-number-wrapper {
+    background: rgba(255,255,255,0.06) !important;
+    border: 1px solid rgba(255,255,255,0.10) !important;
+    border-radius: @radius-input !important;
+  }
 }
