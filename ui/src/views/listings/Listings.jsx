@@ -4,7 +4,13 @@
  */
 
 import ListingsGrid from '../../components/grid/listings/ListingsGrid.jsx';
+import Headline from '../../components/headline/Headline.jsx';
 
 export default function Listings() {
-  return <ListingsGrid />;
+  return (
+    <>
+      <Headline text="Listings" />
+      <ListingsGrid />
+    </>
+  );
 }
