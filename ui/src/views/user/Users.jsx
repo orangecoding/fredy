@@ -4,16 +4,14 @@
  */
 
 import React from 'react';
-
-import { Toast } from '@douyinfe/semi-ui-19';
+import { Toast, Button } from '@douyinfe/semi-ui-19';
+import { IconPlus } from '@douyinfe/semi-icons';
 import UserTable from '../../components/table/UserTable';
 import { useActions, useSelector } from '../../services/state/store';
-import { IconPlus } from '@douyinfe/semi-icons';
-import { Button } from '@douyinfe/semi-ui-19';
 import UserRemovalModal from './UserRemovalModal';
 import { xhrDelete } from '../../services/xhr';
 import { useNavigate } from 'react-router-dom';
-
+import Headline from '../../components/headline/Headline.jsx';
 import './Users.less';
 
 const Users = function Users() {
@@ -28,14 +26,13 @@ const Users = function Users() {
       await actions.user.getUsers();
       setLoading(false);
     }
-
     init();
   }, []);
 
   const onUserRemoval = async () => {
     try {
       await xhrDelete('/api/admin/users', { userId: userIdToBeRemoved });
-      Toast.success('User successfully remove');
+      Toast.success('User successfully removed');
       setUserIdToBeRemoved(null);
       await actions.jobsData.getJobs();
       await actions.user.getUsers();
@@ -46,30 +43,22 @@ const Users = function Users() {
   };
 
   return (
-    <div>
+    <div className="users">
+      <Headline
+        text="Users"
+        actions={
+          <Button type="primary" theme="solid" icon={<IconPlus />} onClick={() => navigate('/users/new')}>
+            New User
+          </Button>
+        }
+      />
       {!loading && (
         <React.Fragment>
           {userIdToBeRemoved && <UserRemovalModal onCancel={() => setUserIdToBeRemoved(null)} onOk={onUserRemoval} />}
-
-          <Button
-            type="primary"
-            className="users__newButton"
-            icon={<IconPlus />}
-            onClick={() => navigate('/users/new')}
-          >
-            New User
-          </Button>
-
           <UserTable
             user={users}
-            onUserEdit={(userId) => {
-              navigate(`/users/edit/${userId}`);
-            }}
-            onUserRemoval={(userId) => {
-              setUserIdToBeRemoved(userId);
-              //throw warning message that all jobs will be removed associated to this user
-              //check if at least 1 admin is available
-            }}
+            onUserEdit={(userId) => navigate(`/users/edit/${userId}`)}
+            onUserRemoval={(userId) => setUserIdToBeRemoved(userId)}
           />
         </React.Fragment>
       )}
