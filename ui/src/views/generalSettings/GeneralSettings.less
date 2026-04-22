@@ -1,17 +1,44 @@
+@import '../../tokens.less';
+
 .generalSettings {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
   &__tab-content {
-    padding: 20px 0;
-    max-width: 860px;
+    padding: @space-4 0;
   }
 
   &__timePickerContainer {
     display: flex;
-    align-items: baseline;
-    gap: 1rem;
+    gap: @space-3;
     flex-wrap: wrap;
+    align-items: center;
   }
 
   &__save-row {
-    margin-top: 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: @space-2;
   }
+}
+
+// Tabs styling
+.semi-tabs-bar-line .semi-tabs-tab {
+  color: @color-faint;
+  font-size: @text-base;
+  transition: color @transition-fast;
+
+  &:hover {
+    color: @color-muted;
+  }
+
+  &.semi-tabs-tab-active {
+    color: @color-text !important;
+  }
+}
+
+.semi-tabs-bar-line .semi-tabs-ink-bar {
+  background-color: @color-accent !important;
+  height: 2px;
 }
