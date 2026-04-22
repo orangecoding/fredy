@@ -11,7 +11,8 @@ import { useActions } from '../../../services/state/store';
 import { Divider, Input, Switch, Button, Toast } from '@douyinfe/semi-ui-19';
 import './UserMutator.less';
 import { SegmentPart } from '../../../components/segment/SegmentPart';
-import { IconPlusCircle } from '@douyinfe/semi-icons';
+import { IconPlusCircle, IconArrowLeft } from '@douyinfe/semi-icons';
+import { Headline } from '../../../components/headline/Headline.jsx';
 
 const UserMutator = function UserMutator() {
   const params = useParams();
@@ -63,53 +64,68 @@ const UserMutator = function UserMutator() {
   };
 
   return (
-    <form className="userMutator">
-      <SegmentPart name="Username" helpText="The username used to login to Fredy">
-        <Input
-          type="text"
-          label="Username"
-          maxLength={30}
-          placeholder="Username"
-          autoFocus
-          width={6}
-          value={username}
-          onChange={(val) => setUsername(val)}
-        />
-      </SegmentPart>
-      <Divider margin="1rem" />
-      <SegmentPart name="Password" helpText="The password used to login to Fredy">
-        <Input
-          mode="password"
-          label="Password"
-          placeholder="Password"
-          width={6}
-          value={password}
-          onChange={(val) => setPassword(val)}
-        />
-      </SegmentPart>
-      <Divider margin="1rem" />
-      <SegmentPart name="Retype password" helpText="Retype the password to make sure they match">
-        <Input
-          mode="password"
-          label="Retype password"
-          placeholder="Retype password"
-          width={6}
-          value={password2}
-          onChange={(val) => setPassword2(val)}
-        />
-      </SegmentPart>
-      <Divider margin="1rem" />
-      <SegmentPart name="Is user an admin?" helpText="Check this if the user is an administrator">
-        <Switch checked={isAdmin} onChange={(checked) => setIsAdmin(checked)} />
-      </SegmentPart>
-      <Divider margin="1rem" />
-      <Button type="danger" style={{ marginRight: '1rem' }} onClick={() => navigate('/users')}>
-        Cancel
-      </Button>
-      <Button type="primary" icon={<IconPlusCircle />} onClick={saveUser}>
-        Save
-      </Button>
-    </form>
+    <>
+      <Headline
+        text={params.userId ? 'Edit User' : 'New User'}
+        actions={
+          <Button
+            icon={<IconArrowLeft />}
+            onClick={() => navigate('/users')}
+            theme="borderless"
+            style={{ color: '#909090' }}
+          >
+            Back
+          </Button>
+        }
+      />
+      <form className="userMutator">
+        <SegmentPart name="Username" helpText="The username used to login to Fredy">
+          <Input
+            type="text"
+            label="Username"
+            maxLength={30}
+            placeholder="Username"
+            autoFocus
+            width={6}
+            value={username}
+            onChange={(val) => setUsername(val)}
+          />
+        </SegmentPart>
+        <Divider margin="1rem" />
+        <SegmentPart name="Password" helpText="The password used to login to Fredy">
+          <Input
+            mode="password"
+            label="Password"
+            placeholder="Password"
+            width={6}
+            value={password}
+            onChange={(val) => setPassword(val)}
+          />
+        </SegmentPart>
+        <Divider margin="1rem" />
+        <SegmentPart name="Retype password" helpText="Retype the password to make sure they match">
+          <Input
+            mode="password"
+            label="Retype password"
+            placeholder="Retype password"
+            width={6}
+            value={password2}
+            onChange={(val) => setPassword2(val)}
+          />
+        </SegmentPart>
+        <Divider margin="1rem" />
+        <SegmentPart name="Is user an admin?" helpText="Check this if the user is an administrator">
+          <Switch checked={isAdmin} onChange={(checked) => setIsAdmin(checked)} />
+        </SegmentPart>
+        <Divider margin="1rem" />
+        <Button type="danger" style={{ marginRight: '1rem' }} onClick={() => navigate('/users')}>
+          Cancel
+        </Button>
+        <Button type="primary" icon={<IconPlusCircle />} onClick={saveUser}>
+          Save
+        </Button>
+      </form>
+    </>
   );
 };
 
