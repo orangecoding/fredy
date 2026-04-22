@@ -41,6 +41,7 @@ import * as timeService from '../../services/time/timeService.js';
 import { distanceMeters, getBoundsFromCoords } from './mapUtils.js';
 import { xhrPost } from '../../services/xhr.js';
 
+import Headline from '../../components/headline/Headline.jsx';
 import './ListingDetail.less';
 
 const { Title, Text } = Typography;
@@ -290,22 +291,20 @@ export default function ListingDetail() {
 
   return (
     <div className="listing-detail">
-      <div className="listing-detail__back">
-        <Button icon={<IconArrowLeft />} onClick={() => navigate(-1)} theme="borderless">
-          Back
-        </Button>
-      </div>
+      <Headline
+        text={listing?.title || 'Listing Detail'}
+        actions={
+          <Button icon={<IconArrowLeft />} onClick={() => navigate(-1)} theme="borderless" style={{ color: '#909090' }}>
+            Back
+          </Button>
+        }
+      />
 
       <Card className="listing-detail__card">
         <div className="listing-detail__header">
-          <Space vertical align="start" spacing="tight">
-            <Title heading={2} className="listing-detail__title">
-              {listing.title}
-            </Title>
-            <Space align="center">
-              <IconMapPin style={{ fontSize: '18px', color: 'var(--semi-color-primary)' }} />
-              <Text type="secondary">{listing.address || 'No address provided'}</Text>
-            </Space>
+          <Space align="center">
+            <IconMapPin style={{ fontSize: '18px', color: 'var(--semi-color-primary)' }} />
+            <Text type="secondary">{listing.address || 'No address provided'}</Text>
           </Space>
           <Space wrap className="listing-detail__header-actions">
             <Button
