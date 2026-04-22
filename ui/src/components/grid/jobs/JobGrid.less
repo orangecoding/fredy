@@ -1,18 +1,34 @@
 @import '../../cards/DashboardCardColors.less';
+@import '../../../tokens.less';
 
 .jobGrid {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  &__topbar {
+    display: flex;
+    align-items: center;
+    gap: @space-3;
+    margin-bottom: @space-4;
+    flex-wrap: wrap;
+
+    &__search {
+      flex: 1;
+      min-width: 160px;
+    }
+  }
+
   &__card {
     height: 100%;
-    transition: transform 0.2s, box-shadow 0.2s;
-    background-color: rgba(36, 36, 36, 0.9);
-    backdrop-filter: blur(8px);
-    border: 1px solid var(--semi-color-border);
-    box-shadow: 0 0 15px -3px rgb(78 78 78 / 50%);
+    background-color: @color-surface !important;
+    border: 1px solid @color-border !important;
+    border-radius: @radius-card !important;
+    transition: transform @transition-card, box-shadow @transition-card;
 
     &:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 0 15px -3px rgb(78 78 78 / 70%);
-      background-color: rgba(36, 36, 36, 1);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px -4px rgba(0,0,0,0.5);
     }
 
     &__header {
@@ -35,10 +51,10 @@
       height: 8px;
       border-radius: 50%;
       flex-shrink: 0;
-      background-color: var(--semi-color-text-3);
+      background-color: rgba(251,113,133,0.7);
 
       &--active {
-        background-color: #21aa21;
+        background-color: rgba(52,211,153,0.8);
       }
     }
 
@@ -52,21 +68,21 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      background: rgba(255, 255, 255, 0.04);
+      background: rgba(255,255,255,0.04);
       border: 1px solid transparent;
-      border-radius: var(--semi-border-radius-small);
+      border-radius: @radius-chip;
       padding: 10px 4px 8px;
 
       &__number {
         font-size: 22px;
         font-weight: 600;
-        color: var(--semi-color-text-0);
+        color: @color-text;
         line-height: 1.2;
       }
 
       &__label {
-        font-size: 11px;
-        color: var(--semi-color-text-3);
+        font-size: @text-xs;
+        color: @color-faint;
         display: flex;
         align-items: center;
         gap: 3px;
@@ -102,59 +118,25 @@
     }
   }
 
-  &__topbar {
-    display: flex;
-    flex-wrap: nowrap;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 16px;
-
-    .jobGrid__topbar__search {
-      flex: 1;
-      min-width: 0;
-    }
-
-    @media (max-width: 768px) {
-      flex-wrap: wrap;
-
-      .semi-button:first-child {
-        flex-shrink: 0;
-      }
-
-      .jobGrid__topbar__search {
-        flex: 1;
-        min-width: 160px;
-      }
-
-      .semi-radio-group {
-        flex: 1;
-      }
-
-      .semi-select {
-        flex: 1;
-        min-width: 100px;
-        width: auto !important;
-      }
-    }
-  }
-
   &__title {
-    margin-bottom: 0 !important;
+    color: @color-text !important;
   }
 
   &__actions {
     display: flex;
-    gap: 6px;
+    gap: 4px;
+    flex-shrink: 0;
   }
 
   &__pagination {
-    margin-top: 2rem;
+    margin-top: @space-4;
     display: flex;
     justify-content: center;
   }
 }
 
 .jobPopoverContent {
-    padding: .4rem;
-    color: var(--semi-color-white);
+  font-size: @text-sm;
+  padding: 4px 8px;
+  color: @color-text;
 }
