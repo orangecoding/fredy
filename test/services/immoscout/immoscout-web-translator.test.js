@@ -21,6 +21,17 @@ describe('#immoscout-mobile URL conversion', () => {
     expect(actualMobileUrl).toBe(expectedMobileUrl);
   });
 
+  // Test shape URL conversion
+  it('should convert a full web URL with shape to mobile URL', () => {
+    const webUrl =
+      'https://www.immobilienscout24.de/Suche/shape/haus-kaufen?shape=aW9yfkhfa3htQXJgUGlnYEBmekhte3BAcXNAfWBsQGNyQ2lkUHVvbEB3eX5Ab25WYn5Fa2BLaGRQY29FaGtTfEhme3xBdHBEdHFMamlHbmdRfHhMcmxPeHlWYnpS&price=-600000.0&ground=240.0-&enteredFrom=result_list';
+    const expectedMobileUrl =
+      'https://api.mobile.immobilienscout24.de/search/list?price=-600000.0&realestatetype=housebuy&searchType=shape&shape=ior~H_kxmAr%60Pig%60%40fzHm%7Bp%40qs%40%7D%60l%40crCidPuol%40wy~%40onVb~Ek%60KhdPcoEhkS%7CHf%7B%7CAtpDtqLjiGngQ%7CxLrlOxyVbzR';
+
+    const actualMobileUrl = convertWebToMobile(webUrl);
+    expect(actualMobileUrl).to.equal(expectedMobileUrl);
+  });
+
   // Test URL conversion of web-only SEO path
   it('should convert a SEO web path to the correct query params', () => {
     const webUrl = 'https://www.immobilienscout24.de/Suche/de/berlin/berlin/wohnung-mit-balkon-mieten?equipment=garden';
