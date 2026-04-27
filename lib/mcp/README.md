@@ -133,7 +133,7 @@ The LLM will automatically call the appropriate Fredy MCP tools and present the 
 #### Setup
 
 1. Open **Claude Desktop**
-2. Go to **Settings → Developer → Edit Config** — this opens the `claude_desktop_config.json` file
+2. Go to **Settings → Developer → Edit Config** - this opens the `claude_desktop_config.json` file
 3. Add the `fredy` server to the `mcpServers` object:
 
    ```json
@@ -158,7 +158,7 @@ The LLM will automatically call the appropriate Fredy MCP tools and present the 
    > - nvm: `/Users/<you>/.nvm/versions/node/<version>/bin/node`
 
 4. Save the file and **restart Claude Desktop**
-5. You should see a hammer icon (🔨) in the chat input — click it to confirm the Fredy tools are listed
+5. You should see a hammer icon (🔨) in the chat input - click it to confirm the Fredy tools are listed
 
 #### Usage
 
@@ -170,7 +170,7 @@ Once connected, simply ask Claude about your real estate data:
 
 Claude will automatically call the appropriate Fredy MCP tools.
 
-> **Note:** Fredy's main web process does not need to be running — the stdio transport opens its own database connection directly. But the SQLite database file must exist and migrations must have been applied.
+> **Note:** Fredy's main web process does not need to be running - the stdio transport opens its own database connection directly. But the SQLite database file must exist and migrations must have been applied.
 
 ---
 
@@ -252,7 +252,7 @@ Example list response:
 ```
 **Tool:** list_listings | **Status:** OK
 
-Found **85** listing(s). Showing page 1 of 2 (50 on this page). More pages available — use page=2 to continue.
+Found **85** listing(s). Showing page 1 of 2 (50 on this page). More pages available - use page=2 to continue.
 
 | ID | Title | Address | Price | Size | Provider | Active | Created | Job |
 |----|-------|---------|-------|------|----------|--------|---------|-----|

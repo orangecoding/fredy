@@ -13,7 +13,7 @@ import { distanceMeters, generateCircleCoords, getBoundsFromCenter, getBoundsFro
 import { Banner, Select, Switch, Toast, Typography } from '@douyinfe/semi-ui-19';
 import { IconDelete, IconEyeOpened, IconLink } from '@douyinfe/semi-icons';
 
-import no_image from '../../assets/no_image.jpg';
+import no_image from '../../assets/no_image.png';
 import _RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
 import './Map.less';

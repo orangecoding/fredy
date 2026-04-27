@@ -299,7 +299,7 @@ const GeneralSettings = function GeneralSettings() {
 
                 <SegmentPart
                   name="Analytics"
-                  helpText="Anonymous usage data to help improve Fredy — provider names, adapter names, OS, Node version, and architecture."
+                  helpText="Anonymous usage data to help improve Fredy - provider names, adapter names, OS, Node version, and architecture."
                 >
                   <Checkbox checked={analyticsEnabled} onChange={(e) => setAnalyticsEnabled(e.target.checked)}>
                     Enable analytics

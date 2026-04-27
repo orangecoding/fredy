@@ -36,7 +36,7 @@ import {
 } from '@douyinfe/semi-icons';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import no_image from '../../assets/no_image.jpg';
+import no_image from '../../assets/no_image.png';
 import * as timeService from '../../services/time/timeService.js';
 import { distanceMeters, getBoundsFromCoords } from './mapUtils.js';
 import { xhrPost } from '../../services/xhr.js';
@@ -337,10 +337,16 @@ export default function ListingDetail() {
           <Col span={24} lg={12}>
             <div className="listing-detail__image-container">
               <Image
-                src={listing.image_url}
-                fallback={no_image}
+                src={listing.image_url ?? no_image}
+                fallback={
+                  <img
+                    src={no_image}
+                    alt="No image available"
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                }
                 style={{ width: '100%', height: '100%' }}
-                preview={true}
+                preview={!!listing.image_url}
               />
             </div>
           </Col>

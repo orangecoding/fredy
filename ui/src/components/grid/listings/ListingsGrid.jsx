@@ -26,7 +26,7 @@ import {
 } from '@douyinfe/semi-icons';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import ListingDeletionModal from '../../ListingDeletionModal.jsx';
-import no_image from '../../../assets/no_image.jpg';
+import no_image from '../../../assets/no_image.png';
 import * as timeService from '../../../services/time/timeService.js';
 import { xhrDelete, xhrPost } from '../../../services/xhr.js';
 import { useActions, useSelector } from '../../../services/state/store.js';

@@ -12,7 +12,7 @@ import './Index.less';
 
 // Semi UI uses react-dom (not react-dom/client) internally for imperative renders
 // like Toast, Notification, etc. In React 19, createRoot was removed from react-dom
-// and lives only in react-dom/client — inject it so Toast can create its own root.
+// and lives only in react-dom/client - inject it so Toast can create its own root.
 semiGlobal.config.createRoot = createRoot;
 
 const container = document.getElementById('fredy');

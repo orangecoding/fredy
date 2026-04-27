@@ -713,7 +713,7 @@
 
             </div><!-- /srb-filters -->
 
-            <!-- Search button — CMS handles via onclick="{{submit()}}"; srbDoSearch() is
+            <!-- Search button - CMS handles via onclick="{{submit()}}"; srbDoSearch() is
                  a standalone fallback that skips empty params (used outside CMS context) -->
             <button type="button" class="srb-search-btn" id="srbSearchBtn">
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -740,7 +740,7 @@
 </div><!-- /srb-wrap -->
 
 <!-- ═══════════════════════════════════════════════════════════
-     MODAL — WEITERE FILTER
+     MODAL - WEITERE FILTER
      ═══════════════════════════════════════════════════════════ -->
 <!-- Screen-reader live region: announces filter changes and modal state -->
 <div id="srbLiveRegion" role="status" aria-live="polite" aria-atomic="true" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap"></div>
@@ -768,7 +768,7 @@
                         <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2"></circle>
                     </svg>
                     <input type="text" class="srb-modal-location-input" id="srbModalLocation" placeholder="Ort, Postleitzahl, Stadt" autocomplete="off" b-event="keyup" role="combobox" aria-autocomplete="list" aria-controls="srbModalLocationList" aria-expanded="false">
-                    <!-- Mirror of the desktop grbWoHidden — Piglet updates this via b-model
+                    <!-- Mirror of the desktop grbWoHidden - Piglet updates this via b-model
                          when select(entry) fires in the modal controller's own scope. -->
                     <input type="hidden" id="srbModalWoHidden" value="district:2434,2695,2621,2700,2967,2734,2909,2955,2392,2746,2767,2982,2904,2612,2892,2587,2871,2975,2591,2887,2569,2640,2735">
                     <div b-redrawable="autocomplete" class="srb-autocomplete-wrapper">
@@ -899,7 +899,7 @@
                 </div>
             </div>
 
-            <!-- ── Additional criteria — CMS server-side rendered per typ+objektart ── -->
+            <!-- ── Additional criteria - CMS server-side rendered per typ+objektart ── -->
             <div class="srb-modal-criteria-groups">
                 <div class="srb-modal-section srb-modal-section--animated srb-modal-section--criteria" data-valid-searches="[&quot;kaufen_grundstueck&quot;,&quot;kaufen_haus&quot;,&quot;kaufen_rendite&quot;,&quot;kaufen_wohnung&quot;,&quot;mieten_grundstueck&quot;,&quot;mieten_haus&quot;,&quot;mieten_waz&quot;,&quot;mieten_wohnung&quot;]">
                         <div class="srb-section-body">
@@ -4393,7 +4393,7 @@
               void g.offsetHeight;
               g.classList.remove('lr-card__gallery--no-transition');
 
-              // counter total (CMS doesn't evaluate expressions in attrs — read from hidden span)
+              // counter total (CMS doesn't evaluate expressions in attrs - read from hidden span)
               var totalEl = g.querySelector('.lr-card__gallery-total');
               var counter = g.querySelector('.lr-card__gallery-counter');
               if (counter && totalEl) counter.dataset.total = totalEl.textContent.trim();

@@ -8,7 +8,7 @@ Fredy is a self-hosted real estate finder for Germany. It scrapes German real es
 
 - Node.js >= 22, ESM-only (`"type": "module"`)
 - Default port: 9998, default login: admin / admin
-- SQLite via `better-sqlite3` (synchronous — all DB ops are sync; only network I/O is async)
+- SQLite via `better-sqlite3` (synchronous - all DB ops are sync; only network I/O is async)
 
 ## Commands
 
@@ -66,13 +66,13 @@ scheduler (every N minutes) or manual trigger via POST /api/jobs/:id/run
 
 ### Plugin systems
 
-**Providers** (`lib/provider/*.js`) — each module exports:
-- `metaInformation` — `{ id, name, baseUrl }`
-- `config` — `ProviderConfig` with `requiredFieldNames`, `crawlContainer`, `crawlFields`, `sortByDateParam`, `normalize()`, `filter()`, optional `getListings()`, `fetchDetails()`, `activeTester()`
-- `init(sourceConfig, blacklist)` — called before each job run; providers are **stateful modules** holding mutable `url` and `appliedBlackList` at module scope
+**Providers** (`lib/provider/*.js`) - each module exports:
+- `metaInformation` - `{ id, name, baseUrl }`
+- `config` - `ProviderConfig` with `requiredFieldNames`, `crawlContainer`, `crawlFields`, `sortByDateParam`, `normalize()`, `filter()`, optional `getListings()`, `fetchDetails()`, `activeTester()`
+- `init(sourceConfig, blacklist)` - called before each job run; providers are **stateful modules** holding mutable `url` and `appliedBlackList` at module scope
 
-**Notification adapters** (`lib/notification/adapter/*.js`) — each exports:
-- `config` — `{ id, name, description, fields }` (drives the UI form)
+**Notification adapters** (`lib/notification/adapter/*.js`) - each exports:
+- `config` - `{ id, name, description, fields }` (drives the UI form)
 - `send({ serviceName, newListings, notificationConfig, jobKey, baseUrl })`
 - Loaded dynamically at startup via `fs.readdirSync`
 
@@ -98,18 +98,18 @@ scheduler (every N minutes) or manual trigger via POST /api/jobs/:id/run
 ### MCP server
 
 Two transports:
-1. **stdio** (`lib/mcp/stdio.js`) — for Claude Desktop/LM Studio; opens its own DB connection (main process need not be running)
-2. **HTTP** (`/api/mcp`) — authenticated via Bearer token (`mcp_token` column in `users` table)
+1. **stdio** (`lib/mcp/stdio.js`) - for Claude Desktop/LM Studio; opens its own DB connection (main process need not be running)
+2. **HTTP** (`/api/mcp`) - authenticated via Bearer token (`mcp_token` column in `users` table)
 
 Tools: `list_jobs`, `get_job`, `list_listings`, `get_listing`, `get_current_date_time`. Responses are Markdown via `lib/mcp/mcpNormalizer.js`.
 
 ## Key Conventions
 
-- **ESM only** — `import`/`export` everywhere, no CommonJS
-- **JSDoc typedefs** (no TypeScript) in `lib/types/` — `listing.js`, `job.js`, `filter.js`, `providerConfig.js`
-- **Copyright header** required on all `.js` files — enforced by `lint-staged` pre-commit hook via `copyright.js`
+- **ESM only** - `import`/`export` everywhere, no CommonJS
+- **JSDoc typedefs** (no TypeScript) in `lib/types/` - `listing.js`, `job.js`, `filter.js`, `providerConfig.js`
+- **Copyright header** required on all `.js` files - enforced by `lint-staged` pre-commit hook via `copyright.js`
 - **`NoNewListingsWarning`** (`lib/errors.js`) is used as control flow to short-circuit the pipeline (not an error)
-- **Test fixtures** in `test/testFixtures/` — HTML/JSON snapshots per provider; `TEST_MODE=offline` mocks `puppeteerExtractor` and global `fetch` via `test/offlineFixtures.js`
+- **Test fixtures** in `test/testFixtures/` - HTML/JSON snapshots per provider; `TEST_MODE=offline` mocks `puppeteerExtractor` and global `fetch` via `test/offlineFixtures.js`
 - **`conf/config.json`** is the only runtime config file; created with defaults if missing
 
 ## Coding
