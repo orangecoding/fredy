@@ -335,16 +335,12 @@ export default function ListingDetail() {
 
         <Row>
           <Col span={24} lg={12}>
-            <div className="listing-detail__image-container">
+            <div
+              className={`listing-detail__image-container${!listing.image_url ? ' listing-detail__image-container--placeholder' : ''}`}
+            >
               <Image
                 src={listing.image_url ?? no_image}
-                fallback={
-                  <img
-                    src={no_image}
-                    alt="No image available"
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                  />
-                }
+                fallback={<img src={no_image} alt="No image available" />}
                 style={{ width: '100%', height: '100%' }}
                 preview={!!listing.image_url}
               />

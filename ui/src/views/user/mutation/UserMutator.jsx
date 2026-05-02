@@ -59,7 +59,7 @@ const UserMutator = function UserMutator() {
       navigate('/users');
     } catch (error) {
       console.error(error);
-      Toast.error(error.json.message);
+      Toast.error(error.json.error);
     }
   };
 

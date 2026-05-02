@@ -47,7 +47,7 @@ export default function UserTable({ user = [], onUserRemoval, onUserEdit } = {})
         {
           title: 'Last login',
           dataIndex: 'lastLogin',
-          render: (value) => format(value),
+          render: (value) => (value == null ? '---' : format(value)),
         },
         {
           title: 'Jobs',
