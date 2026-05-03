@@ -3,7 +3,7 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { expect } from 'chai';
+import { expect } from 'vitest';
 import { mockFredy } from './utils.js';
 import * as mockStore from './mocks/mockStore.js';
 
@@ -17,13 +17,22 @@ describe('Issue reproduction: listings filtered by similarity or area should be 
 
     const providerConfig = {
       url: 'http://example.com',
-      getListings: () => Promise.resolve([{ id: '1', title: 'test', address: 'addr', price: '100' }]),
+      getListings: () =>
+        Promise.resolve([{ id: '1', title: 'test', address: 'addr', price: '100', link: 'http://example.com/1' }]),
       normalize: (l) => l,
       filter: () => true,
       crawlFields: { id: 'id', title: 'title', address: 'address', price: 'price' },
+      requiredFieldNames: ['id', 'title', 'address', 'price'],
     };
 
-    const fredy = new Fredy(providerConfig, null, null, 'test-provider', 'test-job', mockSimilarityCache);
+    const mockedJob = {
+      id: 'test-job',
+      notificationAdapter: null,
+      specFilter: null,
+      spatialFilter: null,
+    };
+
+    const fredy = new Fredy(providerConfig, mockedJob, 'test-provider', mockSimilarityCache, undefined);
 
     // Clear deletedIds before test
     mockStore.deletedIds.length = 0;
@@ -34,7 +43,7 @@ describe('Issue reproduction: listings filtered by similarity or area should be 
       // Might throw NoNewListingsWarning if all are filtered out
     }
 
-    expect(mockStore.deletedIds).to.include('1');
+    expect(mockStore.deletedIds).toContain('1');
   });
 
   it('should call deleteListingsById when listings are filtered by area', async () => {
@@ -64,18 +73,35 @@ describe('Issue reproduction: listings filtered by similarity or area should be 
       ],
     };
 
+    const mockedJob = {
+      id: 'test-job',
+      notificationAdapter: null,
+      specFilter: null,
+      spatialFilter: spatialFilter,
+    };
+
     const providerConfig = {
       url: 'http://example.com',
       getListings: () =>
-        Promise.resolve([{ id: '2', title: 'test', address: 'addr', price: '100', latitude: 2, longitude: 2 }]), // outside polygon
+        Promise.resolve([
+          {
+            id: '2',
+            title: 'test',
+            address: 'addr',
+            price: '100',
+            latitude: 2,
+            longitude: 2,
+            link: 'http://example.com/2',
+          },
+        ]), // outside polygon
       normalize: (l) => l,
       filter: () => true,
       crawlFields: { id: 'id', title: 'title', address: 'address', price: 'price' },
+      requiredFieldNames: ['id', 'title', 'address', 'price'],
     };
 
-    const fredy = new Fredy(providerConfig, null, spatialFilter, 'test-provider', 'test-job', mockSimilarityCache);
+    const fredy = new Fredy(providerConfig, mockedJob, 'test-provider', mockSimilarityCache, undefined);
 
-    // Clear deletedIds before test
     mockStore.deletedIds.length = 0;
 
     try {
@@ -84,6 +110,6 @@ describe('Issue reproduction: listings filtered by similarity or area should be 
       // Might throw NoNewListingsWarning if all are filtered out
     }
 
-    expect(mockStore.deletedIds).to.include('2');
+    expect(mockStore.deletedIds).toContain('2');
   });
 });

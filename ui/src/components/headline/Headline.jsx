@@ -3,13 +3,16 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { Typography } from '@douyinfe/semi-ui-19';
+import './Headline.less';
 
-export default function Headline({ text, size = 3 } = {}) {
-  const { Title } = Typography;
+export default function Headline({ text, actions } = {}) {
   return (
-    <Title heading={size} style={{ marginBottom: '1rem' }}>
-      {text}
-    </Title>
+    <div className="page-heading">
+      <div className="page-heading__row">
+        <h1 className="page-heading__title">{text}</h1>
+        {actions && <div>{actions}</div>}
+      </div>
+      <div className="page-heading__line" />
+    </div>
   );
 }

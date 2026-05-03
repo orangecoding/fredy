@@ -6,15 +6,7 @@
 import { Card, Typography, Space } from '@douyinfe/semi-ui-19';
 import './DashboardCard.less';
 
-export default function KpiCard({
-  title,
-  icon,
-  value,
-  valueFontSize = '1.5rem',
-  description,
-  color = 'gray',
-  children,
-}) {
+export default function KpiCard({ title, icon, value, description, color = 'gray', children }) {
   const { Text } = Typography;
   return (
     <Card className={`dashboard-card ${color}`} bodyStyle={{ padding: '16px' }}>
@@ -26,12 +18,12 @@ export default function KpiCard({
           </Text>
         </Space>
         <div className="dashboard-card__content">
-          <div className="dashboard-card__value" style={{ fontSize: valueFontSize }}>
+          <div className="dashboard-card__value">
             {value}
             {children}
           </div>
           {description && (
-            <Text size="small" type="tertiary" className="dashboard-card__desc">
+            <Text size="small" className="dashboard-card__desc">
               {description}
             </Text>
           )}

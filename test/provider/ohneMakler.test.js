@@ -6,33 +6,46 @@
 import * as similarityCache from '../../lib/services/similarity-check/similarityCache.js';
 import { get } from '../mocks/mockNotification.js';
 import { mockFredy, providerConfig } from '../utils.js';
-import { expect } from 'chai';
+import { expect } from 'vitest';
 import * as provider from '../../lib/provider/ohneMakler.js';
 
 describe('#ohneMakler testsuite()', () => {
   it('should test ohneMakler provider', async () => {
     const Fredy = await mockFredy();
+    const mockedJob = {
+      id: 'ohneMakler',
+      notificationAdapter: null,
+      spatialFilter: null,
+      specFilter: null,
+    };
     provider.init(providerConfig.ohneMakler, []);
 
-    const fredy = new Fredy(provider.config, null, null, provider.metaInformation.id, 'ohneMakler', similarityCache);
+    const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache, undefined);
+
     const listing = await fredy.execute();
 
-    expect(listing).to.be.a('array');
+    if (listing == null || listing.length === 0) {
+      throw new Error('Listings is empty!');
+    }
+
+    expect(listing).toBeInstanceOf(Array);
     const notificationObj = get();
-    expect(notificationObj).to.be.a('object');
-    expect(notificationObj.serviceName).to.equal('ohneMakler');
+    expect(notificationObj).toBeTypeOf('object');
+    expect(notificationObj.serviceName).toBe('ohneMakler');
     notificationObj.payload.forEach((notify) => {
       /** check the actual structure **/
-      expect(notify.id).to.be.a('string');
-      expect(notify.price).to.be.a('string');
-      expect(notify.size).to.be.a('string');
-      expect(notify.title).to.be.a('string');
-      expect(notify.link).to.be.a('string');
-      expect(notify.address).to.be.a('string');
+      expect(notify.id).toBeTypeOf('string');
+      expect(notify.price).toBeTypeOf('string');
+      expect(notify.price).toContain('€');
+      expect(notify.size).toBeTypeOf('string');
+      expect(notify.size).toContain('m²');
+      expect(notify.title).toBeTypeOf('string');
+      expect(notify.link).toBeTypeOf('string');
+      expect(notify.address).toBeTypeOf('string');
       /** check the values if possible **/
-      expect(notify.size).that.does.include('m²');
-      expect(notify.title).to.be.not.empty;
-      expect(notify.address).to.be.not.empty;
+      expect(notify.size).toBeTypeOf('string');
+      expect(notify.title).not.toBe('');
+      expect(notify.address).not.toBe('');
     });
   });
 });

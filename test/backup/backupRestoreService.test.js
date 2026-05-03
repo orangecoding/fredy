@@ -3,8 +3,7 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { expect } from 'chai';
-import esmock from 'esmock';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 
 describe('services/storage/backupRestoreService.js - precheck & filename', () => {
   let svc;
@@ -14,7 +13,7 @@ describe('services/storage/backupRestoreService.js - precheck & filename', () =>
   beforeEach(async () => {
     calls = { logger: { info: [], warn: [], error: [] } };
 
-    // Mock AdmZip with configurable state via globalThis (avoid esmock export name pitfalls)
+    // Mock AdmZip with configurable state via globalThis (avoid mock export name pitfalls)
     globalThis.__ADM_ZIP_STATE__ = { hasDb: false, meta: null };
     setZipState = (s) => {
       globalThis.__ADM_ZIP_STATE__ = { ...globalThis.__ADM_ZIP_STATE__, ...s };
@@ -77,67 +76,61 @@ describe('services/storage/backupRestoreService.js - precheck & filename', () =>
 
     const utilsMock = { getPackageVersion: async () => '16.2.0' };
 
-    const admZipPath = path.join(ROOT, 'node_modules', 'adm-zip', 'adm-zip.js');
-    const mod = await esmock(
-      path.join(ROOT, 'lib', 'services', 'storage', 'backupRestoreService.js'),
-      {},
-      {
-        'adm-zip': admZipMock,
-        [admZipPath]: admZipMock,
-        [migratePath]: migrateMock,
-        [sqlitePath]: sqliteMock,
-        [loggerPath]: loggerMock,
-        [utilsPath]: utilsMock,
-      },
-    );
+    vi.resetModules();
+    vi.doMock('adm-zip', () => admZipMock);
+    vi.doMock(migratePath, () => migrateMock);
+    vi.doMock(sqlitePath, () => sqliteMock);
+    vi.doMock(loggerPath, () => loggerMock);
+    vi.doMock(utilsPath, () => utilsMock);
 
+    const mod = await import(path.join(ROOT, 'lib', 'services', 'storage', 'backupRestoreService.js'));
     svc = mod;
   });
 
   it('precheck: empty upload yields danger', async () => {
     const res = await svc.precheckRestore(Buffer.alloc(0));
-    expect(res.compatible).to.equal(false);
-    expect(res.severity).to.equal('danger');
-    expect(res.message).to.contain('Empty upload');
-    expect(res.requiredMigration).to.equal(10);
+    expect(res.compatible).toBe(false);
+    expect(res.severity).toBe('danger');
+    expect(res.message).toContain('Empty upload');
+    expect(res.requiredMigration).toBe(10);
   });
 
   it('precheck: missing listings.db yields danger', async () => {
     setZipState({ hasDb: false, meta: { dbMigration: 9 } });
     const res = await svc.precheckRestore(Buffer.from('dummy'));
-    expect(res.compatible).to.equal(false);
-    expect(res.severity).to.equal('danger');
-    expect(res.message).to.match(/missing the database file/i);
+    expect(res.compatible).toBe(false);
+    expect(res.severity).toBe('danger');
+    expect(res.message).toMatch(/missing the database file/i);
   });
 
   it('precheck: older backup is compatible with warning', async () => {
     setZipState({ hasDb: true, meta: { dbMigration: 5, fredyVersion: '16.0.0' } });
     const res = await svc.precheckRestore(Buffer.from('zip'));
-    expect(res.compatible).to.equal(true);
-    expect(res.severity).to.equal('warning');
-    expect(res.message).to.match(/automatic migrations/i);
-    expect(res.backupMigration).to.equal(5);
-    expect(res.requiredMigration).to.equal(10);
+    expect(res.compatible).toBe(true);
+    expect(res.severity).toBe('warning');
+    expect(res.message).toMatch(/automatic migrations/i);
+    expect(res.backupMigration).toBe(5);
+    expect(res.requiredMigration).toBe(10);
   });
 
   it('precheck: equal backup is compatible with info', async () => {
     setZipState({ hasDb: true, meta: { dbMigration: 10 } });
     const res = await svc.precheckRestore(Buffer.from('zip'));
-    expect(res.compatible).to.equal(true);
-    expect(res.severity).to.equal('info');
+    expect(res.compatible).toBe(true);
+    expect(res.severity).toBe('info');
   });
 
   it('precheck: newer backup yields danger', async () => {
     setZipState({ hasDb: true, meta: { dbMigration: 11 } });
     const res = await svc.precheckRestore(Buffer.from('zip'));
-    expect(res.compatible).to.equal(false);
-    expect(res.severity).to.equal('danger');
+    expect(res.compatible).toBe(false);
+    expect(res.severity).toBe('danger');
   });
 
   it('buildBackupFileName: matches pattern and includes version', async () => {
     const name = await svc.buildBackupFileName();
-    expect(name).to.match(/^\d{4}-\d{2}-\d{2}-FredyBackup-/);
-    expect(name).to.include('16.2.0');
-    expect(name).to.match(/\.zip$/);
+    expect(name).toMatch(/^\d{4}-\d{2}-\d{2}-FredyBackup-/);
+    expect(name).toContain('16.2.0');
+    expect(name).toMatch(/\.zip$/);
   });
 });

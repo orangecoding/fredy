@@ -6,33 +6,84 @@
 import * as similarityCache from '../../lib/services/similarity-check/similarityCache.js';
 import { get } from '../mocks/mockNotification.js';
 import { mockFredy, providerConfig } from '../utils.js';
-import { expect } from 'chai';
+import { expect, vi } from 'vitest';
 import * as provider from '../../lib/provider/sparkasse.js';
+import * as mockStore from '../mocks/mockStore.js';
 
 describe('#sparkasse testsuite()', () => {
   it('should test sparkasse provider', async () => {
     const Fredy = await mockFredy();
+    const mockedJob = {
+      id: 'sparkasse',
+      notificationAdapter: null,
+      spatialFilter: null,
+      specFilter: null,
+    };
     provider.init(providerConfig.sparkasse, []);
 
-    const fredy = new Fredy(provider.config, null, null, provider.metaInformation.id, 'sparkasse', similarityCache);
+    const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache, undefined);
+
     const listing = await fredy.execute();
 
-    expect(listing).to.be.a('array');
+    if (listing == null || listing.length === 0) {
+      throw new Error('Listings is empty!');
+    }
+
+    expect(listing).toBeInstanceOf(Array);
     const notificationObj = get();
-    expect(notificationObj).to.be.a('object');
-    expect(notificationObj.serviceName).to.equal('sparkasse');
+    expect(notificationObj).toBeTypeOf('object');
+    expect(notificationObj.serviceName).toBe('sparkasse');
     notificationObj.payload.forEach((notify) => {
       /** check the actual structure **/
-      expect(notify.id).to.be.a('string');
-      expect(notify.price).to.be.a('string');
-      expect(notify.size).to.be.a('string');
-      expect(notify.title).to.be.a('string');
-      expect(notify.link).to.be.a('string');
-      expect(notify.address).to.be.a('string');
+      expect(notify.id).toBeTypeOf('string');
+      expect(notify.price).toBeTypeOf('string');
+      expect(notify.price).toContain('€');
+      expect(notify.size).toBeTypeOf('string');
+      expect(notify.size).toContain('m²');
+      expect(notify.title).toBeTypeOf('string');
+      expect(notify.link).toBeTypeOf('string');
+      expect(notify.address).toBeTypeOf('string');
       /** check the values if possible **/
-      expect(notify.size).that.does.include('m²');
-      expect(notify.title).to.be.not.empty;
-      expect(notify.address).to.be.not.empty;
+      expect(notify.size).toBeTypeOf('string');
+      expect(notify.title).not.toBe('');
+      expect(notify.address).not.toBe('');
+    });
+  });
+
+  describe('with provider_details enabled', () => {
+    beforeEach(() => {
+      vi.spyOn(mockStore, 'getUserSettings').mockReturnValue({ provider_details: [provider.metaInformation.id] });
+      vi.spyOn(mockStore, 'getKnownListingHashesForJobAndProvider').mockReturnValue([]);
+    });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    it('should enrich listings with details', async () => {
+      const Fredy = await mockFredy();
+      provider.init(providerConfig.sparkasse, []);
+      const mockedJob = { id: 'sparkasse', notificationAdapter: null, specFilter: null, spatialFilter: null };
+
+      const fredy = new Fredy(
+        provider.config,
+        mockedJob,
+        provider.metaInformation.id,
+        { checkAndAddEntry: () => false },
+        undefined,
+      );
+      const listings = await fredy.execute();
+      expect(listings).toBeInstanceOf(Array);
+      listings.forEach((listing) => {
+        expect(listing.link).toContain('https://immobilien.sparkasse.de');
+        expect(listing.address).toBeTypeOf('string');
+        expect(listing.address).not.toBe('');
+        // description is enriched from the detail page; falls back gracefully if bot-detected
+        if (listing.description != null) {
+          expect(listing.description).toBeTypeOf('string');
+          expect(listing.description).not.toBe('');
+        }
+      });
     });
   });
 });

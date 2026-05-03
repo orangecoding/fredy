@@ -9,7 +9,6 @@ import {
   Col,
   Row,
   Button,
-  Space,
   Typography,
   Divider,
   Switch,
@@ -20,6 +19,8 @@ import {
   Pagination,
   Toast,
   Empty,
+  Radio,
+  RadioGroup,
 } from '@douyinfe/semi-ui-19';
 import {
   IconAlertTriangle,
@@ -31,14 +32,15 @@ import {
   IconBriefcase,
   IconBell,
   IconSearch,
-  IconFilter,
-  IconPlusCircle,
+  IconArrowUp,
+  IconArrowDown,
+  IconHome,
 } from '@douyinfe/semi-icons';
 import { useNavigate } from 'react-router-dom';
 import ListingDeletionModal from '../../ListingDeletionModal.jsx';
 import { useActions, useSelector } from '../../../services/state/store.js';
 import { xhrDelete, xhrPut, xhrPost } from '../../../services/xhr.js';
-import debounce from 'lodash/debounce';
+import { debounce } from '../../../utils';
 import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-illustrations';
 
 import './JobGrid.less';
@@ -59,8 +61,6 @@ const JobGrid = () => {
   const [sortDir, setSortDir] = useState('asc');
   const [freeTextFilter, setFreeTextFilter] = useState(null);
   const [activityFilter, setActivityFilter] = useState(null);
-  const [showFilterBar, setShowFilterBar] = useState(false);
-
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [pendingDeletion, setPendingDeletion] = useState(null); // { type: 'job'|'listings', jobId }
 
@@ -200,73 +200,41 @@ const JobGrid = () => {
 
   return (
     <div className="jobGrid">
-      <Space vertical align="start" style={{ width: '100%', marginBottom: '16px' }} spacing="medium">
-        <Button type="primary" icon={<IconPlusCircle />} onClick={() => navigate('/jobs/new')}>
-          New Job
-        </Button>
-        <div className="jobGrid__searchbar" style={{ width: '100%' }}>
-          <Input prefix={<IconSearch />} showClear placeholder="Search" onChange={handleFilterChange} />
-          <Button
-            icon={<IconFilter />}
-            style={{ marginLeft: '8px' }}
-            onClick={() => {
-              setShowFilterBar(!showFilterBar);
-            }}
-          />
-        </div>
-      </Space>
+      <div className="jobGrid__topbar">
+        <Input
+          className="jobGrid__topbar__search"
+          prefix={<IconSearch />}
+          showClear
+          placeholder="Search"
+          onChange={handleFilterChange}
+        />
 
-      {showFilterBar && (
-        <div className="jobGrid__toolbar">
-          <Space wrap style={{ marginBottom: '1rem' }}>
-            <div className="jobGrid__toolbar__card">
-              <div>
-                <Text strong>Filter by:</Text>
-              </div>
-              <div style={{ display: 'flex', gap: '.3rem' }}>
-                <Select
-                  placeholder="Status"
-                  showClear
-                  onChange={(val) => setActivityFilter(val)}
-                  value={activityFilter}
-                  style={{ width: 140 }}
-                >
-                  <Select.Option value={true}>Active</Select.Option>
-                  <Select.Option value={false}>Not Active</Select.Option>
-                </Select>
-              </div>
-            </div>
-            <Divider layout="vertical" />
-            <div className="jobGrid__toolbar__card">
-              <div>
-                <Text strong>Sort by:</Text>
-              </div>
-              <div style={{ display: 'flex', gap: '.3rem' }}>
-                <Select
-                  placeholder="Sort By"
-                  style={{ width: 160 }}
-                  value={sortField}
-                  onChange={(val) => setSortField(val)}
-                >
-                  <Select.Option value="name">Name</Select.Option>
-                  <Select.Option value="numberOfFoundListings">Number of Listings</Select.Option>
-                  <Select.Option value="enabled">Status</Select.Option>
-                </Select>
+        <RadioGroup
+          type="button"
+          buttonSize="middle"
+          value={activityFilter === null ? 'all' : String(activityFilter)}
+          onChange={(e) => {
+            const v = e.target.value;
+            setActivityFilter(v === 'all' ? null : v === 'true');
+          }}
+        >
+          <Radio value="all">All</Radio>
+          <Radio value="true">Active</Radio>
+          <Radio value="false">Inactive</Radio>
+        </RadioGroup>
 
-                <Select
-                  placeholder="Direction"
-                  style={{ width: 120 }}
-                  value={sortDir}
-                  onChange={(val) => setSortDir(val)}
-                >
-                  <Select.Option value="asc">Ascending</Select.Option>
-                  <Select.Option value="desc">Descending</Select.Option>
-                </Select>
-              </div>
-            </div>
-          </Space>
-        </div>
-      )}
+        <Select prefix="Sort by" style={{ width: 200 }} value={sortField} onChange={(val) => setSortField(val)}>
+          <Select.Option value="name">Name</Select.Option>
+          <Select.Option value="numberOfFoundListings">Number of Listings</Select.Option>
+          <Select.Option value="enabled">Status</Select.Option>
+        </Select>
+
+        <Button
+          icon={sortDir === 'asc' ? <IconArrowUp /> : <IconArrowDown />}
+          onClick={() => setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))}
+          title={sortDir === 'asc' ? 'Ascending' : 'Descending'}
+        />
+      </div>
 
       {(jobsData?.result || []).length === 0 && (
         <Empty
@@ -278,78 +246,70 @@ const JobGrid = () => {
 
       <Row gutter={[16, 16]}>
         {(jobsData?.result || []).map((job) => (
-          <Col key={job.id} xs={24} sm={12} md={8} lg={6} xl={4} xxl={6}>
-            <Card
-              className="jobGrid__card"
-              bodyStyle={{ padding: '16px' }}
-              title={
-                <div className="jobGrid__header">
+          <Col key={job.id} xs={24} sm={12} md={12} lg={8} xl={8} xxl={6}>
+            <Card className="jobGrid__card" bodyStyle={{ padding: '16px' }}>
+              <div className="jobGrid__card__header">
+                <div className="jobGrid__card__name">
+                  <span className={`jobGrid__card__dot${job.enabled ? ' jobGrid__card__dot--active' : ''}`} />
                   <Title heading={5} ellipsis={{ showTooltip: true }} className="jobGrid__title">
                     {job.name}
                   </Title>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    {job.isOnlyShared && (
-                      <Popover
-                        content={getPopoverContent(
-                          'This job has been shared with you by another user, therefor it is read-only.',
-                        )}
-                      >
-                        <div>
-                          <IconAlertTriangle style={{ color: 'rgba(var(--semi-yellow-7), 1)', marginLeft: '8px' }} />
-                        </div>
-                      </Popover>
-                    )}
-                  </div>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+                  {job.isOnlyShared && (
+                    <Popover
+                      content={getPopoverContent(
+                        'This job has been shared with you by another user, therefor it is read-only.',
+                      )}
+                    >
+                      <div>
+                        <IconAlertTriangle style={{ color: 'rgba(var(--semi-yellow-7), 1)' }} />
+                      </div>
+                    </Popover>
+                  )}
                   {job.running && (
                     <Tag color="green" variant="light" size="small">
                       RUNNING
                     </Tag>
                   )}
                 </div>
-              }
-            >
-              <div className="jobGrid__content">
-                <Space vertical align="start" spacing={4} style={{ width: '100%', marginTop: 12 }}>
-                  <div className="jobGrid__infoItem">
-                    <Text type="secondary" icon={<IconSearch />} size="small">
-                      Is active:
-                    </Text>
-                    <Switch
-                      onChange={(checked) => onJobStatusChanged(job.id, checked)}
-                      style={{ marginLeft: 'auto' }}
-                      checked={job.enabled}
-                      disabled={job.isOnlyShared}
-                      size="small"
-                    />
-                  </div>
-                  <div className="jobGrid__infoItem">
-                    <Text type="secondary" icon={<IconSearch />} size="small">
-                      Listings:
-                    </Text>
-                    <Tag color="blue" size="small" style={{ marginLeft: 'auto' }}>
-                      {job.numberOfFoundListings || 0}
-                    </Tag>
-                  </div>
-                  <div className="jobGrid__infoItem">
-                    <Text type="secondary" icon={<IconBriefcase />} size="small">
-                      Providers:
-                    </Text>
-                    <Tag color="cyan" size="small" style={{ marginLeft: 'auto' }}>
-                      {job.provider.length || 0}
-                    </Tag>
-                  </div>
-                  <div className="jobGrid__infoItem">
-                    <Text type="secondary" icon={<IconBell />} size="small">
-                      Adapters:
-                    </Text>
-                    <Tag color="purple" size="small" style={{ marginLeft: 'auto' }}>
-                      {job.notificationAdapter.length || 0}
-                    </Tag>
-                  </div>
-                </Space>
+              </div>
 
-                <Divider margin="12px" />
+              <div className="jobGrid__card__stats">
+                <div className="jobGrid__card__stat jobGrid__card__stat--blue">
+                  <span className="jobGrid__card__stat__number">{job.numberOfFoundListings || 0}</span>
+                  <span className="jobGrid__card__stat__label">
+                    <IconHome size="small" /> Listings
+                  </span>
+                </div>
+                <div className="jobGrid__card__stat jobGrid__card__stat--orange">
+                  <span className="jobGrid__card__stat__number">{job.provider.length || 0}</span>
+                  <span className="jobGrid__card__stat__label">
+                    <IconBriefcase size="small" /> Providers
+                  </span>
+                </div>
+                <div className="jobGrid__card__stat jobGrid__card__stat--purple">
+                  <span className="jobGrid__card__stat__number">{job.notificationAdapter.length || 0}</span>
+                  <span className="jobGrid__card__stat__label">
+                    <IconBell size="small" /> Adapters
+                  </span>
+                </div>
+              </div>
 
+              <Divider margin="12px" />
+
+              <div className="jobGrid__card__footer">
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <Switch
+                    onChange={(checked) => onJobStatusChanged(job.id, checked)}
+                    checked={job.enabled}
+                    disabled={job.isOnlyShared}
+                    size="small"
+                  />
+                  <Text type="secondary" size="small">
+                    Active
+                  </Text>
+                </div>
                 <div className="jobGrid__actions">
                   <Popover content={getPopoverContent('Run Job')}>
                     <div>

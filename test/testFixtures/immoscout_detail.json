@@ -1,0 +1,1054 @@
+{
+  "header": {
+    "id": "165994740",
+    "title": "Beschreibung",
+    "fraudReportUrl": "https://angebot-melden.immobilienscout24.de/report?realEstateId=165994740&publicationState=live",
+    "displayStatusIcon": true,
+    "shareMessage": "Dieses Angebot habe ich bei ImmoScout24 gefunden:\nhttps://www.immobilienscout24.de/expose/165994740?utm_medium=social&utm_campaign=expose_sharing&utm_content=expose_toolbar&utm_source=other&referrer=taf\n\n        Details\n-------------------------\nKaltmiete 21,27 €/m²: 1.740 €\nZimmer:         3\nWohnfläche:     81,8 m²\nWarmmiete:      2.110 €\n\nAm Hain 53\n40468 Stockum, Düsseldorf",
+    "publicationState": "active",
+    "isTenantNetwork": false,
+    "realEstateType": "apartmentrent"
+  },
+  "sections": [
+    {
+      "type": "MEDIA",
+      "featuredBarColor": "#CEC5C0",
+      "featuredRealtorLogoUrl": "https://pictures.immobilienscout24.de/usercontent/ba1e80fb-8333-494e-9935-dae93e10a7cc.PNG/ORIG/resize/%WIDTH%x%HEIGHT%%3E/format/webp/quality/80",
+      "media": [
+        {
+          "type": "PICTURE",
+          "caption": "Titelbild-Wasserzeichen (10)",
+          "previewImageUrl": "https://pictures.immobilienscout24.de/listings/5bb2b09d-75a4-4276-b285-fac7d19ec2f4-1997026927.jpg/ORIG/resize/800x600/format/webp/quality/80",
+          "imageUrlForWeb": "https://pictures.immobilienscout24.de/listings/5bb2b09d-75a4-4276-b285-fac7d19ec2f4-1997026927.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/jpg",
+          "fullImageUrl": "https://pictures.immobilienscout24.de/listings/5bb2b09d-75a4-4276-b285-fac7d19ec2f4-1997026927.jpg/ORIG/resize/1500x1000/format/webp/quality/80",
+          "generatedImages": []
+        },
+        {
+          "type": "PICTURE",
+          "caption": "6b.00.10",
+          "previewImageUrl": "https://pictures.immobilienscout24.de/listings/0e1ec788-c750-4b74-aff4-38fdf51ff7e8-1997026934.jpg/ORIG/resize/800x600/format/webp/quality/80",
+          "imageUrlForWeb": "https://pictures.immobilienscout24.de/listings/0e1ec788-c750-4b74-aff4-38fdf51ff7e8-1997026934.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/jpg",
+          "fullImageUrl": "https://pictures.immobilienscout24.de/listings/0e1ec788-c750-4b74-aff4-38fdf51ff7e8-1997026934.jpg/ORIG/resize/1500x1000/format/webp/quality/80",
+          "generatedImages": []
+        },
+        {
+          "type": "PICTURE",
+          "caption": "Einbauküche",
+          "previewImageUrl": "https://pictures.immobilienscout24.de/listings/4c512abc-7ad3-40da-88cc-2fb4ee265d1d-1997026938.jpg/ORIG/resize/800x600/format/webp/quality/80",
+          "imageUrlForWeb": "https://pictures.immobilienscout24.de/listings/4c512abc-7ad3-40da-88cc-2fb4ee265d1d-1997026938.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/jpg",
+          "fullImageUrl": "https://pictures.immobilienscout24.de/listings/4c512abc-7ad3-40da-88cc-2fb4ee265d1d-1997026938.jpg/ORIG/resize/1500x1000/format/webp/quality/80",
+          "generatedImages": []
+        },
+        {
+          "type": "PICTURE",
+          "caption": "Wohnraum",
+          "previewImageUrl": "https://pictures.immobilienscout24.de/listings/22321074-f870-4c44-9d0d-a9a23ad45086-1997026942.jpg/ORIG/resize/800x600/format/webp/quality/80",
+          "imageUrlForWeb": "https://pictures.immobilienscout24.de/listings/22321074-f870-4c44-9d0d-a9a23ad45086-1997026942.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/jpg",
+          "fullImageUrl": "https://pictures.immobilienscout24.de/listings/22321074-f870-4c44-9d0d-a9a23ad45086-1997026942.jpg/ORIG/resize/1500x1000/format/webp/quality/80",
+          "generatedImages": []
+        },
+        {
+          "type": "PICTURE",
+          "caption": "Musterwohnung Duschbad",
+          "previewImageUrl": "https://pictures.immobilienscout24.de/listings/bfb62560-1ab3-4457-96a1-fa80c374f44a-1997026947.jpg/ORIG/resize/800x600/format/webp/quality/80",
+          "imageUrlForWeb": "https://pictures.immobilienscout24.de/listings/bfb62560-1ab3-4457-96a1-fa80c374f44a-1997026947.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/jpg",
+          "fullImageUrl": "https://pictures.immobilienscout24.de/listings/bfb62560-1ab3-4457-96a1-fa80c374f44a-1997026947.jpg/ORIG/resize/1500x1000/format/webp/quality/80",
+          "generatedImages": []
+        },
+        {
+          "type": "PICTURE",
+          "caption": "Innenhof",
+          "previewImageUrl": "https://pictures.immobilienscout24.de/listings/77545543-8e0e-4f74-aa9a-4ea0128dbdbd-1997026953.jpg/ORIG/resize/800x600/format/webp/quality/80",
+          "imageUrlForWeb": "https://pictures.immobilienscout24.de/listings/77545543-8e0e-4f74-aa9a-4ea0128dbdbd-1997026953.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/jpg",
+          "fullImageUrl": "https://pictures.immobilienscout24.de/listings/77545543-8e0e-4f74-aa9a-4ea0128dbdbd-1997026953.jpg/ORIG/resize/1500x1000/format/webp/quality/80",
+          "generatedImages": []
+        },
+        {
+          "type": "PICTURE",
+          "caption": "WE 6b.00.10",
+          "previewImageUrl": "https://pictures.immobilienscout24.de/listings/24ec785b-9861-454c-82f2-a56f3e9fff60-1997026963.jpg/ORIG/resize/800x600/format/webp/quality/80",
+          "imageUrlForWeb": "https://pictures.immobilienscout24.de/listings/24ec785b-9861-454c-82f2-a56f3e9fff60-1997026963.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/jpg",
+          "fullImageUrl": "https://pictures.immobilienscout24.de/listings/24ec785b-9861-454c-82f2-a56f3e9fff60-1997026963.jpg/ORIG/resize/1500x1000/format/webp/quality/80",
+          "generatedImages": []
+        },
+        {
+          "type": "PICTURE",
+          "caption": "Wir sind Predion",
+          "previewImageUrl": "https://pictures.immobilienscout24.de/listings/a91181a1-ad0e-4a0c-958a-316b96cd08c1-1997026967.jpg/ORIG/resize/800x600/format/webp/quality/80",
+          "imageUrlForWeb": "https://pictures.immobilienscout24.de/listings/a91181a1-ad0e-4a0c-958a-316b96cd08c1-1997026967.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/jpg",
+          "fullImageUrl": "https://pictures.immobilienscout24.de/listings/a91181a1-ad0e-4a0c-958a-316b96cd08c1-1997026967.jpg/ORIG/resize/1500x1000/format/webp/quality/80",
+          "generatedImages": []
+        }
+      ]
+    },
+    {
+      "type": "TOP_ATTRIBUTES",
+      "attributes": [
+        {
+          "label": "Kaltmiete 21,27 €/m²",
+          "highlighted": true,
+          "text": "1.740 €",
+          "type": "TEXT"
+        },
+        {
+          "label": "Zimmer",
+          "text": "3",
+          "type": "TEXT"
+        },
+        {
+          "label": "Wohnfläche",
+          "text": "81,8 m²",
+          "type": "TEXT"
+        },
+        {
+          "label": "Warmmiete",
+          "text": "2.110 €",
+          "type": "TEXT"
+        }
+      ]
+    },
+    {
+      "type": "TITLE",
+      "title": "Tolle 3-Zimmer-Wohnung im Erdgeschoss mit Sonnenterrasse und schicker Einbauküche im Neubauquartier!"
+    },
+    {
+      "type": "RELOCATION",
+      "text": "Was kostet mich der Umzug?",
+      "subText": "Angebote kostenlos erhalten",
+      "reference": {
+        "label": "",
+        "url": "is24://retargetRelocation?pag_source=expose_criteria&floor=0&street=Am%20Hain&houseNumber=53&postcode=40468&city=D%C3%BCsseldorf",
+        "type": "URL_LINK",
+        "target": "INTERNAL",
+        "trackingConfig": {
+          "category": "expose",
+          "action": "consumerservices",
+          "label": "relocation_criteria",
+          "event_name": "productintegration_click",
+          "event_product": "search",
+          "parameters": {
+            "event_parameter_1": "relocation_criteria"
+          }
+        }
+      }
+    },
+    {
+      "type": "MAP",
+      "title": "Karte",
+      "location": {
+        "lat": 51.26249,
+        "lng": 6.76223
+      },
+      "addressLine1": "Am Hain 53",
+      "addressLine2": "40468 Stockum, Düsseldorf",
+      "zipCodeShapes": [],
+      "enableEnterFullAddressAction": true
+    },
+    {
+      "type": "REFERENCE_LIST",
+      "references": [
+        {
+          "label": "Preisentwicklung zu dieser Region ansehen",
+          "url": "https://www.immobilienscout24.de/Suche/controller/executePriceInsightsSimple/region?realestatetype=apartmentrent&geocodes=/de/nordrhein-westfalen/duesseldorf/stadtbezirk-5/stockum&utm_medium=app&utm_source=iphone&utm_campaign=resultlist_price_insights&utm_content=expose_pricedev",
+          "type": "URL_LINK",
+          "target": "WEB_INTERNAL",
+          "trackingConfig": {
+            "category": "expose",
+            "action": "atlas_tapped",
+            "label": "txt_link_address",
+            "event_name": "productintegration_click",
+            "event_product": "search",
+            "parameters": {
+              "event_parameter_1": "txt_link_address"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "TRAVELTIME",
+      "isBlocked": false,
+      "exposeId": "165994740",
+      "address": "Am Hain 53, 40468 Stockum, Düsseldorf",
+      "location": {
+        "lat": 51.26249,
+        "lng": 6.76223
+      }
+    },
+    {
+      "type": "ATTRIBUTE_LIST",
+      "title": "Hauptkriterien",
+      "attributes": [
+        {
+          "type": "TEXT",
+          "label": "Wohnungstyp:",
+          "text": "Erdgeschosswohnung"
+        },
+        {
+          "type": "TEXT",
+          "label": "Etagenzahl:",
+          "text": "3"
+        },
+        {
+          "type": "TEXT",
+          "label": "Schlafzimmer:",
+          "text": "2"
+        },
+        {
+          "type": "TEXT",
+          "label": "Badezimmer:",
+          "text": "1"
+        },
+        {
+          "type": "TEXT",
+          "label": "Bezugsfrei ab:",
+          "text": "01.05.2026"
+        },
+        {
+          "type": "CHECK",
+          "label": "Balkon/Terrasse:"
+        },
+        {
+          "type": "CHECK",
+          "label": "Personenaufzug:"
+        },
+        {
+          "type": "CHECK",
+          "label": "Einbauküche:"
+        },
+        {
+          "type": "LINK",
+          "label": "SCHUFA-BonitätsCheck:",
+          "reference": {
+            "type": "URL_LINK",
+            "label": "Online anfordern",
+            "url": "https://bonitaetscheck.immobilienscout24.de/?utm_medium=app&utm_source=ios&utm_campaign=solvency_check&utm_content=residential_expose_criteria",
+            "target": "WEB_INTERNAL",
+            "trackingConfig": {
+              "category": "expose",
+              "action": "consumerservices",
+              "label": "solvencycheck_criteria",
+              "event_name": "productintegration_click",
+              "event_product": "search",
+              "parameters": {
+                "event_parameter_1": "solvencycheck_criteria"
+              }
+            }
+          }
+        },
+        {
+          "type": "LINK",
+          "label": "Internet:",
+          "reference": {
+            "type": "URL_LINK",
+            "label": "Verfügbarkeit prüfen",
+            "iconUrl": "https://www.immobilienscout24.de/content/dam/is24/expose-snippets/services/powered-by-telekom-new.png",
+            "url": "https://rebrand.ly/anodsl",
+            "target": "WEB_INTERNAL",
+            "trackingConfig": {
+              "category": "clickout",
+              "action": "relocation",
+              "label": "internet_checkavailability_criteria",
+              "event_name": "expose_clickout",
+              "event_product": "search",
+              "parameters": {
+                "event_parameter_1": "internet_checkavailability_criteria"
+              }
+            },
+            "additionalInfoForIcon": {
+              "title": "Warum diese Werbung?",
+              "text": "Für die Bereitstellung von Informationen zur Internet-Verfügbarkeit am Standort des Inserats arbeiten wir mit der Telekom Deutschland GmbH zusammen.",
+              "buttonText": "Weitere Informationen",
+              "buttonUrl": "https://www.immobilienscout24.de/anbieten/dsa-info/telekom.html"
+            },
+            "onClickTrackingTag": "INTERNET_AVAILABILITY_CHECK"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ATTRIBUTE_LIST",
+      "title": "Kosten",
+      "attributes": [
+        {
+          "type": "TEXT",
+          "label": "Kaltmiete (zzgl. Nebenkosten):",
+          "text": "1.740 €"
+        },
+        {
+          "type": "TEXT",
+          "label": "Preis/m²:",
+          "text": "21,27 €/m²",
+          "additionalInfoText": "Kalkuliert von ImmoScout24"
+        },
+        {
+          "type": "TEXT",
+          "label": "Nebenkosten:",
+          "text": "370 €"
+        },
+        {
+          "type": "TEXT",
+          "label": "Heizkosten in Nebenkosten enthalten:",
+          "text": "Ja"
+        },
+        {
+          "type": "TEXT",
+          "label": "Gesamtmiete:",
+          "text": "2.110 €"
+        },
+        {
+          "type": "TEXT",
+          "label": "Kaution oder Genossenschaftsanteile:",
+          "text": "5220"
+        }
+      ]
+    },
+    {
+      "type": "COST_CHECK",
+      "totalRent": 2110,
+      "expenses": [
+        {
+          "name": "Strom",
+          "grouping": "Strom",
+          "price": 70,
+          "providers": [
+            {
+              "id": "klarwatt-electricity",
+              "name": "KlarWatt Strom",
+              "chipName": "KlarWatt Energy by ImmoScout24",
+              "logo": "https://www.immobilienscout24.de/content/dam/is24/expose-snippets/KlarWatt-Logo-72x72.png",
+              "modalTitle": "KlarWatt Energy by ImmoScout24",
+              "modalContent": "/expose/content?fragment=/content/campaigns/is24/expose/cost-check/klarwatt-energy/_jcr_content/par.html",
+              "ctaText": "Jetzt berechnen",
+              "ctaLink": "https://rebrand.ly/KlarWatt-Strom",
+              "price": 52.5
+            },
+            {
+              "id": "lichtblick-electricity",
+              "name": "Strom",
+              "chipName": "LichtBlick",
+              "logo": "https://www.immobilienscout24.de/content/dam/is24/expose-snippets/lichtblick-logo.png",
+              "modalTitle": "100 % ÖkoStrom im neuen Zuhause",
+              "modalContent": "/expose/content?fragment=/content/campaigns/is24/expose/cost-check/lichtblick-electricity/_jcr_content/par.html",
+              "ctaText": "Jetzt berechnen",
+              "ctaLink": "https://rebrand.ly/Kostencheck-Lichtblick-Strom",
+              "selected": true,
+              "price": 71.31
+            }
+          ],
+          "order": 2
+        },
+        {
+          "name": "Internet",
+          "grouping": "Internet",
+          "price": 37.5,
+          "providers": [
+            {
+              "id": "telekom-internet",
+              "name": "Telekom Internet",
+              "chipName": "Telekom",
+              "logo": "https://www.immobilienscout24.de/content/dam/is24/expose-snippets/Telekom-Logo-72x72.png",
+              "price": 9.95,
+              "modalTitle": "Telekom Internet",
+              "modalContent": "/expose/content?fragment=/content/campaigns/is24/expose/cost-check/telekom-internet/_jcr_content/par.html",
+              "ctaText": "Jetzt informieren",
+              "ctaLink": "https://rebrand.ly/Kostencheck-Telekom-Internet",
+              "popup": "<small>\n         • Aktion gilt bis 02.02.2026 für Breitband-Neukunden, die in den letzten 3 Monaten keinen Breitbandanschluss bei der Telekom hatten.<br>\n         • Einmaliger Bereitstellungspreis für neuen Telefonanschluss: 69,95 €<br>\n         • Mindestvertragslaufzeit: MagentaZuhause: 24 Monate<br>\n         • Alle Preise inkl. der gesetzlichen MwSt.</small>",
+              "selected": true
+            }
+          ],
+          "order": 1
+        },
+        {
+          "name": "TV & Streaming",
+          "grouping": "TV & Streaming",
+          "price": 25,
+          "providers": [
+            {
+              "id": "telekom-streaming",
+              "name": "MagentaTV Smart",
+              "chipName": "Telekom",
+              "logo": "https://www.immobilienscout24.de/content/dam/is24/expose-snippets/Telekom-Logo-72x72.png",
+              "price": 7,
+              "modalTitle": "MagentaTV Smart",
+              "modalContent": "/expose/content?fragment=/content/campaigns/is24/expose/cost-check/telekom-streaming/_jcr_content/par.html",
+              "ctaText": "Jetzt informieren",
+              "ctaLink": "https://rebrand.ly/Kostencheck-Telekom-MagentaTV-Smart",
+              "popup": "<small>Für MagentaTV Neukunden in den ersten 6 Monaten 0 €.</small>",
+              "selected": true
+            }
+          ],
+          "order": 0
+        },
+        {
+          "name": "Hausratversicherung",
+          "grouping": "Versicherungen",
+          "price": 10
+        }
+      ]
+    },
+    {
+      "type": "PREMIUM_ADDITIONAL_INFO",
+      "title": "Plus Mitglieder wissen mehr!",
+      "isExposeBuy": false,
+      "chancenCheck": {
+        "enabled": false,
+        "title": "Plus Insights",
+        "publishedLabel": "Veröffentlicht",
+        "visitedLabel": "Aufrufe",
+        "shortlistedLabel": "Gemerkt",
+        "contactedLabel": "Kontaktiert"
+      },
+      "competitionAnalysis": {
+        "enabled": false,
+        "title": "Konkurrenzanalyse",
+        "plusUser": {
+          "label": "Plus-Mitglieder",
+          "count": null
+        },
+        "basicUser": {
+          "label": "Basic-Mitglieder",
+          "count": null
+        },
+        "totalUserCount": null,
+        "description": "inkl. 6 weiterer Diagramme mit Plus+",
+        "activationLabel": "mit Plus oder einzeln",
+        "quickCartUrl": "https://www.immobilienscout24.de/warenkorb/mieterplus?isMobileView=true&utm_campaign=chancen_check&utm_content=residential_expose_competitionanalysis_cta",
+        "trackingConfig": {
+          "event_name": "subscription_clickout",
+          "event_product": "expose",
+          "parameters": {
+            "event_parameter_1": "rent",
+            "event_parameter_2": "competition_analysis"
+          }
+        }
+      },
+      "quickCartButton": {
+        "enabled": true,
+        "label": "Jetzt Plus aktivieren",
+        "url": "https://www.immobilienscout24.de/warenkorb/mieterplus?isMobileView=true&utm_campaign=chancen_check&utm_content=residential_expose_plusinsights_cta",
+        "trackingConfig": {
+          "event_name": "subscription_clickout",
+          "event_product": "expose",
+          "parameters": {
+            "event_parameter_1": "rent",
+            "event_parameter_2": "plus_insights"
+          }
+        }
+      },
+      "visits": null,
+      "contactRequests": null,
+      "shortlistAddEvents": null,
+      "prospectiveCustomersCount": {
+        "basic": null,
+        "premium": null,
+        "total": null
+      },
+      "newExposeHoursThreshold": null,
+      "calculated": null,
+      "privateOffer": null,
+      "onlineSince": null
+    },
+    {
+      "type": "ATTRIBUTE_LIST",
+      "title": "Bausubstanz & Energieausweis",
+      "attributes": [
+        {
+          "type": "TEXT",
+          "label": "Baujahr:",
+          "text": "2026"
+        },
+        {
+          "type": "TEXT",
+          "label": "Objektzustand:",
+          "text": "Erstbezug"
+        },
+        {
+          "type": "TEXT",
+          "label": "Wesentliche Energieträger:",
+          "text": "Keine Angabe"
+        }
+      ]
+    },
+    {
+      "type": "AD",
+      "ad": {
+        "id": "/4467/IS24_APP_DE/app_iOS_iPhone_expose_contentbanner_1"
+      }
+    },
+    {
+      "type": "PROJECT_EXPOSE_LIST",
+      "title": "Weitere Wohneinheiten in diesem Projekt",
+      "items": [
+        {
+          "id": "165994703",
+          "attributes": [
+            "1.790 €",
+            "78,1 m²",
+            "3 Zi."
+          ],
+          "imageUrl": "https://pictures.immobilienscout24.de/listings/8183b9a1-a928-491c-b6ea-6f3a5ff8162f-1997026335.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/jpg/quality/50"
+        },
+        {
+          "id": "166561801",
+          "attributes": [
+            "1.320 €",
+            "58,6 m²",
+            "2 Zi."
+          ],
+          "imageUrl": "https://pictures.immobilienscout24.de/listings/44e0e5f9-d5d8-48e5-9e42-3274cbc05556-2007039892.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/jpg/quality/50"
+        },
+        {
+          "id": "165975759",
+          "attributes": [
+            "2.150 €",
+            "98 m²",
+            "4 Zi."
+          ],
+          "imageUrl": "https://pictures.immobilienscout24.de/listings/756e9426-c1f8-4756-98b1-2bdc6028f07a-1996650985.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/jpg/quality/50"
+        },
+        {
+          "id": "165975741",
+          "attributes": [
+            "2.360 €",
+            "112,5 m²",
+            "5 Zi."
+          ],
+          "imageUrl": "https://pictures.immobilienscout24.de/listings/eb298253-08a4-48eb-baa6-4ad19ed72df3-1996650699.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/jpg/quality/50"
+        },
+        {
+          "id": "165975624",
+          "attributes": [
+            "1.520 €",
+            "70,9 m²",
+            "2 Zi."
+          ],
+          "imageUrl": "https://pictures.immobilienscout24.de/listings/6fafe087-d314-4727-bc7a-0bf7aed4c73a-1996648745.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/jpg/quality/50"
+        },
+        {
+          "id": "165975598",
+          "attributes": [
+            "1.320 €",
+            "58 m²",
+            "2 Zi."
+          ],
+          "imageUrl": "https://pictures.immobilienscout24.de/listings/29e6e279-21ed-4630-8229-2d455d60c5ac-1996648285.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/jpg/quality/50"
+        },
+        {
+          "id": "165975460",
+          "attributes": [
+            "1.210 €",
+            "50,8 m²",
+            "2 Zi."
+          ],
+          "imageUrl": "https://pictures.immobilienscout24.de/listings/b93d4825-7e8a-4e0f-824e-cd1a7e6bf35e-1996645907.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/jpg/quality/50"
+        },
+        {
+          "id": "165199718",
+          "attributes": [
+            "2.190 €",
+            "102,4 m²",
+            "4 Zi."
+          ],
+          "imageUrl": "https://pictures.immobilienscout24.de/listings/dac3d681-8027-4d3a-8c4b-3d89be4ed223-1985561565.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/jpg/quality/50"
+        },
+        {
+          "id": "167016936",
+          "attributes": [
+            "2.360 €",
+            "112,5 m²",
+            "5 Zi."
+          ],
+          "imageUrl": "https://pictures.immobilienscout24.de/listings/bdfc5d22-dd7c-4fa3-ad6e-1339ad1083f9-2014969185.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/jpg/quality/50"
+        },
+        {
+          "id": "165199377",
+          "attributes": [
+            "2.230 €",
+            "104,5 m²",
+            "4 Zi."
+          ],
+          "imageUrl": "https://pictures.immobilienscout24.de/listings/2c6d2272-d28e-477d-8ee2-63a05263244a-1985562301.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/jpg/quality/50"
+        },
+        {
+          "id": "165146621",
+          "attributes": [
+            "1.870 €",
+            "89 m²",
+            "3 Zi."
+          ],
+          "imageUrl": "https://pictures.immobilienscout24.de/listings/6059fc5f-2f9d-43b9-9e6c-9f82c715e8c7-1985563642.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/jpg/quality/50"
+        },
+        {
+          "id": "164094597",
+          "attributes": [
+            "1.660 €",
+            "78,9 m²",
+            "2 Zi."
+          ],
+          "imageUrl": "https://pictures.immobilienscout24.de/listings/a3a0c67d-be45-423e-9a5b-8489e0123303-1967561926.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/jpg/quality/50"
+        },
+        {
+          "id": "167016134",
+          "attributes": [
+            "2.990 €",
+            "150,3 m²",
+            "5 Zi."
+          ],
+          "imageUrl": "https://pictures.immobilienscout24.de/listings/b3e15ecd-0449-4d44-a69e-39c5081b4b82-2014962686.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/jpg/quality/50"
+        },
+        {
+          "id": "166562014",
+          "attributes": [
+            "2.070 €",
+            "96 m²",
+            "4 Zi."
+          ],
+          "imageUrl": "https://pictures.immobilienscout24.de/listings/e8ed2029-8e81-443c-bb0e-6f5d270a968a-2007042953.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/jpg/quality/50"
+        },
+        {
+          "id": "166561906",
+          "attributes": [
+            "1.850 €",
+            "88,1 m²",
+            "3 Zi."
+          ],
+          "imageUrl": "https://pictures.immobilienscout24.de/listings/96e26d69-77bc-43e3-ae7e-d567dda483c2-2007041696.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/jpg/quality/50"
+        }
+      ],
+      "reference": {
+        "type": "URL_LINK",
+        "target": "INTERNAL",
+        "label": "Mehr Details zu diesem Neubauprojekt",
+        "url": "is24://project/136852"
+      }
+    },
+    {
+      "type": "TEXT_AREA",
+      "title": "Objektbeschreibung",
+      "collapseAfterLines": 5,
+      "text": "Leben im Grünen mit urbanem Komfort. Die Deiker Höfe im beliebten Stadtteil Düsseldorf-Stockum im Norden von Düsseldorf bieten als autofreies, modernes Wohnquartier mit gepflegten Grünanlagen eine hohe Aufenthaltsqualität für Jung und Alt.\n\nDiese hochwertig ausgestattete Wohnung im Erdgeschoss bietet auf ca. 91 m² Wohnfläche ein durchdachtes Raumkonzept.\n\nDas Highlight der Wohnung ist der Wohn-Essbereich mit einladender Terrasse und offener, moderner Einbauküche in zeitlosen Naturtönen. Ein gemütliches Schlafzimmer sowie ein weiteres Zimmer runden das Gesamtbild ab. Dank der großzügigen Deckenhöhe von ca. 2,75 m wirkt jeder Raum noch heller und luftiger.\n\nEin modernes Bad mit bodengleicher Dusche, Glasabtrennung und Waschmaschinenanschluss sowie ein zusätzliches WC sorgen für Komfort im Alltag.\n\nDie Böden sind ausgestattet mit einem Design-Vinylboden in warmer Holzoptik und Fußbodenheizung. Die Beheizung erfolgt über umweltfreundliche Nahwärmeversorgung. Eine Wohnraumlüftung in jedem Raum sorgt permanent für frische Luft. Formschöne, elektrische Außenstores sorgen für Schatten an sonnigen Tagen.\n\nZur Wohnung gehört ein eigener Kellerraum. Außerdem stehen Ihnen eine Tiefgarage (Stellplatzanmietung beträgt 130 € monatlich), Fahrradstellplätze und E-Ladestationen im Quartier zur Verfügung – für zeitgemäße, flexible Mobilität."
+    },
+    {
+      "type": "TEXT_AREA",
+      "title": "Ausstattung",
+      "collapseAfterLines": 5,
+      "text": "Wohnen & Ausstattung\n• Einbauküche inklusive Elektrogeräte\n• Fußbodenheizung in allen Räumen\n• Design-Vinylböden in Holzoptik\n• Hochwertige Fliesen in den Bädern\n• Bodentiefe Fenster mit viel Tageslicht\n• Elektrischer Sonnenschutz (Raffstores) an West-, Ost- und Südfassaden\n• Schallschutz-Wohnungstüren\n• Fenster mit Holzoptik-Folierung\n• Flachdächer mit Begrünung (KfW-Effizienzhaus-Standard 55)\n\nTechnik & Komfort\n• Videogegensprechanlage mit IP-Technologie\n• Glasfaseranschluss (Telekom) in jeder Wohnung\n• Barrierefreier Zugang zu allen Wohnungen\n• Abstellräume im Untergeschoss\n\nMobilität & Infrastruktur\n• Tiefgarage mit direktem Zugang zu den Häusern\n• TG-Zugang mit Kennzeichenerkennung\n• Ladestationen für E-Autos (11 kW, zur Anmietung)\n• Fahrradabstellplätze über- und unterirdisch\n• Beheizte Fahrradrampe für sichere Nutzung im Winter"
+    },
+    {
+      "type": "TEXT_AREA",
+      "title": "Lage",
+      "collapseAfterLines": 5,
+      "text": "Eingebettet in ein gewachsenes Wohnumfeld mit charmanten Einfamilienhäusern, Vorgärten und altem Baumbestand genießen Sie hier naturnahes Wohnen mit guter Infrastruktur und Anbindung. \n\nDer Rhein mit seinen einladenden Fuß- und Radwegen, der internationale Flughafen Düsseldorf, die Messe und die berühmte Düsseldorfer Königsallee sind schnell erreichbar. Parks und Grünflächen in der Umgebung laden zu Spaziergängen ein. Das Quartier bietet Einkaufsmöglichkeiten direkt vor Ort mit einer Bäckerei, einer Eisdiele, einem Supermarkt und einer Apotheke. Des Weiteren wird eine Kindertagesstätte im Quartier entstehen.\n\nDank direkter ÖPNV-Anbindung sowie Rad- und Fußwegen ist das Quartier bestens vernetzt – ein zukunftsweisender Standort in Düsseldorf."
+    },
+    {
+      "type": "TEXT_AREA",
+      "title": "Sonstiges",
+      "collapseAfterLines": 5,
+      "text": "Sämtliche Objektinformationen wurden aufgrund von Angaben des Eigentümers erstellt und so sorgfältig und so vollständig wie möglich gemacht. Wir übernehmen keine Gewähr und keine Haftung für die Richtigkeit und/oder Vollständigkeit der Angaben. Alle Angaben werden lediglich zu Informationszwecken zur Verfügung gestellt. Soweit die Grundrissgrafiken Maßangaben und Einrichtungen enthalten, wird auch für diese jegliche Haftung ausgeschlossen. Ebenso weisen wir darauf hin, dass die Grundrissgrafiken und Visualisierungen nicht immer maßstabsgetreu sind."
+    },
+    {
+      "type": "REFERENCE_LIST",
+      "title": "Services passend zur Wohnung",
+      "references": [
+        {
+          "type": "BUTTON",
+          "label": "SCHUFA-BonitätsCheck",
+          "url": "https://bonitaetscheck.immobilienscout24.de/?utm_medium=app&utm_source=ios&utm_campaign=solvency_check&utm_content=residential_expose_services",
+          "target": "WEB_INTERNAL",
+          "trackingConfig": {
+            "category": "expose",
+            "action": "consumerservices",
+            "label": "solvencycheck_services",
+            "event_name": "productintegration_click",
+            "event_product": "search",
+            "parameters": {
+              "event_parameter_1": "solvencycheck_services"
+            }
+          }
+        },
+        {
+          "type": "BUTTON",
+          "label": "Umzugsfirma finden",
+          "url": "is24://retargetRelocation?pag_source=expose_services&floor=0&street=Am%20Hain&houseNumber=53&postcode=40468&city=D%C3%BCsseldorf",
+          "target": "INTERNAL",
+          "trackingConfig": {
+            "category": "expose",
+            "action": "consumerservices",
+            "label": "relocation_services",
+            "event_name": "productintegration_click",
+            "event_product": "search",
+            "parameters": {
+              "event_parameter_1": "relocation_services"
+            }
+          }
+        },
+        {
+          "type": "BUTTON",
+          "label": "Mein Eigentümerbereich",
+          "url": "https://www.immobilienscout24.de/meinkonto/meine-immobilien?utm_medium=app&utm_source=ios&utm_campaign=residential_atlas_myproperty&utm_content=residential_expose_service&street=Am%20Hain&houseNumber=53&zipcode=40468&city=D%C3%BCsseldorf",
+          "target": "WEB_INTERNAL",
+          "trackingConfig": {
+            "category": "expose",
+            "action": "further_links",
+            "label": "myproperty_services",
+            "event_name": "productintegration_click",
+            "event_product": "search",
+            "parameters": {
+              "event_parameter_1": "myproperty_services"
+            }
+          }
+        },
+        {
+          "type": "BUTTON",
+          "label": "Stromverbrauch berechnen",
+          "url": "https://www.immobilienscout24.de/umzug/service/electricity-calculator-mobile.html?zipCode=40468&squareMeters=81.8&lang=de",
+          "target": "WEB_INTERNAL",
+          "trackingConfig": {
+            "category": "clickout",
+            "action": "electricity",
+            "label": "energy_services",
+            "event_name": "productintegration_click",
+            "event_product": "search",
+            "parameters": {
+              "event_parameter_1": "energy_services"
+            }
+          }
+        },
+        {
+          "type": "BUTTON",
+          "label": "Internet umziehen",
+          "url": "https://rebrand.ly/service-android-app",
+          "target": "WEB_INTERNAL",
+          "trackingConfig": {
+            "category": "clickout",
+            "action": "internet",
+            "label": "internet_services",
+            "event_name": "expose_clickout",
+            "event_product": "search",
+            "parameters": {
+              "event_parameter_1": "internet_services"
+            }
+          },
+          "additionalInfoForIcon": {
+            "title": "Warum diese Werbung?",
+            "text": "Für die Bereitstellung von Informationen zur Internet-Verfügbarkeit am Standort des Inserats arbeiten wir mit der Telekom Deutschland GmbH zusammen.",
+            "buttonText": "Weitere Informationen",
+            "buttonUrl": "https://www.immobilienscout24.de/anbieten/dsa-info/telekom.html",
+            "iconUrl": "https://www.immobilienscout24.de/content/dam/is24/expose-snippets/services/powered-by-telekom-new.png"
+          }
+        }
+      ]
+    },
+    {
+      "type": "PRICE_INFO",
+      "title": "Preis- und Lageinformationen",
+      "attributes": [
+        {
+          "type": "TEXT",
+          "label": "Objektzustand:",
+          "text": "Erstbezug"
+        }
+      ],
+      "priceBar": {
+        "minPrice": "10 € /m²",
+        "maxPrice": "22,50 € /m²",
+        "minSimilarPrice": "12,30 € /m²",
+        "maxSimilarPrice": "18,40 € /m²",
+        "actualObject": "Dieses Angebot 21,27 € /m²",
+        "priceIndicatorPositionInPercent": 0.9
+      },
+      "calculationInformation": {
+        "title": "Mehr Informationen zu dieser Adresse",
+        "offersLowerSimilarPrice": "15,9% niedrigeren Angebotspreises",
+        "offersWithSimilarPrice": "68.2% ähnlichen Angebotspreises",
+        "offersHigherSimilarPrice": "15,9% höheren Angebotspreises",
+        "furtherInformation": {
+          "target": "WEB",
+          "type": "URL_LINK",
+          "label": "Quelle und weitere Informationen",
+          "url": "https://www.immobilienscout24.de/immobilienbewertung/fragen-und-antworten/preis-lageinformationen-wohnung-miete.html"
+        }
+      }
+    },
+    {
+      "type": "AGENTS_INFO",
+      "title": "Anbieter Informationen",
+      "company": "Predion Real Estate GmbH",
+      "name": "Frau Anna Henke",
+      "logoUrl": "https://pictures.immobilienscout24.de/usercontent/ba1e80fb-8333-494e-9935-dae93e10a7cc.PNG/ORIG/resize/%WIDTH%x%HEIGHT%%3E/format/webp/quality/80",
+      "rating": {
+        "value": 4.7,
+        "numberOfStars": 5,
+        "reference": {
+          "type": "URL_LINK",
+          "label": "(4.7 Sterne)",
+          "url": "https://www.immobilienscout24.de/anbieter/predion-real-estate-gmbh/a4ef3a419b1abe6d8b7750f",
+          "target": "WEB_INTERNAL"
+        }
+      },
+      "agentProfileUrl": "https://www.immobilienscout24.de/anbieter/predion-real-estate-gmbh/a4ef3a419b1abe6d8b7750f",
+      "verifiedBy": [
+        {
+          "id": "TNS_REALTOR_BADGE",
+          "label": "Identität verifiziert",
+          "tooltip": "Deine Sicherheit liegt uns am Herzen. Diese:r Anbietende wurde daher erfolgreich verifiziert und ist zusätzlich durch eine Mehrfaktor-Authentifizierung geschützt.",
+          "reference": {
+            "label": "Mehr Infos",
+            "url": "https://sicherheit.immobilienscout24.de/verifizierte-anbietende.html",
+            "type": "URL_LINK",
+            "target": "WEB_INTERNAL"
+          }
+        }
+      ],
+      "dsaSelfDeclaration": {
+        "text": "Der:Die Anbietende hat sich gegen&uuml;ber ImmoScout24 verpflichtet, nur Produkte und Dienstleistungen anzubieten, die den geltenden Vorschriften des Unionsrechts entsprechen."
+      },
+      "portraitUrl": "https://pictures.immobilienscout24.de/usercontent/3f234196-8576-4957-a4a0-93a241e9bb0f.PNG/ORIG/resize/%WIDTH%x%HEIGHT%%3E/format/webp/quality/80",
+      "address": "",
+      "references": [
+        {
+          "label": "Impressum des Anbieters",
+          "url": "is24://imprint?text=Predion%20Real%20Estate%20GmbH%0AUnterrather%20Str.%20105%0A40468%20D%C3%BCsseldorf%0A0211%2086842550%0Ainfo%40predion.de%0A%0AAngaben%20gem%C3%A4%C3%9F%20%C2%A7%205%20TMG%0D%0A%0D%0APredion%20Real%20Estate%20GmbH%0D%0AUnterrather%20Str.%20105%0D%0A40468%20D%C3%BCsseldorf%0D%0A%0D%0AHandelsregister%3A%20HRB%2091985%0D%0ARegistergericht%3A%20Amtsgericht%20D%C3%BCsseldorf%0D%0AVertreten%20durch%3A%0D%0AJennifer%20Gro%C3%9F-Kirse%0D%0ASebastian%20Gro%C3%9F%0D%0A%0D%0AKontakt%0D%0ATelefon%3A%20%2B49%20211%20868425%2050%0D%0AE-Mail%3A%20sg%40predion.de%0D%0A%0D%0AUmsatzsteuer-ID%0D%0AUmsatzsteuer-Identifikationsnummer%20gem%C3%A4%C3%9F%20%C2%A7%2027%20a%20Umsatzsteuergesetz%3A%0D%0ADE338386868%0D%0A%0D%0AAufsichtsbeh%C3%B6rde%0D%0AOrdnungsamt%20D%C3%BCsseldorf%2C%20Abt.%20Gewerberechtliche%20Angelegenheiten%0D%0AWorringer%20Stra%C3%9Fe%20111%0D%0A40210%20D%C3%BCsseldorf%0D%0Ahttps%3A%2F%2Fwww.duesseldorf.de%2Fordnungsamt%2Fgewerbe.html%0D%0A%0D%0AAngaben%20zur%20Berufshaftpflichtversicherung%0D%0AName%20und%20Sitz%20des%20Versicherers%3A%0D%0AN%C3%9CRNBERGER%20Versicherungsgruppe%0D%0AOstendstr.%20100%0D%0A90334%20N%C3%BCrnberg%0D%0AGeltungsraum%20der%20Versicherung%3A%0D%0ADeutschland%0D%0A%0D%0AVerbraucherstreitbeilegung%2FUniversalschlichtungsstelle%0D%0AWir%20sind%20nicht%20bereit%20oder%20verpflichtet%2C%20an%20Streitbeilegungsverfahren%20vor%20einer%0D%0AVerbraucherschlichtungsstelle%20teilzunehmen.%0D%0A%0D%0AHaftung%20f%C3%BCr%20Inhalte%0D%0AAls%20Diensteanbieter%20sind%20wir%20gem%C3%A4%C3%9F%20%C2%A7%207%20Abs.1%20TMG%20f%C3%BCr%20eigene%20Inhalte%20auf%20diesen%20Seiten%20nach%20den%0D%0Aallgemeinen%20Gesetzen%20verantwortlich.%20Nach%20%C2%A7%C2%A7%208%20bis%2010%20TMG%20sind%20wir%20als%20Diensteanbieter%20jedoch%20nicht%0D%0Averpflichtet%2C%20%C3%BCbermittelte%20oder%20gespeicherte%20fremde%20Informationen%20zu%20%C3%BCberwachen%20oder%20nach%20Umst%C3%A4nden%20zu%20forschen%2C%20die%20auf%20eine%20rechtswidrige%20T%C3%A4tigkeit%20hinweisen.%0D%0AVerpflichtungen%20zur%20Entfernung%20oder%20Sperrung%20der%20Nutzung%20von%20Informationen%20nach%20den%20allgemeinen%0D%0AGesetzen%20bleiben%20hiervon%20unber%C3%BChrt.%20Eine%20diesbez%C3%BCgliche%20Haftung%20ist%20jedoch%20erst%20ab%20dem%20Zeitpunkt%20der%20Kenntnis%20einer%20konkreten%20Rechtsverletzung%20m%C3%B6glich.%20Bei%20Bekanntwerden%20von%20entsprechenden%0D%0ARechtsverletzungen%20werden%20wir%20diese%20Inhalte%20umgehend%20entfernen.%0D%0A%0D%0AHaftung%20f%C3%BCr%20Links%0D%0AUnser%20Angebot%20enth%C3%A4lt%20Links%20zu%20externen%20Websites%20Dritter%2C%20auf%20deren%20Inhalte%20wir%20keinen%20Einfluss%20haben.%0D%0ADeshalb%20k%C3%B6nnen%20wir%20f%C3%BCr%20diese%20fremden%20Inhalte%20auch%20keine%20Gew%C3%A4hr%20%C3%BCbernehmen.%20F%C3%BCr%20die%20Inhalte%20der%20verlinkten%20Seiten%20ist%20stets%20der%20jeweilige%20Anbieter%20oder%20Betreiber%20der%20Seiten%20verantwortlich.%20Die%20verlinkten%20Seiten%20wurden%20zum%20Zeitpunkt%20der%20Verlinkung%20auf%20m%C3%B6gliche%20Rechtsverst%C3%B6%C3%9Fe%20%C3%BCberpr%C3%BCft.%20Rechtswidrige%20Inhalte%20waren%20zum%20Zeitpunkt%20der%20Verlinkung%20nicht%20erkennbar.%0D%0AEine%20permanente%20inhaltliche%20Kontrolle%20der%20verlinkten%20Seiten%20ist%20jedoch%20ohne%20konkrete%20Anhaltspunkte%20einer%20Rechtsverletzung%20nicht%20zumutbar.%20Bei%20Bekanntwerden%20von%20Rechtsverletzungen%20werden%20wir%20derartige%20Links%20umgehend%20entfernen.%0D%0A%0D%0A%0D%0A%0D%0AUrheberrecht%0D%0ADie%20durch%20die%20Seitenbetreiber%20erstellten%20Inhalte%20und%20Werke%20auf%20diesen%20Seiten%20unterliegen%20dem%20deutschen%20Urheberrecht.%20Die%20Vervielf%C3%A4ltigung%2C%20Bearbeitung%2C%20Verbreitung%20und%20jede%20Art%20der%20Verwertung%20au%C3%9Ferhalb%20der%20Grenzen%20des%20Urheberrechtes%20bed%C3%BCrfen%20der%20schriftlichen%20Zustimmung%20des%20jeweiligen%20Autors%20bzw.%20Erstellers.%20Downloads%20und%20Kopien%20dieser%20Seite%20sind%20nur%20f%C3%BCr%20den%20privaten%2C%20nicht%20kommerziellen%20Gebrauch%20gestattet.%20Soweit%20die%20Inhalte%20auf%20dieser%20Seite%20nicht%20vom%20Betreiber%20erstellt%20wurden%2C%20werden%20die%20Urheberrechte%20Dritter%20beachtet.%20Insbesondere%20werden%20Inhalte%20Dritter%20als%20solche%20gekennzeichnet.%20Sollten%20Sie%20trotzdem%20auf%20eine%20Urheberrechtsverletzung%20aufmerksam%20werden%2C%20bitten%20wir%20um%20einen%20entsprechenden%20Hinweis.%20Bei%20Bekanntwerden%20von%20Rechtsverletzungen%20werden%20wir%20derartige%20Inhalte%20umgehend%20entfernen.%0D%0A%0D%0AQuelle%3A%20eRecht24%0A",
+          "type": "URL_LINK",
+          "target": "INTERNAL"
+        }
+      ],
+      "immoPartnerBadge": {
+        "badgeUrl": "https://pro-badge-images-bucket.s3.eu-west-1.amazonaws.com/standard/gold_2024.png",
+        "linkUrl": "https://www.immobilienscout24.de/anbieten/gewerbliche-anbieter/lp/profis-leicht-erkennen.html"
+      }
+    },
+    {
+      "type": "CONTACT",
+      "callButtonLabel": "Anruf",
+      "callButtonState": "active",
+      "mailButtonLabel": "Nachricht",
+      "mailButtonState": "active",
+      "messengerButtonLabel": "Nachrichten",
+      "premiumProfileRequiredForContacting": "false",
+      "phoneNumbers": [
+        {
+          "type": "TEXT",
+          "label": "Festnetznummer",
+          "text": "+49 211 86842550"
+        }
+      ],
+      "contactData": {
+        "agent": {
+          "name": "Frau Anna Henke",
+          "company": "Predion Real Estate GmbH",
+          "rating": {
+            "numberOfStars": 5,
+            "value": 4.7,
+            "label": "(4.7 Sterne)"
+          },
+          "logo": "https://pictures.immobilienscout24.de/usercontent/ba1e80fb-8333-494e-9935-dae93e10a7cc.PNG/ORIG/resize/%WIDTH%x%HEIGHT%%3E/format/webp/quality/80",
+          "verifiedBy": [
+            {
+              "id": "TNS_REALTOR_BADGE",
+              "label": "Identität verifiziert",
+              "tooltip": "Deine Sicherheit liegt uns am Herzen. Diese:r Anbietende wurde daher erfolgreich verifiziert und ist zusätzlich durch eine Mehrfaktor-Authentifizierung geschützt.",
+              "reference": {
+                "label": "Mehr Infos",
+                "url": "https://sicherheit.immobilienscout24.de/verifizierte-anbietende.html",
+                "type": "URL_LINK",
+                "target": "WEB_INTERNAL"
+              }
+            }
+          ]
+        },
+        "realEstateProjectId": 136852,
+        "realEstateType": "apartmentrent",
+        "formFieldConfig": {
+          "moveInDateField": "OPTIONAL",
+          "petsInHouseholdField": "OPTIONAL",
+          "numberOfPersonsField": "OPTIONAL",
+          "employmentRelationshipField": "OPTIONAL",
+          "incomeField": "OPTIONAL",
+          "firstnameField": "MANDATORY",
+          "lastnameField": "MANDATORY",
+          "phoneNumberField": "OPTIONAL",
+          "emailAddressField": "MANDATORY",
+          "addressField": "MANDATORY",
+          "applicationPackageCompletedField": "OPTIONAL",
+          "salutationField": "MANDATORY",
+          "messageField": "OPTIONAL"
+        },
+        "isExposeBuy": false,
+        "isTenantNetwork": false
+      }
+    },
+    {
+      "type": "AGENTS_CONTACT",
+      "address": "",
+      "references": [
+        {
+          "label": "Impressum des Anbieters",
+          "url": "is24://imprint?text=Predion%20Real%20Estate%20GmbH%0AUnterrather%20Str.%20105%0A40468%20D%C3%BCsseldorf%0A0211%2086842550%0Ainfo%40predion.de%0A%0AAngaben%20gem%C3%A4%C3%9F%20%C2%A7%205%20TMG%0D%0A%0D%0APredion%20Real%20Estate%20GmbH%0D%0AUnterrather%20Str.%20105%0D%0A40468%20D%C3%BCsseldorf%0D%0A%0D%0AHandelsregister%3A%20HRB%2091985%0D%0ARegistergericht%3A%20Amtsgericht%20D%C3%BCsseldorf%0D%0AVertreten%20durch%3A%0D%0AJennifer%20Gro%C3%9F-Kirse%0D%0ASebastian%20Gro%C3%9F%0D%0A%0D%0AKontakt%0D%0ATelefon%3A%20%2B49%20211%20868425%2050%0D%0AE-Mail%3A%20sg%40predion.de%0D%0A%0D%0AUmsatzsteuer-ID%0D%0AUmsatzsteuer-Identifikationsnummer%20gem%C3%A4%C3%9F%20%C2%A7%2027%20a%20Umsatzsteuergesetz%3A%0D%0ADE338386868%0D%0A%0D%0AAufsichtsbeh%C3%B6rde%0D%0AOrdnungsamt%20D%C3%BCsseldorf%2C%20Abt.%20Gewerberechtliche%20Angelegenheiten%0D%0AWorringer%20Stra%C3%9Fe%20111%0D%0A40210%20D%C3%BCsseldorf%0D%0Ahttps%3A%2F%2Fwww.duesseldorf.de%2Fordnungsamt%2Fgewerbe.html%0D%0A%0D%0AAngaben%20zur%20Berufshaftpflichtversicherung%0D%0AName%20und%20Sitz%20des%20Versicherers%3A%0D%0AN%C3%9CRNBERGER%20Versicherungsgruppe%0D%0AOstendstr.%20100%0D%0A90334%20N%C3%BCrnberg%0D%0AGeltungsraum%20der%20Versicherung%3A%0D%0ADeutschland%0D%0A%0D%0AVerbraucherstreitbeilegung%2FUniversalschlichtungsstelle%0D%0AWir%20sind%20nicht%20bereit%20oder%20verpflichtet%2C%20an%20Streitbeilegungsverfahren%20vor%20einer%0D%0AVerbraucherschlichtungsstelle%20teilzunehmen.%0D%0A%0D%0AHaftung%20f%C3%BCr%20Inhalte%0D%0AAls%20Diensteanbieter%20sind%20wir%20gem%C3%A4%C3%9F%20%C2%A7%207%20Abs.1%20TMG%20f%C3%BCr%20eigene%20Inhalte%20auf%20diesen%20Seiten%20nach%20den%0D%0Aallgemeinen%20Gesetzen%20verantwortlich.%20Nach%20%C2%A7%C2%A7%208%20bis%2010%20TMG%20sind%20wir%20als%20Diensteanbieter%20jedoch%20nicht%0D%0Averpflichtet%2C%20%C3%BCbermittelte%20oder%20gespeicherte%20fremde%20Informationen%20zu%20%C3%BCberwachen%20oder%20nach%20Umst%C3%A4nden%20zu%20forschen%2C%20die%20auf%20eine%20rechtswidrige%20T%C3%A4tigkeit%20hinweisen.%0D%0AVerpflichtungen%20zur%20Entfernung%20oder%20Sperrung%20der%20Nutzung%20von%20Informationen%20nach%20den%20allgemeinen%0D%0AGesetzen%20bleiben%20hiervon%20unber%C3%BChrt.%20Eine%20diesbez%C3%BCgliche%20Haftung%20ist%20jedoch%20erst%20ab%20dem%20Zeitpunkt%20der%20Kenntnis%20einer%20konkreten%20Rechtsverletzung%20m%C3%B6glich.%20Bei%20Bekanntwerden%20von%20entsprechenden%0D%0ARechtsverletzungen%20werden%20wir%20diese%20Inhalte%20umgehend%20entfernen.%0D%0A%0D%0AHaftung%20f%C3%BCr%20Links%0D%0AUnser%20Angebot%20enth%C3%A4lt%20Links%20zu%20externen%20Websites%20Dritter%2C%20auf%20deren%20Inhalte%20wir%20keinen%20Einfluss%20haben.%0D%0ADeshalb%20k%C3%B6nnen%20wir%20f%C3%BCr%20diese%20fremden%20Inhalte%20auch%20keine%20Gew%C3%A4hr%20%C3%BCbernehmen.%20F%C3%BCr%20die%20Inhalte%20der%20verlinkten%20Seiten%20ist%20stets%20der%20jeweilige%20Anbieter%20oder%20Betreiber%20der%20Seiten%20verantwortlich.%20Die%20verlinkten%20Seiten%20wurden%20zum%20Zeitpunkt%20der%20Verlinkung%20auf%20m%C3%B6gliche%20Rechtsverst%C3%B6%C3%9Fe%20%C3%BCberpr%C3%BCft.%20Rechtswidrige%20Inhalte%20waren%20zum%20Zeitpunkt%20der%20Verlinkung%20nicht%20erkennbar.%0D%0AEine%20permanente%20inhaltliche%20Kontrolle%20der%20verlinkten%20Seiten%20ist%20jedoch%20ohne%20konkrete%20Anhaltspunkte%20einer%20Rechtsverletzung%20nicht%20zumutbar.%20Bei%20Bekanntwerden%20von%20Rechtsverletzungen%20werden%20wir%20derartige%20Links%20umgehend%20entfernen.%0D%0A%0D%0A%0D%0A%0D%0AUrheberrecht%0D%0ADie%20durch%20die%20Seitenbetreiber%20erstellten%20Inhalte%20und%20Werke%20auf%20diesen%20Seiten%20unterliegen%20dem%20deutschen%20Urheberrecht.%20Die%20Vervielf%C3%A4ltigung%2C%20Bearbeitung%2C%20Verbreitung%20und%20jede%20Art%20der%20Verwertung%20au%C3%9Ferhalb%20der%20Grenzen%20des%20Urheberrechtes%20bed%C3%BCrfen%20der%20schriftlichen%20Zustimmung%20des%20jeweiligen%20Autors%20bzw.%20Erstellers.%20Downloads%20und%20Kopien%20dieser%20Seite%20sind%20nur%20f%C3%BCr%20den%20privaten%2C%20nicht%20kommerziellen%20Gebrauch%20gestattet.%20Soweit%20die%20Inhalte%20auf%20dieser%20Seite%20nicht%20vom%20Betreiber%20erstellt%20wurden%2C%20werden%20die%20Urheberrechte%20Dritter%20beachtet.%20Insbesondere%20werden%20Inhalte%20Dritter%20als%20solche%20gekennzeichnet.%20Sollten%20Sie%20trotzdem%20auf%20eine%20Urheberrechtsverletzung%20aufmerksam%20werden%2C%20bitten%20wir%20um%20einen%20entsprechenden%20Hinweis.%20Bei%20Bekanntwerden%20von%20Rechtsverletzungen%20werden%20wir%20derartige%20Inhalte%20umgehend%20entfernen.%0D%0A%0D%0AQuelle%3A%20eRecht24%0A",
+          "type": "URL_LINK",
+          "target": "INTERNAL"
+        }
+      ]
+    },
+    {
+      "type": "OBJECT_INFO",
+      "text": "Scout-ID: 165994740 | Objekt-Nr.: 6b.00.10"
+    },
+    {
+      "type": "AD",
+      "ad": {
+        "id": "/4467/IS24_APP_DE/app_iOS_iPhone_expose"
+      }
+    },
+    {
+      "type": "FRAUD_REPORT",
+      "text": "Gibt es etwas zu beanstanden?",
+      "reference": {
+        "label": "Angebot melden!",
+        "url": "https://angebot-melden.immobilienscout24.de/report?realEstateId=165994740&publicationState=live",
+        "type": "URL_LINK",
+        "target": "WEB_INTERNAL"
+      }
+    }
+  ],
+  "contact": {
+    "type": "CONTACT",
+    "callButtonLabel": "Anruf",
+    "callButtonState": "active",
+    "mailButtonLabel": "Nachricht",
+    "mailButtonState": "active",
+    "messengerButtonLabel": "Nachrichten",
+    "premiumProfileRequiredForContacting": "false",
+    "phoneNumbers": [
+      {
+        "type": "TEXT",
+        "label": "Festnetznummer",
+        "text": "+49 211 86842550"
+      }
+    ],
+    "contactData": {
+      "agent": {
+        "name": "Frau Anna Henke",
+        "company": "Predion Real Estate GmbH",
+        "rating": {
+          "numberOfStars": 5,
+          "value": 4.7,
+          "label": "(4.7 Sterne)"
+        },
+        "logo": "https://pictures.immobilienscout24.de/usercontent/ba1e80fb-8333-494e-9935-dae93e10a7cc.PNG/ORIG/resize/%WIDTH%x%HEIGHT%%3E/format/webp/quality/80",
+        "verifiedBy": [
+          {
+            "id": "TNS_REALTOR_BADGE",
+            "label": "Identität verifiziert",
+            "tooltip": "Deine Sicherheit liegt uns am Herzen. Diese:r Anbietende wurde daher erfolgreich verifiziert und ist zusätzlich durch eine Mehrfaktor-Authentifizierung geschützt.",
+            "reference": {
+              "label": "Mehr Infos",
+              "url": "https://sicherheit.immobilienscout24.de/verifizierte-anbietende.html",
+              "type": "URL_LINK",
+              "target": "WEB_INTERNAL"
+            }
+          }
+        ]
+      },
+      "realEstateProjectId": 136852,
+      "realEstateType": "apartmentrent",
+      "formFieldConfig": {
+        "moveInDateField": "OPTIONAL",
+        "petsInHouseholdField": "OPTIONAL",
+        "numberOfPersonsField": "OPTIONAL",
+        "employmentRelationshipField": "OPTIONAL",
+        "incomeField": "OPTIONAL",
+        "firstnameField": "MANDATORY",
+        "lastnameField": "MANDATORY",
+        "phoneNumberField": "OPTIONAL",
+        "emailAddressField": "MANDATORY",
+        "addressField": "MANDATORY",
+        "applicationPackageCompletedField": "OPTIONAL",
+        "salutationField": "MANDATORY",
+        "messageField": "OPTIONAL"
+      },
+      "isExposeBuy": false,
+      "isTenantNetwork": false
+    }
+  },
+  "tracking": {
+    "realEstateType": "APARTMENT_RENT",
+    "parameters": {
+      "obj_commissionsettings": "flow:0",
+      "obj_ityp": "apartment_rent",
+      "obj_listFirstStatus": "false",
+      "obj_nbp": "true",
+      "obj_privateOffer": "false",
+      "obj_scoutid": "165994740",
+      "obj_TenantNetwork": "false",
+      "obj_draftListing": "false",
+      "ga_cd_application_requirements": "profile0",
+      "ga_cd_customer_group": "others",
+      "ga_cd_cxp_interactivepic": "false",
+      "obj_totalRent": "2110",
+      "obj_baseRent": "1740",
+      "ga_cd_via": "schaufenster",
+      "geo_land": "deutschland",
+      "geo_bln": "nordrhein_westfalen",
+      "geo_krs": "düsseldorf",
+      "obj_ExclusiveExpose": "true"
+    }
+  },
+  "adTargetingParameters": {
+    "obj_regio1": "Nordrhein_Westfalen",
+    "obj_serviceCharge": "370",
+    "obj_cId": "15726900",
+    "obj_newlyConst": "y",
+    "obj_balcony": "y",
+    "obj_picturecount": "8",
+    "obj_totalRent": "2110",
+    "obj_yearConstructed": "2026",
+    "geo_ot": "stockum",
+    "obj_privateOffer": "false",
+    "obj_project_id": "136852",
+    "obj_scoutId": "165994740",
+    "obj_firingTypes": "no_information",
+    "obj_hasKitchen": "y",
+    "obj_ExclusiveExpose": "true",
+    "geo_bln": "nordrhein_westfalen",
+    "obj_cellar": "n",
+    "obj_yearConstructedRange": "9",
+    "obj_baseRent": "1740",
+    "obj_houseNumber": "53",
+    "obj_livingSpace": "81.8",
+    "geo_krs": "düsseldorf",
+    "obj_zipCode": "40468",
+    "obj_condition": "first_time_use",
+    "obj_interiorQual": "no_information",
+    "obj_highDemand": "false",
+    "obj_petsAllowed": "no_information",
+    "obj_street": "Am Hain",
+    "obj_lift": "y",
+    "obj_depositLink": "n",
+    "obj_baseRentRange": "8",
+    "obj_streetPlain": "Am_Hain",
+    "obj_typeOfFlat": "ground_floor",
+    "obj_noRooms": "3",
+    "obj_assistedLiving": "n",
+    "obj_ityp": "0,active",
+    "goog_abt": "0",
+    "geo_land": "deutschland",
+    "obj_immotype": "wohnung_miete",
+    "obj_privateOfferInvestmentCheck": "false",
+    "obj_contactFormInputFieldCount": "18",
+    "obj_nbp": "true",
+    "obj_cwId": "002.01002908979",
+    "obj_numberOfFloors": "3",
+    "geo_bg": "stadtbezirk_5",
+    "obj_noRoomsRange": "3",
+    "obj_garden": "n",
+    "obj_regio4": "Stockum",
+    "obj_barrierFree": "n",
+    "obj_international": "n",
+    "obj_regio3": "Stadtbezirk_5",
+    "obj_objectnumber": "6b.00.10",
+    "obj_livingSpaceRange": "4",
+    "obj_regio2": "Düsseldorf"
+  }
+}

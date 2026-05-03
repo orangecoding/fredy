@@ -4,7 +4,7 @@
  */
 
 import { useEffect, useState } from 'react';
-import { Button, Nav } from '@douyinfe/semi-ui-19';
+import { Nav } from '@douyinfe/semi-ui-19';
 import { IconStar, IconSetting, IconTerminal, IconHistogram, IconSidebar } from '@douyinfe/semi-icons';
 import logoWhite from '../../assets/logo_white.png';
 import heart from '../../assets/heart.png';
@@ -42,24 +42,21 @@ export default function Navigation({ isAdmin }) {
   ];
 
   if (isAdmin) {
-    const settingsItems = [
-      { itemKey: '/users', text: 'User Management' },
-      { itemKey: '/userSettings', text: 'User Specific Settings' },
-      { itemKey: '/generalSettings', text: 'General Settings' },
-    ];
-
     items.push({
       itemKey: 'settings',
       text: 'Settings',
       icon: <IconSetting />,
-      items: settingsItems,
+      items: [
+        { itemKey: '/users', text: 'User Management' },
+        { itemKey: '/generalSettings', text: 'Settings' },
+      ],
     });
   } else {
     items.push({
       itemKey: 'settings',
       text: 'Settings',
       icon: <IconSetting />,
-      items: [{ itemKey: '/userSettings', text: 'User Specific Settings' }],
+      items: [{ itemKey: '/generalSettings', text: 'Settings' }],
     });
   }
 
@@ -68,20 +65,32 @@ export default function Navigation({ isAdmin }) {
     return '/' + split[0];
   }
 
+  const sidebarWidth = collapsed ? '60px' : '220px';
+
   return (
     <Nav
-      style={{ height: '100%', maxWidth: collapsed ? '60px' : '240px' }}
+      style={{ height: '100%', width: sidebarWidth, minWidth: sidebarWidth, maxWidth: sidebarWidth }}
       items={items}
       isCollapsed={collapsed}
       selectedKeys={[parsePathName(location.pathname)]}
       onSelect={(key) => {
         navigate(key.itemKey);
       }}
-      header={<img src={collapsed ? heart : logoWhite} width={collapsed ? '30' : '120'} alt="Fredy Logo" />}
+      header={
+        <div className="navigate__header">
+          <img src={collapsed ? heart : logoWhite} width={collapsed ? 30 : 160} alt="Fredy Logo" />
+        </div>
+      }
       footer={
-        <Nav.Footer className="navigate__footer">
+        <Nav.Footer className={`navigate__footer${collapsed ? ' navigate__footer--collapsed' : ''}`}>
           <Logout text={!collapsed} />
-          <Button icon={<IconSidebar />} onClick={() => setCollapsed(!collapsed)} />
+          <button
+            className="navigate__toggle-btn"
+            onClick={() => setCollapsed(!collapsed)}
+            title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          >
+            <IconSidebar size="default" />
+          </button>
         </Nav.Footer>
       }
     />

@@ -1,76 +1,141 @@
+@import '../../cards/DashboardCardColors.less';
+@import '../../../tokens.less';
+
 .jobGrid {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  &__topbar {
+    display: flex;
+    align-items: center;
+    gap: @space-3;
+    margin-bottom: @space-4;
+    flex-wrap: wrap;
+
+    &__search {
+      flex: 1;
+      min-width: 160px;
+    }
+  }
+
   &__card {
     height: 100%;
-    transition: transform 0.2s, box-shadow 0.2s;
-    background-color: rgba(36, 36, 36, 0.9);
-    backdrop-filter: blur(8px);
-    border: 1px solid var(--semi-color-border);
-    box-shadow: 0 0 15px -3px rgb(78 78 78 / 50%);
+    background-color: @color-surface !important;
+    border: 1px solid @color-border !important;
+    border-radius: @radius-card !important;
+    transition: transform @transition-card, box-shadow @transition-card;
 
     &:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 0 15px -3px rgb(78 78 78 / 70%);
-      background-color: rgba(36, 36, 36, 1);
+      box-shadow: 0 4px 20px -4px rgba(0,0,0,0.5);
     }
-  }
 
-  &__searchbar {
-    display: flex;
-    gap: .5rem;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-  }
+    &__header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
 
-  &__toolbar {
-    &__card {
-      border-radius: var(--semi-border-radius-medium);
+    &__name {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    &__dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background-color: rgba(251,113,133,0.7);
+
+      &--active {
+        background-color: rgba(52,211,153,0.8);
+      }
+    }
+
+    &__stats {
+      display: flex;
+      gap: 8px;
+    }
+
+    &__stat {
+      flex: 1;
       display: flex;
       flex-direction: column;
-      gap: .3rem;
-      background: rgba(36, 36, 36, 0.9);
-      backdrop-filter: blur(8px);
-      padding: 0.5rem;
-      border: 1px solid var(--semi-color-border);
-    }
-  }
+      align-items: center;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid transparent;
+      border-radius: @radius-chip;
+      padding: 10px 4px 8px;
 
-  &__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+      &__number {
+        font-size: 22px;
+        font-weight: 600;
+        color: @color-text;
+        line-height: 1.2;
+      }
+
+      &__label {
+        font-size: @text-xs;
+        color: @color-faint;
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        margin-top: 4px;
+      }
+
+      &--blue {
+        background: @color-blue-bg;
+        border-color: @color-blue-border;
+        .jobGrid__card__stat__number { color: @color-blue-text; }
+        .jobGrid__card__stat__label { color: @color-blue-text; opacity: 0.7; }
+      }
+
+      &--orange {
+        background: @color-orange-bg;
+        border-color: @color-orange-border;
+        .jobGrid__card__stat__number { color: @color-orange-text; }
+        .jobGrid__card__stat__label { color: @color-orange-text; opacity: 0.7; }
+      }
+
+      &--purple {
+        background: @color-purple-bg;
+        border-color: @color-purple-border;
+        .jobGrid__card__stat__number { color: @color-purple-text; }
+        .jobGrid__card__stat__label { color: @color-purple-text; opacity: 0.7; }
+      }
+    }
+
+    &__footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
   }
 
   &__title {
-    margin-bottom: 0 !important;
-  }
-
-  &__infoItem {
-    display: flex;
-    align-items: center;
-    width: 100%;
-
-    .semi-typography {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
+    color: @color-text !important;
   }
 
   &__actions {
     display: flex;
-    justify-content: space-between;
-    gap: 8px;
+    gap: 4px;
+    flex-shrink: 0;
   }
 
   &__pagination {
-    margin-top: 2rem;
+    margin-top: @space-4;
     display: flex;
     justify-content: center;
   }
 }
 
 .jobPopoverContent {
-    padding: .4rem;
-    color: var(--semi-color-white);
+  font-size: @text-sm;
+  padding: 4px 8px;
+  color: @color-text;
 }

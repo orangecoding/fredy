@@ -1,11 +1,218 @@
+@import '../../tokens.less';
+
 .navigate {
-  &__footer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background: @color-surface;
+  border-right: 1px solid @color-border;
+  transition: @transition-sidebar;
+  overflow: hidden;
+
+  &__header {
+    display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
-    gap: 0.5rem;
-    width: 100%;
+    padding: 20px 16px 16px;
+    min-height: 64px;
+    flex-shrink: 0;
+
+    img {
+      transition: width @transition-fast, opacity @transition-fast;
+    }
+  }
+
+  &__footer {
     display: flex;
-    padding-bottom: 12px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 1rem 8px 10px !important;
+    margin-top: auto;
+    flex-shrink: 0;
+    border-top: 1px solid @color-border;
+
+    &--collapsed {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem 8px 10px !important;
+      gap: 6px;
+    }
+  }
+
+  &__logout-btn {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 32px;
+    padding: 0 10px;
+    border: 1px solid rgba(251,113,133,0.25);
+    background: rgba(251,113,133,0.06);
+    color: #fb7185;
+    border-radius: @radius-btn;
+    cursor: pointer;
+    font-size: @text-sm;
+    font-weight: 500;
+    font-family: @font-ui;
+    transition: background @transition-fast, border-color @transition-fast;
+    white-space: nowrap;
+    overflow: hidden;
+
+    &:hover {
+      background: rgba(251,113,133,0.12);
+      border-color: rgba(251,113,133,0.4);
+    }
+
+    &--icon-only {
+      flex: none;
+      width: 32px;
+      height: 32px;
+      justify-content: center;
+      padding: 0;
+      border: none;
+      background: transparent;
+      border-radius: @radius-btn;
+
+      &:hover {
+        background: rgba(251,113,133,0.08);
+      }
+    }
+  }
+
+  &__toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 32px;
+    width: 32px;
+    flex-shrink: 0;
+    border: none;
+    background: transparent;
+    color: @color-faint;
+    cursor: pointer;
+    border-radius: @radius-btn;
+    transition: background @transition-fast, color @transition-fast;
+
+    &:hover {
+      background: rgba(255,255,255,0.06);
+      color: @color-muted;
+    }
+  }
+}
+
+// Semi Nav overrides
+.semi-navigation {
+  background: @color-surface !important;
+  border-right: none !important;
+}
+
+.semi-navigation-item {
+  border-radius: @radius-btn !important;
+  color: @color-muted !important;
+  transition: background @transition-fast, color @transition-fast !important;
+  margin: 2px 8px !important;
+
+  &:hover {
+    color: @color-text !important;
+  }
+
+  &.semi-navigation-item-selected,
+  &[aria-selected="true"] {
+    background: rgba(224,74,56,0.12) !important;
+    border: 1px solid rgba(224,74,56,0.25) !important;
+    color: @color-text !important;
+
+    .semi-navigation-item-icon {
+      color: @color-accent !important;
+    }
+  }
+}
+
+.semi-navigation-sub-title {
+  color: @color-muted !important;
+}
+
+// Collapsed state - icons perfectly centered
+.semi-navigation-collapsed {
+  // Text span is display:block and takes up flex space - must be removed so justify-content:center works
+  .semi-navigation-item-text {
+    display: none !important;
+  }
+
+  .semi-navigation-item,
+  .semi-navigation-sub-title {
+    margin: 2px 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: 36px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .semi-navigation-item-inner,
+  .semi-navigation-sub-title-inner {
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  // Semi adds margin-right to icons for text spacing - remove it when collapsed
+  .semi-navigation-item-icon,
+  .semi-navigation-sub-title-icon {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 !important;
+    margin-right: 0 !important;
+    padding: 0 !important;
+    width: auto !important;
+    min-width: 0 !important;
+  }
+}
+
+// Semi Nav.Footer - full width, no extra padding (our BEM class controls it)
+.semi-navigation-footer {
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+// Collapsed submenu popup - actual class used by Semi UI is .semi-navigation-popover
+.semi-navigation-popover {
+  background: @color-elevated !important;
+  border: 1px solid @color-border !important;
+  border-radius: @radius-card !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5) !important;
+  overflow: hidden !important;
+
+  .semi-navigation-item {
+    margin: 2px 6px !important;
+    color: @color-muted !important;
+    border: none !important;
+    border-radius: @radius-btn !important;
+
+    &:hover {
+      background: rgba(255,255,255,0.06) !important;
+      color: @color-text !important;
+    }
+
+    &.semi-navigation-item-selected,
+    &.semi-dropdown-item-active {
+      background: rgba(224,74,56,0.10) !important;
+      border: none !important;
+      color: @color-text !important;
+
+      .semi-navigation-item-icon {
+        color: @color-accent !important;
+      }
+    }
   }
 }

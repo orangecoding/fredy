@@ -188,9 +188,24 @@ You should now be able to access _Fredy_ from your browser. Check your Terminal 
 
 ### Run Tests
 
+## "Online" tests
+These tests are directly executed against the actual providers.
 ``` bash
 yarn run test
 ```
+
+## "Offline" tests
+These tests are using the test fixtures instead of the actual providers. Much faster and "good enough" to test the core functionality.
+``` bash
+yarn run test:offline
+```
+
+## Download new fixtures
+If you have to refresh the fixtures (every once in a while needed because the providers change their code), run this command:
+``` bash
+yarn run download-fixtures
+```
+
 
 ------------------------------------------------------------------------
 
@@ -224,6 +239,20 @@ flowchart TD
     E -- No --> F1
     F1 --> F2
 ```
+
+------------------------------------------------------------------------
+## 🤖 Using AI such as Claude Code
+When I started building Fredy, LLMs were still basically the wet dream of a few nerdy scientists.
+
+Nowadays, it’s easier than ever to throw a prompt into the LLM of your choice and let 'the AI' build your stuff. I’m not against that. I use Claude Code myself for smaller tasks, and I do think these tools can be really useful.
+
+That said, I still believe humans should stay in charge. AI is great-ish at writing code, but it still lacks creativity, context, and the ability to see the full picture.
+
+So, if you want to contribute to Fredy, using AI tools to get things done is totally fine. Just please don’t stop thinking.
+
+I’ve had one too many PRs full of hallucinated bullshit.
+
+**Thanks ;)**
 
 ------------------------------------------------------------------------
 

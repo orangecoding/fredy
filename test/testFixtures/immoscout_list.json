@@ -1,0 +1,998 @@
+{
+  "totalResults": 1505,
+  "pageSize": 20,
+  "pageNumber": 1,
+  "numberOfPages": 76,
+  "numberOfListings": 1505,
+  "resultListItems": [
+    {
+      "type": "EXPOSE_RESULT",
+      "item": {
+        "reportUrl": "https://angebot-melden.immobilienscout24.de/report?realEstateId=165994740&publicationState=live",
+        "id": "165994740",
+        "title": "Tolle 3-Zimmer-Wohnung im Erdgeschoss mit Sonnenterrasse und schicker Einbauküche im Neubauquartier!",
+        "pictures": [
+          {
+            "urlScaleAndCrop": "https://pictures.immobilienscout24.de/listings/5bb2b09d-75a4-4276-b285-fac7d19ec2f4-1997026927.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/webp/quality/80"
+          }
+        ],
+        "titlePicture": {
+          "preview": "https://pictures.immobilienscout24.de/listings/5bb2b09d-75a4-4276-b285-fac7d19ec2f4-1997026927.jpg/ORIG/resize/800x600>/format/webp/quality/20",
+          "full": "https://pictures.immobilienscout24.de/listings/5bb2b09d-75a4-4276-b285-fac7d19ec2f4-1997026927.jpg/ORIG/resize/800x600>/format/webp/quality/80"
+        },
+        "address": {
+          "line": "Am Hain 53, 40468 Düsseldorf - Stockum, Stockum",
+          "lat": 51.26249,
+          "lon": 6.76223
+        },
+        "isProject": false,
+        "isPrivate": false,
+        "listingType": "XL",
+        "published": "vor 2 Monaten",
+        "isNewObject": false,
+        "liveVideoTourAvailable": false,
+        "listOnlyOnIs24": false,
+        "attributes": [
+          {
+            "label": "",
+            "value": "1.740 €"
+          },
+          {
+            "label": "",
+            "value": "82 m²"
+          },
+          {
+            "label": "",
+            "value": "3 Zi."
+          }
+        ],
+        "realEstateType": "apartmentrent",
+        "realtor": {
+          "logoUrlScale": "https://pictures.immobilienscout24.de/usercontent/d7337319-0132-41a6-8ac2-ba3619087b0f.PNG/ORIG/resize/%WIDTH%x%HEIGHT%%3E/format/webp/quality/80",
+          "showcasePlacementColor": "#CEC5C0"
+        },
+        "tags": []
+      }
+    },
+    {
+      "type": "EXPOSE_RESULT",
+      "item": {
+        "reportUrl": "https://angebot-melden.immobilienscout24.de/report?realEstateId=165994703&publicationState=live",
+        "id": "165994703",
+        "title": "Neubauquartier Deiker Höfe: Attraktive Dachgeschosswohnung mit Einbauküche und Sonnenloggia!",
+        "pictures": [
+          {
+            "urlScaleAndCrop": "https://pictures.immobilienscout24.de/listings/8183b9a1-a928-491c-b6ea-6f3a5ff8162f-1997026335.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/webp/quality/80"
+          }
+        ],
+        "titlePicture": {
+          "preview": "https://pictures.immobilienscout24.de/listings/8183b9a1-a928-491c-b6ea-6f3a5ff8162f-1997026335.jpg/ORIG/resize/800x600>/format/webp/quality/20",
+          "full": "https://pictures.immobilienscout24.de/listings/8183b9a1-a928-491c-b6ea-6f3a5ff8162f-1997026335.jpg/ORIG/resize/800x600>/format/webp/quality/80"
+        },
+        "address": {
+          "line": "Am Hain 53, 40468 Düsseldorf - Stockum, Stockum",
+          "lat": 51.26249,
+          "lon": 6.76223
+        },
+        "isProject": false,
+        "isPrivate": false,
+        "listingType": "XL",
+        "published": "vor 2 Monaten",
+        "isNewObject": false,
+        "liveVideoTourAvailable": false,
+        "listOnlyOnIs24": false,
+        "attributes": [
+          {
+            "label": "",
+            "value": "1.790 €"
+          },
+          {
+            "label": "",
+            "value": "78 m²"
+          },
+          {
+            "label": "",
+            "value": "3 Zi."
+          }
+        ],
+        "realEstateType": "apartmentrent",
+        "realtor": {
+          "logoUrlScale": "https://pictures.immobilienscout24.de/usercontent/d7337319-0132-41a6-8ac2-ba3619087b0f.PNG/ORIG/resize/%WIDTH%x%HEIGHT%%3E/format/webp/quality/80",
+          "showcasePlacementColor": "#CEC5C0"
+        },
+        "tags": []
+      }
+    },
+    {
+      "type": "EXPOSE_RESULT",
+      "item": {
+        "reportUrl": "https://angebot-melden.immobilienscout24.de/report?realEstateId=166561801&publicationState=live",
+        "id": "166561801",
+        "title": "Gut geschnittene 2-Zimmer-Wohnung mit Einbauküche und Loggia im Neubauquartier Deiker Höfe!",
+        "pictures": [
+          {
+            "urlScaleAndCrop": "https://pictures.immobilienscout24.de/listings/44e0e5f9-d5d8-48e5-9e42-3274cbc05556-2007039892.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/webp/quality/80"
+          }
+        ],
+        "titlePicture": {
+          "preview": "https://pictures.immobilienscout24.de/listings/44e0e5f9-d5d8-48e5-9e42-3274cbc05556-2007039892.jpg/ORIG/resize/800x600>/format/webp/quality/20",
+          "full": "https://pictures.immobilienscout24.de/listings/44e0e5f9-d5d8-48e5-9e42-3274cbc05556-2007039892.jpg/ORIG/resize/800x600>/format/webp/quality/80"
+        },
+        "address": {
+          "line": "Am Hain 53, 40468 Düsseldorf - Stockum, Stockum",
+          "lat": 51.26249,
+          "lon": 6.76223
+        },
+        "isProject": false,
+        "isPrivate": false,
+        "listingType": "XL",
+        "published": "vor 2 Monaten",
+        "isNewObject": false,
+        "liveVideoTourAvailable": false,
+        "listOnlyOnIs24": false,
+        "attributes": [
+          {
+            "label": "",
+            "value": "1.320 €"
+          },
+          {
+            "label": "",
+            "value": "59 m²"
+          },
+          {
+            "label": "",
+            "value": "2 Zi."
+          }
+        ],
+        "realEstateType": "apartmentrent",
+        "realtor": {
+          "logoUrlScale": "https://pictures.immobilienscout24.de/usercontent/d7337319-0132-41a6-8ac2-ba3619087b0f.PNG/ORIG/resize/%WIDTH%x%HEIGHT%%3E/format/webp/quality/80",
+          "showcasePlacementColor": "#CEC5C0"
+        },
+        "tags": []
+      }
+    },
+    {
+      "type": "EXPOSE_RESULT",
+      "item": {
+        "reportUrl": "https://angebot-melden.immobilienscout24.de/report?realEstateId=165975759&publicationState=live",
+        "id": "165975759",
+        "title": "Exklusive 4-Zimmer-Wohnung in den Deiker Höfen mit Einbauküche, Südloggia und Dachterrasse!",
+        "pictures": [
+          {
+            "urlScaleAndCrop": "https://pictures.immobilienscout24.de/listings/756e9426-c1f8-4756-98b1-2bdc6028f07a-1996650985.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/webp/quality/80"
+          }
+        ],
+        "titlePicture": {
+          "preview": "https://pictures.immobilienscout24.de/listings/756e9426-c1f8-4756-98b1-2bdc6028f07a-1996650985.jpg/ORIG/resize/800x600>/format/webp/quality/20",
+          "full": "https://pictures.immobilienscout24.de/listings/756e9426-c1f8-4756-98b1-2bdc6028f07a-1996650985.jpg/ORIG/resize/800x600>/format/webp/quality/80"
+        },
+        "address": {
+          "line": "Am Hain 53, 40468 Düsseldorf - Stockum, Stockum",
+          "lat": 51.26249,
+          "lon": 6.76223
+        },
+        "isProject": false,
+        "isPrivate": false,
+        "listingType": "XL",
+        "published": "vor 2 Monaten",
+        "isNewObject": false,
+        "liveVideoTourAvailable": false,
+        "listOnlyOnIs24": false,
+        "attributes": [
+          {
+            "label": "",
+            "value": "2.150 €"
+          },
+          {
+            "label": "",
+            "value": "98 m²"
+          },
+          {
+            "label": "",
+            "value": "4 Zi."
+          }
+        ],
+        "realEstateType": "apartmentrent",
+        "realtor": {
+          "logoUrlScale": "https://pictures.immobilienscout24.de/usercontent/d7337319-0132-41a6-8ac2-ba3619087b0f.PNG/ORIG/resize/%WIDTH%x%HEIGHT%%3E/format/webp/quality/80",
+          "showcasePlacementColor": "#CEC5C0"
+        },
+        "tags": []
+      }
+    },
+    {
+      "type": "EXPOSE_RESULT",
+      "item": {
+        "reportUrl": "https://angebot-melden.immobilienscout24.de/report?realEstateId=165975741&publicationState=live",
+        "id": "165975741",
+        "title": "Exklusive 5-Zimmer-Wohnung mit Einbauküche im 1. Obergeschoss des Neubauquartiers Deiker Höfe!",
+        "pictures": [
+          {
+            "urlScaleAndCrop": "https://pictures.immobilienscout24.de/listings/eb298253-08a4-48eb-baa6-4ad19ed72df3-1996650699.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/webp/quality/80"
+          }
+        ],
+        "titlePicture": {
+          "preview": "https://pictures.immobilienscout24.de/listings/eb298253-08a4-48eb-baa6-4ad19ed72df3-1996650699.jpg/ORIG/resize/800x600>/format/webp/quality/20",
+          "full": "https://pictures.immobilienscout24.de/listings/eb298253-08a4-48eb-baa6-4ad19ed72df3-1996650699.jpg/ORIG/resize/800x600>/format/webp/quality/80"
+        },
+        "address": {
+          "line": "Am Hain 53, 40468 Düsseldorf - Stockum, Stockum",
+          "lat": 51.26249,
+          "lon": 6.76223
+        },
+        "isProject": false,
+        "isPrivate": false,
+        "listingType": "XL",
+        "published": "vor 2 Monaten",
+        "isNewObject": false,
+        "liveVideoTourAvailable": false,
+        "listOnlyOnIs24": false,
+        "attributes": [
+          {
+            "label": "",
+            "value": "2.360 €"
+          },
+          {
+            "label": "",
+            "value": "113 m²"
+          },
+          {
+            "label": "",
+            "value": "5 Zi."
+          }
+        ],
+        "realEstateType": "apartmentrent",
+        "realtor": {
+          "logoUrlScale": "https://pictures.immobilienscout24.de/usercontent/d7337319-0132-41a6-8ac2-ba3619087b0f.PNG/ORIG/resize/%WIDTH%x%HEIGHT%%3E/format/webp/quality/80",
+          "showcasePlacementColor": "#CEC5C0"
+        },
+        "tags": []
+      }
+    },
+    {
+      "type": "EXPOSE_RESULT",
+      "item": {
+        "reportUrl": "https://angebot-melden.immobilienscout24.de/report?realEstateId=165975624&publicationState=live",
+        "id": "165975624",
+        "title": "Exklusive 2-Zimmer-Wohnung im Erdgeschoss mit Einbauküche im Neubauquartier Deiker Höfe!",
+        "pictures": [
+          {
+            "urlScaleAndCrop": "https://pictures.immobilienscout24.de/listings/6fafe087-d314-4727-bc7a-0bf7aed4c73a-1996648745.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/webp/quality/80"
+          }
+        ],
+        "titlePicture": {
+          "preview": "https://pictures.immobilienscout24.de/listings/6fafe087-d314-4727-bc7a-0bf7aed4c73a-1996648745.jpg/ORIG/resize/800x600>/format/webp/quality/20",
+          "full": "https://pictures.immobilienscout24.de/listings/6fafe087-d314-4727-bc7a-0bf7aed4c73a-1996648745.jpg/ORIG/resize/800x600>/format/webp/quality/80"
+        },
+        "address": {
+          "line": "Am Hain 53, 40468 Düsseldorf - Stockum, Stockum",
+          "lat": 51.26249,
+          "lon": 6.76223
+        },
+        "isProject": false,
+        "isPrivate": false,
+        "listingType": "XL",
+        "published": "vor 2 Monaten",
+        "isNewObject": false,
+        "liveVideoTourAvailable": false,
+        "listOnlyOnIs24": false,
+        "attributes": [
+          {
+            "label": "",
+            "value": "1.520 €"
+          },
+          {
+            "label": "",
+            "value": "71 m²"
+          },
+          {
+            "label": "",
+            "value": "2 Zi."
+          }
+        ],
+        "realEstateType": "apartmentrent",
+        "realtor": {
+          "logoUrlScale": "https://pictures.immobilienscout24.de/usercontent/d7337319-0132-41a6-8ac2-ba3619087b0f.PNG/ORIG/resize/%WIDTH%x%HEIGHT%%3E/format/webp/quality/80",
+          "showcasePlacementColor": "#CEC5C0"
+        },
+        "tags": []
+      }
+    },
+    {
+      "type": "EXPOSE_RESULT",
+      "item": {
+        "reportUrl": "https://angebot-melden.immobilienscout24.de/report?realEstateId=165975598&publicationState=live",
+        "id": "165975598",
+        "title": "Tolle 3-Zimmer-Wohnung mit Einbauküche und großer Süd-Terrasse im Neubauquartier Deiker Höfe!",
+        "pictures": [
+          {
+            "urlScaleAndCrop": "https://pictures.immobilienscout24.de/listings/29e6e279-21ed-4630-8229-2d455d60c5ac-1996648285.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/webp/quality/80"
+          }
+        ],
+        "titlePicture": {
+          "preview": "https://pictures.immobilienscout24.de/listings/29e6e279-21ed-4630-8229-2d455d60c5ac-1996648285.jpg/ORIG/resize/800x600>/format/webp/quality/20",
+          "full": "https://pictures.immobilienscout24.de/listings/29e6e279-21ed-4630-8229-2d455d60c5ac-1996648285.jpg/ORIG/resize/800x600>/format/webp/quality/80"
+        },
+        "address": {
+          "line": "Am Hain 53, 40468 Düsseldorf - Stockum, Stockum",
+          "lat": 51.26249,
+          "lon": 6.76223
+        },
+        "isProject": false,
+        "isPrivate": false,
+        "listingType": "XL",
+        "published": "vor 2 Monaten",
+        "isNewObject": false,
+        "liveVideoTourAvailable": false,
+        "listOnlyOnIs24": false,
+        "attributes": [
+          {
+            "label": "",
+            "value": "1.320 €"
+          },
+          {
+            "label": "",
+            "value": "58 m²"
+          },
+          {
+            "label": "",
+            "value": "2 Zi."
+          }
+        ],
+        "realEstateType": "apartmentrent",
+        "realtor": {
+          "logoUrlScale": "https://pictures.immobilienscout24.de/usercontent/d7337319-0132-41a6-8ac2-ba3619087b0f.PNG/ORIG/resize/%WIDTH%x%HEIGHT%%3E/format/webp/quality/80",
+          "showcasePlacementColor": "#CEC5C0"
+        },
+        "tags": []
+      }
+    },
+    {
+      "type": "EXPOSE_RESULT",
+      "item": {
+        "reportUrl": "https://angebot-melden.immobilienscout24.de/report?realEstateId=165975460&publicationState=live",
+        "id": "165975460",
+        "title": "Gut geschnittene 2-Zimmer-Wohnung mit Einbauküche im exklusiven Neubauquartier Deiker Höfe!",
+        "pictures": [
+          {
+            "urlScaleAndCrop": "https://pictures.immobilienscout24.de/listings/b93d4825-7e8a-4e0f-824e-cd1a7e6bf35e-1996645907.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/webp/quality/80"
+          }
+        ],
+        "titlePicture": {
+          "preview": "https://pictures.immobilienscout24.de/listings/b93d4825-7e8a-4e0f-824e-cd1a7e6bf35e-1996645907.jpg/ORIG/resize/800x600>/format/webp/quality/20",
+          "full": "https://pictures.immobilienscout24.de/listings/b93d4825-7e8a-4e0f-824e-cd1a7e6bf35e-1996645907.jpg/ORIG/resize/800x600>/format/webp/quality/80"
+        },
+        "address": {
+          "line": "Am Hain 53, 40468 Düsseldorf - Stockum, Stockum",
+          "lat": 51.26249,
+          "lon": 6.76223
+        },
+        "isProject": false,
+        "isPrivate": false,
+        "listingType": "XL",
+        "published": "vor 2 Monaten",
+        "isNewObject": false,
+        "liveVideoTourAvailable": false,
+        "listOnlyOnIs24": false,
+        "attributes": [
+          {
+            "label": "",
+            "value": "1.210 €"
+          },
+          {
+            "label": "",
+            "value": "51 m²"
+          },
+          {
+            "label": "",
+            "value": "2 Zi."
+          }
+        ],
+        "realEstateType": "apartmentrent",
+        "realtor": {
+          "logoUrlScale": "https://pictures.immobilienscout24.de/usercontent/d7337319-0132-41a6-8ac2-ba3619087b0f.PNG/ORIG/resize/%WIDTH%x%HEIGHT%%3E/format/webp/quality/80",
+          "showcasePlacementColor": "#CEC5C0"
+        },
+        "tags": []
+      }
+    },
+    {
+      "type": "EXPOSE_RESULT",
+      "item": {
+        "reportUrl": "https://angebot-melden.immobilienscout24.de/report?realEstateId=165199718&publicationState=live",
+        "id": "165199718",
+        "title": "Neubauquartier Deiker Höfe: Attraktive 4-Zimmer-Wohnung mit Einbauküche und Balkon",
+        "pictures": [
+          {
+            "urlScaleAndCrop": "https://pictures.immobilienscout24.de/listings/dac3d681-8027-4d3a-8c4b-3d89be4ed223-1985561565.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/webp/quality/80"
+          }
+        ],
+        "titlePicture": {
+          "preview": "https://pictures.immobilienscout24.de/listings/dac3d681-8027-4d3a-8c4b-3d89be4ed223-1985561565.jpg/ORIG/resize/800x600>/format/webp/quality/20",
+          "full": "https://pictures.immobilienscout24.de/listings/dac3d681-8027-4d3a-8c4b-3d89be4ed223-1985561565.jpg/ORIG/resize/800x600>/format/webp/quality/80"
+        },
+        "address": {
+          "line": "Am Hain 53, 40468 Düsseldorf - Stockum, Stockum",
+          "lat": 51.26249,
+          "lon": 6.76223
+        },
+        "isProject": false,
+        "isPrivate": false,
+        "listingType": "XL",
+        "published": "vor 3 Monaten",
+        "isNewObject": false,
+        "liveVideoTourAvailable": false,
+        "listOnlyOnIs24": false,
+        "attributes": [
+          {
+            "label": "",
+            "value": "2.190 €"
+          },
+          {
+            "label": "",
+            "value": "102 m²"
+          },
+          {
+            "label": "",
+            "value": "4 Zi."
+          }
+        ],
+        "realEstateType": "apartmentrent",
+        "realtor": {
+          "logoUrlScale": "https://pictures.immobilienscout24.de/usercontent/d7337319-0132-41a6-8ac2-ba3619087b0f.PNG/ORIG/resize/%WIDTH%x%HEIGHT%%3E/format/webp/quality/80",
+          "showcasePlacementColor": "#CEC5C0"
+        },
+        "tags": []
+      }
+    },
+    {
+      "type": "EXPOSE_RESULT",
+      "item": {
+        "reportUrl": "https://angebot-melden.immobilienscout24.de/report?realEstateId=167016936&publicationState=live",
+        "id": "167016936",
+        "title": "Erstbezug: Einladende Dachgeschosswohnung mit Einbauküche und Westbalkon!",
+        "pictures": [
+          {
+            "urlScaleAndCrop": "https://pictures.immobilienscout24.de/listings/bdfc5d22-dd7c-4fa3-ad6e-1339ad1083f9-2014969185.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/webp/quality/80"
+          }
+        ],
+        "titlePicture": {
+          "preview": "https://pictures.immobilienscout24.de/listings/bdfc5d22-dd7c-4fa3-ad6e-1339ad1083f9-2014969185.jpg/ORIG/resize/800x600>/format/webp/quality/20",
+          "full": "https://pictures.immobilienscout24.de/listings/bdfc5d22-dd7c-4fa3-ad6e-1339ad1083f9-2014969185.jpg/ORIG/resize/800x600>/format/webp/quality/80"
+        },
+        "address": {
+          "line": "Am Hain 53, 40468 Düsseldorf - Stockum, Stockum",
+          "lat": 51.26249,
+          "lon": 6.76223
+        },
+        "isProject": false,
+        "isPrivate": false,
+        "listingType": "XL",
+        "published": "vor 3 Monaten",
+        "isNewObject": false,
+        "liveVideoTourAvailable": false,
+        "listOnlyOnIs24": false,
+        "attributes": [
+          {
+            "label": "",
+            "value": "2.360 €"
+          },
+          {
+            "label": "",
+            "value": "113 m²"
+          },
+          {
+            "label": "",
+            "value": "5 Zi."
+          }
+        ],
+        "realEstateType": "apartmentrent",
+        "realtor": {
+          "logoUrlScale": "https://pictures.immobilienscout24.de/usercontent/d7337319-0132-41a6-8ac2-ba3619087b0f.PNG/ORIG/resize/%WIDTH%x%HEIGHT%%3E/format/webp/quality/80",
+          "showcasePlacementColor": "#CEC5C0"
+        },
+        "tags": []
+      }
+    },
+    {
+      "type": "EXPOSE_RESULT",
+      "item": {
+        "reportUrl": "https://angebot-melden.immobilienscout24.de/report?realEstateId=165199377&publicationState=live",
+        "id": "165199377",
+        "title": "Großzügige Neubauwohnung mit 4 Zimmern im Erdgeschoss inklusive Einbauküche und einladender Terrasse",
+        "pictures": [
+          {
+            "urlScaleAndCrop": "https://pictures.immobilienscout24.de/listings/2c6d2272-d28e-477d-8ee2-63a05263244a-1985562301.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/webp/quality/80"
+          }
+        ],
+        "titlePicture": {
+          "preview": "https://pictures.immobilienscout24.de/listings/2c6d2272-d28e-477d-8ee2-63a05263244a-1985562301.jpg/ORIG/resize/800x600>/format/webp/quality/20",
+          "full": "https://pictures.immobilienscout24.de/listings/2c6d2272-d28e-477d-8ee2-63a05263244a-1985562301.jpg/ORIG/resize/800x600>/format/webp/quality/80"
+        },
+        "address": {
+          "line": "Am Hain 53, 40468 Düsseldorf - Stockum, Stockum",
+          "lat": 51.26249,
+          "lon": 6.76223
+        },
+        "isProject": false,
+        "isPrivate": false,
+        "listingType": "XL",
+        "published": "vor 3 Monaten",
+        "isNewObject": false,
+        "liveVideoTourAvailable": false,
+        "listOnlyOnIs24": false,
+        "attributes": [
+          {
+            "label": "",
+            "value": "2.230 €"
+          },
+          {
+            "label": "",
+            "value": "105 m²"
+          },
+          {
+            "label": "",
+            "value": "4 Zi."
+          }
+        ],
+        "realEstateType": "apartmentrent",
+        "realtor": {
+          "logoUrlScale": "https://pictures.immobilienscout24.de/usercontent/d7337319-0132-41a6-8ac2-ba3619087b0f.PNG/ORIG/resize/%WIDTH%x%HEIGHT%%3E/format/webp/quality/80",
+          "showcasePlacementColor": "#CEC5C0"
+        },
+        "tags": []
+      }
+    },
+    {
+      "type": "EXPOSE_RESULT",
+      "item": {
+        "reportUrl": "https://angebot-melden.immobilienscout24.de/report?realEstateId=165146621&publicationState=live",
+        "id": "165146621",
+        "title": "Großzügige 3-Zimmer-Wohnung im Erdgeschoss mit Südterrasse und Einbauküche im Neubauquartier!",
+        "pictures": [
+          {
+            "urlScaleAndCrop": "https://pictures.immobilienscout24.de/listings/6059fc5f-2f9d-43b9-9e6c-9f82c715e8c7-1985563642.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/webp/quality/80"
+          }
+        ],
+        "titlePicture": {
+          "preview": "https://pictures.immobilienscout24.de/listings/6059fc5f-2f9d-43b9-9e6c-9f82c715e8c7-1985563642.jpg/ORIG/resize/800x600>/format/webp/quality/20",
+          "full": "https://pictures.immobilienscout24.de/listings/6059fc5f-2f9d-43b9-9e6c-9f82c715e8c7-1985563642.jpg/ORIG/resize/800x600>/format/webp/quality/80"
+        },
+        "address": {
+          "line": "Am Hain 53, 40468 Düsseldorf - Stockum, Stockum",
+          "lat": 51.26249,
+          "lon": 6.76223
+        },
+        "isProject": false,
+        "isPrivate": false,
+        "listingType": "XL",
+        "published": "vor 3 Monaten",
+        "isNewObject": false,
+        "liveVideoTourAvailable": false,
+        "listOnlyOnIs24": false,
+        "attributes": [
+          {
+            "label": "",
+            "value": "1.870 €"
+          },
+          {
+            "label": "",
+            "value": "89 m²"
+          },
+          {
+            "label": "",
+            "value": "3 Zi."
+          }
+        ],
+        "realEstateType": "apartmentrent",
+        "realtor": {
+          "logoUrlScale": "https://pictures.immobilienscout24.de/usercontent/d7337319-0132-41a6-8ac2-ba3619087b0f.PNG/ORIG/resize/%WIDTH%x%HEIGHT%%3E/format/webp/quality/80",
+          "showcasePlacementColor": "#CEC5C0"
+        },
+        "tags": []
+      }
+    },
+    {
+      "type": "EXPOSE_RESULT",
+      "item": {
+        "reportUrl": "https://angebot-melden.immobilienscout24.de/report?realEstateId=164094597&publicationState=live",
+        "id": "164094597",
+        "title": "Großzügige 2-Zimmer-Wohnung mit Einbauküche im exklusiven Neubauquartier Deiker Höfe",
+        "pictures": [
+          {
+            "urlScaleAndCrop": "https://pictures.immobilienscout24.de/listings/a3a0c67d-be45-423e-9a5b-8489e0123303-1967561926.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/webp/quality/80"
+          }
+        ],
+        "titlePicture": {
+          "preview": "https://pictures.immobilienscout24.de/listings/a3a0c67d-be45-423e-9a5b-8489e0123303-1967561926.jpg/ORIG/resize/800x600>/format/webp/quality/20",
+          "full": "https://pictures.immobilienscout24.de/listings/a3a0c67d-be45-423e-9a5b-8489e0123303-1967561926.jpg/ORIG/resize/800x600>/format/webp/quality/80"
+        },
+        "address": {
+          "line": "Am Hain 53, 40468 Düsseldorf - Stockum, Stockum",
+          "lat": 51.26249,
+          "lon": 6.76223
+        },
+        "isProject": false,
+        "isPrivate": false,
+        "listingType": "XL",
+        "published": "vor 5 Monaten",
+        "isNewObject": false,
+        "liveVideoTourAvailable": false,
+        "listOnlyOnIs24": false,
+        "attributes": [
+          {
+            "label": "",
+            "value": "1.660 €"
+          },
+          {
+            "label": "",
+            "value": "79 m²"
+          },
+          {
+            "label": "",
+            "value": "2 Zi."
+          }
+        ],
+        "realEstateType": "apartmentrent",
+        "realtor": {
+          "logoUrlScale": "https://pictures.immobilienscout24.de/usercontent/d7337319-0132-41a6-8ac2-ba3619087b0f.PNG/ORIG/resize/%WIDTH%x%HEIGHT%%3E/format/webp/quality/80",
+          "showcasePlacementColor": "#CEC5C0"
+        },
+        "tags": []
+      }
+    },
+    {
+      "type": "EXPOSE_RESULT",
+      "item": {
+        "reportUrl": "https://angebot-melden.immobilienscout24.de/report?realEstateId=167016134&publicationState=live",
+        "id": "167016134",
+        "title": "Ansprechende Neubauwohnung mit Einbauküche, 4 Schlafzimmern und Bad en Suite!",
+        "pictures": [
+          {
+            "urlScaleAndCrop": "https://pictures.immobilienscout24.de/listings/b3e15ecd-0449-4d44-a69e-39c5081b4b82-2014962686.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/webp/quality/80"
+          }
+        ],
+        "titlePicture": {
+          "preview": "https://pictures.immobilienscout24.de/listings/b3e15ecd-0449-4d44-a69e-39c5081b4b82-2014962686.jpg/ORIG/resize/800x600>/format/webp/quality/20",
+          "full": "https://pictures.immobilienscout24.de/listings/b3e15ecd-0449-4d44-a69e-39c5081b4b82-2014962686.jpg/ORIG/resize/800x600>/format/webp/quality/80"
+        },
+        "address": {
+          "line": "Am Hain 53, 40468 Düsseldorf - Stockum, Stockum",
+          "lat": 51.26249,
+          "lon": 6.76223
+        },
+        "isProject": false,
+        "isPrivate": false,
+        "listingType": "XL",
+        "published": "vor 10 Monaten",
+        "isNewObject": false,
+        "liveVideoTourAvailable": false,
+        "listOnlyOnIs24": false,
+        "attributes": [
+          {
+            "label": "",
+            "value": "2.990 €"
+          },
+          {
+            "label": "",
+            "value": "150 m²"
+          },
+          {
+            "label": "",
+            "value": "5 Zi."
+          }
+        ],
+        "realEstateType": "apartmentrent",
+        "realtor": {
+          "logoUrlScale": "https://pictures.immobilienscout24.de/usercontent/d7337319-0132-41a6-8ac2-ba3619087b0f.PNG/ORIG/resize/%WIDTH%x%HEIGHT%%3E/format/webp/quality/80",
+          "showcasePlacementColor": "#CEC5C0"
+        },
+        "tags": []
+      }
+    },
+    {
+      "type": "EXPOSE_RESULT",
+      "item": {
+        "reportUrl": "https://angebot-melden.immobilienscout24.de/report?realEstateId=162614366&publicationState=live",
+        "id": "162614366",
+        "title": "Vollmöbliertes Studio-Apartment mit EBK und eigenem Keller | verfügbar ab sofort!",
+        "energyEfficiencyClass": "B",
+        "pictures": [
+          {
+            "urlScaleAndCrop": "https://pictures.immobilienscout24.de/listings/03667818-85ab-4eb4-8f15-c1a48dfd5f68-2016315143.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/webp/quality/80"
+          }
+        ],
+        "titlePicture": {
+          "preview": "https://pictures.immobilienscout24.de/listings/03667818-85ab-4eb4-8f15-c1a48dfd5f68-2016315143.jpg/ORIG/resize/800x600>/format/webp/quality/20",
+          "full": "https://pictures.immobilienscout24.de/listings/03667818-85ab-4eb4-8f15-c1a48dfd5f68-2016315143.jpg/ORIG/resize/800x600>/format/webp/quality/80"
+        },
+        "address": {
+          "line": "Moltkestraße 31, 40477 Düsseldorf, Pempelfort",
+          "lat": 51.23962,
+          "lon": 6.78686
+        },
+        "isProject": false,
+        "isPrivate": false,
+        "listingType": "XL",
+        "published": "vor einem Tag",
+        "isNewObject": false,
+        "liveVideoTourAvailable": false,
+        "listOnlyOnIs24": false,
+        "attributes": [
+          {
+            "label": "",
+            "value": "1.120 €"
+          },
+          {
+            "label": "",
+            "value": "36,91 m²"
+          },
+          {
+            "label": "",
+            "value": "1 Zi."
+          }
+        ],
+        "realEstateType": "apartmentrent",
+        "realtor": {
+          "logoUrlScale": "https://pictures.immobilienscout24.de/usercontent/ad89c012-9213-4b7a-b78d-a6e69fc88d64.JPG/ORIG/resize/%WIDTH%x%HEIGHT%%3E/format/webp/quality/80",
+          "showcasePlacementColor": "#8AA1A5"
+        },
+        "tags": []
+      }
+    },
+    {
+      "type": "EXPOSE_RESULT",
+      "item": {
+        "reportUrl": "https://angebot-melden.immobilienscout24.de/report?realEstateId=165687913&publicationState=live",
+        "id": "165687913",
+        "title": "Große 3-Zimmer-Wohnung mit Balkon und Einbauküche | ab sofort verfügbar!",
+        "energyEfficiencyClass": "B",
+        "pictures": [
+          {
+            "urlScaleAndCrop": "https://pictures.immobilienscout24.de/listings/c69b8e8c-3f32-409f-8efa-a412577b1076-1991704632.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/webp/quality/80"
+          }
+        ],
+        "titlePicture": {
+          "preview": "https://pictures.immobilienscout24.de/listings/c69b8e8c-3f32-409f-8efa-a412577b1076-1991704632.jpg/ORIG/resize/800x600>/format/webp/quality/20",
+          "full": "https://pictures.immobilienscout24.de/listings/c69b8e8c-3f32-409f-8efa-a412577b1076-1991704632.jpg/ORIG/resize/800x600>/format/webp/quality/80"
+        },
+        "address": {
+          "line": "Moltkestraße 25b, 40477 Düsseldorf, Pempelfort",
+          "lat": 51.24016,
+          "lon": 6.78547
+        },
+        "isProject": false,
+        "isPrivate": false,
+        "listingType": "XL",
+        "published": "vor 2 Monaten",
+        "isNewObject": false,
+        "liveVideoTourAvailable": false,
+        "listOnlyOnIs24": false,
+        "attributes": [
+          {
+            "label": "",
+            "value": "1.655 €"
+          },
+          {
+            "label": "",
+            "value": "90 m²"
+          },
+          {
+            "label": "",
+            "value": "3 Zi."
+          }
+        ],
+        "realEstateType": "apartmentrent",
+        "realtor": {
+          "logoUrlScale": "https://pictures.immobilienscout24.de/usercontent/ad89c012-9213-4b7a-b78d-a6e69fc88d64.JPG/ORIG/resize/%WIDTH%x%HEIGHT%%3E/format/webp/quality/80",
+          "showcasePlacementColor": "#8AA1A5"
+        },
+        "tags": []
+      }
+    },
+    {
+      "type": "EXPOSE_RESULT",
+      "item": {
+        "reportUrl": "https://angebot-melden.immobilienscout24.de/report?realEstateId=165687647&publicationState=live",
+        "id": "165687647",
+        "title": "Geräumige 2-Zimmer-Wohnung mit Einbauküche und eigener Terrasse | verfügbar ab sofort!",
+        "energyEfficiencyClass": "B",
+        "pictures": [
+          {
+            "urlScaleAndCrop": "https://pictures.immobilienscout24.de/listings/55287aea-d6d7-40b4-8aa2-45b63b253457-1991699878.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/webp/quality/80"
+          }
+        ],
+        "titlePicture": {
+          "preview": "https://pictures.immobilienscout24.de/listings/55287aea-d6d7-40b4-8aa2-45b63b253457-1991699878.jpg/ORIG/resize/800x600>/format/webp/quality/20",
+          "full": "https://pictures.immobilienscout24.de/listings/55287aea-d6d7-40b4-8aa2-45b63b253457-1991699878.jpg/ORIG/resize/800x600>/format/webp/quality/80"
+        },
+        "address": {
+          "line": "Moltkestraße 21c, 40477 Düsseldorf, Pempelfort",
+          "lat": 51.24016,
+          "lon": 6.78547
+        },
+        "isProject": false,
+        "isPrivate": false,
+        "listingType": "XL",
+        "published": "vor 2 Monaten",
+        "isNewObject": false,
+        "liveVideoTourAvailable": false,
+        "listOnlyOnIs24": false,
+        "attributes": [
+          {
+            "label": "",
+            "value": "1.555 €"
+          },
+          {
+            "label": "",
+            "value": "90 m²"
+          },
+          {
+            "label": "",
+            "value": "2 Zi."
+          }
+        ],
+        "realEstateType": "apartmentrent",
+        "realtor": {
+          "logoUrlScale": "https://pictures.immobilienscout24.de/usercontent/ad89c012-9213-4b7a-b78d-a6e69fc88d64.JPG/ORIG/resize/%WIDTH%x%HEIGHT%%3E/format/webp/quality/80",
+          "showcasePlacementColor": "#8AA1A5"
+        },
+        "tags": []
+      }
+    },
+    {
+      "type": "EXPOSE_RESULT",
+      "item": {
+        "reportUrl": "https://angebot-melden.immobilienscout24.de/report?realEstateId=165687226&publicationState=live",
+        "id": "165687226",
+        "title": "Neubau-Erstbezug | Große 2-Zimmer-Wohnung mit Terrasse und Einbauküche",
+        "energyEfficiencyClass": "B",
+        "pictures": [
+          {
+            "urlScaleAndCrop": "https://pictures.immobilienscout24.de/listings/04e3316f-169f-46a5-9ffd-97be14dc0aa4-1991692049.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/webp/quality/80"
+          }
+        ],
+        "titlePicture": {
+          "preview": "https://pictures.immobilienscout24.de/listings/04e3316f-169f-46a5-9ffd-97be14dc0aa4-1991692049.jpg/ORIG/resize/800x600>/format/webp/quality/20",
+          "full": "https://pictures.immobilienscout24.de/listings/04e3316f-169f-46a5-9ffd-97be14dc0aa4-1991692049.jpg/ORIG/resize/800x600>/format/webp/quality/80"
+        },
+        "address": {
+          "line": "Moltkestraße 25b, 40477 Düsseldorf, Pempelfort",
+          "lat": 51.24016,
+          "lon": 6.78547
+        },
+        "isProject": false,
+        "isPrivate": false,
+        "listingType": "XL",
+        "published": "vor 2 Monaten",
+        "isNewObject": false,
+        "liveVideoTourAvailable": false,
+        "listOnlyOnIs24": false,
+        "attributes": [
+          {
+            "label": "",
+            "value": "1.450 €"
+          },
+          {
+            "label": "",
+            "value": "78 m²"
+          },
+          {
+            "label": "",
+            "value": "2 Zi."
+          }
+        ],
+        "realEstateType": "apartmentrent",
+        "realtor": {
+          "logoUrlScale": "https://pictures.immobilienscout24.de/usercontent/ad89c012-9213-4b7a-b78d-a6e69fc88d64.JPG/ORIG/resize/%WIDTH%x%HEIGHT%%3E/format/webp/quality/80",
+          "showcasePlacementColor": "#8AA1A5"
+        },
+        "tags": []
+      }
+    },
+    {
+      "type": "EXPOSE_RESULT",
+      "item": {
+        "reportUrl": "https://angebot-melden.immobilienscout24.de/report?realEstateId=165686635&publicationState=live",
+        "id": "165686635",
+        "title": "Geräumige 1-Zimmer-Wohnung mit Einbauküche zum Erstbezug | kurzfristig verfügbar",
+        "energyEfficiencyClass": "B",
+        "pictures": [
+          {
+            "urlScaleAndCrop": "https://pictures.immobilienscout24.de/listings/e9e2e984-2606-493a-b3fa-623a336943b5-2012822475.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/webp/quality/80"
+          }
+        ],
+        "titlePicture": {
+          "preview": "https://pictures.immobilienscout24.de/listings/e9e2e984-2606-493a-b3fa-623a336943b5-2012822475.jpg/ORIG/resize/800x600>/format/webp/quality/20",
+          "full": "https://pictures.immobilienscout24.de/listings/e9e2e984-2606-493a-b3fa-623a336943b5-2012822475.jpg/ORIG/resize/800x600>/format/webp/quality/80"
+        },
+        "address": {
+          "line": "Moltkestraße 31, 40477 Düsseldorf, Pempelfort",
+          "lat": 51.23962,
+          "lon": 6.78686
+        },
+        "isProject": false,
+        "isPrivate": false,
+        "listingType": "XL",
+        "published": "vor 2 Monaten",
+        "isNewObject": false,
+        "liveVideoTourAvailable": false,
+        "listOnlyOnIs24": false,
+        "attributes": [
+          {
+            "label": "",
+            "value": "1.065 €"
+          },
+          {
+            "label": "",
+            "value": "53 m²"
+          },
+          {
+            "label": "",
+            "value": "1 Zi."
+          }
+        ],
+        "realEstateType": "apartmentrent",
+        "realtor": {
+          "logoUrlScale": "https://pictures.immobilienscout24.de/usercontent/ad89c012-9213-4b7a-b78d-a6e69fc88d64.JPG/ORIG/resize/%WIDTH%x%HEIGHT%%3E/format/webp/quality/80",
+          "showcasePlacementColor": "#8AA1A5"
+        },
+        "tags": []
+      }
+    },
+    {
+      "type": "EXPOSE_RESULT",
+      "item": {
+        "reportUrl": "https://angebot-melden.immobilienscout24.de/report?realEstateId=162272460&publicationState=live",
+        "id": "162272460",
+        "title": "Große 1-Zimmer-Wohnung mit EBK und eigenem Keller | verfügbar ab sofort!",
+        "energyEfficiencyClass": "B",
+        "pictures": [
+          {
+            "urlScaleAndCrop": "https://pictures.immobilienscout24.de/listings/0fbfbfab-b6f1-477b-be10-b1ae72208f92-2012822634.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/webp/quality/80"
+          }
+        ],
+        "titlePicture": {
+          "preview": "https://pictures.immobilienscout24.de/listings/0fbfbfab-b6f1-477b-be10-b1ae72208f92-2012822634.jpg/ORIG/resize/800x600>/format/webp/quality/20",
+          "full": "https://pictures.immobilienscout24.de/listings/0fbfbfab-b6f1-477b-be10-b1ae72208f92-2012822634.jpg/ORIG/resize/800x600>/format/webp/quality/80"
+        },
+        "address": {
+          "line": "Gneisenaustraße 66, 40477 Düsseldorf, Pempelfort",
+          "lat": 51.23982,
+          "lon": 6.78523
+        },
+        "isProject": false,
+        "isPrivate": false,
+        "listingType": "XL",
+        "published": "vor 6 Monaten",
+        "isNewObject": false,
+        "liveVideoTourAvailable": false,
+        "listOnlyOnIs24": false,
+        "attributes": [
+          {
+            "label": "",
+            "value": "1.110 €"
+          },
+          {
+            "label": "",
+            "value": "55 m²"
+          },
+          {
+            "label": "",
+            "value": "1 Zi."
+          }
+        ],
+        "realEstateType": "apartmentrent",
+        "realtor": {
+          "logoUrlScale": "https://pictures.immobilienscout24.de/usercontent/ad89c012-9213-4b7a-b78d-a6e69fc88d64.JPG/ORIG/resize/%WIDTH%x%HEIGHT%%3E/format/webp/quality/80",
+          "showcasePlacementColor": "#8AA1A5"
+        },
+        "tags": []
+      }
+    }
+  ],
+  "shapes": [],
+  "reporting": {},
+  "quickFilterStatistics": []
+}

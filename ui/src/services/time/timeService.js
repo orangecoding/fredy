@@ -13,5 +13,3 @@ export function format(ts, showSeconds = true) {
     ...(showSeconds ? { second: 'numeric' } : {}),
   }).format(ts);
 }
-
-export const roundToHour = (ts) => Math.ceil(ts / (1000 * 60 * 60)) * (1000 * 60 * 60);

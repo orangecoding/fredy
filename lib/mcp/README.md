@@ -1,4 +1,4 @@
-# Fredy MCP Server
+ # Fredy MCP Server
 
 The Fredy MCP Server exposes your real estate jobs and listings data to LLM clients. It supports two transports:
 
@@ -126,6 +126,54 @@ The LLM will automatically call the appropriate Fredy MCP tools and present the 
 
 > **Tip:** Make sure Fredy is running and the database is accessible before starting the MCP server in LM Studio. The stdio transport initializes its own database connection, so Fredy's main process does not need to be running, but the database file must exist and be up-to-date (migrations applied).
 
+### Claude Desktop Configuration
+
+[Claude Desktop](https://claude.ai/download) supports MCP servers natively via its developer settings.
+
+#### Setup
+
+1. Open **Claude Desktop**
+2. Go to **Settings → Developer → Edit Config** - this opens the `claude_desktop_config.json` file
+3. Add the `fredy` server to the `mcpServers` object:
+
+   ```json
+   {
+     "mcpServers": {
+       "fredy": {
+         "command": "/opt/homebrew/opt/node@22/bin/node",
+         "args": ["/absolute/path/to/fredy/lib/mcp/stdio.js"],
+         "env": {
+           "MCP_TOKEN": "fredy_<your-token>"
+         }
+       }
+     }
+   }
+   ```
+
+   Replace `/absolute/path/to/fredy` with the actual path on your machine (e.g. `/Users/you/dev/fredy`).
+
+   > **Important:** Claude Desktop launches with a restricted `PATH` and often cannot find `node` by name. Always use the **full absolute path** to the node binary. Find yours by running `which node` in a terminal. Common locations:
+   > - Homebrew (default): `/opt/homebrew/bin/node`
+   > - Homebrew (versioned, e.g. node@22): `/opt/homebrew/opt/node@22/bin/node`
+   > - nvm: `/Users/<you>/.nvm/versions/node/<version>/bin/node`
+
+4. Save the file and **restart Claude Desktop**
+5. You should see a hammer icon (🔨) in the chat input - click it to confirm the Fredy tools are listed
+
+#### Usage
+
+Once connected, simply ask Claude about your real estate data:
+
+- *"Show me all my active search jobs"*
+- *"List the latest listings from my Berlin apartment search"*
+- *"What are the cheapest apartments added this week?"*
+
+Claude will automatically call the appropriate Fredy MCP tools.
+
+> **Note:** Fredy's main web process does not need to be running - the stdio transport opens its own database connection directly. But the SQLite database file must exist and migrations must have been applied.
+
+---
+
 ## Usage with Remote LLM (Streamable HTTP transport)
 
 The HTTP transport is automatically available when Fredy is running. It uses the MCP Streamable HTTP protocol at:
@@ -204,7 +252,7 @@ Example list response:
 ```
 **Tool:** list_listings | **Status:** OK
 
-Found **85** listing(s). Showing page 1 of 2 (50 on this page). More pages available — use page=2 to continue.
+Found **85** listing(s). Showing page 1 of 2 (50 on this page). More pages available - use page=2 to continue.
 
 | ID | Title | Address | Price | Size | Provider | Active | Created | Job |
 |----|-------|---------|-------|------|----------|--------|---------|-----|

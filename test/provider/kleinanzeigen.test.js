@@ -6,39 +6,79 @@
 import * as similarityCache from '../../lib/services/similarity-check/similarityCache.js';
 import { get } from '../mocks/mockNotification.js';
 import { mockFredy, providerConfig } from '../utils.js';
-import { expect } from 'chai';
+import { expect, vi } from 'vitest';
 import * as provider from '../../lib/provider/kleinanzeigen.js';
+import * as mockStore from '../mocks/mockStore.js';
 
 describe('#kleinanzeigen testsuite()', () => {
   it('should test kleinanzeigen provider', async () => {
     const Fredy = await mockFredy();
+    const mockedJob = {
+      id: 'kleinanzeigen',
+      notificationAdapter: null,
+      spatialFilter: null,
+      specFilter: null,
+    };
     provider.init(providerConfig.kleinanzeigen, [], []);
-    return await new Promise((resolve) => {
-      const fredy = new Fredy(
-        provider.config,
-        null,
-        null,
-        provider.metaInformation.id,
-        'kleinanzeigen',
-        similarityCache,
-      );
+    return await new Promise((resolve, reject) => {
+      const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache, undefined);
+
       fredy.execute().then((listing) => {
-        expect(listing).to.be.a('array');
+        if (listing == null || listing.length === 0) {
+          reject('Listings is empty!');
+          return;
+        }
+
+        expect(listing).toBeInstanceOf(Array);
         const notificationObj = get();
-        expect(notificationObj).to.be.a('object');
-        expect(notificationObj.serviceName).to.equal('kleinanzeigen');
+        expect(notificationObj).toBeTypeOf('object');
+        expect(notificationObj.serviceName).toBe('kleinanzeigen');
         notificationObj.payload.forEach((notify) => {
           /** check the actual structure **/
-          expect(notify.id).to.be.a('string');
-          expect(notify.title).to.be.a('string');
-          expect(notify.link).to.be.a('string');
-          expect(notify.address).to.be.a('string');
+          expect(notify.id).toBeTypeOf('string');
+          expect(notify.title).toBeTypeOf('string');
+          expect(notify.link).toBeTypeOf('string');
+          expect(notify.address).toBeTypeOf('string');
           /** check the values if possible **/
-          expect(notify.title).to.be.not.empty;
-          expect(notify.link).that.does.include('https://www.kleinanzeigen.de');
-          expect(notify.address).to.be.not.empty;
+          expect(notify.title).not.toBe('');
+          expect(notify.link).toContain('https://www.kleinanzeigen.de');
+          expect(notify.address).not.toBe('');
         });
         resolve();
+      });
+    });
+  });
+
+  describe('with provider_details enabled', () => {
+    beforeEach(() => {
+      vi.spyOn(mockStore, 'getUserSettings').mockReturnValue({ provider_details: [provider.metaInformation.id] });
+      vi.spyOn(mockStore, 'getKnownListingHashesForJobAndProvider').mockReturnValue([]);
+    });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    it('should enrich listings with details', async () => {
+      const Fredy = await mockFredy();
+      provider.init(providerConfig.kleinanzeigen, [], []);
+      const mockedJob = { id: 'kleinanzeigen', notificationAdapter: null, specFilter: null, spatialFilter: null };
+
+      const fredy = new Fredy(
+        provider.config,
+        mockedJob,
+        provider.metaInformation.id,
+        { checkAndAddEntry: () => false },
+        undefined,
+      );
+      const listings = await fredy.execute();
+      expect(listings).toBeInstanceOf(Array);
+      listings.forEach((listing) => {
+        expect(listing.link).toContain('https://www.kleinanzeigen.de');
+        expect(listing.address).toBeTypeOf('string');
+        expect(listing.address).not.toBe('');
+        expect(listing.description).toBeTypeOf('string');
+        expect(listing.description).not.toBe('');
       });
     });
   });

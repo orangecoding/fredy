@@ -3,29 +3,34 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import React from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 
-import { useActions, useSelector } from '../../services/state/store';
+import { useActions, useSelector, useIsLoading } from '../../services/state/store';
 
-import { Divider, TimePicker, Button, Checkbox, Input, Modal } from '@douyinfe/semi-ui-19';
+import {
+  Tabs,
+  TabPane,
+  TimePicker,
+  Button,
+  Checkbox,
+  Input,
+  Modal,
+  AutoComplete,
+  Select,
+  Banner,
+} from '@douyinfe/semi-ui-19';
 import { InputNumber } from '@douyinfe/semi-ui-19';
-import { xhrPost } from '../../services/xhr';
+import { xhrPost, xhrGet } from '../../services/xhr';
+import { Toast } from '@douyinfe/semi-ui-19';
 import { SegmentPart } from '../../components/segment/SegmentPart';
-import { Banner, Toast } from '@douyinfe/semi-ui-19';
 import {
   downloadBackup as downloadBackupZip,
   precheckRestore as clientPrecheckRestore,
   restore as clientRestore,
 } from '../../services/backupRestoreClient';
-import {
-  IconSave,
-  IconCalendar,
-  IconRefresh,
-  IconSignal,
-  IconLineChartStroked,
-  IconSearch,
-  IconFolder,
-} from '@douyinfe/semi-icons';
+import { IconSave, IconRefresh, IconSignal, IconHome, IconFolder } from '@douyinfe/semi-icons';
+import { debounce } from '../../utils';
+import Headline from '../../components/headline/Headline.jsx';
 import './GeneralSettings.less';
 
 function formatFromTimestamp(ts) {
@@ -57,11 +62,21 @@ const GeneralSettings = function GeneralSettings() {
   const [demoMode, setDemoMode] = React.useState(null);
   const [analyticsEnabled, setAnalyticsEnabled] = React.useState(null);
   const [sqlitePath, setSqlitePath] = React.useState(null);
+  const [baseUrl, setBaseUrl] = React.useState('');
   const fileInputRef = React.useRef(null);
   const [restoreModalVisible, setRestoreModalVisible] = React.useState(false);
   const [precheckInfo, setPrecheckInfo] = React.useState(null);
   const [restoreBusy, setRestoreBusy] = React.useState(false);
   const [selectedRestoreFile, setSelectedRestoreFile] = React.useState(null);
+
+  // User settings state
+  const homeAddress = useSelector((state) => state.userSettings.settings.home_address);
+  const providerDetails = useSelector((state) => state.userSettings.settings.provider_details);
+  const allProviders = useSelector((state) => state.provider);
+  const [address, setAddress] = useState(homeAddress?.address || '');
+  const [coords, setCoords] = useState(homeAddress?.coords || null);
+  const saving = useIsLoading(actions.userSettings.setHomeAddress);
+  const [dataSource, setDataSource] = useState([]);
 
   React.useEffect(() => {
     async function init() {
@@ -81,10 +96,16 @@ const GeneralSettings = function GeneralSettings() {
       setAnalyticsEnabled(settings?.analyticsEnabled || false);
       setDemoMode(settings?.demoMode || false);
       setSqlitePath(settings?.sqlitepath);
+      setBaseUrl(settings?.baseUrl ?? '');
     }
 
     init();
   }, [settings]);
+
+  useEffect(() => {
+    setAddress(homeAddress?.address || '');
+    setCoords(homeAddress?.coords || null);
+  }, [homeAddress]);
 
   const nullOrEmpty = (val) => val == null || val.length === 0;
 
@@ -119,6 +140,7 @@ const GeneralSettings = function GeneralSettings() {
         demoMode,
         analyticsEnabled,
         sqlitepath: sqlitePath,
+        baseUrl,
       });
     } catch (exception) {
       console.error(exception);
@@ -177,7 +199,6 @@ const GeneralSettings = function GeneralSettings() {
       if (!file) return;
       setSelectedRestoreFile(file);
       await precheckRestore(file);
-      // reset the input to allow same file re-select
       ev.target.value = '';
     },
     [precheckRestore],
@@ -189,180 +210,289 @@ const GeneralSettings = function GeneralSettings() {
     }
   }, []);
 
+  const handleSaveUserSettings = async () => {
+    try {
+      const responseJson = await actions.userSettings.setHomeAddress(address);
+      setCoords(responseJson.coords);
+      await actions.userSettings.getUserSettings();
+      Toast.success('Settings saved. Distance calculations are running in the background.');
+    } catch (error) {
+      Toast.error(error.json?.error || 'Error while saving settings');
+    }
+  };
+
+  const debouncedSearch = useMemo(
+    () =>
+      debounce((value) => {
+        xhrGet(`/api/user/settings/autocomplete?q=${encodeURIComponent(value)}`)
+          .then((response) => {
+            if (response.status === 200) {
+              setDataSource(response.json);
+            }
+          })
+          .catch(() => {});
+      }, 300),
+    [],
+  );
+
+  const searchAddress = (value) => {
+    if (!value) {
+      setDataSource([]);
+      return;
+    }
+    debouncedSearch(value);
+  };
+
   return (
-    <div>
+    <div className="generalSettings">
+      <Headline text="Settings" />
       {!loading && (
-        <React.Fragment>
-          <div>
-            <SegmentPart
-              name="Interval"
-              helpText="Interval in minutes for running queries against the configured services. Do NOT go under 5 minutes as with a lower interval, your instance might be detected as a bot."
-              Icon={IconRefresh}
+        <>
+          <Tabs type="line">
+            <TabPane
+              tab={
+                <span>
+                  <IconSignal size="small" style={{ marginRight: 6 }} />
+                  System
+                </span>
+              }
+              itemKey="system"
             >
-              <InputNumber
-                min={5}
-                max={1440}
-                placeholder="Interval in minutes"
-                value={interval}
-                formatter={(value) => `${value}`.replace(/\D/g, '')}
-                onChange={(value) => setInterval(value)}
-                suffix={'minutes'}
-              />
-            </SegmentPart>
-            <Divider margin="1rem" />
-            <SegmentPart
-              name="Backup & Restore"
-              helpText="Download a zipped backup of your database or restore it from a backup zip."
-              Icon={IconSave}
-            >
-              <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
-                <Button theme="solid" icon={<IconSave />} onClick={handleDownloadBackup}>
-                  Download backup
-                </Button>
-                <input
-                  type="file"
-                  accept=".zip,application/zip"
-                  ref={fileInputRef}
-                  style={{ display: 'none' }}
-                  onChange={handleSelectRestoreFile}
-                />
-                <Button onClick={handleOpenFilePicker} theme="light" icon={<IconFolder />}>
-                  Restore from zip
-                </Button>
+              <div className="generalSettings__tab-content">
+                <SegmentPart name="Port" helpText="The port on which Fredy is running.">
+                  <InputNumber
+                    min={0}
+                    max={99999}
+                    placeholder="Port"
+                    value={port}
+                    formatter={(value) => `${value}`.replace(/\D/g, '')}
+                    onChange={(value) => setPort(value)}
+                    style={{ maxWidth: 160 }}
+                  />
+                </SegmentPart>
+
+                <SegmentPart
+                  name="Base URL"
+                  helpText="Public URL where Fredy is reachable (e.g. http://192.168.1.10:9998). Used for 'Open in Fredy' links in notifications."
+                >
+                  <Input type="text" placeholder="Base-Url" value={baseUrl} onChange={(value) => setBaseUrl(value)} />
+                </SegmentPart>
+
+                <SegmentPart
+                  name="SQLite Database Path"
+                  helpText="The directory where Fredy stores its SQLite database files."
+                >
+                  <Banner
+                    fullMode={false}
+                    type="warning"
+                    closeIcon={null}
+                    style={{ marginBottom: '12px' }}
+                    description="Changing this path may result in data loss. Restart Fredy immediately after saving."
+                  />
+                  <Input
+                    type="text"
+                    placeholder="Database folder path"
+                    value={sqlitePath}
+                    onChange={(value) => setSqlitePath(value)}
+                  />
+                </SegmentPart>
+
+                <SegmentPart
+                  name="Analytics"
+                  helpText="Anonymous usage data to help improve Fredy - provider names, adapter names, OS, Node version, and architecture."
+                >
+                  <Checkbox checked={analyticsEnabled} onChange={(e) => setAnalyticsEnabled(e.target.checked)}>
+                    Enable analytics
+                  </Checkbox>
+                </SegmentPart>
+
+                <SegmentPart
+                  name="Demo Mode"
+                  helpText="In demo mode, Fredy will not search for real estates and all data resets to defaults at midnight."
+                >
+                  <Checkbox checked={demoMode} onChange={(e) => setDemoMode(e.target.checked)}>
+                    Enable demo mode
+                  </Checkbox>
+                </SegmentPart>
+
+                <div className="generalSettings__save-row">
+                  <Button type="primary" theme="solid" onClick={handleStore} icon={<IconSave />}>
+                    Save
+                  </Button>
+                </div>
               </div>
-            </SegmentPart>
-            <Divider margin="1rem" />
-            <SegmentPart name="Port" helpText="Port on which Fredy is running." Icon={IconSignal}>
-              <InputNumber
-                min={0}
-                max={99999}
-                placeholder="Port"
-                value={port}
-                formatter={(value) => `${value}`.replace(/\D/g, '')}
-                onChange={(value) => setPort(value)}
-              />
-            </SegmentPart>
-            <Divider margin="1rem" />
-            <SegmentPart
-              name="SQLite Database path"
-              helpText="The directory where Fredy stores its SQLite database files."
-              Icon={IconFolder}
-            >
-              <Banner
-                fullMode={false}
-                type="warning"
-                closeIcon={null}
-                title={<div style={{ fontWeight: 600, fontSize: '14px', lineHeight: '20px' }}>Warning</div>}
-                style={{ marginBottom: '1rem' }}
-                description={
-                  <div>
-                    Changing the path later may result in data loss.
-                    <br />
-                    You <b>must</b> restart Fredy immediately after changing this setting!
-                  </div>
-                }
-              />
+            </TabPane>
 
-              <Input
-                type="text"
-                placeholder="Select folder"
-                value={sqlitePath}
-                onChange={(value) => {
-                  setSqlitePath(value);
-                }}
-              />
-            </SegmentPart>
-            <Divider margin="1rem" />
-            <SegmentPart
-              name="Working hours"
-              helpText="During these hours, Fredy will search for new apartments. If nothing is configured, Fredy will search around the clock."
-              Icon={IconCalendar}
+            <TabPane
+              tab={
+                <span>
+                  <IconRefresh size="small" style={{ marginRight: 6 }} />
+                  Execution
+                </span>
+              }
+              itemKey="execution"
             >
-              <div className="generalSettings__timePickerContainer">
-                <TimePicker
-                  format={'HH:mm'}
-                  insetLabel="From"
-                  value={formatFromTBackend(workingHourFrom)}
-                  placeholder=""
-                  onChange={(val) => {
-                    setWorkingHourFrom(val == null ? null : formatFromTimestamp(val));
-                  }}
-                />
-                <TimePicker
-                  format={'HH:mm'}
-                  insetLabel="Until"
-                  value={formatFromTBackend(workingHourTo)}
-                  placeholder=""
-                  onChange={(val) => {
-                    setWorkingHourTo(val == null ? null : formatFromTimestamp(val));
-                  }}
-                />
+              <div className="generalSettings__tab-content">
+                <SegmentPart
+                  name="Search Interval"
+                  helpText="Interval in minutes for running queries against configured services. Do not go below 5 minutes to avoid being detected as a bot."
+                >
+                  <InputNumber
+                    min={5}
+                    max={1440}
+                    placeholder="Interval in minutes"
+                    value={interval}
+                    formatter={(value) => `${value}`.replace(/\D/g, '')}
+                    onChange={(value) => setInterval(value)}
+                    suffix={'minutes'}
+                    style={{ maxWidth: 200 }}
+                  />
+                </SegmentPart>
+
+                <SegmentPart
+                  name="Working Hours"
+                  helpText="Fredy will only search for listings during these hours. Leave empty to search around the clock."
+                >
+                  <div className="generalSettings__timePickerContainer">
+                    <TimePicker
+                      format={'HH:mm'}
+                      insetLabel="From"
+                      value={formatFromTBackend(workingHourFrom)}
+                      placeholder=""
+                      onChange={(val) => {
+                        setWorkingHourFrom(val == null ? null : formatFromTimestamp(val));
+                      }}
+                    />
+                    <TimePicker
+                      format={'HH:mm'}
+                      insetLabel="Until"
+                      value={formatFromTBackend(workingHourTo)}
+                      placeholder=""
+                      onChange={(val) => {
+                        setWorkingHourTo(val == null ? null : formatFromTimestamp(val));
+                      }}
+                    />
+                  </div>
+                </SegmentPart>
+
+                <div className="generalSettings__save-row">
+                  <Button type="primary" theme="solid" onClick={handleStore} icon={<IconSave />}>
+                    Save
+                  </Button>
+                </div>
               </div>
-            </SegmentPart>
-            <Divider margin="1rem" />
+            </TabPane>
 
-            <SegmentPart name="Analytics" helpText="Insights into the usage of Fredy." Icon={IconLineChartStroked}>
-              <Banner
-                fullMode={false}
-                type="info"
-                closeIcon={null}
-                title={<div style={{ fontWeight: 600, fontSize: '14px', lineHeight: '20px' }}>Explanation</div>}
-                style={{ marginBottom: '1rem' }}
-                description={
-                  <div>
-                    Analytics are disabled by default. If you choose to enable them, we will begin tracking the
-                    following:
-                    <br />
-                    <ul>
-                      <li>Name of active provider (e.g. Immoscout)</li>
-                      <li>Name of active adapter (e.g. Console)</li>
-                      <li>language</li>
-                      <li>os</li>
-                      <li>node version</li>
-                      <li>arch</li>
-                    </ul>
-                    The data is sent anonymously and helps me understand which providers or adapters are being used the
-                    most. In the end it helps me to improve fredy.
+            <TabPane
+              tab={
+                <span>
+                  <IconHome size="small" style={{ marginRight: 6 }} />
+                  User Settings
+                </span>
+              }
+              itemKey="userSettings"
+            >
+              <div className="generalSettings__tab-content">
+                <SegmentPart
+                  name="Home Address"
+                  helpText="Used to calculate distances between your location and each listing. Updating this recalculates distances for all active listings."
+                >
+                  <AutoComplete
+                    data={dataSource}
+                    value={address}
+                    showClear
+                    onChange={(v) => setAddress(v)}
+                    onSearch={searchAddress}
+                    placeholder="Enter your home address"
+                    style={{ width: '100%' }}
+                  />
+                  {coords && coords.lat === -1 && (
+                    <Banner
+                      type="danger"
+                      description="Address found but could not be geocoded accurately."
+                      closeIcon={null}
+                      style={{ marginTop: 8 }}
+                    />
+                  )}
+                </SegmentPart>
+
+                <SegmentPart
+                  name="Provider Details"
+                  helpText="Fetch additional details (description, attributes, agent info) for listings. Needs an extra API call per listing."
+                >
+                  <Banner
+                    type="warning"
+                    description="Enabling this significantly increases API requests to providers that have implemented this feature, raising the chance of rate limiting or blocking. Use at your own risk."
+                    closeIcon={null}
+                    style={{ marginBottom: 12 }}
+                  />
+                  <Select
+                    multiple
+                    style={{ width: '100%' }}
+                    value={Array.isArray(providerDetails) ? providerDetails : []}
+                    optionList={(allProviders ?? []).map((p) => ({ label: p.name, value: p.id }))}
+                    placeholder="Select providers to fetch details from..."
+                    onChange={async (selected) => {
+                      try {
+                        await actions.userSettings.setProviderDetails(selected);
+                        Toast.success('Provider details setting updated.');
+                      } catch {
+                        Toast.error('Failed to update setting.');
+                      }
+                    }}
+                  />
+                </SegmentPart>
+
+                <div className="generalSettings__save-row">
+                  <Button
+                    icon={<IconSave />}
+                    theme="solid"
+                    type="primary"
+                    onClick={handleSaveUserSettings}
+                    loading={saving}
+                  >
+                    Save
+                  </Button>
+                </div>
+              </div>
+            </TabPane>
+
+            <TabPane
+              tab={
+                <span>
+                  <IconFolder size="small" style={{ marginRight: 6 }} />
+                  Backup & Restore
+                </span>
+              }
+              itemKey="backup"
+            >
+              <div className="generalSettings__tab-content">
+                <SegmentPart
+                  name="Backup & Restore"
+                  helpText="Download a zipped backup of your database or restore from a backup zip."
+                >
+                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                    <Button theme="solid" icon={<IconSave />} onClick={handleDownloadBackup}>
+                      Download Backup
+                    </Button>
+                    <input
+                      type="file"
+                      accept=".zip,application/zip"
+                      ref={fileInputRef}
+                      style={{ display: 'none' }}
+                      onChange={handleSelectRestoreFile}
+                    />
+                    <Button onClick={handleOpenFilePicker} theme="light" icon={<IconFolder />}>
+                      Restore from Zip
+                    </Button>
                   </div>
-                }
-              />
-
-              <Checkbox checked={analyticsEnabled} onChange={(e) => setAnalyticsEnabled(e.target.checked)}>
-                {' '}
-                Enabled
-              </Checkbox>
-            </SegmentPart>
-
-            <Divider margin="1rem" />
-
-            <SegmentPart name="Demo Mode" helpText="If enabled, Fredy runs in demo mode." Icon={IconSearch}>
-              <Banner
-                fullMode={false}
-                type="info"
-                closeIcon={null}
-                title={<div style={{ fontWeight: 600, fontSize: '14px', lineHeight: '20px' }}>Explanation</div>}
-                style={{ marginBottom: '1rem' }}
-                description={
-                  <div>
-                    In demo mode, Fredy will not (really) search for any real estates. Fredy is in a lockdown mode. Also
-                    all database files will be set back to the default values at midnight.
-                  </div>
-                }
-              />
-
-              <Checkbox checked={demoMode} onChange={(e) => setDemoMode(e.target.checked)}>
-                {' '}
-                Enabled
-              </Checkbox>
-            </SegmentPart>
-
-            <Divider margin="1rem" />
-            <Button type="primary" theme="solid" onClick={handleStore} icon={<IconSave />}>
-              Save
-            </Button>
-          </div>
-        </React.Fragment>
+                </SegmentPart>
+              </div>
+            </TabPane>
+          </Tabs>
+        </>
       )}
+
       {restoreModalVisible && (
         <Modal
           title="Restore database"

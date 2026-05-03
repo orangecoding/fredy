@@ -1,37 +1,36 @@
+@import './DashboardCardColors.less';
+
+@keyframes card-glow-rotate {
+  0%   { box-shadow:  3px  3px 14px -4px var(--card-glow); }
+  25%  { box-shadow: -3px  3px 14px -4px var(--card-glow); }
+  50%  { box-shadow: -3px -3px 14px -4px var(--card-glow); }
+  75%  { box-shadow:  3px -3px 14px -4px var(--card-glow); }
+  100% { box-shadow:  3px  3px 14px -4px var(--card-glow); }
+}
+
 .dashboard-card {
   width: 100%;
-  height: 140px;
-  margin-bottom: 16px;
-  transition: transform 0.2s;
-  background-color: rgba(36, 36, 36, 0.9);
-  backdrop-filter: blur(8px);
-  border: 1px solid var(--semi-color-border);
-  --pulse-color: rgba(255, 255, 255, 0.1);
+  height: 112px;
+  border-radius: @radius-card !important;
+  border: 1px solid @color-border !important;
+  background-color: @color-surface !important;
+  transition: box-shadow @transition-card;
   position: relative;
-  z-index: 1;
   overflow: visible;
 
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-radius: inherit;
-    box-shadow: 0 4px 25px -2px var(--pulse-color);
-    opacity: 0;
-    animation: pulse 5s infinite ease-in-out;
-    pointer-events: none;
-    z-index: -1;
-    will-change: opacity;
-  }
-
   &__icon {
-    font-size: 20px;
+    font-size: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
+    color: var(--card-accent, @color-gray-text);
+  }
+
+  &__title {
+    color: rgba(148, 163, 184, 0.7) !important;
+    font-size: @text-xs !important;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
   &__content {
@@ -39,42 +38,50 @@
   }
 
   &__value {
+    font-size: 1.2rem;
     font-weight: 700;
     margin-bottom: 4px;
-    color: var(--semi-color-text-0);
+    color: var(--card-accent, @color-text);
+  }
+
+  &__desc {
+    color: @color-faint !important;
+    font-size: @text-xs;
   }
 
   &.blue {
-    --pulse-color: var(--semi-color-primary);
-    box-shadow: 0 4px 20px -5px var(--pulse-color);
+    --card-accent: @color-blue-text;
+    --card-glow: @color-blue-border;
+    background-color: @color-blue-bg !important;
+    border-color: @color-blue-border !important;
+    animation: card-glow-rotate 8s linear infinite;
   }
-
   &.orange {
-    --pulse-color: var(--semi-color-warning);
-    box-shadow: 0 4px 20px -5px var(--pulse-color);
+    --card-accent: @color-orange-text;
+    --card-glow: @color-orange-border;
+    background-color: @color-orange-bg !important;
+    border-color: @color-orange-border !important;
+    animation: card-glow-rotate 8s linear infinite;
   }
-
   &.green {
-    --pulse-color: var(--semi-color-success);
-    box-shadow: 0 4px 20px -5px var(--pulse-color);
+    --card-accent: @color-green-text;
+    --card-glow: @color-green-border;
+    background-color: @color-green-bg !important;
+    border-color: @color-green-border !important;
+    animation: card-glow-rotate 8s linear infinite;
   }
-
   &.purple {
-    --pulse-color: var(--semi-color-info);
-    box-shadow: 0 4px 20px -5px var(--pulse-color);
+    --card-accent: @color-purple-text;
+    --card-glow: @color-purple-border;
+    background-color: @color-purple-bg !important;
+    border-color: @color-purple-border !important;
+    animation: card-glow-rotate 8s linear infinite;
   }
-
   &.gray {
-    --pulse-color: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 20px -5px var(--pulse-color);
-  }
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 0.1;
-  }
-  50% {
-    opacity: 0.5;
+    --card-accent: @color-gray-text;
+    --card-glow: @color-gray-border;
+    background-color: @color-gray-bg !important;
+    border-color: @color-gray-border !important;
+    animation: card-glow-rotate 8s linear infinite;
   }
 }

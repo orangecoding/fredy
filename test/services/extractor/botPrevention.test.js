@@ -3,8 +3,7 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { describe, it } from 'mocha';
-import { expect } from 'chai';
+import { expect } from 'vitest';
 
 import {
   getPreLaunchConfig,
@@ -26,16 +25,16 @@ describe('botPrevention helper', () => {
     };
     const cfg = getPreLaunchConfig(url, options);
 
-    expect(cfg.acceptLanguage).to.equal('de-DE,de;q=0.9');
-    expect(cfg.langArg).to.equal('--lang=de-DE');
-    expect(cfg.windowSizeArg).to.equal('--window-size=1200,700');
-    expect(cfg.viewport).to.deep.equal({ width: 1200, height: 700, deviceScaleFactor: 2 });
-    expect(cfg.userAgent).to.equal('TestAgent/1.0');
-    expect(cfg.headers['Accept-Language']).to.equal('de-DE,de;q=0.9');
-    expect(cfg.headers['User-Agent']).to.equal('TestAgent/1.0');
-    expect(cfg.headers.Referer).to.equal('https://example.com/ref');
-    expect(cfg.extraArgs).to.include('--disable-blink-features=AutomationControlled');
-    expect(cfg.extraArgs).to.include('--proxy-bypass-list=<-loopback>');
+    expect(cfg.acceptLanguage).toBe('de-DE,de;q=0.9');
+    expect(cfg.langArg).toBe('--lang=de-DE');
+    expect(cfg.windowSizeArg).toBe('--window-size=1200,700');
+    expect(cfg.viewport).toEqual({ width: 1200, height: 700, deviceScaleFactor: 2 });
+    expect(cfg.userAgent).toBe('TestAgent/1.0');
+    expect(cfg.headers['Accept-Language']).toBe('de-DE,de;q=0.9');
+    expect(cfg.headers['User-Agent']).toBe('TestAgent/1.0');
+    expect(cfg.headers.Referer).toBe('https://example.com/ref');
+    expect(cfg.extraArgs).toContain('--disable-blink-features=AutomationControlled');
+    expect(cfg.extraArgs).toContain('--proxy-bypass-list=<-loopback>');
   });
 
   it('applyBotPreventionToPage sets UA, viewport, headers and injects patches', async () => {
@@ -58,15 +57,15 @@ describe('botPrevention helper', () => {
 
     await applyBotPreventionToPage(page, cfg);
 
-    expect(calls[0]).to.deep.equal(['setUserAgent', 'Foo/Bar']);
-    expect(calls.some((c) => c[0] === 'setViewport' && c[1].width === 1000 && c[1].height === 600)).to.equal(true);
-    expect(calls.some((c) => c[0] === 'setJavaScriptEnabled' && c[1] === true)).to.equal(true);
+    expect(calls[0]).toEqual(['setUserAgent', 'Foo/Bar']);
+    expect(calls.some((c) => c[0] === 'setViewport' && c[1].width === 1000 && c[1].height === 600)).toBe(true);
+    expect(calls.some((c) => c[0] === 'setJavaScriptEnabled' && c[1] === true)).toBe(true);
     const headerCall = calls.find((c) => c[0] === 'setExtraHTTPHeaders');
-    expect(headerCall).to.exist;
-    expect(headerCall[1]['Accept-Language']).to.equal('en-US,en');
-    expect(headerCall[1]['User-Agent']).to.equal('Foo/Bar');
-    expect(calls.some((c) => c[0] === 'emulateTimezone' && c[1] === 'UTC')).to.equal(true);
-    expect(calls.some((c) => c[0] === 'evaluateOnNewDocument' && c[1] === 'function')).to.equal(true);
+    expect(headerCall).toBeDefined();
+    expect(headerCall[1]['Accept-Language']).toBe('en-US,en');
+    expect(headerCall[1]['User-Agent']).toBe('Foo/Bar');
+    expect(calls.some((c) => c[0] === 'emulateTimezone' && c[1] === 'UTC')).toBe(true);
+    expect(calls.some((c) => c[0] === 'evaluateOnNewDocument' && c[1] === 'function')).toBe(true);
   });
 
   it('applyLanguagePersistence stores languages early', async () => {
@@ -80,9 +79,9 @@ describe('botPrevention helper', () => {
     });
     await applyLanguagePersistence(page, cfg);
     const call = calls[0];
-    expect(call[0]).to.equal('evaluateOnNewDocument');
-    expect(call[1]).to.equal('function');
-    expect(call[2]).to.equal('de-DE,de');
+    expect(call[0]).toBe('evaluateOnNewDocument');
+    expect(call[1]).toBe('function');
+    expect(call[2]).toBe('de-DE,de');
   });
 
   it('applyPostNavigationHumanSignals moves mouse and scrolls when enabled', async () => {
@@ -98,7 +97,7 @@ describe('botPrevention helper', () => {
       viewport: { width: 1200, height: 800 },
     };
     await applyPostNavigationHumanSignals(page, cfg);
-    expect(mouseCalls.some((c) => c[0] === 'move')).to.equal(true);
-    expect(mouseCalls.some((c) => c[0] === 'wheel')).to.equal(true);
+    expect(mouseCalls.some((c) => c[0] === 'move')).toBe(true);
+    expect(mouseCalls.some((c) => c[0] === 'wheel')).toBe(true);
   });
 });

@@ -5,23 +5,21 @@
 
 import './FredyFooter.less';
 import { useSelector } from '../../services/state/store.js';
-import { Typography, Layout, Space, Divider } from '@douyinfe/semi-ui-19';
+import { Layout } from '@douyinfe/semi-ui-19';
 
 export default function FredyFooter() {
-  const { Text } = Typography;
   const { Footer } = Layout;
   const version = useSelector((state) => state.versionUpdate.versionUpdate);
 
   return (
     <Footer className="fredyFooter">
-      <Space split={<Divider layout="vertical" />}>
-        <Text type="tertiary" size="small">
-          Fredy V{version?.localFredyVersion || 'N/A'}
-        </Text>
-        <Text size="small" link={{ href: 'https://github.com/orangecoding', target: '_blank' }}>
-          Made with ❤️
-        </Text>
-      </Space>
+      <span className="fredyFooter__version">Fredy v{version?.localFredyVersion || 'N/A'}</span>
+      <span className="fredyFooter__credit">
+        Made with ❤️ by{' '}
+        <a href="https://github.com/orangecoding" target="_blank" rel="noreferrer">
+          Christian Kellner
+        </a>
+      </span>
     </Footer>
   );
 }
