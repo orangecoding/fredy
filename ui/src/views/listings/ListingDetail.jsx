@@ -31,6 +31,7 @@ import {
   IconLink,
   IconStar,
   IconStarStroked,
+  IconDelete,
   IconExpand,
   IconGridView,
 } from '@douyinfe/semi-icons';
@@ -39,7 +40,8 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import no_image from '../../assets/no_image.png';
 import * as timeService from '../../services/time/timeService.js';
 import { distanceMeters, getBoundsFromCoords } from './mapUtils.js';
-import { xhrPost } from '../../services/xhr.js';
+import { xhrPost, xhrDelete } from '../../services/xhr.js';
+import ListingDeletionModal from '../../components/ListingDeletionModal.jsx';
 
 import Headline from '../../components/headline/Headline.jsx';
 import './ListingDetail.less';
@@ -59,6 +61,7 @@ export default function ListingDetail() {
   const mapContainer = useRef(null);
   const map = useRef(null);
   const [loading, setLoading] = useState(true);
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
 
   useEffect(() => {
     async function fetchListing() {
@@ -239,6 +242,18 @@ export default function ListingDetail() {
     };
   }, [listing, loading, homeAddress]);
 
+  const confirmDeletion = async (hardDelete) => {
+    try {
+      await xhrDelete('/api/listings/', { ids: [listing.id], hardDelete });
+      Toast.success('Listing successfully removed');
+      navigate('/listings');
+    } catch (e) {
+      Toast.error(e.message || 'Error deleting listing');
+    } finally {
+      setDeleteModalVisible(false);
+    }
+  };
+
   const handleWatch = async () => {
     try {
       await xhrPost('/api/listings/watch', { listingId: listing.id });
@@ -330,6 +345,14 @@ export default function ListingDetail() {
               <IconLink style={{ marginRight: 6 }} />
               Open listing
             </a>
+            <Button
+              icon={<IconDelete />}
+              onClick={() => setDeleteModalVisible(true)}
+              theme="light"
+              type="danger"
+            >
+              Delete
+            </Button>
           </Space>
         </div>
 
@@ -397,6 +420,12 @@ export default function ListingDetail() {
           <div ref={mapContainer} className="listing-detail__map-container" />
         )}
       </div>
+
+      <ListingDeletionModal
+        visible={deleteModalVisible}
+        onConfirm={confirmDeletion}
+        onCancel={() => setDeleteModalVisible(false)}
+      />
     </div>
   );
 }

@@ -14,21 +14,20 @@ import {
   IconStarStroked,
   IconEyeOpened,
 } from '@douyinfe/semi-icons';
-import no_image from '../../../assets/no_image.png';
-import * as timeService from '../../../services/time/timeService.js';
+import no_image from '../../assets/no_image.png';
+import * as timeService from '../../services/time/timeService.js';
 
-import './ListingsGrid.less';
+import './ListingsTable.less';
 
 /**
  * @param {{ listings: object[], onWatch: Function, onNavigate: Function, onDelete: Function }} props
  */
-const ListingsGrid = ({ listings, onWatch, onNavigate, onDelete }) => (
-  <div className="listingsGrid__grid">
+const ListingsTable = ({ listings, onWatch, onNavigate, onDelete }) => (
+  <div className="listingsTable">
     {listings.map((item) => (
       <div
         key={item.id}
-        className="listingsGrid__card"
-        style={{ cursor: 'pointer' }}
+        className={`listingsTable__row${!item.is_active ? ' listingsTable__row--inactive' : ''}`}
         role="button"
         tabIndex={0}
         onClick={() => onNavigate(item.id)}
@@ -36,7 +35,7 @@ const ListingsGrid = ({ listings, onWatch, onNavigate, onDelete }) => (
           if (e.key === 'Enter' || e.key === ' ') onNavigate(item.id);
         }}
       >
-        <div className="listingsGrid__card__image-wrapper">
+        <div className="listingsTable__row__thumb">
           <img
             src={item.image_url || no_image}
             alt={item.title}
@@ -44,45 +43,50 @@ const ListingsGrid = ({ listings, onWatch, onNavigate, onDelete }) => (
               e.target.src = no_image;
             }}
           />
-          {!item.is_active && (
-            <div className="listingsGrid__card__inactive-watermark">
-              <span>Inactive</span>
-            </div>
+        </div>
+
+        <div className="listingsTable__row__title" title={item.title}>
+          {item.title}
+        </div>
+
+        <div className="listingsTable__row__price">
+          {item.price ? (
+            <>
+              <IconCart size="small" />
+              {item.price}
+            </>
+          ) : (
+            <span className="listingsTable__row__empty">—</span>
           )}
+        </div>
+
+        <div className="listingsTable__row__address">
+          {item.address ? (
+            <>
+              <IconMapPin size="small" />
+              {item.address}
+            </>
+          ) : (
+            <span className="listingsTable__row__empty">—</span>
+          )}
+        </div>
+
+        <div className="listingsTable__row__meta">
+          <IconBriefcase size="small" />
+          {item.provider}
+        </div>
+
+        <div className="listingsTable__row__date">{timeService.format(item.created_at, false)}</div>
+
+        <div className="listingsTable__row__actions" onClick={(e) => e.stopPropagation()}>
           <button
             type="button"
-            className="listingsGrid__card__star"
+            className="listingsTable__row__star"
             onClick={(e) => onWatch(e, item)}
             aria-label={item.isWatched === 1 ? 'Remove from watchlist' : 'Add to watchlist'}
           >
             {item.isWatched === 1 ? <IconStar /> : <IconStarStroked />}
           </button>
-        </div>
-
-        <div className="listingsGrid__card__body">
-          <div className="listingsGrid__card__title" title={item.title}>
-            {item.title}
-          </div>
-          {item.price && (
-            <div className="listingsGrid__card__price">
-              <IconCart size="small" />
-              {item.price}
-            </div>
-          )}
-          {item.address && (
-            <div className="listingsGrid__card__meta">
-              <IconMapPin />
-              {item.address}
-            </div>
-          )}
-          <div className="listingsGrid__card__meta">
-            <IconBriefcase />
-            {item.provider}
-          </div>
-          <div className="listingsGrid__card__provider">{timeService.format(item.created_at, false)}</div>
-        </div>
-
-        <div className="listingsGrid__card__actions" onClick={(e) => e.stopPropagation()}>
           <Tooltip content="Original Listing">
             <Button
               size="small"
@@ -125,4 +129,4 @@ const ListingsGrid = ({ listings, onWatch, onNavigate, onDelete }) => (
   </div>
 );
 
-export default ListingsGrid;
+export default ListingsTable;
