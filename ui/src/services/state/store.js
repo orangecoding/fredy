@@ -321,6 +321,20 @@ export const useFredyState = create(
               throw Exception;
             }
           },
+          async setListingsViewMode(listings_view_mode) {
+            try {
+              await xhrPost('/api/user/settings/listings-view-mode', { listings_view_mode });
+              set((state) => ({
+                userSettings: {
+                  ...state.userSettings,
+                  settings: { ...state.userSettings.settings, listings_view_mode },
+                },
+              }));
+            } catch (Exception) {
+              console.error('Error while trying to update listings view mode setting. Error:', Exception);
+              throw Exception;
+            }
+          },
         },
       };
 

@@ -1,0 +1,45 @@
+@import '../../tokens.less';
+
+.listingsOverview {
+  &__topbar {
+    display: flex;
+    align-items: center;
+    gap: @space-3;
+    margin-bottom: @space-4;
+    flex-wrap: wrap;
+
+    &__search {
+      min-width: 200px;
+      flex: 1;
+    }
+
+    &__view-toggle {
+      display: flex;
+      gap: 2px;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+      .listingsOverview__topbar__search {
+        width: 100%;
+        flex: unset;
+      }
+
+      .semi-radio-group {
+        flex: 1;
+      }
+
+      .semi-select {
+        flex: 1;
+        min-width: 100px;
+        width: auto !important;
+      }
+    }
+  }
+
+  &__pagination {
+    margin-top: @space-4;
+    display: flex;
+    justify-content: center;
+  }
+}
