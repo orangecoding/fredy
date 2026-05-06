@@ -32,7 +32,6 @@ import {
   IconBriefcase,
   IconBell,
   IconSearch,
-  IconPlusCircle,
   IconArrowUp,
   IconArrowDown,
   IconHome,
@@ -202,10 +201,6 @@ const JobGrid = () => {
   return (
     <div className="jobGrid">
       <div className="jobGrid__topbar">
-        <Button type="primary" icon={<IconPlusCircle />} onClick={() => navigate('/jobs/new')}>
-          New Job
-        </Button>
-
         <Input
           className="jobGrid__topbar__search"
           prefix={<IconSearch />}

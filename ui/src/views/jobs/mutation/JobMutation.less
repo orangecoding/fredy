@@ -1,25 +1,36 @@
+@import '../../../tokens.less';
+
 .jobMutation {
   &__newButton {
     float: right;
-    margin-bottom: 1rem;
+    margin-bottom: @space-4;
   }
 
   &__specFilter {
     display: flex;
-    gap: 1.5rem;
+    gap: @space-4;
     flex-wrap: wrap;
   }
 
   &__specFilterItem {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: @space-2;
     flex: 1;
     min-width: 150px;
   }
 
   &__specFilterLabel {
     font-weight: 500;
+    font-size: @text-sm;
+    color: @color-muted;
+  }
+
+  &__actions {
+    display: flex;
+    gap: @space-3;
+    margin-top: @space-4;
+    justify-content: flex-end;
   }
 }
 

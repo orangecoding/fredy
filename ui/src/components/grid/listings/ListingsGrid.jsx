@@ -10,41 +10,23 @@ import {
   parseString,
   parseNullableBoolean,
 } from '../../../hooks/useSearchParamState.js';
-import {
-  Card,
-  Col,
-  Row,
-  Image,
-  Button,
-  Typography,
-  Pagination,
-  Toast,
-  Divider,
-  Input,
-  Select,
-  Empty,
-  Radio,
-  RadioGroup,
-  Space,
-} from '@douyinfe/semi-ui-19';
+import { Button, Pagination, Toast, Input, Select, Empty, Radio, RadioGroup, Tooltip } from '@douyinfe/semi-ui-19';
 import {
   IconBriefcase,
   IconCart,
-  IconClock,
   IconDelete,
   IconLink,
   IconMapPin,
   IconStar,
   IconStarStroked,
   IconSearch,
-  IconActivity,
   IconEyeOpened,
   IconArrowUp,
   IconArrowDown,
 } from '@douyinfe/semi-icons';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import ListingDeletionModal from '../../ListingDeletionModal.jsx';
-import no_image from '../../../assets/no_image.jpg';
+import no_image from '../../../assets/no_image.png';
 import * as timeService from '../../../services/time/timeService.js';
 import { xhrDelete, xhrPost } from '../../../services/xhr.js';
 import { useActions, useSelector } from '../../../services/state/store.js';
@@ -52,8 +34,6 @@ import { debounce } from '../../../utils';
 
 import './ListingsGrid.less';
 import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-illustrations';
-
-const { Text } = Typography;
 
 const ListingsGrid = () => {
   const listingsData = useSelector((state) => state.listingsData);
@@ -135,10 +115,6 @@ const ListingsGrid = () => {
       setDeleteModalVisible(false);
       setListingToDelete(null);
     }
-  };
-
-  const cap = (val) => {
-    return String(val).charAt(0).toUpperCase() + String(val).slice(1);
   };
 
   return (
@@ -238,111 +214,107 @@ const ListingsGrid = () => {
           description="No listings available yet..."
         />
       )}
-      <Row gutter={[16, 16]}>
+      <div className="listingsGrid__grid">
         {(listingsData?.result || []).map((item) => (
-          <Col key={item.id} xs={24} sm={12} md={12} lg={8} xl={8} xxl={6}>
-            <Card
-              className={`listingsGrid__card ${!item.is_active ? 'listingsGrid__card--inactive' : ''}`}
-              style={{ cursor: 'pointer' }}
-              onClick={() => navigate(`/listings/listing/${item.id}`)}
-              cover={
-                <div style={{ position: 'relative' }}>
-                  <div className="listingsGrid__imageContainer">
-                    <Image
-                      src={item.image_url || no_image}
-                      fallback={no_image}
-                      width="100%"
-                      height={180}
-                      style={{ objectFit: 'cover' }}
-                      preview={false}
-                    />
-                    <Button
-                      icon={
-                        item.isWatched === 1 ? (
-                          <IconStar style={{ color: 'rgba(var(--semi-green-5), 1)' }} />
-                        ) : (
-                          <IconStarStroked />
-                        )
-                      }
-                      theme="light"
-                      shape="circle"
-                      size="small"
-                      className="listingsGrid__watchButton"
-                      onClick={(e) => handleWatch(e, item)}
-                    />
-                  </div>
-                  {!item.is_active && <div className="listingsGrid__inactiveOverlay">Inactive</div>}
+          <div
+            key={item.id}
+            className="listingsGrid__card"
+            style={{ cursor: 'pointer' }}
+            role="button"
+            tabIndex={0}
+            onClick={() => navigate(`/listings/listing/${item.id}`)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') navigate(`/listings/listing/${item.id}`);
+            }}
+          >
+            <div className="listingsGrid__card__image-wrapper">
+              <img
+                src={item.image_url || no_image}
+                alt={item.title}
+                onError={(e) => {
+                  e.target.src = no_image;
+                }}
+              />
+              {!item.is_active && (
+                <div className="listingsGrid__card__inactive-watermark">
+                  <span>Inactive</span>
                 </div>
-              }
-              bodyStyle={{ padding: '12px' }}
-            >
-              <div className="listingsGrid__content">
-                <Text strong ellipsis={{ showTooltip: true }} className="listingsGrid__title">
-                  {cap(item.title)}
-                </Text>
-                <div className="listingsGrid__price">
-                  <IconCart size="small" />
-                  {item.price} €
-                </div>
-                <div className="listingsGrid__meta">
-                  <Text
-                    type="secondary"
-                    icon={<IconMapPin />}
-                    size="small"
-                    ellipsis={{ showTooltip: true }}
-                    style={{ width: '100%' }}
-                  >
-                    {item.address || 'No address provided'}
-                  </Text>
-                  <Space spacing={12} wrap>
-                    <Text type="tertiary" size="small" icon={<IconBriefcase />}>
-                      {item.provider.charAt(0).toUpperCase() + item.provider.slice(1)}
-                    </Text>
-                    <Text type="tertiary" size="small" icon={<IconClock />}>
-                      {timeService.format(item.created_at, false)}
-                    </Text>
-                  </Space>
-                  {item.distance_to_destination ? (
-                    <Text type="tertiary" size="small" icon={<IconActivity />}>
-                      {item.distance_to_destination} m to chosen address
-                    </Text>
-                  ) : (
-                    <Text type="tertiary" size="small" icon={<IconActivity />}>
-                      Distance cannot be calculated
-                    </Text>
-                  )}
-                </div>
-                <Divider margin=".6rem" />
-                <div className="listingsGrid__actions">
-                  <div className="listingsGrid__linkButton" onClick={(e) => e.stopPropagation()}>
-                    <a href={item.link} target="_blank" rel="noopener noreferrer">
-                      <IconLink />
-                    </a>
-                  </div>
-                  <Button
-                    type="secondary"
-                    size="small"
-                    title="View Details"
-                    onClick={() => navigate(`/listings/listing/${item.id}`)}
-                    icon={<IconEyeOpened />}
-                  />
-                  <Button
-                    title="Remove"
-                    type="danger"
-                    size="small"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setListingToDelete(item.id);
-                      setDeleteModalVisible(true);
-                    }}
-                    icon={<IconDelete />}
-                  />
-                </div>
+              )}
+              <button
+                type="button"
+                className="listingsGrid__card__star"
+                onClick={(e) => handleWatch(e, item)}
+                aria-label={item.isWatched === 1 ? 'Remove from watchlist' : 'Add to watchlist'}
+              >
+                {item.isWatched === 1 ? <IconStar /> : <IconStarStroked />}
+              </button>
+            </div>
+
+            <div className="listingsGrid__card__body">
+              <div className="listingsGrid__card__title" title={item.title}>
+                {item.title}
               </div>
-            </Card>
-          </Col>
+              {item.price && (
+                <div className="listingsGrid__card__price">
+                  <IconCart size="small" />
+                  {item.price}
+                </div>
+              )}
+              {item.address && (
+                <div className="listingsGrid__card__meta">
+                  <IconMapPin />
+                  {item.address}
+                </div>
+              )}
+              <div className="listingsGrid__card__meta">
+                <IconBriefcase />
+                {item.provider}
+              </div>
+              <div className="listingsGrid__card__provider">{timeService.format(item.created_at, false)}</div>
+            </div>
+
+            <div className="listingsGrid__card__actions" onClick={(e) => e.stopPropagation()}>
+              <Tooltip content="Original Listing">
+                <Button
+                  size="small"
+                  icon={<IconLink />}
+                  style={{ color: '#60a5fa' }}
+                  theme="borderless"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    window.open(item.link, '_blank');
+                  }}
+                />
+              </Tooltip>
+              <Tooltip content="View in Fredy">
+                <Button
+                  size="small"
+                  icon={<IconEyeOpened />}
+                  style={{ color: '#34d399' }}
+                  theme="borderless"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/listings/listing/${item.id}`);
+                  }}
+                />
+              </Tooltip>
+              <Tooltip content="Remove">
+                <Button
+                  size="small"
+                  icon={<IconDelete />}
+                  style={{ color: '#fb7185' }}
+                  theme="borderless"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setListingToDelete(item.id);
+                    setDeleteModalVisible(true);
+                  }}
+                />
+              </Tooltip>
+            </div>
+          </div>
         ))}
-      </Row>
+      </div>
       {(listingsData?.result || []).length > 0 && (
         <div className="listingsGrid__pagination">
           <Pagination

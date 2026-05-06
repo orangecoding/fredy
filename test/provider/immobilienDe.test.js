@@ -78,7 +78,7 @@ describe('#immobilien.de testsuite()', () => {
         expect(listing.link).toContain('https://www.immobilien.de');
         expect(listing.address).toBeTypeOf('string');
         expect(listing.address).not.toBe('');
-        // description may be null if selectors don't match yet — falls back gracefully
+        // description may be null if selectors don't match yet - falls back gracefully
         if (listing.description != null) {
           expect(listing.description).toBeTypeOf('string');
         }

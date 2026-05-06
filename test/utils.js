@@ -22,6 +22,23 @@ vi.mock('../lib/services/storage/jobStorage.js', () => ({
 }));
 vi.mock('../lib/notification/notify.js', () => ({ send }));
 
+vi.mock('../lib/services/extractor/puppeteerExtractor.js', async (importOriginal) => {
+  if (process.env.TEST_MODE !== 'offline') {
+    return importOriginal();
+  }
+  const { readFixture } = await import('./offlineFixtures.js');
+  return {
+    default: (url) => readFixture(url),
+    launchBrowser: async () => ({ close: async () => {}, __fredy_removeUserDataDir: false }),
+    closeBrowser: async () => {},
+  };
+});
+
+if (process.env.TEST_MODE === 'offline') {
+  const { buildFetchMock } = await import('./offlineFixtures.js');
+  vi.stubGlobal('fetch', buildFetchMock());
+}
+
 /**
  * @returns {Promise<typeof import('../lib/FredyPipelineExecutioner.js').default>}
  */

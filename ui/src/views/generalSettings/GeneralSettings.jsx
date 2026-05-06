@@ -30,6 +30,7 @@ import {
 } from '../../services/backupRestoreClient';
 import { IconSave, IconRefresh, IconSignal, IconHome, IconFolder } from '@douyinfe/semi-icons';
 import { debounce } from '../../utils';
+import Headline from '../../components/headline/Headline.jsx';
 import './GeneralSettings.less';
 
 function formatFromTimestamp(ts) {
@@ -61,6 +62,7 @@ const GeneralSettings = function GeneralSettings() {
   const [demoMode, setDemoMode] = React.useState(null);
   const [analyticsEnabled, setAnalyticsEnabled] = React.useState(null);
   const [sqlitePath, setSqlitePath] = React.useState(null);
+  const [baseUrl, setBaseUrl] = React.useState('');
   const fileInputRef = React.useRef(null);
   const [restoreModalVisible, setRestoreModalVisible] = React.useState(false);
   const [precheckInfo, setPrecheckInfo] = React.useState(null);
@@ -94,6 +96,7 @@ const GeneralSettings = function GeneralSettings() {
       setAnalyticsEnabled(settings?.analyticsEnabled || false);
       setDemoMode(settings?.demoMode || false);
       setSqlitePath(settings?.sqlitepath);
+      setBaseUrl(settings?.baseUrl ?? '');
     }
 
     init();
@@ -137,6 +140,7 @@ const GeneralSettings = function GeneralSettings() {
         demoMode,
         analyticsEnabled,
         sqlitepath: sqlitePath,
+        baseUrl,
       });
     } catch (exception) {
       console.error(exception);
@@ -241,6 +245,7 @@ const GeneralSettings = function GeneralSettings() {
 
   return (
     <div className="generalSettings">
+      <Headline text="Settings" />
       {!loading && (
         <>
           <Tabs type="line">
@@ -267,6 +272,13 @@ const GeneralSettings = function GeneralSettings() {
                 </SegmentPart>
 
                 <SegmentPart
+                  name="Base URL"
+                  helpText="Public URL where Fredy is reachable (e.g. http://192.168.1.10:9998). Used for 'Open in Fredy' links in notifications."
+                >
+                  <Input type="text" placeholder="Base-Url" value={baseUrl} onChange={(value) => setBaseUrl(value)} />
+                </SegmentPart>
+
+                <SegmentPart
                   name="SQLite Database Path"
                   helpText="The directory where Fredy stores its SQLite database files."
                 >
@@ -287,7 +299,7 @@ const GeneralSettings = function GeneralSettings() {
 
                 <SegmentPart
                   name="Analytics"
-                  helpText="Anonymous usage data to help improve Fredy — provider names, adapter names, OS, Node version, and architecture."
+                  helpText="Anonymous usage data to help improve Fredy - provider names, adapter names, OS, Node version, and architecture."
                 >
                   <Checkbox checked={analyticsEnabled} onChange={(e) => setAnalyticsEnabled(e.target.checked)}>
                     Enable analytics

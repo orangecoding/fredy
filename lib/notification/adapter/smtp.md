@@ -17,6 +17,7 @@ Multiple recipients:
 
 Common SMTP settings:
 
-- **Gmail** — `smtp.gmail.com`, port 587, secure: false
-- **Outlook** — `smtp.office365.com`, port 587, secure: false
-- **Yahoo** — `smtp.mail.yahoo.com`, port 465, secure: true
+- **Gmail** - `smtp.gmail.com`, port 587, secure: false
+- **Outlook** - `smtp.office365.com`, port 587, secure: false
+- **Yahoo** - `smtp.mail.yahoo.com`, port 465, secure: true
+- **Gmx** - `mail.gmx.net`, port 587, secure: true

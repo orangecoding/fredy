@@ -1,9 +1,7 @@
+@import '../../tokens.less';
+
 .listing-detail {
   padding-bottom: 2rem;
-
-  &__back {
-    margin-bottom: 1.5rem;
-  }
 
   &__card {
     background-color: rgba(36, 36, 36, 0.9);
@@ -45,14 +43,6 @@
     }
   }
 
-  &__title {
-    margin: 0 !important;
-    word-break: break-word;
-    @media (max-width: 768px) {
-      font-size: 1.5rem;
-    }
-  }
-
   &__image-container {
     width: 100%;
     height: 400px;
@@ -69,7 +59,68 @@
     img {
       width: 100%;
       height: 100%;
-      object-fit: contain;
+      object-fit: cover;
+    }
+
+    .semi-image,
+    .semi-image-img {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+      display: block !important;
+    }
+
+    &--placeholder {
+      img,
+      .semi-image-img {
+        object-fit: contain !important;
+      }
+    }
+  }
+
+  &__address-link {
+    color: @color-muted;
+    text-decoration: none;
+    font-size: @text-base;
+    transition: color @transition-fast;
+    &:hover {
+      color: @color-text;
+      text-decoration: underline;
+    }
+  }
+
+  &__watch-btn {
+    color: @color-muted !important;
+    border: 1px solid @color-border-bright !important;
+    border-radius: @radius-btn !important;
+    &:hover {
+      color: @color-text !important;
+      background: rgba(255,255,255,0.06) !important;
+    }
+    &--active {
+      color: @color-accent !important;
+      border-color: rgba(224,74,56,0.4) !important;
+      background: rgba(224,74,56,0.08) !important;
+    }
+  }
+
+  &__open-btn {
+    display: inline-flex;
+    align-items: center;
+    height: 32px;
+    padding: 0 12px;
+    border: 1px solid @color-border-bright;
+    border-radius: @radius-btn;
+    color: @color-muted;
+    font-size: @text-base;
+    font-family: @font-ui;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color @transition-fast, border-color @transition-fast, background @transition-fast;
+    &:hover {
+      color: @color-text;
+      border-color: rgba(255,255,255,0.25);
+      background: rgba(255,255,255,0.06);
     }
   }
 

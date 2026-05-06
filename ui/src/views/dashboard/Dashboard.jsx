@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { Button, Col, Row, Toast, Typography } from '@douyinfe/semi-ui-19';
+import { Button, Col, Row, Toast } from '@douyinfe/semi-ui-19';
 import {
   IconTerminal,
   IconStar,
@@ -20,6 +20,7 @@ import {
 import { useSelector, useActions } from '../../services/state/store';
 import KpiCard from '../../components/cards/KpiCard.jsx';
 import PieChartCard from '../../components/cards/PieChartCard.jsx';
+import Headline from '../../components/headline/Headline.jsx';
 
 import './Dashboard.less';
 import { xhrPost } from '../../services/xhr.js';
@@ -34,11 +35,12 @@ export default function Dashboard() {
 
   const kpis = dashboard?.kpis || { totalJobs: 0, totalListings: 0, providersUsed: 0 };
   const pieData = dashboard?.pie || [];
-  const { Text } = Typography;
 
   return (
     <div className="dashboard">
-      <Text className="dashboard__section-label">General</Text>
+      <Headline text="Dashboard" />
+
+      <div className="dashboard__section-label">General</div>
       <Row gutter={[16, 16]} className="dashboard__row">
         <Col xs={24} sm={12} md={12} lg={6} xl={6}>
           <KpiCard
@@ -51,7 +53,6 @@ export default function Dashboard() {
         <Col xs={24} sm={12} md={12} lg={6} xl={6}>
           <KpiCard
             title="Last Search"
-            valueFontSize="14px"
             value={
               dashboard?.general?.lastRun == null || dashboard?.general?.lastRun === 0
                 ? '---'
@@ -69,7 +70,6 @@ export default function Dashboard() {
                 ? '---'
                 : format(dashboard?.general?.nextRun)
             }
-            valueFontSize="14px"
             icon={<IconDoubleChevronRight />}
             description="Next execution timestamp"
           />
@@ -96,7 +96,7 @@ export default function Dashboard() {
         </Col>
       </Row>
 
-      <Text className="dashboard__section-label">Overview</Text>
+      <div className="dashboard__section-label">Overview</div>
       <Row gutter={[16, 16]} className="dashboard__row">
         <Col xs={24} sm={12} md={12} lg={6} xl={6}>
           <KpiCard
@@ -127,23 +127,22 @@ export default function Dashboard() {
         </Col>
         <Col xs={24} sm={12} md={12} lg={6} xl={6}>
           <KpiCard
-            title="Avg. Price"
+            title="Median Price"
             color="purple"
             value={`${
-              !kpis.avgPriceOfListings
+              !kpis.medianPriceOfListings
                 ? '---'
-                : new Intl.NumberFormat('de-DE', {
-                    style: 'currency',
-                    currency: 'EUR',
-                  }).format(kpis.avgPriceOfListings)
+                : new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(
+                    kpis.medianPriceOfListings,
+                  )
             }`}
             icon={<IconNoteMoney />}
-            description="Avg. Price of listings"
+            description="Median Price of listings"
           />
         </Col>
       </Row>
 
-      <Text className="dashboard__section-label">Provider Insights</Text>
+      <div className="dashboard__section-label">Provider Insights</div>
       <div className="dashboard__pie-wrapper">
         <PieChartCard data={pieData} />
       </div>
