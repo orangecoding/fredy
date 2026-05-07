@@ -335,6 +335,20 @@ export const useFredyState = create(
               throw Exception;
             }
           },
+          async setJobsViewMode(jobs_view_mode) {
+            try {
+              await xhrPost('/api/user/settings/jobs-view-mode', { jobs_view_mode });
+              set((state) => ({
+                userSettings: {
+                  ...state.userSettings,
+                  settings: { ...state.userSettings.settings, jobs_view_mode },
+                },
+              }));
+            } catch (Exception) {
+              console.error('Error while trying to update jobs view mode setting. Error:', Exception);
+              throw Exception;
+            }
+          },
         },
       };
 

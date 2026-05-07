@@ -21,6 +21,7 @@ import {
   Empty,
   Radio,
   RadioGroup,
+  Tooltip,
 } from '@douyinfe/semi-ui-19';
 import {
   IconAlertTriangle,
@@ -35,6 +36,8 @@ import {
   IconArrowUp,
   IconArrowDown,
   IconHome,
+  IconGridView,
+  IconList,
 } from '@douyinfe/semi-icons';
 import { useNavigate } from 'react-router-dom';
 import ListingDeletionModal from '../../ListingDeletionModal.jsx';
@@ -42,6 +45,7 @@ import { useActions, useSelector } from '../../../services/state/store.js';
 import { xhrDelete, xhrPut, xhrPost } from '../../../services/xhr.js';
 import { debounce } from '../../../utils';
 import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-illustrations';
+import JobsTable from '../../table/JobsTable.jsx';
 
 import './JobGrid.less';
 
@@ -53,6 +57,9 @@ const JobGrid = () => {
   const jobsData = useSelector((state) => state.jobsData);
   const actions = useActions();
   const navigate = useNavigate();
+
+  const userSettings = useSelector((state) => state.userSettings.settings);
+  const viewMode = userSettings?.jobs_view_mode ?? 'grid';
 
   const [page, setPage] = useState(1);
   const pageSize = 12;
@@ -234,6 +241,27 @@ const JobGrid = () => {
           onClick={() => setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))}
           title={sortDir === 'asc' ? 'Ascending' : 'Descending'}
         />
+
+        <div className="jobGrid__topbar__view-toggle">
+          <Tooltip content="Grid view">
+            <Button
+              icon={<IconGridView />}
+              theme={viewMode === 'grid' ? 'solid' : 'borderless'}
+              onClick={() => actions.userSettings.setJobsViewMode('grid')}
+              aria-label="Grid view"
+              aria-pressed={viewMode === 'grid'}
+            />
+          </Tooltip>
+          <Tooltip content="Table view">
+            <Button
+              icon={<IconList />}
+              theme={viewMode === 'table' ? 'solid' : 'borderless'}
+              onClick={() => actions.userSettings.setJobsViewMode('table')}
+              aria-label="Table view"
+              aria-pressed={viewMode === 'table'}
+            />
+          </Tooltip>
+        </div>
       </div>
 
       {(jobsData?.result || []).length === 0 && (
@@ -244,136 +272,144 @@ const JobGrid = () => {
         />
       )}
 
-      <Row gutter={[16, 16]}>
-        {(jobsData?.result || []).map((job) => (
-          <Col key={job.id} xs={24} sm={12} md={12} lg={8} xl={8} xxl={6}>
-            <Card className="jobGrid__card" bodyStyle={{ padding: '16px' }}>
-              <div className="jobGrid__card__header">
-                <div className="jobGrid__card__name">
-                  <span className={`jobGrid__card__dot${job.enabled ? ' jobGrid__card__dot--active' : ''}`} />
-                  <Title heading={5} ellipsis={{ showTooltip: true }} className="jobGrid__title">
-                    {job.name}
-                  </Title>
+      {viewMode === 'grid' ? (
+        <Row gutter={[16, 16]}>
+          {(jobsData?.result || []).map((job) => (
+            <Col key={job.id} xs={24} sm={12} md={12} lg={8} xl={8} xxl={6}>
+              <Card className="jobGrid__card" bodyStyle={{ padding: '16px' }}>
+                <div className="jobGrid__card__header">
+                  <div className="jobGrid__card__name">
+                    <span className={`jobGrid__card__dot${job.enabled ? ' jobGrid__card__dot--active' : ''}`} />
+                    <Title heading={5} ellipsis={{ showTooltip: true }} className="jobGrid__title">
+                      {job.name}
+                    </Title>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+                    {job.isOnlyShared && (
+                      <Popover content={getPopoverContent('This job has been shared with you — read only.')}>
+                        <div>
+                          <IconAlertTriangle style={{ color: 'rgba(var(--semi-yellow-7), 1)' }} />
+                        </div>
+                      </Popover>
+                    )}
+                    {job.running && (
+                      <Tag color="green" variant="light" size="small">
+                        RUNNING
+                      </Tag>
+                    )}
+                  </div>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
-                  {job.isOnlyShared && (
-                    <Popover
-                      content={getPopoverContent(
-                        'This job has been shared with you by another user, therefor it is read-only.',
-                      )}
-                    >
+
+                <div className="jobGrid__card__stats">
+                  <div className="jobGrid__card__stat jobGrid__card__stat--blue">
+                    <span className="jobGrid__card__stat__number">{job.numberOfFoundListings || 0}</span>
+                    <span className="jobGrid__card__stat__label">
+                      <IconHome size="small" /> Listings
+                    </span>
+                  </div>
+                  <div className="jobGrid__card__stat jobGrid__card__stat--orange">
+                    <span className="jobGrid__card__stat__number">{job.provider?.length || 0}</span>
+                    <span className="jobGrid__card__stat__label">
+                      <IconBriefcase size="small" /> Providers
+                    </span>
+                  </div>
+                  <div className="jobGrid__card__stat jobGrid__card__stat--purple">
+                    <span className="jobGrid__card__stat__number">{job.notificationAdapter?.length || 0}</span>
+                    <span className="jobGrid__card__stat__label">
+                      <IconBell size="small" /> Adapters
+                    </span>
+                  </div>
+                </div>
+
+                <Divider margin="12px" />
+
+                <div className="jobGrid__card__footer">
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <Switch
+                      onChange={(checked) => onJobStatusChanged(job.id, checked)}
+                      checked={job.enabled}
+                      disabled={job.isOnlyShared}
+                      size="small"
+                    />
+                    <Text type="secondary" size="small">
+                      Active
+                    </Text>
+                  </div>
+                  <div className="jobGrid__actions">
+                    <Popover content={getPopoverContent('Run Job')}>
                       <div>
-                        <IconAlertTriangle style={{ color: 'rgba(var(--semi-yellow-7), 1)' }} />
+                        <Button
+                          type="primary"
+                          style={{ background: '#21aa21b5' }}
+                          size="small"
+                          theme="solid"
+                          icon={<IconPlayCircle />}
+                          disabled={job.isOnlyShared || job.running}
+                          onClick={() => onJobRun(job.id)}
+                        />
                       </div>
                     </Popover>
-                  )}
-                  {job.running && (
-                    <Tag color="green" variant="light" size="small">
-                      RUNNING
-                    </Tag>
-                  )}
+                    <Popover content={getPopoverContent('Edit a Job')}>
+                      <div>
+                        <Button
+                          type="secondary"
+                          size="small"
+                          icon={<IconEdit />}
+                          disabled={job.isOnlyShared}
+                          onClick={() => navigate(`/jobs/edit/${job.id}`)}
+                        />
+                      </div>
+                    </Popover>
+                    <Popover content={getPopoverContent('Clone Job')}>
+                      <div>
+                        <Button
+                          type="tertiary"
+                          size="small"
+                          icon={<IconCopy />}
+                          disabled={job.isOnlyShared}
+                          onClick={() => navigate('/jobs/new', { state: { cloneFrom: job.id } })}
+                        />
+                      </div>
+                    </Popover>
+                    <Popover content={getPopoverContent('Delete all found Listings of this Job')}>
+                      <div>
+                        <Button
+                          type="danger"
+                          size="small"
+                          icon={<IconDescend2 />}
+                          disabled={job.isOnlyShared}
+                          onClick={() => onListingRemoval(job.id)}
+                        />
+                      </div>
+                    </Popover>
+                    <Popover content={getPopoverContent('Delete Job')}>
+                      <div>
+                        <Button
+                          type="danger"
+                          size="small"
+                          icon={<IconDelete />}
+                          disabled={job.isOnlyShared}
+                          onClick={() => onJobRemoval(job.id)}
+                        />
+                      </div>
+                    </Popover>
+                  </div>
                 </div>
-              </div>
-
-              <div className="jobGrid__card__stats">
-                <div className="jobGrid__card__stat jobGrid__card__stat--blue">
-                  <span className="jobGrid__card__stat__number">{job.numberOfFoundListings || 0}</span>
-                  <span className="jobGrid__card__stat__label">
-                    <IconHome size="small" /> Listings
-                  </span>
-                </div>
-                <div className="jobGrid__card__stat jobGrid__card__stat--orange">
-                  <span className="jobGrid__card__stat__number">{job.provider.length || 0}</span>
-                  <span className="jobGrid__card__stat__label">
-                    <IconBriefcase size="small" /> Providers
-                  </span>
-                </div>
-                <div className="jobGrid__card__stat jobGrid__card__stat--purple">
-                  <span className="jobGrid__card__stat__number">{job.notificationAdapter.length || 0}</span>
-                  <span className="jobGrid__card__stat__label">
-                    <IconBell size="small" /> Adapters
-                  </span>
-                </div>
-              </div>
-
-              <Divider margin="12px" />
-
-              <div className="jobGrid__card__footer">
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <Switch
-                    onChange={(checked) => onJobStatusChanged(job.id, checked)}
-                    checked={job.enabled}
-                    disabled={job.isOnlyShared}
-                    size="small"
-                  />
-                  <Text type="secondary" size="small">
-                    Active
-                  </Text>
-                </div>
-                <div className="jobGrid__actions">
-                  <Popover content={getPopoverContent('Run Job')}>
-                    <div>
-                      <Button
-                        type="primary"
-                        style={{ background: '#21aa21b5' }}
-                        size="small"
-                        theme="solid"
-                        icon={<IconPlayCircle />}
-                        disabled={job.isOnlyShared || job.running}
-                        onClick={() => onJobRun(job.id)}
-                      />
-                    </div>
-                  </Popover>
-                  <Popover content={getPopoverContent('Edit a Job')}>
-                    <div>
-                      <Button
-                        type="secondary"
-                        size="small"
-                        icon={<IconEdit />}
-                        disabled={job.isOnlyShared}
-                        onClick={() => navigate(`/jobs/edit/${job.id}`)}
-                      />
-                    </div>
-                  </Popover>
-                  <Popover content={getPopoverContent('Clone Job')}>
-                    <div>
-                      <Button
-                        type="tertiary"
-                        size="small"
-                        icon={<IconCopy />}
-                        disabled={job.isOnlyShared}
-                        onClick={() => navigate('/jobs/new', { state: { cloneFrom: job.id } })}
-                      />
-                    </div>
-                  </Popover>
-                  <Popover content={getPopoverContent('Delete all found Listings of this Job')}>
-                    <div>
-                      <Button
-                        type="danger"
-                        size="small"
-                        icon={<IconDescend2 />}
-                        disabled={job.isOnlyShared}
-                        onClick={() => onListingRemoval(job.id)}
-                      />
-                    </div>
-                  </Popover>
-                  <Popover content={getPopoverContent('Delete Job')}>
-                    <div>
-                      <Button
-                        type="danger"
-                        size="small"
-                        icon={<IconDelete />}
-                        disabled={job.isOnlyShared}
-                        onClick={() => onJobRemoval(job.id)}
-                      />
-                    </div>
-                  </Popover>
-                </div>
-              </div>
-            </Card>
-          </Col>
-        ))}
-      </Row>
+              </Card>
+            </Col>
+          ))}
+        </Row>
+      ) : (
+        <JobsTable
+          jobs={jobsData?.result || []}
+          onRun={onJobRun}
+          onEdit={(id) => navigate(`/jobs/edit/${id}`)}
+          onClone={(id) => navigate('/jobs/new', { state: { cloneFrom: id } })}
+          onDeleteListings={onListingRemoval}
+          onDeleteJob={onJobRemoval}
+          onStatusChange={onJobStatusChanged}
+        />
+      )}
       {(jobsData?.result || []).length > 0 && jobsData?.totalNumber > 12 && (
         <div className="jobGrid__pagination">
           <Pagination
