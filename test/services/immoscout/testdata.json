@@ -18,5 +18,9 @@
   "rentHouse": {
     "url": "https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/duesseldorf/haus-mieten?enteredFrom=one_step_search",
     "type": "houserent"
+  },
+  "buyHouseWithShape": {
+    "url": "https://www.immobilienscout24.de/Suche/shape/haus-kaufen?shape=aW9yfkhfa3htQXJgUGlnYEBmekhte3BAcXNAfWBsQGNyQ2lkUHVvbEB3eX5Ab25WYn5Fa2BLaGRQY29FaGtTfEhme3xBdHBEdHFMamlHbmdRfHhMcmxPeHlWYnpS&price=-600000.0&ground=240.0-&enteredFrom=result_list",
+    "type": "housebuy"
   }
 }

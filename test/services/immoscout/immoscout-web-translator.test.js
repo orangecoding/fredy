@@ -10,6 +10,17 @@ import { readFile } from 'fs/promises';
 export const testData = JSON.parse(await readFile(new URL('./testdata.json', import.meta.url)));
 
 describe('#immoscout-mobile URL conversion', () => {
+  // Test shape URL conversion
+  it('should convert a full web URL with shape to mobile URL', () => {
+    const webUrl =
+      'https://www.immobilienscout24.de/Suche/shape/haus-kaufen?shape=aW9yfkhfa3htQXJgUGlnYEBmekhte3BAcXNAfWBsQGNyQ2lkUHVvbEB3eX5Ab25WYn5Fa2BLaGRQY29FaGtTfEhme3xBdHBEdHFMamlHbmdRfHhMcmxPeHlWYnpS&price=-600000.0&ground=240.0-&enteredFrom=result_list';
+    const expectedMobileUrl =
+      'https://api.mobile.immobilienscout24.de/search/list?ground=240.0-&price=-600000.0&realestatetype=housebuy&searchType=shape&shape=ior~H_kxmAr%60Pig%60%40fzHm%7Bp%40qs%40%7D%60l%40crCidPuol%40wy~%40onVb~Ek%60KhdPcoEhkS%7CHf%7B%7CAtpDtqLjiGngQ%7CxLrlOxyVbzR';
+
+    const actualMobileUrl = convertWebToMobile(webUrl);
+    expect(actualMobileUrl).toBe(expectedMobileUrl);
+  });
+
   // Test URL conversion
   it('should convert a full web URL to mobile URL', () => {
     const webUrl =
