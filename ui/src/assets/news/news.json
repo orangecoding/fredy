@@ -1,10 +1,11 @@
 {
-  "key": "00e6b81777a275f5a140fc9101cb943810db6a69f6eb3927319c5aee0c876542",
+  "key": "00e6b81777a275f5a140fc9101cb943810db6a69f6eb3927319c5aee0c876515",
   "content":
 [
   {
-    "title": "Open in...Fredy ;)",
-    "text": "With the latest version of Fredy, every notification now comes with a link that opens the listing directly inside Fredy. This is also a key step toward an upcoming...milestone :).<br/>To make this work, Fredy needs to know where it lives on the network. We try to guess the public base URL, but let’s be honest, you probably know better. Take a quick look at the baseUrl in the system settings and fix it if it looks off."
+    "title": "Table overview for listings",
+    "text": "Thanks to https://github.com/datenwurm, we now have a table overview for listings. If you decide to use the table view, the decision will be stored.",
+    "media": "1.png"
   }
 ]
 }
