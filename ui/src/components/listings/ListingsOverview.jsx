@@ -197,7 +197,7 @@ const ListingsOverview = () => {
 
         <Button
           icon={sortDir === 'asc' ? <IconArrowUp /> : <IconArrowDown />}
-          onClick={() => setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))}
+          onClick={() => setSortDir(sortDir === 'asc' ? 'desc' : 'asc')}
           title={sortDir === 'asc' ? 'Ascending' : 'Descending'}
         />
 
