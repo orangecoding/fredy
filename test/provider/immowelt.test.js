@@ -9,10 +9,14 @@ import { mockFredy, providerConfig } from '../utils.js';
 import { expect, vi } from 'vitest';
 import * as provider from '../../lib/provider/immowelt.js';
 import * as mockStore from '../mocks/mockStore.js';
+import * as puppeteerExtractorMod from '../../lib/services/extractor/puppeteerExtractor.js';
 
-// Immowelt is a React SPA; with CloakBrowser's humanise layer the page can take
-// longer to render the selector than the global 60 s testTimeout allows.
-const TEST_TIMEOUT = 120_000;
+// Immowelt is a React SPA behind a CDN that challenges cold sessions.
+// The main test uses a fresh browser with homepage pre-navigation to warm up.
+// The detail test intercepts the search URL with the offline fixture so only
+// individual listing detail pages are fetched live (they are less aggressively
+// protected than the search endpoint).
+const TEST_TIMEOUT = 180_000;
 
 describe('#immowelt testsuite()', () => {
   it(
@@ -63,9 +67,24 @@ describe('#immowelt testsuite()', () => {
   );
 
   describe('with provider_details enabled', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       vi.spyOn(mockStore, 'getUserSettings').mockReturnValue({ provider_details: [provider.metaInformation.id] });
       vi.spyOn(mockStore, 'getKnownListingHashesForJobAndProvider').mockReturnValue([]);
+
+      // Serve the offline fixture for the search URL to avoid hitting the
+      // CDN-protected search endpoint a second time. Individual detail pages
+      // (fetched by fetchDetails) are less aggressively protected and go live.
+      const { readFixture } = await import('../offlineFixtures.js');
+      const listPath = new URL(providerConfig.immowelt.url).pathname;
+      const realExtract = puppeteerExtractorMod.default;
+      vi.spyOn(puppeteerExtractorMod, 'default').mockImplementation(async (url, sel, opts) => {
+        try {
+          if (new URL(url).pathname === listPath) return readFixture(url);
+        } catch {
+          // pass through malformed URLs
+        }
+        return realExtract(url, sel, opts);
+      });
     });
 
     afterEach(() => {
