@@ -29,7 +29,7 @@ vi.mock('../lib/services/extractor/puppeteerExtractor.js', async (importOriginal
   const { readFixture } = await import('./offlineFixtures.js');
   return {
     default: (url) => readFixture(url),
-    launchBrowser: async () => ({ close: async () => {}, __fredy_removeUserDataDir: false }),
+    launchBrowser: async () => ({ close: async () => {}, isConnected: () => true }),
     closeBrowser: async () => {},
   };
 });
