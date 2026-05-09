@@ -10,49 +10,57 @@ import { expect, vi } from 'vitest';
 import * as provider from '../../lib/provider/immowelt.js';
 import * as mockStore from '../mocks/mockStore.js';
 
+// Immowelt is a React SPA; with CloakBrowser's humanise layer the page can take
+// longer to render the selector than the global 60 s testTimeout allows.
+const TEST_TIMEOUT = 120_000;
+
 describe('#immowelt testsuite()', () => {
-  it('should test immowelt provider', async () => {
-    const Fredy = await mockFredy();
-    const mockedJob = {
-      id: 'immowelt',
-      notificationAdapter: null,
-      spatialFilter: null,
-      specFilter: null,
-    };
-    provider.init(providerConfig.immowelt, [], []);
+  it(
+    'should test immowelt provider',
+    async () => {
+      const Fredy = await mockFredy();
+      const mockedJob = {
+        id: 'immowelt',
+        notificationAdapter: null,
+        spatialFilter: null,
+        specFilter: null,
+      };
+      provider.init(providerConfig.immowelt, [], []);
 
-    const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache, undefined);
+      const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache, undefined);
 
-    const listing = await fredy.execute();
+      const listing = await fredy.execute();
 
-    if (listing == null || listing.length === 0) {
-      throw new Error('Listings is empty!');
-    }
-
-    expect(listing).toBeInstanceOf(Array);
-    const notificationObj = get();
-    expect(notificationObj).toBeTypeOf('object');
-    expect(notificationObj.serviceName).toBe('immowelt');
-    notificationObj.payload.forEach((notify) => {
-      /** check the actual structure **/
-      expect(notify.id).toBeTypeOf('string');
-      if (notify.price != null) {
-        expect(notify.price).toBeTypeOf('string');
-        expect(notify.price).toContain('€');
+      if (listing == null || listing.length === 0) {
+        throw new Error('Listings is empty!');
       }
-      expect(notify.title).toBeTypeOf('string');
-      expect(notify.link).toBeTypeOf('string');
-      expect(notify.address).toBeTypeOf('string');
-      /** check the values if possible **/
-      if (notify.size != null && notify.size.trim().toLowerCase() !== 'k.a.') {
-        expect(notify.size).toBeTypeOf('string');
-        expect(notify.size).toContain('m²');
-      }
-      expect(notify.title).not.toBe('');
-      expect(notify.link).toContain('https://www.immowelt.de');
-      expect(notify.address).not.toBe('');
-    });
-  });
+
+      expect(listing).toBeInstanceOf(Array);
+      const notificationObj = get();
+      expect(notificationObj).toBeTypeOf('object');
+      expect(notificationObj.serviceName).toBe('immowelt');
+      notificationObj.payload.forEach((notify) => {
+        /** check the actual structure **/
+        expect(notify.id).toBeTypeOf('string');
+        if (notify.price != null) {
+          expect(notify.price).toBeTypeOf('string');
+          expect(notify.price).toContain('€');
+        }
+        expect(notify.title).toBeTypeOf('string');
+        expect(notify.link).toBeTypeOf('string');
+        expect(notify.address).toBeTypeOf('string');
+        /** check the values if possible **/
+        if (notify.size != null && notify.size.trim().toLowerCase() !== 'k.a.') {
+          expect(notify.size).toBeTypeOf('string');
+          expect(notify.size).toContain('m²');
+        }
+        expect(notify.title).not.toBe('');
+        expect(notify.link).toContain('https://www.immowelt.de');
+        expect(notify.address).not.toBe('');
+      });
+    },
+    TEST_TIMEOUT,
+  );
 
   describe('with provider_details enabled', () => {
     beforeEach(() => {
@@ -64,29 +72,33 @@ describe('#immowelt testsuite()', () => {
       vi.restoreAllMocks();
     });
 
-    it('should enrich listings with details', async () => {
-      const Fredy = await mockFredy();
-      provider.init(providerConfig.immowelt, [], []);
-      const mockedJob = { id: 'immowelt', notificationAdapter: null, specFilter: null, spatialFilter: null };
+    it(
+      'should enrich listings with details',
+      async () => {
+        const Fredy = await mockFredy();
+        provider.init(providerConfig.immowelt, [], []);
+        const mockedJob = { id: 'immowelt', notificationAdapter: null, specFilter: null, spatialFilter: null };
 
-      const fredy = new Fredy(
-        provider.config,
-        mockedJob,
-        provider.metaInformation.id,
-        { checkAndAddEntry: () => false },
-        undefined,
-      );
-      const listings = await fredy.execute();
-      expect(listings).toBeInstanceOf(Array);
-      listings.forEach((listing) => {
-        expect(listing.link).toContain('https://www.immowelt.de');
-        expect(listing.address).toBeTypeOf('string');
-        expect(listing.address).not.toBe('');
-        // description is enriched from the detail page; falls back gracefully if blocked
-        if (listing.description != null) {
-          expect(listing.description).toBeTypeOf('string');
-        }
-      });
-    });
+        const fredy = new Fredy(
+          provider.config,
+          mockedJob,
+          provider.metaInformation.id,
+          { checkAndAddEntry: () => false },
+          undefined,
+        );
+        const listings = await fredy.execute();
+        expect(listings).toBeInstanceOf(Array);
+        listings.forEach((listing) => {
+          expect(listing.link).toContain('https://www.immowelt.de');
+          expect(listing.address).toBeTypeOf('string');
+          expect(listing.address).not.toBe('');
+          // description is enriched from the detail page; falls back gracefully if blocked
+          if (listing.description != null) {
+            expect(listing.description).toBeTypeOf('string');
+          }
+        });
+      },
+      TEST_TIMEOUT,
+    );
   });
 });

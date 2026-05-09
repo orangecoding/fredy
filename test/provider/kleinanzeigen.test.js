@@ -9,6 +9,7 @@ import { mockFredy, providerConfig } from '../utils.js';
 import { expect, vi } from 'vitest';
 import * as provider from '../../lib/provider/kleinanzeigen.js';
 import * as mockStore from '../mocks/mockStore.js';
+import * as puppeteerExtractorMod from '../../lib/services/extractor/puppeteerExtractor.js';
 
 describe('#kleinanzeigen testsuite()', () => {
   it('should test kleinanzeigen provider', async () => {
@@ -50,9 +51,26 @@ describe('#kleinanzeigen testsuite()', () => {
   });
 
   describe('with provider_details enabled', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       vi.spyOn(mockStore, 'getUserSettings').mockReturnValue({ provider_details: [provider.metaInformation.id] });
       vi.spyOn(mockStore, 'getKnownListingHashesForJobAndProvider').mockReturnValue([]);
+
+      // The main test above already made one live request to the search URL.
+      // A second fresh browser session hitting the same URL is rate-limited by
+      // kleinanzeigen. Serve the offline fixture for the search endpoint so only
+      // individual detail pages are fetched live, exercising enrichment without
+      // triggering rate limiting on the listing endpoint.
+      const { readFixture } = await import('../offlineFixtures.js');
+      const listPath = new URL(providerConfig.kleinanzeigen.url).pathname;
+      const realExtract = puppeteerExtractorMod.default;
+      vi.spyOn(puppeteerExtractorMod, 'default').mockImplementation(async (url, sel, opts) => {
+        try {
+          if (new URL(url).pathname === listPath) return readFixture(url);
+        } catch {
+          // pass through malformed URLs to the real extractor
+        }
+        return realExtract(url, sel, opts);
+      });
     });
 
     afterEach(() => {
