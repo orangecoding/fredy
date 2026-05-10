@@ -15,13 +15,14 @@ import { initGeocodingCron } from './lib/services/crons/geocoding-cron.js';
 import { getSettings } from './lib/services/storage/settingsStorage.js';
 import SqliteConnection, { computeDbPath } from './lib/services/storage/SqliteConnection.js';
 import { initJobExecutionService } from './lib/services/jobs/jobExecutionService.js';
-import { ensureBinary } from 'cloakbrowser';
+import { ensureValidBinary } from './lib/services/ensureValidBinary.js';
 
-// Ensure the CloakBrowser stealth Chromium binary is present before jobs run.
-// In Docker it is pre-baked at build time so this is instant; for direct
-// (non-Docker) installs it downloads on first start instead of crashing later.
+// Ensure the CloakBrowser stealth Chromium binary is present and complete before
+// jobs run.  ensureValidBinary() also detects and auto-heals partial extractions
+// (e.g. a newer version that was downloaded but only the chrome executable was
+// written) so Chrome never crashes with "Invalid file descriptor to ICU data".
 logger.info('Checking CloakBrowser binary...');
-await ensureBinary();
+await ensureValidBinary();
 logger.info('CloakBrowser binary ready.');
 
 //in the config, we store the path of the sqlite file, thus we must check if it is available
