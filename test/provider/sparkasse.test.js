@@ -9,6 +9,7 @@ import { mockFredy, providerConfig } from '../utils.js';
 import { expect, vi } from 'vitest';
 import * as provider from '../../lib/provider/sparkasse.js';
 import * as mockStore from '../mocks/mockStore.js';
+import * as puppeteerExtractorMod from '../../lib/services/extractor/puppeteerExtractor.js';
 
 describe('#sparkasse testsuite()', () => {
   it('should test sparkasse provider', async () => {
@@ -51,9 +52,24 @@ describe('#sparkasse testsuite()', () => {
   });
 
   describe('with provider_details enabled', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       vi.spyOn(mockStore, 'getUserSettings').mockReturnValue({ provider_details: [provider.metaInformation.id] });
       vi.spyOn(mockStore, 'getKnownListingHashesForJobAndProvider').mockReturnValue([]);
+
+      // Serve the offline fixture for the search URL to avoid hitting the
+      // live search endpoint a second time. Individual detail pages are fetched
+      // live because they are less aggressively rate-limited than the search endpoint.
+      const { readFixture } = await import('../offlineFixtures.js');
+      const listPath = new URL(providerConfig.sparkasse.url).pathname;
+      const realExtract = puppeteerExtractorMod.default;
+      vi.spyOn(puppeteerExtractorMod, 'default').mockImplementation(async (url, sel, opts) => {
+        try {
+          if (new URL(url).pathname === listPath) return readFixture(url);
+        } catch {
+          // pass through malformed URLs
+        }
+        return realExtract(url, sel, opts);
+      });
     });
 
     afterEach(() => {
