@@ -10,6 +10,7 @@ export default defineConfig({
     globals: true,
     environment: 'node',
     include: ['test/**/*.test.js'],
+    globalSetup: ['./test/globalSetup.js'],
     testTimeout: 60000,
     reporters: ['verbose'],
   },
