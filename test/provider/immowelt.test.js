@@ -6,19 +6,28 @@
 import * as similarityCache from '../../lib/services/similarity-check/similarityCache.js';
 import { get } from '../mocks/mockNotification.js';
 import { mockFredy, providerConfig } from '../utils.js';
-import { expect, vi } from 'vitest';
+import { expect } from 'vitest';
 import * as provider from '../../lib/provider/immowelt.js';
-import * as mockStore from '../mocks/mockStore.js';
-import * as puppeteerExtractorMod from '../../lib/services/extractor/puppeteerExtractor.js';
+import { launchBrowser, closeBrowser } from '../../lib/services/extractor/puppeteerExtractor.js';
 
-// Immowelt is a React SPA behind a CDN that challenges cold sessions.
-// The main test uses a fresh browser with homepage pre-navigation to warm up.
-// The detail test intercepts the search URL with the offline fixture so only
-// individual listing detail pages are fetched live (they are less aggressively
-// protected than the search endpoint).
+// One browser shared across the whole suite so both requests (search + detail)
+// come from the same warm session. Immowelt's CDN challenges cold sessions
+// aggressively; a shared warm browser prevents the second request from being
+// blocked as a bot hit.
 const TEST_TIMEOUT = 180_000;
 
 describe('#immowelt testsuite()', () => {
+  let browser;
+  let liveListings;
+
+  beforeAll(async () => {
+    browser = await launchBrowser(providerConfig.immowelt.url);
+  }, TEST_TIMEOUT);
+
+  afterAll(async () => {
+    await closeBrowser(browser);
+  });
+
   it(
     'should test immowelt provider',
     async () => {
@@ -31,15 +40,15 @@ describe('#immowelt testsuite()', () => {
       };
       provider.init(providerConfig.immowelt, [], []);
 
-      const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache, undefined);
+      const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache, browser);
 
-      const listing = await fredy.execute();
+      liveListings = await fredy.execute();
 
-      if (listing == null || listing.length === 0) {
+      if (liveListings == null || liveListings.length === 0) {
         throw new Error('Listings is empty!');
       }
 
-      expect(listing).toBeInstanceOf(Array);
+      expect(liveListings).toBeInstanceOf(Array);
       const notificationObj = get();
       expect(notificationObj).toBeTypeOf('object');
       expect(notificationObj.serviceName).toBe('immowelt');
@@ -67,55 +76,23 @@ describe('#immowelt testsuite()', () => {
   );
 
   describe('with provider_details enabled', () => {
-    beforeEach(async () => {
-      vi.spyOn(mockStore, 'getUserSettings').mockReturnValue({ provider_details: [provider.metaInformation.id] });
-      vi.spyOn(mockStore, 'getKnownListingHashesForJobAndProvider').mockReturnValue([]);
-
-      // Serve the offline fixture for the search URL to avoid hitting the
-      // CDN-protected search endpoint a second time. Individual detail pages
-      // (fetched by fetchDetails) are less aggressively protected and go live.
-      const { readFixture } = await import('../offlineFixtures.js');
-      const listPath = new URL(providerConfig.immowelt.url).pathname;
-      const realExtract = puppeteerExtractorMod.default;
-      vi.spyOn(puppeteerExtractorMod, 'default').mockImplementation(async (url, sel, opts) => {
-        try {
-          if (new URL(url).pathname === listPath) return readFixture(url);
-        } catch {
-          // pass through malformed URLs
-        }
-        return realExtract(url, sel, opts);
-      });
-    });
-
-    afterEach(() => {
-      vi.restoreAllMocks();
-    });
-
     it(
       'should enrich listings with details',
       async () => {
-        const Fredy = await mockFredy();
-        provider.init(providerConfig.immowelt, [], []);
-        const mockedJob = { id: 'immowelt', notificationAdapter: null, specFilter: null, spatialFilter: null };
+        if (!liveListings?.length) throw new Error('No listings from first test to enrich');
 
-        const fredy = new Fredy(
-          provider.config,
-          mockedJob,
-          provider.metaInformation.id,
-          { checkAndAddEntry: () => false },
-          undefined,
-        );
-        const listings = await fredy.execute();
-        expect(listings).toBeInstanceOf(Array);
-        listings.forEach((listing) => {
-          expect(listing.link).toContain('https://www.immowelt.de');
-          expect(listing.address).toBeTypeOf('string');
-          expect(listing.address).not.toBe('');
-          // description is enriched from the detail page; falls back gracefully if blocked
-          if (listing.description != null) {
-            expect(listing.description).toBeTypeOf('string');
-          }
-        });
+        // Call fetchDetails directly on the first live listing — no need to
+        // re-scrape the search page. The shared browser keeps the session warm.
+        const enriched = await provider.config.fetchDetails(liveListings[0], browser);
+
+        expect(enriched).toBeTruthy();
+        expect(enriched.link).toContain('https://www.immowelt.de');
+        expect(enriched.address).toBeTypeOf('string');
+        expect(enriched.address).not.toBe('');
+        // description is enriched from the detail page; falls back gracefully if blocked
+        if (enriched.description != null) {
+          expect(enriched.description).toBeTypeOf('string');
+        }
       },
       TEST_TIMEOUT,
     );
