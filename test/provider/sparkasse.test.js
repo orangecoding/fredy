@@ -9,97 +9,97 @@ import { mockFredy, providerConfig } from '../utils.js';
 import { expect, vi } from 'vitest';
 import * as provider from '../../lib/provider/sparkasse.js';
 import * as mockStore from '../mocks/mockStore.js';
-import * as puppeteerExtractorMod from '../../lib/services/extractor/puppeteerExtractor.js';
+import { launchBrowser, closeBrowser } from '../../lib/services/extractor/puppeteerExtractor.js';
+
+// One browser shared across the whole suite so both requests (search + detail)
+// come from the same warm session. This prevents the second request from being
+// flagged as a cold-start bot hit.
+const TEST_TIMEOUT = 120_000;
 
 describe('#sparkasse testsuite()', () => {
-  it('should test sparkasse provider', async () => {
-    const Fredy = await mockFredy();
-    const mockedJob = {
-      id: 'sparkasse',
-      notificationAdapter: null,
-      spatialFilter: null,
-      specFilter: null,
-    };
-    provider.init(providerConfig.sparkasse, []);
+  let browser;
+  let liveListings;
 
-    const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache, undefined);
+  beforeAll(async () => {
+    browser = await launchBrowser(providerConfig.sparkasse.url);
+  }, TEST_TIMEOUT);
 
-    const listing = await fredy.execute();
-
-    if (listing == null || listing.length === 0) {
-      throw new Error('Listings is empty!');
-    }
-
-    expect(listing).toBeInstanceOf(Array);
-    const notificationObj = get();
-    expect(notificationObj).toBeTypeOf('object');
-    expect(notificationObj.serviceName).toBe('sparkasse');
-    notificationObj.payload.forEach((notify) => {
-      /** check the actual structure **/
-      expect(notify.id).toBeTypeOf('string');
-      expect(notify.price).toBeTypeOf('string');
-      expect(notify.price).toContain('€');
-      expect(notify.size).toBeTypeOf('string');
-      expect(notify.size).toContain('m²');
-      expect(notify.title).toBeTypeOf('string');
-      expect(notify.link).toBeTypeOf('string');
-      expect(notify.address).toBeTypeOf('string');
-      /** check the values if possible **/
-      expect(notify.size).toBeTypeOf('string');
-      expect(notify.title).not.toBe('');
-      expect(notify.address).not.toBe('');
-    });
+  afterAll(async () => {
+    await closeBrowser(browser);
   });
 
-  describe('with provider_details enabled', () => {
-    beforeEach(async () => {
-      vi.spyOn(mockStore, 'getUserSettings').mockReturnValue({ provider_details: [provider.metaInformation.id] });
-      vi.spyOn(mockStore, 'getKnownListingHashesForJobAndProvider').mockReturnValue([]);
+  it(
+    'should test sparkasse provider',
+    async () => {
+      const Fredy = await mockFredy();
+      const mockedJob = {
+        id: 'sparkasse',
+        notificationAdapter: null,
+        spatialFilter: null,
+        specFilter: null,
+      };
+      provider.init(providerConfig.sparkasse, []);
 
-      // Serve the offline fixture for the search URL to avoid hitting the
-      // live search endpoint a second time. Individual detail pages are fetched
-      // live because they are less aggressively rate-limited than the search endpoint.
-      const { readFixture } = await import('../offlineFixtures.js');
-      const listPath = new URL(providerConfig.sparkasse.url).pathname;
-      const realExtract = puppeteerExtractorMod.default;
-      vi.spyOn(puppeteerExtractorMod, 'default').mockImplementation(async (url, sel, opts) => {
-        try {
-          if (new URL(url).pathname === listPath) return readFixture(url);
-        } catch {
-          // pass through malformed URLs
-        }
-        return realExtract(url, sel, opts);
+      const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache, browser);
+
+      liveListings = await fredy.execute();
+
+      if (liveListings == null || liveListings.length === 0) {
+        throw new Error('Listings is empty!');
+      }
+
+      expect(liveListings).toBeInstanceOf(Array);
+      const notificationObj = get();
+      expect(notificationObj).toBeTypeOf('object');
+      expect(notificationObj.serviceName).toBe('sparkasse');
+      notificationObj.payload.forEach((notify) => {
+        /** check the actual structure **/
+        expect(notify.id).toBeTypeOf('string');
+        expect(notify.price).toBeTypeOf('string');
+        expect(notify.price).toContain('€');
+        expect(notify.size).toBeTypeOf('string');
+        expect(notify.size).toContain('m²');
+        expect(notify.title).toBeTypeOf('string');
+        expect(notify.link).toBeTypeOf('string');
+        expect(notify.address).toBeTypeOf('string');
+        /** check the values if possible **/
+        expect(notify.size).toBeTypeOf('string');
+        expect(notify.title).not.toBe('');
+        expect(notify.address).not.toBe('');
       });
+    },
+    TEST_TIMEOUT,
+  );
+
+  describe('with provider_details enabled', () => {
+    beforeEach(() => {
+      vi.spyOn(mockStore, 'getUserSettings').mockReturnValue({ provider_details: [provider.metaInformation.id] });
     });
 
     afterEach(() => {
       vi.restoreAllMocks();
     });
 
-    it('should enrich listings with details', async () => {
-      const Fredy = await mockFredy();
-      provider.init(providerConfig.sparkasse, []);
-      const mockedJob = { id: 'sparkasse', notificationAdapter: null, specFilter: null, spatialFilter: null };
+    it(
+      'should enrich listings with details',
+      async () => {
+        if (!liveListings?.length) throw new Error('No listings from first test to enrich');
 
-      const fredy = new Fredy(
-        provider.config,
-        mockedJob,
-        provider.metaInformation.id,
-        { checkAndAddEntry: () => false },
-        undefined,
-      );
-      const listings = await fredy.execute();
-      expect(listings).toBeInstanceOf(Array);
-      listings.forEach((listing) => {
-        expect(listing.link).toContain('https://immobilien.sparkasse.de');
-        expect(listing.address).toBeTypeOf('string');
-        expect(listing.address).not.toBe('');
-        // description is enriched from the detail page; falls back gracefully if bot-detected
-        if (listing.description != null) {
-          expect(listing.description).toBeTypeOf('string');
-          expect(listing.description).not.toBe('');
+        // Call fetchDetails directly on the first live listing — no need to
+        // re-scrape the search page. The shared browser keeps the session warm.
+        const enriched = await provider.config.fetchDetails(liveListings[0], browser);
+
+        expect(enriched).toBeTruthy();
+        expect(enriched.link).toContain('https://immobilien.sparkasse.de');
+        expect(enriched.address).toBeTypeOf('string');
+        expect(enriched.address).not.toBe('');
+        // description is enriched from the detail page; falls back gracefully if blocked
+        if (enriched.description != null) {
+          expect(enriched.description).toBeTypeOf('string');
+          expect(enriched.description).not.toBe('');
         }
-      });
-    });
+      },
+      TEST_TIMEOUT,
+    );
   });
 });
