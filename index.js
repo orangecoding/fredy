@@ -15,6 +15,15 @@ import { initGeocodingCron } from './lib/services/crons/geocoding-cron.js';
 import { getSettings } from './lib/services/storage/settingsStorage.js';
 import SqliteConnection, { computeDbPath } from './lib/services/storage/SqliteConnection.js';
 import { initJobExecutionService } from './lib/services/jobs/jobExecutionService.js';
+import { ensureValidBinary } from './lib/services/ensureValidBinary.js';
+
+// Ensure the CloakBrowser stealth Chromium binary is present and complete before
+// jobs run.  ensureValidBinary() also detects and auto-heals partial extractions
+// (e.g. a newer version that was downloaded but only the chrome executable was
+// written) so Chrome never crashes with "Invalid file descriptor to ICU data".
+logger.info('Checking CloakBrowser binary...');
+await ensureValidBinary();
+logger.info('CloakBrowser binary ready.');
 
 //in the config, we store the path of the sqlite file, thus we must check if it is available
 const isConfigAccessible = await checkIfConfigIsAccessible();
