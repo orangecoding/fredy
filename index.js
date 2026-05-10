@@ -15,6 +15,14 @@ import { initGeocodingCron } from './lib/services/crons/geocoding-cron.js';
 import { getSettings } from './lib/services/storage/settingsStorage.js';
 import SqliteConnection, { computeDbPath } from './lib/services/storage/SqliteConnection.js';
 import { initJobExecutionService } from './lib/services/jobs/jobExecutionService.js';
+import { ensureBinary } from 'cloakbrowser';
+
+// Ensure the CloakBrowser stealth Chromium binary is present before jobs run.
+// In Docker it is pre-baked at build time so this is instant; for direct
+// (non-Docker) installs it downloads on first start instead of crashing later.
+logger.info('Checking CloakBrowser binary...');
+await ensureBinary();
+logger.info('CloakBrowser binary ready.');
 
 //in the config, we store the path of the sqlite file, thus we must check if it is available
 const isConfigAccessible = await checkIfConfigIsAccessible();
