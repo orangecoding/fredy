@@ -1,6 +1,6 @@
 {
   "name": "fredy",
-  "version": "22.0.0",
+  "version": "22.0.1",
   "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
   "scripts": {
     "prepare": "husky",
@@ -98,7 +98,7 @@
     "react-router": "7.15.0",
     "react-router-dom": "7.15.0",
     "resend": "^6.12.3",
-    "semver": "^7.7.4",
+    "semver": "^7.8.0",
     "slack": "11.0.2",
     "vite": "8.0.11",
     "x-var": "^3.0.1",
@@ -118,7 +118,7 @@
     "history": "5.3.0",
     "husky": "9.1.7",
     "less": "4.6.4",
-    "lint-staged": "16.4.0",
+    "lint-staged": "17.0.4",
     "nodemon": "^3.1.14",
     "prettier": "3.8.3",
     "vitest": "^4.1.5"

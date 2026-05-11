@@ -38,6 +38,7 @@ describe('services/jobs/jobExecutionService', () => {
     }));
     vi.doMock(utilsPath, () => ({
       duringWorkingHoursOrNotSet: () => false,
+      getPackageVersion: async () => '0.0.0-test',
     }));
     vi.doMock(loggerPath, () => {
       const m = { debug: () => {}, info: () => {}, warn: () => {}, error: () => {} };
