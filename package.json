@@ -1,6 +1,6 @@
 {
   "name": "fredy",
-  "version": "22.0.4",
+  "version": "22.0.5",
   "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
   "scripts": {
     "prepare": "husky",
@@ -75,7 +75,7 @@
     "@turf/boolean-point-in-polygon": "^7.3.5",
     "@vitejs/plugin-react": "6.0.1",
     "adm-zip": "^0.5.17",
-    "better-sqlite3": "^12.9.0",
+    "better-sqlite3": "^12.10.0",
     "chart.js": "^4.5.1",
     "cheerio": "^1.2.0",
     "cloakbrowser": "^0.3.28",
