@@ -54,6 +54,7 @@ const GeneralSettings = function GeneralSettings() {
   const [loading, setLoading] = React.useState(true);
 
   const settings = useSelector((state) => state.generalSettings.settings);
+  const currentUser = useSelector((state) => state.user.currentUser);
 
   const [interval, setInterval] = React.useState('');
   const [port, setPort] = React.useState('');
@@ -467,12 +468,26 @@ const GeneralSettings = function GeneralSettings() {
               itemKey="backup"
             >
               <div className="generalSettings__tab-content">
+                {demoMode && !currentUser?.isAdmin && (
+                  <Banner
+                    fullMode={false}
+                    type="warning"
+                    closeIcon={null}
+                    style={{ marginBottom: '12px' }}
+                    description="Backup and restore are not available in demo mode."
+                  />
+                )}
                 <SegmentPart
                   name="Backup & Restore"
                   helpText="Download a zipped backup of your database or restore from a backup zip."
                 >
                   <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
-                    <Button theme="solid" icon={<IconSave />} onClick={handleDownloadBackup}>
+                    <Button
+                      theme="solid"
+                      icon={<IconSave />}
+                      onClick={handleDownloadBackup}
+                      disabled={demoMode && !currentUser?.isAdmin}
+                    >
                       Download Backup
                     </Button>
                     <input
@@ -482,7 +497,12 @@ const GeneralSettings = function GeneralSettings() {
                       style={{ display: 'none' }}
                       onChange={handleSelectRestoreFile}
                     />
-                    <Button onClick={handleOpenFilePicker} theme="light" icon={<IconFolder />}>
+                    <Button
+                      onClick={handleOpenFilePicker}
+                      theme="light"
+                      icon={<IconFolder />}
+                      disabled={demoMode && !currentUser?.isAdmin}
+                    >
                       Restore from Zip
                     </Button>
                   </div>
