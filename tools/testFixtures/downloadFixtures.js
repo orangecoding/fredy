@@ -95,7 +95,10 @@ async function downloadHtmlProvider(name, providerConfig, launchBrowser, closeBr
 
   const browser = await launchBrowser(providerConfig.url, {});
   try {
-    const html = await puppeteerExtractor(providerConfig.url, providerConfig.waitForSelector, { browser });
+    const html = await puppeteerExtractor(providerConfig.url, providerConfig.waitForSelector, {
+      browser,
+      name: 'dowload_fixtures',
+    });
 
     if (!html) {
       console.warn(`  Failed to download ${name}`);
