@@ -1,6 +1,6 @@
 {
   "name": "fredy",
-  "version": "22.0.1",
+  "version": "22.0.3",
   "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
   "scripts": {
     "prepare": "husky",
@@ -62,9 +62,9 @@
     "Firefox ESR"
   ],
   "dependencies": {
-    "@douyinfe/semi-icons": "^2.96.1",
-    "@douyinfe/semi-ui": "2.96.1",
-    "@douyinfe/semi-ui-19": "^2.96.1",
+    "@douyinfe/semi-icons": "^2.97.0",
+    "@douyinfe/semi-ui": "2.97.0",
+    "@douyinfe/semi-ui-19": "^2.97.0",
     "@fastify/cookie": "^11.0.2",
     "@fastify/helmet": "^13.0.2",
     "@fastify/session": "^11.1.1",
@@ -78,7 +78,7 @@
     "better-sqlite3": "^12.9.0",
     "chart.js": "^4.5.1",
     "cheerio": "^1.2.0",
-    "cloakbrowser": "^0.3.27",
+    "cloakbrowser": "^0.3.28",
     "fastify": "^5.8.5",
     "handlebars": "4.7.9",
     "maplibre-gl": "^5.24.0",
@@ -89,7 +89,7 @@
     "nodemailer": "^8.0.7",
     "p-throttle": "^8.1.0",
     "package-up": "^5.0.0",
-    "puppeteer-core": "^24.43.0",
+    "puppeteer-core": "^24.43.1",
     "query-string": "9.3.1",
     "react": "19.2.6",
     "react-chartjs-2": "^5.3.1",
@@ -100,7 +100,7 @@
     "resend": "^6.12.3",
     "semver": "^7.8.0",
     "slack": "11.0.2",
-    "vite": "8.0.11",
+    "vite": "8.0.12",
     "x-var": "^3.0.1",
     "zustand": "^5.0.13"
   },
@@ -121,6 +121,6 @@
     "lint-staged": "17.0.4",
     "nodemon": "^3.1.14",
     "prettier": "3.8.3",
-    "vitest": "^4.1.5"
+    "vitest": "^4.1.6"
   }
 }
