@@ -37,7 +37,7 @@ const Users = function Users() {
       await actions.jobsData.getJobs();
       await actions.user.getUsers();
     } catch (error) {
-      Toast.error(error);
+      Toast.error(error.error);
       setUserIdToBeRemoved(null);
     }
   };

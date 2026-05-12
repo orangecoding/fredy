@@ -174,7 +174,7 @@ const JobGrid = () => {
       Toast.success('Job status successfully changed');
       loadData();
     } catch (error) {
-      Toast.error(error);
+      Toast.error(error.error);
     }
   };
 
