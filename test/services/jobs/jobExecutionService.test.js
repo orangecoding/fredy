@@ -18,6 +18,7 @@ describe('services/jobs/jobExecutionService', () => {
     const busPath = root + '/lib/services/events/event-bus.js';
     const jobStoragePath = root + '/lib/services/storage/jobStorage.js';
     const userStoragePath = root + '/lib/services/storage/userStorage.js';
+    const settingsStoragePath = root + '/lib/services/storage/settingsStorage.js';
     const brokerPath = root + '/lib/services/sse/sse-broker.js';
     const utilsPath = root + '/lib/utils.js';
     const loggerPath = root + '/lib/services/logger.js';
@@ -32,6 +33,9 @@ describe('services/jobs/jobExecutionService', () => {
     vi.doMock(userStoragePath, () => ({
       getUsers: () => state.users.slice(),
       getUser: (id) => state.users.find((u) => u.id === id) || null,
+    }));
+    vi.doMock(settingsStoragePath, () => ({
+      getSettings: async () => ({}),
     }));
     vi.doMock(brokerPath, () => ({
       sendToUsers: (...args) => calls.sent.push(args),

@@ -167,6 +167,40 @@ For more information on how to set it up and use it, please refer to the [MCP Re
 
 Immoscout has implemented advanced bot detection. In order to work around this, we are using a reversed engineered version of their mobile api. See [Immoscout Reverse Engineering Documentation](https://github.com/orangecoding/fredy/blob/master/reverse-engineered-immoscout.md)
 
+## 🛡️ Bot Detection & Proxies
+
+Most browser-based providers (immowelt, immonet, kleinanzeigen, ...) are scraped through a hardened headless browser ([CloakBrowser](https://www.npmjs.com/package/cloakbrowser)). It makes the **browser fingerprint** indistinguishable from a real Chrome, which is enough when you run Fredy on a normal home connection.
+
+On a **server / VPS the requests usually originate from a datacenter IP**, and providers behind anti-bot systems (e.g. AWS CloudFront/WAF) block those based on **IP reputation alone**, no matter how perfect the fingerprint is. The typical symptom: it works locally but you get `We have been detected as a bot :-/` on the server.
+
+### The fix: a residential proxy
+
+A **residential proxy** routes Fredy's browser through the internet connection of a real household, so the provider sees a "normal user" IP instead of a datacenter. For German portals, use a **German (DE) residential** (or mobile/4G) proxy. Plain VPNs and **datacenter proxies do not help** here, they share the same bad reputation as your server.
+
+**Configure it** under **Settings → Execution → Proxy URL**. Supported formats:
+
+```
+http://user:pass@host:port
+socks5://user:pass@host:port
+```
+
+Leave the field empty to disable. The proxy applies to all headless-browser providers and takes effect on the next job run (no restart needed). Immoscout uses a separate mobile API and is not affected.
+
+### Where to get a residential proxy
+
+Residential proxies are a paid service (usually billed per GB, Fredy's traffic is small). Well-known providers offering German residential IPs include:
+
+| Provider | Notes |
+|---|---|
+| [IPRoyal](https://iproyal.com) | Pay-as-you-go, no monthly minimum, good for low volume |
+| [Webshare](https://www.webshare.io) | Cheap entry tier, has a small free plan to test with |
+| [Decodo (formerly Smartproxy)](https://decodo.com) | Easy setup, country/city targeting |
+| [SOAX](https://soax.com) | Residential + mobile, fine-grained geo-targeting |
+| [Bright Data](https://brightdata.com) | Largest pool, most features, higher complexity/price |
+| [Oxylabs](https://oxylabs.io) | Enterprise-grade, larger plans |
+
+This is not an endorsement, pick whatever fits your budget. For low-volume use like Fredy, a pay-as-you-go plan (e.g. IPRoyal) or a cheap entry tier (e.g. Webshare) is usually plenty. Make sure to select **Germany** as the proxy location and keep the search interval reasonable (the higher the interval, the less you look like a bot).
+
 ## Analytics
 
 Fredy is completely free (and will always remain free). However, it would be a huge help if you’d allow me to collect some analytical data.

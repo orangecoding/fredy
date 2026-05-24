@@ -57,6 +57,7 @@ const GeneralSettings = function GeneralSettings() {
   const currentUser = useSelector((state) => state.user.currentUser);
 
   const [interval, setInterval] = React.useState('');
+  const [proxyUrl, setProxyUrl] = React.useState('');
   const [port, setPort] = React.useState('');
   const [workingHourFrom, setWorkingHourFrom] = React.useState(null);
   const [workingHourTo, setWorkingHourTo] = React.useState(null);
@@ -91,6 +92,7 @@ const GeneralSettings = function GeneralSettings() {
   React.useEffect(() => {
     async function init() {
       setInterval(settings?.interval);
+      setProxyUrl(settings?.proxyUrl ?? '');
       setPort(settings?.port);
       setWorkingHourFrom(settings?.workingHours?.from);
       setWorkingHourTo(settings?.workingHours?.to);
@@ -133,6 +135,7 @@ const GeneralSettings = function GeneralSettings() {
     try {
       await xhrPost('/api/admin/generalSettings', {
         interval,
+        proxyUrl: proxyUrl?.trim() ?? '',
         port,
         workingHours: {
           from: workingHourFrom,
@@ -374,6 +377,18 @@ const GeneralSettings = function GeneralSettings() {
                       }}
                     />
                   </div>
+                </SegmentPart>
+
+                <SegmentPart
+                  name="Proxy URL"
+                  helpText="Optional. Routes the scraping browser through a proxy. Server/datacenter IPs are frequently blocked by providers (e.g. immowelt) regardless of browser fingerprint, a German residential proxy makes requests look like a normal household and is the most effective fix. Format: http://user:pass@host:port or socks5://user:pass@host:port. Leave empty to disable."
+                >
+                  <Input
+                    type="text"
+                    placeholder="http://user:pass@host:port"
+                    value={proxyUrl}
+                    onChange={(value) => setProxyUrl(value)}
+                  />
                 </SegmentPart>
 
                 <div className="generalSettings__save-row">

@@ -1,6 +1,6 @@
 {
   "name": "fredy",
-  "version": "22.0.10",
+  "version": "22.1.0",
   "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
   "scripts": {
     "prepare": "husky",
@@ -62,9 +62,9 @@
     "Firefox ESR"
   ],
   "dependencies": {
-    "@douyinfe/semi-icons": "^2.99.0",
-    "@douyinfe/semi-ui": "2.99.0",
-    "@douyinfe/semi-ui-19": "^2.99.0",
+    "@douyinfe/semi-icons": "^2.99.2",
+    "@douyinfe/semi-ui": "2.99.2",
+    "@douyinfe/semi-ui-19": "^2.99.2",
     "@fastify/cookie": "^11.0.2",
     "@fastify/helmet": "^13.0.2",
     "@fastify/session": "^11.1.1",
