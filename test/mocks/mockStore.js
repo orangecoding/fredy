@@ -32,4 +32,7 @@ export const deletedIds = [];
 export const deleteListingsById = (ids) => {
   deletedIds.push(...ids);
 };
+export const deleteListingsByHash = (hashes) => {
+  deletedIds.push(...hashes);
+};
 /* eslint-enable no-unused-vars */
