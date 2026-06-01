@@ -33,6 +33,8 @@ const ListingsOverview = () => {
   const sp = useSearchParams();
 
   const viewMode = userSettings?.listings_view_mode ?? 'grid';
+  const listingDeletionPref = userSettings?.listing_deletion_preference;
+  const defaultDeleteType = listingDeletionPref?.hardDelete ? 'hard' : 'soft';
 
   const [page, setPage] = useSearchParamState(sp, 'page', 1, parseNumber);
   const pageSize = 40;
@@ -91,15 +93,22 @@ const ListingsOverview = () => {
   };
 
   const handleDelete = (id) => {
+    if (listingDeletionPref?.skipPrompt) {
+      confirmDeletion(listingDeletionPref.hardDelete, false, id);
+      return;
+    }
     setListingToDelete(id);
     setDeleteModalVisible(true);
   };
 
   const handleNavigate = (id) => navigate(`/listings/listing/${id}`);
 
-  const confirmDeletion = async (hardDelete) => {
+  const confirmDeletion = async (hardDelete, remember, id = listingToDelete) => {
     try {
-      await xhrDelete('/api/listings/', { ids: [listingToDelete], hardDelete });
+      if (remember) {
+        await actions.userSettings.setListingDeletionPreference({ skipPrompt: true, hardDelete });
+      }
+      await xhrDelete('/api/listings/', { ids: [id], hardDelete });
       Toast.success('Listing successfully removed');
       loadData();
     } catch (error) {
@@ -251,6 +260,7 @@ const ListingsOverview = () => {
 
       <ListingDeletionModal
         visible={deleteModalVisible}
+        defaultDeleteType={defaultDeleteType}
         onConfirm={confirmDeletion}
         onCancel={() => {
           setDeleteModalVisible(false);

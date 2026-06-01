@@ -18,6 +18,8 @@ import {
   AutoComplete,
   Select,
   Banner,
+  Radio,
+  RadioGroup,
 } from '@douyinfe/semi-ui-19';
 import { InputNumber } from '@douyinfe/semi-ui-19';
 import { xhrPost, xhrGet } from '../../services/xhr';
@@ -74,9 +76,12 @@ const GeneralSettings = function GeneralSettings() {
   // User settings state
   const homeAddress = useSelector((state) => state.userSettings.settings.home_address);
   const providerDetails = useSelector((state) => state.userSettings.settings.provider_details);
+  const listingDeletionPreference = useSelector((state) => state.userSettings.settings.listing_deletion_preference);
   const allProviders = useSelector((state) => state.provider);
   const [address, setAddress] = useState(homeAddress?.address || '');
   const [coords, setCoords] = useState(homeAddress?.coords || null);
+  const [listingDeleteHard, setListingDeleteHard] = useState(false);
+  const [listingDeleteSkipPrompt, setListingDeleteSkipPrompt] = useState(false);
   const saving = useIsLoading(actions.userSettings.setHomeAddress);
   const [dataSource, setDataSource] = useState([]);
 
@@ -109,6 +114,11 @@ const GeneralSettings = function GeneralSettings() {
     setAddress(homeAddress?.address || '');
     setCoords(homeAddress?.coords || null);
   }, [homeAddress]);
+
+  useEffect(() => {
+    setListingDeleteHard(listingDeletionPreference?.hardDelete ?? false);
+    setListingDeleteSkipPrompt(listingDeletionPreference?.skipPrompt ?? false);
+  }, [listingDeletionPreference]);
 
   const nullOrEmpty = (val) => val == null || val.length === 0;
 
@@ -218,6 +228,10 @@ const GeneralSettings = function GeneralSettings() {
     try {
       const responseJson = await actions.userSettings.setHomeAddress(address);
       setCoords(responseJson.coords);
+      await actions.userSettings.setListingDeletionPreference({
+        skipPrompt: listingDeleteSkipPrompt,
+        hardDelete: listingDeleteHard,
+      });
       await actions.userSettings.getUserSettings();
       Toast.success('Settings saved. Distance calculations are running in the background.');
     } catch (error) {
@@ -457,6 +471,27 @@ const GeneralSettings = function GeneralSettings() {
                       }
                     }}
                   />
+                </SegmentPart>
+
+                <SegmentPart
+                  name="Listing deletion"
+                  helpText="Choose the default deletion mode. Soft delete hides them without re-scraping; hard delete removes them from the database."
+                >
+                  <RadioGroup
+                    value={listingDeleteHard ? 'hard' : 'soft'}
+                    onChange={(e) => setListingDeleteHard(e.target.value === 'hard')}
+                    style={{ width: '100%' }}
+                  >
+                    <Radio value="soft">Mark as deleted (soft delete)</Radio>
+                    <Radio value="hard">Remove from database (hard delete)</Radio>
+                  </RadioGroup>
+                  <Checkbox
+                    checked={listingDeleteSkipPrompt}
+                    onChange={(e) => setListingDeleteSkipPrompt(e.target.checked)}
+                    style={{ marginTop: 12 }}
+                  >
+                    Skip confirmation dialog
+                  </Checkbox>
                 </SegmentPart>
 
                 <div className="generalSettings__save-row">

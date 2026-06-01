@@ -37,7 +37,10 @@ export default function MapView() {
   const sp = useSearchParams();
   const [searchParams, setSearchParams] = sp;
   const listings = useSelector((state) => state.listingsData.mapListings);
-  const homeAddress = useSelector((state) => state.userSettings.settings.home_address);
+  const userSettings = useSelector((state) => state.userSettings.settings);
+  const homeAddress = userSettings?.home_address;
+  const listingDeletionPref = userSettings?.listing_deletion_preference;
+  const defaultDeleteType = listingDeletionPref?.hardDelete ? 'hard' : 'soft';
 
   const jobs = useSelector((state) => state.jobsData.jobs);
   const [jobId, setJobId] = useSearchParamState(sp, 'job', null, parseString);
@@ -52,10 +55,14 @@ export default function MapView() {
 
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [listingToDelete, setListingToDelete] = useState(null);
+  const deleteListingRef = useRef(null);
 
-  const confirmListingDeletion = async (hardDelete) => {
+  const confirmListingDeletion = async (hardDelete, remember, id = listingToDelete) => {
     try {
-      await xhrDelete('/api/listings/', { ids: [listingToDelete], hardDelete });
+      if (remember) {
+        await actions.userSettings.setListingDeletionPreference({ skipPrompt: true, hardDelete });
+      }
+      await xhrDelete('/api/listings/', { ids: [id], hardDelete });
       Toast.success('Listing successfully removed');
       fetchListings();
     } catch (error) {
@@ -64,6 +71,15 @@ export default function MapView() {
       setDeleteModalVisible(false);
       setListingToDelete(null);
     }
+  };
+
+  deleteListingRef.current = (id) => {
+    if (listingDeletionPref?.skipPrompt) {
+      confirmListingDeletion(listingDeletionPref.hardDelete, false, id);
+      return;
+    }
+    setListingToDelete(id);
+    setDeleteModalVisible(true);
   };
 
   useEffect(() => {
@@ -88,10 +104,7 @@ export default function MapView() {
   };
 
   useEffect(() => {
-    window.deleteListing = (id) => {
-      setListingToDelete(id);
-      setDeleteModalVisible(true);
-    };
+    window.deleteListing = (id) => deleteListingRef.current(id);
 
     window.viewDetails = (id) => {
       navigate(`/listings/listing/${id}`);
@@ -472,6 +485,7 @@ export default function MapView() {
 
         <ListingDeletionModal
           visible={deleteModalVisible}
+          defaultDeleteType={defaultDeleteType}
           onConfirm={confirmListingDeletion}
           onCancel={() => {
             setDeleteModalVisible(false);

@@ -349,6 +349,20 @@ export const useFredyState = create(
               throw Exception;
             }
           },
+          async setListingDeletionPreference(listing_deletion_preference) {
+            try {
+              await xhrPost('/api/user/settings/listing-deletion-preference', { listing_deletion_preference });
+              set((state) => ({
+                userSettings: {
+                  ...state.userSettings,
+                  settings: { ...state.userSettings.settings, listing_deletion_preference },
+                },
+              }));
+            } catch (Exception) {
+              console.error('Error while trying to update listing deletion preference. Error:', Exception);
+              throw Exception;
+            }
+          },
         },
       };
 

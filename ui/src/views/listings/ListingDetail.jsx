@@ -57,7 +57,10 @@ export default function ListingDetail() {
   const navigate = useNavigate();
   const actions = useActions();
   const listing = useSelector((state) => state.listingsData.currentListing);
-  const homeAddress = useSelector((state) => state.userSettings.settings.home_address);
+  const userSettings = useSelector((state) => state.userSettings.settings);
+  const homeAddress = userSettings?.home_address;
+  const listingDeletionPref = userSettings?.listing_deletion_preference;
+  const defaultDeleteType = listingDeletionPref?.hardDelete ? 'hard' : 'soft';
   const mapContainer = useRef(null);
   const map = useRef(null);
   const [loading, setLoading] = useState(true);
@@ -242,8 +245,11 @@ export default function ListingDetail() {
     };
   }, [listing, loading, homeAddress]);
 
-  const confirmDeletion = async (hardDelete) => {
+  const confirmDeletion = async (hardDelete, remember) => {
     try {
+      if (remember) {
+        await actions.userSettings.setListingDeletionPreference({ skipPrompt: true, hardDelete });
+      }
       await xhrDelete('/api/listings/', { ids: [listing.id], hardDelete });
       Toast.success('Listing successfully removed');
       navigate('/listings');
@@ -347,7 +353,13 @@ export default function ListingDetail() {
             </a>
             <Button
               icon={<IconDelete />}
-              onClick={() => setDeleteModalVisible(true)}
+              onClick={() => {
+                if (listingDeletionPref?.skipPrompt) {
+                  confirmDeletion(listingDeletionPref.hardDelete);
+                  return;
+                }
+                setDeleteModalVisible(true);
+              }}
               theme="light"
               type="danger"
             >
@@ -423,6 +435,7 @@ export default function ListingDetail() {
 
       <ListingDeletionModal
         visible={deleteModalVisible}
+        defaultDeleteType={defaultDeleteType}
         onConfirm={confirmDeletion}
         onCancel={() => setDeleteModalVisible(false)}
       />
