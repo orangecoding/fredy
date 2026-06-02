@@ -20,6 +20,7 @@ import {
   Banner,
   Radio,
   RadioGroup,
+  Typography,
 } from '@douyinfe/semi-ui-19';
 import { InputNumber } from '@douyinfe/semi-ui-19';
 import { xhrPost, xhrGet } from '../../services/xhr';
@@ -34,6 +35,8 @@ import { IconSave, IconRefresh, IconSignal, IconHome, IconFolder } from '@douyin
 import { debounce } from '../../utils';
 import Headline from '../../components/headline/Headline.jsx';
 import './GeneralSettings.less';
+
+const { Text } = Typography;
 
 function formatFromTimestamp(ts) {
   const date = new Date(ts);
@@ -480,10 +483,31 @@ const GeneralSettings = function GeneralSettings() {
                   <RadioGroup
                     value={listingDeleteHard ? 'hard' : 'soft'}
                     onChange={(e) => setListingDeleteHard(e.target.value === 'hard')}
-                    style={{ width: '100%' }}
                   >
-                    <Radio value="soft">Mark as deleted (soft delete)</Radio>
-                    <Radio value="hard">Remove from database (hard delete)</Radio>
+                    <Radio value="soft">
+                      <div>
+                        <Text strong>Mark as deleted (Soft Delete)</Text>
+                        <br />
+                        <Text type="secondary">
+                          Listings are kept in the database but marked as hidden. They will <b>not</b> re-appear during
+                          the next scraping session.
+                        </Text>
+                      </div>
+                    </Radio>
+                    <Radio value="hard">
+                      <div>
+                        <Text strong>Remove from database (Hard Delete)</Text>
+                        <br />
+                        <Text type="secondary">
+                          Listings are completely removed from the database.
+                          <br />
+                          <Text type="warning">
+                            Consequence: They might re-appear when scraping the next time because Fredy won't know they
+                            were previously found.
+                          </Text>
+                        </Text>
+                      </div>
+                    </Radio>
                   </RadioGroup>
                   <Checkbox
                     checked={listingDeleteSkipPrompt}
