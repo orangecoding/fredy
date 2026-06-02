@@ -155,6 +155,7 @@ const routes = {
   'GET /api/dashboard': dashboard,
   'GET /api/demo': { demoMode: false },
   'POST /api/user/settings/news-hash': {},
+  'POST /api/user/settings/listing-deletion-preference': {},
 };
 
 const server = http.createServer((req, res) => {

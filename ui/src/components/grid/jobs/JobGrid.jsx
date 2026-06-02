@@ -60,6 +60,8 @@ const JobGrid = () => {
 
   const userSettings = useSelector((state) => state.userSettings.settings);
   const viewMode = userSettings?.jobs_view_mode ?? 'grid';
+  const listingDeletionPref = userSettings?.listing_deletion_preference;
+  const defaultDeleteType = listingDeletionPref?.hardDelete ? 'hard' : 'soft';
 
   const [page, setPage] = useState(1);
   const pageSize = 12;
@@ -142,13 +144,21 @@ const JobGrid = () => {
   };
 
   const onListingRemoval = (jobId) => {
-    setPendingDeletion({ type: 'listings', jobId });
+    const deletion = { type: 'listings', jobId };
+    if (listingDeletionPref?.skipPrompt) {
+      confirmDeletion(listingDeletionPref.hardDelete, false, deletion);
+      return;
+    }
+    setPendingDeletion(deletion);
     setDeleteModalVisible(true);
   };
 
-  const confirmDeletion = async (hardDelete) => {
-    const { type, jobId } = pendingDeletion;
+  const confirmDeletion = async (hardDelete, remember, deletion = pendingDeletion) => {
+    const { type, jobId } = deletion;
     try {
+      if (remember && type === 'listings') {
+        await actions.userSettings.setListingDeletionPreference({ skipPrompt: true, hardDelete });
+      }
       if (type === 'job') {
         await xhrDelete('/api/jobs', { jobId });
         Toast.success('Job and listings successfully removed');
@@ -425,6 +435,7 @@ const JobGrid = () => {
         visible={deleteModalVisible}
         title={pendingDeletion?.type === 'job' ? 'Delete Job' : 'Delete Listings'}
         showOptions={pendingDeletion?.type !== 'job'}
+        defaultDeleteType={defaultDeleteType}
         message={
           pendingDeletion?.type === 'job'
             ? 'Are you sure you want to delete this job? All associated listings will be removed from the database.'
