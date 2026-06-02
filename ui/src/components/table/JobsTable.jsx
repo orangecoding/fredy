@@ -63,7 +63,7 @@ const JobsTable = ({ jobs, onRun, onEdit, onClone, onDeleteListings, onDeleteJob
             </Tag>
           )}
           {job.isOnlyShared && (
-            <Tooltip content="Shared with you — read only">
+            <Tooltip content="Shared with you - read only">
               <span style={{ display: 'flex', alignItems: 'center' }}>
                 <IconAlertTriangle style={{ color: 'rgba(var(--semi-yellow-7), 1)' }} />
               </span>

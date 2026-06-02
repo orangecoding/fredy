@@ -20,6 +20,8 @@ import {
   Banner,
   Spin,
   Toast,
+  TextArea,
+  Tooltip,
 } from '@douyinfe/semi-ui-19';
 import {
   IconArrowLeft,
@@ -44,6 +46,7 @@ import { xhrPost, xhrDelete } from '../../services/xhr.js';
 import ListingDeletionModal from '../../components/ListingDeletionModal.jsx';
 
 import Headline from '../../components/headline/Headline.jsx';
+import StatusControl from '../../components/listings/StatusControl.jsx';
 import './ListingDetail.less';
 
 const { Title, Text } = Typography;
@@ -65,6 +68,8 @@ export default function ListingDetail() {
   const map = useRef(null);
   const [loading, setLoading] = useState(true);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [notesDraft, setNotesDraft] = useState('');
+  const [notesSaving, setNotesSaving] = useState(false);
 
   useEffect(() => {
     async function fetchListing() {
@@ -81,6 +86,10 @@ export default function ListingDetail() {
     }
     fetchListing();
   }, [listingId]);
+
+  useEffect(() => {
+    setNotesDraft(listing?.notes ?? '');
+  }, [listing?.id, listing?.notes]);
 
   const hasGeo =
     listing?.latitude != null && listing?.longitude != null && listing?.latitude !== -1 && listing?.longitude !== -1;
@@ -271,6 +280,32 @@ export default function ListingDetail() {
     }
   };
 
+  const handleStatusChange = async (next) => {
+    try {
+      await actions.listingsData.setListingStatus(listing.id, next);
+      await actions.listingsData.getListing(listingId);
+      Toast.success(next ? `Marked as ${next}` : 'Status cleared');
+    } catch (e) {
+      console.error('Failed to update status:', e);
+      Toast.error('Failed to update status');
+    }
+  };
+
+  const handleSaveNotes = async () => {
+    if (!listing) return;
+    setNotesSaving(true);
+    try {
+      await actions.listingsData.setListingNotes(listing.id, notesDraft);
+      await actions.listingsData.getListing(listingId);
+      Toast.success('Notes saved');
+    } catch (e) {
+      console.error('Failed to save notes:', e);
+      Toast.error('Failed to save notes');
+    } finally {
+      setNotesSaving(false);
+    }
+  };
+
   if (loading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
@@ -281,34 +316,57 @@ export default function ListingDetail() {
 
   if (!listing) return null;
 
+  const statusLabel = listing.status?.status
+    ? listing.status.status.charAt(0).toUpperCase() + listing.status.status.slice(1)
+    : null;
+
   const data = [
-    { key: 'Price', value: `${listing.price} €`, Icon: <IconCart /> },
+    {
+      key: 'Price',
+      value: `${listing.price} €`,
+      Icon: <IconCart />,
+      helpText: 'The asking price of this listing, as reported by the provider.',
+    },
     {
       key: 'Size',
       value: listing.size ? `${listing.size} m²` : 'N/A',
       Icon: <IconExpand />,
+      helpText: 'Living space of the listing in square meters.',
     },
     {
       key: 'Rooms',
       value: listing.rooms ? `${listing.rooms} Rooms` : 'N/A',
       Icon: <IconGridView />,
+      helpText: 'Number of rooms in the listing.',
     },
     {
       key: 'Job',
       value: listing.job_name,
       Icon: <IconBriefcase />,
+      helpText: 'The Fredy job that found this listing.',
     },
     {
       key: 'Provider',
       value: listing.provider ? listing.provider.charAt(0).toUpperCase() + listing.provider.slice(1) : 'Unknown',
       Icon: <IconBriefcase />,
+      helpText: 'The real estate portal where this listing was scraped from.',
     },
     {
       key: 'Added',
       value: timeService.format(listing.created_at),
       Icon: <IconClock />,
+      helpText: 'When Fredy first added this listing to your database.',
     },
   ];
+
+  if (statusLabel) {
+    data.push({
+      key: 'Status',
+      value: listing.status?.setAt ? `${statusLabel} (set ${timeService.format(listing.status.setAt)})` : statusLabel,
+      Icon: <IconActivity />,
+      helpText: 'The status you marked for this listing and when you set it.',
+    });
+  }
 
   return (
     <div className="listing-detail">
@@ -347,6 +405,7 @@ export default function ListingDetail() {
             >
               {listing.isWatched === 1 ? 'Watched' : 'Watch'}
             </Button>
+            <StatusControl status={listing.status?.status ?? null} onChange={handleStatusChange} />
             <a href={listing.link} target="_blank" rel="noopener noreferrer" className="listing-detail__open-btn">
               <IconLink style={{ marginRight: 6 }} />
               Open listing
@@ -380,6 +439,32 @@ export default function ListingDetail() {
                 preview={!!listing.image_url}
               />
             </div>
+
+            <div className="listing-detail__notes">
+              <Title heading={4} className="listing-detail__notes-title">
+                Notes
+              </Title>
+              <TextArea
+                value={notesDraft}
+                onChange={(val) => setNotesDraft(val)}
+                placeholder="Your private notes about this listing…"
+                rows={5}
+                autosize={{ minRows: 4, maxRows: 12 }}
+                className="listing-detail__notes-textarea"
+                showClear
+              />
+              <Space className="listing-detail__notes-actions">
+                <Button
+                  theme="solid"
+                  type="primary"
+                  loading={notesSaving}
+                  disabled={notesSaving || (notesDraft ?? '') === (listing.notes ?? '')}
+                  onClick={handleSaveNotes}
+                >
+                  Store notes
+                </Button>
+              </Space>
+            </div>
           </Col>
           <Col span={24} lg={12}>
             <div className="listing-detail__info-section">
@@ -389,10 +474,12 @@ export default function ListingDetail() {
               <Descriptions column={1}>
                 {data.map((item, index) => (
                   <Descriptions.Item key={index}>
-                    <Space>
-                      {item.Icon}
-                      {item.value}
-                    </Space>
+                    <Tooltip content={item.helpText} position="left">
+                      <span className="listing-detail__details-item">
+                        {item.Icon}
+                        {item.value}
+                      </span>
+                    </Tooltip>
                   </Descriptions.Item>
                 ))}
               </Descriptions>

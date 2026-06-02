@@ -11,12 +11,11 @@
   border: 1px solid @color-border !important;
   border-radius: @radius-card !important;
   overflow: hidden;
-  transition: transform @transition-card, box-shadow @transition-card;
+  transition: box-shadow @transition-card;
   display: flex;
   flex-direction: column;
 
   &:hover {
-    transform: translateY(-2px);
     box-shadow: 0 6px 24px -4px rgba(0,0,0,0.6);
   }
 
