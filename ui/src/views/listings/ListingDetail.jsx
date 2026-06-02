@@ -20,6 +20,7 @@ import {
   Banner,
   Spin,
   Toast,
+  TextArea,
 } from '@douyinfe/semi-ui-19';
 import {
   IconArrowLeft,
@@ -44,6 +45,7 @@ import { xhrPost, xhrDelete } from '../../services/xhr.js';
 import ListingDeletionModal from '../../components/ListingDeletionModal.jsx';
 
 import Headline from '../../components/headline/Headline.jsx';
+import StatusControl from '../../components/listings/StatusControl.jsx';
 import './ListingDetail.less';
 
 const { Title, Text } = Typography;
@@ -65,6 +67,8 @@ export default function ListingDetail() {
   const map = useRef(null);
   const [loading, setLoading] = useState(true);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [notesDraft, setNotesDraft] = useState('');
+  const [notesSaving, setNotesSaving] = useState(false);
 
   useEffect(() => {
     async function fetchListing() {
@@ -81,6 +85,10 @@ export default function ListingDetail() {
     }
     fetchListing();
   }, [listingId]);
+
+  useEffect(() => {
+    setNotesDraft(listing?.notes ?? '');
+  }, [listing?.id, listing?.notes]);
 
   const hasGeo =
     listing?.latitude != null && listing?.longitude != null && listing?.latitude !== -1 && listing?.longitude !== -1;
@@ -271,6 +279,32 @@ export default function ListingDetail() {
     }
   };
 
+  const handleStatusChange = async (next) => {
+    try {
+      await actions.listingsData.setListingStatus(listing.id, next);
+      await actions.listingsData.getListing(listingId);
+      Toast.success(next ? `Marked as ${next}` : 'Status cleared');
+    } catch (e) {
+      console.error('Failed to update status:', e);
+      Toast.error('Failed to update status');
+    }
+  };
+
+  const handleSaveNotes = async () => {
+    if (!listing) return;
+    setNotesSaving(true);
+    try {
+      await actions.listingsData.setListingNotes(listing.id, notesDraft);
+      await actions.listingsData.getListing(listingId);
+      Toast.success('Notes saved');
+    } catch (e) {
+      console.error('Failed to save notes:', e);
+      Toast.error('Failed to save notes');
+    } finally {
+      setNotesSaving(false);
+    }
+  };
+
   if (loading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
@@ -347,6 +381,7 @@ export default function ListingDetail() {
             >
               {listing.isWatched === 1 ? 'Watched' : 'Watch'}
             </Button>
+            <StatusControl status={listing.status ?? null} onChange={handleStatusChange} />
             <a href={listing.link} target="_blank" rel="noopener noreferrer" className="listing-detail__open-btn">
               <IconLink style={{ marginRight: 6 }} />
               Open listing
@@ -379,6 +414,32 @@ export default function ListingDetail() {
                 style={{ width: '100%', height: '100%' }}
                 preview={!!listing.image_url}
               />
+            </div>
+
+            <div className="listing-detail__notes">
+              <Title heading={4} className="listing-detail__notes-title">
+                Notes
+              </Title>
+              <TextArea
+                value={notesDraft}
+                onChange={(val) => setNotesDraft(val)}
+                placeholder="Your private notes about this listing…"
+                rows={5}
+                autosize={{ minRows: 4, maxRows: 12 }}
+                className="listing-detail__notes-textarea"
+                showClear
+              />
+              <Space className="listing-detail__notes-actions">
+                <Button
+                  theme="solid"
+                  type="primary"
+                  loading={notesSaving}
+                  disabled={notesSaving || (notesDraft ?? '') === (listing.notes ?? '')}
+                  onClick={handleSaveNotes}
+                >
+                  Store notes
+                </Button>
+              </Space>
             </div>
           </Col>
           <Col span={24} lg={12}>

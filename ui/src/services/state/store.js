@@ -260,6 +260,22 @@ export const useFredyState = create(
               console.error('Error while trying to get resource for api/listings/map. Error:', Exception);
             }
           },
+          async setListingStatus(listingId, status) {
+            try {
+              await xhrPost(`/api/listings/${listingId}/status`, { status });
+            } catch (Exception) {
+              console.error(`Error while trying to set status for listing ${listingId}. Error:`, Exception);
+              throw Exception;
+            }
+          },
+          async setListingNotes(listingId, notes) {
+            try {
+              await xhrPost(`/api/listings/${listingId}/notes`, { notes });
+            } catch (Exception) {
+              console.error(`Error while trying to set notes for listing ${listingId}. Error:`, Exception);
+              throw Exception;
+            }
+          },
         },
         userSettings: {
           async getUserSettings() {

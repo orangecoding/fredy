@@ -16,13 +16,14 @@ import {
 } from '@douyinfe/semi-icons';
 import no_image from '../../assets/no_image.png';
 import * as timeService from '../../services/time/timeService.js';
+import StatusControl from '../listings/StatusControl.jsx';
 
 import './ListingsTable.less';
 
 /**
- * @param {{ listings: object[], onWatch: Function, onNavigate: Function, onDelete: Function }} props
+ * @param {{ listings: object[], onWatch: Function, onNavigate: Function, onDelete: Function, onStatusChange: Function }} props
  */
-const ListingsTable = ({ listings, onWatch, onNavigate, onDelete }) => (
+const ListingsTable = ({ listings, onWatch, onNavigate, onDelete, onStatusChange }) => (
   <div className="listingsTable">
     {listings.map((item) => (
       <div
@@ -56,7 +57,7 @@ const ListingsTable = ({ listings, onWatch, onNavigate, onDelete }) => (
               {item.price}
             </>
           ) : (
-            <span className="listingsTable__row__empty">—</span>
+            <span className="listingsTable__row__empty">---</span>
           )}
         </div>
 
@@ -67,7 +68,7 @@ const ListingsTable = ({ listings, onWatch, onNavigate, onDelete }) => (
               {item.address}
             </>
           ) : (
-            <span className="listingsTable__row__empty">—</span>
+            <span className="listingsTable__row__empty">---</span>
           )}
         </div>
 
@@ -79,14 +80,22 @@ const ListingsTable = ({ listings, onWatch, onNavigate, onDelete }) => (
         <div className="listingsTable__row__date">{timeService.format(item.created_at, false)}</div>
 
         <div className="listingsTable__row__actions" onClick={(e) => e.stopPropagation()}>
-          <button
-            type="button"
-            className="listingsTable__row__star"
-            onClick={(e) => onWatch(e, item)}
-            aria-label={item.isWatched === 1 ? 'Remove from watchlist' : 'Add to watchlist'}
-          >
-            {item.isWatched === 1 ? <IconStar /> : <IconStarStroked />}
-          </button>
+          <StatusControl
+            status={item.status ?? null}
+            compact
+            onChange={(next) => onStatusChange?.(item, next)}
+            onTriggerClick={(e) => e.stopPropagation()}
+          />
+          <Tooltip content={item.isWatched === 1 ? 'Remove from Watchlist' : 'Add to Watchlist'}>
+            <button
+              type="button"
+              className="listingsTable__row__star"
+              onClick={(e) => onWatch(e, item)}
+              aria-label={item.isWatched === 1 ? 'Remove from watchlist' : 'Add to watchlist'}
+            >
+              {item.isWatched === 1 ? <IconStar /> : <IconStarStroked />}
+            </button>
+          </Tooltip>
           <Tooltip content="Original Listing">
             <Button
               size="small"

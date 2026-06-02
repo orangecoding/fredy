@@ -23,7 +23,8 @@ import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-i
 
 import './ListingsOverview.less';
 
-const ListingsOverview = () => {
+const ListingsOverview = ({ mode = 'all' }) => {
+  const isWatchlistMode = mode === 'watchlist';
   const listingsData = useSelector((state) => state.listingsData);
   const providers = useSelector((state) => state.provider);
   const jobs = useSelector((state) => state.jobsData.jobs);
@@ -46,8 +47,12 @@ const ListingsOverview = () => {
   const [jobNameFilter, setJobNameFilter] = useSearchParamState(sp, 'job', null, parseString);
   const [activityFilter, setActivityFilter] = useSearchParamState(sp, 'active', null, parseNullableBoolean);
   const [providerFilter, setProviderFilter] = useSearchParamState(sp, 'provider', null, parseString);
+  const [statusFilter, setStatusFilter] = useSearchParamState(sp, 'status', null, parseString);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [listingToDelete, setListingToDelete] = useState(null);
+
+  // In watchlist mode the watch filter is forced to "watched only" — regardless of the URL.
+  const effectiveWatchListFilter = isWatchlistMode ? true : watchListFilter;
 
   const loadData = () => {
     actions.listingsData.getListingsData({
@@ -56,13 +61,30 @@ const ListingsOverview = () => {
       sortfield: sortField,
       sortdir: sortDir,
       freeTextFilter,
-      filter: { watchListFilter, jobNameFilter, activityFilter, providerFilter },
+      filter: {
+        watchListFilter: effectiveWatchListFilter,
+        jobNameFilter,
+        activityFilter,
+        providerFilter,
+        statusFilter,
+      },
     });
   };
 
   useEffect(() => {
     loadData();
-  }, [page, sortField, sortDir, freeTextFilter, providerFilter, activityFilter, jobNameFilter, watchListFilter]);
+  }, [
+    page,
+    sortField,
+    sortDir,
+    freeTextFilter,
+    providerFilter,
+    activityFilter,
+    jobNameFilter,
+    watchListFilter,
+    statusFilter,
+    isWatchlistMode,
+  ]);
 
   const handleFilterChange = useMemo(
     () =>
@@ -89,6 +111,17 @@ const ListingsOverview = () => {
     } catch (e) {
       console.error(e);
       Toast.error('Failed to operate Watchlist');
+    }
+  };
+
+  const handleStatusChange = async (item, nextStatus) => {
+    try {
+      await actions.listingsData.setListingStatus(item.id, nextStatus);
+      Toast.success(nextStatus ? `Marked as ${nextStatus}` : 'Status cleared');
+      loadData();
+    } catch (e) {
+      console.error(e);
+      Toast.error('Failed to update status');
     }
   };
 
@@ -148,20 +181,38 @@ const ListingsOverview = () => {
           <Radio value="false">Inactive</Radio>
         </RadioGroup>
 
-        <RadioGroup
-          type="button"
-          buttonSize="middle"
-          value={watchListFilter === null ? 'all' : String(watchListFilter)}
-          onChange={(e) => {
-            const v = e.target.value;
-            setWatchListFilter(v === 'all' ? null : v === 'true');
+        {!isWatchlistMode && (
+          <RadioGroup
+            type="button"
+            buttonSize="middle"
+            value={watchListFilter === null ? 'all' : String(watchListFilter)}
+            onChange={(e) => {
+              const v = e.target.value;
+              setWatchListFilter(v === 'all' ? null : v === 'true');
+              setPage(1);
+            }}
+          >
+            <Radio value="all">All</Radio>
+            <Radio value="true">Watched</Radio>
+            <Radio value="false">Unwatched</Radio>
+          </RadioGroup>
+        )}
+
+        <Select
+          placeholder="Status"
+          showClear
+          onChange={(val) => {
+            setStatusFilter(val ?? null);
             setPage(1);
           }}
+          value={statusFilter}
+          style={{ width: 150 }}
         >
-          <Radio value="all">All</Radio>
-          <Radio value="true">Watched</Radio>
-          <Radio value="false">Unwatched</Radio>
-        </RadioGroup>
+          <Select.Option value="applied">Applied</Select.Option>
+          <Select.Option value="rejected">Rejected</Select.Option>
+          <Select.Option value="accepted">Accepted</Select.Option>
+          <Select.Option value="none">No status</Select.Option>
+        </Select>
 
         <Select
           placeholder="Provider"
@@ -197,7 +248,13 @@ const ListingsOverview = () => {
           ))}
         </Select>
 
-        <Select prefix="Sort by" style={{ width: 185 }} value={sortField} onChange={(val) => setSortField(val)}>
+        <Select
+          prefix="Sort by"
+          className="listingsOverview__topbar__sort"
+          style={{ width: 220 }}
+          value={sortField}
+          onChange={(val) => setSortField(val)}
+        >
           <Select.Option value="job_name">Job Name</Select.Option>
           <Select.Option value="created_at">Listing Date</Select.Option>
           <Select.Option value="price">Price</Select.Option>
@@ -241,9 +298,21 @@ const ListingsOverview = () => {
       )}
 
       {viewMode === 'grid' ? (
-        <ListingsGrid listings={listings} onWatch={handleWatch} onNavigate={handleNavigate} onDelete={handleDelete} />
+        <ListingsGrid
+          listings={listings}
+          onWatch={handleWatch}
+          onNavigate={handleNavigate}
+          onDelete={handleDelete}
+          onStatusChange={handleStatusChange}
+        />
       ) : (
-        <ListingsTable listings={listings} onWatch={handleWatch} onNavigate={handleNavigate} onDelete={handleDelete} />
+        <ListingsTable
+          listings={listings}
+          onWatch={handleWatch}
+          onNavigate={handleNavigate}
+          onDelete={handleDelete}
+          onStatusChange={handleStatusChange}
+        />
       )}
 
       {listings.length > 0 && (

@@ -1,0 +1,56 @@
+@import '../../tokens.less';
+
+// StatusControl shared base. Matches dimensions and border treatment
+// of the surrounding Watched / Open listing / Delete buttons in the
+// detail view, and shrinks via the --compact modifier for table rows
+// and grid cards.
+.status-btn {
+  color: @color-muted !important;
+  border: 1px solid @color-border-bright !important;
+  border-radius: @radius-btn !important;
+  background: transparent !important;
+  transition: color @transition-fast, border-color @transition-fast, background @transition-fast;
+
+  &:hover {
+    color: @color-text !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+  }
+
+  &--compact {
+    height: 24px !important;
+    padding: 0 8px !important;
+    font-size: @text-sm !important;
+    border-radius: @radius-chip !important;
+
+    .semi-icon {
+      font-size: 12px !important;
+    }
+  }
+
+  &--applied {
+    color: @color-info !important;
+    border-color: rgba(96, 165, 250, 0.4) !important;
+    background: rgba(96, 165, 250, 0.08) !important;
+    &:hover {
+      background: rgba(96, 165, 250, 0.14) !important;
+    }
+  }
+
+  &--rejected {
+    color: @color-error !important;
+    border-color: rgba(251, 113, 133, 0.4) !important;
+    background: rgba(251, 113, 133, 0.08) !important;
+    &:hover {
+      background: rgba(251, 113, 133, 0.14) !important;
+    }
+  }
+
+  &--accepted {
+    color: @color-success !important;
+    border-color: rgba(52, 211, 153, 0.4) !important;
+    background: rgba(52, 211, 153, 0.08) !important;
+    &:hover {
+      background: rgba(52, 211, 153, 0.14) !important;
+    }
+  }
+}
