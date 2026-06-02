@@ -81,7 +81,7 @@ const ListingsTable = ({ listings, onWatch, onNavigate, onDelete, onStatusChange
 
         <div className="listingsTable__row__actions" onClick={(e) => e.stopPropagation()}>
           <StatusControl
-            status={item.status ?? null}
+            status={item.status?.status ?? null}
             compact
             onChange={(next) => onStatusChange?.(item, next)}
             onTriggerClick={(e) => e.stopPropagation()}

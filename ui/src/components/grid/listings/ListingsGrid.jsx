@@ -87,7 +87,7 @@ const ListingsGrid = ({ listings, onWatch, onNavigate, onDelete, onStatusChange 
 
         <div className="listingsGrid__card__actions" onClick={(e) => e.stopPropagation()}>
           <StatusControl
-            status={item.status ?? null}
+            status={item.status?.status ?? null}
             compact
             onChange={(next) => onStatusChange?.(item, next)}
             onTriggerClick={(e) => e.stopPropagation()}

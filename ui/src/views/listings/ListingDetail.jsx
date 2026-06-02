@@ -21,6 +21,7 @@ import {
   Spin,
   Toast,
   TextArea,
+  Tooltip,
 } from '@douyinfe/semi-ui-19';
 import {
   IconArrowLeft,
@@ -315,34 +316,57 @@ export default function ListingDetail() {
 
   if (!listing) return null;
 
+  const statusLabel = listing.status?.status
+    ? listing.status.status.charAt(0).toUpperCase() + listing.status.status.slice(1)
+    : null;
+
   const data = [
-    { key: 'Price', value: `${listing.price} €`, Icon: <IconCart /> },
+    {
+      key: 'Price',
+      value: `${listing.price} €`,
+      Icon: <IconCart />,
+      helpText: 'The asking price of this listing, as reported by the provider.',
+    },
     {
       key: 'Size',
       value: listing.size ? `${listing.size} m²` : 'N/A',
       Icon: <IconExpand />,
+      helpText: 'Living space of the listing in square meters.',
     },
     {
       key: 'Rooms',
       value: listing.rooms ? `${listing.rooms} Rooms` : 'N/A',
       Icon: <IconGridView />,
+      helpText: 'Number of rooms in the listing.',
     },
     {
       key: 'Job',
       value: listing.job_name,
       Icon: <IconBriefcase />,
+      helpText: 'The Fredy job that found this listing.',
     },
     {
       key: 'Provider',
       value: listing.provider ? listing.provider.charAt(0).toUpperCase() + listing.provider.slice(1) : 'Unknown',
       Icon: <IconBriefcase />,
+      helpText: 'The real estate portal where this listing was scraped from.',
     },
     {
       key: 'Added',
       value: timeService.format(listing.created_at),
       Icon: <IconClock />,
+      helpText: 'When Fredy first added this listing to your database.',
     },
   ];
+
+  if (statusLabel) {
+    data.push({
+      key: 'Status',
+      value: listing.status?.setAt ? `${statusLabel} (set ${timeService.format(listing.status.setAt)})` : statusLabel,
+      Icon: <IconActivity />,
+      helpText: 'The status you marked for this listing and when you set it.',
+    });
+  }
 
   return (
     <div className="listing-detail">
@@ -381,7 +405,7 @@ export default function ListingDetail() {
             >
               {listing.isWatched === 1 ? 'Watched' : 'Watch'}
             </Button>
-            <StatusControl status={listing.status ?? null} onChange={handleStatusChange} />
+            <StatusControl status={listing.status?.status ?? null} onChange={handleStatusChange} />
             <a href={listing.link} target="_blank" rel="noopener noreferrer" className="listing-detail__open-btn">
               <IconLink style={{ marginRight: 6 }} />
               Open listing
@@ -450,10 +474,12 @@ export default function ListingDetail() {
               <Descriptions column={1}>
                 {data.map((item, index) => (
                   <Descriptions.Item key={index}>
-                    <Space>
-                      {item.Icon}
-                      {item.value}
-                    </Space>
+                    <Tooltip content={item.helpText} position="left">
+                      <span className="listing-detail__details-item">
+                        {item.Icon}
+                        {item.value}
+                      </span>
+                    </Tooltip>
                   </Descriptions.Item>
                 ))}
               </Descriptions>
