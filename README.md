@@ -23,7 +23,7 @@
 
 
 
-# Fredy 🏡 – Your Self-Hosted Real Estate Finder for Germany
+# Fredy 🏡 - Your Self-Hosted Real Estate Finder for Germany
 
 Finding an apartment or house in Germany can be stressful and
 time-consuming.\
