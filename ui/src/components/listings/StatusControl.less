@@ -1,5 +1,13 @@
 @import '../../tokens.less';
 
+// Wrapper span used as the Dropdown's positioning anchor so the menu opens
+// directly below the visible button rather than the implicit wrapper of the
+// hover tooltip (which can have a different bounding box).
+.status-btn__anchor {
+  display: inline-block;
+  line-height: 0;
+}
+
 // StatusControl shared base. Matches dimensions and border treatment
 // of the surrounding Watched / Open listing / Delete buttons in the
 // detail view, and shrinks via the --compact modifier for table rows

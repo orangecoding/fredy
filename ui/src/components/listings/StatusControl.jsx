@@ -3,6 +3,7 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
+import { useState } from 'react';
 import { Dropdown, Button, Tooltip } from '@douyinfe/semi-ui-19';
 import { IconChevronDown } from '@douyinfe/semi-icons';
 
@@ -43,9 +44,12 @@ const optionFor = (status) => STATUS_OPTIONS.find((o) => o.value === status) ?? 
  * @param {(e: React.MouseEvent) => void} [props.onTriggerClick] - Optional click handler to stop propagation on the trigger.
  */
 export default function StatusControl({ status = null, onChange, compact = false, onTriggerClick }) {
+  const [open, setOpen] = useState(false);
+  const [tooltipOpen, setTooltipOpen] = useState(false);
   const current = optionFor(status);
 
   const handlePick = (next) => {
+    setOpen(false);
     if (next === status) return;
     onChange?.(next);
   };
@@ -69,13 +73,25 @@ export default function StatusControl({ status = null, onChange, compact = false
     .join(' ');
 
   const trigger = (
-    <Tooltip content={STATUS_TOOLTIP} position="top" trigger="hover">
+    <Tooltip
+      content={STATUS_TOOLTIP}
+      position="top"
+      trigger="custom"
+      visible={tooltipOpen && !open}
+      onVisibleChange={setTooltipOpen}
+    >
       <Button
         size={compact ? 'small' : 'default'}
         theme="borderless"
         icon={<IconChevronDown />}
         iconPosition="right"
-        onClick={(e) => onTriggerClick?.(e)}
+        onMouseEnter={() => setTooltipOpen(true)}
+        onMouseLeave={() => setTooltipOpen(false)}
+        onClick={(e) => {
+          onTriggerClick?.(e);
+          setTooltipOpen(false);
+          setOpen((o) => !o);
+        }}
         className={className}
       >
         {status ? current.label : 'Status'}
@@ -84,8 +100,16 @@ export default function StatusControl({ status = null, onChange, compact = false
   );
 
   return (
-    <Dropdown trigger="click" position="bottomLeft" render={menu} stopPropagation>
-      {trigger}
+    <Dropdown
+      trigger="custom"
+      visible={open}
+      onVisibleChange={setOpen}
+      onClickOutSide={() => setOpen(false)}
+      position="bottom"
+      render={menu}
+      stopPropagation
+    >
+      <span className="status-btn__anchor">{trigger}</span>
     </Dropdown>
   );
 }
