@@ -4,10 +4,15 @@
  */
 
 import { convertWebToMobile } from '../../../lib/services/immoscout/immoscout-web-translator.js';
-import { expect } from 'vitest';
+import { expect, vi } from 'vitest';
 import { readFile } from 'fs/promises';
+import { buildFetchMock } from '../../offlineFixtures.js';
 
 export const testData = JSON.parse(await readFile(new URL('./testdata.json', import.meta.url)));
+
+if (process.env.TEST_MODE === 'offline') {
+  vi.stubGlobal('fetch', buildFetchMock());
+}
 
 describe('#immoscout-mobile URL conversion', () => {
   // Test shape URL conversion
