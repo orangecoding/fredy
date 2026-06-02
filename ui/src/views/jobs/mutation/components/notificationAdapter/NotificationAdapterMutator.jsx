@@ -73,7 +73,9 @@ export default function NotificationAdapterMutator({
   const adapter = useSelector((state) => state.notificationAdapter);
 
   const preFilledSelectedAdapter =
-    editNotificationAdapter == null ? null : adapter.find((a) => a.id === editNotificationAdapter.id);
+    editNotificationAdapter == null
+      ? null
+      : adapter.filter((a) => a != null).find((a) => a.id === editNotificationAdapter.id);
 
   spreadPrefilledAdapterWithValues(preFilledSelectedAdapter, editNotificationAdapter?.fields);
 
@@ -227,9 +229,9 @@ export default function NotificationAdapterMutator({
         className="providerMutator__fields"
         value={selectedAdapter == null ? '' : selectedAdapter.id}
         optionList={adapter
+          .filter((a) => a != null)
           .map((a) => {
             return {
-              otherKey: a.id,
               value: a.id,
               label: a.name,
             };
@@ -238,7 +240,7 @@ export default function NotificationAdapterMutator({
           .filter((option) =>
             editNotificationAdapter != null
               ? true
-              : selected.find((selectedOption) => selectedOption.id === option.key) == null,
+              : selected.find((selectedOption) => selectedOption.id === option.value) == null,
           )
           .sort(sortAdapter)}
         onChange={(value) => {
