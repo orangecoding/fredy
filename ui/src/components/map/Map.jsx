@@ -8,6 +8,7 @@ import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import { fixMapboxDrawCompatibility, addDrawingControl, setupAreaFilterEventListeners } from './MapDrawingExtension.js';
+import { getBoundsFromCoords } from '../../views/listings/mapUtils.js';
 import './Map.less';
 
 export const GERMANY_BOUNDS = [
@@ -66,6 +67,7 @@ export default function Map({
   const mapContainerRef = useRef(null);
   const mapRef = useRef(null);
   const drawRef = useRef(null);
+  const hasFittedToInitialAreaRef = useRef(false);
 
   // Initialize map - ONLY when container changes, never reinitialize
   useEffect(() => {
@@ -127,6 +129,17 @@ export default function Map({
         drawRef.current.set(initialSpatialFilter);
       } catch (error) {
         console.error('Error loading spatial filter:', error);
+      }
+
+      if (!hasFittedToInitialAreaRef.current) {
+        const coords = initialSpatialFilter.features.flatMap((feature) =>
+          feature.geometry?.type === 'Polygon' ? feature.geometry.coordinates.flat() : [],
+        );
+        const bounds = getBoundsFromCoords(coords);
+        if (bounds) {
+          mapRef.current.fitBounds(bounds, { padding: 50, maxZoom: 15, duration: 0 });
+          hasFittedToInitialAreaRef.current = true;
+        }
       }
     }
 
