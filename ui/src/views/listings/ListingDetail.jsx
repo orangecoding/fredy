@@ -39,6 +39,7 @@ import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import no_image from '../../assets/no_image.png';
 import * as timeService from '../../services/time/timeService.js';
+import { formatEuroPrice } from '../../services/price/priceService.js';
 import { distanceMeters, getBoundsFromCoords } from './mapUtils.js';
 import { xhrPost, xhrDelete } from '../../services/xhr.js';
 import ListingDeletionModal from '../../components/ListingDeletionModal.jsx';
@@ -282,7 +283,15 @@ export default function ListingDetail() {
   if (!listing) return null;
 
   const data = [
-    { key: 'Price', value: `${listing.price} €`, Icon: <IconCart /> },
+    {
+      key: 'Price',
+      value: listing.price ? (
+        <span className="listing-detail__price">{formatEuroPrice(listing.price)}</span>
+      ) : (
+        'N/A'
+      ),
+      Icon: <IconCart />,
+    },
     {
       key: 'Size',
       value: listing.size ? `${listing.size} m²` : 'N/A',
