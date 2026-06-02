@@ -6,7 +6,6 @@
 import { Button, Tooltip } from '@douyinfe/semi-ui-19';
 import {
   IconBriefcase,
-  IconCart,
   IconDelete,
   IconLink,
   IconMapPin,
@@ -52,10 +51,7 @@ const ListingsTable = ({ listings, onWatch, onNavigate, onDelete }) => (
 
         <div className="listingsTable__row__price">
           {item.price ? (
-            <>
-              <IconCart size="small" />
-              {formatEuroPrice(item.price)}
-            </>
+            formatEuroPrice(item.price)
           ) : (
             <span className="listingsTable__row__empty">—</span>
           )}
