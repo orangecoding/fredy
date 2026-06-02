@@ -114,7 +114,6 @@
   border-radius: @radius-btn !important;
   color: @color-muted !important;
   transition: background @transition-fast, color @transition-fast !important;
-  margin: 2px 8px !important;
 
   &:hover {
     color: @color-text !important;
@@ -123,7 +122,8 @@
   &.semi-navigation-item-selected,
   &[aria-selected="true"] {
     background: rgba(224,74,56,0.12) !important;
-    border: 1px solid rgba(224,74,56,0.25) !important;
+    border: none !important;
+    box-shadow: inset 0 0 0 1px rgba(224,74,56,0.25) !important;
     color: @color-text !important;
 
     .semi-navigation-item-icon {
