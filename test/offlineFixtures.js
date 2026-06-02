@@ -38,6 +38,20 @@ async function tryReadFile(filepath) {
   }
 }
 
+function withRealEstateType(data, realEstateType) {
+  if (!realEstateType?.length || !Array.isArray(data?.resultListItems)) {
+    return data;
+  }
+
+  const cloned = typeof structuredClone === 'function' ? structuredClone(data) : JSON.parse(JSON.stringify(data));
+  for (const item of cloned.resultListItems) {
+    if (item?.type === 'EXPOSE_RESULT' && item?.item) {
+      item.item.realEstateType = realEstateType;
+    }
+  }
+  return cloned;
+}
+
 /**
  * Returns fixture HTML for the given URL by mapping hostname → provider name,
  * then distinguishing list vs detail pages by comparing the URL path against
@@ -83,7 +97,10 @@ export function buildFetchMock() {
         const raw = await tryReadFile(path.join(FIXTURES_DIR, 'immoscout_list.json'));
         listData = raw ? JSON.parse(raw) : { resultListItems: [] };
       }
-      return { ok: true, status: 200, json: () => Promise.resolve(listData) };
+
+      const requestedType = new URL(urlStr).searchParams.get('realestatetype');
+      const responseData = withRealEstateType(listData, requestedType);
+      return { ok: true, status: 200, json: () => Promise.resolve(responseData) };
     }
 
     if (urlStr.includes('api.mobile.immobilienscout24.de/expose/')) {
