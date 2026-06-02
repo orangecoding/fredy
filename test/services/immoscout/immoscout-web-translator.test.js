@@ -46,6 +46,60 @@ describe('#immoscout-mobile URL conversion', () => {
     expect(queryParams.get('equipment').split(',')).toEqual(expect.arrayContaining(['garden', 'balcony']));
   });
 
+  // Test URL conversion of SEO web path for max warmrent. The ImmoScout web UI
+  // generates this special SEO slug instead of explicit price/pricetype params
+  // when the user configures a "Warmmiete" filter (real-world URL).
+  it('should convert a SEO apartment max warmrent path to rent + price + pricetype', () => {
+    const webUrl =
+      'https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/duesseldorf/wohnung-bis-800-euro-warm?livingspace=-800.0&enteredFrom=result_list';
+
+    const converted = convertWebToMobile(webUrl);
+    const queryParams = new URL(converted).searchParams;
+    expect(queryParams.get('realestatetype')).toBe('apartmentrent');
+    expect(queryParams.get('price')).toBe('-800');
+    expect(queryParams.get('pricetype')).toBe('calculatedtotalrent');
+    expect(queryParams.get('geocodes')).toBe('/de/nordrhein-westfalen/duesseldorf');
+    expect(queryParams.get('livingspace')).toBe('-800.0');
+  });
+
+  // Same SEO pattern for houses ("haus-bis-X-euro-warm" → houserent).
+  it('should convert a SEO house max warmrent path to rent + price + pricetype', () => {
+    const webUrl = 'https://www.immobilienscout24.de/Suche/de/berlin/berlin/haus-bis-1500-euro-warm';
+
+    const converted = convertWebToMobile(webUrl);
+    const queryParams = new URL(converted).searchParams;
+    expect(queryParams.get('realestatetype')).toBe('houserent');
+    expect(queryParams.get('price')).toBe('-1500');
+    expect(queryParams.get('pricetype')).toBe('calculatedtotalrent');
+  });
+
+  // Sanity check: max coldrent ("Kaltmiete") does NOT use an SEO slug. The web
+  // UI keeps the regular "wohnung-mieten" path and passes explicit
+  // price + pricetype query params, which the existing translator already
+  // handles (real-world URL).
+  it('should convert a max coldrent search via the regular wohnung-mieten path', () => {
+    const webUrl =
+      'https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/duesseldorf/wohnung-mieten?price=-800.0&livingspace=-800.0&pricetype=rentpermonth&enteredFrom=result_list';
+
+    const converted = convertWebToMobile(webUrl);
+    const queryParams = new URL(converted).searchParams;
+    expect(queryParams.get('realestatetype')).toBe('apartmentrent');
+    expect(queryParams.get('price')).toBe('-800.0');
+    expect(queryParams.get('pricetype')).toBe('rentpermonth');
+    expect(queryParams.get('geocodes')).toBe('/de/nordrhein-westfalen/duesseldorf');
+  });
+
+  // Explicit query params win over the SEO slug's implicit defaults.
+  it('should let explicit query params override SEO path price defaults', () => {
+    const webUrl = 'https://www.immobilienscout24.de/Suche/de/berlin/berlin/wohnung-bis-800-euro-warm?price=100-500';
+
+    const converted = convertWebToMobile(webUrl);
+    const queryParams = new URL(converted).searchParams;
+    expect(queryParams.get('realestatetype')).toBe('apartmentrent');
+    expect(queryParams.get('price')).toBe('100-500');
+    expect(queryParams.get('pricetype')).toBe('calculatedtotalrent');
+  });
+
   // Test URL conversion with unsupported query parameters
   it('should remove unsupported query parameters', () => {
     const webUrl = 'https://www.immobilienscout24.de/Suche/de/berlin/berlin/wohnung-mieten?minimuminternetspeed=100000';
