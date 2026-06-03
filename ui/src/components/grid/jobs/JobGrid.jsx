@@ -296,7 +296,7 @@ const JobGrid = () => {
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
                     {job.isOnlyShared && (
-                      <Popover content={getPopoverContent('This job has been shared with you — read only.')}>
+                      <Popover content={getPopoverContent('This job has been shared with you - read only.')}>
                         <div>
                           <IconAlertTriangle style={{ color: 'rgba(var(--semi-yellow-7), 1)' }} />
                         </div>
