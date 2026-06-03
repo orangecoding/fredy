@@ -6,11 +6,15 @@
 import ListingsOverview from '../../components/listings/ListingsOverview.jsx';
 import Headline from '../../components/headline/Headline.jsx';
 
-export default function Listings() {
+/**
+ * @param {{ mode?: 'all' | 'watchlist' }} props
+ */
+export default function Listings({ mode = 'all' }) {
+  const title = mode === 'watchlist' ? 'Watchlist' : 'Listings';
   return (
     <>
-      <Headline text="Listings" />
-      <ListingsOverview />
+      <Headline text={title} />
+      <ListingsOverview mode={mode} />
     </>
   );
 }

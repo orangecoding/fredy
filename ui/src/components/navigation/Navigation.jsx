@@ -37,6 +37,7 @@ export default function Navigation({ isAdmin }) {
       items: [
         { itemKey: '/listings', text: 'Overview' },
         { itemKey: '/map', text: 'Map View' },
+        { itemKey: '/listings/watchlist', text: 'Watchlist' },
       ],
     },
   ];
@@ -61,6 +62,22 @@ export default function Navigation({ isAdmin }) {
   }
 
   function parsePathName(name) {
+    // Collect every leaf itemKey that looks like a route (starts with '/').
+    // Prefer the longest exact-prefix match so nested routes like
+    // '/listings/watchlist' resolve to themselves instead of being collapsed
+    // to '/listings'.
+    const allKeys = [];
+    const collect = (nodes) => {
+      for (const n of nodes) {
+        if (typeof n.itemKey === 'string' && n.itemKey.startsWith('/')) allKeys.push(n.itemKey);
+        if (Array.isArray(n.items)) collect(n.items);
+      }
+    };
+    collect(items);
+    const longestMatch = allKeys
+      .filter((k) => name === k || name.startsWith(k + '/'))
+      .sort((a, b) => b.length - a.length)[0];
+    if (longestMatch) return longestMatch;
     const split = name.split('/').filter((s) => s.length !== 0);
     return '/' + split[0];
   }

@@ -97,6 +97,7 @@ export default function FredyApp() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/jobs" element={<Jobs />} />
             <Route path="/listings" element={<Listings />} />
+            <Route path="/listings/watchlist" element={<Listings mode="watchlist" />} />
             <Route path="/listings/listing/:listingId" element={<ListingDetail />} />
             <Route path="/map" element={<MapView />} />
             <Route path="/watchlistManagement" element={<WatchlistManagement />} />
