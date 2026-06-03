@@ -6,6 +6,7 @@
 import { Button, Tooltip } from '@douyinfe/semi-ui-19';
 import {
   IconBriefcase,
+  IconCart,
   IconDelete,
   IconLink,
   IconMapPin,
@@ -14,15 +15,15 @@ import {
   IconEyeOpened,
 } from '@douyinfe/semi-icons';
 import no_image from '../../../assets/no_image.png';
-import { formatEuroPrice } from '../../../services/price/priceService.js';
 import * as timeService from '../../../services/time/timeService.js';
+import StatusControl from '../../listings/StatusControl.jsx';
 
 import './ListingsGrid.less';
 
 /**
- * @param {{ listings: object[], onWatch: Function, onNavigate: Function, onDelete: Function }} props
+ * @param {{ listings: object[], onWatch: Function, onNavigate: Function, onDelete: Function, onStatusChange: Function }} props
  */
-const ListingsGrid = ({ listings, onWatch, onNavigate, onDelete }) => (
+const ListingsGrid = ({ listings, onWatch, onNavigate, onDelete, onStatusChange }) => (
   <div className="listingsGrid__grid">
     {listings.map((item) => (
       <div
@@ -49,14 +50,16 @@ const ListingsGrid = ({ listings, onWatch, onNavigate, onDelete }) => (
               <span>Inactive</span>
             </div>
           )}
-          <button
-            type="button"
-            className="listingsGrid__card__star"
-            onClick={(e) => onWatch(e, item)}
-            aria-label={item.isWatched === 1 ? 'Remove from watchlist' : 'Add to watchlist'}
-          >
-            {item.isWatched === 1 ? <IconStar /> : <IconStarStroked />}
-          </button>
+          <Tooltip content={item.isWatched === 1 ? 'Remove from Watchlist' : 'Add to Watchlist'}>
+            <button
+              type="button"
+              className="listingsGrid__card__star"
+              onClick={(e) => onWatch(e, item)}
+              aria-label={item.isWatched === 1 ? 'Remove from watchlist' : 'Add to watchlist'}
+            >
+              {item.isWatched === 1 ? <IconStar /> : <IconStarStroked />}
+            </button>
+          </Tooltip>
         </div>
 
         <div className="listingsGrid__card__body">
@@ -65,7 +68,8 @@ const ListingsGrid = ({ listings, onWatch, onNavigate, onDelete }) => (
           </div>
           {item.price && (
             <div className="listingsGrid__card__price">
-              {formatEuroPrice(item.price)}
+              <IconCart size="small" />
+              {item.price}
             </div>
           )}
           {item.address && (
@@ -82,6 +86,12 @@ const ListingsGrid = ({ listings, onWatch, onNavigate, onDelete }) => (
         </div>
 
         <div className="listingsGrid__card__actions" onClick={(e) => e.stopPropagation()}>
+          <StatusControl
+            status={item.status?.status ?? null}
+            compact
+            onChange={(next) => onStatusChange?.(item, next)}
+            onTriggerClick={(e) => e.stopPropagation()}
+          />
           <Tooltip content="Original Listing">
             <Button
               size="small"
