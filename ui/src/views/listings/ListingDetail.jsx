@@ -41,6 +41,7 @@ import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import no_image from '../../assets/no_image.png';
 import * as timeService from '../../services/time/timeService.js';
+import { formatEuroPrice } from '../../services/price/priceService.js';
 import { distanceMeters, getBoundsFromCoords } from './mapUtils.js';
 import { xhrPost, xhrDelete } from '../../services/xhr.js';
 import ListingDeletionModal from '../../components/ListingDeletionModal.jsx';
@@ -323,7 +324,11 @@ export default function ListingDetail() {
   const data = [
     {
       key: 'Price',
-      value: `${listing.price} €`,
+      value: listing.price ? (
+        <span className="listing-detail__price">{formatEuroPrice(listing.price)}</span>
+      ) : (
+        'N/A'
+      ),
       Icon: <IconCart />,
       helpText: 'The asking price of this listing, as reported by the provider.',
     },

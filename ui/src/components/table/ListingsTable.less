@@ -55,8 +55,11 @@
       color: @color-success;
       display: flex;
       align-items: center;
+      justify-content: flex-end;
       gap: 4px;
       white-space: nowrap;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
     }
 
     &__address {
@@ -94,26 +97,33 @@
     }
 
     &__star {
-      width: 28px;
-      height: 28px;
-      background: transparent;
-      border: none;
+      width: 30px;
+      height: 30px;
+      background: rgba(0,0,0,0.28);
+      border: 1px solid rgba(255,255,255,0.12);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       padding: 0;
-      transition: background @transition-fast;
+      transition: background @transition-fast, border-color @transition-fast, transform @transition-fast;
       flex-shrink: 0;
 
       &:hover {
-        background: rgba(0, 0, 0, 0.1);
+        background: rgba(0,0,0,0.48);
+        border-color: rgba(255,255,255,0.22);
+        transform: translateY(-1px);
+      }
+
+      &:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(224,74,56,0.35);
       }
 
       svg {
         color: @color-accent;
-        font-size: 14px;
+        font-size: 15px;
       }
     }
 

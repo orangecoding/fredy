@@ -6,7 +6,6 @@
 import { Button, Tooltip } from '@douyinfe/semi-ui-19';
 import {
   IconBriefcase,
-  IconCart,
   IconDelete,
   IconLink,
   IconMapPin,
@@ -15,6 +14,7 @@ import {
   IconEyeOpened,
 } from '@douyinfe/semi-icons';
 import no_image from '../../assets/no_image.png';
+import { formatEuroPrice } from '../../services/price/priceService.js';
 import * as timeService from '../../services/time/timeService.js';
 import StatusControl from '../listings/StatusControl.jsx';
 
@@ -52,10 +52,7 @@ const ListingsTable = ({ listings, onWatch, onNavigate, onDelete, onStatusChange
 
         <div className="listingsTable__row__price">
           {item.price ? (
-            <>
-              <IconCart size="small" />
-              {item.price}
-            </>
+            formatEuroPrice(item.price)
           ) : (
             <span className="listingsTable__row__empty">---</span>
           )}
