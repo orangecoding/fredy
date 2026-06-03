@@ -335,6 +335,61 @@ describe('telegram send() - mixed batch (regression-safety)', () => {
   });
 });
 
+describe('telegram send() - multiple chat IDs', () => {
+  const listing = {
+    id: '1',
+    title: 'Flat',
+    link: 'https://ex.com',
+    address: 'Berlin',
+    price: '800',
+    size: '50',
+    image: 'https://ex.com/img.jpg',
+  };
+
+  it('sends to every chat ID in a comma-separated list', async () => {
+    mockNodeFetch.mockResolvedValue(jsonOk());
+
+    await send({
+      serviceName: 'immoscout',
+      newListings: [listing],
+      notificationConfig: [{ id: 'telegram', fields: { token: 'TKN', chatId: '111, 222' } }],
+      jobKey: 'Berlin',
+    });
+
+    expect(mockNodeFetch).toHaveBeenCalledTimes(2);
+    const bodies = mockNodeFetch.mock.calls.map((c) => JSON.parse(c[1].body));
+    expect(bodies.map((b) => b.chat_id)).toEqual(expect.arrayContaining(['111', '222']));
+  });
+
+  it('trims whitespace around each chat ID', async () => {
+    mockNodeFetch.mockResolvedValue(jsonOk());
+
+    await send({
+      serviceName: 'immoscout',
+      newListings: [listing],
+      notificationConfig: [{ id: 'telegram', fields: { token: 'TKN', chatId: '  333 , 444  ' } }],
+      jobKey: 'Berlin',
+    });
+
+    expect(mockNodeFetch).toHaveBeenCalledTimes(2);
+    const bodies = mockNodeFetch.mock.calls.map((c) => JSON.parse(c[1].body));
+    expect(bodies.map((b) => b.chat_id)).toEqual(expect.arrayContaining(['333', '444']));
+  });
+
+  it('sends each listing to each chat ID (N listings × M chats)', async () => {
+    mockNodeFetch.mockResolvedValue(jsonOk());
+
+    await send({
+      serviceName: 'immoscout',
+      newListings: [listing, { ...listing, id: '2' }],
+      notificationConfig: [{ id: 'telegram', fields: { token: 'TKN', chatId: '555, 666' } }],
+      jobKey: 'Berlin',
+    });
+
+    expect(mockNodeFetch).toHaveBeenCalledTimes(4);
+  });
+});
+
 describe('telegram send() - config validation', () => {
   it('throws when telegram adapter config is missing', () => {
     expect(() =>

@@ -21,6 +21,8 @@ Steps:
    - Private chats: `chat.id` is a positive number
    - Groups/supergroups: `chat.id` is a negative number
 
+**Multiple recipients:** To notify several users individually, enter a comma-separated list of chat IDs in the Chat Id field, e.g. `123456789, 987654321`. Each recipient receives the same messages and gets its own independent rate-limit window. This avoids having to create a group and add the bot to it.
+
 Keep your bot token secret. If `getUpdates` returns an empty list, send a new message and try again, or make sure your bot’s privacy settings allow it to see group messages when used in groups.
 
 #### Getting the thread ID (this is optional to be used for forum topics)
