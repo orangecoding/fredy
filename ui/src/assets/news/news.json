@@ -1,16 +1,11 @@
 {
-  "key": "00e6b81777a275f5a140fc9101cb943810db6a69f6eb3927319c5aee0c876221",
+  "key": "00e6b81777a275f5a140fc9101cb94eef0db6a69f6eb3927319c5aee0c876221",
   "content":
 [
   {
-    "title": "Table overview for listings",
-    "text": "Thanks to https://github.com/datenwurm, we now have a table overview for listings. If you decide to use the table view, the decision will be stored.",
-    "media": "1.png"
-  },
-  {
-    "title": "Table overview for jobs",
-    "text": "Based on datenwurm's, work, I created a table overview for jobs. If you decide to use the table view, the decision will be stored.",
-    "media": "2.png"
+    "title": "Fredy goes multilingual!",
+    "text": "Fredy now supports multiple languages (Starting with german and english). You can select the language in the user-settings.",
+    "media": "1.jpg"
   }
 ]
 }
