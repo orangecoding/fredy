@@ -25,8 +25,11 @@ import Headline from '../../components/headline/Headline.jsx';
 import './Dashboard.less';
 import { xhrPost } from '../../services/xhr.js';
 import { format } from '../../services/time/timeService.js';
+import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
 
 export default function Dashboard() {
+  const t = useTranslation();
+  const locale = useLocale();
   const actions = useActions();
   const dashboard = useSelector((state) => state.dashboard.data);
   React.useEffect(() => {
@@ -38,111 +41,111 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard">
-      <Headline text="Dashboard" />
+      <Headline text={t('dashboard.title')} />
 
-      <div className="dashboard__section-label">General</div>
+      <div className="dashboard__section-label">{t('dashboard.sectionGeneral')}</div>
       <Row gutter={[16, 16]} className="dashboard__row">
         <Col xs={24} sm={12} md={12} lg={6} xl={6}>
           <KpiCard
-            title="Search Interval"
+            title={t('dashboard.searchInterval')}
             value={`${dashboard?.general?.interval} min`}
             icon={<IconClock />}
-            description="Time interval for job execution"
+            description={t('dashboard.searchIntervalDesc')}
           />
         </Col>
         <Col xs={24} sm={12} md={12} lg={6} xl={6}>
           <KpiCard
-            title="Last Search"
+            title={t('dashboard.lastSearch')}
             value={
               dashboard?.general?.lastRun == null || dashboard?.general?.lastRun === 0
                 ? '---'
-                : format(dashboard?.general?.lastRun)
+                : format(dashboard?.general?.lastRun, true, locale)
             }
             icon={<IconDoubleChevronLeft />}
-            description="Last execution timestamp"
+            description={t('dashboard.lastSearchDesc')}
           />
         </Col>
         <Col xs={24} sm={12} md={12} lg={6} xl={6}>
           <KpiCard
-            title="Next Search"
+            title={t('dashboard.nextSearch')}
             value={
               dashboard?.general?.nextRun == null || dashboard?.general?.nextRun === 0
                 ? '---'
-                : format(dashboard?.general?.nextRun)
+                : format(dashboard?.general?.nextRun, true, locale)
             }
             icon={<IconDoubleChevronRight />}
-            description="Next execution timestamp"
+            description={t('dashboard.nextSearchDesc')}
           />
         </Col>
         <Col xs={24} sm={12} md={12} lg={6} xl={6}>
-          <KpiCard title="Search Now" icon={<IconSearch />} description="Run a search now">
+          <KpiCard title={t('dashboard.searchNow')} icon={<IconSearch />} description={t('dashboard.searchNowDesc')}>
             <Button
               size="small"
               style={{ marginTop: '.2rem' }}
               icon={<IconPlayCircle />}
-              aria-label="Start now"
+              aria-label={t('common.startNow')}
               onClick={async () => {
                 try {
                   await xhrPost('/api/jobs/startAll', null);
-                  Toast.success('Successfully triggered Fredy search.');
+                  Toast.success(t('dashboard.searchNowStarted'));
                 } catch {
-                  Toast.error('Failed to trigger search');
+                  Toast.error(t('dashboard.searchNowFailed'));
                 }
               }}
             >
-              Search now
+              {t('dashboard.searchNowButton')}
             </Button>
           </KpiCard>
         </Col>
       </Row>
 
-      <div className="dashboard__section-label">Overview</div>
+      <div className="dashboard__section-label">{t('dashboard.sectionOverview')}</div>
       <Row gutter={[16, 16]} className="dashboard__row">
         <Col xs={24} sm={12} md={12} lg={6} xl={6}>
           <KpiCard
-            title="Jobs"
+            title={t('dashboard.kpiJobs')}
             color="blue"
             value={!kpis.totalJobs ? '---' : kpis.totalJobs}
             icon={<IconTerminal />}
-            description="Total number of jobs"
+            description={t('dashboard.kpiJobsDesc')}
           />
         </Col>
         <Col xs={24} sm={12} md={12} lg={6} xl={6}>
           <KpiCard
-            title="Listings"
+            title={t('dashboard.kpiListings')}
             color="orange"
             value={!kpis.totalListings ? '---' : kpis.totalListings}
             icon={<IconStarStroked />}
-            description="Total listings found"
+            description={t('dashboard.kpiListingsDesc')}
           />
         </Col>
         <Col xs={24} sm={12} md={12} lg={6} xl={6}>
           <KpiCard
-            title="Active Listings"
+            title={t('dashboard.kpiActiveListings')}
             color="green"
             value={!kpis.numberOfActiveListings ? '---' : kpis.numberOfActiveListings}
             icon={<IconStar />}
-            description="Total active listings"
+            description={t('dashboard.kpiActiveListingsDesc')}
           />
         </Col>
         <Col xs={24} sm={12} md={12} lg={6} xl={6}>
           <KpiCard
-            title="Median Price"
+            title={t('dashboard.kpiMedianPrice')}
             color="purple"
             value={`${
               !kpis.medianPriceOfListings
                 ? '---'
-                : new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(
+                : new Intl.NumberFormat(locale, { style: 'currency', currency: 'EUR' }).format(
                     kpis.medianPriceOfListings,
                   )
             }`}
             icon={<IconNoteMoney />}
-            description="Median Price of listings"
+            description={t('dashboard.kpiMedianPriceDesc')}
           />
         </Col>
       </Row>
 
-      <div className="dashboard__section-label">Provider Insights</div>
+      <div className="dashboard__section-label">{t('dashboard.sectionProviderInsights')}</div>
       <div className="dashboard__pie-wrapper">
         <PieChartCard data={pieData} />
       </div>

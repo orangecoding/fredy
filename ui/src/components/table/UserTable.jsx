@@ -7,19 +7,25 @@ import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-i
 import { format } from '../../services/time/timeService';
 import { Table, Button, Empty, Tag } from '@douyinfe/semi-ui-19';
 import { IconDelete, IconEdit } from '@douyinfe/semi-icons';
-
-const empty = (
-  <Empty image={<IllustrationNoResult />} darkModeImage={<IllustrationNoResultDark />} description="No users found." />
-);
+import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
 
 export default function UserTable({ user = [], onUserRemoval, onUserEdit } = {}) {
+  const t = useTranslation();
+  const locale = useLocale();
+  const empty = (
+    <Empty
+      image={<IllustrationNoResult />}
+      darkModeImage={<IllustrationNoResultDark />}
+      description={t('users.emptyState')}
+    />
+  );
   return (
     <Table
       pagination={false}
       empty={empty}
       columns={[
         {
-          title: 'User',
+          title: t('users.tableColumnUser'),
           dataIndex: 'username',
           render: (value, record) => (
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -38,23 +44,23 @@ export default function UserTable({ user = [], onUserRemoval, onUserEdit } = {})
                     padding: '0 8px',
                   }}
                 >
-                  ADMIN
+                  {t('users.tableAdminBadge')}
                 </Tag>
               )}
             </div>
           ),
         },
         {
-          title: 'Last login',
+          title: t('users.tableColumnLastLogin'),
           dataIndex: 'lastLogin',
-          render: (value) => (value == null ? '---' : format(value)),
+          render: (value) => (value == null ? '---' : format(value, true, locale)),
         },
         {
-          title: 'Jobs',
+          title: t('users.tableColumnJobs'),
           dataIndex: 'numberOfJobs',
         },
         {
-          title: 'MCP Token',
+          title: t('users.tableColumnMcpToken'),
           dataIndex: 'mcpToken',
           render: (value) => (
             <span

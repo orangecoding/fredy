@@ -4,10 +4,13 @@
  */
 
 import { Modal } from '@douyinfe/semi-ui-19';
+import { useTranslation } from '../../services/i18n/i18n.jsx';
+
 const UserRemovalModal = function UserRemovalModal({ onOk, onCancel }) {
+  const t = useTranslation();
   return (
-    <Modal title="Removing user" visible={true} closable={false} onOk={onOk} onCancel={onCancel}>
-      <p>Removing this user will also remove all associated jobs.</p>
+    <Modal title={t('users.removalModal.title')} visible={true} closable={false} onOk={onOk} onCancel={onCancel}>
+      <p>{t('users.removalModal.message')}</p>
     </Modal>
   );
 };

@@ -22,12 +22,14 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import ListingDeletionModal from '../../components/ListingDeletionModal.jsx';
 import Map from '../../components/map/Map.jsx';
 import Headline from '../../components/headline/Headline.jsx';
+import { useTranslation } from '../../services/i18n/i18n.jsx';
 
 const RangeSlider = _RangeSlider?.default ?? _RangeSlider;
 
 const { Text } = Typography;
 
 export default function MapView() {
+  const t = useTranslation();
   const mapContainer = useRef(null);
   const map = useRef(null);
   const markers = useRef([]);
@@ -63,10 +65,10 @@ export default function MapView() {
         await actions.userSettings.setListingDeletionPreference({ skipPrompt: true, hardDelete });
       }
       await xhrDelete('/api/listings/', { ids: [id], hardDelete });
-      Toast.success('Listing successfully removed');
+      Toast.success(t('map.toastDeleted'));
       fetchListings();
     } catch (error) {
-      Toast.error(error.message || 'Error deleting listing');
+      Toast.error(error.message || t('map.toastDeleteError'));
     } finally {
       setDeleteModalVisible(false);
       setListingToDelete(null);
@@ -236,7 +238,7 @@ export default function MapView() {
         .setLngLat([homeAddress.coords.lng, homeAddress.coords.lat])
         .setPopup(
           new maplibregl.Popup({ offset: 25 }).setHTML(
-            `<div class="map-popup-content"><h4>Home Address</h4><p>${homeAddress.address}</p></div>`,
+            `<div class="map-popup-content"><h4>${t('map.popupHomeAddress')}</h4><p>${homeAddress.address}</p></div>`,
           ),
         )
         .addTo(map.current);
@@ -313,11 +315,11 @@ export default function MapView() {
             />
             <h4>${listing.title}</h4>
             <div class="info">
-              <span><strong>Price:</strong> ${listing.price ? listing.price + ' €' : 'N/A'}</span>
-              <span><strong>Address:</strong> ${listing.address || 'N/A'}</span>
-              <span><strong>Job:</strong> ${listing.job_name || 'N/A'}</span>
-              <span><strong>Provider:</strong> ${capitalizedProvider}</span>
-              <span><strong>Size:</strong> ${listing.size != null ? `${listing.size} m²` : 'N/A'}</span>
+              <span><strong>${t('map.popupPrice')}</strong> ${listing.price ? listing.price + ' €' : t('common.na')}</span>
+              <span><strong>${t('map.popupAddress')}</strong> ${listing.address || t('common.na')}</span>
+              <span><strong>${t('map.popupJob')}</strong> ${listing.job_name || t('common.na')}</span>
+              <span><strong>${t('map.popupProvider')}</strong> ${capitalizedProvider}</span>
+              <span><strong>${t('map.popupSize')}</strong> ${listing.size != null ? `${listing.size} m²` : t('common.na')}</span>
               <div style="display: flex; gap: 8px; margin-top: 8px; justify-content: space-between;">
                 <div class="map-popup-content__linkButton">
                   <a href="${listing.link}" target="_blank" rel="noopener noreferrer">
@@ -326,14 +328,14 @@ export default function MapView() {
                 </div>
                 <button
                   class="map-popup-content__detailsButton"
-                  title="View Details"
+                  title="${t('map.popupViewDetails')}"
                   onclick="viewDetails('${listing.id}')"
                 >
                   ${renderToString(<IconEyeOpened />)}
                 </button>
                 <button
                   class="map-popup-content__deleteButton"
-                  title="Remove"
+                  title="${t('map.popupRemove')}"
                   onclick="deleteListing('${listing.id}')"
                 >
                   ${renderToString(<IconDelete />)}
@@ -369,7 +371,7 @@ export default function MapView() {
 
   return (
     <>
-      <Headline text="Map View" />
+      <Headline text={t('map.title')} />
       <div className="map-view-container">
         {!homeAddress && (
           <Banner
@@ -380,8 +382,9 @@ export default function MapView() {
             style={{ marginBottom: '8px' }}
             description={
               <span>
-                No home address set. Configure it in <Link to="/userSettings">user settings</Link> to use the distance
-                filter.
+                {t('map.noHomeAddressBefore')}
+                <Link to="/userSettings">{t('map.noHomeAddressLink')}</Link>
+                {t('map.noHomeAddressAfter')}
               </span>
             }
           />
@@ -393,7 +396,7 @@ export default function MapView() {
           bordered
           closeIcon={null}
           style={{ marginBottom: '8px' }}
-          description="Only listings with valid addresses are shown on this map."
+          description={t('map.onlyValidAddresses')}
         />
 
         <div className="map-view-container__map-wrapper">
@@ -408,10 +411,10 @@ export default function MapView() {
           <div className="map-view-container__floating-panel">
             <div className="map-view-container__panel-row">
               <Text size="small" strong style={{ color: '#8892a4' }}>
-                Job
+                {t('map.filterJobLabel')}
               </Text>
               <Select
-                placeholder="All jobs"
+                placeholder={t('map.filterJobPlaceholder')}
                 showClear
                 size="small"
                 onChange={(val) => setJobId(val)}
@@ -428,16 +431,16 @@ export default function MapView() {
 
             <div className="map-view-container__panel-row">
               <Text size="small" strong style={{ color: '#8892a4' }}>
-                Distance
+                {t('map.filterDistanceLabel')}
               </Text>
               <Select
-                placeholder="None"
+                placeholder={t('map.filterDistanceNone')}
                 size="small"
                 onChange={(val) => setDistanceFilter(val)}
                 value={distanceFilter}
                 style={{ width: 100 }}
               >
-                <Select.Option value={0}>None</Select.Option>
+                <Select.Option value={0}>{t('map.filterDistanceNone')}</Select.Option>
                 <Select.Option value={5}>5 km</Select.Option>
                 <Select.Option value={10}>10 km</Select.Option>
                 <Select.Option value={15}>15 km</Select.Option>
@@ -448,7 +451,7 @@ export default function MapView() {
 
             <div className="map-view-container__panel-row">
               <Text size="small" strong style={{ color: '#8892a4' }}>
-                Price (€)
+                {t('map.filterPriceLabel')}
               </Text>
               <div className="map-view-container__price-slider">
                 <div className="map__rangesliderLabels">
@@ -461,17 +464,17 @@ export default function MapView() {
 
             <div className="map-view-container__panel-row">
               <Text size="small" strong style={{ color: '#8892a4' }}>
-                Style
+                {t('map.filterStyleLabel')}
               </Text>
               <Select size="small" value={style} onChange={(val) => handleMapStyle(val)} style={{ width: 110 }}>
-                <Select.Option value="STANDARD">Standard</Select.Option>
-                <Select.Option value="SATELLITE">Satellite</Select.Option>
+                <Select.Option value="STANDARD">{t('map.filterStyleStandard')}</Select.Option>
+                <Select.Option value="SATELLITE">{t('map.filterStyleSatellite')}</Select.Option>
               </Select>
             </div>
 
             <div className="map-view-container__panel-row">
               <Text size="small" strong style={{ color: '#8892a4' }}>
-                3D Buildings
+                {t('map.filter3dBuildings')}
               </Text>
               <Switch
                 size="small"

@@ -49,6 +49,7 @@ import ListingDeletionModal from '../../components/ListingDeletionModal.jsx';
 import Headline from '../../components/headline/Headline.jsx';
 import StatusControl from '../../components/listings/StatusControl.jsx';
 import './ListingDetail.less';
+import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
 
 const { Title, Text } = Typography;
 
@@ -57,6 +58,8 @@ const STYLES = {
 };
 
 export default function ListingDetail() {
+  const t = useTranslation();
+  const locale = useLocale();
   const { listingId } = useParams();
   const navigate = useNavigate();
   const actions = useActions();
@@ -79,7 +82,7 @@ export default function ListingDetail() {
         await actions.listingsData.getListing(listingId);
       } catch (e) {
         console.error('Failed to load listing details:', e);
-        Toast.error('Failed to load listing details');
+        Toast.error(t('listing.detail.toastLoadError'));
         navigate('/listings');
       } finally {
         setLoading(false);
@@ -114,13 +117,21 @@ export default function ListingDetail() {
 
     new maplibregl.Marker({ color: '#3FB1CE' })
       .setLngLat([listing.longitude, listing.latitude])
-      .setPopup(new maplibregl.Popup({ offset: 25 }).setHTML(`<h4>Listing Location</h4><p>${listing.address}</p>`))
+      .setPopup(
+        new maplibregl.Popup({ offset: 25 }).setHTML(
+          `<h4>${t('listing.detail.mapPopupListingLocation')}</h4><p>${listing.address}</p>`,
+        ),
+      )
       .addTo(map.current);
 
     if (homeAddress?.coords) {
       new maplibregl.Marker({ color: 'red' })
         .setLngLat([homeAddress.coords.lng, homeAddress.coords.lat])
-        .setPopup(new maplibregl.Popup({ offset: 25 }).setHTML(`<h4>Home Address</h4><p>${homeAddress.address}</p>`))
+        .setPopup(
+          new maplibregl.Popup({ offset: 25 }).setHTML(
+            `<h4>${t('listing.detail.mapPopupHomeAddress')}</h4><p>${homeAddress.address}</p>`,
+          ),
+        )
         .addTo(map.current);
 
       const bounds = getBoundsFromCoords([
@@ -261,10 +272,10 @@ export default function ListingDetail() {
         await actions.userSettings.setListingDeletionPreference({ skipPrompt: true, hardDelete });
       }
       await xhrDelete('/api/listings/', { ids: [listing.id], hardDelete });
-      Toast.success('Listing successfully removed');
+      Toast.success(t('listing.detail.toastDeleted'));
       navigate('/listings');
     } catch (e) {
-      Toast.error(e.message || 'Error deleting listing');
+      Toast.error(e.message || t('listing.detail.toastDeleteError'));
     } finally {
       setDeleteModalVisible(false);
     }
@@ -273,11 +284,13 @@ export default function ListingDetail() {
   const handleWatch = async () => {
     try {
       await xhrPost('/api/listings/watch', { listingId: listing.id });
-      Toast.success(listing.isWatched === 1 ? 'Removed from Watchlist' : 'Added to Watchlist');
+      Toast.success(
+        listing.isWatched === 1 ? t('listing.detail.toastWatchlistRemoved') : t('listing.detail.toastWatchlistAdded'),
+      );
       actions.listingsData.getListing(listingId);
     } catch (e) {
       console.error('Failed to operate Watchlist:', e);
-      Toast.error('Failed to operate Watchlist');
+      Toast.error(t('listing.detail.toastWatchlistError'));
     }
   };
 
@@ -285,10 +298,10 @@ export default function ListingDetail() {
     try {
       await actions.listingsData.setListingStatus(listing.id, next);
       await actions.listingsData.getListing(listingId);
-      Toast.success(next ? `Marked as ${next}` : 'Status cleared');
+      Toast.success(next ? t('listings.toastStatusMarked', { status: next }) : t('listings.toastStatusCleared'));
     } catch (e) {
       console.error('Failed to update status:', e);
-      Toast.error('Failed to update status');
+      Toast.error(t('listings.toastStatusUpdateError'));
     }
   };
 
@@ -298,10 +311,10 @@ export default function ListingDetail() {
     try {
       await actions.listingsData.setListingNotes(listing.id, notesDraft);
       await actions.listingsData.getListing(listingId);
-      Toast.success('Notes saved');
+      Toast.success(t('listing.detail.toastNotesSaved'));
     } catch (e) {
       console.error('Failed to save notes:', e);
-      Toast.error('Failed to save notes');
+      Toast.error(t('listing.detail.toastNotesError'));
     } finally {
       setNotesSaving(false);
     }
@@ -317,69 +330,74 @@ export default function ListingDetail() {
 
   if (!listing) return null;
 
-  const statusLabel = listing.status?.status
-    ? listing.status.status.charAt(0).toUpperCase() + listing.status.status.slice(1)
-    : null;
+  const statusKeyMap = {
+    applied: 'listing.detail.statusApplied',
+    accepted: 'listing.detail.statusAccepted',
+    rejected: 'listing.detail.statusRejected',
+  };
+  const statusLabel = listing.status?.status ? t(statusKeyMap[listing.status.status] ?? listing.status.status) : null;
 
   const data = [
     {
-      key: 'Price',
+      key: t('listing.detail.fieldPrice'),
       value: listing.price ? (
         <span className="listing-detail__price">{formatEuroPrice(listing.price)}</span>
       ) : (
-        'N/A'
+        t('common.na')
       ),
       Icon: <IconCart />,
-      helpText: 'The asking price of this listing, as reported by the provider.',
+      helpText: t('listing.detail.fieldPriceHelp'),
     },
     {
-      key: 'Size',
-      value: listing.size ? `${listing.size} m²` : 'N/A',
+      key: t('listing.detail.fieldSize'),
+      value: listing.size ? `${listing.size} m²` : t('common.na'),
       Icon: <IconExpand />,
-      helpText: 'Living space of the listing in square meters.',
+      helpText: t('listing.detail.fieldSizeHelp'),
     },
     {
-      key: 'Rooms',
-      value: listing.rooms ? `${listing.rooms} Rooms` : 'N/A',
+      key: t('listing.detail.fieldRooms'),
+      value: listing.rooms ? t('listing.detail.fieldRoomsValue', { count: listing.rooms }) : t('common.na'),
       Icon: <IconGridView />,
-      helpText: 'Number of rooms in the listing.',
+      helpText: t('listing.detail.fieldRoomsHelp'),
     },
     {
-      key: 'Job',
+      key: t('listing.detail.fieldJob'),
       value: listing.job_name,
       Icon: <IconBriefcase />,
-      helpText: 'The Fredy job that found this listing.',
+      helpText: t('listing.detail.fieldJobHelp'),
     },
     {
-      key: 'Provider',
+      key: t('listing.detail.fieldProvider'),
       value: listing.provider ? listing.provider.charAt(0).toUpperCase() + listing.provider.slice(1) : 'Unknown',
       Icon: <IconBriefcase />,
-      helpText: 'The real estate portal where this listing was scraped from.',
+      helpText: t('listing.detail.fieldProviderHelp'),
     },
     {
-      key: 'Added',
-      value: timeService.format(listing.created_at),
+      key: t('listing.detail.fieldAdded'),
+      value: timeService.format(listing.created_at, true, locale),
       Icon: <IconClock />,
-      helpText: 'When Fredy first added this listing to your database.',
+      helpText: t('listing.detail.fieldAddedHelp'),
     },
   ];
 
   if (statusLabel) {
     data.push({
-      key: 'Status',
-      value: listing.status?.setAt ? `${statusLabel} (set ${timeService.format(listing.status.setAt)})` : statusLabel,
+      key: t('listing.detail.fieldStatus'),
+      value: listing.status?.setAt
+        ? `${statusLabel} ${t('listing.detail.statusSetAt', { date: timeService.format(listing.status.setAt, true, locale) })}`
+        : statusLabel,
       Icon: <IconActivity />,
-      helpText: 'The status you marked for this listing and when you set it.',
+      helpText: t('listing.detail.fieldStatusHelp'),
     });
   }
 
   return (
     <div className="listing-detail">
       <Headline
-        text={listing?.title || 'Listing Detail'}
+        text={listing?.title || t('listing.detail.defaultTitle')}
         actions={
           <Button icon={<IconArrowLeft />} onClick={() => navigate(-1)} theme="borderless" style={{ color: '#909090' }}>
-            Back
+            {t('listing.detail.back')}
           </Button>
         }
       />
@@ -398,7 +416,7 @@ export default function ListingDetail() {
                 {listing.address}
               </a>
             ) : (
-              <Text type="secondary">No address provided</Text>
+              <Text type="secondary">{t('listing.detail.noAddress')}</Text>
             )}
           </Space>
           <Space wrap className="listing-detail__header-actions">
@@ -408,12 +426,12 @@ export default function ListingDetail() {
               theme="borderless"
               className={`listing-detail__watch-btn${listing.isWatched === 1 ? ' listing-detail__watch-btn--active' : ''}`}
             >
-              {listing.isWatched === 1 ? 'Watched' : 'Watch'}
+              {listing.isWatched === 1 ? t('listing.detail.watched') : t('listing.detail.watch')}
             </Button>
             <StatusControl status={listing.status?.status ?? null} onChange={handleStatusChange} />
             <a href={listing.link} target="_blank" rel="noopener noreferrer" className="listing-detail__open-btn">
               <IconLink style={{ marginRight: 6 }} />
-              Open listing
+              {t('listing.detail.openListing')}
             </a>
             <Button
               icon={<IconDelete />}
@@ -427,7 +445,7 @@ export default function ListingDetail() {
               theme="light"
               type="danger"
             >
-              Delete
+              {t('listing.detail.delete')}
             </Button>
           </Space>
         </div>
@@ -439,7 +457,7 @@ export default function ListingDetail() {
             >
               <Image
                 src={listing.image_url ?? no_image}
-                fallback={<img src={no_image} alt="No image available" />}
+                fallback={<img src={no_image} alt={t('listing.detail.noImageAlt')} />}
                 style={{ width: '100%', height: '100%' }}
                 preview={!!listing.image_url}
               />
@@ -447,12 +465,12 @@ export default function ListingDetail() {
 
             <div className="listing-detail__notes">
               <Title heading={4} className="listing-detail__notes-title">
-                Notes
+                {t('listing.detail.notesTitle')}
               </Title>
               <TextArea
                 value={notesDraft}
                 onChange={(val) => setNotesDraft(val)}
-                placeholder="Your private notes about this listing…"
+                placeholder={t('listing.detail.notesPlaceholder')}
                 rows={5}
                 autosize={{ minRows: 4, maxRows: 12 }}
                 className="listing-detail__notes-textarea"
@@ -466,7 +484,7 @@ export default function ListingDetail() {
                   disabled={notesSaving || (notesDraft ?? '') === (listing.notes ?? '')}
                   onClick={handleSaveNotes}
                 >
-                  Store notes
+                  {t('listing.detail.storeNotes')}
                 </Button>
               </Space>
             </div>
@@ -474,7 +492,7 @@ export default function ListingDetail() {
           <Col span={24} lg={12}>
             <div className="listing-detail__info-section">
               <Title heading={4} style={{ marginBottom: '1rem' }}>
-                Details
+                {t('listing.detail.detailsTitle')}
               </Title>
               <Descriptions column={1}>
                 {data.map((item, index) => (
@@ -490,10 +508,10 @@ export default function ListingDetail() {
               </Descriptions>
               <Divider margin="1.5rem" />
               <Title heading={4} style={{ marginBottom: '1rem' }}>
-                Description
+                {t('listing.detail.descriptionTitle')}
               </Title>
               <Text type="secondary" style={{ whiteSpace: 'pre-wrap' }}>
-                {listing.description || 'No description available.'}
+                {listing.description || t('listing.detail.noDescription')}
               </Text>
 
               {listing.distance_to_destination && (
@@ -501,7 +519,7 @@ export default function ListingDetail() {
                   <Divider margin="1.5rem" />
                   <Space align="center">
                     <IconActivity style={{ fontSize: '18px', color: 'var(--semi-color-primary)' }} />
-                    <Text strong>Distance to home:</Text>
+                    <Text strong>{t('listing.detail.distanceToHome')}</Text>
                     <Tag color="blue">{listing.distance_to_destination} m</Tag>
                   </Space>
                 </>
@@ -512,12 +530,12 @@ export default function ListingDetail() {
       </Card>
 
       <div className="listing-detail__map-wrapper">
-        <Title heading={3}>Location</Title>
+        <Title heading={3}>{t('listing.detail.locationTitle')}</Title>
         {!hasGeo ? (
           <Banner
             type="warning"
             bordered
-            description="This listing has no valid geocoordinates, so we cannot show it on the map."
+            description={t('listing.detail.noGeoWarning')}
             style={{ marginTop: '1rem' }}
           />
         ) : (

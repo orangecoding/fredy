@@ -13,6 +13,7 @@ import { Banner, Button, Form, Modal, Select, Switch } from '@douyinfe/semi-ui-1
 
 import './NotificationAdapterMutator.less';
 import { useScreenWidth } from '../../../../../hooks/screenWidth.js';
+import { useTranslation } from '../../../../../services/i18n/i18n.jsx';
 
 const sortAdapter = (a, b) => {
   if (a.name < b.name) {
@@ -24,11 +25,11 @@ const sortAdapter = (a, b) => {
   return 0;
 };
 
-const validate = (selectedAdapter) => {
+const validate = (selectedAdapter, t) => {
   const results = [];
   for (let uiElement of Object.values(selectedAdapter.fields || [])) {
     if (uiElement.value == null && !uiElement.optional && uiElement.type !== 'boolean') {
-      results.push('All fields are mandatory and must be set.');
+      results.push(t('notification.validationAllMandatory'));
       continue;
     }
     if (uiElement.type === 'boolean' && typeof uiElement.value !== 'boolean') {
@@ -37,16 +38,16 @@ const validate = (selectedAdapter) => {
     if (uiElement.type === 'number') {
       const numberValue = parseFloat(uiElement.value);
       if (isNaN(numberValue) || numberValue < 0) {
-        results.push('A number field cannot contain anything else and must be > 0.');
+        results.push(t('notification.validationNumberField'));
         continue;
       }
     }
     if (uiElement.type === 'boolean' && typeof uiElement.value !== 'boolean') {
-      results.push('A boolean field cannot be of a different type.');
+      results.push(t('notification.validationBooleanField'));
       continue;
     }
     if (typeof uiElement.value === 'string' && uiElement.value.length === 0 && !uiElement.optional) {
-      results.push('All fields are mandatory and must be set.');
+      results.push(t('notification.validationAllMandatory'));
     }
   }
 
@@ -70,6 +71,7 @@ export default function NotificationAdapterMutator({
   editNotificationAdapter,
   onData,
 } = {}) {
+  const t = useTranslation();
   const adapter = useSelector((state) => state.notificationAdapter);
 
   const preFilledSelectedAdapter =
@@ -88,7 +90,7 @@ export default function NotificationAdapterMutator({
 
   const onSubmit = (doStore) => {
     if (doStore) {
-      const validationResults = validate(selectedAdapter);
+      const validationResults = validate(selectedAdapter, t);
       if (validationResults.length > 0) {
         setValidationMessage(validationResults.join('<br/>'));
         return;
@@ -114,7 +116,7 @@ export default function NotificationAdapterMutator({
     setValidationMessage(null);
     setSuccessMessage(null);
 
-    const validationResults = validate(selectedAdapter);
+    const validationResults = validate(selectedAdapter, t);
     if (validationResults.length > 0) {
       setValidationMessage(validationResults.join('<br/>'));
       return;
@@ -127,11 +129,9 @@ export default function NotificationAdapterMutator({
       },
     })
       .then(() => {
-        setSuccessMessage('It seems like it worked! Please check your service.');
+        setSuccessMessage(t('notification.trySuccess'));
       })
-      .catch((error) =>
-        setValidationMessage(`This did not work :-( I've received the following error: ${error.json.message}`),
-      );
+      .catch((error) => setValidationMessage(t('notification.tryError', { error: error.json.message })));
   };
 
   const setValue = (selectedAdapter, uiElement, key, value) => {
@@ -195,37 +195,29 @@ export default function NotificationAdapterMutator({
 
   return (
     <Modal
-      title={title != null ? title : 'Adding a new Notification Adapter'}
+      title={title != null ? title : t('notification.defaultTitle')}
       visible={visible}
       style={{ width: isMobile ? '95%' : '50rem' }}
       onCancel={() => onSubmit(false)}
       footer={
         <div>
           <Button type="secondary" disabled={selectedAdapter == null} style={{ float: 'left' }} onClick={onTry}>
-            Try
+            {t('notification.try')}
           </Button>
           <Button theme="light" type="tertiary" onClick={() => onSubmit(false)}>
-            Cancel
+            {t('notification.cancel')}
           </Button>
           <Button theme="solid" type="primary" onClick={() => onSubmit(true)}>
-            Save
+            {t('notification.save')}
           </Button>
         </div>
       }
     >
-      {description != null ? (
-        <p>{description}</p>
-      ) : (
-        <p>
-          When Fredy finds new listings, we like to report them to you. To do so, notification adapter can be
-          configured. <br />
-          There are multiple ways how Fredy can send new listings to you. Chose your weapon...
-        </p>
-      )}
+      {description != null ? <p>{description}</p> : <p>{t('notification.description')}</p>}
 
       <Select
         filter
-        placeholder="Select a notification adapter"
+        placeholder={t('notification.selectPlaceholder')}
         className="providerMutator__fields"
         value={selectedAdapter == null ? '' : selectedAdapter.id}
         optionList={adapter
@@ -265,7 +257,11 @@ export default function NotificationAdapterMutator({
               fullMode={false}
               type="danger"
               closeIcon={null}
-              title={<div style={{ fontWeight: 600, fontSize: '14px', lineHeight: '20px' }}>Error</div>}
+              title={
+                <div style={{ fontWeight: 600, fontSize: '14px', lineHeight: '20px' }}>
+                  {t('notification.errorTitle')}
+                </div>
+              }
               style={{ marginBottom: '1rem' }}
               description={<p dangerouslySetInnerHTML={{ __html: validationMessage }} />}
             />
@@ -275,7 +271,11 @@ export default function NotificationAdapterMutator({
               fullMode={false}
               type="success"
               closeIcon={null}
-              title={<div style={{ fontWeight: 600, fontSize: '14px', lineHeight: '20px' }}>Yay!</div>}
+              title={
+                <div style={{ fontWeight: 600, fontSize: '14px', lineHeight: '20px' }}>
+                  {t('notification.successTitle')}
+                </div>
+              }
               style={{ marginBottom: '1rem' }}
               description={<p dangerouslySetInnerHTML={{ __html: successMessage }} />}
             />

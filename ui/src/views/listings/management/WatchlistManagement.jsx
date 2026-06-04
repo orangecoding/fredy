@@ -8,8 +8,10 @@ import { IconHorn } from '@douyinfe/semi-icons';
 import { SegmentPart } from '../../../components/segment/SegmentPart.jsx';
 import { Banner, Button, Checkbox, Space, Typography } from '@douyinfe/semi-ui-19';
 import NotificationAdapterMutator from '../../jobs/mutation/components/notificationAdapter/NotificationAdapterMutator.jsx';
+import { useTranslation } from '../../../services/i18n/i18n.jsx';
 
 export default function WatchlistManagement() {
+  const t = useTranslation();
   const [notificationChooserVisible, setNotificationChooserVisible] = useState(false);
   const [notificationAdapterData, setNotificationAdapterData] = useState([]);
   //TODO: Set default
@@ -17,39 +19,37 @@ export default function WatchlistManagement() {
   const [priceChanges, setPriceChanges] = useState(false);
   return (
     <div>
-      <SegmentPart
-        name="Notification for Watch List"
-        helpText="You can get notified for changes on listings from your watch list."
-        Icon={IconHorn}
-      >
+      <SegmentPart name={t('watchlist.sectionName')} helpText={t('watchlist.sectionHelp')} Icon={IconHorn}>
         <Banner
           fullMode={false}
           type="info"
           closeIcon={null}
-          title={<div style={{ fontWeight: 600, fontSize: '14px', lineHeight: '20px' }}>Note</div>}
-          description="You’ll receive notifications only for listings that are on your watch list. To add listings to it, open the 'Listings' section and tag the ones you want to follow."
+          title={
+            <div style={{ fontWeight: 600, fontSize: '14px', lineHeight: '20px' }}>{t('watchlist.noteTitle')}</div>
+          }
+          description={t('watchlist.noteDescription')}
         />
         <Space />
         <Typography.Title heading={5} style={{ marginTop: '1rem' }}>
-          Notify me when:
+          {t('watchlist.notifyMeWhen')}
         </Typography.Title>
 
         <Checkbox checked={activityChanges} onChange={(e) => setActivityChanges(e.target.checked)}>
-          Listing state changes (e.g. listing becomes inactive)
+          {t('watchlist.activityChanges')}
         </Checkbox>
         <Checkbox checked={priceChanges} onChange={(e) => setPriceChanges(e.target.checked)}>
-          Listing price changes
+          {t('watchlist.priceChanges')}
         </Checkbox>
 
         <Space />
         <Typography.Title heading={5} style={{ marginTop: '1rem' }}>
-          Notify me with:
+          {t('watchlist.notifyMeWith')}
         </Typography.Title>
-        <Button onClick={() => setNotificationChooserVisible(true)}>Select notification method</Button>
+        <Button onClick={() => setNotificationChooserVisible(true)}>{t('watchlist.selectNotificationMethod')}</Button>
 
         <NotificationAdapterMutator
-          title="Add notification method"
-          description="When something has changed, Fredy will notify you using the selected notification adapter. Note, some adapter like SqLite are not available here."
+          title={t('watchlist.addNotificationTitle')}
+          description={t('watchlist.addNotificationDescription')}
           visible={notificationChooserVisible}
           onVisibilityChanged={(visible) => {
             setNotificationChooserVisible(visible);

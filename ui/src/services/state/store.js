@@ -379,6 +379,20 @@ export const useFredyState = create(
               throw Exception;
             }
           },
+          async setLanguage(language) {
+            try {
+              await xhrPost('/api/user/settings/language', { language });
+              set((state) => ({
+                userSettings: {
+                  ...state.userSettings,
+                  settings: { ...state.userSettings.settings, language },
+                },
+              }));
+            } catch (Exception) {
+              console.error('Error while trying to update language setting. Error:', Exception);
+              throw Exception;
+            }
+          },
         },
       };
 

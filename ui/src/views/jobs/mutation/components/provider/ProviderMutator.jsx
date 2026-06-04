@@ -8,9 +8,10 @@ import { useState, useEffect } from 'react';
 import { Banner, Modal, Select, Input } from '@douyinfe/semi-ui-19';
 import { transform } from '../../../../../services/transformer/providerTransformer';
 import { useSelector } from '../../../../../services/state/store';
-import { IconLikeHeart } from '@douyinfe/semi-icons';
+
 import './ProviderMutator.less';
 import { useScreenWidth } from '../../../../../hooks/screenWidth.js';
+import { useTranslation } from '../../../../../services/i18n/i18n.jsx';
 
 const sortProvider = (a, b) => {
   if (a.key < b.key) {
@@ -33,6 +34,7 @@ export default function ProviderMutator({
   onEditData,
   providerToEdit,
 } = {}) {
+  const t = useTranslation();
   const provider = useSelector((state) => state.provider);
   const [selectedProvider, setSelectedProvider] = useState(null);
   const [providerUrl, setProviderUrl] = useState(null);
@@ -53,16 +55,16 @@ export default function ProviderMutator({
 
   const validate = () => {
     if (selectedProvider == null || selectedProvider.length === 0 || providerUrl == null || providerUrl.length === 0) {
-      return 'Please select a provider and copy the browser url into the textfield after configuring your search parameter.';
+      return t('provider.validationSelectAndUrl');
     }
     try {
       const url = new URL(providerUrl);
       if (selectedProvider.baseUrl.indexOf(url.origin) === -1) {
-        return 'The url you have copied is not valid.';
+        return t('provider.validationInvalidUrl');
       }
       /* eslint-disable no-unused-vars */
     } catch (ignored) {
-      return 'The url you have copied is not valid.';
+      return t('provider.validationInvalidUrl');
     }
     return null;
   };
@@ -104,46 +106,36 @@ export default function ProviderMutator({
 
   return (
     <Modal
-      title={providerToEdit ? 'Editing an existing Provider' : 'Adding a new Provider'}
+      title={providerToEdit ? t('provider.editTitle') : t('provider.defaultTitle')}
       visible={visible}
       onOk={() => onSubmit(true)}
       onCancel={() => onSubmit(false)}
       style={{ width: isMobile ? '95%' : '50rem' }}
-      okText="Save"
+      okText={t('provider.save')}
     >
       {validationMessage != null && (
         <Banner
           fullMode={false}
           type="danger"
           closeIcon={null}
-          title={<div style={{ fontWeight: 600, fontSize: '14px', lineHeight: '20px' }}>Error</div>}
+          title={
+            <div style={{ fontWeight: 600, fontSize: '14px', lineHeight: '20px' }}>{t('provider.errorTitle')}</div>
+          }
           style={{ marginBottom: '1rem' }}
           description={validationMessage}
         />
       )}
       {providerToEdit != null ? (
-        <p>
-          You can now edit the <strong>{providerToEdit.name}</strong> provider's URL in the input field below.
-        </p>
+        <p>{t('provider.editDescription', { name: providerToEdit.name })}</p>
       ) : (
         <>
-          <p>
-            Provider are the <IconLikeHeart style={{ color: '#ff0000' }} /> of Fredy. We're supporting multiple Provider
-            such as Immowelt, Kalaydo etc. Select a provider from the list below.
-            <br />
-            Fredy will then open the provider's url in a new tab.
-          </p>
-          <p>
-            You will need to configure your search parameter like you would do when you do a regular search on the
-            provider's website.
-            <br />
-            When the search results are shown on the website, copy the url and paste it into the textfield below.
-          </p>
+          <p>{t('provider.description')}</p>
+          <p>{t('provider.descriptionStep2')}</p>
         </>
       )}
       <Select
         filter
-        placeholder="Select a provider"
+        placeholder={t('provider.selectPlaceholder')}
         className="providerMutator__fields"
         disabled={providerToEdit != null}
         optionList={provider
@@ -167,7 +159,7 @@ export default function ProviderMutator({
       <br />
       <Input
         type="text"
-        placeholder="Provider Url"
+        placeholder={t('provider.urlPlaceholder')}
         width={10}
         className="providerMutator__fields"
         value={providerUrl}

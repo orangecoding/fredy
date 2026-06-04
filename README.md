@@ -240,6 +240,37 @@ If you have to refresh the fixtures (every once in a while needed because the pr
 yarn run download-fixtures
 ```
 
+## Adding a new language
+
+Fredy's UI is fully multilingual. Translation files live in `ui/src/locales/`. To add a new language, create a single JSON file there, no code changes required.
+
+**Example: `ui/src/locales/fr.json`**
+```json
+{
+  "_meta": {
+    "flag": "🇫🇷",
+    "name": "Français",
+    "locale": "fr-FR",
+    "semiLocale": "fr"
+  },
+  "nav.dashboard": "Tableau de bord",
+  "common.save": "Enregistrer",
+  ...
+}
+```
+
+The `_meta` fields:
+
+| Field | Description |
+|---|---|
+| `flag` | Unicode flag emoji shown in the language selector |
+| `name` | Display name shown in the language selector |
+| `locale` | BCP 47 locale string used for date and number formatting (e.g. `fr-FR`) |
+| `semiLocale` | Semi UI locale key for component-level strings (date pickers, pagination, etc.) |
+
+> **Important:** `semiLocale` must exactly match a locale filename from the Semi UI locale sources (without the `.js` extension). See the [available Semi UI locales on GitHub](https://github.com/DouyinFE/semi-design/tree/main/packages/semi-ui/locale/source) for the full list of supported keys.
+
+After adding the file, rebuild the frontend (`yarn build:frontend` or restart the dev server) and the new language will appear automatically in **Settings → User Settings → Language**.
 
 ------------------------------------------------------------------------
 

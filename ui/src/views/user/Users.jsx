@@ -13,8 +13,10 @@ import { xhrDelete } from '../../services/xhr';
 import { useNavigate } from 'react-router-dom';
 import Headline from '../../components/headline/Headline.jsx';
 import './Users.less';
+import { useTranslation } from '../../services/i18n/i18n.jsx';
 
 const Users = function Users() {
+  const t = useTranslation();
   const actions = useActions();
   const [loading, setLoading] = React.useState(true);
   const users = useSelector((state) => state.user.users);
@@ -32,7 +34,7 @@ const Users = function Users() {
   const onUserRemoval = async () => {
     try {
       await xhrDelete('/api/admin/users', { userId: userIdToBeRemoved });
-      Toast.success('User successfully removed');
+      Toast.success(t('users.toastRemoved'));
       setUserIdToBeRemoved(null);
       await actions.jobsData.getJobs();
       await actions.user.getUsers();
@@ -45,10 +47,10 @@ const Users = function Users() {
   return (
     <div className="users">
       <Headline
-        text="Users"
+        text={t('users.title')}
         actions={
           <Button type="primary" theme="solid" icon={<IconPlus />} onClick={() => navigate('/users/new')}>
-            New User
+            {t('users.newUser')}
           </Button>
         }
       />

@@ -6,23 +6,25 @@
 import { Empty, Table, Button } from '@douyinfe/semi-ui-19';
 import { IconDelete, IconEdit } from '@douyinfe/semi-icons';
 import { Typography } from '@douyinfe/semi-ui';
+import { useTranslation } from '../../services/i18n/i18n.jsx';
 
 export default function ProviderTable({ providerData = [], onRemove, onEdit } = {}) {
+  const t = useTranslation();
   const { Text } = Typography;
   return (
     <Table
       pagination={false}
-      empty={<Empty description="No providers found." />}
+      empty={<Empty description={t('provider.tableEmptyState')} />}
       columns={[
         {
-          title: 'Name',
+          title: t('provider.tableColumnName'),
           dataIndex: 'name',
         },
         {
-          title: 'URL',
+          title: t('provider.tableColumnUrl'),
           dataIndex: 'url',
           render: (_, data) => {
-            return <Text link={{ href: data.url, target: '_blank' }}>Open Provider</Text>;
+            return <Text link={{ href: data.url, target: '_blank' }}>{t('provider.tableOpenProvider')}</Text>;
           },
         },
         {

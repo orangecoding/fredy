@@ -13,8 +13,10 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import './Navigate.less';
 import { useScreenWidth } from '../../hooks/screenWidth.js';
+import { useTranslation } from '../../services/i18n/i18n.jsx';
 
 export default function Navigation({ isAdmin }) {
+  const t = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -28,16 +30,16 @@ export default function Navigation({ isAdmin }) {
   }, [width]);
 
   const items = [
-    { itemKey: '/dashboard', text: 'Dashboard', icon: <IconHistogram /> },
-    { itemKey: '/jobs', text: 'Jobs', icon: <IconTerminal /> },
+    { itemKey: '/dashboard', text: t('nav.dashboard'), icon: <IconHistogram /> },
+    { itemKey: '/jobs', text: t('nav.jobs'), icon: <IconTerminal /> },
     {
       itemKey: 'listings',
-      text: 'Listings',
+      text: t('nav.listings'),
       icon: <IconStar />,
       items: [
-        { itemKey: '/listings', text: 'Overview' },
-        { itemKey: '/map', text: 'Map View' },
-        { itemKey: '/listings/watchlist', text: 'Watchlist' },
+        { itemKey: '/listings', text: t('nav.listingsOverview') },
+        { itemKey: '/map', text: t('nav.mapView') },
+        { itemKey: '/listings/watchlist', text: t('nav.watchlist') },
       ],
     },
   ];
@@ -45,19 +47,19 @@ export default function Navigation({ isAdmin }) {
   if (isAdmin) {
     items.push({
       itemKey: 'settings',
-      text: 'Settings',
+      text: t('nav.settings'),
       icon: <IconSetting />,
       items: [
-        { itemKey: '/users', text: 'User Management' },
-        { itemKey: '/generalSettings', text: 'Settings' },
+        { itemKey: '/users', text: t('nav.userManagement') },
+        { itemKey: '/generalSettings', text: t('nav.settingsPage') },
       ],
     });
   } else {
     items.push({
       itemKey: 'settings',
-      text: 'Settings',
+      text: t('nav.settings'),
       icon: <IconSetting />,
-      items: [{ itemKey: '/generalSettings', text: 'Settings' }],
+      items: [{ itemKey: '/generalSettings', text: t('nav.settingsPage') }],
     });
   }
 
@@ -104,7 +106,7 @@ export default function Navigation({ isAdmin }) {
           <button
             className="navigate__toggle-btn"
             onClick={() => setCollapsed(!collapsed)}
-            title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            title={collapsed ? t('nav.expandSidebar') : t('nav.collapseSidebar')}
           >
             <IconSidebar size="default" />
           </button>

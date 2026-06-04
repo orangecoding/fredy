@@ -48,12 +48,14 @@ import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-i
 import JobsTable from '../../table/JobsTable.jsx';
 
 import './JobGrid.less';
+import { useTranslation } from '../../../services/i18n/i18n.jsx';
 
 const { Text, Title } = Typography;
 
 const getPopoverContent = (text) => <article className="jobPopoverContent">{text}</article>;
 
 const JobGrid = () => {
+  const t = useTranslation();
   const jobsData = useSelector((state) => state.jobsData);
   const actions = useActions();
   const navigate = useNavigate();
@@ -104,7 +106,7 @@ const JobGrid = () => {
           actions.jobsData.setJobRunning(data.jobId, !!data.running);
           // notify finish if it was triggered by this view
           if (pendingJobIdRef.current === data.jobId && data.running === false) {
-            Toast.success('Job finished');
+            Toast.success(t('jobs.toastFinished'));
             pendingJobIdRef.current = null;
           }
         }
@@ -161,17 +163,17 @@ const JobGrid = () => {
       }
       if (type === 'job') {
         await xhrDelete('/api/jobs', { jobId });
-        Toast.success('Job and listings successfully removed');
+        Toast.success(t('jobs.toastDeletedWithListings'));
       } else if (type === 'listings') {
         await xhrDelete('/api/listings/job', { jobId, hardDelete });
-        Toast.success('Listings successfully removed');
+        Toast.success(t('jobs.toastListingsDeleted'));
       }
       loadData();
       if (type === 'job') {
         actions.jobsData.getJobs(); // refresh select list too
       }
     } catch (error) {
-      Toast.error(error.message || 'Error performing deletion');
+      Toast.error(error.message || t('jobs.toastDeleteError'));
     } finally {
       setDeleteModalVisible(false);
       setPendingDeletion(null);
@@ -181,7 +183,7 @@ const JobGrid = () => {
   const onJobStatusChanged = async (jobId, status) => {
     try {
       await xhrPut(`/api/jobs/${jobId}/status`, { status });
-      Toast.success('Job status successfully changed');
+      Toast.success(t('jobs.toastStatusChanged'));
       loadData();
     } catch (error) {
       Toast.error(error.error);
@@ -192,21 +194,21 @@ const JobGrid = () => {
     try {
       const response = await xhrPost(`/api/jobs/${jobId}/run`);
       if (response.status === 202) {
-        Toast.success('Job run started');
+        Toast.success(t('jobs.toastRunStarted'));
       } else {
-        Toast.info('Job run requested');
+        Toast.info(t('jobs.toastRunRequested'));
       }
       pendingJobIdRef.current = jobId;
       loadData();
     } catch (error) {
       if (error?.status === 409) {
-        Toast.warning(error?.json?.message || 'Job is already running');
+        Toast.warning(error?.json?.message || t('jobs.toastAlreadyRunning'));
       } else if (error?.status === 403) {
-        Toast.error('You are not allowed to run this job');
+        Toast.error(t('jobs.toastNotAllowed'));
       } else if (error?.status === 404) {
-        Toast.error('Job not found');
+        Toast.error(t('jobs.toastNotFound'));
       } else {
-        Toast.error('Failed to trigger job');
+        Toast.error(t('jobs.toastRunFailed'));
       }
     }
   };
@@ -222,7 +224,7 @@ const JobGrid = () => {
           className="jobGrid__topbar__search"
           prefix={<IconSearch />}
           showClear
-          placeholder="Search"
+          placeholder={t('jobs.searchPlaceholder')}
           onChange={handleFilterChange}
         />
 
@@ -235,39 +237,44 @@ const JobGrid = () => {
             setActivityFilter(v === 'all' ? null : v === 'true');
           }}
         >
-          <Radio value="all">All</Radio>
-          <Radio value="true">Active</Radio>
-          <Radio value="false">Inactive</Radio>
+          <Radio value="all">{t('jobs.filterAll')}</Radio>
+          <Radio value="true">{t('jobs.filterActive')}</Radio>
+          <Radio value="false">{t('jobs.filterInactive')}</Radio>
         </RadioGroup>
 
-        <Select prefix="Sort by" style={{ width: 200 }} value={sortField} onChange={(val) => setSortField(val)}>
-          <Select.Option value="name">Name</Select.Option>
-          <Select.Option value="numberOfFoundListings">Number of Listings</Select.Option>
-          <Select.Option value="enabled">Status</Select.Option>
+        <Select
+          prefix={t('jobs.sortPrefix')}
+          style={{ width: 200 }}
+          value={sortField}
+          onChange={(val) => setSortField(val)}
+        >
+          <Select.Option value="name">{t('jobs.sortByName')}</Select.Option>
+          <Select.Option value="numberOfFoundListings">{t('jobs.sortByListings')}</Select.Option>
+          <Select.Option value="enabled">{t('jobs.sortByStatus')}</Select.Option>
         </Select>
 
         <Button
           icon={sortDir === 'asc' ? <IconArrowUp /> : <IconArrowDown />}
           onClick={() => setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))}
-          title={sortDir === 'asc' ? 'Ascending' : 'Descending'}
+          title={sortDir === 'asc' ? t('jobs.sortAscending') : t('jobs.sortDescending')}
         />
 
         <div className="jobGrid__topbar__view-toggle">
-          <Tooltip content="Grid view">
+          <Tooltip content={t('jobs.tooltipGridView')}>
             <Button
               icon={<IconGridView />}
               theme={viewMode === 'grid' ? 'solid' : 'borderless'}
               onClick={() => actions.userSettings.setJobsViewMode('grid')}
-              aria-label="Grid view"
+              aria-label={t('common.ariaGridView')}
               aria-pressed={viewMode === 'grid'}
             />
           </Tooltip>
-          <Tooltip content="Table view">
+          <Tooltip content={t('jobs.tooltipTableView')}>
             <Button
               icon={<IconList />}
               theme={viewMode === 'table' ? 'solid' : 'borderless'}
               onClick={() => actions.userSettings.setJobsViewMode('table')}
-              aria-label="Table view"
+              aria-label={t('common.ariaTableView')}
               aria-pressed={viewMode === 'table'}
             />
           </Tooltip>
@@ -278,7 +285,7 @@ const JobGrid = () => {
         <Empty
           image={<IllustrationNoResult />}
           darkModeImage={<IllustrationNoResultDark />}
-          description="No jobs available yet..."
+          description={t('jobs.empty')}
         />
       )}
 
@@ -296,7 +303,7 @@ const JobGrid = () => {
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
                     {job.isOnlyShared && (
-                      <Popover content={getPopoverContent('This job has been shared with you - read only.')}>
+                      <Popover content={getPopoverContent(t('jobs.cardSharedReadOnly'))}>
                         <div>
                           <IconAlertTriangle style={{ color: 'rgba(var(--semi-yellow-7), 1)' }} />
                         </div>
@@ -304,7 +311,7 @@ const JobGrid = () => {
                     )}
                     {job.running && (
                       <Tag color="green" variant="light" size="small">
-                        RUNNING
+                        {t('jobs.cardRunning')}
                       </Tag>
                     )}
                   </div>
@@ -314,19 +321,19 @@ const JobGrid = () => {
                   <div className="jobGrid__card__stat jobGrid__card__stat--blue">
                     <span className="jobGrid__card__stat__number">{job.numberOfFoundListings || 0}</span>
                     <span className="jobGrid__card__stat__label">
-                      <IconHome size="small" /> Listings
+                      <IconHome size="small" /> {t('jobs.cardListings')}
                     </span>
                   </div>
                   <div className="jobGrid__card__stat jobGrid__card__stat--orange">
                     <span className="jobGrid__card__stat__number">{job.provider?.length || 0}</span>
                     <span className="jobGrid__card__stat__label">
-                      <IconBriefcase size="small" /> Providers
+                      <IconBriefcase size="small" /> {t('jobs.cardProviders')}
                     </span>
                   </div>
                   <div className="jobGrid__card__stat jobGrid__card__stat--purple">
                     <span className="jobGrid__card__stat__number">{job.notificationAdapter?.length || 0}</span>
                     <span className="jobGrid__card__stat__label">
-                      <IconBell size="small" /> Adapters
+                      <IconBell size="small" /> {t('jobs.cardAdapters')}
                     </span>
                   </div>
                 </div>
@@ -342,11 +349,11 @@ const JobGrid = () => {
                       size="small"
                     />
                     <Text type="secondary" size="small">
-                      Active
+                      {t('jobs.cardActive')}
                     </Text>
                   </div>
                   <div className="jobGrid__actions">
-                    <Popover content={getPopoverContent('Run Job')}>
+                    <Popover content={getPopoverContent(t('jobs.popoverRunJob'))}>
                       <div>
                         <Button
                           type="primary"
@@ -359,7 +366,7 @@ const JobGrid = () => {
                         />
                       </div>
                     </Popover>
-                    <Popover content={getPopoverContent('Edit a Job')}>
+                    <Popover content={getPopoverContent(t('jobs.popoverEditJob'))}>
                       <div>
                         <Button
                           type="secondary"
@@ -370,7 +377,7 @@ const JobGrid = () => {
                         />
                       </div>
                     </Popover>
-                    <Popover content={getPopoverContent('Clone Job')}>
+                    <Popover content={getPopoverContent(t('jobs.popoverCloneJob'))}>
                       <div>
                         <Button
                           type="tertiary"
@@ -381,7 +388,7 @@ const JobGrid = () => {
                         />
                       </div>
                     </Popover>
-                    <Popover content={getPopoverContent('Delete all found Listings of this Job')}>
+                    <Popover content={getPopoverContent(t('jobs.popoverDeleteListings'))}>
                       <div>
                         <Button
                           type="danger"
@@ -392,7 +399,7 @@ const JobGrid = () => {
                         />
                       </div>
                     </Popover>
-                    <Popover content={getPopoverContent('Delete Job')}>
+                    <Popover content={getPopoverContent(t('jobs.popoverDeleteJob'))}>
                       <div>
                         <Button
                           type="danger"
@@ -433,14 +440,10 @@ const JobGrid = () => {
       )}
       <ListingDeletionModal
         visible={deleteModalVisible}
-        title={pendingDeletion?.type === 'job' ? 'Delete Job' : 'Delete Listings'}
+        title={pendingDeletion?.type === 'job' ? t('jobs.deletion.title') : t('listing.deletion.title')}
         showOptions={pendingDeletion?.type !== 'job'}
         defaultDeleteType={defaultDeleteType}
-        message={
-          pendingDeletion?.type === 'job'
-            ? 'Are you sure you want to delete this job? All associated listings will be removed from the database.'
-            : 'How would you like to delete the selected listing(s)?'
-        }
+        message={pendingDeletion?.type === 'job' ? t('jobs.deletion.message') : t('listing.deletion.message')}
         onConfirm={confirmDeletion}
         onCancel={() => {
           setDeleteModalVisible(false);

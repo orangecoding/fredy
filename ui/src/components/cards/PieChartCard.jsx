@@ -8,10 +8,12 @@ import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, Title as ChartTitle } from 'chart.js';
 
 import './ChartCard.less';
+import { useTranslation } from '../../services/i18n/i18n.jsx';
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartTitle);
 
 export default function PieChartCard({ data = [] }) {
+  const t = useTranslation();
   const { labels, values } = React.useMemo(() => {
     if (data && typeof data === 'object' && !Array.isArray(data)) {
       const lbls = Array.isArray(data.labels) ? data.labels : [];
@@ -92,6 +94,12 @@ export default function PieChartCard({ data = [] }) {
   const isEmpty = !labels || labels.length === 0 || !values || values.length === 0;
 
   return (
-    <>{isEmpty ? <div className="chartCard__no__data">No Data</div> : <Pie data={chartData} options={options} />}</>
+    <>
+      {isEmpty ? (
+        <div className="chartCard__no__data">{t('dashboard.noData')}</div>
+      ) : (
+        <Pie data={chartData} options={options} />
+      )}
+    </>
   );
 }

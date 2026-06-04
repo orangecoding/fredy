@@ -8,26 +8,11 @@ import { Dropdown, Button, Tooltip } from '@douyinfe/semi-ui-19';
 import { IconChevronDown } from '@douyinfe/semi-icons';
 
 import './StatusControl.less';
-
-const STATUS_TOOLTIP =
-  'Track where you stand with this listing: Applied once you have reached out, Rejected if it did not work out, or Accepted if you got it.';
+import { useTranslation } from '../../services/i18n/i18n.jsx';
 
 /**
  * @typedef {('applied'|'rejected'|'accepted'|null)} ListingStatus
  */
-
-const STATUS_OPTIONS = [
-  { value: null, label: 'None' },
-  { value: 'applied', label: 'Applied' },
-  { value: 'rejected', label: 'Rejected' },
-  { value: 'accepted', label: 'Accepted' },
-];
-
-/**
- * Look up the option metadata for a status value.
- * @param {ListingStatus} status
- */
-const optionFor = (status) => STATUS_OPTIONS.find((o) => o.value === status) ?? STATUS_OPTIONS[0];
 
 /**
  * Shared control for setting a listing's user-decision status
@@ -44,8 +29,21 @@ const optionFor = (status) => STATUS_OPTIONS.find((o) => o.value === status) ?? 
  * @param {(e: React.MouseEvent) => void} [props.onTriggerClick] - Optional click handler to stop propagation on the trigger.
  */
 export default function StatusControl({ status = null, onChange, compact = false, onTriggerClick }) {
+  const t = useTranslation();
   const [open, setOpen] = useState(false);
   const [tooltipOpen, setTooltipOpen] = useState(false);
+
+  const STATUS_OPTIONS = [
+    { value: null, label: t('listings.status.none') },
+    { value: 'applied', label: t('listings.status.applied') },
+    { value: 'rejected', label: t('listings.status.rejected') },
+    { value: 'accepted', label: t('listings.status.accepted') },
+  ];
+
+  const STATUS_TOOLTIP = t('listings.status.tooltip');
+
+  const optionFor = (status) => STATUS_OPTIONS.find((o) => o.value === status) ?? STATUS_OPTIONS[0];
+
   const current = optionFor(status);
 
   const handlePick = (next) => {
@@ -94,7 +92,7 @@ export default function StatusControl({ status = null, onChange, compact = false
         }}
         className={className}
       >
-        {status ? current.label : 'Status'}
+        {status ? current.label : t('listings.status.statusLabel')}
       </Button>
     </Tooltip>
   );

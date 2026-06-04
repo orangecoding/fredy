@@ -14,8 +14,10 @@ import { Input, Button, Banner } from '@douyinfe/semi-ui-19';
 
 import './login.less';
 import { IconUser, IconLock } from '@douyinfe/semi-icons';
+import { useTranslation } from '../../services/i18n/i18n.jsx';
 
 export default function Login() {
+  const t = useTranslation();
   const actions = useActions();
   const [username, setUserName] = React.useState('');
   const [password, setPassword] = React.useState('');
@@ -33,7 +35,7 @@ export default function Login() {
 
   const tryLogin = async () => {
     if (!username?.trim() || !password) {
-      setError('Username and password are mandatory.');
+      setError(t('login.errorMandatory'));
       return;
     }
     setError(null);
@@ -45,7 +47,7 @@ export default function Login() {
       });
       /* eslint-disable no-unused-vars */
     } catch (ignored) {
-      setError('Login unsuccessful. Please check your username and password.');
+      setError(t('login.errorInvalid'));
       return;
     }
 
@@ -67,7 +69,7 @@ export default function Login() {
             type="info"
             bordered
             closeIcon={null}
-            description="This is the demo version of Fredy. Use 'demo' as both the username and password to log in."
+            description={t('login.demoBanner')}
             style={{ marginBottom: '1.5rem' }}
           />
         )}
@@ -78,7 +80,7 @@ export default function Login() {
             <Input
               size="large"
               prefix={<IconUser />}
-              placeholder="Username"
+              placeholder={t('login.usernamePlaceholder')}
               value={username}
               showClear
               autoFocus
@@ -97,7 +99,7 @@ export default function Login() {
               mode="password"
               prefix={<IconLock />}
               value={password}
-              placeholder="Password"
+              placeholder={t('login.passwordPlaceholder')}
               onChange={(value) => setPassword(value)}
               onKeyPress={async (e) => {
                 if (e.key === 'Enter') {
@@ -108,7 +110,7 @@ export default function Login() {
           </div>
 
           <Button block type="primary" onClick={tryLogin} theme="solid" style={{ marginTop: '1rem' }}>
-            Login
+            {t('login.loginButton')}
           </Button>
         </form>
       </div>

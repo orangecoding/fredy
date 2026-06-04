@@ -13,8 +13,10 @@ import './UserMutator.less';
 import { SegmentPart } from '../../../components/segment/SegmentPart';
 import { IconPlusCircle, IconArrowLeft } from '@douyinfe/semi-icons';
 import Headline from '../../../components/headline/Headline.jsx';
+import { useTranslation } from '../../../services/i18n/i18n.jsx';
 
 const UserMutator = function UserMutator() {
+  const t = useTranslation();
   const params = useParams();
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
@@ -55,7 +57,7 @@ const UserMutator = function UserMutator() {
         isAdmin,
       });
       await actions.user.getUsers();
-      Toast.success('User successfully saved...');
+      Toast.success(t('users.mutation.saved'));
       navigate('/users');
     } catch (error) {
       console.error(error);
@@ -66,7 +68,7 @@ const UserMutator = function UserMutator() {
   return (
     <>
       <Headline
-        text={params.userId ? 'Edit User' : 'New User'}
+        text={params.userId ? t('users.mutation.editTitle') : t('users.mutation.newTitle')}
         actions={
           <Button
             icon={<IconArrowLeft />}
@@ -74,17 +76,17 @@ const UserMutator = function UserMutator() {
             theme="borderless"
             style={{ color: '#909090' }}
           >
-            Back
+            {t('users.mutation.back')}
           </Button>
         }
       />
       <form className="userMutator">
-        <SegmentPart name="Username" helpText="The username used to login to Fredy">
+        <SegmentPart name={t('users.mutation.sectionUsername')} helpText={t('users.mutation.usernameHelp')}>
           <Input
             type="text"
-            label="Username"
+            label={t('users.mutation.sectionUsername')}
             maxLength={30}
-            placeholder="Username"
+            placeholder={t('users.mutation.usernamePlaceholder')}
             autoFocus
             width={6}
             value={username}
@@ -92,38 +94,38 @@ const UserMutator = function UserMutator() {
           />
         </SegmentPart>
         <Divider margin="1rem" />
-        <SegmentPart name="Password" helpText="The password used to login to Fredy">
+        <SegmentPart name={t('users.mutation.sectionPassword')} helpText={t('users.mutation.passwordHelp')}>
           <Input
             mode="password"
-            label="Password"
-            placeholder="Password"
+            label={t('users.mutation.sectionPassword')}
+            placeholder={t('users.mutation.passwordPlaceholder')}
             width={6}
             value={password}
             onChange={(val) => setPassword(val)}
           />
         </SegmentPart>
         <Divider margin="1rem" />
-        <SegmentPart name="Retype password" helpText="Retype the password to make sure they match">
+        <SegmentPart name={t('users.mutation.sectionRetypePassword')} helpText={t('users.mutation.retypePasswordHelp')}>
           <Input
             mode="password"
-            label="Retype password"
-            placeholder="Retype password"
+            label={t('users.mutation.sectionRetypePassword')}
+            placeholder={t('users.mutation.retypePasswordPlaceholder')}
             width={6}
             value={password2}
             onChange={(val) => setPassword2(val)}
           />
         </SegmentPart>
         <Divider margin="1rem" />
-        <SegmentPart name="Is user an admin?" helpText="Check this if the user is an administrator">
+        <SegmentPart name={t('users.mutation.sectionIsAdmin')} helpText={t('users.mutation.isAdminHelp')}>
           <Switch checked={isAdmin} onChange={(checked) => setIsAdmin(checked)} />
         </SegmentPart>
         <Divider margin="1rem" />
         <div className="userMutator__actions">
           <Button size="small" theme="borderless" style={{ color: '#909090' }} onClick={() => navigate('/users')}>
-            Cancel
+            {t('users.mutation.cancel')}
           </Button>
           <Button size="small" type="primary" theme="solid" icon={<IconPlusCircle />} onClick={saveUser}>
-            Save
+            {t('users.mutation.save')}
           </Button>
         </div>
       </form>

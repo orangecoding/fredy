@@ -9,10 +9,12 @@ import { IconAlertCircle, IconArrowRight } from '@douyinfe/semi-icons';
 import { useSelector } from '../../services/state/store.js';
 
 import './VersionBanner.less';
+import { useTranslation } from '../../services/i18n/i18n.jsx';
 
 const { Text } = Typography;
 
 export default function VersionBanner() {
+  const t = useTranslation();
   const [modalVisible, setModalVisible] = useState(false);
   const versionUpdate = useSelector((state) => state.versionUpdate.versionUpdate);
 
@@ -28,13 +30,13 @@ export default function VersionBanner() {
             <Space spacing={8} align="center">
               <IconAlertCircle size="small" />
               <Text strong size="small">
-                New version available
+                {t('version.newVersionAvailable')}
               </Text>
               <Tag color="amber" size="small" shape="circle">
                 {versionUpdate.version}
               </Tag>
               <Text type="tertiary" size="small">
-                Current: {versionUpdate.localFredyVersion}
+                {t('version.currentLabel', { version: versionUpdate.localFredyVersion })}
               </Text>
             </Space>
             <Button
@@ -44,7 +46,7 @@ export default function VersionBanner() {
               iconPosition="right"
               onClick={() => setModalVisible(true)}
             >
-              Release notes
+              {t('version.releaseNotes')}
             </Button>
           </div>
         }
@@ -54,7 +56,7 @@ export default function VersionBanner() {
           <Space spacing={8} align="center">
             <Text strong>Fredy {versionUpdate.version}</Text>
             <Tag color="amber" size="small">
-              New
+              {t('version.newBadge')}
             </Tag>
           </Space>
         }
@@ -63,21 +65,21 @@ export default function VersionBanner() {
         width={640}
         footer={
           <Space>
-            <Button onClick={() => setModalVisible(false)}>Close</Button>
+            <Button onClick={() => setModalVisible(false)}>{t('version.modalClose')}</Button>
             <Button
               type="primary"
               icon={<IconArrowRight />}
               iconPosition="right"
               onClick={() => window.open(versionUpdate.url, '_blank')}
             >
-              View on GitHub
+              {t('version.viewOnGithub')}
             </Button>
           </Space>
         }
       >
         <Descriptions row size="small" className="versionBanner__details">
-          <Descriptions.Item itemKey="Your Version">{versionUpdate.localFredyVersion}</Descriptions.Item>
-          <Descriptions.Item itemKey="Latest Version">{versionUpdate.version}</Descriptions.Item>
+          <Descriptions.Item itemKey={t('version.yourVersion')}>{versionUpdate.localFredyVersion}</Descriptions.Item>
+          <Descriptions.Item itemKey={t('version.latestVersion')}>{versionUpdate.version}</Descriptions.Item>
         </Descriptions>
         <div className="versionBanner__notes">
           <MarkdownRender raw={versionUpdate.body} />

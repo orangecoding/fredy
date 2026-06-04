@@ -6,6 +6,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 
 import { useActions, useSelector, useIsLoading } from '../../services/state/store';
+import { useTranslation, availableLanguages } from '../../services/i18n/i18n.jsx';
 
 import {
   Tabs,
@@ -56,10 +57,12 @@ function formatFromTBackend(time) {
 
 const GeneralSettings = function GeneralSettings() {
   const actions = useActions();
+  const t = useTranslation();
   const [loading, setLoading] = React.useState(true);
 
   const settings = useSelector((state) => state.generalSettings.settings);
   const currentUser = useSelector((state) => state.user.currentUser);
+  const language = useSelector((state) => state.userSettings.settings.language);
 
   const [interval, setInterval] = React.useState('');
   const [proxyUrl, setProxyUrl] = React.useState('');
@@ -86,6 +89,7 @@ const GeneralSettings = function GeneralSettings() {
   const [listingDeleteHard, setListingDeleteHard] = useState(false);
   const [listingDeleteSkipPrompt, setListingDeleteSkipPrompt] = useState(false);
   const saving = useIsLoading(actions.userSettings.setHomeAddress);
+  const savingLanguage = useIsLoading(actions.userSettings.setLanguage);
   const [dataSource, setDataSource] = useState([]);
 
   React.useEffect(() => {
@@ -127,22 +131,22 @@ const GeneralSettings = function GeneralSettings() {
 
   const handleStore = async () => {
     if (nullOrEmpty(interval)) {
-      Toast.error('Interval may not be empty.');
+      Toast.error(t('settings.toastIntervalEmpty'));
       return;
     }
     if (nullOrEmpty(port)) {
-      Toast.error('Port may not be empty.');
+      Toast.error(t('settings.toastPortEmpty'));
       return;
     }
     if (
       (!nullOrEmpty(workingHourFrom) && nullOrEmpty(workingHourTo)) ||
       (nullOrEmpty(workingHourFrom) && !nullOrEmpty(workingHourTo))
     ) {
-      Toast.error('Working hours to and from must be set if either to or from has been set before.');
+      Toast.error(t('settings.toastWorkingHoursIncomplete'));
       return;
     }
     if (nullOrEmpty(sqlitePath)) {
-      Toast.error('SQLite db path cannot be empty.');
+      Toast.error(t('settings.toastSqlitePathEmpty'));
       return;
     }
     try {
@@ -164,11 +168,11 @@ const GeneralSettings = function GeneralSettings() {
       if (exception?.json?.message != null) {
         Toast.error(exception.json.message);
       } else {
-        Toast.error('Error while trying to store settings.');
+        Toast.error(t('settings.toastSaveError'));
       }
       return;
     }
-    Toast.success('Settings stored successfully. We will reload your browser in 3 seconds.');
+    Toast.success(t('settings.toastSavedReloading'));
     setTimeout(() => {
       location.reload();
     }, 3000);
@@ -179,7 +183,7 @@ const GeneralSettings = function GeneralSettings() {
       await downloadBackupZip();
     } catch (e) {
       console.error(e);
-      Toast.error('Unexpected error while downloading backup.');
+      Toast.error(t('settings.backupDownloadError'));
     }
   }, []);
 
@@ -190,7 +194,7 @@ const GeneralSettings = function GeneralSettings() {
       setRestoreModalVisible(true);
     } catch (e) {
       console.error(e);
-      Toast.error('Failed to analyze backup.');
+      Toast.error(t('settings.backupAnalyzeError'));
     }
   }, []);
 
@@ -199,10 +203,10 @@ const GeneralSettings = function GeneralSettings() {
       try {
         setRestoreBusy(true);
         await clientRestore(selectedRestoreFile, force);
-        Toast.success('Restore completed. Please restart the Fredy backend now!');
+        Toast.success(t('settings.backupRestoreCompleted'));
       } catch (e) {
         console.error(e);
-        Toast.error(e?.message || 'Unexpected error while restoring backup.');
+        Toast.error(e?.message || t('settings.backupRestoreError'));
       } finally {
         setRestoreBusy(false);
       }
@@ -236,9 +240,9 @@ const GeneralSettings = function GeneralSettings() {
         hardDelete: listingDeleteHard,
       });
       await actions.userSettings.getUserSettings();
-      Toast.success('Settings saved. Distance calculations are running in the background.');
+      Toast.success(t('settings.userSettingsSaved'));
     } catch (error) {
-      Toast.error(error.json?.error || 'Error while saving settings');
+      Toast.error(error.json?.error || t('settings.userSettingsSaveError'));
     }
   };
 
@@ -266,7 +270,7 @@ const GeneralSettings = function GeneralSettings() {
 
   return (
     <div className="generalSettings">
-      <Headline text="Settings" />
+      <Headline text={t('settings.title')} />
       {!loading && (
         <>
           <Tabs type="line">
@@ -274,17 +278,17 @@ const GeneralSettings = function GeneralSettings() {
               tab={
                 <span>
                   <IconSignal size="small" style={{ marginRight: 6 }} />
-                  System
+                  {t('settings.tabSystem')}
                 </span>
               }
               itemKey="system"
             >
               <div className="generalSettings__tab-content">
-                <SegmentPart name="Port" helpText="The port on which Fredy is running.">
+                <SegmentPart name={t('settings.port')} helpText={t('settings.portHelp')}>
                   <InputNumber
                     min={0}
                     max={99999}
-                    placeholder="Port"
+                    placeholder={t('settings.portPlaceholder')}
                     value={port}
                     formatter={(value) => `${value}`.replace(/\D/g, '')}
                     onChange={(value) => setPort(value)}
@@ -292,53 +296,46 @@ const GeneralSettings = function GeneralSettings() {
                   />
                 </SegmentPart>
 
-                <SegmentPart
-                  name="Base URL"
-                  helpText="Public URL where Fredy is reachable (e.g. http://192.168.1.10:9998). Used for 'Open in Fredy' links in notifications."
-                >
-                  <Input type="text" placeholder="Base-Url" value={baseUrl} onChange={(value) => setBaseUrl(value)} />
+                <SegmentPart name={t('settings.baseUrl')} helpText={t('settings.baseUrlHelp')}>
+                  <Input
+                    type="text"
+                    placeholder={t('settings.baseUrlPlaceholder')}
+                    value={baseUrl}
+                    onChange={(value) => setBaseUrl(value)}
+                  />
                 </SegmentPart>
 
-                <SegmentPart
-                  name="SQLite Database Path"
-                  helpText="The directory where Fredy stores its SQLite database files."
-                >
+                <SegmentPart name={t('settings.sqlitePath')} helpText={t('settings.sqlitePathHelp')}>
                   <Banner
                     fullMode={false}
                     type="warning"
                     closeIcon={null}
                     style={{ marginBottom: '12px' }}
-                    description="Changing this path may result in data loss. Restart Fredy immediately after saving."
+                    description={t('settings.sqlitePathWarning')}
                   />
                   <Input
                     type="text"
-                    placeholder="Database folder path"
+                    placeholder={t('settings.sqlitePathPlaceholder')}
                     value={sqlitePath}
                     onChange={(value) => setSqlitePath(value)}
                   />
                 </SegmentPart>
 
-                <SegmentPart
-                  name="Analytics"
-                  helpText="Anonymous usage data to help improve Fredy - provider names, adapter names, OS, Node version, and architecture."
-                >
+                <SegmentPart name={t('settings.analytics')} helpText={t('settings.analyticsHelp')}>
                   <Checkbox checked={analyticsEnabled} onChange={(e) => setAnalyticsEnabled(e.target.checked)}>
-                    Enable analytics
+                    {t('settings.analyticsEnable')}
                   </Checkbox>
                 </SegmentPart>
 
-                <SegmentPart
-                  name="Demo Mode"
-                  helpText="In demo mode, Fredy will not search for real estates and all data resets to defaults at midnight."
-                >
+                <SegmentPart name={t('settings.demoMode')} helpText={t('settings.demoModeHelp')}>
                   <Checkbox checked={demoMode} onChange={(e) => setDemoMode(e.target.checked)}>
-                    Enable demo mode
+                    {t('settings.demoModeEnable')}
                   </Checkbox>
                 </SegmentPart>
 
                 <div className="generalSettings__save-row">
                   <Button type="primary" theme="solid" onClick={handleStore} icon={<IconSave />}>
-                    Save
+                    {t('settings.save')}
                   </Button>
                 </div>
               </div>
@@ -348,36 +345,30 @@ const GeneralSettings = function GeneralSettings() {
               tab={
                 <span>
                   <IconRefresh size="small" style={{ marginRight: 6 }} />
-                  Execution
+                  {t('settings.tabExecution')}
                 </span>
               }
               itemKey="execution"
             >
               <div className="generalSettings__tab-content">
-                <SegmentPart
-                  name="Search Interval"
-                  helpText="Interval in minutes for running queries against configured services. Do not go below 5 minutes to avoid being detected as a bot."
-                >
+                <SegmentPart name={t('settings.searchInterval')} helpText={t('settings.searchIntervalHelp')}>
                   <InputNumber
                     min={5}
                     max={1440}
-                    placeholder="Interval in minutes"
+                    placeholder={t('settings.searchIntervalPlaceholder')}
                     value={interval}
                     formatter={(value) => `${value}`.replace(/\D/g, '')}
                     onChange={(value) => setInterval(value)}
-                    suffix={'minutes'}
+                    suffix={t('settings.searchIntervalSuffix')}
                     style={{ maxWidth: 200 }}
                   />
                 </SegmentPart>
 
-                <SegmentPart
-                  name="Working Hours"
-                  helpText="Fredy will only search for listings during these hours. Leave empty to search around the clock."
-                >
+                <SegmentPart name={t('settings.workingHours')} helpText={t('settings.workingHoursHelp')}>
                   <div className="generalSettings__timePickerContainer">
                     <TimePicker
                       format={'HH:mm'}
-                      insetLabel="From"
+                      insetLabel={t('settings.workingHoursFrom')}
                       value={formatFromTBackend(workingHourFrom)}
                       placeholder=""
                       onChange={(val) => {
@@ -386,7 +377,7 @@ const GeneralSettings = function GeneralSettings() {
                     />
                     <TimePicker
                       format={'HH:mm'}
-                      insetLabel="Until"
+                      insetLabel={t('settings.workingHoursUntil')}
                       value={formatFromTBackend(workingHourTo)}
                       placeholder=""
                       onChange={(val) => {
@@ -396,13 +387,10 @@ const GeneralSettings = function GeneralSettings() {
                   </div>
                 </SegmentPart>
 
-                <SegmentPart
-                  name="Proxy URL"
-                  helpText="Optional. Routes the scraping browser through a proxy. Server/datacenter IPs are frequently blocked by providers (e.g. immowelt) regardless of browser fingerprint, a German residential proxy makes requests look like a normal household and is the most effective fix. Format: http://user:pass@host:port or socks5://user:pass@host:port. Leave empty to disable."
-                >
+                <SegmentPart name={t('settings.proxyUrl')} helpText={t('settings.proxyUrlHelp')}>
                   <Input
                     type="text"
-                    placeholder="http://user:pass@host:port"
+                    placeholder={t('settings.proxyUrlPlaceholder')}
                     value={proxyUrl}
                     onChange={(value) => setProxyUrl(value)}
                   />
@@ -410,7 +398,7 @@ const GeneralSettings = function GeneralSettings() {
 
                 <div className="generalSettings__save-row">
                   <Button type="primary" theme="solid" onClick={handleStore} icon={<IconSave />}>
-                    Save
+                    {t('settings.save')}
                   </Button>
                 </div>
               </div>
@@ -420,42 +408,55 @@ const GeneralSettings = function GeneralSettings() {
               tab={
                 <span>
                   <IconHome size="small" style={{ marginRight: 6 }} />
-                  User Settings
+                  {t('settings.tabUserSettings')}
                 </span>
               }
               itemKey="userSettings"
             >
               <div className="generalSettings__tab-content">
-                <SegmentPart
-                  name="Home Address"
-                  helpText="Used to calculate distances between your location and each listing. Updating this recalculates distances for all active listings."
-                >
+                <SegmentPart name={t('settings.language')} helpText={t('settings.languageHelp')}>
+                  <Select
+                    style={{ width: 240 }}
+                    value={language ?? 'en'}
+                    disabled={savingLanguage}
+                    optionList={availableLanguages.map((lang) => ({
+                      label: `${lang.flag} ${lang.name}`,
+                      value: lang.code,
+                    }))}
+                    onChange={async (code) => {
+                      try {
+                        await actions.userSettings.setLanguage(code);
+                      } catch {
+                        Toast.error(t('settings.languageSaveError'));
+                      }
+                    }}
+                  />
+                </SegmentPart>
+
+                <SegmentPart name={t('settings.homeAddress')} helpText={t('settings.homeAddressHelp')}>
                   <AutoComplete
                     data={dataSource}
                     value={address}
                     showClear
                     onChange={(v) => setAddress(v)}
                     onSearch={searchAddress}
-                    placeholder="Enter your home address"
+                    placeholder={t('settings.homeAddressPlaceholder')}
                     style={{ width: '100%' }}
                   />
                   {coords && coords.lat === -1 && (
                     <Banner
                       type="danger"
-                      description="Address found but could not be geocoded accurately."
+                      description={t('settings.homeAddressGeoError')}
                       closeIcon={null}
                       style={{ marginTop: 8 }}
                     />
                   )}
                 </SegmentPart>
 
-                <SegmentPart
-                  name="Provider Details"
-                  helpText="Fetch additional details (description, attributes, agent info) for listings. Needs an extra API call per listing."
-                >
+                <SegmentPart name={t('settings.providerDetails')} helpText={t('settings.providerDetailsHelp')}>
                   <Banner
                     type="warning"
-                    description="Enabling this significantly increases API requests to providers that have implemented this feature, raising the chance of rate limiting or blocking. Use at your own risk."
+                    description={t('settings.providerDetailsWarning')}
                     closeIcon={null}
                     style={{ marginBottom: 12 }}
                   />
@@ -464,47 +465,38 @@ const GeneralSettings = function GeneralSettings() {
                     style={{ width: '100%' }}
                     value={Array.isArray(providerDetails) ? providerDetails : []}
                     optionList={(allProviders ?? []).map((p) => ({ label: p.name, value: p.id }))}
-                    placeholder="Select providers to fetch details from..."
+                    placeholder={t('settings.providerDetailsPlaceholder')}
                     onChange={async (selected) => {
                       try {
                         await actions.userSettings.setProviderDetails(selected);
-                        Toast.success('Provider details setting updated.');
+                        Toast.success(t('settings.providerDetailsUpdated'));
                       } catch {
-                        Toast.error('Failed to update setting.');
+                        Toast.error(t('settings.providerDetailsUpdateError'));
                       }
                     }}
                   />
                 </SegmentPart>
 
-                <SegmentPart
-                  name="Listing deletion"
-                  helpText="Choose the default deletion mode. Soft delete hides them without re-scraping; hard delete removes them from the database."
-                >
+                <SegmentPart name={t('settings.listingDeletion')} helpText={t('settings.listingDeletionHelp')}>
                   <RadioGroup
                     value={listingDeleteHard ? 'hard' : 'soft'}
                     onChange={(e) => setListingDeleteHard(e.target.value === 'hard')}
                   >
                     <Radio value="soft">
                       <div>
-                        <Text strong>Mark as deleted (Soft Delete)</Text>
+                        <Text strong>{t('settings.listingDeletionSoftLabel')}</Text>
                         <br />
-                        <Text type="secondary">
-                          Listings are kept in the database but marked as hidden. They will <b>not</b> re-appear during
-                          the next scraping session.
-                        </Text>
+                        <Text type="secondary">{t('settings.listingDeletionSoftDesc')}</Text>
                       </div>
                     </Radio>
                     <Radio value="hard">
                       <div>
-                        <Text strong>Remove from database (Hard Delete)</Text>
+                        <Text strong>{t('settings.listingDeletionHardLabel')}</Text>
                         <br />
                         <Text type="secondary">
-                          Listings are completely removed from the database.
+                          {t('settings.listingDeletionHardDesc')}
                           <br />
-                          <Text type="warning">
-                            Consequence: They might re-appear when scraping the next time because Fredy won't know they
-                            were previously found.
-                          </Text>
+                          <Text type="warning">{t('settings.listingDeletionHardConsequence')}</Text>
                         </Text>
                       </div>
                     </Radio>
@@ -514,7 +506,7 @@ const GeneralSettings = function GeneralSettings() {
                     onChange={(e) => setListingDeleteSkipPrompt(e.target.checked)}
                     style={{ marginTop: 12 }}
                   >
-                    Skip confirmation dialog
+                    {t('settings.listingDeletionSkipPrompt')}
                   </Checkbox>
                 </SegmentPart>
 
@@ -526,7 +518,7 @@ const GeneralSettings = function GeneralSettings() {
                     onClick={handleSaveUserSettings}
                     loading={saving}
                   >
-                    Save
+                    {t('settings.save')}
                   </Button>
                 </div>
               </div>
@@ -536,7 +528,7 @@ const GeneralSettings = function GeneralSettings() {
               tab={
                 <span>
                   <IconFolder size="small" style={{ marginRight: 6 }} />
-                  Backup & Restore
+                  {t('settings.tabBackup')}
                 </span>
               }
               itemKey="backup"
@@ -548,13 +540,10 @@ const GeneralSettings = function GeneralSettings() {
                     type="warning"
                     closeIcon={null}
                     style={{ marginBottom: '12px' }}
-                    description="Backup and restore are not available in demo mode."
+                    description={t('settings.backupDemoWarning')}
                   />
                 )}
-                <SegmentPart
-                  name="Backup & Restore"
-                  helpText="Download a zipped backup of your database or restore from a backup zip."
-                >
+                <SegmentPart name={t('settings.backupSectionName')} helpText={t('settings.backupHelp')}>
                   <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
                     <Button
                       theme="solid"
@@ -562,7 +551,7 @@ const GeneralSettings = function GeneralSettings() {
                       onClick={handleDownloadBackup}
                       disabled={demoMode && !currentUser?.isAdmin}
                     >
-                      Download Backup
+                      {t('settings.backupDownload')}
                     </Button>
                     <input
                       type="file"
@@ -577,7 +566,7 @@ const GeneralSettings = function GeneralSettings() {
                       icon={<IconFolder />}
                       disabled={demoMode && !currentUser?.isAdmin}
                     >
-                      Restore from Zip
+                      {t('settings.backupRestoreFromZip')}
                     </Button>
                   </div>
                 </SegmentPart>
@@ -589,11 +578,11 @@ const GeneralSettings = function GeneralSettings() {
 
       {restoreModalVisible && (
         <Modal
-          title="Restore database"
+          title={t('settings.restoreModalTitle')}
           visible={restoreModalVisible}
           onCancel={() => setRestoreModalVisible(false)}
           onOk={() => performRestore(!precheckInfo?.compatible)}
-          okText={precheckInfo?.compatible ? 'Restore now' : 'Restore anyway'}
+          okText={precheckInfo?.compatible ? t('settings.restoreNow') : t('settings.restoreAnyway')}
           okType={precheckInfo?.compatible ? 'primary' : 'danger'}
           confirmLoading={restoreBusy}
         >
@@ -602,7 +591,7 @@ const GeneralSettings = function GeneralSettings() {
               type="danger"
               fullMode={false}
               closeIcon={null}
-              title={<div style={{ fontWeight: 600, fontSize: '14px' }}>Problem detected</div>}
+              title={<div style={{ fontWeight: 600, fontSize: '14px' }}>{t('settings.restoreProblemDetected')}</div>}
               description={<div>{precheckInfo?.message}</div>}
             />
           )}
@@ -611,7 +600,7 @@ const GeneralSettings = function GeneralSettings() {
               type="warning"
               fullMode={false}
               closeIcon={null}
-              title={<div style={{ fontWeight: 600, fontSize: '14px' }}>Automatic migrations will be applied</div>}
+              title={<div style={{ fontWeight: 600, fontSize: '14px' }}>{t('settings.restoreMigrationsApplied')}</div>}
               description={<div>{precheckInfo?.message}</div>}
             />
           )}
@@ -620,13 +609,15 @@ const GeneralSettings = function GeneralSettings() {
               type="success"
               fullMode={false}
               closeIcon={null}
-              title={<div style={{ fontWeight: 600, fontSize: '14px' }}>Backup is compatible</div>}
+              title={<div style={{ fontWeight: 600, fontSize: '14px' }}>{t('settings.restoreCompatible')}</div>}
               description={<div>{precheckInfo?.message}</div>}
             />
           )}
           <div style={{ marginTop: '0.5rem', fontSize: '12px', color: 'var(--semi-color-text-2)' }}>
-            Backup migration: {precheckInfo?.backupMigration ?? 'unknown'} | Required migration:{' '}
-            {precheckInfo?.requiredMigration ?? 'unknown'}
+            {t('settings.restoreMigrationInfo', {
+              backupMigration: precheckInfo?.backupMigration ?? 'unknown',
+              requiredMigration: precheckInfo?.requiredMigration ?? 'unknown',
+            })}
           </div>
         </Modal>
       )}

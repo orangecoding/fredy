@@ -10,10 +10,12 @@ import newsConfig from '../../assets/news/news.json';
 import { useActions, useSelector } from '../../services/state/store';
 
 import './NewsModal.less';
+import { useTranslation } from '../../services/i18n/i18n.jsx';
 
 const newsMedia = import.meta.glob('../../assets/news/*', { eager: true, query: '?url', import: 'default' });
 
 const NewsModal = () => {
+  const t = useTranslation();
   const screenWidth = useScreenWidth();
   const newsHash = useSelector((state) => state.userSettings.settings.news_hash);
   const userSettingsLoaded = useSelector((state) => state.userSettings.loaded);
@@ -38,7 +40,7 @@ const NewsModal = () => {
           (item.media.includes('mp4') ? (
             <video controls width="500">
               <source src={newsMedia[`../../assets/news/${item.media}`]} type="video/mp4" />
-              Your browser does not support the video tag.
+              {t('news.videoFallback')}
             </video>
           ) : (
             <img

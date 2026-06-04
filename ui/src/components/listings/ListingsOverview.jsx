@@ -22,8 +22,10 @@ import ListingsTable from '../table/ListingsTable.jsx';
 import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-illustrations';
 
 import './ListingsOverview.less';
+import { useTranslation } from '../../services/i18n/i18n.jsx';
 
 const ListingsOverview = ({ mode = 'all' }) => {
+  const t = useTranslation();
   const isWatchlistMode = mode === 'watchlist';
   const listingsData = useSelector((state) => state.listingsData);
   const providers = useSelector((state) => state.provider);
@@ -106,22 +108,24 @@ const ListingsOverview = ({ mode = 'all' }) => {
     e.stopPropagation();
     try {
       await xhrPost('/api/listings/watch', { listingId: item.id });
-      Toast.success(item.isWatched === 1 ? 'Listing removed from Watchlist' : 'Listing added to Watchlist');
+      Toast.success(
+        item.isWatched === 1 ? t('listings.toastRemovedFromWatchlist') : t('listings.toastAddedToWatchlist'),
+      );
       loadData();
     } catch (e) {
       console.error(e);
-      Toast.error('Failed to operate Watchlist');
+      Toast.error(t('listings.toastWatchlistError'));
     }
   };
 
   const handleStatusChange = async (item, nextStatus) => {
     try {
       await actions.listingsData.setListingStatus(item.id, nextStatus);
-      Toast.success(nextStatus ? `Marked as ${nextStatus}` : 'Status cleared');
+      Toast.success(nextStatus ? `Marked as ${nextStatus}` : t('listings.toastStatusCleared'));
       loadData();
     } catch (e) {
       console.error(e);
-      Toast.error('Failed to update status');
+      Toast.error(t('listings.toastStatusUpdateError'));
     }
   };
 
@@ -142,10 +146,10 @@ const ListingsOverview = ({ mode = 'all' }) => {
         await actions.userSettings.setListingDeletionPreference({ skipPrompt: true, hardDelete });
       }
       await xhrDelete('/api/listings/', { ids: [id], hardDelete });
-      Toast.success('Listing successfully removed');
+      Toast.success(t('listings.toastDeleted'));
       loadData();
     } catch (error) {
-      Toast.error(error.message || 'Error deleting listing');
+      Toast.error(error.message || t('listings.toastDeleteError'));
     } finally {
       setDeleteModalVisible(false);
       setListingToDelete(null);
@@ -161,7 +165,7 @@ const ListingsOverview = ({ mode = 'all' }) => {
           className="listingsOverview__topbar__search"
           prefix={<IconSearch />}
           showClear
-          placeholder="Search"
+          placeholder={t('listings.searchPlaceholder')}
           defaultValue={freeTextFilter ?? ''}
           onChange={handleFilterChange}
         />
@@ -176,9 +180,9 @@ const ListingsOverview = ({ mode = 'all' }) => {
             setPage(1);
           }}
         >
-          <Radio value="all">All</Radio>
-          <Radio value="true">Active</Radio>
-          <Radio value="false">Inactive</Radio>
+          <Radio value="all">{t('listings.filterAll')}</Radio>
+          <Radio value="true">{t('listings.filterActive')}</Radio>
+          <Radio value="false">{t('listings.filterInactive')}</Radio>
         </RadioGroup>
 
         {!isWatchlistMode && (
@@ -192,14 +196,14 @@ const ListingsOverview = ({ mode = 'all' }) => {
               setPage(1);
             }}
           >
-            <Radio value="all">All</Radio>
-            <Radio value="true">Watched</Radio>
-            <Radio value="false">Unwatched</Radio>
+            <Radio value="all">{t('listings.filterAll')}</Radio>
+            <Radio value="true">{t('listings.filterWatched')}</Radio>
+            <Radio value="false">{t('listings.filterUnwatched')}</Radio>
           </RadioGroup>
         )}
 
         <Select
-          placeholder="Status"
+          placeholder={t('listings.filterStatusPlaceholder')}
           showClear
           onChange={(val) => {
             setStatusFilter(val ?? null);
@@ -208,14 +212,14 @@ const ListingsOverview = ({ mode = 'all' }) => {
           value={statusFilter}
           style={{ width: 150 }}
         >
-          <Select.Option value="applied">Applied</Select.Option>
-          <Select.Option value="rejected">Rejected</Select.Option>
-          <Select.Option value="accepted">Accepted</Select.Option>
-          <Select.Option value="none">No status</Select.Option>
+          <Select.Option value="applied">{t('listings.filterStatusApplied')}</Select.Option>
+          <Select.Option value="rejected">{t('listings.filterStatusRejected')}</Select.Option>
+          <Select.Option value="accepted">{t('listings.filterStatusAccepted')}</Select.Option>
+          <Select.Option value="none">{t('listings.filterStatusNone')}</Select.Option>
         </Select>
 
         <Select
-          placeholder="Provider"
+          placeholder={t('listings.filterProviderPlaceholder')}
           showClear
           onChange={(val) => {
             setProviderFilter(val);
@@ -232,7 +236,7 @@ const ListingsOverview = ({ mode = 'all' }) => {
         </Select>
 
         <Select
-          placeholder="Job"
+          placeholder={t('listings.filterJobPlaceholder')}
           showClear
           onChange={(val) => {
             setJobNameFilter(val);
@@ -249,40 +253,40 @@ const ListingsOverview = ({ mode = 'all' }) => {
         </Select>
 
         <Select
-          prefix="Sort by"
+          prefix={t('listings.sortPrefix')}
           className="listingsOverview__topbar__sort"
           style={{ width: 220 }}
           value={sortField}
           onChange={(val) => setSortField(val)}
         >
-          <Select.Option value="job_name">Job Name</Select.Option>
-          <Select.Option value="created_at">Listing Date</Select.Option>
-          <Select.Option value="price">Price</Select.Option>
-          <Select.Option value="provider">Provider</Select.Option>
+          <Select.Option value="job_name">{t('listings.sortByJobName')}</Select.Option>
+          <Select.Option value="created_at">{t('listings.sortByDate')}</Select.Option>
+          <Select.Option value="price">{t('listings.sortByPrice')}</Select.Option>
+          <Select.Option value="provider">{t('listings.sortByProvider')}</Select.Option>
         </Select>
 
         <Button
           icon={sortDir === 'asc' ? <IconArrowUp /> : <IconArrowDown />}
           onClick={() => setSortDir(sortDir === 'asc' ? 'desc' : 'asc')}
-          title={sortDir === 'asc' ? 'Ascending' : 'Descending'}
+          title={sortDir === 'asc' ? t('listings.sortAscending') : t('listings.sortDescending')}
         />
 
         <div className="listingsOverview__topbar__view-toggle">
-          <Tooltip content="Grid view">
+          <Tooltip content={t('listings.tooltipGridView')}>
             <Button
               icon={<IconGridView />}
               theme={viewMode === 'grid' ? 'solid' : 'borderless'}
               onClick={() => actions.userSettings.setListingsViewMode('grid')}
-              aria-label="Grid view"
+              aria-label={t('common.ariaGridView')}
               aria-pressed={viewMode === 'grid'}
             />
           </Tooltip>
-          <Tooltip content="Table view">
+          <Tooltip content={t('listings.tooltipTableView')}>
             <Button
               icon={<IconList />}
               theme={viewMode === 'table' ? 'solid' : 'borderless'}
               onClick={() => actions.userSettings.setListingsViewMode('table')}
-              aria-label="Table view"
+              aria-label={t('common.ariaTableView')}
               aria-pressed={viewMode === 'table'}
             />
           </Tooltip>
@@ -293,7 +297,7 @@ const ListingsOverview = ({ mode = 'all' }) => {
         <Empty
           image={<IllustrationNoResult />}
           darkModeImage={<IllustrationNoResultDark />}
-          description="No listings available yet..."
+          description={t('listings.empty')}
         />
       )}
 
