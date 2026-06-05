@@ -8,7 +8,7 @@ import React, { useEffect } from 'react';
 import cityBackground from '../../assets/city_background.jpg';
 import Logo from '../../components/logo/Logo';
 import { xhrPost } from '../../services/xhr';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useActions, useSelector } from '../../services/state/store';
 import { Input, Button, Banner } from '@douyinfe/semi-ui-19';
 
@@ -24,6 +24,7 @@ export default function Login() {
   const [error, setError] = React.useState(null);
   const demoMode = useSelector((state) => state.demoMode.demoMode || false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     async function init() {
@@ -52,7 +53,7 @@ export default function Login() {
     }
 
     await actions.user.getCurrentUser();
-    navigate('/dashboard');
+    navigate(location.state?.from?.pathname || '/dashboard');
   };
 
   return (
