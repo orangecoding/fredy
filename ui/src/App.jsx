@@ -11,7 +11,7 @@ import GeneralSettings from './views/generalSettings/GeneralSettings';
 import JobMutation from './views/jobs/mutation/JobMutation';
 import UserMutator from './views/user/mutation/UserMutator';
 import { useActions, useSelector } from './services/state/store';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Login from './views/login/Login';
 import Users from './views/user/Users';
 import Jobs from './views/jobs/Jobs';
@@ -42,6 +42,7 @@ for (const [path, mod] of Object.entries(semiLocaleModules)) {
 }
 
 export default function FredyApp() {
+  const location = useLocation();
   const actions = useActions();
   const [loading, setLoading] = React.useState(true);
   const currentUser = useSelector((state) => state.user.currentUser);
@@ -85,7 +86,7 @@ export default function FredyApp() {
         {needsLogin() ? (
           <Routes>
             <Route path="/login" element={<Login />} />
-            <Route path="*" element={<Navigate to="/login" replace />} />
+            <Route path="*" element={<Navigate state={{ from: location }} to="/login" replace />} />
           </Routes>
         ) : (
           <Layout className="app">
