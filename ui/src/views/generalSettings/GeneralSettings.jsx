@@ -22,6 +22,7 @@ import {
   Radio,
   RadioGroup,
   Typography,
+  Progress,
 } from '@douyinfe/semi-ui-19';
 import { InputNumber } from '@douyinfe/semi-ui-19';
 import { xhrPost, xhrGet } from '../../services/xhr';
@@ -32,7 +33,14 @@ import {
   precheckRestore as clientPrecheckRestore,
   restore as clientRestore,
 } from '../../services/backupRestoreClient';
-import { IconSave, IconRefresh, IconSignal, IconHome, IconFolder } from '@douyinfe/semi-icons';
+import {
+  fetchDebugStatus,
+  enableDebugLogging as apiEnableDebugLogging,
+  disableDebugLogging as apiDisableDebugLogging,
+  downloadDebugBundle,
+  clearDebugLogs as apiClearDebugLogs,
+} from '../../services/debugLoggingClient';
+import { IconSave, IconRefresh, IconSignal, IconHome, IconFolder, IconAlertTriangle } from '@douyinfe/semi-icons';
 import { debounce } from '../../utils';
 import Headline from '../../components/headline/Headline.jsx';
 import './GeneralSettings.less';
@@ -53,6 +61,32 @@ function formatFromTBackend(time) {
   date.setHours(split[0]);
   date.setMinutes(split[1]);
   return date.getTime();
+}
+
+/**
+ * Human-readable byte formatter used by the Debug tab's usage label.
+ * @param {number} bytes
+ * @returns {string}
+ */
+function formatBytes(bytes) {
+  if (!Number.isFinite(bytes)) return String(bytes);
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KiB`;
+  return `${(bytes / (1024 * 1024)).toFixed(2)} MiB`;
+}
+
+/**
+ * Compute the integer percentage that `used` represents of `total`, clamped to [0, 100].
+ * @param {number} used
+ * @param {number} total
+ * @returns {number}
+ */
+function percentOf(used, total) {
+  if (!total || total <= 0) return 0;
+  const pct = Math.round((used / total) * 100);
+  if (pct < 0) return 0;
+  if (pct > 100) return 100;
+  return pct;
 }
 
 const GeneralSettings = function GeneralSettings() {
@@ -78,6 +112,20 @@ const GeneralSettings = function GeneralSettings() {
   const [precheckInfo, setPrecheckInfo] = React.useState(null);
   const [restoreBusy, setRestoreBusy] = React.useState(false);
   const [selectedRestoreFile, setSelectedRestoreFile] = React.useState(null);
+
+  // Debug-logging tab state. status is fetched on mount + polled every 3s while the
+  // feature is active so the progress bar reflects the live byte budget.
+  // debugStatusSeq monotonically increases with every applied status update so we can
+  // discard stale polling responses that arrive after a manual enable/disable.
+  const [debugStatus, setDebugStatus] = React.useState(null);
+  const [debugBusy, setDebugBusy] = React.useState(false);
+  const [debugConfirmVisible, setDebugConfirmVisible] = React.useState(false);
+  const [debugClearConfirmVisible, setDebugClearConfirmVisible] = React.useState(false);
+  const debugStatusSeqRef = React.useRef(0);
+  const applyDebugStatus = React.useCallback((fresh) => {
+    debugStatusSeqRef.current += 1;
+    setDebugStatus(fresh);
+  }, []);
 
   // User settings state
   const homeAddress = useSelector((state) => state.userSettings.settings.home_address);
@@ -126,6 +174,45 @@ const GeneralSettings = function GeneralSettings() {
     setListingDeleteHard(listingDeletionPreference?.hardDelete ?? false);
     setListingDeleteSkipPrompt(listingDeletionPreference?.skipPrompt ?? false);
   }, [listingDeletionPreference]);
+
+  // Initial debug-status load. Subsequent updates flow through applyDebugStatus()
+  // (called by polling + after every enable/disable action), so this effect only
+  // needs to fire once on mount.
+  useEffect(() => {
+    let cancelled = false;
+    fetchDebugStatus()
+      .then((s) => {
+        if (!cancelled) applyDebugStatus(s);
+      })
+      .catch((e) => {
+        // Non-fatal: tab is still usable, polling will retry.
+        console.error('Failed to load debug status', e);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [applyDebugStatus]);
+
+  // Live polling while the feature is active so the progress bar reflects new entries
+  // as they are written. We intentionally do NOT poll while inactive — the size stays
+  // constant and there's no Banner to update. Stale poll responses (where a manual
+  // enable/disable bumped the sequence in the meantime) are discarded so the UI does
+  // not flicker back to the previous state for ~3s.
+  useEffect(() => {
+    if (!debugStatus?.enabled) return undefined;
+    const id = window.setInterval(async () => {
+      const seqAtStart = debugStatusSeqRef.current;
+      try {
+        const fresh = await fetchDebugStatus();
+        if (debugStatusSeqRef.current === seqAtStart) {
+          applyDebugStatus(fresh);
+        }
+      } catch {
+        // ignore transient errors; next tick will retry
+      }
+    }, 3000);
+    return () => window.clearInterval(id);
+  }, [debugStatus?.enabled, applyDebugStatus]);
 
   const nullOrEmpty = (val) => val == null || val.length === 0;
 
@@ -230,6 +317,89 @@ const GeneralSettings = function GeneralSettings() {
       fileInputRef.current.click();
     }
   }, []);
+
+  // ── Debug-logging actions ────────────────────────────────────────────────────
+  // performEnableDebug() centralizes the actual enable call so both branches of the
+  // confirm dialog ("delete" vs. "keep") plus the no-confirm fast-path can share it.
+  const performEnableDebug = React.useCallback(
+    async ({ clearPrevious }) => {
+      setDebugBusy(true);
+      try {
+        const fresh = await apiEnableDebugLogging({ clearPrevious });
+        applyDebugStatus(fresh);
+        // Keep the global generalSettings store in sync so the app-wide red banner
+        // (which reads settings.debug_logging_enabled) updates immediately.
+        await actions.generalSettings.getGeneralSettings();
+        Toast.success(t('settings.debugToastEnabled'));
+      } catch (e) {
+        console.error(e);
+        Toast.error(t('settings.debugToastEnableError'));
+      } finally {
+        setDebugBusy(false);
+        setDebugConfirmVisible(false);
+      }
+    },
+    [actions.generalSettings, applyDebugStatus, t],
+  );
+
+  const handleToggleDebugLogging = React.useCallback(async () => {
+    // Guard against the initial-load race: if status hasn't arrived yet, ignore the
+    // click. The button is also disabled when debugStatus == null, this is belt &
+    // braces for the case where the click somehow reached the handler anyway.
+    if (debugStatus == null) return;
+    if (debugStatus.enabled) {
+      setDebugBusy(true);
+      try {
+        const fresh = await apiDisableDebugLogging();
+        applyDebugStatus(fresh);
+        await actions.generalSettings.getGeneralSettings();
+        Toast.success(t('settings.debugToastDisabled'));
+      } catch (e) {
+        console.error(e);
+        Toast.error(t('settings.debugToastDisableError'));
+      } finally {
+        setDebugBusy(false);
+      }
+      return;
+    }
+    // Enabling: if logs from a previous session are still around, ask first.
+    if (debugStatus.hasLogs) {
+      setDebugConfirmVisible(true);
+      return;
+    }
+    await performEnableDebug({ clearPrevious: false });
+  }, [debugStatus, performEnableDebug, actions.generalSettings, applyDebugStatus, t]);
+
+  const handleDownloadDebugBundle = React.useCallback(async () => {
+    try {
+      await downloadDebugBundle();
+    } catch (e) {
+      console.error(e);
+      if (e?.code === 'NO_LOGS') {
+        Toast.error(t('settings.debugToastNoLogs'));
+      } else {
+        Toast.error(t('settings.debugToastDownloadError'));
+      }
+    }
+  }, [t]);
+
+  // Deleting stored logs is a separate action from disabling the feature: the user can
+  // free up the rolling buffer mid-recording without turning off collection. The
+  // confirmation dialog makes the destructive nature explicit.
+  const performClearDebugLogs = React.useCallback(async () => {
+    setDebugBusy(true);
+    try {
+      const fresh = await apiClearDebugLogs();
+      applyDebugStatus(fresh);
+      Toast.success(t('settings.debugToastCleared'));
+    } catch (e) {
+      console.error(e);
+      Toast.error(t('settings.debugToastClearError'));
+    } finally {
+      setDebugBusy(false);
+      setDebugClearConfirmVisible(false);
+    }
+  }, [applyDebugStatus, t]);
 
   const handleSaveUserSettings = async () => {
     try {
@@ -572,6 +742,98 @@ const GeneralSettings = function GeneralSettings() {
                 </SegmentPart>
               </div>
             </TabPane>
+
+            {currentUser?.isAdmin && (
+              <TabPane
+                tab={
+                  <span>
+                    <IconAlertTriangle
+                      size="small"
+                      style={{
+                        marginRight: 6,
+                        color: debugStatus?.enabled ? 'var(--semi-color-danger)' : undefined,
+                      }}
+                    />
+                    {t('settings.tabDebug')}
+                  </span>
+                }
+                itemKey="debug"
+              >
+                <div className="generalSettings__tab-content">
+                  <SegmentPart name={t('settings.debugSectionName')}>
+                    <Banner
+                      type="info"
+                      fullMode={false}
+                      closeIcon={null}
+                      style={{ marginBottom: 12 }}
+                      title={<div style={{ fontWeight: 600, fontSize: '14px' }}>{t('settings.debugInfoTitle')}</div>}
+                      description={t('settings.debugInfoDescription')}
+                    />
+
+                    {debugStatus?.enabled ? (
+                      <Banner
+                        type="danger"
+                        fullMode={false}
+                        closeIcon={null}
+                        style={{ marginBottom: 12 }}
+                        description={
+                          <div>
+                            <div style={{ fontWeight: 600 }}>{t('settings.debugStatusActive')}</div>
+                            <div style={{ marginTop: 8 }}>
+                              <Text type="secondary" style={{ marginRight: 8 }}>
+                                {t('settings.debugUsedLabel')}
+                              </Text>
+                              <Text>
+                                {t('settings.debugUsedValue', {
+                                  used: formatBytes(debugStatus.size),
+                                  max: formatBytes(debugStatus.max),
+                                  percent: percentOf(debugStatus.size, debugStatus.max),
+                                })}
+                              </Text>
+                              <Progress
+                                percent={percentOf(debugStatus.size, debugStatus.max)}
+                                stroke="var(--semi-color-danger)"
+                                aria-label="debug log storage"
+                                style={{ marginTop: 6 }}
+                              />
+                            </div>
+                          </div>
+                        }
+                      />
+                    ) : (
+                      <div style={{ marginBottom: 12 }}>
+                        <Text type="secondary">{t('settings.debugStatusInactive')}</Text>
+                      </div>
+                    )}
+
+                    <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                      <Button
+                        theme="solid"
+                        type={debugStatus?.enabled ? 'danger' : 'primary'}
+                        loading={debugBusy}
+                        disabled={debugStatus == null}
+                        onClick={handleToggleDebugLogging}
+                      >
+                        {debugStatus?.enabled ? t('settings.debugDisableButton') : t('settings.debugEnableButton')}
+                      </Button>
+                      <Button
+                        theme="light"
+                        icon={<IconSave />}
+                        disabled={debugStatus == null || !debugStatus?.everEnabled || !debugStatus?.hasLogs}
+                        onClick={handleDownloadDebugBundle}
+                      >
+                        {t('settings.debugDownloadButton')}
+                      </Button>
+                      {debugStatus?.hasLogs && (
+                        <Button theme="solid" type="warning" onClick={() => setDebugClearConfirmVisible(true)}>
+                          {t('settings.debugClearButton')}
+                        </Button>
+                      )}
+                    </div>
+                  </SegmentPart>
+                </div>
+              </TabPane>
+            )}
           </Tabs>
         </>
       )}
@@ -617,6 +879,65 @@ const GeneralSettings = function GeneralSettings() {
             {t('settings.restoreMigrationInfo', {
               backupMigration: precheckInfo?.backupMigration ?? 'unknown',
               requiredMigration: precheckInfo?.requiredMigration ?? 'unknown',
+            })}
+          </div>
+        </Modal>
+      )}
+
+      {debugConfirmVisible && (
+        <Modal
+          title={t('settings.debugConfirmReenableTitle')}
+          visible={debugConfirmVisible}
+          onCancel={() => {
+            // Defensive reset in case a network blip left debugBusy stuck while the
+            // user dismissed the dialog via the X / backdrop.
+            setDebugBusy(false);
+            setDebugConfirmVisible(false);
+          }}
+          footer={
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+              <Button onClick={() => performEnableDebug({ clearPrevious: false })} loading={debugBusy}>
+                {t('settings.debugConfirmKeep')}
+              </Button>
+              <Button
+                type="danger"
+                theme="solid"
+                onClick={() => performEnableDebug({ clearPrevious: true })}
+                loading={debugBusy}
+              >
+                {t('settings.debugConfirmDelete')}
+              </Button>
+            </div>
+          }
+        >
+          <div>{t('settings.debugConfirmReenableMessage')}</div>
+        </Modal>
+      )}
+
+      {debugClearConfirmVisible && (
+        <Modal
+          title={t('settings.debugClearConfirmTitle')}
+          visible={debugClearConfirmVisible}
+          onCancel={() => {
+            setDebugBusy(false);
+            setDebugClearConfirmVisible(false);
+          }}
+          footer={
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+              <Button onClick={() => setDebugClearConfirmVisible(false)} disabled={debugBusy}>
+                {t('settings.debugClearConfirmCancel')}
+              </Button>
+              <Button type="warning" theme="solid" onClick={performClearDebugLogs} loading={debugBusy}>
+                {t('settings.debugClearConfirmDelete')}
+              </Button>
+            </div>
+          }
+        >
+          <div>
+            {t('settings.debugClearConfirmMessage', {
+              recordingState: debugStatus?.enabled
+                ? t('settings.debugClearConfirmRecordingOn')
+                : t('settings.debugClearConfirmRecordingOff'),
             })}
           </div>
         </Modal>

@@ -10,6 +10,7 @@ import { runMigrations } from './lib/services/storage/migrations/migrate.js';
 import { ensureDemoUserExists, ensureAdminUserExists } from './lib/services/storage/userStorage.js';
 import { initTrackerCron } from './lib/services/crons/tracker-cron.js';
 import logger from './lib/services/logger.js';
+import { reloadEnabledFromSettings } from './lib/services/debug/debugLogStorage.js';
 import { initActiveCheckerCron } from './lib/services/crons/listing-alive-cron.js';
 import { initGeocodingCron } from './lib/services/crons/geocoding-cron.js';
 import { getSettings } from './lib/services/storage/settingsStorage.js';
@@ -41,6 +42,12 @@ if (!isConfigAccessible) {
 await runMigrations();
 
 const settings = await getSettings();
+
+// Restore the persisted on/off flag for opt-in DB log capture so it survives a
+// Fredy restart. reloadEnabledFromSettings() also (un)wires the logger sink based
+// on the restored flag, so the logger hot path stays cost-free when nobody enabled
+// the feature.
+await reloadEnabledFromSettings();
 
 // Ensure the sqlite directory exists before loading anything else (based on config.sqlitepath)
 const { dir: sqliteDir } = await computeDbPath();

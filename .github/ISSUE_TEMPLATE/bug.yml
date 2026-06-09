@@ -5,6 +5,40 @@ labels: [bug]
 assignees: []
 
 body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Please attach a debug bundle (available since Fredy 22.5.0+)
+
+        Since **Fredy 22.5.0** you can export a debug bundle that contains a system
+        snapshot (`sys.txt`, Fredy version, Node.js version, OS, Docker detection,
+        CPU, memory, sanitized settings) and the full log buffer (`logs.txt`) that
+        Fredy recorded while you reproduced the issue. Attaching it dramatically
+        speeds up triage.
+        Oh and before you ask: I decided against simply putting all logs into the debug
+        due to privacy reasons :)
+
+        **The bundle is only useful when the error is actually inside `logs.txt`.**
+        That means you have to record first, reproduce after:
+
+        1. Log in to Fredy as **admin** and open **Settings → Debug**.
+        2. Click **"Enable debug logging" / "Debug-Logging aktivieren"**. A red banner
+           appears across the whole app while recording is on.
+        3. **Now reproduce the bug.** Trigger the broken job, click the failing
+           button, wait for the failing scrape — whatever it was.
+        4. Come back to **Settings → Debug** and confirm the progress bar moved
+           (i.e. log entries were actually written). If it stayed at 0%, nothing was
+           captured and the bundle won't help us.
+        5. Click **"Download debug information" / "Debug Informationen herunterladen"**
+           and drop the resulting `FredyDebug-*.zip` into the "Screenshots / Logs"
+           field below.
+        6. Optional but recommended: click **"Disable debug logging"** to stop the
+           recording, and **"Delete stored debug logs"** once you have the zip so the
+           database does not keep them around.
+
+        On Fredy versions older than 22.5.0, paste the relevant log lines from your
+        console / Docker / systemd journal manually instead.
+
   - type: textarea
     id: description
     attributes:
@@ -49,8 +83,11 @@ body:
     id: screenshots
     attributes:
       label: Screenshots / Logs
-      description: Add screenshots or paste log output to help explain the problem.
-      placeholder: "Drag and drop screenshots here, or paste logs."
+      description: |
+        Drop the FredyDebug-*.zip here (see the instructions at the top, available
+        since Fredy 22.5.0) and/or any additional screenshots. If you cannot produce
+        the bundle, paste relevant log lines instead.
+      placeholder: "Drag and drop the FredyDebug-*.zip and any screenshots here."
     validations:
       required: false
 
@@ -58,8 +95,10 @@ body:
     id: environment
     attributes:
       label: Environment
-      description: Provide details about your environment.
-      placeholder: "OS: macOS 15, Browser: Chrome 124, App version: 1.2.3"
+      description: |
+        Provide details about your environment. You can copy most of this from
+        sys.txt inside the debug bundle.
+      placeholder: "OS: macOS 15, Browser: Chrome 124, App version: 22.5.0, Docker: yes"
     validations:
       required: true
 

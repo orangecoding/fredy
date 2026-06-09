@@ -30,6 +30,7 @@ import Dashboard from './views/dashboard/Dashboard.jsx';
 import ListingDetail from './views/listings/ListingDetail.jsx';
 import NewsModal from './components/news/NewsModal.jsx';
 import { I18nProvider, availableLanguages } from './services/i18n/i18n.jsx';
+import DebugLoggingBanner from './components/debug/DebugLoggingBanner.jsx';
 
 const semiLocaleModules = import.meta.glob('/node_modules/@douyinfe/semi-ui-19/lib/es/locale/source/*.js', {
   eager: true,
@@ -96,6 +97,7 @@ export default function FredyApp() {
             <Layout className="app__main">
               <Content className="app__content">
                 {versionUpdate?.newVersion && <VersionBanner />}
+                <DebugLoggingBanner />
                 {settings.demoMode && (
                   <>
                     <Banner
