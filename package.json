@@ -1,6 +1,6 @@
 {
   "name": "fredy",
-  "version": "22.5.0",
+  "version": "22.6.0",
   "description": "[F]ind [R]eal [E]states [d]amn eas[y].",
   "scripts": {
     "prepare": "husky",
@@ -62,9 +62,9 @@
     "Firefox ESR"
   ],
   "dependencies": {
-    "@douyinfe/semi-icons": "^2.99.3",
-    "@douyinfe/semi-ui": "2.99.3",
-    "@douyinfe/semi-ui-19": "^2.99.3",
+    "@douyinfe/semi-icons": "^2.100.0",
+    "@douyinfe/semi-ui": "2.100.0",
+    "@douyinfe/semi-ui-19": "^2.100.0",
     "@fastify/cookie": "^11.0.2",
     "@fastify/helmet": "^13.0.2",
     "@fastify/session": "^11.1.1",
@@ -95,10 +95,10 @@
     "react-chartjs-2": "^5.3.1",
     "react-dom": "19.2.7",
     "react-range-slider-input": "^3.3.5",
-    "react-router": "7.16.0",
-    "react-router-dom": "7.16.0",
+    "react-router": "7.17.0",
+    "react-router-dom": "7.17.0",
     "resend": "^6.12.4",
-    "semver": "^7.8.1",
+    "semver": "^7.8.3",
     "slack": "11.0.2",
     "vite": "8.0.16",
     "x-var": "^3.0.1",
@@ -120,7 +120,7 @@
     "less": "4.6.4",
     "lint-staged": "17.0.7",
     "nodemon": "^3.1.14",
-    "prettier": "3.8.3",
+    "prettier": "3.8.4",
     "vitest": "^4.1.8"
   }
 }

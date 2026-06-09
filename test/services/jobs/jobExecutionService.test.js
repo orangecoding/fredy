@@ -29,6 +29,7 @@ describe('services/jobs/jobExecutionService', () => {
     vi.doMock(jobStoragePath, () => ({
       getJob: (id) => state.jobsById[id] || null,
       getJobs: () => state.jobsList.slice(),
+      updateJobLastRunAt: (id, timestamp) => calls.lastRunUpdates.push({ id, timestamp }),
     }));
     vi.doMock(userStoragePath, () => ({
       getUsers: () => state.users.slice(),
@@ -65,7 +66,7 @@ describe('services/jobs/jobExecutionService', () => {
 
   beforeEach(() => {
     bus = new EventEmitter();
-    calls = { sent: [], markRunning: [] };
+    calls = { sent: [], markRunning: [], lastRunUpdates: [] };
     state = {
       jobsById: {},
       jobsList: [],
@@ -118,5 +119,24 @@ describe('services/jobs/jobExecutionService', () => {
     bus.emit('jobs:runAll', { userId: 'admin' });
     await new Promise((r) => setTimeout(r, 0));
     expect(new Set(calls.markRunning)).toEqual(new Set(['j1', 'j2']));
+  });
+
+  it('persists last_run_at when a job is executed', async () => {
+    state.jobsById['j1'] = { id: 'j1', enabled: true, userId: 'u1', provider: [] };
+    state.jobsList = [state.jobsById['j1']];
+    state.users = [{ id: 'u1', isAdmin: false }];
+
+    await initService();
+
+    const before = Date.now();
+    bus.emit('jobs:runOne', { jobId: 'j1' });
+    await new Promise((r) => setTimeout(r, 0));
+    const after = Date.now();
+
+    expect(calls.lastRunUpdates.length).toBe(1);
+    const [update] = calls.lastRunUpdates;
+    expect(update.id).toBe('j1');
+    expect(update.timestamp).toBeGreaterThanOrEqual(before);
+    expect(update.timestamp).toBeLessThanOrEqual(after);
   });
 });
