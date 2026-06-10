@@ -17,8 +17,12 @@ export const getGeocoordinatesByAddress = (any) => {
   return null;
 };
 
+let userSettings = null;
+export function setUserSettings(settings) {
+  userSettings = settings;
+}
 export function getUserSettings(userId) {
-  return null;
+  return userSettings;
 }
 
 export async function getSettings() {

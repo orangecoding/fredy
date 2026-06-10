@@ -130,6 +130,9 @@ const GeneralSettings = function GeneralSettings() {
   // User settings state
   const homeAddress = useSelector((state) => state.userSettings.settings.home_address);
   const providerDetails = useSelector((state) => state.userSettings.settings.provider_details);
+  const blacklistFilterOnProviderDetails = useSelector(
+    (state) => state.userSettings.settings.blacklist_filter_on_provider_details,
+  );
   const listingDeletionPreference = useSelector((state) => state.userSettings.settings.listing_deletion_preference);
   const allProviders = useSelector((state) => state.provider);
   const [address, setAddress] = useState(homeAddress?.address || '');
@@ -645,6 +648,25 @@ const GeneralSettings = function GeneralSettings() {
                       }
                     }}
                   />
+                </SegmentPart>
+
+                <SegmentPart
+                  name={t('settings.blacklistFilterOnProviderDetails')}
+                  helpText={t('settings.blacklistFilterOnProviderDetailsHelp')}
+                >
+                  <Checkbox
+                    checked={blacklistFilterOnProviderDetails === true}
+                    onChange={async (e) => {
+                      try {
+                        await actions.userSettings.setBlacklistFilterOnProviderDetails(e.target.checked);
+                        Toast.success(t('settings.blacklistFilterOnProviderDetailsUpdated'));
+                      } catch {
+                        Toast.error(t('settings.blacklistFilterOnProviderDetailsUpdateError'));
+                      }
+                    }}
+                  >
+                    {t('settings.blacklistFilterOnProviderDetailsEnable')}
+                  </Checkbox>
                 </SegmentPart>
 
                 <SegmentPart name={t('settings.listingDeletion')} helpText={t('settings.listingDeletionHelp')}>
