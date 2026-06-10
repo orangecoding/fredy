@@ -7,7 +7,10 @@ import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '',
+  // Must be absolute: with a relative base, asset URLs in index.html break on
+  // deep links like /listings/listing/:id (the SPA fallback serves index.html,
+  // but ./assets/* then resolves below the route path and loads HTML as JS).
+  base: '/',
   build: {
     chunkSizeWarningLimit: 9999999,
     outDir: './ui/public',
