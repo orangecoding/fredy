@@ -276,6 +276,14 @@ export const useFredyState = create(
               throw Exception;
             }
           },
+          async restoreListings(ids) {
+            try {
+              await xhrPost('/api/listings/restore', { ids });
+            } catch (Exception) {
+              console.error('Error while trying to restore listings. Error:', Exception);
+              throw Exception;
+            }
+          },
         },
         userSettings: {
           async getUserSettings() {

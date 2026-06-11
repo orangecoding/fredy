@@ -139,4 +139,23 @@
       border-radius: @radius-chip !important;
     }
   }
+
+  &__strike {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: -2px;
+      right: -2px;
+      top: 50%;
+      height: 2px;
+      background: currentColor;
+      transform: rotate(-45deg);
+      pointer-events: none;
+    }
+  }
 }

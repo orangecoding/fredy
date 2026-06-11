@@ -120,6 +120,57 @@ describe('listingsStorage.queryListings statusFilter', () => {
   });
 });
 
+describe('listingsStorage.queryListings hiddenOnly', () => {
+  let listingsStorage;
+
+  beforeEach(async () => {
+    calls.execute.length = 0;
+    calls.query.length = 0;
+    sqliteMock.__queryHandler = (sql) => {
+      if (/COUNT\(1\)/.test(sql)) return [{ cnt: 0 }];
+      return [];
+    };
+    listingsStorage = await import('../../lib/services/storage/listingsStorage.js');
+  });
+
+  it('filters by manually_deleted = 0 by default', () => {
+    listingsStorage.queryListings({ userId: 'u1', isAdmin: true });
+    const pageQuery = calls.query.find((c) => !/COUNT\(1\)/.test(c.sql));
+    expect(pageQuery.sql).toMatch(/\(l\.manually_deleted = 0\)/);
+  });
+
+  it('filters by manually_deleted = 1 when hiddenOnly is true', () => {
+    listingsStorage.queryListings({ userId: 'u1', isAdmin: true, hiddenOnly: true });
+    const pageQuery = calls.query.find((c) => !/COUNT\(1\)/.test(c.sql));
+    expect(pageQuery.sql).toMatch(/\(l\.manually_deleted = 1\)/);
+    expect(pageQuery.sql).not.toMatch(/\(l\.manually_deleted = 0\)/);
+  });
+});
+
+describe('listingsStorage.restoreListingsById', () => {
+  let listingsStorage;
+
+  beforeEach(async () => {
+    calls.execute.length = 0;
+    calls.query.length = 0;
+    sqliteMock.__queryHandler = null;
+    listingsStorage = await import('../../lib/services/storage/listingsStorage.js');
+  });
+
+  it('clears the manually_deleted flag for the given ids', () => {
+    listingsStorage.restoreListingsById(['a', 'b']);
+    expect(calls.execute).toHaveLength(1);
+    expect(calls.execute[0].sql).toMatch(/UPDATE listings\s+SET manually_deleted = 0\s+WHERE id IN \(\?,\?\)/);
+    expect(calls.execute[0].params).toEqual(['a', 'b']);
+  });
+
+  it('is a no-op when ids are missing or empty', () => {
+    listingsStorage.restoreListingsById([]);
+    listingsStorage.restoreListingsById(undefined);
+    expect(calls.execute).toHaveLength(0);
+  });
+});
+
 describe('listingsStorage.getListingById', () => {
   let listingsStorage;
 

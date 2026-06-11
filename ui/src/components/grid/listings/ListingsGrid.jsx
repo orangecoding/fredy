@@ -22,9 +22,9 @@ import './ListingsGrid.less';
 import { useTranslation, useLocale } from '../../../services/i18n/i18n.jsx';
 
 /**
- * @param {{ listings: object[], onWatch: Function, onNavigate: Function, onDelete: Function, onStatusChange: Function }} props
+ * @param {{ listings: object[], onWatch: Function, onNavigate: Function, onDelete: Function, onRestore?: Function, isHiddenView?: boolean, onStatusChange: Function }} props
  */
-const ListingsGrid = ({ listings, onWatch, onNavigate, onDelete, onStatusChange }) => {
+const ListingsGrid = ({ listings, onWatch, onNavigate, onDelete, onRestore, isHiddenView = false, onStatusChange }) => {
   const t = useTranslation();
   const locale = useLocale();
   return (
@@ -126,18 +126,38 @@ const ListingsGrid = ({ listings, onWatch, onNavigate, onDelete, onStatusChange 
                 }}
               />
             </Tooltip>
-            <Tooltip content={t('listings.tooltipRemove')}>
-              <Button
-                size="small"
-                icon={<IconDelete />}
-                style={{ color: '#fb7185' }}
-                theme="borderless"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onDelete(item.id);
-                }}
-              />
-            </Tooltip>
+            {isHiddenView ? (
+              <Tooltip content={t('listings.tooltipUndelete')}>
+                <Button
+                  size="small"
+                  icon={
+                    <span className="listingsGrid__strike" aria-hidden="true">
+                      <IconDelete />
+                    </span>
+                  }
+                  style={{ color: '#34d399' }}
+                  theme="borderless"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onRestore?.(item.id);
+                  }}
+                  aria-label={t('listings.tooltipUndelete')}
+                />
+              </Tooltip>
+            ) : (
+              <Tooltip content={t('listings.tooltipRemove')}>
+                <Button
+                  size="small"
+                  icon={<IconDelete />}
+                  style={{ color: '#fb7185' }}
+                  theme="borderless"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete(item.id);
+                  }}
+                />
+              </Tooltip>
+            )}
           </div>
         </div>
       ))}
