@@ -58,7 +58,7 @@ same listing twice.
 I maintain Fredy and other open-source projects in my free time, if you find it useful, consider supporting the project ❤️
 
 #### Support me on 
-[Ko-Fi](https://ko-fi.com/orangecoding) |  [Github](https://ko-fi.com/orangecoding)
+[Ko-Fi](https://ko-fi.com/orangecoding) |  [Github](https://github.com/sponsors/orangecoding)
 ----
 
 Fredy is proudly backed by the **JetBrains Open Source Support Program**.   
