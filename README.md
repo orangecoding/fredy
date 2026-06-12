@@ -55,8 +55,11 @@ same listing twice.
 
 ## 🤝 Sponsorship [![](https://img.shields.io/static/v1?label=Sponsor&message=❤&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/orangecoding)
 
-I maintain Fredy and other open-source projects in my free time.\
-If you find it useful, consider supporting the project 💙
+I maintain Fredy and other open-source projects in my free time, if you find it useful, consider supporting the project ❤️
+
+#### Support me on 
+[Ko-Fi](https://ko-fi.com/orangecoding) |  [Github](https://ko-fi.com/orangecoding)
+----
 
 Fredy is proudly backed by the **JetBrains Open Source Support Program**.   
 
