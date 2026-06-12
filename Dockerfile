@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /fredy
 
 ENV NODE_ENV=production \
+    FREDY_DB_ALLOW_DIR=/db \
     IS_DOCKER=true
 
 COPY package.json yarn.lock ./

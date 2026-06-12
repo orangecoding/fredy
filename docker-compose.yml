@@ -7,6 +7,9 @@ services:
     image: ghcr.io/orangecoding/fredy
     environment:
       - NODE_ENV=production
+      # Allow the SQLite adapter to write to the /db volume.
+      # Add more directories (comma-separated) if you store your DB elsewhere.
+      - FREDY_DB_ALLOW_DIR=/db
     volumes:
       - ./conf:/conf
       - ./db:/db
