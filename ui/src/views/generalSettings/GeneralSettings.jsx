@@ -255,11 +255,11 @@ const GeneralSettings = function GeneralSettings() {
       });
     } catch (exception) {
       console.error(exception);
-      if (exception?.json?.message != null) {
-        Toast.error(exception.json.message);
-      } else {
-        Toast.error(t('settings.toastSaveError'));
-      }
+      // The backend returns the concrete reason in `json.error` (e.g. a 403
+      // "Only admins can change these settings."). Fall back to `json.message`
+      // and finally the generic toast so the user always sees why it failed.
+      const serverReason = exception?.json?.error ?? exception?.json?.message;
+      Toast.error(serverReason ?? t('settings.toastSaveError'));
       return;
     }
     Toast.success(t('settings.toastSavedReloading'));
