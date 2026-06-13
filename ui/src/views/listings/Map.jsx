@@ -189,6 +189,10 @@ export default function MapView() {
   useEffect(() => {
     if (!map.current) return;
 
+    // Use duration: 0 so the map jumps straight to the target view instead of
+    // animating from the zoomed-out initial state. This effect re-runs whenever
+    // listings/filters change, and the fly/zoom animation was distracting on
+    // every refresh.
     if (homeAddress?.coords) {
       if (distanceFilter > 0) {
         const bounds = getBoundsFromCenter([homeAddress.coords.lng, homeAddress.coords.lat], distanceFilter);
@@ -196,13 +200,13 @@ export default function MapView() {
         map.current.fitBounds(bounds, {
           padding: 20,
           maxZoom: 15,
-          duration: 1000,
+          duration: 0,
         });
       } else {
         map.current.flyTo({
           center: [homeAddress.coords.lng, homeAddress.coords.lat],
           zoom: 12,
-          duration: 1000,
+          duration: 0,
         });
       }
     } else {
@@ -216,7 +220,7 @@ export default function MapView() {
         map.current.fitBounds(bounds, {
           padding: 50,
           maxZoom: 15,
-          duration: 1000,
+          duration: 0,
         });
       }
     }
