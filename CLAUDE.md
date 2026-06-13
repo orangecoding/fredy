@@ -46,7 +46,7 @@ index.js (startup)
   ├── runMigrations()
   ├── getProviders()            # lazily imports lib/provider/*.js
   ├── similarityCache.init()    # preloads hash cache from DB
-  ├── api.js                    # starts restana HTTP server
+  ├── api.js                    # starts fastify HTTP server
   └── initJobExecutionService() # registers event-bus listeners + starts scheduler
 
 scheduler (every N minutes) or manual trigger via POST /api/jobs/:id/run
