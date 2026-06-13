@@ -185,6 +185,7 @@ const JobGrid = () => {
       await xhrPut(`/api/jobs/${jobId}/status`, { status });
       Toast.success(t('jobs.toastStatusChanged'));
       loadData();
+      actions.jobsData.getJobs(); // refresh the jobs slice read by the edit form so its switch isn't stale
     } catch (error) {
       Toast.error(error.error);
     }
