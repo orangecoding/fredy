@@ -92,8 +92,15 @@ export default function Navigation({ isAdmin }) {
       items={items}
       isCollapsed={collapsed}
       selectedKeys={[parsePathName(location.pathname)]}
-      onSelect={(key) => {
-        navigate(key.itemKey);
+      onClick={({ itemKey }) => {
+        // Use onClick (fires on every click) instead of onSelect (skips the
+        // already-selected item) so clicking e.g. "Jobs" while on a nested
+        // route like /jobs/edit/:id still navigates back to the list. Only
+        // leaf routes navigate; parent items (keys without a leading '/') just
+        // toggle their submenu.
+        if (typeof itemKey === 'string' && itemKey.startsWith('/')) {
+          navigate(itemKey);
+        }
       }}
       header={
         <div className="navigate__header">
