@@ -15,6 +15,7 @@ import {
   IconEyeOpened,
 } from '@douyinfe/semi-icons';
 import no_image from '../../../assets/no_image.png';
+import { formatEuroPrice } from '../../../services/price/priceService.js';
 import * as timeService from '../../../services/time/timeService.js';
 import StatusControl from '../../listings/StatusControl.jsx';
 
@@ -79,7 +80,7 @@ const ListingsGrid = ({ listings, onWatch, onNavigate, onDelete, onRestore, isHi
             {item.price && (
               <div className="listingsGrid__card__price">
                 <IconCart size="small" />
-                {item.price}
+                {formatEuroPrice(item.price, item.currency ?? '€')}
               </div>
             )}
             {item.address && (

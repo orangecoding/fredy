@@ -131,8 +131,11 @@ export default function MapView() {
     }
   }, []);
 
+  const [mapReady, setMapReady] = useState(false);
+
   const handleMapReady = (mapInstance) => {
     map.current = mapInstance;
+    setMapReady(true);
   };
 
   const handleMapStyle = (value) => {
@@ -224,7 +227,7 @@ export default function MapView() {
         });
       }
     }
-  }, [homeAddress?.address, distanceFilter, listings]);
+  }, [homeAddress?.address, distanceFilter, listings, mapReady]);
 
   useEffect(() => {
     if (!map.current) return;
@@ -319,7 +322,7 @@ export default function MapView() {
             />
             <h4>${listing.title}</h4>
             <div class="info">
-              <span><strong>${t('map.popupPrice')}</strong> ${listing.price ? listing.price + ' €' : t('common.na')}</span>
+              <span><strong>${t('map.popupPrice')}</strong> ${listing.price ? listing.price + ' ' + (listing.currency ?? '€') : t('common.na')}</span>
               <span><strong>${t('map.popupAddress')}</strong> ${listing.address || t('common.na')}</span>
               <span><strong>${t('map.popupJob')}</strong> ${listing.job_name || t('common.na')}</span>
               <span><strong>${t('map.popupProvider')}</strong> ${capitalizedProvider}</span>

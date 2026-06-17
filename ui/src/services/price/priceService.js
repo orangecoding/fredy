@@ -10,13 +10,14 @@ const euroPriceFormatter = new Intl.NumberFormat('de-DE', {
 
 /**
  * @param {number|string} price
+ * @param {string} [currency='€']
  * @returns {string}
  */
-export const formatEuroPrice = (price) => {
+export const formatEuroPrice = (price, currency = '€') => {
   const parsedPrice = Number(price);
   if (!Number.isFinite(parsedPrice)) {
-    return `${price} €`;
+    return `${price} ${currency}`;
   }
 
-  return `${euroPriceFormatter.format(parsedPrice)} €`;
+  return `${euroPriceFormatter.format(parsedPrice)} ${currency}`;
 };

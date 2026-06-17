@@ -11,9 +11,9 @@ import { fixMapboxDrawCompatibility, addDrawingControl, setupAreaFilterEventList
 import { getBoundsFromCoords } from '../../views/listings/mapUtils.js';
 import './Map.less';
 
-export const GERMANY_BOUNDS = [
-  [5.866, 47.27], // Southwest coordinates
-  [15.042, 55.059], // Northeast coordinates
+export const DACH_BOUNDS = [
+  [5.866, 45.818], // Southwest (includes Switzerland and Austria)
+  [17.16, 55.059], // Northeast (includes Austria)
 ];
 
 export const STYLES = {
@@ -76,9 +76,9 @@ export default function Map({
     mapRef.current = new maplibregl.Map({
       container: mapContainerRef.current,
       style: STYLES[style],
-      center: [10.4515, 51.1657], // Center of Germany
+      center: [10.4515, 50.5], // Center of DACH region
       zoom: 4,
-      maxBounds: GERMANY_BOUNDS,
+      maxBounds: DACH_BOUNDS,
       antialias: true,
     });
 

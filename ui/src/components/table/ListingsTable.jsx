@@ -63,7 +63,11 @@ const ListingsTable = ({
           </div>
 
           <div className="listingsTable__row__price">
-            {item.price ? formatEuroPrice(item.price) : <span className="listingsTable__row__empty">---</span>}
+            {item.price ? (
+              formatEuroPrice(item.price, item.currency ?? '€')
+            ) : (
+              <span className="listingsTable__row__empty">---</span>
+            )}
           </div>
 
           <div className="listingsTable__row__address">
