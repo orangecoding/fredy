@@ -100,6 +100,8 @@ const GeneralSettings = function GeneralSettings() {
 
   const [interval, setInterval] = React.useState('');
   const [proxyUrl, setProxyUrl] = React.useState('');
+  const [deeplApiKey, setDeeplApiKey] = React.useState('');
+  const [deeplApiKeySet, setDeeplApiKeySet] = React.useState(false);
   const [port, setPort] = React.useState('');
   const [workingHourFrom, setWorkingHourFrom] = React.useState(null);
   const [workingHourTo, setWorkingHourTo] = React.useState(null);
@@ -163,6 +165,7 @@ const GeneralSettings = function GeneralSettings() {
       setDemoMode(settings?.demoMode || false);
       setSqlitePath(settings?.sqlitepath);
       setBaseUrl(settings?.baseUrl ?? '');
+      setDeeplApiKeySet(settings?.deepl_api_key_set ?? false);
     }
 
     init();
@@ -252,6 +255,7 @@ const GeneralSettings = function GeneralSettings() {
         analyticsEnabled,
         sqlitepath: sqlitePath,
         baseUrl,
+        ...(deeplApiKey.trim() ? { deepl_api_key: deeplApiKey.trim() } : {}),
       });
     } catch (exception) {
       console.error(exception);
@@ -566,6 +570,15 @@ const GeneralSettings = function GeneralSettings() {
                     placeholder={t('settings.proxyUrlPlaceholder')}
                     value={proxyUrl}
                     onChange={(value) => setProxyUrl(value)}
+                  />
+                </SegmentPart>
+
+                <SegmentPart name={t('settings.deeplApiKey')} helpText={t('settings.deeplApiKeyHelp')}>
+                  <Input
+                    type="password"
+                    placeholder={deeplApiKeySet ? t('settings.deeplApiKeyAlreadySet') : t('settings.deeplApiKeyPlaceholder')}
+                    value={deeplApiKey}
+                    onChange={(value) => setDeeplApiKey(value)}
                   />
                 </SegmentPart>
 

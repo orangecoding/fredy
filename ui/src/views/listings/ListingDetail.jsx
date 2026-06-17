@@ -74,6 +74,10 @@ export default function ListingDetail() {
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [notesDraft, setNotesDraft] = useState('');
   const [notesSaving, setNotesSaving] = useState(false);
+  const lang = (userSettings?.language ?? 'en').toLowerCase();
+  const [translatedText, setTranslatedText] = useState(null);
+  const [showTranslation, setShowTranslation] = useState(false);
+  const [translating, setTranslating] = useState(false);
 
   useEffect(() => {
     async function fetchListing() {
@@ -94,6 +98,38 @@ export default function ListingDetail() {
   useEffect(() => {
     setNotesDraft(listing?.notes ?? '');
   }, [listing?.id, listing?.notes]);
+
+  useEffect(() => {
+    if (!listing) return;
+    const translations = listing.translations ? JSON.parse(listing.translations) : {};
+    if (translations[lang]) {
+      setTranslatedText(translations[lang]);
+    } else {
+      setTranslatedText(null);
+      setShowTranslation(false);
+    }
+  }, [listing?.id, lang]);
+
+  const handleTranslate = async () => {
+    if (showTranslation) {
+      setShowTranslation(false);
+      return;
+    }
+    if (translatedText) {
+      setShowTranslation(true);
+      return;
+    }
+    setTranslating(true);
+    try {
+      const { json } = await xhrPost(`/api/listings/${listing.id}/translate`, { targetLanguage: lang });
+      setTranslatedText(json.text);
+      setShowTranslation(true);
+    } catch (e) {
+      Toast.error(t('listing.detail.translateError', e));
+    } finally {
+      setTranslating(false);
+    }
+  };
 
   const hasGeo =
     listing?.latitude != null && listing?.longitude != null && listing?.latitude !== -1 && listing?.longitude !== -1;
@@ -509,9 +545,20 @@ export default function ListingDetail() {
               <Divider margin="1.5rem" />
               <Title heading={4} style={{ marginBottom: '1rem' }}>
                 {t('listing.detail.descriptionTitle')}
+                {listing.description && (
+                  <Button
+                    size="small"
+                    theme="borderless"
+                    loading={translating}
+                    onClick={handleTranslate}
+                    style={{ marginLeft: 8, fontWeight: 'normal', fontSize: '13px' }}
+                  >
+                    {showTranslation ? t('listing.detail.showOriginal') : t('listing.detail.translate')}
+                  </Button>
+                )}
               </Title>
               <Text type="secondary" style={{ whiteSpace: 'pre-wrap' }}>
-                {listing.description || t('listing.detail.noDescription')}
+                {showTranslation && translatedText ? translatedText : (listing.description || t('listing.detail.noDescription'))}
               </Text>
 
               {listing.distance_to_destination && (
