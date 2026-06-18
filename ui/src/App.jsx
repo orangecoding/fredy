@@ -70,6 +70,15 @@ export default function FredyApp() {
     init();
   }, [currentUser?.userId]);
 
+  // When any request reports a 401 (expired session), drop the cached user. That flips
+  // needsLogin() to true, so the router shows the login screen (carrying the current
+  // location as `from` so the user is sent back here after re-authenticating).
+  useEffect(() => {
+    const onUnauthorized = () => actions.user.resetCurrentUser();
+    window.addEventListener('fredy:unauthorized', onUnauthorized);
+    return () => window.removeEventListener('fredy:unauthorized', onUnauthorized);
+  }, []);
+
   const needsLogin = () => {
     return currentUser == null || Object.keys(currentUser).length === 0;
   };
