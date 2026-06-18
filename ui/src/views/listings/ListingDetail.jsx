@@ -609,7 +609,13 @@ export default function ListingDetail() {
                       commuteTimes &&
                       COMMUTE_MODES.map(({ profile, label }) => {
                         const data = commuteTimes[profile];
-                        if (!data) return null;
+                        if (!data) {
+                          return (
+                            <Tag key={profile} color="grey">
+                              {label}: –
+                            </Tag>
+                          );
+                        }
                         const suffix =
                           profile === 'TRANSIT' && data.transfers != null
                             ? `, ${data.transfers} transfer${data.transfers !== 1 ? 's' : ''}`
