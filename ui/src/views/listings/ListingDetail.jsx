@@ -58,9 +58,10 @@ const STYLES = {
 };
 
 const COMMUTE_MODES = [
-  { profile: 'foot-walking', label: '🚶 Walking' },
-  { profile: 'cycling-regular', label: '🚲 Cycling' },
-  { profile: 'driving-car', label: '🚗 Driving' },
+  { profile: 'WALK', label: '🚶 Walking' },
+  { profile: 'BIKE', label: '🚲 Cycling' },
+  { profile: 'CAR', label: '🚗 Driving' },
+  { profile: 'TRANSIT', label: '🚆 Transit' },
 ];
 
 const formatDuration = (seconds) => {
@@ -608,11 +609,17 @@ export default function ListingDetail() {
                       commuteTimes &&
                       COMMUTE_MODES.map(({ profile, label }) => {
                         const data = commuteTimes[profile];
-                        return data ? (
+                        if (!data) return null;
+                        const suffix =
+                          profile === 'TRANSIT' && data.transfers != null
+                            ? `, ${data.transfers} transfer${data.transfers !== 1 ? 's' : ''}`
+                            : '';
+                        return (
                           <Tag key={profile} color="blue">
                             {label}: {formatDuration(data.duration)}
+                            {suffix}
                           </Tag>
-                        ) : null;
+                        );
                       })}
                   </Space>
                 </>
