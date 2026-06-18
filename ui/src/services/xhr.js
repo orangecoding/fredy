@@ -128,6 +128,12 @@ function parseJSON(response) {
             json,
           });
         } else {
+          // A 401 means the session expired (or was never valid). Broadcast it so the app can
+          // drop the cached user and redirect to login instead of leaving the UI stuck. Without
+          // this, a 401 just rejects and callers like the news popup get stuck open forever.
+          if (response.status === 401 && typeof window !== 'undefined') {
+            window.dispatchEvent(new CustomEvent('fredy:unauthorized'));
+          }
           reject({
             status: response.status,
             json,

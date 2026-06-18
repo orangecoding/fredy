@@ -155,6 +155,13 @@ export const useFredyState = create(
               console.error('Error while trying to get resource for api/login/user. Error:', Exception);
             }
           },
+          /**
+           * Drops the cached current user so the app falls back to the login screen. Triggered when a
+           * request returns 401 (expired session) so the UI recovers instead of staying stuck.
+           */
+          async resetCurrentUser() {
+            set((state) => ({ user: { ...state.user, currentUser: {} } }));
+          },
         },
         demoMode: {
           async getDemoMode() {
