@@ -102,6 +102,8 @@ const GeneralSettings = function GeneralSettings() {
   const [proxyUrl, setProxyUrl] = React.useState('');
   const [deeplApiKey, setDeeplApiKey] = React.useState('');
   const [deeplApiKeySet, setDeeplApiKeySet] = React.useState(false);
+  const [orsApiKey, setOrsApiKey] = React.useState('');
+  const [orsApiKeySet, setOrsApiKeySet] = React.useState(false);
   const [port, setPort] = React.useState('');
   const [workingHourFrom, setWorkingHourFrom] = React.useState(null);
   const [workingHourTo, setWorkingHourTo] = React.useState(null);
@@ -166,6 +168,7 @@ const GeneralSettings = function GeneralSettings() {
       setSqlitePath(settings?.sqlitepath);
       setBaseUrl(settings?.baseUrl ?? '');
       setDeeplApiKeySet(settings?.deepl_api_key_set ?? false);
+      setOrsApiKeySet(settings?.ors_api_key_set ?? false);
     }
 
     init();
@@ -256,6 +259,7 @@ const GeneralSettings = function GeneralSettings() {
         sqlitepath: sqlitePath,
         baseUrl,
         ...(deeplApiKey.trim() ? { deepl_api_key: deeplApiKey.trim() } : {}),
+        ...(orsApiKey.trim() ? { ors_api_key: orsApiKey.trim() } : {}),
       });
     } catch (exception) {
       console.error(exception);
@@ -576,9 +580,20 @@ const GeneralSettings = function GeneralSettings() {
                 <SegmentPart name={t('settings.deeplApiKey')} helpText={t('settings.deeplApiKeyHelp')}>
                   <Input
                     type="password"
-                    placeholder={deeplApiKeySet ? t('settings.deeplApiKeyAlreadySet') : t('settings.deeplApiKeyPlaceholder')}
+                    placeholder={
+                      deeplApiKeySet ? t('settings.deeplApiKeyAlreadySet') : t('settings.deeplApiKeyPlaceholder')
+                    }
                     value={deeplApiKey}
                     onChange={(value) => setDeeplApiKey(value)}
+                  />
+                </SegmentPart>
+
+                <SegmentPart name={t('settings.orsApiKey')} helpText={t('settings.orsApiKeyHelp')}>
+                  <Input
+                    type="password"
+                    placeholder={orsApiKeySet ? t('settings.orsApiKeyAlreadySet') : t('settings.orsApiKeyPlaceholder')}
+                    value={orsApiKey}
+                    onChange={(value) => setOrsApiKey(value)}
                   />
                 </SegmentPart>
 
