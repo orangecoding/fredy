@@ -43,10 +43,7 @@ describe('#deeplClient translate()', () => {
 
     await translate('Bonjour', 'EN', FREE_KEY);
 
-    expect(mockFetch).toHaveBeenCalledWith(
-      'https://api-free.deepl.com/v2/translate',
-      expect.any(Object),
-    );
+    expect(mockFetch).toHaveBeenCalledWith('https://api-free.deepl.com/v2/translate', expect.any(Object));
   });
 
   it('calls the pro URL for keys not ending with :fx', async () => {
@@ -54,10 +51,7 @@ describe('#deeplClient translate()', () => {
 
     await translate('Bonjour', 'EN', PRO_KEY);
 
-    expect(mockFetch).toHaveBeenCalledWith(
-      'https://api.deepl.com/v2/translate',
-      expect.any(Object),
-    );
+    expect(mockFetch).toHaveBeenCalledWith('https://api.deepl.com/v2/translate', expect.any(Object));
   });
 
   it('sends the correct Authorization header and body', async () => {

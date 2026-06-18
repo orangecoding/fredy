@@ -57,6 +57,17 @@ const STYLES = {
   STANDARD: 'https://tiles.openfreemap.org/styles/bright',
 };
 
+const COMMUTE_MODES = [
+  { profile: 'foot-walking', label: '🚶 Walking' },
+  { profile: 'cycling-regular', label: '🚲 Cycling' },
+  { profile: 'driving-car', label: '🚗 Driving' },
+];
+
+const formatDuration = (seconds) => {
+  const mins = Math.round(seconds / 60);
+  return mins < 60 ? `${mins} min` : `${Math.floor(mins / 60)}h ${mins % 60}min`;
+};
+
 export default function ListingDetail() {
   const t = useTranslation();
   const locale = useLocale();
@@ -75,6 +86,8 @@ export default function ListingDetail() {
   const [notesDraft, setNotesDraft] = useState('');
   const [notesSaving, setNotesSaving] = useState(false);
   const lang = (userSettings?.language ?? 'en').toLowerCase();
+  const [commuteTimes, setCommuteTimes] = useState(null);
+  const [commuteLoading, setCommuteLoading] = useState(false);
   const [translatedText, setTranslatedText] = useState(null);
   const [showTranslation, setShowTranslation] = useState(false);
   const [translating, setTranslating] = useState(false);
@@ -109,6 +122,16 @@ export default function ListingDetail() {
       setShowTranslation(false);
     }
   }, [listing?.id, lang]);
+
+  useEffect(() => {
+    if (!listing?.latitude || listing.latitude === -1) return;
+    if (!userSettings?.home_address?.coords) return;
+    setCommuteLoading(true);
+    xhrPost(`/api/listings/${listing.id}/commute`, {})
+      .then(({ json }) => setCommuteTimes(json))
+      .catch(() => setCommuteTimes({}))
+      .finally(() => setCommuteLoading(false));
+  }, [listing?.id]);
 
   const handleTranslate = async () => {
     if (showTranslation) {
@@ -558,7 +581,9 @@ export default function ListingDetail() {
                 )}
               </Title>
               <Text type="secondary" style={{ whiteSpace: 'pre-wrap' }}>
-                {showTranslation && translatedText ? translatedText : (listing.description || t('listing.detail.noDescription'))}
+                {showTranslation && translatedText
+                  ? translatedText
+                  : listing.description || t('listing.detail.noDescription')}
               </Text>
 
               {listing.distance_to_destination && (
@@ -568,6 +593,27 @@ export default function ListingDetail() {
                     <IconActivity style={{ fontSize: '18px', color: 'var(--semi-color-primary)' }} />
                     <Text strong>{t('listing.detail.distanceToHome')}</Text>
                     <Tag color="blue">{listing.distance_to_destination} m</Tag>
+                  </Space>
+                </>
+              )}
+
+              {userSettings?.home_address?.coords && listing.latitude && listing.latitude !== -1 && (
+                <>
+                  <Divider margin="1.5rem" />
+                  <Space align="center" wrap>
+                    <IconClock style={{ fontSize: '18px', color: 'var(--semi-color-primary)' }} />
+                    <Text strong>{t('listing.detail.commuteTimes')}</Text>
+                    {commuteLoading && <Spin size="small" />}
+                    {!commuteLoading &&
+                      commuteTimes &&
+                      COMMUTE_MODES.map(({ profile, label }) => {
+                        const data = commuteTimes[profile];
+                        return data ? (
+                          <Tag key={profile} color="blue">
+                            {label}: {formatDuration(data.duration)}
+                          </Tag>
+                        ) : null;
+                      })}
                   </Space>
                 </>
               )}
