@@ -296,7 +296,12 @@ export const useFredyState = create(
           async getUserSettings() {
             try {
               const response = await xhrGet('/api/user/settings');
-              set((state) => ({ userSettings: { ...state.userSettings, settings: response.json, loaded: true } }));
+              const settings = response.json;
+              // Fall back to localStorage so dismissal survives a session expiry
+              if (!settings.news_hash) {
+                settings.news_hash = localStorage.getItem('fredy_news_hash') ?? undefined;
+              }
+              set((state) => ({ userSettings: { ...state.userSettings, settings, loaded: true } }));
             } catch (Exception) {
               console.error('Error while trying to get resource for api/user/settings. Error:', Exception);
               // Mark as loaded even on error to prevent blocking the UI
@@ -304,17 +309,17 @@ export const useFredyState = create(
             }
           },
           async setNewsHash(newsHash) {
+            localStorage.setItem('fredy_news_hash', newsHash);
+            set((state) => ({
+              userSettings: {
+                ...state.userSettings,
+                settings: { ...state.userSettings.settings, news_hash: newsHash },
+              },
+            }));
             try {
               await xhrPost('/api/user/settings/news-hash', { news_hash: newsHash });
-              set((state) => ({
-                userSettings: {
-                  ...state.userSettings,
-                  settings: { ...state.userSettings.settings, news_hash: newsHash },
-                },
-              }));
             } catch (Exception) {
               console.error('Error while trying to update news hash. Error:', Exception);
-              throw Exception;
             }
           },
           async setHomeAddress(address) {
