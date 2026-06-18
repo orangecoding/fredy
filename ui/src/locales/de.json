@@ -200,6 +200,7 @@
   "listing.detail.translateError": "Übersetzung fehlgeschlagen. Bitte DeepL-API-Schlüssel prüfen.",
   "listing.detail.distanceToHome": "Entfernung zum Ziel:",
   "listing.detail.commuteTimes": "Pendelzeiten:",
+  "listing.detail.commuteTimesHint": "Zeiten sind Schätzungen von Transitous (OpenStreetMap-basiertes Routing). Gehzeiten mit ~ sind Luftlinien-Näherungswerte. Tatsächliche Zeiten können abweichen.",
   "listing.detail.locationTitle": "Lage",
   "listing.detail.noGeoWarning": "Dieses Inserat hat keine gültigen Geokoordinaten und kann daher nicht auf der Karte angezeigt werden.",
   "listing.detail.fieldPrice": "Preis",

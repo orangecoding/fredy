@@ -200,6 +200,7 @@
   "listing.detail.translateError": "Translation failed. Please check your DeepL API key.",
   "listing.detail.distanceToHome": "Distance to destination:",
   "listing.detail.commuteTimes": "Commute times:",
+  "listing.detail.commuteTimesHint": "Times are estimates from Transitous (openstreetmap-based routing). Walking times marked with ~ are straight-line approximations. Actual times may vary.",
   "listing.detail.locationTitle": "Location",
   "listing.detail.noGeoWarning": "This listing has no valid geocoordinates, so we cannot show it on the map.",
   "listing.detail.fieldPrice": "Price",

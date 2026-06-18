@@ -639,6 +639,11 @@ export default function ListingDetail() {
                   <Space align="center" wrap>
                     <IconClock style={{ fontSize: '18px', color: 'var(--semi-color-primary)' }} />
                     <Text strong>{t('listing.detail.commuteTimes')}</Text>
+                    <Tooltip content={t('listing.detail.commuteTimesHint')}>
+                      <Text type="tertiary" size="small" style={{ cursor: 'help' }}>
+                        (approx.)
+                      </Text>
+                    </Tooltip>
                     {commuteLoading && <Spin size="small" />}
                     {!commuteLoading &&
                       commuteTimes &&
