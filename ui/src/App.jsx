@@ -162,6 +162,10 @@ export default function FredyApp() {
                   <Route path="/generalSettings" element={<GeneralSettings />} />
 
                   <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                  {/* Catch-all: an authenticated user landing on an unknown path (e.g. still on
+                      /login during the post-login transition) is sent to the dashboard instead
+                      of matching no route. */}
+                  <Route path="*" element={<Navigate to="/dashboard" replace />} />
                 </Routes>
               </Content>
               <FredyFooter />
