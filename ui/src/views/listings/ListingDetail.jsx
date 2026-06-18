@@ -58,15 +58,42 @@ const STYLES = {
 };
 
 const COMMUTE_MODES = [
-  { profile: 'foot-walking', label: '🚶 Walking' },
-  { profile: 'cycling-regular', label: '🚲 Cycling' },
-  { profile: 'driving-car', label: '🚗 Driving' },
+  { profile: 'WALK', label: '🚶 Walking' },
+  { profile: 'BIKE', label: '🚲 Cycling' },
+  { profile: 'CAR', label: '🚗 Driving' },
+  { profile: 'TRANSIT', label: '🚆 Transit' },
 ];
 
 const formatDuration = (seconds) => {
   const mins = Math.round(seconds / 60);
   return mins < 60 ? `${mins} min` : `${Math.floor(mins / 60)}h ${mins % 60}min`;
 };
+
+const COMMUTE_CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
+
+function commuteStorageKey(listingId, destLat, destLng) {
+  return `fredy_commute_${listingId}_${destLat}_${destLng}`;
+}
+
+function loadCachedCommute(listingId, destLat, destLng) {
+  try {
+    const raw = localStorage.getItem(commuteStorageKey(listingId, destLat, destLng));
+    if (!raw) return null;
+    const { data, ts } = JSON.parse(raw);
+    if (Date.now() - ts > COMMUTE_CACHE_TTL_MS) return null;
+    return data;
+  } catch {
+    return null;
+  }
+}
+
+function saveCachedCommute(listingId, destLat, destLng, data) {
+  try {
+    localStorage.setItem(commuteStorageKey(listingId, destLat, destLng), JSON.stringify({ data, ts: Date.now() }));
+  } catch {
+    // localStorage full or unavailable — silently skip
+  }
+}
 
 export default function ListingDetail() {
   const t = useTranslation();
@@ -125,10 +152,19 @@ export default function ListingDetail() {
 
   useEffect(() => {
     if (!listing?.latitude || listing.latitude === -1) return;
-    if (!userSettings?.home_address?.coords) return;
+    const dest = userSettings?.home_address?.coords;
+    if (!dest) return;
+    const cached = loadCachedCommute(listing.id, dest.lat, dest.lng);
+    if (cached) {
+      setCommuteTimes(cached);
+      return;
+    }
     setCommuteLoading(true);
     xhrPost(`/api/listings/${listing.id}/commute`, {})
-      .then(({ json }) => setCommuteTimes(json))
+      .then(({ json }) => {
+        setCommuteTimes(json);
+        saveCachedCommute(listing.id, dest.lat, dest.lng, json);
+      })
       .catch(() => setCommuteTimes({}))
       .finally(() => setCommuteLoading(false));
   }, [listing?.id]);
@@ -603,16 +639,35 @@ export default function ListingDetail() {
                   <Space align="center" wrap>
                     <IconClock style={{ fontSize: '18px', color: 'var(--semi-color-primary)' }} />
                     <Text strong>{t('listing.detail.commuteTimes')}</Text>
+                    <Tooltip content={t('listing.detail.commuteTimesHint')}>
+                      <Text type="tertiary" size="small" style={{ cursor: 'help' }}>
+                        (approx.)
+                      </Text>
+                    </Tooltip>
                     {commuteLoading && <Spin size="small" />}
                     {!commuteLoading &&
                       commuteTimes &&
                       COMMUTE_MODES.map(({ profile, label }) => {
                         const data = commuteTimes[profile];
-                        return data ? (
+                        if (!data) {
+                          return (
+                            <Tag key={profile} color="grey">
+                              {label}: –
+                            </Tag>
+                          );
+                        }
+                        const prefix = data.estimated ? '~' : '';
+                        const suffix =
+                          profile === 'TRANSIT' && data.transfers != null
+                            ? `, ${data.transfers} transfer${data.transfers !== 1 ? 's' : ''}`
+                            : '';
+                        return (
                           <Tag key={profile} color="blue">
-                            {label}: {formatDuration(data.duration)}
+                            {label}: {prefix}
+                            {formatDuration(data.duration)}
+                            {suffix}
                           </Tag>
-                        ) : null;
+                        );
                       })}
                   </Space>
                 </>
