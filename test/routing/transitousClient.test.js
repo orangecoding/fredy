@@ -175,6 +175,21 @@ describe('#transitousClient getAllRoutes()', () => {
     expect(result[MODES.TRANSIT]).not.toBeNull();
   });
 
+  it('falls back to haversine estimate when WALK API returns no route', async () => {
+    mockFetch
+      .mockResolvedValueOnce(makeResponse({ direct: [], itineraries: [] })) // WALK → no route
+      .mockResolvedValueOnce(makeResponse(directBody('BIKE', 360, 1350)))
+      .mockResolvedValueOnce(makeResponse(directBody('CAR', 665, 1720)))
+      .mockResolvedValueOnce(makeResponse(transitBody(900, 0)));
+
+    const result = await getAllRoutes(47.376, 8.541, 47.369, 8.539);
+
+    expect(result[MODES.WALKING]).not.toBeNull();
+    expect(result[MODES.WALKING].estimated).toBe(true);
+    expect(result[MODES.WALKING].duration).toBeGreaterThan(0);
+    expect(result[MODES.WALKING].distance).toBeGreaterThan(0);
+  });
+
   it('returns null for transit when no connection exists', async () => {
     mockFetch
       .mockResolvedValueOnce(makeResponse(directBody('WALK', 600, 450)))
