@@ -1,0 +1,72 @@
+{
+  "listings": [
+    {
+      "id": "4003206723",
+      "listing": {
+        "address": {
+          "geoCoordinates": { "accuracy": "LOW", "longitude": 6.585132, "latitude": 46.536659 },
+          "locality": "Lausanne",
+          "postalCode": "1020",
+          "street": "Avenue des Figuiers 27"
+        },
+        "categories": ["APARTMENT", "FLAT"],
+        "characteristics": { "livingSpace": 78, "numberOfRooms": 3.5 },
+        "id": "4003206723",
+        "localization": {
+          "fr": {
+            "text": {
+              "title": "Appartement spacieux au centre-ville",
+              "description": "Bel appartement lumineux avec vue sur le lac."
+            },
+            "attachments": [
+              {
+                "type": "IMAGE",
+                "url": "https://cdn.immoscout24.ch/listings/v2/anibisfill/4003206723/image/9fb80da04a392e61c7fe9f7063c3220f.jpg",
+                "file": "image1.jpg"
+              }
+            ],
+            "isMachineTranslated": false
+          }
+        },
+        "meta": { "createdAt": "2026-06-02T10:09:07.917Z" },
+        "offerType": "RENT",
+        "platforms": ["homegate", "immoscout24"],
+        "prices": { "currency": "CHF", "rent": { "gross": 1850, "interval": "MONTH" } }
+      }
+    },
+    {
+      "id": "4003186650",
+      "listing": {
+        "address": {
+          "geoCoordinates": { "accuracy": "LOW", "latitude": 46.520995, "longitude": 6.631682 },
+          "locality": "Lausanne",
+          "postalCode": "1003",
+          "street": "Rue de Lausanne"
+        },
+        "categories": ["APARTMENT", "FLAT"],
+        "characteristics": { "livingSpace": 55, "numberOfRooms": 2.5 },
+        "id": "4003186650",
+        "localization": {
+          "fr": {
+            "text": {
+              "title": "Studio moderne près de la gare",
+              "description": "Studio bien aménagé avec toutes commodités."
+            },
+            "attachments": [
+              {
+                "type": "IMAGE",
+                "url": "https://cdn.immoscout24.ch/listings/v2/anibisfill/4003186650/image/b8e5c44b6e9b50baa95990e3bfe03b08.jpg",
+                "file": "image1.jpg"
+              }
+            ],
+            "isMachineTranslated": false
+          }
+        },
+        "meta": { "createdAt": "2026-06-01T08:00:00.000Z" },
+        "offerType": "RENT",
+        "platforms": ["homegate", "immoscout24"],
+        "prices": { "currency": "CHF", "rent": { "gross": 1350, "interval": "MONTH" } }
+      }
+    }
+  ]
+}

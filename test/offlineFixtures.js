@@ -89,6 +89,8 @@ export function buildFetchMock() {
   let listData = null;
   let detailData = null;
   let homegateApiData = null;
+  let immoscout24chSearchData = null;
+  let immoscout24chListingsData = null;
 
   return async (url) => {
     const urlStr = String(url);
@@ -118,6 +120,22 @@ export function buildFetchMock() {
         homegateApiData = raw ? JSON.parse(raw) : { results: [], total: 0 };
       }
       return { ok: true, status: 200, json: () => Promise.resolve(homegateApiData) };
+    }
+
+    if (urlStr.includes('api.immoscout24.ch/search/listings')) {
+      if (!immoscout24chSearchData) {
+        const raw = await tryReadFile(path.join(FIXTURES_DIR, 'immoscout24ch_search.json'));
+        immoscout24chSearchData = raw ? JSON.parse(raw) : { results: [], total: 0 };
+      }
+      return { ok: true, status: 200, json: () => Promise.resolve(immoscout24chSearchData) };
+    }
+
+    if (urlStr.includes('api.immoscout24.ch/listings/listings')) {
+      if (!immoscout24chListingsData) {
+        const raw = await tryReadFile(path.join(FIXTURES_DIR, 'immoscout24ch_listings.json'));
+        immoscout24chListingsData = raw ? JSON.parse(raw) : { listings: [] };
+      }
+      return { ok: true, status: 200, json: () => Promise.resolve(immoscout24chListingsData) };
     }
 
     // Nominatim geocoding — return a stub for Lausanne so Homegate API tests work offline.
