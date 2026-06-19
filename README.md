@@ -23,6 +23,9 @@
 
 
 
+> **This is a personal fork of [orangecoding/fredy](https://github.com/orangecoding/fredy) maintained by [@domisko](https://github.com/domisko).**
+> It adds features on top of the upstream project — see [Custom Features](#-custom-features) below.
+
 # Fredy 🏡 - Your Self-Hosted Real Estate Finder for Germany
 
 Finding an apartment or house in Germany can be stressful and
@@ -38,12 +41,22 @@ same listing twice.
 
 ------------------------------------------------------------------------
 
+## 🔧 Custom Features
+
+Features added in this fork on top of the upstream Fredy:
+
+- **Homegate (CH) provider** — scrapes Swiss listings from [homegate.ch](https://www.homegate.ch), with full virtual-list scroll support so all listings on the page are captured
+- **Commute times via [Transitous](https://transitous.org/)** — walking, cycling, driving and public transit times from each listing to your destination; no API key required; results cached in the browser for 24 h
+- **Bug fix: news modal dismiss** — the "what's new" modal no longer reappears on every page reload
+
+------------------------------------------------------------------------
+
 ## ✨ Key Features
 
 -   🏠 Scrapes **ImmoScout24, Immowelt, Immonet, eBay Kleinanzeigen,
-    WG-Gesucht**
+    WG-Gesucht, Homegate (CH)**
 -   ⚡ Instant notifications: Slack, Telegram, Email (SendGrid,
-    Mailjet), ntfy, discord 
+    Mailjet), ntfy, discord
 -   🔎 Uses the **ImmoScout Mobile API** (reverse engineered)
 -   🌍 Runs anywhere: Docker, Node.js, self-hosted
 -   🖥️ Intuitive **Web UI** to manage searches
@@ -78,24 +91,36 @@ You can try out Fredy here: [Fredy Demo](https://fredy-demo.orange-coding.net/)
 
 ## 🚀 Quick Start
 
-### With Docker
+### With Docker (this fork)
 
 > [!NOTE]
-> In order to start Fredy, you must provide a config.json. As a start, use the one in this repo: https://github.com/orangecoding/fredy/blob/master/conf/config.json
+> This fork is not published to a container registry. Build the image locally from the repo.
 
 ``` bash
-docker run -d --name fredy \
-  -v fredy_conf:/conf \
-  -v fredy_db:/db \
-  -p 9998:9998 \
-  ghcr.io/orangecoding/fredy:master
+# Clone and build
+git clone https://github.com/domisko/fredy.git
+cd fredy
+docker compose up -d --build
 ```
 
 Logs:
 
 ``` bash
-docker logs fredy -f
+docker compose logs -f
 ```
+
+To update after pulling new changes:
+
+``` bash
+git pull
+docker compose up -d --build
+```
+
+> **Syncing with upstream:** to pull in fixes from the original Fredy project, add it as a remote once:
+> ```bash
+> git remote add upstream https://github.com/orangecoding/fredy.git
+> ```
+> Then periodically: `git fetch upstream && git merge upstream/master`
 
 ### Manual (Node.js)
 
