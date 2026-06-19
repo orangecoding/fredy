@@ -126,6 +126,12 @@ export function buildFetchMock() {
       return { ok: true, status: 200, json: () => Promise.resolve(stubResult) };
     }
 
+    // Homegate search page HTML — used by the __INITIAL_STATE__ extraction approach.
+    if (urlStr.includes('homegate.ch')) {
+      const html = await tryReadFile(path.join(FIXTURES_DIR, 'homegate.html'));
+      return { ok: true, status: 200, text: () => Promise.resolve(html ?? '') };
+    }
+
     throw new Error(`Network request blocked in offline mode: ${urlStr}`);
   };
 }
