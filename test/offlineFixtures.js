@@ -81,13 +81,14 @@ export async function readFixture(url) {
 }
 
 /**
- * Returns a fetch replacement that intercepts immoscout mobile API calls and
- * serves pre-downloaded JSON fixtures. Throws for any other URL to prevent
+ * Returns a fetch replacement that intercepts mobile API calls and serves
+ * pre-downloaded JSON fixtures. Throws for any other URL to prevent
  * accidental live network traffic in offline mode.
  */
 export function buildFetchMock() {
   let listData = null;
   let detailData = null;
+  let homegateApiData = null;
 
   return async (url) => {
     const urlStr = String(url);
@@ -109,6 +110,20 @@ export function buildFetchMock() {
         detailData = raw ? JSON.parse(raw) : { sections: [], contact: {} };
       }
       return { ok: true, status: 200, json: () => Promise.resolve(detailData) };
+    }
+
+    if (urlStr.includes('api.homegate.ch/search/listings')) {
+      if (!homegateApiData) {
+        const raw = await tryReadFile(path.join(FIXTURES_DIR, 'homegate_api.json'));
+        homegateApiData = raw ? JSON.parse(raw) : { results: [], total: 0 };
+      }
+      return { ok: true, status: 200, json: () => Promise.resolve(homegateApiData) };
+    }
+
+    // Nominatim geocoding — return a stub for Lausanne so Homegate API tests work offline.
+    if (urlStr.includes('nominatim.openstreetmap.org')) {
+      const stubResult = [{ lat: '46.5196535', lon: '6.6322734', display_name: 'Lausanne, Switzerland' }];
+      return { ok: true, status: 200, json: () => Promise.resolve(stubResult) };
     }
 
     throw new Error(`Network request blocked in offline mode: ${urlStr}`);

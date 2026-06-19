@@ -1,0 +1,76 @@
+{
+  "from": 0,
+  "size": 20,
+  "total": 2,
+  "maxFrom": 980,
+  "results": [
+    {
+      "id": "4003179219",
+      "listing": {
+        "id": "4003179219",
+        "address": {
+          "street": "Rue de la Paix 10",
+          "city": "Lausanne",
+          "zipCode": "1003"
+        },
+        "characteristics": {
+          "numberOfRooms": 3.5,
+          "livingSpace": 78
+        },
+        "localization": {
+          "fr": {
+            "text": {
+              "title": "Appartement spacieux au centre-ville",
+              "description": "Bel appartement lumineux avec vue sur le lac."
+            },
+            "attachments": [
+              {
+                "type": "IMAGE",
+                "url": "https://media2.homegate.ch/listings/v2/hg/media/4003179219/image/abc.jpg"
+              }
+            ]
+          }
+        },
+        "prices": {
+          "rent": {
+            "gross": 1850
+          }
+        }
+      }
+    },
+    {
+      "id": "4003299999",
+      "listing": {
+        "id": "4003299999",
+        "address": {
+          "street": "Avenue de la Gare 5",
+          "city": "Lausanne",
+          "zipCode": "1003"
+        },
+        "characteristics": {
+          "numberOfRooms": 2.5,
+          "livingSpace": 55
+        },
+        "localization": {
+          "fr": {
+            "text": {
+              "title": "Studio moderne près de la gare",
+              "description": "Studio bien aménagé avec toutes commodités."
+            },
+            "attachments": [
+              {
+                "type": "IMAGE",
+                "url": "https://media2.homegate.ch/listings/v2/hg/media/4003299999/image/def.jpg"
+              }
+            ]
+          }
+        },
+        "prices": {
+          "rent": {
+            "gross": 1350
+          }
+        }
+      }
+    }
+  ]
+}
