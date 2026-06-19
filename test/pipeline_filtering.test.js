@@ -9,11 +9,11 @@ import * as mockStore from './mocks/mockStore.js';
 import { get as getLastNotification } from './mocks/mockNotification.js';
 
 describe('Issue reproduction: listings filtered by similarity or area should be marked as manually deleted', () => {
-  it('should call deleteListingsById when listings are filtered by similarity', async () => {
+  it('should soft-delete listings filtered by similarity (hidden from overview, kept for _findNew dedup)', async () => {
     const Fredy = await mockFredy();
 
     const mockSimilarityCache = {
-      checkAndAddEntry: () => true, // always similar
+      checkAndAddEntry: () => ({ duplicate: true }), // always similar
     };
 
     const providerConfig = {
@@ -44,6 +44,8 @@ describe('Issue reproduction: listings filtered by similarity or area should be 
       // Might throw NoNewListingsWarning if all are filtered out
     }
 
+    // Similarity-filtered listings are soft-deleted: hidden from overview but hashes
+    // remain in DB so _findNew skips them on the next run without re-processing.
     expect(mockStore.deletedIds).toContain('1');
   });
 
@@ -51,7 +53,7 @@ describe('Issue reproduction: listings filtered by similarity or area should be 
     const Fredy = await mockFredy();
 
     const mockSimilarityCache = {
-      checkAndAddEntry: () => false, // never similar
+      checkAndAddEntry: () => ({ duplicate: false }), // never similar
     };
 
     const spatialFilter = {
