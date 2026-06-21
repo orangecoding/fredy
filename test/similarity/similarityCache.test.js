@@ -61,4 +61,35 @@ describe('similarityCache', () => {
     const dupZero = checkAndAddEntry({ title: 'Z', price: 0, address: 'Zero' });
     expect(dupZero).toBe(true);
   });
+
+  it('removeEntry evicts a known entry so it is no longer detected as a duplicate', async () => {
+    const { checkAndAddEntry, removeEntry } = await loadModuleWith();
+
+    // Seed the cache with an entry
+    expect(checkAndAddEntry({ title: 'A', price: 1000, address: 'Main 1' })).toBe(false);
+    expect(checkAndAddEntry({ title: 'A', price: 1000, address: 'Main 1' })).toBe(true);
+
+    // Evict it
+    expect(removeEntry({ title: 'A', price: 1000, address: 'Main 1' })).toBe(true);
+
+    // After eviction it must be treated as new again (this is the hard-delete fix)
+    expect(checkAndAddEntry({ title: 'A', price: 1000, address: 'Main 1' })).toBe(false);
+  });
+
+  it('removeEntry returns false when the entry is not present', async () => {
+    const { removeEntry } = await loadModuleWith();
+
+    expect(removeEntry({ title: 'Nope', price: 1, address: 'Nowhere' })).toBe(false);
+  });
+
+  it('removeEntry uses the same hashing rules (null/undefined ignored, 0 preserved)', async () => {
+    const { checkAndAddEntry, removeEntry } = await loadModuleWith();
+
+    // Seed with a null address and price 0
+    expect(checkAndAddEntry({ title: 'Z', price: 0, address: null })).toBe(false);
+
+    // Removing with undefined address (same hash) should evict it
+    expect(removeEntry({ title: 'Z', price: 0, address: undefined })).toBe(true);
+    expect(checkAndAddEntry({ title: 'Z', price: 0, address: null })).toBe(false);
+  });
 });
