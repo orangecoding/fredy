@@ -1,0 +1,942 @@
+
+            <nav aria-label="Schnellnavigation">
+    <ul class="list-none font-semibold p-0 bg-white text-neutral-900">
+        <li class="sr-only focus-within:not-sr-only w-full text-center">
+            <!-- skips to short links on click -> see skip-nav.js -->
+            <button class="p-3 inline-block" id="skip-nav-skipToShortLinks">Navigation</button>
+        </li>
+                        <li class="sr-only focus-within:not-sr-only w-full text-center">
+            <a class="p-3 inline-block" href="/login">Login</a>
+        </li>
+                <li class="sr-only focus-within:not-sr-only w-full text-center">
+            <!-- skips to h1 on click -> see skip-nav.js -->
+            <button class="p-3 inline-block" id="skip-nav-skipTo-h1">Inhaltsbereich</button>
+        </li>
+        <li class="sr-only focus-within:not-sr-only w-full text-center">
+            <!-- skips to footer on click -> see skip-nav.js -->
+            <button class="p-3 inline-block" id="skip-nav-skipTo-footer">Fußzeile</button>
+        </li>
+    </ul>
+</nav>
+
+      <noscript>
+            <p>
+                  <img src="https://matomo.wfb-bremen.de/matomo.php?idsite=20&amp;rec=1"
+                        style="border:0;"
+                        alt="" />
+            </p>
+      </noscript>
+      <div class="fixed inset-0 -z-10 ios-no-heavy-bg">
+            <div class="bg-circle-red"></div>
+            <div class="bg-circle-orange"></div>
+            <div class="bg-circle-purple"></div>
+      </div>
+
+      <header class="w-full py-8 mb-8">
+  <div class="container flex justify-between items-center">
+    <a href="/" class="group">
+      <img src="https://schwarzesbrett.bremen.de/images/logo.svg" alt="Logo Schwarzes Brett Bremen" class="dark:hidden w-54 group-focus-visible:outline-2 group-focus-visible:outline-offset-2 group-focus-visible:outline-blue-600">
+      <img src="https://schwarzesbrett.bremen.de/images/logo_dark.svg" alt="Logo Schwarzes Brett Bremen" class="hidden dark:block w-54 group-focus-visible:outline-2 group-focus-visible:outline-offset-2 group-focus-visible:outline-blue-600">
+    </a>
+    <!-- shows menu on click -> see header-nav.js -->
+<button id="openmenu" class="lg:hidden shadow-[inset_1px_1px_4px_0px_rgba(255,255,255,0.60)] hover:shadow-none bg-accent text-white h-14 w-14 rounded-2xl" aria-controls="short-links">
+    <span class="bg-white block h-[3px] rounded mx-2"></span>
+    <span class="bg-white block h-[3px] rounded ml-4 mr-2 my-2"></span>
+    <span class="bg-white block h-[3px] rounded ml-3 mr-2"></span>
+</button>
+
+<nav id="short-links" data-hide-class="hidden" data-translate-class="translate-x-full" class="hidden md:block fixed z-[2500000] lg:static top-0 right-0 bottom-0 bg-white dark:bg-neutral-700 dark:lg:bg-transparent lg:bg-transparent p-8 lg:p-0 shadow-2xl lg:shadow-none min-w-3xs md:min-w-xs transform-none translate-x-full lg:block lg:translate-none transition-transform ease-out duration-300 overflow-auto" aria-expanded="false">
+    <!-- closes menu on click -> see header-nav.js -->
+    <button id="closemenu" class="mb-6 lg:hidden button-basics" aria-controls="short-links">
+        <span class="fas fa-close"></span>
+        <span class="button-underline">
+            Menü schließen
+        </span>
+    </button>
+
+    <ul class="lg:flex items-center gap-5 xl:gap-8 pl-0 list-none">
+                <li class="mb-6 lg:mb-0">
+            <a class="text-base font-semibold focus:underline hover:underline" href="/verkauf-und-angebote">
+                                <span>Angebote</span>
+            </a>
+        </li>
+                <li class="mb-6 lg:mb-0">
+            <a class="text-base font-semibold focus:underline hover:underline" href="/kauf-und-gesuche">
+                                <span>Gesuche</span>
+            </a>
+        </li>
+                <li class="mb-6 lg:mb-0">
+            <a class="text-base font-semibold focus:underline hover:underline" href="/kontakte-knuepfen">
+                                <span>Kontakte knüpfen</span>
+            </a>
+        </li>
+                <li class="mb-6 lg:mb-0">
+            <a class="text-base font-semibold focus:underline hover:underline" href="/create">
+                                <span>Inserieren</span>
+            </a>
+        </li>
+                <li class="mb-6 lg:mb-0">
+            <a class="text-base font-semibold focus:underline hover:underline" href="/faq">
+                                <span>FAQ</span>
+            </a>
+        </li>
+                <li class="mb-6 lg:mb-0">
+            <a class="text-base font-semibold focus:underline hover:underline" href="/favorites">
+                                <span class="hidden lg:inline-block">
+                    <span class="fas fa-heart"></span>
+                </span>
+                                <span>Merkliste</span>
+            </a>
+        </li>
+        
+        <li class="absolute lg:static top-13 right-8">
+            <button id="theme-toggle" class="cursor-pointer text-xl" aria-label="Darkmode aktivieren"><span class="far fa-moon"></span></button>
+        </li>
+
+                <li class="mb-6 lg:mb-0">
+            <a href="/login" class="button-basics min-w-0">
+            <span class="fas fa-user"></span>
+        <span class="button-underline">
+        Login
+    </span>
+</a>
+        </li>
+            </ul>
+
+    
+</nav>
+
+  </div>
+</header>
+      <div wire:snapshot="{&quot;data&quot;:{&quot;message&quot;:&quot;&quot;,&quot;type_class&quot;:&quot;&quot;},&quot;memo&quot;:{&quot;id&quot;:&quot;UHOZPetLJdEwQ79H0c6n&quot;,&quot;name&quot;:&quot;notification&quot;,&quot;path&quot;:&quot;verkauf-und-angebote\/mietobjekte&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;release&quot;:&quot;a-a-a&quot;,&quot;children&quot;:[],&quot;scripts&quot;:[],&quot;assets&quot;:[],&quot;errors&quot;:[],&quot;locale&quot;:&quot;de&quot;},&quot;checksum&quot;:&quot;836ed9f5dee31912df81f5f2ccf2edbf851362b27713d7d6e62965634736a73d&quot;}" wire:effects="{&quot;listeners&quot;:[&quot;notify&quot;]}" wire:id="UHOZPetLJdEwQ79H0c6n" id="notification-container" role="alert">
+    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]--></div>
+
+
+      <main wire:snapshot="{&quot;data&quot;:{&quot;navigation&quot;:[null,{&quot;class&quot;:&quot;App\\Models\\Navigation&quot;,&quot;key&quot;:2,&quot;s&quot;:&quot;mdl&quot;}],&quot;category&quot;:[null,{&quot;class&quot;:&quot;App\\Models\\Category&quot;,&quot;key&quot;:38,&quot;s&quot;:&quot;mdl&quot;}],&quot;navigation_url&quot;:&quot;verkauf-und-angebote&quot;,&quot;category_url&quot;:&quot;mietobjekte&quot;,&quot;price_tag&quot;:&quot;Kaltmiete&quot;,&quot;options_sorting&quot;:[{&quot;date_desc&quot;:&quot;Datum absteigend&quot;,&quot;date_asc&quot;:&quot;Datum aufsteigend&quot;,&quot;price_desc&quot;:&quot;Preis absteigend&quot;,&quot;price_asc&quot;:&quot;Preis aufsteigend&quot;},{&quot;s&quot;:&quot;arr&quot;}],&quot;search_query&quot;:&quot;&quot;,&quot;subcategories&quot;:[[],{&quot;s&quot;:&quot;arr&quot;}],&quot;sort&quot;:&quot;date_desc&quot;,&quot;district&quot;:&quot;Keine Auswahl&quot;,&quot;filters&quot;:[[],{&quot;s&quot;:&quot;arr&quot;}],&quot;price_filters&quot;:[[],{&quot;s&quot;:&quot;arr&quot;}],&quot;paginators&quot;:[{&quot;page&quot;:1},{&quot;s&quot;:&quot;arr&quot;}]},&quot;memo&quot;:{&quot;id&quot;:&quot;khTmztfFkxwzSeDuj75w&quot;,&quot;name&quot;:&quot;advertisements.advertisements-index&quot;,&quot;path&quot;:&quot;verkauf-und-angebote\/mietobjekte&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;release&quot;:&quot;a-a-a&quot;,&quot;children&quot;:{&quot;verkauf-und-angebote&quot;:[&quot;section&quot;,&quot;Yw5ko88NLClOShTIJAIF&quot;],&quot;lw-705167080-1&quot;:[&quot;div&quot;,&quot;oElKdLWlWPLqfShmGcOE&quot;],&quot;lw-705167080-2&quot;:[&quot;div&quot;,&quot;efC6bXSc17T0L7Xq5zSt&quot;],&quot;lw-705167080-3&quot;:[&quot;div&quot;,&quot;2oJjlhvmoEuXQAlTIVtj&quot;],&quot;favorite-19726&quot;:[&quot;button&quot;,&quot;fd1ZV0gJiu2cdjTcjkiy&quot;],&quot;favorite-19435&quot;:[&quot;button&quot;,&quot;gxGsYroxd6LKFumaIKx0&quot;],&quot;favorite-19540&quot;:[&quot;button&quot;,&quot;nPzzcr90BLWLHrDiDJmy&quot;],&quot;favorite-19555&quot;:[&quot;button&quot;,&quot;Y9bwbIc6gHcmIvAtIrrb&quot;],&quot;favorite-19684&quot;:[&quot;button&quot;,&quot;9OJtWF6mzteSgjynmLYR&quot;],&quot;favorite-19705&quot;:[&quot;button&quot;,&quot;xOokl9R4OuePWwepc4yJ&quot;],&quot;favorite-19720&quot;:[&quot;button&quot;,&quot;dxWJkBYGO2Ka79CzuG5A&quot;],&quot;favorite-19297&quot;:[&quot;button&quot;,&quot;rBoz5B25segLYOKA05d6&quot;],&quot;favorite-19339&quot;:[&quot;button&quot;,&quot;vCYh7cvNtj7IodxXuvZV&quot;],&quot;favorite-19228&quot;:[&quot;button&quot;,&quot;fUi5PaXVC6hhcMvgWWhS&quot;]},&quot;scripts&quot;:[],&quot;assets&quot;:[],&quot;errors&quot;:[],&quot;locale&quot;:&quot;de&quot;},&quot;checksum&quot;:&quot;1a477b3f3bbdc0dfd2b67b12be86cdebe4753c62875dc3c94dac8343ed9c8f0b&quot;}" wire:effects="{&quot;url&quot;:{&quot;search_query&quot;:{&quot;as&quot;:&quot;search_query&quot;,&quot;use&quot;:&quot;replace&quot;,&quot;alwaysShow&quot;:false,&quot;except&quot;:null},&quot;subcategories&quot;:{&quot;as&quot;:&quot;subcategories&quot;,&quot;use&quot;:&quot;replace&quot;,&quot;alwaysShow&quot;:false,&quot;except&quot;:null},&quot;sort&quot;:{&quot;as&quot;:&quot;sort&quot;,&quot;use&quot;:&quot;replace&quot;,&quot;alwaysShow&quot;:false,&quot;except&quot;:null},&quot;district&quot;:{&quot;as&quot;:&quot;district&quot;,&quot;use&quot;:&quot;replace&quot;,&quot;alwaysShow&quot;:false,&quot;except&quot;:null},&quot;filters&quot;:{&quot;as&quot;:&quot;filters&quot;,&quot;use&quot;:&quot;replace&quot;,&quot;alwaysShow&quot;:false,&quot;except&quot;:null},&quot;price_filters&quot;:{&quot;as&quot;:&quot;price_filters&quot;,&quot;use&quot;:&quot;replace&quot;,&quot;alwaysShow&quot;:false,&quot;except&quot;:null},&quot;paginators.page&quot;:{&quot;as&quot;:&quot;page&quot;,&quot;use&quot;:&quot;push&quot;,&quot;alwaysShow&quot;:false,&quot;except&quot;:null}},&quot;listeners&quot;:[&quot;filterSubcategories&quot;,&quot;searchQueryChanged&quot;,&quot;rangeFilterChanged&quot;,&quot;keywordFilterChanged&quot;]}" wire:id="khTmztfFkxwzSeDuj75w">
+     <section class="container mb-12">
+         <div class="mx-auto flex justify-center items-center overflow-visible flex mb-10 lg:mb-20">
+    <div data-yieldlove="billboard"></div>
+</div>
+         <!--[if BLOCK]><![endif]-->    <nav aria-label="Breadcrumbs" class="mb-8">
+        <ol class="flex flex-wrap gap-2 list-none pl-0">
+            <!--[if BLOCK]><![endif]-->                <li class="flex items-center">
+                    <!--[if BLOCK]><![endif]-->                        <a href="https://schwarzesbrett.bremen.de" class="underline hover:text-white hover:bg-accent duration-200">
+                            Start
+                        </a>
+                        <!--[if BLOCK]><![endif]-->                            <span class="ml-2 fas fa-chevron-right"></span>
+                        <!--[if ENDBLOCK]><![endif]-->                    <!--[if ENDBLOCK]><![endif]-->                </li>
+                            <li class="flex items-center">
+                    <!--[if BLOCK]><![endif]-->                        <a href="https://schwarzesbrett.bremen.de/verkauf-und-angebote" class="underline hover:text-white hover:bg-accent duration-200">
+                            Verkauf und Angebote
+                        </a>
+                        <!--[if BLOCK]><![endif]-->                            <span class="ml-2 fas fa-chevron-right"></span>
+                        <!--[if ENDBLOCK]><![endif]-->                    <!--[if ENDBLOCK]><![endif]-->                </li>
+                            <li class="flex items-center">
+                    <!--[if BLOCK]><![endif]-->                        <span aria-current="page">
+                            Mietangebote
+                        </span>
+                    <!--[if ENDBLOCK]><![endif]-->                </li>
+            <!--[if ENDBLOCK]><![endif]-->        </ol>
+    </nav>
+<!--[if ENDBLOCK]><![endif]-->         <h1 id="navigation-title" class="headline-big">
+             Mietangebote
+         </h1>
+         <!--[if BLOCK]><![endif]-->         <p class="mt-8">Hier könnt ihr Wohnungen, Häuser, Parzellen oder Räumlichkeiten wie Studios in Bremen und Umgebung anbieten.</p>
+         <!--[if ENDBLOCK]><![endif]-->     </section>
+
+     <section wire:snapshot="{&quot;data&quot;:[],&quot;memo&quot;:{&quot;id&quot;:&quot;Yw5ko88NLClOShTIJAIF&quot;,&quot;name&quot;:&quot;header.categories&quot;,&quot;path&quot;:&quot;verkauf-und-angebote\/mietobjekte&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;release&quot;:&quot;a-a-a&quot;,&quot;children&quot;:[],&quot;scripts&quot;:[],&quot;assets&quot;:[],&quot;errors&quot;:[],&quot;locale&quot;:&quot;de&quot;},&quot;checksum&quot;:&quot;ba2a2a7c832ca3c69c0305c95846fb8b5e66fdfedd6bb60407b7e2ab29209e26&quot;}" wire:effects="[]" wire:id="Yw5ko88NLClOShTIJAIF" class="container">
+    <!--[if BLOCK]><![endif]-->        <div class="mx-auto flex justify-center items-center overflow-visible flex mb-20">
+    <div data-yieldlove="leaderboard_wide_1"></div>
+</div>
+    <!--[if ENDBLOCK]><![endif]--></section>
+        <section class="app-grid mb-4 container">
+            <div class="col-span-4 md:col-span-8 lg:col-span-12 app-grid items-stretch">
+                <div wire:snapshot="{&quot;data&quot;:{&quot;search_query&quot;:&quot;&quot;,&quot;navigation_title&quot;:&quot;Verkauf und Angebote&quot;,&quot;category_title&quot;:&quot;Mietangebote&quot;,&quot;model&quot;:&quot;&quot;,&quot;large&quot;:false,&quot;label&quot;:&quot;Stichwortsuche in \&quot;Mietangebote\&quot;:&quot;},&quot;memo&quot;:{&quot;id&quot;:&quot;oElKdLWlWPLqfShmGcOE&quot;,&quot;name&quot;:&quot;header.search&quot;,&quot;path&quot;:&quot;verkauf-und-angebote\/mietobjekte&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;release&quot;:&quot;a-a-a&quot;,&quot;bindings&quot;:{&quot;search_query&quot;:&quot;search_query&quot;},&quot;bindingsDirectives&quot;:{&quot;search_query&quot;:&quot;wire:model&quot;},&quot;children&quot;:[],&quot;scripts&quot;:[],&quot;assets&quot;:[],&quot;errors&quot;:[],&quot;locale&quot;:&quot;de&quot;},&quot;checksum&quot;:&quot;1bf6df6365cc0654cff150ad20f9365b9c035c6c36e20e259c8695128e3cbaed&quot;}" wire:effects="[]" wire:model="$parent.search_query" x-modelable="$wire.search_query" wire:id="oElKdLWlWPLqfShmGcOE" class="col-span-4 md:col-span-8 lg:col-span-4">
+    <div class="flex flex-col gap-1">
+        <label for="search_query" class="font-semibold">Stichwortsuche in "Mietangebote":</label>
+        <div class="relative text-neutral-900">
+            <span class="mr-2 fas fa-2xl fa-magnifying-glass absolute top-1/2 cursor-pointer hover:opacity-80 left-2" wire:click="$dispatch('search')" wire:keydown.enter="$dispatch('search')">
+            </span>
+            <input aria-label="Stichwortsuche" wire:model="search_query" wire:keydown.enter="$dispatch('search')" type="text" id="search_query" name="search_query" class="bg-white rounded-2xl w-full min-w-42 p-4 pl-14">
+        </div>
+    </div>
+</div>                    <div id="filter-buttons" data-hide-class="hidden" class="lg:h-auto col-span-4 md:col-span-8 flex justify-between items-end flex-wrap gap-4">
+                        <button wire:click="search" class="button-basics">
+                            <span class="button-underline">Filter anwenden</span>
+                        </button>
+                        <div class="flex items-center gap-4">
+    <p><span class="fas fa-check"></span> Angebote</p>
+    <a href="https://schwarzesbrett.bremen.de/kauf-und-gesuche/mietobjekte" class="button-basics">
+    <!--[if BLOCK]><![endif]-->        <span class="far fa-arrows-retweet"></span>
+    <!--[if ENDBLOCK]><![endif]-->    <span class="button-underline">
+        Zu Gesuchen
+    </span>
+</a>
+</div>
+                    </div>
+                    <div id="filter-modal-buttons" data-hide-class="hidden" class="hidden lg:h-0 col-span-4 md:col-span-8 flex justify-between items-end flex-wrap gap-4">
+                        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->                        <button wire:click="search" class="button-basics">
+                            <span class="button-underline">Suchen</span>
+                        </button>
+                        <button @click="openFilterModal()" class="button-basics light">
+                            <span class="fas fa-filter"></span><span class="button-underline">Filter öffnen</span>
+                        </button>
+                    </div>
+            </div>
+
+            <div id="filter-modal" data-hide-class="hidden" role="dialog" class="hidden fixed inset-0 z-50 flex items-center justify-content bg-black/60 p-4" @keydown.escape.window="closeFilterModal()" aria-modal="true" tabindex="-1">
+                <div class="w-full h-full rounded-2xl bg-white text-neutral-900 p-6 shadow-2xl m-6 relative pt-12">
+                    <div class="flex justify-end absolute top-5 right-5">
+                        <button id="filter-close" @click="closeFilterModal()" aria-label="Schließen" class="cursor-pointer">
+                            <span class="fa fa-xmark text-xl"></span>
+                        </button>
+                    </div>
+                    <div class="w-full h-9/10 overflow-y-scroll">
+                        <div id="filters-in-modal" class="flex flex-col gap-8 lg:mr-18 xl:mr-24"></div>
+                    </div>
+                    <div class="w-full h-1/10 mt-4 flex justify-content">
+                        <div class="w-full flex justify-between items-center">
+                            <button wire:click="search" @click="closeFilterModal()" class="button-basics">
+                                <span class="button-underline">Filter anwenden</span>
+                            </button>
+                            <button class="mt-2 flex gap-1 items-center cursor-pointer group" wire:click="resetFilters" @click="closeFilterModal()">
+                                <span class="fa fa-sm fa-xmark"></span><span class="group-hover:underline group-focus:underline">Zurücksetzen</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-span-4 md:col-span-8 lg:col-span-4 lg:sticky lg:overflow-auto lg:h-[calc(100dvh-1.5rem)] lg:top-3 lg:px-1 lg:-mx-1">
+                <div id="filters" class="flex flex-col gap-8 lg:mr-18 xl:mr-24 lg:mb-8">
+                    <div class="flex flex-col gap-1">
+    <label for="sortby" class="font-semibold">Sortieren nach:</label>
+    <div class="relative bg-white rounded-lg">
+        <select id="sortby" class="bg-transparent rounded-lg w-full p-3 border border-neutral-300 appearance-none relative z-20 text-neutral-900" wire:model="sort">
+            <!--[if BLOCK]><![endif]-->            <option value="date_desc">Datum absteigend</option>
+                        <option value="date_asc">Datum aufsteigend</option>
+                        <option value="price_desc">Preis absteigend</option>
+                        <option value="price_asc">Preis aufsteigend</option>
+            <!--[if ENDBLOCK]><![endif]-->        </select>
+        <span class="fa fa-caret-down absolute top-1/3 right-2 z-10 text-neutral-900"></span>
+     </div>
+</div>                    <div wire:snapshot="{&quot;data&quot;:{&quot;selected_subcategories&quot;:[[],{&quot;s&quot;:&quot;arr&quot;}],&quot;categories&quot;:[[],{&quot;class&quot;:&quot;Illuminate\\Support\\Collection&quot;,&quot;s&quot;:&quot;clctn&quot;}]},&quot;memo&quot;:{&quot;id&quot;:&quot;efC6bXSc17T0L7Xq5zSt&quot;,&quot;name&quot;:&quot;header.subcategories&quot;,&quot;path&quot;:&quot;verkauf-und-angebote\/mietobjekte&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;release&quot;:&quot;a-a-a&quot;,&quot;bindings&quot;:{&quot;subcategories&quot;:&quot;selected_subcategories&quot;},&quot;bindingsDirectives&quot;:{&quot;subcategories&quot;:&quot;wire:model&quot;},&quot;children&quot;:[],&quot;scripts&quot;:[],&quot;assets&quot;:[],&quot;errors&quot;:[],&quot;locale&quot;:&quot;de&quot;},&quot;checksum&quot;:&quot;adf88e3bfd8d9fe7a22fcc64c77058caff428225577afddb758d9478de41fe70&quot;}" wire:effects="[]" wire:model="$parent.subcategories" x-modelable="$wire.selected_subcategories" wire:id="efC6bXSc17T0L7Xq5zSt" class="hidden">
+    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]--></div>                        <div class="flex flex-col gap-1">
+    <label for="district" class="font-semibold">Stadtteil:</label>
+    <div class="relative bg-white rounded-lg">
+        <select id="district" class="bg-transparent rounded-lg w-full p-3 border border-neutral-300 appearance-none relative z-20 text-neutral-900" wire:model="district">
+            <!--[if BLOCK]><![endif]-->            <option value="Keine Auswahl">Alle</option>
+                        <option value="Keine Angabe">Keine Angabe</option>
+                        <option value="Außerhalb Bremens">Außerhalb Bremens</option>
+                        <option value="Blockland">Blockland</option>
+                        <option value="Blumenthal">Blumenthal</option>
+                        <option value="Borgfeld">Borgfeld</option>
+                        <option value="Burglesum">Burglesum</option>
+                        <option value="Findorff">Findorff</option>
+                        <option value="Gröpelingen">Gröpelingen</option>
+                        <option value="Hemelingen">Hemelingen</option>
+                        <option value="Horn-Lehe">Horn-Lehe</option>
+                        <option value="Huchting">Huchting</option>
+                        <option value="Häfen">Häfen</option>
+                        <option value="Mitte">Mitte</option>
+                        <option value="Neustadt">Neustadt</option>
+                        <option value="Oberneuland">Oberneuland</option>
+                        <option value="Obervieland">Obervieland</option>
+                        <option value="Osterholz">Osterholz</option>
+                        <option value="Schwachhausen">Schwachhausen</option>
+                        <option value="Seehausen">Seehausen</option>
+                        <option value="Strom">Strom</option>
+                        <option value="Vahr">Vahr</option>
+                        <option value="Vegesack">Vegesack</option>
+                        <option value="Walle">Walle</option>
+                        <option value="Woltmershausen">Woltmershausen</option>
+                        <option value="Östliche Vorstadt">Östliche Vorstadt</option>
+                        <option value="Überseehafen">Überseehafen</option>
+            <!--[if ENDBLOCK]><![endif]-->        </select>
+        <span class="fa fa-caret-down absolute top-1/3 right-2 z-10 text-neutral-900"></span>
+     </div>
+</div>
+                        <div class="w-full flex flex-col gap-8 lg:mr-18 xl:mr-24">
+                            <!--[if BLOCK]><![endif]-->                            <!--[if BLOCK]><![endif]-->                            <div>
+                                <!--[if BLOCK]><![endif]--><p class="font-semibold mb-1">Typ:</p><!--[if ENDBLOCK]><![endif]-->                                <div class="flex flex-col gap-1">
+                                    <!--[if BLOCK]><![endif]-->                                    <div class="w-full flex gap-2 items-center has-[:disabled]:opacity-60">
+    <div class="inline-flex items-center">
+        <div class="checkbox-basics">
+            <input id="feature_Haus" value="" type="checkbox" @keyup.enter="updateCheckbox" class="peer " wire:click="$dispatch('keywordFilterChanged', { title: 'Haus' })">
+            <span class="checkbox-check peer-checked:opacity-100">
+                <span class="fa fa-check"></span>
+            </span>
+        </div>
+    </div>
+    <label for="feature_Haus" class="cursor-pointer has-[:disabled]:cursor-not-allowed">Haus</label>
+</div>                                                                        <div class="w-full flex gap-2 items-center has-[:disabled]:opacity-60">
+    <div class="inline-flex items-center">
+        <div class="checkbox-basics">
+            <input id="feature_Wohnung" value="" type="checkbox" @keyup.enter="updateCheckbox" class="peer " wire:click="$dispatch('keywordFilterChanged', { title: 'Wohnung' })">
+            <span class="checkbox-check peer-checked:opacity-100">
+                <span class="fa fa-check"></span>
+            </span>
+        </div>
+    </div>
+    <label for="feature_Wohnung" class="cursor-pointer has-[:disabled]:cursor-not-allowed">Wohnung</label>
+</div>                                                                        <div class="w-full flex gap-2 items-center has-[:disabled]:opacity-60">
+    <div class="inline-flex items-center">
+        <div class="checkbox-basics">
+            <input id="feature_Garage" value="" type="checkbox" @keyup.enter="updateCheckbox" class="peer " wire:click="$dispatch('keywordFilterChanged', { title: 'Garage' })">
+            <span class="checkbox-check peer-checked:opacity-100">
+                <span class="fa fa-check"></span>
+            </span>
+        </div>
+    </div>
+    <label for="feature_Garage" class="cursor-pointer has-[:disabled]:cursor-not-allowed">Garage</label>
+</div>                                                                        <div class="w-full flex gap-2 items-center has-[:disabled]:opacity-60">
+    <div class="inline-flex items-center">
+        <div class="checkbox-basics">
+            <input id="feature_Stellplatz" value="" type="checkbox" @keyup.enter="updateCheckbox" class="peer " wire:click="$dispatch('keywordFilterChanged', { title: 'Stellplatz' })">
+            <span class="checkbox-check peer-checked:opacity-100">
+                <span class="fa fa-check"></span>
+            </span>
+        </div>
+    </div>
+    <label for="feature_Stellplatz" class="cursor-pointer has-[:disabled]:cursor-not-allowed">Stellplatz</label>
+</div>                                                                        <div class="w-full flex gap-2 items-center has-[:disabled]:opacity-60">
+    <div class="inline-flex items-center">
+        <div class="checkbox-basics">
+            <input id="feature_Parzelle" value="" type="checkbox" @keyup.enter="updateCheckbox" class="peer " wire:click="$dispatch('keywordFilterChanged', { title: 'Parzelle' })">
+            <span class="checkbox-check peer-checked:opacity-100">
+                <span class="fa fa-check"></span>
+            </span>
+        </div>
+    </div>
+    <label for="feature_Parzelle" class="cursor-pointer has-[:disabled]:cursor-not-allowed">Parzelle</label>
+</div>                                                                        <div class="w-full flex gap-2 items-center has-[:disabled]:opacity-60">
+    <div class="inline-flex items-center">
+        <div class="checkbox-basics">
+            <input id="feature_Hobbyraum" value="" type="checkbox" @keyup.enter="updateCheckbox" class="peer " wire:click="$dispatch('keywordFilterChanged', { title: 'Hobbyraum' })">
+            <span class="checkbox-check peer-checked:opacity-100">
+                <span class="fa fa-check"></span>
+            </span>
+        </div>
+    </div>
+    <label for="feature_Hobbyraum" class="cursor-pointer has-[:disabled]:cursor-not-allowed">Hobbyraum</label>
+</div>                                    <!--[if ENDBLOCK]><![endif]-->                                </div>
+                            </div>
+                                                        <div>
+                                <!--[if BLOCK]><![endif]--><p class="font-semibold mb-1">Ausstattung:</p><!--[if ENDBLOCK]><![endif]-->                                <div class="flex flex-col gap-1">
+                                    <!--[if BLOCK]><![endif]-->                                    <div class="w-full flex gap-2 items-center has-[:disabled]:opacity-60">
+    <div class="inline-flex items-center">
+        <div class="checkbox-basics">
+            <input id="feature_Balkon" value="" type="checkbox" @keyup.enter="updateCheckbox" class="peer " wire:click="$dispatch('keywordFilterChanged', { title: 'Balkon' })">
+            <span class="checkbox-check peer-checked:opacity-100">
+                <span class="fa fa-check"></span>
+            </span>
+        </div>
+    </div>
+    <label for="feature_Balkon" class="cursor-pointer has-[:disabled]:cursor-not-allowed">Balkon</label>
+</div>                                                                        <div class="w-full flex gap-2 items-center has-[:disabled]:opacity-60">
+    <div class="inline-flex items-center">
+        <div class="checkbox-basics">
+            <input id="feature_Terrasse" value="" type="checkbox" @keyup.enter="updateCheckbox" class="peer " wire:click="$dispatch('keywordFilterChanged', { title: 'Terrasse' })">
+            <span class="checkbox-check peer-checked:opacity-100">
+                <span class="fa fa-check"></span>
+            </span>
+        </div>
+    </div>
+    <label for="feature_Terrasse" class="cursor-pointer has-[:disabled]:cursor-not-allowed">Terrasse</label>
+</div>                                                                        <div class="w-full flex gap-2 items-center has-[:disabled]:opacity-60">
+    <div class="inline-flex items-center">
+        <div class="checkbox-basics">
+            <input id="feature_Garten" value="" type="checkbox" @keyup.enter="updateCheckbox" class="peer " wire:click="$dispatch('keywordFilterChanged', { title: 'Garten' })">
+            <span class="checkbox-check peer-checked:opacity-100">
+                <span class="fa fa-check"></span>
+            </span>
+        </div>
+    </div>
+    <label for="feature_Garten" class="cursor-pointer has-[:disabled]:cursor-not-allowed">Garten</label>
+</div>                                                                        <div class="w-full flex gap-2 items-center has-[:disabled]:opacity-60">
+    <div class="inline-flex items-center">
+        <div class="checkbox-basics">
+            <input id="feature_Möbliert" value="" type="checkbox" @keyup.enter="updateCheckbox" class="peer " wire:click="$dispatch('keywordFilterChanged', { title: 'Möbliert' })">
+            <span class="checkbox-check peer-checked:opacity-100">
+                <span class="fa fa-check"></span>
+            </span>
+        </div>
+    </div>
+    <label for="feature_Möbliert" class="cursor-pointer has-[:disabled]:cursor-not-allowed">Möbliert</label>
+</div>                                                                        <div class="w-full flex gap-2 items-center has-[:disabled]:opacity-60">
+    <div class="inline-flex items-center">
+        <div class="checkbox-basics">
+            <input id="feature_Unmöbliert" value="" type="checkbox" @keyup.enter="updateCheckbox" class="peer " wire:click="$dispatch('keywordFilterChanged', { title: 'Unmöbliert' })">
+            <span class="checkbox-check peer-checked:opacity-100">
+                <span class="fa fa-check"></span>
+            </span>
+        </div>
+    </div>
+    <label for="feature_Unmöbliert" class="cursor-pointer has-[:disabled]:cursor-not-allowed">Unmöbliert</label>
+</div>                                                                        <div class="w-full flex gap-2 items-center has-[:disabled]:opacity-60">
+    <div class="inline-flex items-center">
+        <div class="checkbox-basics">
+            <input id="feature_Einbauküche" value="" type="checkbox" @keyup.enter="updateCheckbox" class="peer " wire:click="$dispatch('keywordFilterChanged', { title: 'Einbauküche' })">
+            <span class="checkbox-check peer-checked:opacity-100">
+                <span class="fa fa-check"></span>
+            </span>
+        </div>
+    </div>
+    <label for="feature_Einbauküche" class="cursor-pointer has-[:disabled]:cursor-not-allowed">Einbauküche</label>
+</div>                                                                        <div class="w-full flex gap-2 items-center has-[:disabled]:opacity-60">
+    <div class="inline-flex items-center">
+        <div class="checkbox-basics">
+            <input id="feature_Barrierefrei" value="" type="checkbox" @keyup.enter="updateCheckbox" class="peer " wire:click="$dispatch('keywordFilterChanged', { title: 'Barrierefrei' })">
+            <span class="checkbox-check peer-checked:opacity-100">
+                <span class="fa fa-check"></span>
+            </span>
+        </div>
+    </div>
+    <label for="feature_Barrierefrei" class="cursor-pointer has-[:disabled]:cursor-not-allowed">Barrierefrei</label>
+</div>                                                                        <div class="w-full flex gap-2 items-center has-[:disabled]:opacity-60">
+    <div class="inline-flex items-center">
+        <div class="checkbox-basics">
+            <input id="feature_Temporär" value="" type="checkbox" @keyup.enter="updateCheckbox" class="peer " wire:click="$dispatch('keywordFilterChanged', { title: 'Temporär' })">
+            <span class="checkbox-check peer-checked:opacity-100">
+                <span class="fa fa-check"></span>
+            </span>
+        </div>
+    </div>
+    <label for="feature_Temporär" class="cursor-pointer has-[:disabled]:cursor-not-allowed">Temporär</label>
+</div>                                                                        <div class="w-full flex gap-2 items-center has-[:disabled]:opacity-60">
+    <div class="inline-flex items-center">
+        <div class="checkbox-basics">
+            <input id="feature_Unbegrenzt" value="" type="checkbox" @keyup.enter="updateCheckbox" class="peer " wire:click="$dispatch('keywordFilterChanged', { title: 'Unbegrenzt' })">
+            <span class="checkbox-check peer-checked:opacity-100">
+                <span class="fa fa-check"></span>
+            </span>
+        </div>
+    </div>
+    <label for="feature_Unbegrenzt" class="cursor-pointer has-[:disabled]:cursor-not-allowed">Unbegrenzt</label>
+</div>                                    <!--[if ENDBLOCK]><![endif]-->                                </div>
+                            </div>
+                            <!--[if ENDBLOCK]><![endif]-->                            <!--[if ENDBLOCK]><![endif]-->
+                            <div class="flex flex-col gap-1">
+                                <p class="font-semibold">Kaltmiete:</p>
+                                <div x-data="{ min: 0 }" class="input-basics flex-row justify-between items-center">
+                                    <label for="price_min">von</label>
+                                    <div class="relative bg-white rounded-lg">
+                                        <input wire:model="price_filters.min" id="price_min" type="number" class="max-w-46">
+                                        <span class="fa fa-eur absolute top-1/3 right-10 z-10 text-neutral-900"></span>
+                                    </div>
+                                </div>
+                                <div class="input-basics flex-row justify-between items-center">
+                                    <label for="price_max">bis</label>
+                                    <div class="relative bg-white rounded-lg">
+                                        <input wire:model="price_filters.max" id="price_max" type="number" class="max-w-46">
+                                        <span class="fa fa-eur absolute top-1/3 right-10 z-10 text-neutral-900"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--[if BLOCK]><![endif]-->                            <!--[if BLOCK]><![endif]-->                            <!--[if BLOCK]><![endif]-->                            <div class="mb-4">
+                                <div wire:snapshot="{&quot;data&quot;:{&quot;id&quot;:&quot;Zimmer&quot;,&quot;title&quot;:&quot;Zimmer&quot;,&quot;filter&quot;:[null,{&quot;class&quot;:&quot;App\\Models\\Filter&quot;,&quot;key&quot;:null,&quot;s&quot;:&quot;mdl&quot;}],&quot;min&quot;:null,&quot;max&quot;:null},&quot;memo&quot;:{&quot;id&quot;:&quot;fEU8uKKztIMH9SLtujf3&quot;,&quot;name&quot;:&quot;range-input&quot;,&quot;path&quot;:&quot;verkauf-und-angebote\/mietobjekte&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;release&quot;:&quot;a-a-a&quot;,&quot;children&quot;:[],&quot;scripts&quot;:[],&quot;assets&quot;:[],&quot;errors&quot;:[],&quot;locale&quot;:&quot;de&quot;},&quot;checksum&quot;:&quot;4a3acb03273fb853f7815f870bcf2b1ed296239977e79ee05d6bf83244194cd9&quot;}" wire:effects="[]" wire:id="fEU8uKKztIMH9SLtujf3" class="flex flex-col gap-1">
+    <!--[if BLOCK]><![endif]-->        <p class="font-semibold">Zimmer:</p>
+        <div x-data="{ min: 0 }" class="input-basics flex-row justify-between items-center">
+            <label for="Zimmer-min">von</label>
+            <input wire:key="$filter-&gt;title" id="Zimmer-min" step="0.5" min="0" @change="$dispatch('rangeFilterChanged', {title: 'Zimmer', field: 'min', value: $event.target.value})" value="" type="number" class="max-w-46">
+        </div>
+        <div class="input-basics flex-row justify-between items-center">
+            <label for="Zimmer-max">bis</label>
+            <input wire:key="$filter-&gt;title" id="Zimmer-max" step="0.5" min="0" @change="$dispatch('rangeFilterChanged', {title: 'Zimmer', field: 'max', value: $event.target.value})" value="" type="number" class="max-w-46">
+        </div>
+    <!--[if ENDBLOCK]><![endif]--></div>                            </div>
+                            <!--[if ENDBLOCK]><![endif]-->                                                        <!--[if BLOCK]><![endif]-->                            <div class="mb-4">
+                                <div wire:snapshot="{&quot;data&quot;:{&quot;id&quot;:&quot;Quadratmeter&quot;,&quot;title&quot;:&quot;Quadratmeter&quot;,&quot;filter&quot;:[null,{&quot;class&quot;:&quot;App\\Models\\Filter&quot;,&quot;key&quot;:null,&quot;s&quot;:&quot;mdl&quot;}],&quot;min&quot;:null,&quot;max&quot;:null},&quot;memo&quot;:{&quot;id&quot;:&quot;2oJjlhvmoEuXQAlTIVtj&quot;,&quot;name&quot;:&quot;range-input&quot;,&quot;path&quot;:&quot;verkauf-und-angebote\/mietobjekte&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;release&quot;:&quot;a-a-a&quot;,&quot;children&quot;:[],&quot;scripts&quot;:[],&quot;assets&quot;:[],&quot;errors&quot;:[],&quot;locale&quot;:&quot;de&quot;},&quot;checksum&quot;:&quot;c2431f72542b84a21e0148b6bde0eff3f42f6a00a83592cf0b5acc34196786b6&quot;}" wire:effects="[]" wire:id="2oJjlhvmoEuXQAlTIVtj" class="flex flex-col gap-1">
+    <!--[if BLOCK]><![endif]-->        <p class="font-semibold">Quadratmeter:</p>
+        <div x-data="{ min: 0 }" class="input-basics flex-row justify-between items-center">
+            <label for="Quadratmeter-min">von</label>
+            <input wire:key="$filter-&gt;title" id="Quadratmeter-min" step="0.5" min="0" @change="$dispatch('rangeFilterChanged', {title: 'Quadratmeter', field: 'min', value: $event.target.value})" value="" type="number" class="max-w-46">
+        </div>
+        <div class="input-basics flex-row justify-between items-center">
+            <label for="Quadratmeter-max">bis</label>
+            <input wire:key="$filter-&gt;title" id="Quadratmeter-max" step="0.5" min="0" @change="$dispatch('rangeFilterChanged', {title: 'Quadratmeter', field: 'max', value: $event.target.value})" value="" type="number" class="max-w-46">
+        </div>
+    <!--[if ENDBLOCK]><![endif]--></div>                            </div>
+                            <!--[if ENDBLOCK]><![endif]-->                            <!--[if ENDBLOCK]><![endif]-->                            <!--[if ENDBLOCK]><![endif]-->                        </div>
+                </div>
+                <div id="filter-buttons-2" data-hide-class="hidden" class="flex flex-col gap-8 lg:mr-18 xl:mr-24">
+                    <div>
+                        <button wire:click="search" class="button-basics">
+                            <span class="button-underline">Filter anwenden</span>
+                        </button>
+                        <button class="mt-2 flex gap-1 items-center cursor-pointer group" wire:click="resetFilters">
+                            <span class="fa fa-sm fa-xmark"></span><span class="group-hover:underline group-focus:underline">Zurücksetzen</span>
+                        </button>
+                    </div>
+                    <div class="mx-auto flex justify-center items-center overflow-visible">
+    <div data-yieldlove="rectangle_4"></div>
+</div>
+                </div>
+            </div>
+            <div id="results" class="col-span-4 md:col-span-8 lg:col-span-8 lg:col-start-5">
+    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->    <!--[if BLOCK]><![endif]-->        <div class="app-grid mb-4 p-4 bg-white dark:bg-transparent dark:border-2 dark:border-white rounded-2xl gap-4">
+    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->    <div class="col-span-4 bg-white rounded-xl lg:col-span-5 aspect-16/9 md:aspect-square lg:aspect-6/7 xl:aspect-square">
+        <a href="/show/19726" tabindex="-1" class="w-full h-full flex justify-center items-center">
+            <img class="rounded-xl  w-full h-full object-cover " src="/storage/images/thumbnails/97c72f76-91e5-4c1d-9331-f94ecb389ead.webp" alt="Treppe zur Hochebene ">
+        </a>
+    </div>
+    <div class="col-span-4 md:col-span-4 lg:col-span-7 flex flex-col justify-between gap-6 self-stretch">
+        <div class="flex flex-col justify-start items-start gap-6">
+            <h3 class="font-semibold text-lg">
+                <a href="/show/19726" class="hover:underline focus:underline">Schöne 1 Zimmer Wohnung im Viertel zum 01.07.</a>
+            </h3>
+            <div class="justify-start clamp-5-lines trix-content"><div>Vermietet wird eine super schöne 1 Zimmer Wohnung am Dobben.&nbsp;<br>Die Wohnung befindet sich in einem altbremer Haus mit mehreren Mietparteien im 1 Stock.&nbsp;<br>Sie hat hohe Decken und hat eine Hochebene die perfekt für ein Bett ausgelegt ist.<br>Zudem verfügt sie über einen Balkon, eine Küche mit Tresen und ein Bad mit Badewanne.&nbsp;<br>Die Warmmiete liegt bei 405€ und es können noch diverse Möbel und Inventare übernommen werden.&nbsp;<br>Der Vermieter möchte eine weibliche Personen als Nachmieterin.&nbsp;<br>Bei Interesse gerne melden :-)</div></div>
+        </div>
+        <div class="w-full inline-flex flex-wrap gap-4 justify-between items-end">
+            <div class="flex-1 inline-flex flex-col justify-end items-start gap-2.5">
+                <!--[if BLOCK]><![endif]-->                <div class="inline-flex justify-start items-center gap-2">
+                    <span class="far fa-location-pin"></span>
+                    <span>Keine Angabe</span>
+                </div>
+                <!--[if ENDBLOCK]><![endif]-->
+                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                <div class="inline-flex justify-start items-center gap-2">
+                    <span class="far fa-calendar"></span>
+                    <span>28.06.2026<!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]--></span>
+                </div>
+            </div>
+            <div class="flex flex-row-reverse">
+                <!--[if BLOCK]><![endif]-->                <button wire:snapshot="{&quot;data&quot;:{&quot;advertisementId&quot;:19726,&quot;is_favorite&quot;:false,&quot;small&quot;:true},&quot;memo&quot;:{&quot;id&quot;:&quot;fd1ZV0gJiu2cdjTcjkiy&quot;,&quot;name&quot;:&quot;favorite-button&quot;,&quot;path&quot;:&quot;verkauf-und-angebote\/mietobjekte&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;release&quot;:&quot;a-a-a&quot;,&quot;children&quot;:[],&quot;scripts&quot;:[],&quot;assets&quot;:[],&quot;errors&quot;:[],&quot;locale&quot;:&quot;de&quot;},&quot;checksum&quot;:&quot;a019dd8369e5ad3782500278d1d9d18d8068ddf5b4632fc3c30a8b08a9e09a16&quot;}" wire:effects="[]" wire:id="fd1ZV0gJiu2cdjTcjkiy" wire:click="toggleFavorite" class="button-basics small">
+    <!--[if BLOCK]><![endif]-->        <span class="fas fa-heart"></span>
+        <span class="button-underline">Merken</span>
+    <!--[if ENDBLOCK]><![endif]--></button>                <!--[if ENDBLOCK]><![endif]-->            </div>
+        </div>
+    </div>
+<!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]--></div>        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->            <div class="app-grid mb-4 p-4 bg-white dark:bg-transparent dark:border-2 dark:border-white rounded-2xl gap-4">
+    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->    <div class="col-span-4 bg-white rounded-xl lg:col-span-5 aspect-16/9 md:aspect-square lg:aspect-6/7 xl:aspect-square">
+        <a href="/show/19435" tabindex="-1" class="w-full h-full flex justify-center items-center">
+            <img class="rounded-xl  w-full h-full object-cover " src="/storage/images/thumbnails/713c8391-c393-411a-bd1d-56ab51244716.webp" alt="Zimmer 20m²">
+        </a>
+    </div>
+    <div class="col-span-4 md:col-span-4 lg:col-span-7 flex flex-col justify-between gap-6 self-stretch">
+        <div class="flex flex-col justify-start items-start gap-6">
+            <h3 class="font-semibold text-lg">
+                <a href="/show/19435" class="hover:underline focus:underline">3ZiKBB ab sofort, 600€ KM</a>
+            </h3>
+            <div class="justify-start clamp-5-lines trix-content"><div>Eine schöne 3 Zimmer Wohnung im vorderen Woltmershausen ist ab sofort zu vermieten. Die Lage ist in der Nähe der Haltestelle Akazienstraße jeweils 5min mit dem Rad zur Hochschule, zur Pappelstraße und zum Einkaufszentrum in Woltmershausen.<br>&nbsp;<br>Die Wohnung liegt in der ersten Etage und hat 3 Zimmer: 20m², 14m², 9m². Die beiden kleineren Zimmer gehen zur Woltmershauser Straße, haben aber gute Fenster. Zum großen Zimmer gehört ein Südwest-Balkon mit Markise. Das mittlere Zimmer hat einen Einbauschrank. Außerdem gibt es ein Tageslichtbad mit Badewanne&nbsp; und eine Einbauküche.<br>Flur, Küche, kleines Zimmer und natürlich das Bad sind gefliest, die beiden größeren Zimmer haben Laminatboden.&nbsp;<br>&nbsp;<br>Die Miete beträgt 600€ kalt, die Nebenkosten liegen momentan bei&nbsp; ca. 300€&nbsp; (jährliche Abrechnung) für Wasser, Heizung, Müll usw. Strom, GEZ und&nbsp; Telefon sind darin nicht enthalten.<br>Hinzu kommt eine Kaution von 1200€.<br>&nbsp;<br>Die Wohnung ist gut geeignet für ein Paar oder einen alleinerziehenden Menschen mit 1 Kind. Kleine WGs gehen natürlich auch.&nbsp;</div></div>
+        </div>
+        <div class="w-full inline-flex flex-wrap gap-4 justify-between items-end">
+            <div class="flex-1 inline-flex flex-col justify-end items-start gap-2.5">
+                <!--[if BLOCK]><![endif]-->                <div class="inline-flex justify-start items-center gap-2">
+                    <span class="far fa-location-pin"></span>
+                    <span>Woltmershausen</span>
+                </div>
+                <!--[if ENDBLOCK]><![endif]-->
+                <!--[if BLOCK]><![endif]-->                <div class="inline-flex justify-start items-center gap-2">
+                    <span class="far fa-circle-euro"></span>
+                    <span>
+                        <!--[if BLOCK]><![endif]-->                        600 € <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->                        <!--[if ENDBLOCK]><![endif]-->                    </span>
+                </div>
+                <!--[if ENDBLOCK]><![endif]-->
+                <div class="inline-flex justify-start items-center gap-2">
+                    <span class="far fa-calendar"></span>
+                    <span>28.06.2026<!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]--></span>
+                </div>
+            </div>
+            <div class="flex flex-row-reverse">
+                <!--[if BLOCK]><![endif]-->                <button wire:snapshot="{&quot;data&quot;:{&quot;advertisementId&quot;:19435,&quot;is_favorite&quot;:false,&quot;small&quot;:true},&quot;memo&quot;:{&quot;id&quot;:&quot;gxGsYroxd6LKFumaIKx0&quot;,&quot;name&quot;:&quot;favorite-button&quot;,&quot;path&quot;:&quot;verkauf-und-angebote\/mietobjekte&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;release&quot;:&quot;a-a-a&quot;,&quot;children&quot;:[],&quot;scripts&quot;:[],&quot;assets&quot;:[],&quot;errors&quot;:[],&quot;locale&quot;:&quot;de&quot;},&quot;checksum&quot;:&quot;c9aaff4205e2201834658adea994ac6f57f815820cce3b26dcb9bc94515b3668&quot;}" wire:effects="[]" wire:id="gxGsYroxd6LKFumaIKx0" wire:click="toggleFavorite" class="button-basics small">
+    <!--[if BLOCK]><![endif]-->        <span class="fas fa-heart"></span>
+        <span class="button-underline">Merken</span>
+    <!--[if ENDBLOCK]><![endif]--></button>                <!--[if ENDBLOCK]><![endif]-->            </div>
+        </div>
+    </div>
+<!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]--></div>        <!--[if BLOCK]><![endif]-->            <!--[if BLOCK]><![endif]-->                                <div class="w-full min-h-[280px] py-1 flex justify-center items-center mb-4">
+                    <div class="mx-auto flex justify-center items-center overflow-visible">
+    <div data-yieldlove="rectangle_1"></div>
+</div>
+                </div>
+            <!--[if ENDBLOCK]><![endif]-->        <!--[if ENDBLOCK]><![endif]-->            <div class="app-grid mb-4 p-4 bg-white dark:bg-transparent dark:border-2 dark:border-white rounded-2xl gap-4">
+    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->    <div class="col-span-4 bg-white rounded-xl lg:col-span-5 aspect-16/9 md:aspect-square lg:aspect-6/7 xl:aspect-square">
+        <a href="/show/19540" tabindex="-1" class="w-full h-full flex justify-center items-center">
+            <img class="rounded-xl  w-full h-full object-cover " src="/storage/images/thumbnails/b6e4b614-8c58-497a-8313-bc1281d52b30.webp" alt="Wohn-/Schlafbereich">
+        </a>
+    </div>
+    <div class="col-span-4 md:col-span-4 lg:col-span-7 flex flex-col justify-between gap-6 self-stretch">
+        <div class="flex flex-col justify-start items-start gap-6">
+            <h3 class="font-semibold text-lg">
+                <a href="/show/19540" class="hover:underline focus:underline">Frisch Renovierte 1-Zimmer Wohnung mit Balkon und EBK</a>
+            </h3>
+            <div class="justify-start clamp-5-lines trix-content"><div>Diese renovierte 1-Zimmer-Wohnung befindet sich im 1. Obergeschoss einer ruhigen Wohnanlage in Achim und ist ab sofort bezugsfrei. Mit einer Wohnfläche von ca. 50 m² überzeugt sie durch eine praktische Raumaufteilung und bietet ideale Voraussetzungen für Singles.&nbsp;</div><div>Das Herzstück der Wohnung bildet der helle Wohn-/Schlafbereich mit direktem Zugang zum Balkon, der zum Entspannen im Freien einlädt. Neben einem gemütlichen Schlafzimmer steht ein weiteres Zimmer zur Verfügung, das sich flexibel als, Abstellraum oder sogar als kleines Büro genutzt werden kann.&nbsp;</div><div>Ein weiteres Highlight ist die neue Einbauküche in einer separaten Küche. Das Badezimmer verfügt über eine Badewanne mit Duschvorrichtung.&nbsp;</div><div>Zusätzlichen Stauraum bietet ein eigener Kellerraum. Darüber hinaus steht den Bewohnern ein gemeinschaftlicher Wasch- und Trockenraum zur Verfügung.&nbsp;</div><div>&nbsp;</div><div>Ausstattung im Überblick:&nbsp;</div><div>•&nbsp; &nbsp; &nbsp; &nbsp; Ca. 50 m² Wohnfläche&nbsp;</div><div>•&nbsp; &nbsp; &nbsp; &nbsp; Neuer Bodenbeläge&nbsp;</div><div>•&nbsp; &nbsp; &nbsp; &nbsp; Neue Einbauküche&nbsp;</div><div>•&nbsp; &nbsp; &nbsp; &nbsp; Balkon&nbsp;</div><div>•&nbsp; &nbsp; &nbsp; &nbsp; Eigener Kellerraum&nbsp;</div><div>•&nbsp; &nbsp; &nbsp; &nbsp; Sofort bezugsfrei&nbsp;</div><div>&nbsp;</div><div>Lage:<br>&nbsp;Die Wohnung befindet sich in einer ruhigen und dennoch zentralen Wohnlage in Achim. Einkaufsmöglichkeiten, Ärzte, Apotheken sowie weitere Einrichtungen des täglichen Bedarfs sind schnell erreichbar. Auch die Anbindung an den öffentlichen Nahverkehr sowie an die umliegenden Städte, insbesondere Bremen und Verden, ist sehr gut. Gleichzeitig bieten die nahegelegenen Grün- und Erholungsflächen eine angenehme Wohnqualität.&nbsp;<br>&nbsp;</div><div>Daten zur Wohnung:&nbsp;</div><div>Zimmer: 1<br>Größe: ca. 50 m²<br>Geschoss: 1.OG<br>Kaltmiete: 540 €<br>Nebenkosten: 155 €<br>Warmmiete: 695 €<br>Kaution: 1.620 €&nbsp;</div></div>
+        </div>
+        <div class="w-full inline-flex flex-wrap gap-4 justify-between items-end">
+            <div class="flex-1 inline-flex flex-col justify-end items-start gap-2.5">
+                <!--[if BLOCK]><![endif]-->                <div class="inline-flex justify-start items-center gap-2">
+                    <span class="far fa-location-pin"></span>
+                    <span>Außerhalb Bremens</span>
+                </div>
+                <!--[if ENDBLOCK]><![endif]-->
+                <!--[if BLOCK]><![endif]-->                <div class="inline-flex justify-start items-center gap-2">
+                    <span class="far fa-circle-euro"></span>
+                    <span>
+                        <!--[if BLOCK]><![endif]-->                        540 € <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->                        <!--[if ENDBLOCK]><![endif]-->                    </span>
+                </div>
+                <!--[if ENDBLOCK]><![endif]-->
+                <div class="inline-flex justify-start items-center gap-2">
+                    <span class="far fa-calendar"></span>
+                    <span>28.06.2026<!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]--></span>
+                </div>
+            </div>
+            <div class="flex flex-row-reverse">
+                <!--[if BLOCK]><![endif]-->                <button wire:snapshot="{&quot;data&quot;:{&quot;advertisementId&quot;:19540,&quot;is_favorite&quot;:false,&quot;small&quot;:true},&quot;memo&quot;:{&quot;id&quot;:&quot;nPzzcr90BLWLHrDiDJmy&quot;,&quot;name&quot;:&quot;favorite-button&quot;,&quot;path&quot;:&quot;verkauf-und-angebote\/mietobjekte&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;release&quot;:&quot;a-a-a&quot;,&quot;children&quot;:[],&quot;scripts&quot;:[],&quot;assets&quot;:[],&quot;errors&quot;:[],&quot;locale&quot;:&quot;de&quot;},&quot;checksum&quot;:&quot;f42296a670eddd57aa1e8c0d4d46f281173e8091a95b54eb68734a0babb14c45&quot;}" wire:effects="[]" wire:id="nPzzcr90BLWLHrDiDJmy" wire:click="toggleFavorite" class="button-basics small">
+    <!--[if BLOCK]><![endif]-->        <span class="fas fa-heart"></span>
+        <span class="button-underline">Merken</span>
+    <!--[if ENDBLOCK]><![endif]--></button>                <!--[if ENDBLOCK]><![endif]-->            </div>
+        </div>
+    </div>
+<!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]--></div>        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->            <div class="app-grid mb-4 p-4 bg-white dark:bg-transparent dark:border-2 dark:border-white rounded-2xl gap-4">
+    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->    <div class="col-span-4 bg-white rounded-xl lg:col-span-5 aspect-16/9 md:aspect-square lg:aspect-6/7 xl:aspect-square">
+        <a href="/show/19555" tabindex="-1" class="w-full h-full flex justify-center items-center">
+            <img class="rounded-xl  w-full h-full object-cover " src="/storage/images/thumbnails/cdc122f1-d21b-4186-a859-31b396db1ea5.webp" alt="Wohnzimmer">
+        </a>
+    </div>
+    <div class="col-span-4 md:col-span-4 lg:col-span-7 flex flex-col justify-between gap-6 self-stretch">
+        <div class="flex flex-col justify-start items-start gap-6">
+            <h3 class="font-semibold text-lg">
+                <a href="/show/19555" class="hover:underline focus:underline">Freundliche 3-Zimmer Wohnung mit Balkon und EBK</a>
+            </h3>
+            <div class="justify-start clamp-5-lines trix-content"><div>Diese gepflegte 3-Zimmer-Wohnung befindet sich im 2. Obergeschoss einer ruhigen Wohnanlage in Bremen-Blumenthal und ist ab sofort bezugsfrei. Mit einer Wohnfläche von ca. 70 m² überzeugt sie durch eine praktische Raumaufteilung und bietet ideale Voraussetzungen für Paare, kleine Familien oder Berufstätige mit Homeoffice-Bedarf.<br>Das Herzstück der Wohnung bildet das helle Wohnzimmer mit direktem Zugang zum Balkon, der zum Entspannen im Freien einlädt. Neben einem gemütlichen Schlafzimmer steht ein weiteres Zimmer zur Verfügung, das sich flexibel als Kinderzimmer, Gästezimmer oder Büro nutzen lässt.<br>Die separate Küche ist bereits mit einer Einbauküche ausgestattet und bietet ausreichend Platz für den täglichen Bedarf. Das Badezimmer verfügt über eine Dusche und präsentiert sich funktional und gepflegt.<br>Zusätzlichen Stauraum bietet ein eigener Kellerraum. Darüber hinaus steht den Bewohnern ein gemeinschaftlicher Wasch- und Trockenraum zur Verfügung.<br>Ausstattung im Überblick:<br>•	Ca. 70 m² Wohnfläche<br>•	3 gut geschnittene Zimmer<br>•	Balkon<br>•	Einbauküche<br>•	Eigener Kellerraum<br>•	Gemeinschaftlicher Wasch- und Trockenraum<br>•	Ruhige Wohnlage<br>•	Sofort bezugsfrei<br>Lage:<br>Die Wohnung befindet sich in einer ruhigen und gewachsenen Wohnlage in Bremen-Nord. Das Umfeld zeichnet sich durch eine angenehme Nachbarschaft, viel Grün und eine gute Infrastruktur aus. Einkaufsmöglichkeiten für den täglichen Bedarf, Schulen, Kindergärten sowie medizinische Versorgungseinrichtungen sind bequem erreichbar. Zahlreiche Freizeit- und Erholungsmöglichkeiten sowie die Nähe zu den Weser- und Lesumlandschaften sorgen für eine hohe Wohnqualität. Dank der guten Anbindung an den öffentlichen Nahverkehr und die überregionalen Verkehrswege sind die Bremer Innenstadt und das Umland schnell und komfortabel erreichbar.<br>Überzeugen Sie sich selbst von den Vorzügen dieser attraktiven Wohnung und vereinbaren Sie gerne einen Besichtigungstermin.<br>Daten zur Wohnung:</div><div>Zimmer: 3<br>Größe: ca. 70 m²<br>Kaltmiete: 790 €<br>Nebenkosten: 150 €<br>Warmmiete: 940 €<br>Kaution: 2.370 €&nbsp;</div></div>
+        </div>
+        <div class="w-full inline-flex flex-wrap gap-4 justify-between items-end">
+            <div class="flex-1 inline-flex flex-col justify-end items-start gap-2.5">
+                <!--[if BLOCK]><![endif]-->                <div class="inline-flex justify-start items-center gap-2">
+                    <span class="far fa-location-pin"></span>
+                    <span>Blumenthal</span>
+                </div>
+                <!--[if ENDBLOCK]><![endif]-->
+                <!--[if BLOCK]><![endif]-->                <div class="inline-flex justify-start items-center gap-2">
+                    <span class="far fa-circle-euro"></span>
+                    <span>
+                        <!--[if BLOCK]><![endif]-->                        790 € <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->                        <!--[if ENDBLOCK]><![endif]-->                    </span>
+                </div>
+                <!--[if ENDBLOCK]><![endif]-->
+                <div class="inline-flex justify-start items-center gap-2">
+                    <span class="far fa-calendar"></span>
+                    <span>28.06.2026<!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]--></span>
+                </div>
+            </div>
+            <div class="flex flex-row-reverse">
+                <!--[if BLOCK]><![endif]-->                <button wire:snapshot="{&quot;data&quot;:{&quot;advertisementId&quot;:19555,&quot;is_favorite&quot;:false,&quot;small&quot;:true},&quot;memo&quot;:{&quot;id&quot;:&quot;Y9bwbIc6gHcmIvAtIrrb&quot;,&quot;name&quot;:&quot;favorite-button&quot;,&quot;path&quot;:&quot;verkauf-und-angebote\/mietobjekte&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;release&quot;:&quot;a-a-a&quot;,&quot;children&quot;:[],&quot;scripts&quot;:[],&quot;assets&quot;:[],&quot;errors&quot;:[],&quot;locale&quot;:&quot;de&quot;},&quot;checksum&quot;:&quot;941cf813a053d8a1d2d31b26f235d7bb7feb274e5f734d82fbcc86b5e3acedd0&quot;}" wire:effects="[]" wire:id="Y9bwbIc6gHcmIvAtIrrb" wire:click="toggleFavorite" class="button-basics small">
+    <!--[if BLOCK]><![endif]-->        <span class="fas fa-heart"></span>
+        <span class="button-underline">Merken</span>
+    <!--[if ENDBLOCK]><![endif]--></button>                <!--[if ENDBLOCK]><![endif]-->            </div>
+        </div>
+    </div>
+<!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]--></div>        <!--[if BLOCK]><![endif]-->            <!--[if BLOCK]><![endif]-->                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->            <!--[if ENDBLOCK]><![endif]-->        <!--[if ENDBLOCK]><![endif]-->            <div class="app-grid mb-4 p-4 bg-white dark:bg-transparent dark:border-2 dark:border-white rounded-2xl gap-4">
+    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->    <div class="col-span-4 bg-white rounded-xl lg:col-span-5 aspect-16/9 md:aspect-square lg:aspect-6/7 xl:aspect-square">
+        <a href="/show/19684" tabindex="-1" class="w-full h-full flex justify-center items-center">
+            <img class="rounded-xl  w-full h-full object-cover " src="/storage/images/thumbnails/4b47ae66-aebc-404c-80f4-ca0c1d1bc501.webp" alt="Wohnzimmer">
+        </a>
+    </div>
+    <div class="col-span-4 md:col-span-4 lg:col-span-7 flex flex-col justify-between gap-6 self-stretch">
+        <div class="flex flex-col justify-start items-start gap-6">
+            <h3 class="font-semibold text-lg">
+                <a href="/show/19684" class="hover:underline focus:underline">3 Zimmer Wohnung mit Terrasse Erdgeschoss zentral</a>
+            </h3>
+            <div class="justify-start clamp-5-lines trix-content"><div>Wir suchen einen Nachmieter für unsere zentral gelegene 3-Zimmer-Wohnung im Erdgeschoss. Die Wohnung verfügt über ca. 70 m² Wohnfläche und wurde Anfang 2025 vollständig kernsaniert.&nbsp;<br></div><div>Die Wohnung eignet sich besonders für Singles, Paare oder kleine Familien mit einem Kind.<br>Aktuell zahlen wir zu zweit Nebenkosten von 215€, das kann sich je nach Personenanzahl ändern.<br>&nbsp;<br><strong>Bezugsfrei ab dem 01.09.2026, nach Absprache auch bereits zum 15.08.2026 möglich.</strong><br><strong>Wichtige Voraussetzung:</strong><br> Die maßangefertigten Plissees, der Badezimmer-Spiegelschrank sowie die Gardine inklusive Gardinenstange sollen gegen eine Abstandszahlung übernommen werden. Die Übernahme dieser Gegenstände ist Voraussetzung für die Anmietung der Wohnung.<br>&nbsp;<br>Bei Interesse bitten wir um eine kurze Nachricht mit euren Eckdaten:<br>&nbsp;</div><ul><li>Vor- und Nachname</li><li>Anzahl der einziehenden Personen</li><li>Gewünschter Einzugstermin</li></ul><div><br>Aufgrund der erwarteten Anzahl der Anfragen können wir nicht auf jede einzelne Nachricht antworten und bitten um Verständnis!<br></div></div>
+        </div>
+        <div class="w-full inline-flex flex-wrap gap-4 justify-between items-end">
+            <div class="flex-1 inline-flex flex-col justify-end items-start gap-2.5">
+                <!--[if BLOCK]><![endif]-->                <div class="inline-flex justify-start items-center gap-2">
+                    <span class="far fa-location-pin"></span>
+                    <span>Östliche Vorstadt</span>
+                </div>
+                <!--[if ENDBLOCK]><![endif]-->
+                <!--[if BLOCK]><![endif]-->                <div class="inline-flex justify-start items-center gap-2">
+                    <span class="far fa-circle-euro"></span>
+                    <span>
+                        <!--[if BLOCK]><![endif]-->                        695 € <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->                        <!--[if ENDBLOCK]><![endif]-->                    </span>
+                </div>
+                <!--[if ENDBLOCK]><![endif]-->
+                <div class="inline-flex justify-start items-center gap-2">
+                    <span class="far fa-calendar"></span>
+                    <span>28.06.2026<!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]--></span>
+                </div>
+            </div>
+            <div class="flex flex-row-reverse">
+                <!--[if BLOCK]><![endif]-->                <button wire:snapshot="{&quot;data&quot;:{&quot;advertisementId&quot;:19684,&quot;is_favorite&quot;:false,&quot;small&quot;:true},&quot;memo&quot;:{&quot;id&quot;:&quot;9OJtWF6mzteSgjynmLYR&quot;,&quot;name&quot;:&quot;favorite-button&quot;,&quot;path&quot;:&quot;verkauf-und-angebote\/mietobjekte&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;release&quot;:&quot;a-a-a&quot;,&quot;children&quot;:[],&quot;scripts&quot;:[],&quot;assets&quot;:[],&quot;errors&quot;:[],&quot;locale&quot;:&quot;de&quot;},&quot;checksum&quot;:&quot;a1f11b0e2189ef8785f8c9ee3f2531593396aeb492afb097d39553b7462b8634&quot;}" wire:effects="[]" wire:id="9OJtWF6mzteSgjynmLYR" wire:click="toggleFavorite" class="button-basics small">
+    <!--[if BLOCK]><![endif]-->        <span class="fas fa-heart"></span>
+        <span class="button-underline">Merken</span>
+    <!--[if ENDBLOCK]><![endif]--></button>                <!--[if ENDBLOCK]><![endif]-->            </div>
+        </div>
+    </div>
+<!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]--></div>        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->            <div class="app-grid mb-4 p-4 bg-white dark:bg-transparent dark:border-2 dark:border-white rounded-2xl gap-4">
+    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->    <div class="col-span-4 bg-white rounded-xl lg:col-span-5 aspect-16/9 md:aspect-square lg:aspect-6/7 xl:aspect-square">
+        <a href="/show/19705" tabindex="-1" class="w-full h-full flex justify-center items-center">
+            <img class="rounded-xl  w-full h-full object-cover " src="/storage/images/thumbnails/d75c42a4-b07f-41ec-a86c-4b7fc6cd9ace.webp" alt="Terrasse Blick ">
+        </a>
+    </div>
+    <div class="col-span-4 md:col-span-4 lg:col-span-7 flex flex-col justify-between gap-6 self-stretch">
+        <div class="flex flex-col justify-start items-start gap-6">
+            <h3 class="font-semibold text-lg">
+                <a href="/show/19705" class="hover:underline focus:underline">Top zentral Lage Neustadt.1 Zimmer Studio Wohnung mit großen Terrasse. </a>
+            </h3>
+            <div class="justify-start clamp-5-lines trix-content"><div><br></div><div>Liebe Bewerberinnen und Bewerber,<br>Sie haben die Möglichkeit, im schönen Neustadt, mitten im Zentrum nahe dem Marktplatz, in einer der besten und beliebtesten Wohngegenden in Bremen ein Dachgeschosswohnung mit herrlichem Ausblick zu mieten.&nbsp;<br>Dank der hervorragenden Lage des Hauses ist alles Notwendige für den täglichen Bedarf zu Fuß erreichbar. REWE ( 3 min.), Rossmann ( 4 min.),<br>Bäckerei, Apotheke, Cafés, Restaurants, Bäcker und mehr... sind auch ganz in der Nähe!<br>Außerdem ist buchstäblich um die Ecke vom Haus: Der Wochenmarkt Delmestr. / Ecke Pappelstr. mit frischen regionalen Produkten und vieles mehr.<br>Die Wohnung befindet sich im Dachgeschoss (vierten Stock) und bietet einen herrlichen Blick auf die Stadt und das umliegende Neustadt.<br>Die Wohnung ist zu jeder Jahreszeit sehr hell, selbst im Winter sind die Räume lichtdurchflutet.<br>Es handelt sich um ein Einzimmerapartment mit offener Küche und ein Badezimmer mit Dusche und Fenster.<br>Die Wohnung verfügt über ein riesiges Panoramafenster mit Zugang zur Terrasse, ein zweites mittelgroßes Fenster und zwei weitere Dachfenster.<br>Die Terrasse ist sehr groß, und für die nahe Zukunft sind eine Erweiterung und eine Renovierung des Terrassenbodens geplant.<br>Und die Größe der Terrasse wird vergrößerlt.<br>Die Wohnung wird je nach Wunsch teilmöbliert oder vollmöbliert vermietet.<br>Diese Wohnung ist ideal für Singles, junge Paare sowie Studenten und junge Berufstätige.<br>Haustiere sind in einer Anzahl von maximal zwei Tieren erlaubt.<br>Es ist ein befristeter oder unbefristeter Mietvertrag mit Anmeldung möglich.<br>Sollten Sie aus schwerwiegenden Gründen nicht persönlich erscheinen können, ist es möglich, eine Online-Besichtigung zu organisieren</div><div>Das Haus verfügt außerdem über einen großen, grünen Garten – eine Oase der Ruhe und Abkühlung – den Sie wie alle anderen Bewohner nutzen können. Im Erdgeschoss befindet sich eine Waschmaschine. Falls Sie eine eigene benötigen, können Sie diese in der Wohnung aufstellen.</div></div>
+        </div>
+        <div class="w-full inline-flex flex-wrap gap-4 justify-between items-end">
+            <div class="flex-1 inline-flex flex-col justify-end items-start gap-2.5">
+                <!--[if BLOCK]><![endif]-->                <div class="inline-flex justify-start items-center gap-2">
+                    <span class="far fa-location-pin"></span>
+                    <span>Neustadt</span>
+                </div>
+                <!--[if ENDBLOCK]><![endif]-->
+                <!--[if BLOCK]><![endif]-->                <div class="inline-flex justify-start items-center gap-2">
+                    <span class="far fa-circle-euro"></span>
+                    <span>
+                        <!--[if BLOCK]><![endif]-->                        690 € <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->                        <!--[if ENDBLOCK]><![endif]-->                    </span>
+                </div>
+                <!--[if ENDBLOCK]><![endif]-->
+                <div class="inline-flex justify-start items-center gap-2">
+                    <span class="far fa-calendar"></span>
+                    <span>28.06.2026<!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]--></span>
+                </div>
+            </div>
+            <div class="flex flex-row-reverse">
+                <!--[if BLOCK]><![endif]-->                <button wire:snapshot="{&quot;data&quot;:{&quot;advertisementId&quot;:19705,&quot;is_favorite&quot;:false,&quot;small&quot;:true},&quot;memo&quot;:{&quot;id&quot;:&quot;xOokl9R4OuePWwepc4yJ&quot;,&quot;name&quot;:&quot;favorite-button&quot;,&quot;path&quot;:&quot;verkauf-und-angebote\/mietobjekte&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;release&quot;:&quot;a-a-a&quot;,&quot;children&quot;:[],&quot;scripts&quot;:[],&quot;assets&quot;:[],&quot;errors&quot;:[],&quot;locale&quot;:&quot;de&quot;},&quot;checksum&quot;:&quot;7f4d1a7b4f093c58b68ba6dec1e78fc2e262889fc7135ee03951a01883e2aff7&quot;}" wire:effects="[]" wire:id="xOokl9R4OuePWwepc4yJ" wire:click="toggleFavorite" class="button-basics small">
+    <!--[if BLOCK]><![endif]-->        <span class="fas fa-heart"></span>
+        <span class="button-underline">Merken</span>
+    <!--[if ENDBLOCK]><![endif]--></button>                <!--[if ENDBLOCK]><![endif]-->            </div>
+        </div>
+    </div>
+<!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]--></div>        <!--[if BLOCK]><![endif]-->            <!--[if BLOCK]><![endif]-->                                <div class="w-full min-h-[280px] py-1 flex justify-center items-center mb-4">
+                    <div class="mx-auto flex justify-center items-center overflow-visible">
+    <div data-yieldlove="rectangle_2"></div>
+</div>
+                </div>
+            <!--[if ENDBLOCK]><![endif]-->        <!--[if ENDBLOCK]><![endif]-->            <div class="app-grid mb-4 p-4 bg-white dark:bg-transparent dark:border-2 dark:border-white rounded-2xl gap-4">
+    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->    <div class="col-span-4 bg-white rounded-xl lg:col-span-5 aspect-16/9 md:aspect-square lg:aspect-6/7 xl:aspect-square">
+        <a href="/show/19720" tabindex="-1" class="w-full h-full flex justify-center items-center">
+            <img class="rounded-xl  w-full h-full object-cover " src="/storage/images/thumbnails/7ab38bc8-581a-4ed6-a36f-3dfa43ba56c9.webp" alt="Flur oben">
+        </a>
+    </div>
+    <div class="col-span-4 md:col-span-4 lg:col-span-7 flex flex-col justify-between gap-6 self-stretch">
+        <div class="flex flex-col justify-start items-start gap-6">
+            <h3 class="font-semibold text-lg">
+                <a href="/show/19720" class="hover:underline focus:underline">Haus 115 qm Walle </a>
+            </h3>
+            <div class="justify-start clamp-5-lines trix-content"><div>Für unser gepflegtes und lichtdurchflutetes Reihenhaus im beliebten Generalsviertel in Bremen-Walle suchen wir sympathische und zuverlässige Mieter, die sich in einem schönen Zuhause wohlfühlen möchten.&nbsp;</div><div><strong>Das Haus bietet:</strong>&nbsp;</div><div><strong>Erdgeschoss</strong>&nbsp;</div><ul><li>Kleiner Eingangsflur</li><li>Großzügiger Wohn- und Essbereich mit offener Küche (ca 36 qm)</li><li>Einbauküche mit Herd, Backofen und Spülmaschine</li></ul><div><br><strong>1. Obergeschoss</strong><br>&nbsp;</div><ul><li>Zwei Schlafzimmer (Kinderzimmer), jeweils ca. 14 qm</li><li>Badezimmer mit Dusche und Badewanne</li><li>Separate Toilette</li></ul><div><br><strong>Dachgeschoss</strong><br>&nbsp;</div><ul><li>Helles, vielseitig nutzbares Studio (Elternschlafzimmer), ca. 30 qm&nbsp;</li><li>Zweites Badezimmer (2020 erneuert)</li></ul><div><br><strong>Keller</strong><br>&nbsp;</div><ul><li>Ca. 45 m² Nutzfläche mit viel Stauraum</li></ul><div><br><strong>Ausstattung</strong><br>&nbsp;</div><ul><li>Helles, freundliches Wohnambiente</li><li>Parkettboden im Erdgeschoss und Dachgeschoss</li><li>Laminat in den Kinderzimmern</li><li>Terrasse (ca. 20 m²)</li><li>Kleiner grüner Garten mit Platz für Sandkasten und Planschpool&nbsp; (ca. 20 m²) oder als Ruheoase nutzbar</li><li>Kernsaniert 2015</li></ul><div><br>Kaltmiete: 1200€<br>Nebenkosten: 130€<br>Strom, Wasser, Gas über Vermieter&nbsp;<br>Die ruhige und dennoch zentrale Lage im Generalsviertel bietet eine sehr gute Anbindung sowie Einkaufsmöglichkeiten, Schulen, Kitas, Spielplätze und öffentliche Verkehrsmittel in der Nähe.<br>&nbsp;<br>Wir freuen uns auf Ihre aussagekräftige Anfrage mit einer kurzen Vorstellung Ihrer Person bzw. Ihrer Familie.<br>&nbsp;</div><div><br></div></div>
+        </div>
+        <div class="w-full inline-flex flex-wrap gap-4 justify-between items-end">
+            <div class="flex-1 inline-flex flex-col justify-end items-start gap-2.5">
+                <!--[if BLOCK]><![endif]-->                <div class="inline-flex justify-start items-center gap-2">
+                    <span class="far fa-location-pin"></span>
+                    <span>Walle</span>
+                </div>
+                <!--[if ENDBLOCK]><![endif]-->
+                <!--[if BLOCK]><![endif]-->                <div class="inline-flex justify-start items-center gap-2">
+                    <span class="far fa-circle-euro"></span>
+                    <span>
+                        <!--[if BLOCK]><![endif]-->                        1.200 € <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->                        <!--[if ENDBLOCK]><![endif]-->                    </span>
+                </div>
+                <!--[if ENDBLOCK]><![endif]-->
+                <div class="inline-flex justify-start items-center gap-2">
+                    <span class="far fa-calendar"></span>
+                    <span>28.06.2026<!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]--></span>
+                </div>
+            </div>
+            <div class="flex flex-row-reverse">
+                <!--[if BLOCK]><![endif]-->                <button wire:snapshot="{&quot;data&quot;:{&quot;advertisementId&quot;:19720,&quot;is_favorite&quot;:false,&quot;small&quot;:true},&quot;memo&quot;:{&quot;id&quot;:&quot;dxWJkBYGO2Ka79CzuG5A&quot;,&quot;name&quot;:&quot;favorite-button&quot;,&quot;path&quot;:&quot;verkauf-und-angebote\/mietobjekte&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;release&quot;:&quot;a-a-a&quot;,&quot;children&quot;:[],&quot;scripts&quot;:[],&quot;assets&quot;:[],&quot;errors&quot;:[],&quot;locale&quot;:&quot;de&quot;},&quot;checksum&quot;:&quot;69057680f67d475df09434b2b702a10aa2aef5bc447fc80229ffa5676f12c193&quot;}" wire:effects="[]" wire:id="dxWJkBYGO2Ka79CzuG5A" wire:click="toggleFavorite" class="button-basics small">
+    <!--[if BLOCK]><![endif]-->        <span class="fas fa-heart"></span>
+        <span class="button-underline">Merken</span>
+    <!--[if ENDBLOCK]><![endif]--></button>                <!--[if ENDBLOCK]><![endif]-->            </div>
+        </div>
+    </div>
+<!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]--></div>        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->            <div class="app-grid mb-4 p-4 bg-white dark:bg-transparent dark:border-2 dark:border-white rounded-2xl gap-4">
+    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->    <div class="col-span-4 bg-white rounded-xl lg:col-span-5 aspect-16/9 md:aspect-square lg:aspect-6/7 xl:aspect-square">
+        <a href="/show/19297" tabindex="-1" class="w-full h-full flex justify-center items-center">
+            <img class="rounded-xl  w-full h-full object-cover " src="/storage/images/thumbnails/925ce358-d1e0-4c75-bba8-a87b4f07fb6a.webp" alt="Hauptzimmer">
+        </a>
+    </div>
+    <div class="col-span-4 md:col-span-4 lg:col-span-7 flex flex-col justify-between gap-6 self-stretch">
+        <div class="flex flex-col justify-start items-start gap-6">
+            <h3 class="font-semibold text-lg">
+                <a href="/show/19297" class="hover:underline focus:underline">Untermieter für ein Jahr gesucht</a>
+            </h3>
+            <div class="justify-start clamp-5-lines trix-content"><div>Hallo zusammen,<br>ich möchte meine Wohnung für ein Jahr untervermieten, weil ich wegen der Hochschule Bremen ins Ausland muss. Es handelt sich um eine Wohnung in der Neustadt in der Nähe der Hochschule Bremen ca. 6min zu Fuß. Die Wohnung beträgt ca. 25&nbsp; m² zudem ist sie möbliert und im Erdgeschoss.<br>In dem Hauptzimmer ist eine Küchennische und es gibt eine kleine Terrasse. Im Hauskeller befinden sich geteilte Waschmaschinen und ein Trockenraum. In der Miete sind Nebenkosten und Internet einbezogen.<br>Die Wohnung wäre vom 01.09.2026 bis zum 31.08.2027 zu mieten.<br>Bei Interesse oder Fragen könnt ihr mir gerne eine E-Mail schreiben:&nbsp; lgiel(at)stud.hs-bremen.de</div></div>
+        </div>
+        <div class="w-full inline-flex flex-wrap gap-4 justify-between items-end">
+            <div class="flex-1 inline-flex flex-col justify-end items-start gap-2.5">
+                <!--[if BLOCK]><![endif]-->                <div class="inline-flex justify-start items-center gap-2">
+                    <span class="far fa-location-pin"></span>
+                    <span>Neustadt</span>
+                </div>
+                <!--[if ENDBLOCK]><![endif]-->
+                <!--[if BLOCK]><![endif]-->                <div class="inline-flex justify-start items-center gap-2">
+                    <span class="far fa-circle-euro"></span>
+                    <span>
+                        <!--[if BLOCK]><![endif]-->                        500 € <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->                        <!--[if ENDBLOCK]><![endif]-->                    </span>
+                </div>
+                <!--[if ENDBLOCK]><![endif]-->
+                <div class="inline-flex justify-start items-center gap-2">
+                    <span class="far fa-calendar"></span>
+                    <span>27.06.2026<!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]--></span>
+                </div>
+            </div>
+            <div class="flex flex-row-reverse">
+                <!--[if BLOCK]><![endif]-->                <button wire:snapshot="{&quot;data&quot;:{&quot;advertisementId&quot;:19297,&quot;is_favorite&quot;:false,&quot;small&quot;:true},&quot;memo&quot;:{&quot;id&quot;:&quot;rBoz5B25segLYOKA05d6&quot;,&quot;name&quot;:&quot;favorite-button&quot;,&quot;path&quot;:&quot;verkauf-und-angebote\/mietobjekte&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;release&quot;:&quot;a-a-a&quot;,&quot;children&quot;:[],&quot;scripts&quot;:[],&quot;assets&quot;:[],&quot;errors&quot;:[],&quot;locale&quot;:&quot;de&quot;},&quot;checksum&quot;:&quot;10c2ccbbc5512137c2033260355260ff7461f9312d88a992711f7ac59b68bce1&quot;}" wire:effects="[]" wire:id="rBoz5B25segLYOKA05d6" wire:click="toggleFavorite" class="button-basics small">
+    <!--[if BLOCK]><![endif]-->        <span class="fas fa-heart"></span>
+        <span class="button-underline">Merken</span>
+    <!--[if ENDBLOCK]><![endif]--></button>                <!--[if ENDBLOCK]><![endif]-->            </div>
+        </div>
+    </div>
+<!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]--></div>        <!--[if BLOCK]><![endif]-->            <!--[if BLOCK]><![endif]-->                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->            <!--[if ENDBLOCK]><![endif]-->        <!--[if ENDBLOCK]><![endif]-->            <div class="app-grid mb-4 p-4 bg-white dark:bg-transparent dark:border-2 dark:border-white rounded-2xl gap-4">
+    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->    <div class="col-span-4 bg-white rounded-xl lg:col-span-5 aspect-16/9 md:aspect-square lg:aspect-6/7 xl:aspect-square">
+        <a href="/show/19339" tabindex="-1" class="w-full h-full flex justify-center items-center">
+            <img class="rounded-xl  w-1/2 h-1/2 object-contain " src="/storage/icons/mietangebote.svg" alt="Mietangebote">
+        </a>
+    </div>
+    <div class="col-span-4 md:col-span-4 lg:col-span-7 flex flex-col justify-between gap-6 self-stretch">
+        <div class="flex flex-col justify-start items-start gap-6">
+            <h3 class="font-semibold text-lg">
+                <a href="/show/19339" class="hover:underline focus:underline">Kfz-Stellplatz Tiefgarage Weidedamm mieten</a>
+            </h3>
+            <div class="justify-start clamp-5-lines trix-content"><div>„An heißen Tagen ins kühle Auto steigen“. WEIDEDAMM. Moderner Tiefgaragenplatz. Eigentümer geführte Garage. Hell, sicher, sauber. Rolltor mit Hand-Sender. Innsbrucker Str. (REWE-Komplex). Zur Untervermietung ab sofort. Monatlich 92 € incl..</div></div>
+        </div>
+        <div class="w-full inline-flex flex-wrap gap-4 justify-between items-end">
+            <div class="flex-1 inline-flex flex-col justify-end items-start gap-2.5">
+                <!--[if BLOCK]><![endif]-->                <div class="inline-flex justify-start items-center gap-2">
+                    <span class="far fa-location-pin"></span>
+                    <span>Findorff</span>
+                </div>
+                <!--[if ENDBLOCK]><![endif]-->
+                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                <div class="inline-flex justify-start items-center gap-2">
+                    <span class="far fa-calendar"></span>
+                    <span>27.06.2026<!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]--></span>
+                </div>
+            </div>
+            <div class="flex flex-row-reverse">
+                <!--[if BLOCK]><![endif]-->                <button wire:snapshot="{&quot;data&quot;:{&quot;advertisementId&quot;:19339,&quot;is_favorite&quot;:false,&quot;small&quot;:true},&quot;memo&quot;:{&quot;id&quot;:&quot;vCYh7cvNtj7IodxXuvZV&quot;,&quot;name&quot;:&quot;favorite-button&quot;,&quot;path&quot;:&quot;verkauf-und-angebote\/mietobjekte&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;release&quot;:&quot;a-a-a&quot;,&quot;children&quot;:[],&quot;scripts&quot;:[],&quot;assets&quot;:[],&quot;errors&quot;:[],&quot;locale&quot;:&quot;de&quot;},&quot;checksum&quot;:&quot;9744fd13b3e6b38ab35600add32c94b6b0eae9535986d330132bfa8cc6fe614e&quot;}" wire:effects="[]" wire:id="vCYh7cvNtj7IodxXuvZV" wire:click="toggleFavorite" class="button-basics small">
+    <!--[if BLOCK]><![endif]-->        <span class="fas fa-heart"></span>
+        <span class="button-underline">Merken</span>
+    <!--[if ENDBLOCK]><![endif]--></button>                <!--[if ENDBLOCK]><![endif]-->            </div>
+        </div>
+    </div>
+<!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]--></div>        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->            <div class="app-grid mb-4 p-4 bg-white dark:bg-transparent dark:border-2 dark:border-white rounded-2xl gap-4">
+    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->    <div class="col-span-4 bg-white rounded-xl lg:col-span-5 aspect-16/9 md:aspect-square lg:aspect-6/7 xl:aspect-square">
+        <a href="/show/19228" tabindex="-1" class="w-full h-full flex justify-center items-center">
+            <img class="rounded-xl  w-full h-full object-cover " src="/storage/images/thumbnails/dfcd0118-56c8-4339-8bf4-2303ba82b69f.webp" alt="Jugendstilvilla in Blumenthal">
+        </a>
+    </div>
+    <div class="col-span-4 md:col-span-4 lg:col-span-7 flex flex-col justify-between gap-6 self-stretch">
+        <div class="flex flex-col justify-start items-start gap-6">
+            <h3 class="font-semibold text-lg">
+                <a href="/show/19228" class="hover:underline focus:underline">Sanierte Altbau-Wohnung</a>
+            </h3>
+            <div class="justify-start clamp-5-lines trix-content"><div>Sanierte Altbau-Wohnung, 106 qm, im 1. OG einer Jugendstilvilla,&nbsp;<br>3 Zimmer, Küche, Wannenbad, Duschbad, Balkon, Abstellraum im Dachgeschoss, PKW-Stellplatz<br>Das Haus steht unter Denkmalschutz und bietet ein helles, großzügiges Wohnambiente mit noch vielen bis heute erhaltenen historischen Stilelementen der Art Nouveau Epoche (Jugendstil), Sprossenfenster, Marmorfensterbänke, gut erhaltene Vollholz-Kassettentüren und Holzdielenböden. Die Raumhöhe von gut 3,30 Metern rundet das repräsentative Ambiente ab. Zwei Zimmer wurden ehemals als Wohn- und Esszimmer genutzt und können bei Bedarf wieder zusammengelegt werden.&nbsp;<br>Die Wohnung wird zur Zeit saniert, der Einzug ist voraussichtlich im Oktober möglich.</div></div>
+        </div>
+        <div class="w-full inline-flex flex-wrap gap-4 justify-between items-end">
+            <div class="flex-1 inline-flex flex-col justify-end items-start gap-2.5">
+                <!--[if BLOCK]><![endif]-->                <div class="inline-flex justify-start items-center gap-2">
+                    <span class="far fa-location-pin"></span>
+                    <span>Blumenthal</span>
+                </div>
+                <!--[if ENDBLOCK]><![endif]-->
+                <!--[if BLOCK]><![endif]-->                <div class="inline-flex justify-start items-center gap-2">
+                    <span class="far fa-circle-euro"></span>
+                    <span>
+                        <!--[if BLOCK]><![endif]-->                        950 € <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->                        <!--[if ENDBLOCK]><![endif]-->                    </span>
+                </div>
+                <!--[if ENDBLOCK]><![endif]-->
+                <div class="inline-flex justify-start items-center gap-2">
+                    <span class="far fa-calendar"></span>
+                    <span>27.06.2026<!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]--></span>
+                </div>
+            </div>
+            <div class="flex flex-row-reverse">
+                <!--[if BLOCK]><![endif]-->                <button wire:snapshot="{&quot;data&quot;:{&quot;advertisementId&quot;:19228,&quot;is_favorite&quot;:false,&quot;small&quot;:true},&quot;memo&quot;:{&quot;id&quot;:&quot;fUi5PaXVC6hhcMvgWWhS&quot;,&quot;name&quot;:&quot;favorite-button&quot;,&quot;path&quot;:&quot;verkauf-und-angebote\/mietobjekte&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;release&quot;:&quot;a-a-a&quot;,&quot;children&quot;:[],&quot;scripts&quot;:[],&quot;assets&quot;:[],&quot;errors&quot;:[],&quot;locale&quot;:&quot;de&quot;},&quot;checksum&quot;:&quot;5d9e6f44357e5ac3cae0884302c9cfbee60e14ed51d4ecdef32f25d2e881cb10&quot;}" wire:effects="[]" wire:id="fUi5PaXVC6hhcMvgWWhS" wire:click="toggleFavorite" class="button-basics small">
+    <!--[if BLOCK]><![endif]-->        <span class="fas fa-heart"></span>
+        <span class="button-underline">Merken</span>
+    <!--[if ENDBLOCK]><![endif]--></button>                <!--[if ENDBLOCK]><![endif]-->            </div>
+        </div>
+    </div>
+<!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]--></div>        <!--[if BLOCK]><![endif]-->            <!--[if BLOCK]><![endif]-->                                <div class="w-full min-h-[280px] py-1 flex justify-center items-center mb-4">
+                    <div class="mx-auto flex justify-center items-center overflow-visible">
+    <div data-yieldlove="rectangle_3"></div>
+</div>
+                </div>
+            <!--[if ENDBLOCK]><![endif]-->        <!--[if ENDBLOCK]><![endif]-->    <!--[if ENDBLOCK]><![endif]-->    <!--[if BLOCK]><![endif]-->    <nav role="navigation" aria-label="Pagination Navigation" class="flex flex-col-reverse gap-4 items-center md:flex-row md:justify-between">
+        <div class="md:min-w-42">
+            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->        </div>
+        <div class="hidden bg-accent py-2 rounded-lg text-white lg:flex divide-x-2 divide-white">
+            
+            <!--[if BLOCK]><![endif]-->                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->                <!--[if BLOCK]><![endif]-->                    <span aria-current="page" class="text-center font-semibold px-2 min-w-8">1</span>
+                <!--[if ENDBLOCK]><![endif]-->                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->                <!--[if BLOCK]><![endif]-->                    <a href="https://schwarzesbrett.bremen.de/verkauf-und-angebote/mietobjekte?sort=date_desc&amp;page=2#results" aria-label="Go to page 2" class="text-center hover:underline hover:text-white px-2 min-w-8">
+                        2
+                    </a>
+                <!--[if ENDBLOCK]><![endif]-->                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->                <!--[if BLOCK]><![endif]-->                    <a href="https://schwarzesbrett.bremen.de/verkauf-und-angebote/mietobjekte?sort=date_desc&amp;page=3#results" aria-label="Go to page 3" class="text-center hover:underline hover:text-white px-2 min-w-8">
+                        3
+                    </a>
+                <!--[if ENDBLOCK]><![endif]-->                            <!--[if BLOCK]><![endif]-->                    <span aria-disabled="true" class="text-center px-2 min-w-8">…</span>
+                <!--[if ENDBLOCK]><![endif]-->                <!--[if BLOCK]><![endif]-->                    <a href="https://schwarzesbrett.bremen.de/verkauf-und-angebote/mietobjekte?sort=date_desc&amp;page=12#results" aria-label="Go to page 12" class="text-center hover:underline hover:text-white px-2 min-w-8">
+                        12
+                    </a>
+                <!--[if ENDBLOCK]><![endif]-->            <!--[if ENDBLOCK]><![endif]-->        </div>
+        <div class="md:min-w-42">
+            
+            <!--[if BLOCK]><![endif]-->                <a href="https://schwarzesbrett.bremen.de/verkauf-und-angebote/mietobjekte?sort=date_desc&amp;page=2#results" class="button-basics">
+    <!--[if BLOCK]><![endif]-->        <span class="fas fa-forward"></span>
+    <!--[if ENDBLOCK]><![endif]-->    <span class="button-underline">
+        Nächste Seite
+    </span>
+</a>
+            <!--[if ENDBLOCK]><![endif]-->        </div>
+    </nav>
+<!--[if ENDBLOCK]><![endif]-->    
+</div>            <div class="col-span-4 md:col-span-8 lg:col-span-12 flex justify-center mt-8" x-data="{ copied: false, url: 'https://schwarzesbrett.bremen.de/feed/verkauf-und-angebote/mietobjekte' }">
+                <button class="cursor-pointer underline hover:text-white hover:bg-accent focus-visible:text-white focus-visible:bg-accent duration-200" @click="navigator.clipboard.writeText(url); copied = true; setTimeout(() =&gt; copied = false, 2000)">
+                    <span class="fa" :class="copied ? 'fa-check' : 'fa-rss'"></span>
+                    <span class="button-underline" x-text="copied ? 'URL wurde kopiert' : 'URL zum RSS-Feed kopieren'"></span>
+                </button>
+            </div>
+         </section>
+ </main>
+
+      <footer class="bg-white dark:bg-white/10 footer-dark py-10 mt-30">
+    <div class="container app-grid">
+        <div class="col-span-4 md:col-span-6 lg:col-span-8 block lg:flex items-start gap-4">
+            <div>
+                <a href="/" class="group mb-2 inline-block">
+                    <img src="https://schwarzesbrett.bremen.de/images/logo.svg" alt="Logo Schwarzes Brett Bremen" class="dark:hidden w-54 group-focus-visible:outline-2 group-focus-visible:outline-offset-2 group-focus-visible:outline-blue-600">
+                    <img src="https://schwarzesbrett.bremen.de/images/logo_dark.svg" alt="Logo Schwarzes Brett Bremen" class="hidden dark:block w-54 group-focus-visible:outline-2 group-focus-visible:outline-offset-2 group-focus-visible:outline-blue-600">
+                </a>
+                <p class="mb-4">Telefon: 0421 - 9600 - 880<br>
+                E-Mail: <a href="/cdn-cgi/l/email-protection#691a0a011e081b130c1a0b1b0c1d1d291e0f0b440b1b0c040c07470d0c" class="underline hover:text-white hover:bg-accent focus-visible:text-white focus-visible:bg-accent duration-200"><span class="__cf_email__" data-cfemail="afdcccc7d8ceddd5cadccdddcadbdbefd8c9cd82cdddcac2cac181cbca">[email&nbsp;protected]</span></a></p>
+                <p>© 2026 Bremen Online<br>
+                eine Abteilung der WFB Wirtschaftsförderung Bremen GmbH</p>
+            </div>
+        </div>
+        <div class="col-span-4 md:col-span-2 lg:col-span-4">
+            <ul class="block xl:grid grid-cols-2 grid-rows-3 gap-4 grid-flow-col list-none pl-0">
+                <li class="mb-2 xl:mb-0"><a class="underline hover:text-white hover:bg-accent focus-visible:text-white focus-visible:bg-accent duration-200" href="/impressum">Impressum</a></li>
+                <li class="mb-2 xl:mb-0"><a class="underline hover:text-white hover:bg-accent focus-visible:text-white focus-visible:bg-accent duration-200" href="/datenschutz">Datenschutz</a></li>
+                <li class="mb-2 xl:mb-0"><a class="underline hover:text-white hover:bg-accent focus-visible:text-white focus-visible:bg-accent duration-200" href="/support">Support &amp; Kontakt</a></li>
+                <li class="mb-2 xl:mb-0"><a class="underline hover:text-white hover:bg-accent focus-visible:text-white focus-visible:bg-accent duration-200" href="/barrierefreiheit">Barrierefreiheit</a></li>
+                <li class="mb-2 xl:mb-0"><a class="underline hover:text-white hover:bg-accent focus-visible:text-white focus-visible:bg-accent duration-200" href="https://www.bremen.de/produkte-und-mediadaten" target="_blank" rel="noopener noreferrer" title="Öffnet in neuem Fenster">Produkte &amp; Medien</a></li>
+                <li><a class="underline hover:text-white hover:bg-accent focus-visible:text-white focus-visible:bg-accent duration-200" href="/nutzungsbedingungen">Nutzungsbedingungen</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+      
+            <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js" type="text/plain"></script><script nonce="DrHzA3WMZfUwI9iGuI6H76Q01Aqg2jU2qnuj5QQC" src="/js/components/main.js" type="text/plain"></script><iframe class="CybotCookiebotHiddenIframe" name="__uspapiLocator" tabindex="-1" role="presentation" aria-hidden="true" title="Blank"></iframe>
+          <script nonce="DrHzA3WMZfUwI9iGuI6H76Q01Aqg2jU2qnuj5QQC" src="/js/header-nav.js" type="text/plain"></script>
+    <script nonce="DrHzA3WMZfUwI9iGuI6H76Q01Aqg2jU2qnuj5QQC" src="https://schwarzesbrett.bremen.de/js/yieldlove-placements/billboard.js" type="text/plain"></script>
+    <script nonce="DrHzA3WMZfUwI9iGuI6H76Q01Aqg2jU2qnuj5QQC" src="https://schwarzesbrett.bremen.de/js/yieldlove-placements/rectangle_4.js" type="text/plain"></script>
+    <script nonce="DrHzA3WMZfUwI9iGuI6H76Q01Aqg2jU2qnuj5QQC" src="https://schwarzesbrett.bremen.de/js/yieldlove-placements/leaderboard_wide_1.js" type="text/plain"></script>
+    <script nonce="DrHzA3WMZfUwI9iGuI6H76Q01Aqg2jU2qnuj5QQC" src="https://schwarzesbrett.bremen.de/js/yieldlove-placements/rectangle_1.js" type="text/plain"></script>
+    <script nonce="DrHzA3WMZfUwI9iGuI6H76Q01Aqg2jU2qnuj5QQC" src="https://schwarzesbrett.bremen.de/js/yieldlove-placements/rectangle_2.js" type="text/plain"></script>
+    <script nonce="DrHzA3WMZfUwI9iGuI6H76Q01Aqg2jU2qnuj5QQC" src="https://schwarzesbrett.bremen.de/js/yieldlove-placements/rectangle_3.js" type="text/plain"></script>
+    <script nonce="DrHzA3WMZfUwI9iGuI6H76Q01Aqg2jU2qnuj5QQC" src="/js/skip-nav.js" type="text/plain"></script>
+ <script nonce="DrHzA3WMZfUwI9iGuI6H76Q01Aqg2jU2qnuj5QQC" src="/js/components/advertisement-index.js" type="text/plain"></script>
+           <script nonce="DrHzA3WMZfUwI9iGuI6H76Q01Aqg2jU2qnuj5QQC" src="/js/components/notification.js" type="text/plain"></script>
+<script src="/livewire/livewire.min.js?id=e949cd11" nonce="DrHzA3WMZfUwI9iGuI6H76Q01Aqg2jU2qnuj5QQC" data-csrf="l21XtSI7AwZkClZ74hyOGHJiLEPrpsJjM8axZhaa" data-update-uri="/livewire/update" data-navigate-once="true" type="text/plain"></script>
+<script type="text/plain">(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a12d6ac04a5fcb32',t:'MTc4MjY1NzMxNQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script defer="" src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon="{&quot;version&quot;:&quot;2024.11.0&quot;,&quot;token&quot;:&quot;8fe9e7d992bc41e381c68199a3a28a9a&quot;,&quot;server_timing&quot;:{&quot;name&quot;:{&quot;cfCacheStatus&quot;:true,&quot;cfEdge&quot;:true,&quot;cfExtPri&quot;:true,&quot;cfL4&quot;:true,&quot;cfOrigin&quot;:true,&quot;cfSpeedBrain&quot;:true},&quot;location_startswith&quot;:null}}" crossorigin="anonymous" type="text/plain"></script>
+
+
+<iframe class="CybotCookiebotHiddenIframe" name="__tcfapiLocator"></iframe><iframe class="CybotCookiebotOffscreenIframe" tabindex="-1" role="presentation" aria-hidden="true" title="Blank" src="https://consentcdn.cookiebot.com/sdk/bc-v4.min.html"></iframe>

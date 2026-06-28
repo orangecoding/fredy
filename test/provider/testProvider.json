@@ -44,6 +44,11 @@
     "url": "https://immobilien.sparkasse.de/immobilien/treffer?estateTypeGroupingId=403&marketingType=buy&perimeter=10&usageType=residential&zipCityEstateId=51.22422%2F6.78006%2F0__D%C3%BCsseldorf",
     "enabled": true
   },
+  "schwarzesbrett": {
+    "url": "https://schwarzesbrett.bremen.de/verkauf-und-angebote/mietobjekte",
+    "enabled": true,
+    "id": "schwarzesbrett"
+  },
   "wgGesucht": {
     "url": "https://www.wg-gesucht.de/wg-zimmer-in-Duesseldorf.30.0.1.0.html",
     "enabled": true
