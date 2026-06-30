@@ -1,6 +1,6 @@
 {
   "name": "fredy",
-  "version": "22.9.4",
+  "version": "22.9.5",
   "description": "Fredy - [F]ind [R]eal [E]state [D]amn Eas[y] - Fredy keeps searching for new apartments, houses, and flats in Germany on platforms like ImmoScout24, Immowelt, Immonet, eBay Kleinanzeigen, and WG-Gesucht and instantly delivers the results to you via Slack, Telegram, Email, Discord or ntfy, so you can focus on the more important things in life ;)",
   "scripts": {
     "prepare": "husky",
