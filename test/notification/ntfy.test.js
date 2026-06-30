@@ -123,6 +123,37 @@ describe('ntfy send() - authentication header', () => {
   });
 });
 
+describe('ntfy send() - header encoding', () => {
+  it('keeps plain ASCII titles untouched', async () => {
+    await send({
+      serviceName: 'immoscout',
+      newListings: [{ ...listing, title: 'Nice Flat' }],
+      notificationConfig: configWith({}),
+      jobKey: 'Berlin',
+    });
+
+    const [, opts] = mockNodeFetch.mock.calls[0];
+    expect(opts.headers.Title).toBe('Nice Flat');
+  });
+
+  it('encodes German Umlauts in the title as an RFC 2047 encoded-word instead of stripping them', async () => {
+    const title = 'Großzügige Wohnung';
+    await send({
+      serviceName: 'immoscout',
+      newListings: [{ ...listing, title }],
+      notificationConfig: configWith({}),
+      jobKey: 'Berlin',
+    });
+
+    const [, opts] = mockNodeFetch.mock.calls[0];
+    const expected = `=?UTF-8?B?${Buffer.from(title, 'utf-8').toString('base64')}?=`;
+    expect(opts.headers.Title).toBe(expected);
+    // Round-trip: decoding the base64 payload must yield the original Umlauts.
+    const payload = opts.headers.Title.replace(/^=\?UTF-8\?B\?/, '').replace(/\?=$/, '');
+    expect(Buffer.from(payload, 'base64').toString('utf-8')).toBe(title);
+  });
+});
+
 describe('ntfy send() - error handling', () => {
   it('rejects when the server responds with a non-ok status (e.g. 403)', async () => {
     mockNodeFetch.mockResolvedValue({ ok: false, status: 403, text: async () => 'forbidden' });
