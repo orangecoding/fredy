@@ -107,6 +107,7 @@ const GeneralSettings = function GeneralSettings() {
   const [analyticsEnabled, setAnalyticsEnabled] = React.useState(null);
   const [sqlitePath, setSqlitePath] = React.useState(null);
   const [baseUrl, setBaseUrl] = React.useState('');
+  const [sessionTTL, setSessionTTL] = React.useState('');
   const fileInputRef = React.useRef(null);
   const [restoreModalVisible, setRestoreModalVisible] = React.useState(false);
   const [precheckInfo, setPrecheckInfo] = React.useState(null);
@@ -163,6 +164,7 @@ const GeneralSettings = function GeneralSettings() {
       setDemoMode(settings?.demoMode || false);
       setSqlitePath(settings?.sqlitepath);
       setBaseUrl(settings?.baseUrl ?? '');
+      setSessionTTL(settings?.sessionTTL ?? '');
     }
 
     init();
@@ -252,6 +254,7 @@ const GeneralSettings = function GeneralSettings() {
         analyticsEnabled,
         sqlitepath: sqlitePath,
         baseUrl,
+        sessionTTL,
       });
     } catch (exception) {
       console.error(exception);
@@ -475,6 +478,15 @@ const GeneralSettings = function GeneralSettings() {
                     placeholder={t('settings.baseUrlPlaceholder')}
                     value={baseUrl}
                     onChange={(value) => setBaseUrl(value)}
+                  />
+                </SegmentPart>
+
+                <SegmentPart name={t('settings.sessionTTL')} helpText={t('settings.sessionTTLHelp')}>
+                  <Input
+                    type="text"
+                    placeholder={t('settings.sessionTTLPlaceholder')}
+                    value={sessionTTL}
+                    onChange={(value) => setSessionTTL(value)}
                   />
                 </SegmentPart>
 
