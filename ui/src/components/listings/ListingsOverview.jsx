@@ -3,7 +3,7 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import {
   useSearchParamState,
   parseNumber,
@@ -103,6 +103,41 @@ const ListingsOverview = ({ mode = 'all' }) => {
     hiddenOnly,
     isWatchlistMode,
   ]);
+
+  const loadDataRef = useRef(loadData);
+  useEffect(() => {
+    loadDataRef.current = loadData;
+  }, [loadData]);
+
+  // SSE connection for live listings updates
+  useEffect(() => {
+    const src = new EventSource('/api/jobs/events');
+
+    const onNewListings = (e) => {
+      try {
+        const data = JSON.parse(e.data || '{}');
+        if (data && data.count) {
+          loadDataRef.current();
+        }
+      } catch {
+        // ignore malformed events
+      }
+    };
+
+    src.addEventListener('listings:new', onNewListings);
+    src.onerror = () => {
+      // Let browser auto-reconnect
+    };
+
+    return () => {
+      try {
+        src.removeEventListener('listings:new', onNewListings);
+        src.close();
+      } catch {
+        // noop
+      }
+    };
+  }, [t]);
 
   const handleFilterChange = useMemo(
     () =>

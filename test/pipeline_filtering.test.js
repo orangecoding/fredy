@@ -4,7 +4,7 @@
  */
 
 import { afterEach, expect } from 'vitest';
-import { mockFredy } from './utils.js';
+import { mockFredy, sseEvents } from './utils.js';
 import * as mockStore from './mocks/mockStore.js';
 import { get as getLastNotification } from './mocks/mockNotification.js';
 
@@ -332,5 +332,59 @@ describe('Blacklist is re-applied after detail enrichment', () => {
     // Listing leaks through because user has not opted in to the stricter check.
     expect(result).toBeInstanceOf(Array);
     expect(result.map((l) => l.id)).toContain('leaks-through');
+  });
+});
+
+describe('Live reload triggers via SSE', () => {
+  afterEach(() => {
+    sseEvents.length = 0;
+  });
+
+  it('emits a listings:new event via SSE when a new listing is saved', async () => {
+    sseEvents.length = 0;
+    const Fredy = await mockFredy();
+
+    const mockSimilarityCache = {
+      checkAndAddEntry: () => false, // unique listing
+    };
+
+    const providerConfig = {
+      url: 'http://example.com',
+      getListings: () =>
+        Promise.resolve([
+          {
+            id: 'brand-new-listing',
+            title: 'Cool Apartment',
+            address: 'Awesome Ave',
+            price: '500',
+            link: 'http://example.com/new',
+          },
+        ]),
+      normalize: (l) => l,
+      filter: () => true,
+      crawlFields: { id: 'id', title: 'title', address: 'address', price: 'price', link: 'link' },
+      requiredFieldNames: ['id', 'title', 'address', 'price', 'link'],
+    };
+
+    const mockedJob = {
+      id: 'live-reload-job',
+      notificationAdapter: null,
+      specFilter: null,
+      spatialFilter: null,
+    };
+
+    const fredy = new Fredy(providerConfig, mockedJob, 'live-reload-provider', mockSimilarityCache, undefined);
+
+    await fredy.execute();
+
+    expect(sseEvents).toHaveLength(1);
+    expect(sseEvents[0]).toEqual({
+      userId: 'user1',
+      event: 'listings:new',
+      data: {
+        jobId: 'live-reload-job',
+        count: 1,
+      },
+    });
   });
 });
