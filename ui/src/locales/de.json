@@ -154,6 +154,8 @@
   "listings.filterSortHelp": "Wählt das Sortierkriterium. Mit dem Pfeil-Button schaltet man zwischen aufsteigend und absteigend.",
   "listings.hiddenViewBanner": "Du siehst gerade versteckte (soft-gelöschte) Inserate. Sie werden in den normalen Ansichten ausgeblendet. Über den Wiederherstellen-Button kannst du sie zurückholen.",
   "listings.toastRestored": "Inserat wiederhergestellt",
+  "listings.newAvailableBanner": "Neue Inserate verfügbar! ({{count}})",
+  "listings.reloadButton": "Aktualisieren",
   "listings.toastRestoreError": "Wiederherstellung fehlgeschlagen",
   "listings.tooltipUndelete": "Inserat wiederherstellen",
   "listings.sortByJobName": "Job-Name",

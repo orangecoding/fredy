@@ -154,6 +154,8 @@
   "listings.filterSortHelp": "Choose the column to sort listings by. Use the arrow button to toggle ascending and descending order.",
   "listings.hiddenViewBanner": "You are viewing hidden (soft-deleted) listings. They are excluded from the regular views. Use the restore button on a card to bring it back.",
   "listings.toastRestored": "Listing restored",
+  "listings.newAvailableBanner": "New listings available! ({{count}})",
+  "listings.reloadButton": "Refresh",
   "listings.toastRestoreError": "Failed to restore listing",
   "listings.tooltipUndelete": "Restore Listing",
   "listings.sortByJobName": "Job Name",

@@ -64,6 +64,7 @@ const ListingsOverview = ({ mode = 'all' }) => {
   const [hiddenOnly, setHiddenOnly] = useSearchParamState(sp, 'hidden', false, parseNullableBoolean);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [listingToDelete, setListingToDelete] = useState(null);
+  const [newAvailableCount, setNewAvailableCount] = useState(0);
 
   const isHiddenView = hiddenOnly === true;
 
@@ -90,6 +91,7 @@ const ListingsOverview = ({ mode = 'all' }) => {
 
   useEffect(() => {
     loadData();
+    setNewAvailableCount(0);
   }, [
     page,
     sortField,
@@ -117,7 +119,7 @@ const ListingsOverview = ({ mode = 'all' }) => {
       try {
         const data = JSON.parse(e.data || '{}');
         if (data && data.count) {
-          loadDataRef.current();
+          setNewAvailableCount((prev) => prev + data.count);
         }
       } catch {
         // ignore malformed events
@@ -400,6 +402,32 @@ const ListingsOverview = ({ mode = 'all' }) => {
           </Tooltip>
         </div>
       </div>
+
+      {newAvailableCount > 0 && (
+        <Banner
+          type="info"
+          fullMode={false}
+          closeIcon={null}
+          description={
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+              <span>{t('listings.newAvailableBanner', { count: newAvailableCount })}</span>
+              <Button
+                size="small"
+                theme="solid"
+                type="primary"
+                onClick={() => {
+                  loadDataRef.current();
+                  setNewAvailableCount(0);
+                }}
+                style={{ marginLeft: 16 }}
+              >
+                {t('listings.reloadButton')}
+              </Button>
+            </div>
+          }
+          style={{ marginBottom: 12 }}
+        />
+      )}
 
       {isHiddenView && (
         <Banner
