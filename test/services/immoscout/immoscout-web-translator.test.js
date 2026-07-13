@@ -4,11 +4,11 @@
  */
 
 import { convertWebToMobile } from '../../../lib/services/immoscout/immoscout-web-translator.js';
-import { expect, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { readFile } from 'fs/promises';
 import { buildFetchMock } from '../../offlineFixtures.js';
 
-export const testData = JSON.parse(await readFile(new URL('./testdata.json', import.meta.url)));
+export const testData = JSON.parse(await readFile(new URL('./testdata.json', import.meta.url), 'utf8'));
 
 if (process.env.TEST_MODE === 'offline') {
   vi.stubGlobal('fetch', buildFetchMock());
@@ -20,7 +20,7 @@ describe('#immoscout-mobile URL conversion', () => {
     const webUrl =
       'https://www.immobilienscout24.de/Suche/shape/haus-kaufen?shape=aW9yfkhfa3htQXJgUGlnYEBmekhte3BAcXNAfWBsQGNyQ2lkUHVvbEB3eX5Ab25WYn5Fa2BLaGRQY29FaGtTfEhme3xBdHBEdHFMamlHbmdRfHhMcmxPeHlWYnpS&price=-600000.0&ground=240.0-&enteredFrom=result_list';
     const expectedMobileUrl =
-      'https://api.mobile.immobilienscout24.de/search/list?ground=240.0-&price=-600000.0&realestatetype=housebuy&searchType=shape&shape=ior~H_kxmAr%60Pig%60%40fzHm%7Bp%40qs%40%7D%60l%40crCidPuol%40wy~%40onVb~Ek%60KhdPcoEhkS%7CHf%7B%7CAtpDtqLjiGngQ%7CxLrlOxyVbzR';
+      'https://api.mobile.immobilienscout24.de/search/list?exclusioncriteria=swapflat&ground=240.0-&price=-600000.0&realestatetype=housebuy&searchType=shape&shape=ior~H_kxmAr%60Pig%60%40fzHm%7Bp%40qs%40%7D%60l%40crCidPuol%40wy~%40onVb~Ek%60KhdPcoEhkS%7CHf%7B%7CAtpDtqLjiGngQ%7CxLrlOxyVbzR';
 
     const actualMobileUrl = convertWebToMobile(webUrl);
     expect(actualMobileUrl).toBe(expectedMobileUrl);
@@ -31,33 +31,50 @@ describe('#immoscout-mobile URL conversion', () => {
     const webUrl =
       'https://www.immobilienscout24.de/Suche/de/berlin/berlin/wohnung-mieten?heatingtypes=central,selfcontainedcentral&haspromotion=false&numberofrooms=2.0-5.0&livingspace=10.0-25.0&energyefficiencyclasses=a,b,c,d,e,f,g,h,a_plus&exclusioncriteria=projectlisting,swapflat&equipment=parking,cellar,builtinkitchen,lift,garden,guesttoilet,balcony&petsallowedtypes=no,yes,negotiable&price=10.0-100.0&constructionyear=1920-2026&apartmenttypes=halfbasement,penthouse,other,loft,groundfloor,terracedflat,raisedgroundfloor,roofstorey,apartment,maisonette&pricetype=calculatedtotalrent&floor=2-7&enteredFrom=result_list';
     const expectedMobileUrl =
-      'https://api.mobile.immobilienscout24.de/search/list?apartmenttypes=halfbasement,penthouse,other,loft,groundfloor,terracedflat,raisedgroundfloor,roofstorey,apartment,maisonette&constructionyear=1920-2026&energyefficiencyclasses=a,b,c,d,e,f,g,h,a_plus&equipment=parking,cellar,builtInKitchen,lift,garden,guestToilet,balcony&exclusioncriteria=projectlisting,swap_flat&floor=2-7&geocodes=%2Fde%2Fberlin%2Fberlin&haspromotion=false&heatingtypes=central,selfcontainedcentral&livingspace=10.0-25.0&numberofrooms=2.0-5.0&petsallowedtypes=no,yes,negotiable&price=10.0-100.0&pricetype=calculatedtotalrent&realestatetype=apartmentrent&searchType=region';
+      'https://api.mobile.immobilienscout24.de/search/list?apartmenttypes=halfbasement,penthouse,other,loft,groundfloor,terracedflat,raisedgroundfloor,roofstorey,apartment,maisonette&constructionyear=1920-2026&energyefficiencyclasses=a,b,c,d,e,f,g,h,a_plus&equipment=parking,cellar,builtInKitchen,lift,garden,guestToilet,balcony&exclusioncriteria=swapflat,projectlisting&floor=2-7&geocodes=%2Fde%2Fberlin%2Fberlin&haspromotion=false&heatingtypes=central,selfcontainedcentral&livingspace=10.0-25.0&numberofrooms=2.0-5.0&petsallowedtypes=no,yes,negotiable&price=10.0-100.0&pricetype=calculatedtotalrent&realestatetype=apartmentrent&searchType=region';
 
     const actualMobileUrl = convertWebToMobile(webUrl);
     expect(actualMobileUrl).toBe(expectedMobileUrl);
   });
 
-  // The web UI encodes "no swap flats" as exclusioncriteria=swapflat, but the
-  // mobile API only understands swap_flat. Unknown values are not ignored by the
-  // API - the search silently returns 0 results, so the mapping is essential.
-  it('should map exclusioncriteria=swapflat to the mobile API value swap_flat', () => {
-    const webUrl =
-      'https://www.immobilienscout24.de/Suche/de/berlin/berlin/wohnung-mieten?exclusioncriteria=swapflat&price=-1500.0';
+  // The mobile API now uses swapflat directly for the default rental filter.
+  it('should default exclusioncriteria to swapflat for regular apartment searches', () => {
+    const webUrl = 'https://www.immobilienscout24.de/Suche/de/berlin/berlin/wohnung-mieten?price=-1500.0';
 
     const converted = convertWebToMobile(webUrl);
     const queryParams = new URL(converted).searchParams;
-    expect(queryParams.get('exclusioncriteria')).toBe('swap_flat');
+    expect(queryParams.get('exclusioncriteria')).toBe('swapflat');
   });
 
-  // Values the mobile API shares with the web API (e.g. projectlisting) must
-  // pass through unchanged, in any combination with mapped values.
-  it('should keep other exclusioncriteria values untouched', () => {
+  // Values that are spelled differently on the web must be translated for the
+  // mobile API, while swapflat stays unchanged.
+  it('should translate projectlisting and keep swapflat', () => {
     const webUrl =
       'https://www.immobilienscout24.de/Suche/de/berlin/berlin/wohnung-mieten?exclusioncriteria=projectlisting,swapflat';
 
     const converted = convertWebToMobile(webUrl);
     const queryParams = new URL(converted).searchParams;
-    expect(queryParams.get('exclusioncriteria')).toBe('projectlisting,swap_flat');
+    expect(queryParams.get('exclusioncriteria').split(',').sort()).toEqual(['projectlisting', 'swapflat']);
+  });
+
+  // Bestandswohnungen use the projectlisting exclusion by default.
+  it('should set exclusioncriteria=projectlisting for bestandswohnung-mieten', () => {
+    const webUrl = 'https://www.immobilienscout24.de/Suche/de/berlin/berlin/bestandswohnung-mieten';
+
+    const converted = convertWebToMobile(webUrl);
+    const queryParams = new URL(converted).searchParams;
+    expect(queryParams.get('exclusioncriteria').split(',').sort()).toEqual(['projectlisting', 'swapflat']);
+  });
+
+  // Exchange-apartment searches must not inherit the swapflat default, but any
+  // explicit exclusioncriteria from the URL should still pass through.
+  it('should remove the swapflat default for mietwohnungen-mit-tauschwohnungen', () => {
+    const webUrl =
+      'https://www.immobilienscout24.de/Suche/de/berlin/berlin/mietwohnungen-mit-tauschwohnungen?exclusioncriteria=projectlisting';
+
+    const converted = convertWebToMobile(webUrl);
+    const queryParams = new URL(converted).searchParams;
+    expect(queryParams.get('exclusioncriteria')).toBe('projectlisting');
   });
 
   // Test URL conversion of web-only SEO path
