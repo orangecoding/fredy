@@ -42,6 +42,52 @@ function extractFirstLink(html, linkSelectorExpr, baseUrl) {
   return null;
 }
 
+async function downloadDeutscheWohnenFixtures(apiUrl, refererUrl) {
+  console.log('\nDownloading deutscheWohnen...');
+
+  const listResponse = await fetch(apiUrl, {
+    headers: {
+      'User-Agent':
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36',
+      Accept: 'application/json',
+      Referer: refererUrl,
+    },
+  });
+
+  if (!listResponse.ok) {
+    console.warn(`  Failed to download deutscheWohnen list: ${listResponse.statusText}`);
+    return;
+  }
+
+  const listData = await listResponse.json();
+  await writeFile(path.join(FIXTURES_DIR, 'deutscheWohnen_list.json'), JSON.stringify(listData, null, 2), 'utf-8');
+  console.log('  Saved deutscheWohnen_list.json');
+
+  const firstListing = listData.results?.[0];
+  if (!firstListing?.slug) {
+    console.warn('  No listing slug found – skipping detail fixture');
+    return;
+  }
+
+  const detailUrl = `https://www.deutsche-wohnen.com/mieten/mietangebote/${firstListing.slug}`;
+  console.log(`  Downloading deutscheWohnen detail (${firstListing.slug})...`);
+  const detailResponse = await fetch(detailUrl, {
+    headers: {
+      'User-Agent':
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36',
+    },
+  });
+
+  if (!detailResponse.ok) {
+    console.warn(`  Failed to download deutscheWohnen detail: ${detailResponse.statusText}`);
+    return;
+  }
+
+  const detailHtml = await detailResponse.text();
+  await writeFile(path.join(FIXTURES_DIR, 'deutscheWohnen_detail.html'), detailHtml, 'utf-8');
+  console.log('  Saved deutscheWohnen_detail.html');
+}
+
 async function downloadImmoscoutFixtures(mobileApiUrl) {
   console.log('\nDownloading immoscout...');
 
@@ -146,10 +192,15 @@ async function main() {
     const provider = await import(`../../lib/provider/${name}.js`);
     provider.init(cfg, [], []);
 
-    if (name === 'immoscout') {
-      await downloadImmoscoutFixtures(provider.config.url);
-    } else {
-      await downloadHtmlProvider(name, provider.config, launchBrowser, closeBrowser, puppeteerExtractor);
+    switch (name) {
+      case 'immoscout':
+        await downloadImmoscoutFixtures(provider.config.url);
+        break;
+      case 'deutscheWohnen':
+        await downloadDeutscheWohnenFixtures(provider.config.url, cfg.url);
+        break;
+      default:
+        await downloadHtmlProvider(name, provider.config, launchBrowser, closeBrowser, puppeteerExtractor);
     }
   }
 
