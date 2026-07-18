@@ -47,7 +47,7 @@ describe('#inberlinwohnen testsuite()', () => {
       expect(listing.size).toMatch(/ m²$/);
       expect(listing.rooms).toMatch(/ Zimmer$/);
       expect(listing.address).toContain('Berlin');
-      expect(listing.image).toContain('https://inberlinwohnen.de/storage/images/apartments/');
+      expect(listing.image).toContain('https://inberlinwohnen.de/img/images/apartments/');
       expect(listing.description).toContain('Gesamtmiete:');
     });
 
@@ -60,7 +60,7 @@ describe('#inberlinwohnen testsuite()', () => {
         size: '51.04 m²',
         rooms: '2 Zimmer',
         address: 'Firlstraße 31, 12459 Berlin, Treptow-Köpenick',
-        image: 'https://inberlinwohnen.de/storage/images/apartments/sample.webp',
+        image: 'https://inberlinwohnen.de/img/images/apartments/sample.webp?q=90&fit=crop&fm=png&dpr=1',
       });
       expect(notification.payload[0].description).toContain('WBS: unbekannt');
     }
