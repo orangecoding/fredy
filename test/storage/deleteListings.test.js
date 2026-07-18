@@ -50,8 +50,8 @@ describe('listingsStorage hard delete evicts the similarity cache', () => {
   describe('deleteListingsByJobId', () => {
     it('hard delete fetches affected rows, DELETEs them and evicts each from the cache', () => {
       sqliteMock.__queryHandler = () => [
-        { title: 'A', address: 'Main 1', price: 1000 },
-        { title: 'B', address: 'Zero St', price: 0 },
+        { job_id: 'job-1', title: 'A', address: 'Main 1', price: 1000 },
+        { job_id: 'job-1', title: 'B', address: 'Zero St', price: 0 },
       ];
 
       listingsStorage.deleteListingsByJobId('job-1', true);
@@ -63,8 +63,8 @@ describe('listingsStorage hard delete evicts the similarity cache', () => {
 
       // Each removed row must be evicted from the similarity cache
       expect(removeEntry).toHaveBeenCalledTimes(2);
-      expect(removeEntry).toHaveBeenCalledWith({ title: 'A', address: 'Main 1', price: 1000 });
-      expect(removeEntry).toHaveBeenCalledWith({ title: 'B', address: 'Zero St', price: 0 });
+      expect(removeEntry).toHaveBeenCalledWith({ jobId: 'job-1', title: 'A', address: 'Main 1', price: 1000 });
+      expect(removeEntry).toHaveBeenCalledWith({ jobId: 'job-1', title: 'B', address: 'Zero St', price: 0 });
     });
 
     it('soft delete marks rows and does NOT touch the similarity cache', () => {
@@ -84,7 +84,7 @@ describe('listingsStorage hard delete evicts the similarity cache', () => {
 
   describe('deleteListingsById', () => {
     it('hard delete fetches affected rows, DELETEs them and evicts each from the cache', () => {
-      sqliteMock.__queryHandler = () => [{ title: 'C', address: 'Road 3', price: 300 }];
+      sqliteMock.__queryHandler = () => [{ job_id: 'job-1', title: 'C', address: 'Road 3', price: 300 }];
 
       listingsStorage.deleteListingsById(['id-1', 'id-2'], true);
 
@@ -93,7 +93,7 @@ describe('listingsStorage hard delete evicts the similarity cache', () => {
       expect(calls.execute[0].sql).not.toMatch(/manually_deleted/);
 
       expect(removeEntry).toHaveBeenCalledTimes(1);
-      expect(removeEntry).toHaveBeenCalledWith({ title: 'C', address: 'Road 3', price: 300 });
+      expect(removeEntry).toHaveBeenCalledWith({ jobId: 'job-1', title: 'C', address: 'Road 3', price: 300 });
     });
 
     it('soft delete marks rows and does NOT touch the similarity cache', () => {

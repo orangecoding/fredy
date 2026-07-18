@@ -3,7 +3,8 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { expect, vi } from 'vitest';
+import { afterEach, expect, vi } from 'vitest';
+import { readFile } from 'fs/promises';
 import * as similarityCache from '../../lib/services/similarity-check/similarityCache.js';
 import { get } from '../mocks/mockNotification.js';
 import { mockFredy, providerConfig } from '../utils.js';
@@ -15,8 +16,13 @@ const snapshot = (item, tuple = true) => ({
 
 describe('#inberlinwohnen testsuite()', () => {
   provider.init(providerConfig.inberlinwohnen, []);
+  afterEach(() => vi.restoreAllMocks());
 
   it('should parse listings from the Livewire snapshot', async () => {
+    if (process.env.TEST_MODE === 'offline') {
+      const html = await readFile(new URL('../testFixtures/inberlinwohnen.html', import.meta.url), 'utf8');
+      vi.spyOn(globalThis, 'fetch').mockResolvedValue({ ok: true, status: 200, text: async () => html });
+    }
     const Fredy = await mockFredy();
     const mockedJob = {
       id: 'inberlinwohnen',
@@ -58,6 +64,42 @@ describe('#inberlinwohnen testsuite()', () => {
       });
       expect(notification.payload[0].description).toContain('WBS: unbekannt');
     }
+  });
+
+  it('should fetch every server-rendered result page', async () => {
+    const item = (id) =>
+      `<div wire:snapshot='${JSON.stringify({ data: { item: [{ id, title: `Listing ${id}` }, { s: 'arr' }] } })}'></div>`;
+    const page = (items, itemIds = null) => `<!doctype html><html><body>
+      ${
+        itemIds == null
+          ? ''
+          : `<div wire:snapshot='${JSON.stringify({ data: { itemIds: [itemIds, { s: 'arr' }], itemsPerPage: 2 } })}'></div>`
+      }
+      ${items.map(item).join('')}
+    </body></html>`;
+    const fetchMock = vi
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValueOnce({ ok: true, status: 200, text: async () => page([1, 2], [1, 2, 3, 4, 5]) })
+      .mockResolvedValueOnce({ ok: true, status: 200, text: async () => page([3, 4]) })
+      .mockResolvedValueOnce({ ok: true, status: 200, text: async () => page([5]) });
+
+    const listings = await provider.config.getListings('https://inberlinwohnen.de/wohnungsfinder/?district=mitte');
+
+    expect(listings).toHaveLength(5);
+    expect(listings.map((listing) => JSON.parse(listing.id).data.item[0].id)).toEqual([1, 2, 3, 4, 5]);
+    expect(fetchMock).toHaveBeenNthCalledWith(1, new URL('https://inberlinwohnen.de/wohnungsfinder/?district=mitte'), {
+      headers: { Accept: 'text/html' },
+    });
+    expect(fetchMock).toHaveBeenNthCalledWith(
+      2,
+      new URL('https://inberlinwohnen.de/wohnungsfinder/?district=mitte&page=2'),
+      { headers: { Accept: 'text/html' } },
+    );
+    expect(fetchMock).toHaveBeenNthCalledWith(
+      3,
+      new URL('https://inberlinwohnen.de/wohnungsfinder/?district=mitte&page=3'),
+      { headers: { Accept: 'text/html' } },
+    );
   });
 
   it('should support object snapshots and rent fallbacks', () => {
