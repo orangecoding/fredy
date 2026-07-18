@@ -31,6 +31,7 @@ describe('similarityCache', () => {
 
     // Exact duplicates should be detected
     expect(checkAndAddEntry({ jobId: 'job-1', title: 'A', price: 1000, address: 'Main 1' })).toBe(true);
+    expect(checkAndAddEntry({ jobId: 'job-2', title: 'A', price: 1000, address: 'Main 1' })).toBe(false);
     // Ensure falsy-but-valid price 0 is preserved by hashing and detected as duplicate
     expect(checkAndAddEntry({ jobId: 'job-1', title: 'B', price: 0, address: 'Zero St' })).toBe(true);
   });
@@ -100,5 +101,24 @@ describe('similarityCache', () => {
     expect(checkAndAddEntry({ jobId: 'job-1', ...listing })).toBe(false);
     expect(checkAndAddEntry({ jobId: 'job-1', ...listing })).toBe(true);
     expect(checkAndAddEntry({ jobId: 'job-2', ...listing })).toBe(false);
+  });
+
+  it('normalizes parenthesized address suffixes consistently with storage', async () => {
+    const { checkAndAddEntry } = await loadModuleWith();
+
+    expect(checkAndAddEntry({ jobId: 'job-1', title: 'A', price: 1000, address: 'Main 1 (Mitte)' })).toBe(false);
+    expect(checkAndAddEntry({ jobId: 'job-1', title: 'A', price: 1000, address: 'Main 1' })).toBe(true);
+  });
+
+  it('removes only the matching job entry', async () => {
+    const { checkAndAddEntry, removeEntry } = await loadModuleWith();
+    const listing = { title: 'A', price: 1000, address: 'Main 1' };
+
+    expect(checkAndAddEntry({ jobId: 'job-1', ...listing })).toBe(false);
+    expect(checkAndAddEntry({ jobId: 'job-2', ...listing })).toBe(false);
+    expect(removeEntry({ jobId: 'job-1', ...listing })).toBe(true);
+
+    expect(checkAndAddEntry({ jobId: 'job-1', ...listing })).toBe(false);
+    expect(checkAndAddEntry({ jobId: 'job-2', ...listing })).toBe(true);
   });
 });

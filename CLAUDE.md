@@ -82,7 +82,7 @@ scheduler (every N minutes) or manual trigger via POST /api/jobs/:id/run
 |---|---|---|
 | Event bus | `lib/services/events/event-bus.js` | Plain `EventEmitter`; events: `jobs:runAll`, `jobs:runOne`, `jobs:status` |
 | SSE broker | `lib/services/sse/sse-broker.js` | Per-userId `Set<ServerResponse>`; heartbeat every 25s; pushes job status to UI |
-| Similarity cache | `lib/services/similarity-check/` | In-memory SHA-256 Set; refreshes hourly; cross-provider dedup by title+price+address |
+| Similarity cache | `lib/services/similarity-check/` | In-memory SHA-256 Set; refreshes hourly; per-job cross-provider dedup by title+price+address |
 | SqliteConnection | `lib/services/storage/SqliteConnection.js` | Singleton, WAL mode; `execute()`, `query()`, `withTransaction()` |
 | Migrations | `lib/services/storage/migrations/` | Numbered JS files each exporting `up(db)`; checksum-tracked in `schema_migrations` |
 | Extractor | `lib/services/extractor/` | Orchestrates Puppeteer + Cheerio; shared browser instance per job |

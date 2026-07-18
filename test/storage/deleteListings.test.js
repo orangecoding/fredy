@@ -56,6 +56,7 @@ describe('listingsStorage hard delete evicts the similarity cache', () => {
 
       listingsStorage.deleteListingsByJobId('job-1', true);
 
+      expect(calls.query[0].sql).toMatch(/SELECT job_id, title, address, price, manually_deleted/);
       // A DELETE (not a soft-delete UPDATE) must run
       expect(calls.execute).toHaveLength(1);
       expect(calls.execute[0].sql).toMatch(/DELETE FROM listings/);
@@ -72,6 +73,17 @@ describe('listingsStorage hard delete evicts the similarity cache', () => {
 
       expect(calls.execute).toHaveLength(1);
       expect(calls.execute[0].sql).toMatch(/UPDATE listings\s+SET manually_deleted = 1/);
+      expect(removeEntry).not.toHaveBeenCalled();
+    });
+
+    it('does not evict cache entries for already hidden duplicates', () => {
+      sqliteMock.__queryHandler = () => [
+        { job_id: 'job-1', title: 'A', address: 'Main 1', price: 1000, manually_deleted: 1 },
+      ];
+
+      listingsStorage.deleteListingsByJobId('job-1', true);
+
+      expect(calls.execute[0].sql).toMatch(/DELETE FROM listings/);
       expect(removeEntry).not.toHaveBeenCalled();
     });
 

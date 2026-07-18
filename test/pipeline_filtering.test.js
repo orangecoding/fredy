@@ -3,7 +3,7 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { afterEach, expect } from 'vitest';
+import { afterEach, expect, vi } from 'vitest';
 import { mockFredy, sseEvents } from './utils.js';
 import * as mockStore from './mocks/mockStore.js';
 import { get as getLastNotification } from './mocks/mockNotification.js';
@@ -13,7 +13,7 @@ describe('Issue reproduction: listings filtered by similarity or area should be 
     const Fredy = await mockFredy();
 
     const mockSimilarityCache = {
-      checkAndAddEntry: () => true, // always similar
+      checkAndAddEntry: vi.fn(() => true), // always similar
     };
 
     const providerConfig = {
@@ -45,6 +45,39 @@ describe('Issue reproduction: listings filtered by similarity or area should be 
     }
 
     expect(mockStore.deletedIds).toContain('1');
+    expect(mockSimilarityCache.checkAndAddEntry).toHaveBeenCalledWith({
+      jobId: 'test-job',
+      title: 'test',
+      address: 'addr',
+      price: '100',
+    });
+  });
+
+  it('should pass the shared browser to a custom getListings implementation', async () => {
+    const Fredy = await mockFredy();
+    const browser = { connected: true };
+    const getListings = vi.fn().mockResolvedValue([]);
+    const providerConfig = {
+      url: 'http://example.com',
+      getListings,
+      requiresBrowser: true,
+      normalize: (listing) => listing,
+      filter: () => true,
+      crawlFields: {},
+      requiredFieldNames: [],
+    };
+    const mockedJob = {
+      id: 'custom-get-listings-browser',
+      notificationAdapter: null,
+      specFilter: null,
+      spatialFilter: null,
+    };
+
+    const fredy = new Fredy(providerConfig, mockedJob, 'custom-provider', {}, browser);
+    await fredy.execute();
+
+    expect(getListings).toHaveBeenCalledWith('http://example.com', browser);
+    expect(getListings.mock.contexts[0]).toBe(fredy);
   });
 
   it('should call deleteListingsById when listings are filtered by area', async () => {
