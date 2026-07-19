@@ -140,6 +140,65 @@ describe('#immoscout-mobile URL conversion', () => {
     expect(queryParams.get('pricetype')).toBe('calculatedtotalrent');
   });
 
+  // Buy-side apartment sub-type SEO paths.
+  it.each([
+    ['souterrainwohnung-kaufen', 'halfbasement'],
+    ['erdgeschosswohnung-kaufen', 'groundfloor'],
+    ['hochparterrewohnung-kaufen', 'raisedgroundfloor'],
+    ['etagenwohnung-kaufen', 'apartment'],
+    ['loft-kaufen', 'loft'],
+    ['maisonette-kaufen', 'maisonette'],
+    ['terrassenwohnung-kaufen', 'terracedflat'],
+    ['penthouse-kaufen', 'penthouse'],
+    ['dachgeschosswohnung-kaufen', 'roofstorey'],
+  ])('should convert %s to apartmentbuy with apartmenttype %s', (slug, apartmentType) => {
+    const webUrl = `https://www.immobilienscout24.de/Suche/de/berlin/berlin/${slug}`;
+
+    const converted = convertWebToMobile(webUrl);
+    const queryParams = new URL(converted).searchParams;
+    expect(queryParams.get('realestatetype')).toBe('apartmentbuy');
+    expect(queryParams.get('apartmenttypes')).toBe(apartmentType);
+  });
+
+  // Buy-side equipment/feature SEO paths follow the same "-kaufen" suffix
+  // pattern as the apartment sub-types above (also verified live).
+  it.each([
+    ['wohnung-mit-garage-kaufen', 'parking'],
+    ['wohnung-mit-einbaukueche-kaufen', 'builtinkitchen'],
+    ['wohnung-mit-keller-kaufen', 'cellar'],
+    ['barrierefreie-wohnung-kaufen', 'handicappedaccessible'],
+  ])('should convert %s to apartmentbuy with equipment %s', (slug, equipment) => {
+    const webUrl = `https://www.immobilienscout24.de/Suche/de/berlin/berlin/${slug}`;
+
+    const converted = convertWebToMobile(webUrl);
+    const queryParams = new URL(converted).searchParams;
+    expect(queryParams.get('realestatetype')).toBe('apartmentbuy');
+    expect(queryParams.get('equipment')).toBe(equipment);
+  });
+
+  it('should convert neubauwohnung-kaufen to apartmentbuy with newbuilding=true', () => {
+    const webUrl = 'https://www.immobilienscout24.de/Suche/de/berlin/berlin/neubauwohnung-kaufen';
+
+    const converted = convertWebToMobile(webUrl);
+    const queryParams = new URL(converted).searchParams;
+    expect(queryParams.get('realestatetype')).toBe('apartmentbuy');
+    expect(queryParams.get('newbuilding')).toBe('true');
+  });
+
+  // Sanity check: the corresponding "-mieten" slugs must remain untouched
+  // by the suffix-based realType resolution introduced above.
+  it.each([
+    ['souterrainwohnung-mieten', 'halfbasement'],
+    ['dachgeschosswohnung-mieten', 'roofstorey'],
+  ])('should keep %s resolving to apartmentrent with apartmenttype %s', (slug, apartmentType) => {
+    const webUrl = `https://www.immobilienscout24.de/Suche/de/berlin/berlin/${slug}`;
+
+    const converted = convertWebToMobile(webUrl);
+    const queryParams = new URL(converted).searchParams;
+    expect(queryParams.get('realestatetype')).toBe('apartmentrent');
+    expect(queryParams.get('apartmenttypes')).toBe(apartmentType);
+  });
+
   // Test URL conversion with unsupported query parameters
   it('should remove unsupported query parameters', () => {
     const webUrl = 'https://www.immobilienscout24.de/Suche/de/berlin/berlin/wohnung-mieten?minimuminternetspeed=100000';
