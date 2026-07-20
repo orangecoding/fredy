@@ -60,7 +60,6 @@ describe('Issue reproduction: listings filtered by similarity or area should be 
     const providerConfig = {
       url: 'http://example.com',
       getListings,
-      requiresBrowser: true,
       normalize: (listing) => listing,
       filter: () => true,
       crawlFields: {},

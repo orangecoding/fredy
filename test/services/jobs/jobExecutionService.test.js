@@ -170,7 +170,7 @@ describe('services/jobs/jobExecutionService', () => {
     expect(update.timestamp).toBeLessThanOrEqual(after);
   });
 
-  it('launches and reuses a shared browser for custom providers that require it', async () => {
+  it('launches and reuses a single shared browser across all providers in a job', async () => {
     const provider = (id, config) => ({
       metaInformation: { id },
       config,
@@ -181,12 +181,10 @@ describe('services/jobs/jobExecutionService', () => {
       provider('browser-provider', {
         url: 'https://browser.example/',
         getListings: vi.fn(),
-        requiresBrowser: true,
       }),
       provider('browser-provider-2', {
         url: 'https://browser-2.example/',
         getListings: vi.fn(),
-        requiresBrowser: true,
       }),
     ];
     state.jobsById.j1 = {
@@ -200,8 +198,8 @@ describe('services/jobs/jobExecutionService', () => {
     bus.emit('jobs:runOne', { jobId: 'j1' });
     await vi.waitFor(() => expect(calls.markFinished).toEqual(['j1']));
 
-    expect(calls.launchBrowser).toEqual([['https://browser.example/', {}]]);
-    expect(calls.pipeline.map(({ browser }) => browser)).toEqual([undefined, state.browser, state.browser]);
+    expect(calls.launchBrowser).toEqual([['https://api.example/', {}]]);
+    expect(calls.pipeline.map(({ browser }) => browser)).toEqual([state.browser, state.browser, state.browser]);
     expect(calls.closeBrowser).toEqual([state.browser]);
   });
 });
