@@ -135,7 +135,7 @@ Fredy is built around three simple concepts:
 ### Provider 🌐
 
 A **provider** is a real-estate platform (e.g. ImmoScout24, Immowelt,
-Immonet, eBay Kleinanzeigen, WG-Gesucht).\
+Immonet, Deutsche Wohnen, eBay Kleinanzeigen, WG-Gesucht).\
 When you create a job, you paste the search URL from the platform into
 Fredy.\
 ⚠️ Always make sure the search results are sorted by **date**, so Fredy

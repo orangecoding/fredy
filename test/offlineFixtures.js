@@ -88,6 +88,7 @@ export async function readFixture(url) {
 export function buildFetchMock() {
   let listData = null;
   let detailData = null;
+  let deutscheWohnenListData = null;
 
   return async (url) => {
     const urlStr = String(url);
@@ -109,6 +110,14 @@ export function buildFetchMock() {
         detailData = raw ? JSON.parse(raw) : { sections: [], contact: {} };
       }
       return { ok: true, status: 200, json: () => Promise.resolve(detailData) };
+    }
+
+    if (urlStr.includes('deutsche-wohnen.com/api/deuwo-real-estate/list')) {
+      if (!deutscheWohnenListData) {
+        const raw = await tryReadFile(path.join(FIXTURES_DIR, 'deutscheWohnen_list.json'));
+        deutscheWohnenListData = raw ? JSON.parse(raw) : { results: [] };
+      }
+      return { ok: true, status: 200, json: () => Promise.resolve(deutscheWohnenListData) };
     }
 
     throw new Error(`Network request blocked in offline mode: ${urlStr}`);
