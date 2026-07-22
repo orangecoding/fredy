@@ -4,10 +4,13 @@
  */
 
 import { afterAll, afterEach, beforeAll, expect, vi } from 'vitest';
+// Import utils.js before puppeteerExtractor so its offline vi.mock (which stubs
+// launchBrowser) is registered first; otherwise offline runs launch a real
+// browser and fail when the CloakBrowser binary isn't cached (e.g. in CI).
+import { mockFredy, providerConfig } from '../utils.js';
 import * as similarityCache from '../../lib/services/similarity-check/similarityCache.js';
 import { closeBrowser, launchBrowser } from '../../lib/services/extractor/puppeteerExtractor.js';
 import { get } from '../mocks/mockNotification.js';
-import { mockFredy, providerConfig } from '../utils.js';
 import * as provider from '../../lib/provider/inberlinwohnen.js';
 import { buildHash } from '../../lib/utils.js';
 
