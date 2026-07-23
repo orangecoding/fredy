@@ -32,4 +32,13 @@ describe('distancesToAddresses', () => {
     expect(distancesToAddresses(52.51, 13.4, [])).toEqual([]);
     expect(distancesToAddresses(52.51, 13.4, undefined)).toEqual([]);
   });
+
+  it('keeps every address even when labels are not unique', () => {
+    const home1 = { label: 'Home', address: 'A', coords: { lat: 52.52, lng: 13.405 } };
+    const home2 = { label: 'Home', address: 'B', coords: { lat: 48.0, lng: 11.0 } };
+    const result = distancesToAddresses(52.51, 13.4, [home1, home2]);
+    expect(result).toHaveLength(2);
+    expect(result.map((r) => r.label)).toEqual(['Home', 'Home']);
+    expect(result[0].meters).not.toBe(result[1].meters);
+  });
 });
