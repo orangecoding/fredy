@@ -20,6 +20,10 @@
     "url": "https://immo.swp.de/suchergebnisse?l=M%C3%BCnchen&r=0km&_multiselect_r=0km&ut=private&t=apartment%3Arental&a=de.muenchen&pf=&pt=&rf=0&rt=0&sf=50&st=&yf=&yt=&ff=&ft=&s=most_recently_updated_first&pa=&o=&ad=&u=",
     "enabled": true
   },
+  "inberlinwohnen": {
+    "url": "https://inberlinwohnen.de/wohnungsfinder/",
+    "enabled": true
+  },
   "kleinanzeigen": {
     "url": "https://www.kleinanzeigen.de/s-immobilien/duesseldorf/anzeige:angebote/wohnung/k0c195l2068r5",
     "enabled": true
