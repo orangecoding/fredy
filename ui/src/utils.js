@@ -9,12 +9,8 @@
  * @param {Object} settings - The user settings object.
  * @returns {Array<{label: string, address: string, coords: {lat: number, lng: number}}>}
  */
-export function getHomeAddresses(settings) {
-  const raw = Array.isArray(settings?.home_addresses)
-    ? settings.home_addresses
-    : settings?.home_address?.coords
-      ? [{ label: 'Home', ...settings.home_address }]
-      : [];
+export function getAddresses(settings) {
+  const raw = Array.isArray(settings?.home_addresses) ? settings.home_addresses : [];
   return raw.filter((a) => a?.coords && a.coords.lat !== -1);
 }
 

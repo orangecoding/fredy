@@ -5,7 +5,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { parseBoolean, parseNumber, parseString, useSearchParamState } from '../../hooks/useSearchParamState.js';
-import { getHomeAddresses } from '../../utils.js';
+import { getAddresses } from '../../utils.js';
 import { renderToString } from 'react-dom/server';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -41,7 +41,7 @@ export default function MapView() {
   const [searchParams, setSearchParams] = sp;
   const listings = useSelector((state) => state.listingsData.mapListings);
   const userSettings = useSelector((state) => state.userSettings.settings);
-  const homeAddresses = useMemo(() => getHomeAddresses(userSettings), [userSettings]);
+  const homeAddresses = useMemo(() => getAddresses(userSettings), [userSettings]);
   const listingDeletionPref = userSettings?.listing_deletion_preference;
   const defaultDeleteType = listingDeletionPref?.hardDelete ? 'hard' : 'soft';
 

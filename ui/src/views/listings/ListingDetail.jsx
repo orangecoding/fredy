@@ -43,7 +43,7 @@ import no_image from '../../assets/no_image.png';
 import * as timeService from '../../services/time/timeService.js';
 import { formatEuroPrice } from '../../services/price/priceService.js';
 import { distanceMeters, getBoundsFromCoords } from './mapUtils.js';
-import { getHomeAddresses } from '../../utils.js';
+import { getAddresses } from '../../utils.js';
 import { xhrPost, xhrDelete } from '../../services/xhr.js';
 import ListingDeletionModal from '../../components/ListingDeletionModal.jsx';
 
@@ -66,7 +66,7 @@ export default function ListingDetail() {
   const actions = useActions();
   const listing = useSelector((state) => state.listingsData.currentListing);
   const userSettings = useSelector((state) => state.userSettings.settings);
-  const homeAddresses = useMemo(() => getHomeAddresses(userSettings), [userSettings]);
+  const homeAddresses = useMemo(() => getAddresses(userSettings), [userSettings]);
   const listingDeletionPref = userSettings?.listing_deletion_preference;
   const defaultDeleteType = listingDeletionPref?.hardDelete ? 'hard' : 'soft';
   const mapContainer = useRef(null);

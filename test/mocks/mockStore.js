@@ -29,7 +29,7 @@ export async function getSettings() {
   return { baseUrl: '' };
 }
 
-export function getHomeAddresses(settings) {
+export function getAddresses(settings) {
   if (Array.isArray(settings?.home_addresses)) return settings.home_addresses;
   if (settings?.home_address?.coords) return [{ label: 'Home', ...settings.home_address }];
   return [];

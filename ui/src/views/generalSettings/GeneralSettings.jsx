@@ -139,7 +139,6 @@ const GeneralSettings = function GeneralSettings() {
 
   // User settings state
   const homeAddresses = useSelector((state) => state.userSettings.settings.home_addresses);
-  const legacyHomeAddress = useSelector((state) => state.userSettings.settings.home_address);
   const providerDetails = useSelector((state) => state.userSettings.settings.provider_details);
   const blacklistFilterOnProviderDetails = useSelector(
     (state) => state.userSettings.settings.blacklist_filter_on_provider_details,
@@ -181,13 +180,9 @@ const GeneralSettings = function GeneralSettings() {
   }, [settings]);
 
   useEffect(() => {
-    const initial = Array.isArray(homeAddresses)
-      ? homeAddresses
-      : legacyHomeAddress?.coords
-        ? [{ label: 'Home', ...legacyHomeAddress }]
-        : [];
+    const initial = Array.isArray(homeAddresses) ? homeAddresses : [];
     setAddresses(initial.map((a) => ({ label: a.label || '', address: a.address || '', coords: a.coords || null })));
-  }, [homeAddresses, legacyHomeAddress]);
+  }, [homeAddresses]);
 
   useEffect(() => {
     setListingDeleteHard(listingDeletionPreference?.hardDelete ?? false);
