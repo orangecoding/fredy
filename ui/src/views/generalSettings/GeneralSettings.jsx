@@ -181,7 +181,6 @@ const GeneralSettings = function GeneralSettings() {
   }, [settings]);
 
   useEffect(() => {
-    // Fall back to the legacy single home_address so existing users keep their address.
     const initial = Array.isArray(homeAddresses)
       ? homeAddresses
       : legacyHomeAddress?.coords

@@ -196,7 +196,6 @@ export default function MapView() {
     // every refresh.
     if (homeAddresses.length > 0) {
       if (distanceFilter > 0) {
-        // Fit to a box that contains every address's radius circle.
         const corners = homeAddresses.flatMap((home) =>
           getBoundsFromCenter([home.coords.lng, home.coords.lat], distanceFilter),
         );
@@ -264,7 +263,6 @@ export default function MapView() {
       if (map.current.getSource('distance-circle-source')) map.current.removeSource('distance-circle-source');
 
       if (distanceFilter > 0 && homeAddresses.length > 0) {
-        // One circle polygon per address in a single source/layer.
         map.current.addSource('distance-circle-source', {
           type: 'geojson',
           data: {

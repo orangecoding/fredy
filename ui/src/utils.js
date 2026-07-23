@@ -5,8 +5,6 @@
 
 /**
  * Normalize the configured distance-check addresses from user settings to an array.
- * Falls back to the legacy single `home_address` object so existing users keep theirs.
- * Only addresses that geocoded successfully (coords.lat !== -1) are returned.
  *
  * @param {Object} settings - The user settings object.
  * @returns {Array<{label: string, address: string, coords: {lat: number, lng: number}}>}

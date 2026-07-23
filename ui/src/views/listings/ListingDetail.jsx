@@ -147,7 +147,6 @@ export default function ListingDetail() {
         maxZoom: 15,
       });
 
-      // Build one dashed line + a distance label per configured address.
       const buildRouteData = () => ({
         type: 'FeatureCollection',
         features: homeAddresses.flatMap((home) => {
