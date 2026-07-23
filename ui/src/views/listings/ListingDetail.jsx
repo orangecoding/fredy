@@ -3,7 +3,7 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector, useActions } from '../../services/state/store.js';
 import {
@@ -43,6 +43,7 @@ import no_image from '../../assets/no_image.png';
 import * as timeService from '../../services/time/timeService.js';
 import { formatEuroPrice } from '../../services/price/priceService.js';
 import { distanceMeters, getBoundsFromCoords } from './mapUtils.js';
+import { getHomeAddresses } from '../../utils.js';
 import { xhrPost, xhrDelete } from '../../services/xhr.js';
 import ListingDeletionModal from '../../components/ListingDeletionModal.jsx';
 
@@ -65,7 +66,7 @@ export default function ListingDetail() {
   const actions = useActions();
   const listing = useSelector((state) => state.listingsData.currentListing);
   const userSettings = useSelector((state) => state.userSettings.settings);
-  const homeAddress = userSettings?.home_address;
+  const homeAddresses = useMemo(() => getHomeAddresses(userSettings), [userSettings]);
   const listingDeletionPref = userSettings?.listing_deletion_preference;
   const defaultDeleteType = listingDeletionPref?.hardDelete ? 'hard' : 'soft';
   const mapContainer = useRef(null);
@@ -124,19 +125,21 @@ export default function ListingDetail() {
       )
       .addTo(map.current);
 
-    if (homeAddress?.coords) {
-      new maplibregl.Marker({ color: 'red' })
-        .setLngLat([homeAddress.coords.lng, homeAddress.coords.lat])
-        .setPopup(
-          new maplibregl.Popup({ offset: 25 }).setHTML(
-            `<h4>${t('listing.detail.mapPopupHomeAddress')}</h4><p>${homeAddress.address}</p>`,
-          ),
-        )
-        .addTo(map.current);
+    if (homeAddresses.length > 0) {
+      homeAddresses.forEach((home) => {
+        new maplibregl.Marker({ color: 'red' })
+          .setLngLat([home.coords.lng, home.coords.lat])
+          .setPopup(
+            new maplibregl.Popup({ offset: 25 }).setHTML(
+              `<h4>${home.label || t('listing.detail.mapPopupHomeAddress')}</h4><p>${home.address}</p>`,
+            ),
+          )
+          .addTo(map.current);
+      });
 
       const bounds = getBoundsFromCoords([
         [listing.longitude, listing.latitude],
-        [homeAddress.coords.lng, homeAddress.coords.lat],
+        ...homeAddresses.map((home) => [home.coords.lng, home.coords.lat]),
       ]);
 
       map.current.fitBounds(bounds, {
@@ -144,75 +147,47 @@ export default function ListingDetail() {
         maxZoom: 15,
       });
 
+      // Build one dashed line + a distance label per configured address.
+      const buildRouteData = () => ({
+        type: 'FeatureCollection',
+        features: homeAddresses.flatMap((home) => {
+          const distance = distanceMeters(listing.latitude, listing.longitude, home.coords.lat, home.coords.lng);
+          const midpoint = [(listing.longitude + home.coords.lng) / 2, (listing.latitude + home.coords.lat) / 2];
+          const labelPrefix = home.label ? `${home.label}: ` : '';
+          return [
+            {
+              type: 'Feature',
+              geometry: {
+                type: 'LineString',
+                coordinates: [
+                  [listing.longitude, listing.latitude],
+                  [home.coords.lng, home.coords.lat],
+                ],
+              },
+            },
+            {
+              type: 'Feature',
+              geometry: {
+                type: 'Point',
+                coordinates: midpoint,
+              },
+              properties: {
+                distance: `${labelPrefix}${Math.round(distance)} m`,
+              },
+            },
+          ];
+        }),
+      });
+
       const drawLine = () => {
         if (!map.current || !map.current.isStyleLoaded()) return;
 
-        const distance = distanceMeters(
-          listing.latitude,
-          listing.longitude,
-          homeAddress.coords.lat,
-          homeAddress.coords.lng,
-        );
-
-        const midpoint = [
-          (listing.longitude + homeAddress.coords.lng) / 2,
-          (listing.latitude + homeAddress.coords.lat) / 2,
-        ];
-
         if (map.current.getSource('route')) {
-          map.current.getSource('route').setData({
-            type: 'FeatureCollection',
-            features: [
-              {
-                type: 'Feature',
-                geometry: {
-                  type: 'LineString',
-                  coordinates: [
-                    [listing.longitude, listing.latitude],
-                    [homeAddress.coords.lng, homeAddress.coords.lat],
-                  ],
-                },
-              },
-              {
-                type: 'Feature',
-                geometry: {
-                  type: 'Point',
-                  coordinates: midpoint,
-                },
-                properties: {
-                  distance: `${Math.round(distance)} m`,
-                },
-              },
-            ],
-          });
+          map.current.getSource('route').setData(buildRouteData());
         } else {
           map.current.addSource('route', {
             type: 'geojson',
-            data: {
-              type: 'FeatureCollection',
-              features: [
-                {
-                  type: 'Feature',
-                  geometry: {
-                    type: 'LineString',
-                    coordinates: [
-                      [listing.longitude, listing.latitude],
-                      [homeAddress.coords.lng, homeAddress.coords.lat],
-                    ],
-                  },
-                },
-                {
-                  type: 'Feature',
-                  geometry: {
-                    type: 'Point',
-                    coordinates: midpoint,
-                  },
-                  properties: {
-                    distance: `${Math.round(distance)} m`,
-                  },
-                },
-              ],
-            },
+            data: buildRouteData(),
           });
 
           map.current.addLayer({
@@ -264,7 +239,7 @@ export default function ListingDetail() {
         map.current = null;
       }
     };
-  }, [listing, loading, homeAddress]);
+  }, [listing, loading, homeAddresses]);
 
   const confirmDeletion = async (hardDelete, remember) => {
     try {
@@ -514,13 +489,17 @@ export default function ListingDetail() {
                 {listing.description || t('listing.detail.noDescription')}
               </Text>
 
-              {listing.distance_to_destination && (
+              {Array.isArray(listing.distances) && listing.distances.length > 0 && (
                 <>
                   <Divider margin="1.5rem" />
-                  <Space align="center">
+                  <Space align="center" wrap>
                     <IconActivity style={{ fontSize: '18px', color: 'var(--semi-color-primary)' }} />
                     <Text strong>{t('listing.detail.distanceToHome')}</Text>
-                    <Tag color="blue">{listing.distance_to_destination} m</Tag>
+                    {listing.distances.map((d) => (
+                      <Tag color="blue" key={d.label}>
+                        {d.label}: {d.meters} m
+                      </Tag>
+                    ))}
                   </Space>
                 </>
               )}
