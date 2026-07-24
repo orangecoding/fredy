@@ -4,19 +4,12 @@
  */
 
 import { Button, Tooltip } from '@douyinfe/semi-ui-19';
-import {
-  IconBriefcase,
-  IconDelete,
-  IconLink,
-  IconMapPin,
-  IconStar,
-  IconStarStroked,
-  IconEyeOpened,
-} from '@douyinfe/semi-icons';
+import { IconBriefcase, IconDelete, IconMapPin, IconStar, IconStarStroked, IconEyeOpened } from '@douyinfe/semi-icons';
 import no_image from '../../assets/no_image.png';
 import { formatEuroPrice } from '../../services/price/priceService.js';
 import * as timeService from '../../services/time/timeService.js';
 import StatusControl from '../listings/StatusControl.jsx';
+import ExternalListingLink from '../listings/ExternalListingLink.jsx';
 
 import './ListingsTable.less';
 import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
@@ -84,7 +77,11 @@ const ListingsTable = ({
 
           <div className="listingsTable__row__date">{timeService.format(item.created_at, false, locale)}</div>
 
-          <div className="listingsTable__row__actions" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="listingsTable__row__actions"
+            onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => e.stopPropagation()}
+          >
             <StatusControl
               status={item.status?.status ?? null}
               compact
@@ -107,18 +104,7 @@ const ListingsTable = ({
                 {item.isWatched === 1 ? <IconStar /> : <IconStarStroked />}
               </button>
             </Tooltip>
-            <Tooltip content={t('listings.tooltipOriginalListing')}>
-              <Button
-                size="small"
-                icon={<IconLink />}
-                style={{ color: '#60a5fa' }}
-                theme="borderless"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  window.open(item.link, '_blank');
-                }}
-              />
-            </Tooltip>
+            <ExternalListingLink href={item.link} label={t('listings.tooltipOriginalListing')} />
             <Tooltip content={t('listings.tooltipViewInFredy')}>
               <Button
                 size="small"

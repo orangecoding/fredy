@@ -8,7 +8,6 @@ import {
   IconBriefcase,
   IconCart,
   IconDelete,
-  IconLink,
   IconMapPin,
   IconStar,
   IconStarStroked,
@@ -17,6 +16,7 @@ import {
 import no_image from '../../../assets/no_image.png';
 import * as timeService from '../../../services/time/timeService.js';
 import StatusControl from '../../listings/StatusControl.jsx';
+import ExternalListingLink from '../../listings/ExternalListingLink.jsx';
 
 import './ListingsGrid.less';
 import { useTranslation, useLocale } from '../../../services/i18n/i18n.jsx';
@@ -95,25 +95,18 @@ const ListingsGrid = ({ listings, onWatch, onNavigate, onDelete, onRestore, isHi
             <div className="listingsGrid__card__provider">{timeService.format(item.created_at, false, locale)}</div>
           </div>
 
-          <div className="listingsGrid__card__actions" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="listingsGrid__card__actions"
+            onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => e.stopPropagation()}
+          >
             <StatusControl
               status={item.status?.status ?? null}
               compact
               onChange={(next) => onStatusChange?.(item, next)}
               onTriggerClick={(e) => e.stopPropagation()}
             />
-            <Tooltip content={t('listings.tooltipOriginalListing')}>
-              <Button
-                size="small"
-                icon={<IconLink />}
-                style={{ color: '#60a5fa' }}
-                theme="borderless"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  window.open(item.link, '_blank');
-                }}
-              />
-            </Tooltip>
+            <ExternalListingLink href={item.link} label={t('listings.tooltipOriginalListing')} />
             <Tooltip content={t('listings.tooltipViewInFredy')}>
               <Button
                 size="small"
