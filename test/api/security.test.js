@@ -9,11 +9,30 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 vi.mock('../../lib/services/storage/userStorage.js', () => ({
   getUser: vi.fn(),
 }));
+// security.js reads sessionTTL at import time. An empty settings object exercises the default.
+vi.mock('../../lib/services/storage/settingsStorage.js', () => ({ getSettings: vi.fn(async () => ({})) }));
 
 import { getUser } from '../../lib/services/storage/userStorage.js';
-import { isUnauthorized, isAdmin, authHook, adminHook } from '../../lib/api/security.js';
+import { isUnauthorized, isAdmin, authHook, adminHook, touchSession } from '../../lib/api/security.js';
 
-const SESSION_MAX_AGE = 2 * 60 * 60 * 1000; // mirrors security.js
+const SESSION_MAX_AGE = 2 * 60 * 60 * 1000; // the default applied when sessionTTL is unset
+
+/**
+ * Re-import security.js with a specific sessionTTL setting. Needed because the max age is
+ * derived once at module load, so the module registry has to be reset per scenario.
+ * @param {any} sessionTTL - The raw setting value as it would come from the settings table.
+ * @returns {Promise<typeof import('../../lib/api/security.js')>}
+ */
+async function importSecurityWithTtl(sessionTTL) {
+  vi.resetModules();
+  vi.doMock('../../lib/services/storage/userStorage.js', () => ({ getUser: vi.fn() }));
+  vi.doMock('../../lib/services/storage/settingsStorage.js', () => ({
+    getSettings: vi.fn(async () => ({ sessionTTL })),
+  }));
+  return import('../../lib/api/security.js');
+}
+
+const sessionAgedHours = (hours) => ({ currentUser: 'user-1', createdAt: Date.now() - hours * 60 * 60 * 1000 });
 
 /**
  * Minimal Fastify reply double recording the status code and whether send() was called.
@@ -58,6 +77,55 @@ describe('isUnauthorized', () => {
   });
 });
 
+describe('session max age', () => {
+  it('honors a configured sessionTTL above the two hour default', async () => {
+    const { isUnauthorized: check, SESSION_MAX_AGE: maxAge } = await importSecurityWithTtl(24);
+
+    expect(maxAge).toBe(24 * 60 * 60 * 1000);
+    // Would have expired under the previously hard-coded two hour cap.
+    expect(check({ session: sessionAgedHours(3) })).toBe(false);
+    expect(check({ session: sessionAgedHours(25) })).toBe(true);
+  });
+
+  it('honors a sessionTTL shorter than the default', async () => {
+    const { isUnauthorized: check } = await importSecurityWithTtl(1);
+
+    expect(check({ session: sessionAgedHours(0.5) })).toBe(false);
+    expect(check({ session: sessionAgedHours(1.5) })).toBe(true);
+  });
+
+  it('accepts the numeric string the settings UI stores', async () => {
+    const { SESSION_MAX_AGE: maxAge } = await importSecurityWithTtl('12');
+
+    expect(maxAge).toBe(12 * 60 * 60 * 1000);
+  });
+
+  it.each([['not-a-number'], [''], [0], [-5], [null], [undefined]])(
+    'falls back to the default instead of never expiring for sessionTTL %o',
+    async (value) => {
+      // A NaN or non-positive max age would make the expiry comparison always false,
+      // leaving sessions valid forever.
+      const { SESSION_MAX_AGE: maxAge, isUnauthorized: check } = await importSecurityWithTtl(value);
+
+      expect(maxAge).toBe(SESSION_MAX_AGE);
+      expect(check({ session: sessionAgedHours(3) })).toBe(true);
+    },
+  );
+});
+
+describe('touchSession', () => {
+  it('moves the session timestamp forward so the TTL behaves as an idle timeout', () => {
+    const session = sessionAgedHours(1.5);
+    touchSession({ session });
+
+    expect(Date.now() - session.createdAt).toBeLessThan(1000);
+  });
+
+  it('does nothing when there is no session', () => {
+    expect(() => touchSession({})).not.toThrow();
+  });
+});
+
 describe('authHook', () => {
   it('short-circuits the lifecycle by returning the reply when unauthorized', async () => {
     const reply = makeReply();
@@ -76,6 +144,21 @@ describe('authHook', () => {
     expect(result).toBeUndefined();
     expect(reply.statusCode).toBeNull();
     expect(reply.sent).toBe(false);
+  });
+
+  it('extends the session of an authorized request', async () => {
+    const session = sessionAgedHours(1.5);
+    await authHook({ session }, makeReply());
+
+    expect(Date.now() - session.createdAt).toBeLessThan(1000);
+  });
+
+  it('does not extend the session of a rejected request', async () => {
+    const session = expiredSession();
+    const before = session.createdAt;
+    await authHook({ session }, makeReply());
+
+    expect(session.createdAt).toBe(before);
   });
 });
 

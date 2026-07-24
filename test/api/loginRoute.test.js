@@ -19,6 +19,7 @@ vi.mock('../../lib/services/logger.js', () => ({ default: { error: vi.fn(), info
 import { getUser } from '../../lib/services/storage/userStorage.js';
 import loginPlugin from '../../lib/api/routes/loginRoute.js';
 
+// getSettings is mocked to return {}, so security.js applies its two hour default TTL.
 const SESSION_MAX_AGE = 2 * 60 * 60 * 1000;
 const freshSession = () => ({ currentUser: 'user-1', createdAt: Date.now() });
 const expiredSession = () => ({ currentUser: 'user-1', createdAt: Date.now() - (SESSION_MAX_AGE + 1000) });
@@ -67,6 +68,20 @@ describe('GET /user', () => {
 
     expect(res.statusCode).toBe(200);
     expect(res.json()).toEqual({});
+
+    await app.close();
+  });
+
+  it('does not extend the session', async () => {
+    // This probe only reports whether a session is still valid. Extending it here would let an
+    // idle browser tab keep a session alive indefinitely without any real user activity.
+    testSession = { currentUser: 'user-1', createdAt: Date.now() - 60 * 60 * 1000 };
+    const before = testSession.createdAt;
+    const app = await buildApp();
+
+    await app.inject({ method: 'GET', url: '/user' });
+
+    expect(testSession.createdAt).toBe(before);
 
     await app.close();
   });
