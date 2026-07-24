@@ -3,6 +3,17 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
+/**
+ * Normalize the configured distance-check addresses from user settings to an array.
+ *
+ * @param {Object} settings - The user settings object.
+ * @returns {Array<{label: string, address: string, coords: {lat: number, lng: number}}>}
+ */
+export function getAddresses(settings) {
+  const raw = Array.isArray(settings?.home_addresses) ? settings.home_addresses : [];
+  return raw.filter((a) => a?.coords && a.coords.lat !== -1);
+}
+
 export function debounce(fn, delay) {
   let timer;
 

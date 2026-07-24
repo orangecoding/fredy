@@ -3,8 +3,9 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { parseBoolean, parseNumber, parseString, useSearchParamState } from '../../hooks/useSearchParamState.js';
+import { getAddresses } from '../../utils.js';
 import { renderToString } from 'react-dom/server';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -33,14 +34,14 @@ export default function MapView() {
   const mapContainer = useRef(null);
   const map = useRef(null);
   const markers = useRef([]);
-  const homeMarker = useRef(null);
+  const homeMarkers = useRef([]);
   const actions = useActions();
   const navigate = useNavigate();
   const sp = useSearchParams();
   const [searchParams, setSearchParams] = sp;
   const listings = useSelector((state) => state.listingsData.mapListings);
   const userSettings = useSelector((state) => state.userSettings.settings);
-  const homeAddress = userSettings?.home_address;
+  const homeAddresses = useMemo(() => getAddresses(userSettings), [userSettings]);
   const listingDeletionPref = userSettings?.listing_deletion_preference;
   const defaultDeleteType = listingDeletionPref?.hardDelete ? 'hard' : 'soft';
 
@@ -193,19 +194,27 @@ export default function MapView() {
     // animating from the zoomed-out initial state. This effect re-runs whenever
     // listings/filters change, and the fly/zoom animation was distracting on
     // every refresh.
-    if (homeAddress?.coords) {
+    if (homeAddresses.length > 0) {
       if (distanceFilter > 0) {
-        const bounds = getBoundsFromCenter([homeAddress.coords.lng, homeAddress.coords.lat], distanceFilter);
-
-        map.current.fitBounds(bounds, {
+        const corners = homeAddresses.flatMap((home) =>
+          getBoundsFromCenter([home.coords.lng, home.coords.lat], distanceFilter),
+        );
+        map.current.fitBounds(getBoundsFromCoords(corners), {
           padding: 20,
           maxZoom: 15,
           duration: 0,
         });
-      } else {
+      } else if (homeAddresses.length === 1) {
         map.current.flyTo({
-          center: [homeAddress.coords.lng, homeAddress.coords.lat],
+          center: [homeAddresses[0].coords.lng, homeAddresses[0].coords.lat],
           zoom: 12,
+          duration: 0,
+        });
+      } else {
+        const bounds = getBoundsFromCoords(homeAddresses.map((home) => [home.coords.lng, home.coords.lat]));
+        map.current.fitBounds(bounds, {
+          padding: 50,
+          maxZoom: 15,
           duration: 0,
         });
       }
@@ -224,7 +233,7 @@ export default function MapView() {
         });
       }
     }
-  }, [homeAddress?.address, distanceFilter, listings]);
+  }, [homeAddresses, distanceFilter, listings]);
 
   useEffect(() => {
     if (!map.current) return;
@@ -232,21 +241,20 @@ export default function MapView() {
     markers.current.forEach((marker) => marker.remove());
     markers.current = [];
 
-    if (homeMarker.current) {
-      homeMarker.current.remove();
-      homeMarker.current = null;
-    }
+    homeMarkers.current.forEach((marker) => marker.remove());
+    homeMarkers.current = [];
 
-    if (homeAddress?.coords) {
-      homeMarker.current = new maplibregl.Marker({ color: 'red' })
-        .setLngLat([homeAddress.coords.lng, homeAddress.coords.lat])
+    homeAddresses.forEach((home) => {
+      const marker = new maplibregl.Marker({ color: 'red' })
+        .setLngLat([home.coords.lng, home.coords.lat])
         .setPopup(
           new maplibregl.Popup({ offset: 25 }).setHTML(
-            `<div class="map-popup-content"><h4>${t('map.popupHomeAddress')}</h4><p>${homeAddress.address}</p></div>`,
+            `<div class="map-popup-content"><h4>${home.label || t('map.popupHomeAddress')}</h4><p>${home.address}</p></div>`,
           ),
         )
         .addTo(map.current);
-    }
+      homeMarkers.current.push(marker);
+    });
 
     const addCircleLayer = () => {
       if (!map.current || !map.current.isStyleLoaded()) return;
@@ -254,17 +262,18 @@ export default function MapView() {
       if (map.current.getLayer('distance-circle-outline')) map.current.removeLayer('distance-circle-outline');
       if (map.current.getSource('distance-circle-source')) map.current.removeSource('distance-circle-source');
 
-      if (distanceFilter > 0 && homeAddress?.coords) {
-        const ret = generateCircleCoords([homeAddress.coords.lng, homeAddress.coords.lat], distanceFilter);
-
+      if (distanceFilter > 0 && homeAddresses.length > 0) {
         map.current.addSource('distance-circle-source', {
           type: 'geojson',
           data: {
-            type: 'Feature',
-            geometry: {
-              type: 'Polygon',
-              coordinates: [ret],
-            },
+            type: 'FeatureCollection',
+            features: homeAddresses.map((home) => ({
+              type: 'Feature',
+              geometry: {
+                type: 'Polygon',
+                coordinates: [generateCircleCoords([home.coords.lng, home.coords.lat], distanceFilter)],
+              },
+            })),
           },
         });
 
@@ -351,14 +360,13 @@ export default function MapView() {
         const popup = new maplibregl.Popup({ offset: 25 }).setHTML(popupContent);
 
         let color = '#3FB1CE';
-        if (distanceFilter > 0 && homeAddress?.coords) {
-          const dist = distanceMeters(
-            homeAddress.coords.lat,
-            homeAddress.coords.lng,
-            listing.latitude,
-            listing.longitude,
+        if (distanceFilter > 0 && homeAddresses.length > 0) {
+          const inRange = homeAddresses.some(
+            (home) =>
+              distanceMeters(home.coords.lat, home.coords.lng, listing.latitude, listing.longitude) <=
+              distanceFilter * 1000,
           );
-          if (dist <= distanceFilter * 1000) {
+          if (inRange) {
             color = 'orange';
           }
         }
@@ -371,13 +379,13 @@ export default function MapView() {
         markers.current.push(marker);
       }
     });
-  }, [listings, priceRange, homeAddress, distanceFilter]);
+  }, [listings, priceRange, homeAddresses, distanceFilter]);
 
   return (
     <>
       <Headline text={t('map.title')} />
       <div className="map-view-container">
-        {!homeAddress && (
+        {homeAddresses.length === 0 && (
           <Banner
             fullMode={true}
             type="warning"

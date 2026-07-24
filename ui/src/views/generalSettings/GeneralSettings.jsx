@@ -40,7 +40,16 @@ import {
   downloadDebugBundle,
   clearDebugLogs as apiClearDebugLogs,
 } from '../../services/debugLoggingClient';
-import { IconSave, IconRefresh, IconSignal, IconHome, IconFolder, IconAlertTriangle } from '@douyinfe/semi-icons';
+import {
+  IconSave,
+  IconRefresh,
+  IconSignal,
+  IconHome,
+  IconFolder,
+  IconAlertTriangle,
+  IconPlus,
+  IconDelete,
+} from '@douyinfe/semi-icons';
 import { debounce } from '../../utils';
 import Headline from '../../components/headline/Headline.jsx';
 import './GeneralSettings.less';
@@ -129,20 +138,20 @@ const GeneralSettings = function GeneralSettings() {
   }, []);
 
   // User settings state
-  const homeAddress = useSelector((state) => state.userSettings.settings.home_address);
+  const homeAddresses = useSelector((state) => state.userSettings.settings.home_addresses);
   const providerDetails = useSelector((state) => state.userSettings.settings.provider_details);
   const blacklistFilterOnProviderDetails = useSelector(
     (state) => state.userSettings.settings.blacklist_filter_on_provider_details,
   );
   const listingDeletionPreference = useSelector((state) => state.userSettings.settings.listing_deletion_preference);
   const allProviders = useSelector((state) => state.provider);
-  const [address, setAddress] = useState(homeAddress?.address || '');
-  const [coords, setCoords] = useState(homeAddress?.coords || null);
+  const [addresses, setAddresses] = useState([]);
   const [listingDeleteHard, setListingDeleteHard] = useState(false);
   const [listingDeleteSkipPrompt, setListingDeleteSkipPrompt] = useState(false);
-  const saving = useIsLoading(actions.userSettings.setHomeAddress);
+  const saving = useIsLoading(actions.userSettings.setHomeAddresses);
   const savingLanguage = useIsLoading(actions.userSettings.setLanguage);
   const [dataSource, setDataSource] = useState([]);
+  const [activeSearchIdx, setActiveSearchIdx] = useState(null);
 
   React.useEffect(() => {
     async function init() {
@@ -171,9 +180,9 @@ const GeneralSettings = function GeneralSettings() {
   }, [settings]);
 
   useEffect(() => {
-    setAddress(homeAddress?.address || '');
-    setCoords(homeAddress?.coords || null);
-  }, [homeAddress]);
+    const initial = Array.isArray(homeAddresses) ? homeAddresses : [];
+    setAddresses(initial.map((a) => ({ label: a.label || '', address: a.address || '', coords: a.coords || null })));
+  }, [homeAddresses]);
 
   useEffect(() => {
     setListingDeleteHard(listingDeletionPreference?.hardDelete ?? false);
@@ -409,8 +418,16 @@ const GeneralSettings = function GeneralSettings() {
 
   const handleSaveUserSettings = async () => {
     try {
-      const responseJson = await actions.userSettings.setHomeAddress(address);
-      setCoords(responseJson.coords);
+      const responseJson = await actions.userSettings.setHomeAddresses(
+        addresses.filter((a) => a.address).map((a) => ({ label: a.label, address: a.address })),
+      );
+      setAddresses(
+        (responseJson.home_addresses || []).map((a) => ({
+          label: a.label || '',
+          address: a.address || '',
+          coords: a.coords || null,
+        })),
+      );
       await actions.userSettings.setListingDeletionPreference({
         skipPrompt: listingDeleteSkipPrompt,
         hardDelete: listingDeleteHard,
@@ -436,7 +453,8 @@ const GeneralSettings = function GeneralSettings() {
     [],
   );
 
-  const searchAddress = (value) => {
+  const searchAddress = (value, idx) => {
+    setActiveSearchIdx(idx);
     if (!value) {
       setDataSource([]);
       return;
@@ -618,24 +636,53 @@ const GeneralSettings = function GeneralSettings() {
                   />
                 </SegmentPart>
 
-                <SegmentPart name={t('settings.homeAddress')} helpText={t('settings.homeAddressHelp')}>
-                  <AutoComplete
-                    data={dataSource}
-                    value={address}
-                    showClear
-                    onChange={(v) => setAddress(v)}
-                    onSearch={searchAddress}
-                    placeholder={t('settings.homeAddressPlaceholder')}
-                    style={{ width: '100%' }}
-                  />
-                  {coords && coords.lat === -1 && (
-                    <Banner
-                      type="danger"
-                      description={t('settings.homeAddressGeoError')}
-                      closeIcon={null}
-                      style={{ marginTop: 8 }}
-                    />
-                  )}
+                <SegmentPart name={t('settings.homeAddresses')} helpText={t('settings.homeAddressesHelp')}>
+                  {addresses.map((row, idx) => (
+                    <div key={idx} style={{ display: 'flex', gap: 8, marginBottom: 8, alignItems: 'flex-start' }}>
+                      <Input
+                        value={row.label}
+                        placeholder={t('settings.homeAddressLabelPlaceholder')}
+                        style={{ width: 140 }}
+                        onChange={(v) =>
+                          setAddresses((prev) => prev.map((r, i) => (i === idx ? { ...r, label: v } : r)))
+                        }
+                      />
+                      <div style={{ flex: 1 }}>
+                        <AutoComplete
+                          data={activeSearchIdx === idx ? dataSource : []}
+                          value={row.address}
+                          showClear
+                          onChange={(v) =>
+                            setAddresses((prev) => prev.map((r, i) => (i === idx ? { ...r, address: v } : r)))
+                          }
+                          onSearch={(v) => searchAddress(v, idx)}
+                          placeholder={t('settings.homeAddressPlaceholder')}
+                          style={{ width: '100%' }}
+                        />
+                        {row.coords && row.coords.lat === -1 && (
+                          <Banner
+                            type="danger"
+                            description={t('settings.homeAddressGeoError')}
+                            closeIcon={null}
+                            style={{ marginTop: 8 }}
+                          />
+                        )}
+                      </div>
+                      <Button
+                        type="danger"
+                        theme="borderless"
+                        icon={<IconDelete />}
+                        aria-label={t('settings.removeAddress')}
+                        onClick={() => setAddresses((prev) => prev.filter((_, i) => i !== idx))}
+                      />
+                    </div>
+                  ))}
+                  <Button
+                    icon={<IconPlus />}
+                    onClick={() => setAddresses((prev) => [...prev, { label: '', address: '', coords: null }])}
+                  >
+                    {t('settings.addAddress')}
+                  </Button>
                 </SegmentPart>
 
                 <SegmentPart name={t('settings.providerDetails')} helpText={t('settings.providerDetailsHelp')}>

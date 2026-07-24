@@ -29,7 +29,13 @@ export async function getSettings() {
   return { baseUrl: '' };
 }
 
-export const updateListingDistance = (id, distance) => {
+export function getAddresses(settings) {
+  if (Array.isArray(settings?.home_addresses)) return settings.home_addresses;
+  if (settings?.home_address?.coords) return [{ label: 'Home', ...settings.home_address }];
+  return [];
+}
+
+export const updateListingDistances = (id, distances) => {
   // noop
 };
 export const deletedIds = [];

@@ -317,16 +317,16 @@ export const useFredyState = create(
               throw Exception;
             }
           },
-          async setHomeAddress(address) {
+          async setHomeAddresses(addresses) {
             try {
-              const response = await xhrPost('/api/user/settings/home-address', { home_address: address });
+              const response = await xhrPost('/api/user/settings/home-address', { home_addresses: addresses });
               if (response.status === 200) {
                 set((state) => ({
                   userSettings: {
                     ...state.userSettings,
                     settings: {
                       ...state.userSettings.settings,
-                      home_address: { address, coords: response.json.coords },
+                      home_addresses: response.json.home_addresses,
                     },
                   },
                 }));
@@ -334,7 +334,7 @@ export const useFredyState = create(
               }
               throw response;
             } catch (Exception) {
-              console.error('Error while trying to update home address. Error:', Exception);
+              console.error('Error while trying to update addresses. Error:', Exception);
               throw Exception;
             }
           },
