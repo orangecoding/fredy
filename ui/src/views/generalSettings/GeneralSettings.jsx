@@ -208,7 +208,7 @@ const GeneralSettings = function GeneralSettings() {
   }, [applyDebugStatus]);
 
   // Live polling while the feature is active so the progress bar reflects new entries
-  // as they are written. We intentionally do NOT poll while inactive — the size stays
+  // as they are written. We intentionally do NOT poll while inactive - the size stays
   // constant and there's no Banner to update. Stale poll responses (where a manual
   // enable/disable bumped the sequence in the meantime) are discarded so the UI does
   // not flicker back to the previous state for ~3s.

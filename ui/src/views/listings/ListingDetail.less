@@ -94,6 +94,15 @@
     border-top: 1px solid var(--semi-color-border);
   }
 
+  &__affordability {
+    display: inline-block;
+    padding: 1px @space-2;
+    border: 1px solid;
+    border-radius: @radius-chip;
+    font-size: @text-xs;
+    white-space: nowrap;
+  }
+
   &__notes-title {
     margin-bottom: 1rem !important;
   }
@@ -182,7 +191,6 @@
     height: 400px;
     width: 100%;
     border-radius: var(--semi-border-radius-medium);
-    margin-top: 1rem;
     border: 1px solid var(--semi-color-border);
 
     @media (max-width: 768px) {
@@ -190,9 +198,13 @@
     }
   }
 
+  // Shares the notes' gutter, since it now sits in the same column right below them.
   &__map-wrapper {
-      margin-top: 2rem;
-      margin-bottom: 3rem;
+    padding: 0 1.5rem 1.5rem;
+  }
+
+  &__map-title {
+    margin-bottom: 1rem !important;
   }
 
   .info-tag {

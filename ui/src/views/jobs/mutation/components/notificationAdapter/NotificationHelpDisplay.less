@@ -1,0 +1,151 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../../../../tokens.less';
+
+.notificationHelp {
+  margin: @space-4 0 @space-5;
+  border: 1px solid @color-border;
+  border-radius: @radius-card;
+  background: @color-elevated;
+  overflow: hidden;
+
+  &__summary {
+    display: flex;
+    align-items: center;
+    gap: @space-3;
+    padding: @space-3 @space-4;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+    transition: background @transition-fast;
+
+    /* Safari and Chrome each draw their own marker; the chevron below is the one affordance. */
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    &:hover {
+      background: @color-fill-subtle;
+    }
+
+    /* Keyboard users get the same ring the rest of the app uses, on the row itself. */
+    &:focus-visible {
+      outline: 2px solid @color-accent;
+      outline-offset: -2px;
+    }
+  }
+
+  /* Accent marks the thing you can act on, the same signal every other control in Fredy uses.
+     Grey on a grey card read as disabled, which is exactly what this is not. */
+  &__icon {
+    flex: none;
+    font-size: @text-md;
+    color: @color-accent;
+  }
+
+  /* Full text contrast, at the size of a field label: this sits in the same scan column as the
+     Token and Chat ID labels below it, and belongs to the same reading level. */
+  &__label {
+    flex: 1;
+    font-size: @text-base;
+    font-weight: 500;
+    color: @color-text;
+  }
+
+  &__chevron {
+    flex: none;
+    color: @color-muted;
+    transition: transform @transition-fast;
+  }
+
+  &[open] &__chevron {
+    transform: rotate(180deg);
+  }
+
+  &[open] &__summary {
+    border-bottom: 1px solid @color-border;
+  }
+
+  /* Reference material, not a wall to scroll the dialog past: the guide gets its own scroll area
+     so a long adapter README cannot push the Save button out of reach. The accent rule down the
+     left ties the open guide back to the adapter it documents. */
+  &__body {
+    max-height: 40vh;
+    overflow-y: auto;
+    padding: @space-4;
+    border-left: 2px solid @color-accent-dim;
+    font-size: @text-sm;
+    line-height: 1.65;
+    color: @color-muted;
+
+    /* Body copy takes the panel's muted tone. Semi colours it as primary text by default, which
+       would make the guide shout as loudly as the form it is helping with. Declared before the
+       heading rule below on purpose: both selectors carry one class, so source order decides,
+       and the headings have to be the ones that win. */
+    .semi-typography {
+      font-size: @text-sm;
+      color: @color-muted;
+    }
+
+    /* Headings are waypoints through a long guide, not page titles. Semi maps them onto its own
+       typography scale, where an h1 lands at 32px and dwarfs the dialog it sits in, so the
+       override has to match its class rather than the bare tag. Two levels only: this is a
+       panel, not a document. */
+    .semi-markdownRender-component-header {
+      margin: @space-4 0 @space-2;
+      font-weight: 600;
+      color: @color-text;
+
+      &.semi-typography-h1,
+      &.semi-typography-h2 {
+        font-size: @text-md;
+      }
+
+      &.semi-typography-h3,
+      &.semi-typography-h4,
+      &.semi-typography-h5,
+      &.semi-typography-h6 {
+        font-size: @text-base;
+      }
+    }
+
+    .semi-markdownRender > :first-child,
+    > :first-child {
+      margin-top: 0;
+    }
+
+    a,
+    a.semi-typography {
+      color: @color-accent;
+    }
+
+    /* Bot tokens and curl one-liners must wrap instead of widening the dialog. */
+    pre,
+    code {
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: @font-mono;
+      font-size: @text-xs;
+    }
+
+    pre {
+      padding: @space-3;
+      border-radius: @radius-chip;
+      background: @color-base;
+    }
+
+    img {
+      max-width: 100%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &__summary,
+    &__chevron {
+      transition: none;
+    }
+  }
+}

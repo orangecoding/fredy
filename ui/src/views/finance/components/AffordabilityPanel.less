@@ -1,0 +1,121 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../../tokens.less';
+
+.affordabilityPanel {
+  // Every control here is label-over-input of the same height, so aligning on the bottom edge
+  // puts the inputs and the button on one baseline. Field help lives in the label popover
+  // rather than under the input for exactly this reason - a hint line would push its own
+  // input up and break the row.
+  &__controls {
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: @space-4;
+    margin-bottom: @space-5;
+
+    .financeField {
+      flex: 1 1 200px;
+      max-width: 280px;
+    }
+  }
+
+  &__run {
+    flex: 0 0 auto;
+  }
+
+  &__loading {
+    display: flex;
+    justify-content: center;
+    padding: @space-8 0;
+  }
+
+  &__summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: @space-8;
+    padding: @space-4 0;
+    margin-bottom: @space-4;
+    border-top: 1px solid @color-border;
+    border-bottom: 1px solid @color-border;
+  }
+
+  &__stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__stat-value {
+    font-family: @font-mono;
+    font-size: @text-lg;
+    color: @color-text;
+    line-height: 1.1;
+  }
+
+  &__stat-label {
+    font-size: @text-xs;
+    color: @color-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__note {
+    display: block;
+    margin-bottom: @space-4;
+    line-height: 1.5;
+  }
+
+  &__table {
+    margin-top: @space-5;
+  }
+
+  &__num {
+    font-family: @font-mono;
+    font-size: @text-sm;
+  }
+
+  /* The figure with what kind of figure it is underneath, because the table mixes rents and
+     purchase prices in one column and the number alone does not say which. */
+  &__stacked {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  &__sub {
+    font-size: @text-xs;
+    color: @color-faint;
+  }
+
+  &__chip {
+    display: inline-block;
+    padding: 1px @space-2;
+    border: 1px solid;
+    border-radius: @radius-chip;
+    font-size: @text-xs;
+    white-space: nowrap;
+  }
+
+  &__link {
+    padding: 0;
+    border: none;
+    background: none;
+    color: @color-text;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+
+    &:hover {
+      color: @color-accent;
+    }
+
+    &:focus-visible {
+      outline: 2px solid @color-accent;
+      outline-offset: 2px;
+    }
+  }
+}

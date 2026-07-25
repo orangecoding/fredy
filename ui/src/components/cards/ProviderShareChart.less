@@ -1,0 +1,64 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../tokens.less';
+
+.providerShare {
+  &__bar {
+    width: 100%;
+  }
+
+  /* The one-provider case: a sentence, not a full-width rectangle claiming to be a comparison. */
+  &__single {
+    display: flex;
+    align-items: center;
+    gap: @space-2;
+    margin: 0;
+    font-size: @text-base;
+    color: @color-muted;
+  }
+
+  /* Wraps into as many columns as fit, so two providers do not leave a row of empty space and
+     ten do not turn into a tall list. */
+  &__legend {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: @space-2 @space-5;
+    margin: @space-4 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: @space-2;
+    min-width: 0;
+  }
+
+  &__swatch {
+    flex: none;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+  }
+
+  &__name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: @text-sm;
+    color: @color-muted;
+    text-transform: capitalize;
+  }
+
+  &__value {
+    flex: none;
+    font-family: @font-mono;
+    font-size: @text-sm;
+  }
+}

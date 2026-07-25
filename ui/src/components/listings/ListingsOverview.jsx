@@ -28,15 +28,19 @@ import ListingDeletionModal from '../ListingDeletionModal.jsx';
 import { xhrDelete, xhrPost } from '../../services/xhr.js';
 import { useActions, useSelector } from '../../services/state/store.js';
 import { debounce } from '../../utils';
+import FilterSelect from './FilterSelect.jsx';
 import ListingsGrid from '../grid/listings/ListingsGrid.jsx';
 import ListingsTable from '../table/ListingsTable.jsx';
 import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-illustrations';
 
 import './ListingsOverview.less';
-import { useTranslation } from '../../services/i18n/i18n.jsx';
+import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
+import { useFinanceProfile } from '../../hooks/useFinanceProfile.js';
+import { formatEuro } from '../cards/chartTheme.js';
 
 const ListingsOverview = ({ mode = 'all' }) => {
   const t = useTranslation();
+  const locale = useLocale();
   const isWatchlistMode = mode === 'watchlist';
   const listingsData = useSelector((state) => state.listingsData);
   const providers = useSelector((state) => state.provider);
@@ -45,6 +49,7 @@ const ListingsOverview = ({ mode = 'all' }) => {
   const actions = useActions();
   const navigate = useNavigate();
   const sp = useSearchParams();
+  const { anyComplete: financeComplete, thresholds: financeThresholds } = useFinanceProfile();
 
   const viewMode = userSettings?.listings_view_mode ?? 'grid';
   const listingDeletionPref = userSettings?.listing_deletion_preference;
@@ -61,6 +66,7 @@ const ListingsOverview = ({ mode = 'all' }) => {
   const [activityFilter, setActivityFilter] = useSearchParamState(sp, 'active', null, parseNullableBoolean);
   const [providerFilter, setProviderFilter] = useSearchParamState(sp, 'provider', null, parseString);
   const [statusFilter, setStatusFilter] = useSearchParamState(sp, 'status', null, parseString);
+  const [affordabilityFilter, setAffordabilityFilter] = useSearchParamState(sp, 'afford', null, parseString);
   const [hiddenOnly, setHiddenOnly] = useSearchParamState(sp, 'hidden', false, parseNullableBoolean);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [listingToDelete, setListingToDelete] = useState(null);
@@ -68,8 +74,27 @@ const ListingsOverview = ({ mode = 'all' }) => {
 
   const isHiddenView = hiddenOnly === true;
 
-  // In watchlist mode the watch filter is forced to "watched only" — regardless of the URL.
+  // In watchlist mode the watch filter is forced to "watched only" - regardless of the URL.
   const effectiveWatchListFilter = isWatchlistMode ? true : watchListFilter;
+
+  // The filter says nothing about *why* a listing lands in a band, so its tooltip names the
+  // ceilings it is measured against - both of them when the user set up both halves, because a
+  // mixed listings page is judged by two different yardsticks at once.
+  const affordabilityHelp = useMemo(() => {
+    const { buy, rent } = financeThresholds;
+    if (buy != null && rent != null) {
+      return t('listings.filterAffordabilityBothHelp', {
+        price: formatEuro(buy.affordableMaxPrice, locale),
+        rent: formatEuro(rent.affordableMaxRent, locale),
+      });
+    }
+    if (buy != null) {
+      return t('listings.filterAffordabilityHelp', { price: formatEuro(buy.affordableMaxPrice, locale) });
+    }
+    return t('listings.filterAffordabilityRentHelp', {
+      price: formatEuro(rent?.affordableMaxRent, locale),
+    });
+  }, [financeThresholds, locale, t]);
 
   const loadData = () => {
     actions.listingsData.getListingsData({
@@ -84,6 +109,9 @@ const ListingsOverview = ({ mode = 'all' }) => {
         activityFilter: isHiddenView ? null : activityFilter,
         providerFilter,
         statusFilter,
+        // The server turns this into a price range from the saved profile; it ignores the
+        // filter entirely when there is no profile to derive one from.
+        affordabilityFilter,
         hiddenOnly: isHiddenView ? true : undefined,
       },
     });
@@ -102,6 +130,7 @@ const ListingsOverview = ({ mode = 'all' }) => {
     jobNameFilter,
     watchListFilter,
     statusFilter,
+    affordabilityFilter,
     hiddenOnly,
     isWatchlistMode,
   ]);
@@ -289,83 +318,92 @@ const ListingsOverview = ({ mode = 'all' }) => {
           </Tooltip>
         )}
 
-        <Tooltip content={t('listings.filterStatusHelp')} trigger="hover" position="top">
-          <span className="listingsOverview__topbar__tooltipWrap">
-            <Select
-              placeholder={t('listings.filterStatusPlaceholder')}
-              showClear
-              onChange={(val) => {
-                setStatusFilter(val ?? null);
-                setPage(1);
-              }}
-              value={statusFilter}
-              style={{ width: 150 }}
-            >
-              <Select.Option value="applied">{t('listings.filterStatusApplied')}</Select.Option>
-              <Select.Option value="rejected">{t('listings.filterStatusRejected')}</Select.Option>
-              <Select.Option value="accepted">{t('listings.filterStatusAccepted')}</Select.Option>
-              <Select.Option value="none">{t('listings.filterStatusNone')}</Select.Option>
-            </Select>
-          </span>
-        </Tooltip>
+        <FilterSelect
+          help={t('listings.filterStatusHelp')}
+          placeholder={t('listings.filterStatusPlaceholder')}
+          showClear
+          onChange={(val) => {
+            setStatusFilter(val ?? null);
+            setPage(1);
+          }}
+          value={statusFilter}
+          style={{ width: 150 }}
+        >
+          <Select.Option value="applied">{t('listings.filterStatusApplied')}</Select.Option>
+          <Select.Option value="rejected">{t('listings.filterStatusRejected')}</Select.Option>
+          <Select.Option value="accepted">{t('listings.filterStatusAccepted')}</Select.Option>
+          <Select.Option value="none">{t('listings.filterStatusNone')}</Select.Option>
+        </FilterSelect>
 
-        <Tooltip content={t('listings.filterProviderHelp')} trigger="hover" position="top">
-          <span className="listingsOverview__topbar__tooltipWrap">
-            <Select
-              placeholder={t('listings.filterProviderPlaceholder')}
-              showClear
-              onChange={(val) => {
-                setProviderFilter(val);
-                setPage(1);
-              }}
-              value={providerFilter}
-              style={{ width: 130 }}
-            >
-              {providers?.map((p) => (
-                <Select.Option key={p.id} value={p.id}>
-                  {p.name}
-                </Select.Option>
-              ))}
-            </Select>
-          </span>
-        </Tooltip>
+        {/* Only offered once the user has actually entered their financial data - there is
+            nothing to measure a listing against otherwise. */}
+        {financeComplete && (
+          <FilterSelect
+            help={affordabilityHelp}
+            placeholder={t('listings.filterAffordabilityPlaceholder')}
+            showClear
+            onChange={(val) => {
+              setAffordabilityFilter(val ?? null);
+              setPage(1);
+            }}
+            value={affordabilityFilter}
+            style={{ width: 150 }}
+          >
+            <Select.Option value="affordable">{t('listings.filterAffordabilityYes')}</Select.Option>
+            <Select.Option value="stretch">{t('listings.filterAffordabilityStretch')}</Select.Option>
+            <Select.Option value="unaffordable">{t('listings.filterAffordabilityNo')}</Select.Option>
+          </FilterSelect>
+        )}
 
-        <Tooltip content={t('listings.filterJobHelp')} trigger="hover" position="top">
-          <span className="listingsOverview__topbar__tooltipWrap">
-            <Select
-              placeholder={t('listings.filterJobPlaceholder')}
-              showClear
-              onChange={(val) => {
-                setJobNameFilter(val);
-                setPage(1);
-              }}
-              value={jobNameFilter}
-              style={{ width: 130 }}
-            >
-              {jobs?.map((j) => (
-                <Select.Option key={j.id} value={j.id}>
-                  {j.name}
-                </Select.Option>
-              ))}
-            </Select>
-          </span>
-        </Tooltip>
+        <FilterSelect
+          help={t('listings.filterProviderHelp')}
+          placeholder={t('listings.filterProviderPlaceholder')}
+          showClear
+          onChange={(val) => {
+            setProviderFilter(val);
+            setPage(1);
+          }}
+          value={providerFilter}
+          style={{ width: 130 }}
+        >
+          {providers?.map((p) => (
+            <Select.Option key={p.id} value={p.id}>
+              {p.name}
+            </Select.Option>
+          ))}
+        </FilterSelect>
 
-        <Tooltip content={t('listings.filterSortHelp')} trigger="hover" position="top">
-          <span className="listingsOverview__topbar__tooltipWrap listingsOverview__topbar__sort">
-            <Select
-              prefix={t('listings.sortPrefix')}
-              style={{ width: 220 }}
-              value={sortField}
-              onChange={(val) => setSortField(val)}
-            >
-              <Select.Option value="job_name">{t('listings.sortByJobName')}</Select.Option>
-              <Select.Option value="created_at">{t('listings.sortByDate')}</Select.Option>
-              <Select.Option value="price">{t('listings.sortByPrice')}</Select.Option>
-              <Select.Option value="provider">{t('listings.sortByProvider')}</Select.Option>
-            </Select>
-          </span>
-        </Tooltip>
+        <FilterSelect
+          help={t('listings.filterJobHelp')}
+          placeholder={t('listings.filterJobPlaceholder')}
+          showClear
+          onChange={(val) => {
+            setJobNameFilter(val);
+            setPage(1);
+          }}
+          value={jobNameFilter}
+          style={{ width: 130 }}
+        >
+          {jobs?.map((j) => (
+            <Select.Option key={j.id} value={j.id}>
+              {j.name}
+            </Select.Option>
+          ))}
+        </FilterSelect>
+
+        <FilterSelect
+          help={t('listings.filterSortHelp')}
+          className="listingsOverview__topbar__sort"
+          prefix={t('listings.sortPrefix')}
+          style={{ width: 220 }}
+          value={sortField}
+          onChange={(val) => setSortField(val)}
+        >
+          <Select.Option value="job_name">{t('listings.sortByJobName')}</Select.Option>
+          <Select.Option value="created_at">{t('listings.sortByDate')}</Select.Option>
+          <Select.Option value="price">{t('listings.sortByPrice')}</Select.Option>
+          <Select.Option value="provider">{t('listings.sortByProvider')}</Select.Option>
+        </FilterSelect>
 
         <Tooltip
           content={sortDir === 'asc' ? t('listings.sortAscending') : t('listings.sortDescending')}

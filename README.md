@@ -36,6 +36,11 @@ With a modern architecture, Fredy provides a **clean Web UI**, removes
 duplicates across platforms, and stores results so you never see the
 same listing twice.
 
+Fredy also knows what a place would cost **you**. Enter your financial situation once, your
+income, your living costs, what you have saved, and every listing is measured against it. Fredy
+tells you which ones you can comfortably afford, which would be a stretch, and which are out of
+reach, for renting and for buying alike. See [Financing Calculator](#-financing-calculator).
+
 ------------------------------------------------------------------------
 
 ## ✨ Key Features
@@ -50,6 +55,8 @@ same listing twice.
 -   🎯 Easy to use thanks to a user-friendly Web UI
 -   🔄 Deduplication across platforms
 -   ⏱️ Customizable search intervals
+-   💶 Add your **personal financial situation** and see which listings you can actually
+    afford, for renting and for buying
 
 ------------------------------------------------------------------------
 
@@ -163,6 +170,66 @@ Starting with **V20**, Fredy ships with a built-in **MCP Server **. This allows 
 The local LLM can even enrich existing listings by checking the listing online.   
 
 For more information on how to set it up and use it, please refer to the [MCP Readme](lib/mcp/README.md).
+
+------------------------------------------------------------------------
+
+## 💶 Financing Calculator
+
+Finding a place you like is one thing. Working out whether you can actually pay for it is
+another. The **Financing** page answers the question the listing page cannot: what would this
+cost me every month, and does it fit?
+
+Every job now says whether it searches for something to **rent** or something to **buy**, and
+the finance page has one tab for each. Both sit on the same household block - income for one or
+two people, living costs, any loan you are already paying off - and both are judged by the same
+rule of thumb: housing costs plus existing debt at or below 35 % of net income.
+
+### Renting
+
+Portals quote the Kaltmiete, but a household pays warm. Set the Nebenkosten surcharge once and
+Fredy reports the highest cold rent you can take on, what that comes to warm, and what is left
+over each month. Nothing else is asked for: someone who only ever rents is never made to answer
+a question about Grunderwerbsteuer.
+
+### Buying
+
+The buying tab models the purchase the way a German bank would, as an **Annuitätendarlehen**:
+
+- the **monthly rate**, and how it splits into interest and repayment over the years
+- the **Kaufnebenkosten**: Grunderwerbsteuer for your Bundesland, Notar + Grundbuch, and the
+  Maklerprovision. On a 400.000 € house in NRW these add roughly 46.000 € that has to be
+  financed or covered from your own pocket
+- the **Restschuld** left when the Zinsbindung runs out, which is the amount you have to
+  refinance at whatever rates exist then
+- the **age at which you and your partner become debt-free**
+- the **highest purchase price** that keeps you inside the 35 % rule
+
+Several loan scenarios can be compared side by side. Each carries a Sollzins, a Tilgung, a
+Zinsbindung, a monthly rate and an optional Sondertilgung. Tilgung and monthly rate are the same
+number seen from opposite ends, so editing either one rewrites the other and you can work from
+whichever figure you actually have. The term is calculated at a constant Sollzins; what a
+follow-up loan costs after the Zinsbindung is anyone's guess, so the Restschuld is reported
+instead of a made-up rate.
+
+### It follows you around the app
+
+Each half saves and deletes on its own, and once a half is saved it shows up elsewhere:
+
+- an **affordability filter** on the listings overview, next to the status and provider
+  filters, plus a small verdict chip on each listing
+- a **rent card or a financing card** on the listing detail page, whichever matches the job
+  that found the listing
+
+Which yardstick a listing gets follows the deal type of its job, so a 1.200 € rent is never
+mistaken for an absurdly cheap house. Everything stays hidden until the matching half exists,
+so nothing changes for anyone who does not use this.
+
+An LLM can ask the same question over MCP with the `calculate_financing` tool, which returns a
+mortgage answer or a rent answer depending on the listing.
+
+> **This is an estimate, not financial advice.** The Grunderwerbsteuer rates ship as editable
+> defaults and Bundesländer change them from time to time, so check the figure for your state
+> and get a binding offer from your bank before committing to anything.
 
 ------------------------------------------------------------------------
 

@@ -3,6 +3,25 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
+@import '../../../../../tokens.less';
+
+/* The map fills whatever is left after the search field, rather than the field eating into a
+   fixed map height and pushing the drawing controls out of view. */
 .areaFilter {
+  display: flex;
+  flex-direction: column;
   height: 50rem;
+
+  &__search {
+    width: 100%;
+    margin-bottom: @space-3;
+    flex: none;
+  }
+
+  .map-container {
+    flex: 1 1 auto;
+    min-height: 0;
+    border-radius: @radius-card;
+    overflow: hidden;
+  }
 }

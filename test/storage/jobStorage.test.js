@@ -61,4 +61,58 @@ describe('jobStorage.getJobs', () => {
     expect(jobs.find((j) => j.id === 'enabled-job').enabled).toBe(true);
     expect(jobs.find((j) => j.id === 'disabled-job').enabled).toBe(false);
   });
+
+  it('selects the deal type on every read path', () => {
+    jobStorage.getJobs();
+    jobStorage.getJob('job-1');
+    jobStorage.queryJobs({ userId: 'u1' });
+    // Every query that projects job columns (not the bare COUNT) must carry the deal type.
+    for (const call of calls.query) {
+      if (call.sql.includes('j.notification_adapter')) {
+        expect(call.sql).toContain('j.deal_type AS dealType');
+      }
+    }
+  });
+});
+
+describe('jobStorage.upsertJob deal type', () => {
+  let jobStorage;
+
+  beforeEach(async () => {
+    calls.execute.length = 0;
+    calls.query.length = 0;
+    sqliteMock.__queryHandler = null;
+    jobStorage = await import('../../lib/services/storage/jobStorage.js');
+  });
+
+  it('persists the given deal type on insert', () => {
+    // No existing row, so this is an INSERT.
+    jobStorage.upsertJob({ userId: 'u1', name: 'Buy job', provider: [], notificationAdapter: [], dealType: 'buy' });
+    const insert = calls.execute.find((c) => c.sql.includes('INSERT INTO jobs'));
+    expect(insert.sql).toContain('deal_type');
+    expect(insert.params.dealType).toBe('buy');
+  });
+
+  it('defaults an insert to renting when no deal type is given', () => {
+    jobStorage.upsertJob({ userId: 'u1', name: 'Job', provider: [], notificationAdapter: [] });
+    const insert = calls.execute.find((c) => c.sql.includes('INSERT INTO jobs'));
+    expect(insert.params.dealType).toBe('rent');
+  });
+
+  it('keeps the stored deal type on an update that omits it', () => {
+    // An existing row -> UPDATE path.
+    sqliteMock.__queryHandler = (sql) => (sql.includes('SELECT id, user_id') ? [{ id: 'job-1', user_id: 'u1' }] : []);
+    jobStorage.upsertJob({ jobId: 'job-1', name: 'Job', provider: [], notificationAdapter: [] });
+    const update = calls.execute.find((c) => c.sql.includes('UPDATE jobs'));
+    // COALESCE leaves the column untouched when the bound value is null.
+    expect(update.sql).toContain('deal_type = COALESCE(@dealType, deal_type)');
+    expect(update.params.dealType).toBeNull();
+  });
+
+  it('applies an explicit deal type on update', () => {
+    sqliteMock.__queryHandler = (sql) => (sql.includes('SELECT id, user_id') ? [{ id: 'job-1', user_id: 'u1' }] : []);
+    jobStorage.upsertJob({ jobId: 'job-1', name: 'Job', provider: [], notificationAdapter: [], dealType: 'rent' });
+    const update = calls.execute.find((c) => c.sql.includes('UPDATE jobs'));
+    expect(update.params.dealType).toBe('rent');
+  });
 });

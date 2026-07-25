@@ -23,40 +23,70 @@ MCP tokens are displayed in the **User Management** list (Admin → Users). Each
 | `get_job` | Get detailed information about a specific job                                  |
 | `list_listings` | Search and list real estate listings with pagination, text search, and filters |
 | `get_listing` | Get full details of a single listing                                           |
+| `calculate_financing` | Work out whether a property is affordable, using a German mortgage model       |
 | `get_current_date_time` | Gets the current date/time for the llm to be used                              |
 
 ### Tool Details
 
 #### list_jobs
-- `page` (number, optional) – Page number (default: 1)
-- `pageSize` (number, optional) – Results per page (default: 50, max: 1000). Use pagination to fetch more.
-- `filter` (string, optional) – Free-text filter on job name
+- `page` (number, optional) - Page number (default: 1)
+- `pageSize` (number, optional) - Results per page (default: 50, max: 1000). Use pagination to fetch more.
+- `filter` (string, optional) - Free-text filter on job name
 
 Response: markdown table with columns ID, Name, Enabled, Active Listings. Includes summary and pagination info.
 
 #### get_job
-- `jobId` (string, required) – The job ID to retrieve
+- `jobId` (string, required) - The job ID to retrieve
 
 #### list_listings
-- `page` (number, optional) – Page number (default: 1)
-- `pageSize` (number, optional) – Results per page (default: 50, max: 1000). Use pagination to fetch more.
-- `filter` (string, optional) – Free-text search across title, address, provider, link
-- `jobId` (string, optional) – Filter listings by job ID
-- `activeOnly` (boolean, optional) – When true, only show active listings
-- `provider` (string, optional) – Filter by provider name
-- `createdAfter` (number, optional) – Only include listings created at or after this unix timestamp in milliseconds (e.g. `1772008362564`). Useful for queries like "give me all listings from today".
-- `createdBefore` (number, optional) – Only include listings created at or before this unix timestamp in milliseconds (e.g. `1772008362564`).
-- `minPrice` (number, optional) – Only include listings with price >= this value (e.g. `500`). Numeric, no currency symbol.
-- `maxPrice` (number, optional) – Only include listings with price <= this value (e.g. `1500`). Numeric, no currency symbol.
-- `sortField` (string, optional) – Sort by: created_at, price, size, provider, title, is_active
-- `sortDir` (string, optional) – Sort direction: asc or desc
+- `page` (number, optional) - Page number (default: 1)
+- `pageSize` (number, optional) - Results per page (default: 50, max: 1000). Use pagination to fetch more.
+- `filter` (string, optional) - Free-text search across title, address, provider, link
+- `jobId` (string, optional) - Filter listings by job ID
+- `activeOnly` (boolean, optional) - When true, only show active listings
+- `provider` (string, optional) - Filter by provider name
+- `createdAfter` (number, optional) - Only include listings created at or after this unix timestamp in milliseconds (e.g. `1772008362564`). Useful for queries like "give me all listings from today".
+- `createdBefore` (number, optional) - Only include listings created at or before this unix timestamp in milliseconds (e.g. `1772008362564`).
+- `minPrice` (number, optional) - Only include listings with price >= this value (e.g. `500`). Numeric, no currency symbol.
+- `maxPrice` (number, optional) - Only include listings with price <= this value (e.g. `1500`). Numeric, no currency symbol.
+- `sortField` (string, optional) - Sort by: created_at, price, size, provider, title, is_active
+- `sortDir` (string, optional) - Sort direction: asc or desc
 
 Response: markdown table with columns ID, Title, Address, Price, Size, Provider, Active, Created, Job. Includes summary and pagination info. Use `get_listing` for full details.
 
 > **Note:** All timestamps are **unix timestamps in milliseconds** (e.g. `1772008362564`), not seconds.
 
 #### get_listing
-- `listingId` (string, required) – The listing ID to retrieve
+- `listingId` (string, required) - The listing ID to retrieve
+
+#### calculate_financing
+Prices up a property as a German Annuitätendarlehen and judges it against the 35 % rule.
+
+Every parameter is optional and falls back to the finance profile saved in the UI, so
+`calculate_financing({ listingId: "abc" })` is usually all you need.
+
+- `listingId` (string) - Listing to price up. Its price overrides `purchasePrice`.
+- `purchasePrice` (number) - Purchase price in EUR, when not using a listing
+- `equity` (number) - Eigenkapital in EUR
+- `bundesland` (string) - Two-letter code (`BW`, `BY`, `BE`, `BB`, `HB`, `HH`, `HE`, `MV`, `NI`, `NW`, `RP`, `SL`, `SN`, `ST`, `SH`, `TH`), sets the Grunderwerbsteuer
+- `annualRate` (number) - Sollzins in percent, e.g. `3.8`
+- `tilgung` (number) - Anfängliche Tilgung in percent per year, e.g. `2`
+- `fixedYears` (number) - Zinsbindung in years, e.g. `10`
+- `monthlyPayment` (number) - Monthly instalment in EUR. Overrides `tilgung`; the two are the same quantity from opposite ends
+- `maklerPct` (number) - Buyer's agent commission in percent; `0` for a private sale
+- `netIncome` (number) - Combined monthly net income, overriding the saved profile
+- `livingCosts` (number) - Monthly living costs excluding rent
+
+Response: markdown with the verdict (affordable / a stretch / out of reach), the monthly rate
+and what share of net income it is, the Kaufnebenkosten breakdown, the loan amount, the years
+to payoff, the Restschuld at the end of the Zinsbindung, the debt-free age, and a comparison
+table when several rate scenarios are configured.
+
+Listings are user-scoped exactly as in the other tools: asking for a listing that belongs to
+someone else returns "Listing not found".
+
+> **Note:** The result is an estimate based on standard German purchase costs. It is not
+> financial advice, and the Grunderwerbsteuer table ships as an editable default.
 
 ## Usage with Local LLM (stdio transport)
 
@@ -179,9 +209,9 @@ Claude will automatically call the appropriate Fredy MCP tools.
 The HTTP transport is automatically available when Fredy is running. It uses the MCP Streamable HTTP protocol at:
 
 ```
-POST   /api/mcp   – JSON-RPC messages (initialize, tool calls)
-GET    /api/mcp   – SSE stream for server-initiated notifications
-DELETE /api/mcp   – Terminate session
+POST   /api/mcp   - JSON-RPC messages (initialize, tool calls)
+GET    /api/mcp   - SSE stream for server-initiated notifications
+DELETE /api/mcp   - Terminate session
 ```
 
 ### Authentication
@@ -230,14 +260,14 @@ curl -X POST http://localhost:9998/api/mcp \
 
 ## Security
 
-- Every user is automatically assigned a permanent MCP token at account creation – **tokens never expire**
+- Every user is automatically assigned a permanent MCP token at account creation - **tokens never expire**
 - Tokens are cryptographically random (256-bit) and prefixed with `fredy_`
-- Each token is scoped to a single user – the LLM can only access that user's data
+- Each token is scoped to a single user - the LLM can only access that user's data
 - Non-admin users only see their own jobs and jobs shared with them
 - Tokens are stored in the `mcp_token` column of the `users` table
 - Tokens are deleted automatically when the owning user is removed
 - The `/api/mcp` endpoint uses Bearer token auth (independent of cookie-session)
-- Treat MCP tokens like passwords – do not share them publicly
+- Treat MCP tokens like passwords - do not share them publicly
 
 ## Response Format
 

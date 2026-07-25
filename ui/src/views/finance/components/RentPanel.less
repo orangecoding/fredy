@@ -1,0 +1,53 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../../tokens.less';
+
+.rentPanel {
+  /* The input and the ceilings it moves are one card, separated by a rule rather than by a
+     card boundary - the numbers below are the answer to the field above, not a second topic. */
+  &__facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: @space-4;
+    margin: @space-5 0;
+    padding-top: @space-5;
+    border-top: 1px solid @color-border;
+  }
+
+  &__empty {
+    display: block;
+    margin-top: @space-5;
+    padding-top: @space-5;
+    border-top: 1px solid @color-border;
+  }
+
+  &__fact {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-left: @space-3;
+    border-left: 2px solid @color-border;
+
+    &--emphasis {
+      border-left-color: @color-accent;
+    }
+  }
+
+  /* The caption itself is a FieldLabel, so the type treatment comes from .financeField__label -
+     the same one every input on this page uses. */
+  &__fact-value {
+    margin: 0;
+    // Same mono face as every other figure in the finance area.
+    font-family: @font-mono;
+    font-size: @text-base;
+    color: @color-text;
+  }
+
+  &__fact--emphasis &__fact-value {
+    font-size: @text-md;
+    color: @color-accent;
+  }
+}

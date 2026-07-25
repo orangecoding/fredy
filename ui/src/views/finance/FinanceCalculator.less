@@ -1,0 +1,167 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../tokens.less';
+
+.finance {
+  padding-bottom: @space-8;
+
+  &__intro {
+    max-width: 70ch;
+    margin-bottom: @space-5;
+    display: flex;
+    flex-direction: column;
+    gap: @space-1;
+  }
+
+  &__intro-lead {
+    display: block;
+    color: @color-muted;
+    line-height: 1.6;
+  }
+
+  /* The rule every verdict is derived from. It gets an accent rule and body-level contrast
+     because it is the one thing on this page a user has to understand to trust the numbers -
+     but it stays type, not a tinted box, so it informs without shouting. */
+  &__rule {
+    margin: @space-2 0;
+    padding-left: @space-3;
+    border-left: 2px solid @color-accent-dim;
+    color: @color-muted;
+    font-size: @text-sm;
+    line-height: 1.6;
+  }
+
+  &__rule-label {
+    margin-right: @space-2;
+    color: @color-text;
+    font-weight: 600;
+  }
+
+  /* The estimate/no-advice caveat. It has to be present and readable, but it is not what the
+     user came for - a full-width tinted banner made it the loudest thing above the fold. */
+  &__intro-note {
+    display: block;
+    color: @color-faint;
+    font-size: @text-xs;
+    line-height: 1.5;
+  }
+
+  /* Semi lays its grid out with floated columns. Floats of unequal height snag on each other,
+     so one card with a two-line description drags the next row out of alignment and leaves
+     holes. Flex ignores the float and stretches every card in a row to the tallest, which is
+     what makes a KPI grid read as a grid. */
+  &__kpi-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    margin-bottom: @space-4;
+
+    > .semi-col {
+      float: none;
+      display: flex;
+      min-width: 0;
+    }
+  }
+
+  /* The charts that justify the answer rather than give it. Collapsed by default and rendered
+     flush, so it reads as one more section of the tab and not as a widget bolted on. */
+  &__more {
+    margin-top: @space-4;
+    border-top: 1px solid @color-border;
+
+    .semi-collapse-item {
+      border-bottom: none;
+    }
+
+    .semi-collapse-header {
+      padding-left: 0;
+      padding-right: 0;
+      color: @color-muted;
+      font-size: @text-base;
+    }
+
+    .semi-collapse-content {
+      padding: 0 0 @space-2;
+    }
+  }
+
+  &__save-row {
+    display: flex;
+    align-items: center;
+    gap: @space-4;
+    margin: @space-5 0 @space-4;
+    flex-wrap: wrap;
+
+    /* On a phone the hint would otherwise be squeezed into a one-word-per-line sliver beside the
+       buttons. Giving it the whole next line keeps both buttons at a full tap target. */
+    @media (max-width: 600px) {
+      gap: @space-3;
+
+      .semi-button {
+        flex: 1 1 auto;
+        justify-content: center;
+      }
+
+      > .semi-typography {
+        flex: 1 0 100%;
+      }
+    }
+  }
+
+  &__household {
+    margin-bottom: @space-6;
+  }
+
+  /* Renting and buying sit in two tabs side by side. The accent - blue for renting, green for
+     buying, matching the chips - only marks the tab you are on. Colouring both at all times
+     turned the tab bar into two highlighters shouting at each other while saying nothing about
+     where you are. */
+  &__tabs {
+    margin-bottom: @space-6;
+  }
+
+  &__tab {
+    display: inline-flex;
+    align-items: center;
+    gap: @space-2;
+    color: @color-muted;
+  }
+
+  .semi-tabs-tab-active &__tab {
+    font-weight: 500;
+
+    &--rent {
+      color: @color-blue-text;
+    }
+
+    &--buy {
+      color: @color-green-text;
+    }
+  }
+
+  /* Two tabs have to stay legible on a phone: split the width evenly and let the label shrink
+     rather than overflow or clip. */
+  @media (max-width: 600px) {
+    &__tabs .semi-tabs-bar-line .semi-tabs-tab {
+      flex: 1 1 0;
+      min-width: 0;
+      padding-left: @space-2;
+      padding-right: @space-2;
+      text-align: center;
+    }
+
+    &__tab {
+      justify-content: center;
+      font-size: @text-base;
+    }
+  }
+
+  &__tab-lead {
+    display: block;
+    margin: @space-2 0 @space-5;
+    max-width: 70ch;
+  }
+}

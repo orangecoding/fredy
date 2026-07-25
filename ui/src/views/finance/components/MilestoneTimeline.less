@@ -1,0 +1,140 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../../tokens.less';
+
+.milestoneTimeline {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 0;
+  margin: 0;
+  padding: @space-2 0 0;
+  list-style: none;
+
+  &__item {
+    position: relative;
+    padding: @space-6 @space-4 0 0;
+
+    // The connecting rail. Drawn per item so it stops cleanly at the last node instead of
+    // running off the end of the row.
+    &::before {
+      content: '';
+      position: absolute;
+      top: 5px;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: @color-border;
+    }
+
+    &:last-child::before {
+      right: auto;
+      width: 0;
+    }
+  }
+
+  &__marker {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 11px;
+    height: 11px;
+    border-radius: @radius-pill;
+    background: @color-base;
+    border: 2px solid @color-border-bright;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__year {
+    font-family: @font-mono;
+    font-size: @text-xs;
+    color: @color-faint;
+    letter-spacing: 0.04em;
+  }
+
+  &__title {
+    font-size: @text-sm;
+    color: @color-text;
+    font-weight: 500;
+  }
+
+  &__detail {
+    font-family: @font-mono;
+    font-size: @text-md;
+    color: @color-text;
+  }
+
+  &__note {
+    font-size: @text-xs;
+    color: @color-muted;
+    line-height: 1.4;
+  }
+
+  // Tone only ever colours the marker and the headline figure. The rail and the body text
+  // stay neutral so a row of four milestones does not turn into a row of four traffic lights.
+  &__item--accent &__marker {
+    border-color: @color-accent;
+  }
+  &__item--accent &__detail {
+    color: @color-accent;
+  }
+
+  &__item--success &__marker {
+    border-color: @color-success;
+  }
+  &__item--success &__detail {
+    color: @color-success;
+  }
+
+  &__item--warning &__marker {
+    border-color: @color-warning;
+  }
+  &__item--warning &__detail {
+    color: @color-warning;
+  }
+
+  &__item--error &__marker {
+    border-color: @color-error;
+  }
+  &__item--error &__detail {
+    color: @color-error;
+  }
+
+  // Below the breakpoint the timeline turns vertical: the rail moves to the left edge and
+  // the nodes stack, which keeps the sequence readable on a phone.
+  @media (max-width: 860px) {
+    grid-auto-flow: row;
+    grid-auto-columns: auto;
+    padding-left: @space-1;
+
+    &__item {
+      padding: 0 0 @space-5 @space-5;
+
+      &::before {
+        top: 5px;
+        bottom: 0;
+        left: 5px;
+        right: auto;
+        width: 1px;
+        height: auto;
+      }
+
+      &:last-child::before {
+        display: none;
+      }
+    }
+
+    &__marker {
+      top: 0;
+      left: 0;
+    }
+  }
+}

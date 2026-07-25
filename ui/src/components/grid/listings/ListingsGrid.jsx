@@ -17,6 +17,7 @@ import no_image from '../../../assets/no_image.png';
 import * as timeService from '../../../services/time/timeService.js';
 import StatusControl from '../../listings/StatusControl.jsx';
 import ExternalListingLink from '../../listings/ExternalListingLink.jsx';
+import AffordabilityChip from '../../listings/AffordabilityChip.jsx';
 
 import './ListingsGrid.less';
 import { useTranslation, useLocale } from '../../../services/i18n/i18n.jsx';
@@ -80,6 +81,7 @@ const ListingsGrid = ({ listings, onWatch, onNavigate, onDelete, onRestore, isHi
               <div className="listingsGrid__card__price">
                 <IconCart size="small" />
                 {item.price}
+                <AffordabilityChip price={item.price} dealType={item.dealType} />
               </div>
             )}
             {item.address && (

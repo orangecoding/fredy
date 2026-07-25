@@ -10,6 +10,7 @@ import { create } from 'zustand';
 import { shallow } from 'zustand/shallow';
 import { xhrGet, xhrPost } from '../xhr.js';
 import queryString from 'query-string';
+import { mergeSection, stripSection } from '../../../../lib/services/finance/profileSections.js';
 
 const logger = (config) => (set, get, api) =>
   config(
@@ -28,6 +29,32 @@ const logger = (config) => (set, get, api) =>
   );
 
 /**
+ * Write a finance profile to the server and mirror it into the store.
+ *
+ * Saving a tab and deleting a tab differ only in the profile they produce, so the request and
+ * the store update live here once rather than twice.
+ *
+ * @param {(updater: Function) => void} set Zustand setter.
+ * @param {Object} profile The complete profile to persist.
+ * @returns {Promise<Object>} The persisted profile.
+ */
+async function persistFinanceProfile(set, profile) {
+  try {
+    await xhrPost('/api/user/settings/finance-profile', { finance_profile: profile });
+    set((state) => ({
+      userSettings: {
+        ...state.userSettings,
+        settings: { ...state.userSettings.settings, finance_profile: profile },
+      },
+    }));
+    return profile;
+  } catch (Exception) {
+    console.error('Error while trying to persist the finance profile. Error:', Exception);
+    throw Exception;
+  }
+}
+
+/**
  * Middleware to track loading state of async actions.
  */
 const loadingTracker = (config) => (set, get, api) => {
@@ -41,7 +68,7 @@ const loadingTracker = (config) => (set, get, api) => {
 // Create the Zustand store with slices and actions
 export const useFredyState = create(
   logger(
-    loadingTracker((set) => {
+    loadingTracker((set, get) => {
       // Async actions that directly set state (no separate reducer concept)
       const effects = {
         dashboard: {
@@ -51,6 +78,20 @@ export const useFredyState = create(
               set((state) => ({ dashboard: { ...state.dashboard, data: response.json } }));
             } catch (Exception) {
               console.error('Error while trying to get resource for /api/dashboard. Error:', Exception);
+            }
+          },
+        },
+        finance: {
+          async getAffordability(payload) {
+            set((state) => ({ finance: { ...state.finance, loading: true } }));
+            try {
+              const response = await xhrPost('/api/finance/affordability', payload);
+              set((state) => ({ finance: { ...state.finance, data: response.json, loading: false } }));
+              return response.json;
+            } catch (Exception) {
+              console.error('Error while trying to score listings for affordability. Error:', Exception);
+              set((state) => ({ finance: { ...state.finance, loading: false } }));
+              throw Exception;
             }
           },
         },
@@ -147,12 +188,21 @@ export const useFredyState = create(
               console.error('Error while trying to get resource for api/admin/users. Error:', Exception);
             }
           },
+          /**
+           * Loads the logged-in user and returns it, so a caller that needs to act on the
+           * answer immediately does not have to wait for the store update to reach its props.
+           *
+           * @returns {Promise<Object|null>}
+           */
           async getCurrentUser() {
             try {
               const response = await xhrGet('/api/login/user');
-              set((state) => ({ user: { ...state.user, currentUser: Object.freeze(response.json) } }));
+              const currentUser = Object.freeze(response.json);
+              set((state) => ({ user: { ...state.user, currentUser } }));
+              return currentUser;
             } catch (Exception) {
               console.error('Error while trying to get resource for api/login/user. Error:', Exception);
+              return null;
             }
           },
           /**
@@ -338,6 +388,29 @@ export const useFredyState = create(
               throw Exception;
             }
           },
+          /**
+           * Persist one tab (renting or buying) of the finance profile, leaving the other tab as
+           * it is already stored. The merge is done against the live stored profile so saving one
+           * tab never clobbers what the other tab saved earlier.
+           *
+           * @param {{section: 'rent'|'buy', profile: Object}} params
+           * @returns {Promise<Object>} The profile that is now stored.
+           */
+          async saveFinanceSection({ section, profile }) {
+            const stored = get().userSettings.settings.finance_profile ?? null;
+            return persistFinanceProfile(set, mergeSection(stored, section, profile));
+          },
+          /**
+           * Remove one tab (renting or buying) from the stored finance profile, keeping the
+           * household and the other tab.
+           *
+           * @param {'rent'|'buy'} section
+           * @returns {Promise<Object>} The profile that is now stored.
+           */
+          async deleteFinanceSection(section) {
+            const stored = get().userSettings.settings.finance_profile ?? null;
+            return persistFinanceProfile(set, stripSection(stored, section));
+          },
           async setProviderDetails(providers) {
             try {
               await xhrPost('/api/user/settings/provider-details', { provider_details: providers });
@@ -436,6 +509,7 @@ export const useFredyState = create(
       // Initial state
       const initial = {
         dashboard: { data: null },
+        finance: { data: null, loading: false },
         notificationAdapter: [],
         listingsData: {
           totalNumber: 0,
@@ -464,6 +538,7 @@ export const useFredyState = create(
       // Expose actions by grouping them per slice
       const actions = {
         dashboard: { ...effects.dashboard },
+        finance: { ...effects.finance },
         notificationAdapter: { ...effects.notificationAdapter },
         generalSettings: { ...effects.generalSettings },
         demoMode: { ...effects.demoMode },
