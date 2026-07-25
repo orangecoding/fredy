@@ -36,6 +36,11 @@ With a modern architecture, Fredy provides a **clean Web UI**, removes
 duplicates across platforms, and stores results so you never see the
 same listing twice.
 
+Fredy also knows what a place would cost **you**. Enter your financial situation once, your
+income, your living costs, what you have saved, and every listing is measured against it. Fredy
+tells you which ones you can comfortably afford, which would be a stretch, and which are out of
+reach, for renting and for buying alike. See [Financing Calculator](#-financing-calculator).
+
 ------------------------------------------------------------------------
 
 ## ✨ Key Features
@@ -50,6 +55,8 @@ same listing twice.
 -   🎯 Easy to use thanks to a user-friendly Web UI
 -   🔄 Deduplication across platforms
 -   ⏱️ Customizable search intervals
+-   💶 Add your **personal financial situation** and see which listings you can actually
+    afford, for renting and for buying
 
 ------------------------------------------------------------------------
 
