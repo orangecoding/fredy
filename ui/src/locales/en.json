@@ -461,6 +461,8 @@
   "notification.save": "Save",
   "notification.trySuccess": "It seems like it worked! Please check your service.",
   "notification.tryError": "This did not work :-( I've received the following error: {{error}}",
+  "notification.browserPermissionDenied": "Browser notifications are blocked. Please enable/allow notifications in your browser's site settings to use this adapter.",
+  "notification.browserNotSupported": "Your browser or current connection does not support desktop notifications. Please make sure you are using a modern browser over HTTPS or localhost.",
   "notification.errorTitle": "Error",
   "notification.successTitle": "Yay!",
   "notification.validationAllMandatory": "All fields are mandatory and must be set.",
