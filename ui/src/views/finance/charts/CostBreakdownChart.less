@@ -1,0 +1,43 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../../tokens.less';
+
+.costBreakdown {
+  position: relative;
+
+  &__center {
+    // The legend sits on the right, so the hole is centred over the left portion only.
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 60%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    pointer-events: none;
+  }
+
+  &__center-label {
+    font-size: @text-xs;
+    color: @color-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  &__center-value {
+    font-family: @font-mono;
+    font-size: @text-md;
+    color: @color-text;
+  }
+
+  @media (max-width: 700px) {
+    &__center {
+      width: 100%;
+    }
+  }
+}

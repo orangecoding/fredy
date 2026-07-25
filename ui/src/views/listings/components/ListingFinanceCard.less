@@ -1,0 +1,77 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../../tokens.less';
+
+.listingFinance {
+  margin-top: @space-6;
+  padding-top: @space-5;
+  border-top: 1px solid @color-border;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: @space-3;
+    margin-bottom: @space-4;
+  }
+
+  &__title {
+    margin: 0 !important;
+  }
+
+  &__facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: @space-4;
+    margin: 0 0 @space-5;
+  }
+
+  &__fact {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-left: @space-3;
+    border-left: 2px solid @color-border;
+
+    &--emphasis {
+      border-left-color: @color-accent;
+    }
+  }
+
+  &__fact-label {
+    font-size: @text-xs;
+    color: @color-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__fact-value {
+    margin: 0;
+    // Figures in the mono face, matching the calculator and reading like a Tilgungsplan.
+    font-family: @font-mono;
+    font-size: @text-base;
+    color: @color-text;
+  }
+
+  &__fact--emphasis &__fact-value {
+    font-size: @text-md;
+    color: @color-accent;
+  }
+
+  &__fact-note {
+    margin: 0;
+    font-size: @text-xs;
+    color: @color-faint;
+  }
+
+  &__chart {
+    margin-bottom: @space-3;
+  }
+
+  &__footnote {
+    display: block;
+  }
+}

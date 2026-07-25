@@ -1,0 +1,52 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../../tokens.less';
+
+.verdictBanner {
+  display: flex;
+  align-items: flex-start;
+  gap: @space-3;
+  padding: @space-4;
+  margin-bottom: @space-4;
+  border: 1px solid;
+  border-radius: @radius-card;
+
+  &__dot {
+    flex: 0 0 auto;
+    width: 8px;
+    height: 8px;
+    margin-top: 6px;
+    border-radius: @radius-pill;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: @space-1;
+    min-width: 0;
+  }
+
+  &__headline {
+    font-size: @text-md;
+    font-weight: 500;
+    line-height: 1.3;
+  }
+
+  &__advice {
+    font-size: @text-sm;
+    color: @color-muted;
+    line-height: 1.45;
+  }
+
+  &--compact {
+    padding: @space-3;
+    margin-bottom: @space-3;
+
+    .verdictBanner__headline {
+      font-size: @text-base;
+    }
+  }
+}

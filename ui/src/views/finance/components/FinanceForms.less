@@ -1,0 +1,183 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../../tokens.less';
+
+.financeField {
+  display: flex;
+  flex-direction: column;
+  gap: @space-1;
+  min-width: 0;
+
+  &__label {
+    display: flex;
+    align-items: center;
+    gap: @space-1;
+    font-size: @text-xs;
+    color: @color-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  // The help affordance has to be noticeable enough to be found and quiet enough not to
+  // compete with the label it belongs to.
+  &__help {
+    display: inline-flex;
+    align-items: center;
+    color: @color-faint;
+    cursor: help;
+
+    &:hover,
+    &:focus-visible {
+      color: @color-accent;
+    }
+
+    &:focus-visible {
+      outline: 2px solid @color-accent;
+      outline-offset: 2px;
+      border-radius: @radius-chip;
+    }
+  }
+
+  &__input {
+    width: 100%;
+  }
+
+  // Figures read as figures: monospace keeps the digits aligned between fields, the way an
+  // amortization table does.
+  &__input input {
+    font-family: @font-mono;
+  }
+
+  &__suffix {
+    color: @color-faint;
+    padding-right: @space-2;
+    font-size: @text-sm;
+  }
+}
+
+.financeForm {
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: @space-4;
+  }
+
+  &__person {
+    padding-bottom: @space-4;
+    margin-bottom: @space-4;
+    border-bottom: 1px solid @color-border;
+
+    &:last-child {
+      padding-bottom: 0;
+      margin-bottom: 0;
+      border-bottom: none;
+    }
+  }
+
+  &__person-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: @space-3;
+    margin-bottom: @space-3;
+  }
+
+  &__person-title {
+    display: block;
+    margin-bottom: @space-3;
+    font-size: @text-sm;
+  }
+
+  &__person-header &__person-title {
+    margin-bottom: 0;
+  }
+
+  &__toggle {
+    display: flex;
+    align-items: flex-start;
+    gap: @space-3;
+    margin-top: @space-4;
+    cursor: pointer;
+  }
+
+  &__toggle-label {
+    display: block;
+    font-size: @text-sm;
+    color: @color-text;
+  }
+
+  &__toggle-hint {
+    display: block;
+    font-size: @text-xs;
+    color: @color-muted;
+    line-height: 1.4;
+  }
+
+  &__readout {
+    margin-top: @space-5;
+    padding-top: @space-4;
+    border-top: 1px solid @color-border;
+    display: flex;
+    flex-direction: column;
+    gap: @space-2;
+  }
+
+  &__readout-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: @space-4;
+
+    &--emphasis {
+      padding-top: @space-2;
+      border-top: 1px solid @color-border;
+
+      .financeForm__readout-value {
+        color: @color-accent;
+        font-size: @text-md;
+      }
+    }
+  }
+
+  &__readout-value {
+    font-family: @font-mono;
+    font-size: @text-base;
+    color: @color-text;
+  }
+}
+
+.scenarioRow {
+  display: flex;
+  align-items: flex-start;
+  gap: @space-3;
+  padding: @space-4 0;
+  border-bottom: 1px solid @color-border;
+
+  &:first-of-type {
+    padding-top: 0;
+  }
+
+  &:last-of-type {
+    border-bottom: none;
+  }
+
+  &__swatch {
+    flex: 0 0 auto;
+    width: 4px;
+    align-self: stretch;
+    min-height: 40px;
+    border-radius: @radius-chip;
+  }
+
+  &__fields {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  &__add {
+    margin-top: @space-3;
+  }
+}
