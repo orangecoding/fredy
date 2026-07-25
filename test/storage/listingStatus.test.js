@@ -21,7 +21,7 @@ const sqliteMock = {
   },
   query: (sql, params) => {
     calls.query.push({ sql, params });
-    // Return shape varies by test — overridden via queryHandler when needed.
+    // Return shape varies by test - overridden via queryHandler when needed.
     if (sqliteMock.__queryHandler) return sqliteMock.__queryHandler(sql, params);
     return [];
   },

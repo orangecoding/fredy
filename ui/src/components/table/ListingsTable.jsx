@@ -10,6 +10,7 @@ import { formatEuroPrice } from '../../services/price/priceService.js';
 import * as timeService from '../../services/time/timeService.js';
 import StatusControl from '../listings/StatusControl.jsx';
 import ExternalListingLink from '../listings/ExternalListingLink.jsx';
+import AffordabilityChip from '../listings/AffordabilityChip.jsx';
 
 import './ListingsTable.less';
 import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
@@ -56,7 +57,14 @@ const ListingsTable = ({
           </div>
 
           <div className="listingsTable__row__price">
-            {item.price ? formatEuroPrice(item.price) : <span className="listingsTable__row__empty">---</span>}
+            {item.price ? (
+              <>
+                {formatEuroPrice(item.price)}
+                <AffordabilityChip price={item.price} dealType={item.dealType} />
+              </>
+            ) : (
+              <span className="listingsTable__row__empty">---</span>
+            )}
           </div>
 
           <div className="listingsTable__row__address">

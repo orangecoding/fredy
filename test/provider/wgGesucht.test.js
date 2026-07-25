@@ -75,7 +75,7 @@ describe('#wgGesucht testsuite()', () => {
       async () => {
         if (!liveListings?.length) throw new Error('No listings from first test to enrich');
 
-        // Call fetchDetails directly on the first live listing — no need to
+        // Call fetchDetails directly on the first live listing - no need to
         // re-scrape the search page. The shared browser keeps the session warm.
         const enriched = await provider.config.fetchDetails(liveListings[0], browser);
 

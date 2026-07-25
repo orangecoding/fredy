@@ -89,6 +89,12 @@ const JobGrid = () => {
     });
   };
 
+  // The SSE subscription is set up once, so a `loadData` captured inside it would keep querying
+  // the page and sort order that happened to be active at mount. Reading it through a ref means
+  // the refresh always uses the filters on screen right now.
+  const loadDataRef = useRef(loadData);
+  loadDataRef.current = loadData;
+
   useEffect(() => {
     loadData();
   }, [page, sortField, sortDir, freeTextFilter, activityFilter]);
@@ -104,10 +110,16 @@ const JobGrid = () => {
         const data = JSON.parse(e.data || '{}');
         if (data && data.jobId) {
           actions.jobsData.setJobRunning(data.jobId, !!data.running);
-          // notify finish if it was triggered by this view
-          if (pendingJobIdRef.current === data.jobId && data.running === false) {
-            Toast.success(t('jobs.toastFinished'));
-            pendingJobIdRef.current = null;
+          if (data.running === false) {
+            // A finished run is exactly when the listing count changed. Without this the grid
+            // keeps showing the count from before the run - typically 0 on a brand new job -
+            // until the user reloads the page and wonders whether the run did anything.
+            loadDataRef.current();
+            // notify finish if it was triggered by this view
+            if (pendingJobIdRef.current === data.jobId) {
+              Toast.success(t('jobs.toastFinished'));
+              pendingJobIdRef.current = null;
+            }
           }
         }
       } catch {

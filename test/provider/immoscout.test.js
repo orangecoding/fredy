@@ -73,7 +73,7 @@ describe('#immoscout provider testsuite()', () => {
       async () => {
         if (!liveListings?.length) throw new Error('No listings from first test to enrich');
 
-        // Call fetchDetails directly on the first live listing — no need to
+        // Call fetchDetails directly on the first live listing - no need to
         // re-query the search API. immoscout uses fetch (no browser).
         const enriched = await provider.config.fetchDetails(liveListings[0]);
 

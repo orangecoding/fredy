@@ -48,9 +48,14 @@ import { xhrPost, xhrDelete } from '../../services/xhr.js';
 import ListingDeletionModal from '../../components/ListingDeletionModal.jsx';
 
 import Headline from '../../components/headline/Headline.jsx';
+import IconEuro from '../../components/icons/IconEuro.jsx';
 import StatusControl from '../../components/listings/StatusControl.jsx';
+import ListingFinanceCard from './components/ListingFinanceCard.jsx';
 import './ListingDetail.less';
 import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
+import { useFinanceProfile } from '../../hooks/useFinanceProfile.js';
+import { verdictForListing } from '../../../../lib/services/finance/affordability.js';
+import { VERDICT_COLORS, formatEuro, withAlpha } from '../../components/cards/chartTheme.js';
 
 const { Title, Text } = Typography;
 
@@ -64,6 +69,7 @@ export default function ListingDetail() {
   const { listingId } = useParams();
   const navigate = useNavigate();
   const actions = useActions();
+  const { isComplete: buyComplete, rentComplete, thresholds: financeThresholds } = useFinanceProfile();
   const listing = useSelector((state) => state.listingsData.currentListing);
   const userSettings = useSelector((state) => state.userSettings.settings);
   const homeAddresses = useMemo(() => getAddresses(userSettings), [userSettings]);
@@ -354,6 +360,40 @@ export default function ListingDetail() {
     },
   ];
 
+  // The verdict belongs next to the price, not only in the costing block further down. Which
+  // yardstick applies follows the deal type of the job that found this listing; the matching
+  // half of the profile being empty yields no verdict at all.
+  const affordabilityVerdict = verdictForListing(listing.price, listing.dealType, financeThresholds);
+  const isRental = listing.dealType === 'rent';
+
+  if (affordabilityVerdict) {
+    data.push({
+      key: t('listing.detail.fieldAffordability'),
+      value: (
+        <span
+          className="listing-detail__affordability"
+          style={{
+            color: VERDICT_COLORS[affordabilityVerdict],
+            backgroundColor: withAlpha(VERDICT_COLORS[affordabilityVerdict], 0.12),
+            borderColor: withAlpha(VERDICT_COLORS[affordabilityVerdict], 0.4),
+          }}
+        >
+          {t(`finance.verdict.${affordabilityVerdict}`)}
+        </span>
+      ),
+      Icon: <IconEuro />,
+      helpText: t(
+        `listings.${isRental ? 'rentAffordabilityTooltip' : 'affordabilityTooltip'}.${affordabilityVerdict}`,
+        {
+          price: formatEuro(
+            isRental ? financeThresholds.rent.affordableMaxRent : financeThresholds.buy.affordableMaxPrice,
+            locale,
+          ),
+        },
+      ),
+    });
+  }
+
   if (statusLabel) {
     data.push({
       key: t('listing.detail.fieldStatus'),
@@ -462,6 +502,20 @@ export default function ListingDetail() {
                 </Button>
               </Space>
             </div>
+
+            {/* The map used to run the full width under the card, which pushed it a screen
+                below the figures. In this column it sits beside the details and the costing,
+                so the whole listing fits on one screen. */}
+            <div className="listing-detail__map-wrapper">
+              <Title heading={4} className="listing-detail__map-title">
+                {t('listing.detail.locationTitle')}
+              </Title>
+              {!hasGeo ? (
+                <Banner type="warning" bordered description={t('listing.detail.noGeoWarning')} />
+              ) : (
+                <div ref={mapContainer} className="listing-detail__map-container" />
+              )}
+            </div>
           </Col>
           <Col span={24} lg={12}>
             <div className="listing-detail__info-section">
@@ -480,6 +534,38 @@ export default function ListingDetail() {
                   </Descriptions.Item>
                 ))}
               </Descriptions>
+
+              {/* The costing answers "can I have this?", which is the question asked right
+                  after the price - so it comes before the sales copy, not after it. */}
+              <ListingFinanceCard listing={listing} />
+
+              {/* Without the matching half of the profile there is nothing to compute, so offer
+                  the way to create it instead of hiding the feature completely. */}
+              {!(isRental ? rentComplete : buyComplete) && listing.price != null && (
+                <>
+                  <Divider margin="1.5rem" />
+                  <Space align="center" wrap>
+                    <IconEuro style={{ fontSize: '18px', color: 'var(--semi-color-primary)' }} />
+                    <Text type="secondary">
+                      {t(isRental ? 'listing.detail.rentSetupHint' : 'listing.detail.financeSetupHint')}
+                    </Text>
+                    <Button
+                      theme="borderless"
+                      size="small"
+                      onClick={() =>
+                        navigate(
+                          isRental
+                            ? '/finance'
+                            : `/finance?dealType=buy&price=${listing.price}&listingId=${listing.id}`,
+                        )
+                      }
+                    >
+                      {t(isRental ? 'listing.detail.rentSetup' : 'listing.detail.financeCalculate')}
+                    </Button>
+                  </Space>
+                </>
+              )}
+
               <Divider margin="1.5rem" />
               <Title heading={4} style={{ marginBottom: '1rem' }}>
                 {t('listing.detail.descriptionTitle')}
@@ -506,20 +592,6 @@ export default function ListingDetail() {
           </Col>
         </Row>
       </Card>
-
-      <div className="listing-detail__map-wrapper">
-        <Title heading={3}>{t('listing.detail.locationTitle')}</Title>
-        {!hasGeo ? (
-          <Banner
-            type="warning"
-            bordered
-            description={t('listing.detail.noGeoWarning')}
-            style={{ marginTop: '1rem' }}
-          />
-        ) : (
-          <div ref={mapContainer} className="listing-detail__map-container" />
-        )}
-      </div>
 
       <ListingDeletionModal
         visible={deleteModalVisible}

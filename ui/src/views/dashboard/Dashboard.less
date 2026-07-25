@@ -16,20 +16,77 @@
     margin-top: 1.5rem;
   }
 
+  /* Same reason as the finance KPI grid: Semi's columns float, and floats of unequal height
+     stagger instead of wrapping cleanly once a card is allowed to grow with its content. */
   &__row {
-    margin-bottom: 8px;
+    display: flex;
     flex-wrap: wrap;
+    align-items: stretch;
+    margin-bottom: 8px;
+
+    > .semi-col {
+      float: none;
+      display: flex;
+      min-width: 0;
+    }
   }
 
-  &__pie-wrapper {
-    background: #23242a;
-    border: 1px solid #37404e;
+  /* Same surface and border as every other card in the app. The old wrapper hard-coded its own
+     two greys, which read as a panel from a different product, and reserved 320px of height for
+     a chart that now needs a fraction of it. */
+  &__panel {
+    background: @color-surface;
+    border: 1px solid @color-border;
     border-radius: @radius-card;
-    padding: 28px;
-    max-height: 320px;
-    flex: 1;
+    padding: @space-5;
+    margin-bottom: @space-2;
+  }
+
+  &__trend-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: @space-3;
+    flex-wrap: wrap;
+    margin-bottom: @space-3;
+  }
+
+  &__trend-value {
+    margin-right: @space-2;
+    font-family: @font-mono;
+    font-size: @text-xl;
+    font-weight: 700;
+    color: @color-text;
+  }
+
+  &__trend-change {
+    font-size: @text-sm;
+
+    &--up {
+      color: @color-success;
+    }
+
+    &--down {
+      color: @color-muted;
+    }
+  }
+
+  /* Nothing set up yet. One statement and one action, centred, instead of a grid of dashes. */
+  &__empty {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    align-items: center;
+    gap: @space-3;
+    max-width: 46ch;
+    margin: @space-12 auto;
+    text-align: center;
+  }
+
+  &__empty-title {
+    margin: 0 !important;
+  }
+
+  &__empty-body {
+    line-height: 1.6;
   }
 }

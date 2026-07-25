@@ -6,7 +6,7 @@
 import { ensureValidBinary } from '../lib/services/ensureValidBinary.js';
 
 /**
- * Vitest global setup — runs once in the main process before any workers start.
+ * Vitest global setup - runs once in the main process before any workers start.
  * Downloads and validates the CloakBrowser stealth Chromium binary.
  * ensureValidBinary() also removes and re-downloads partial/corrupt installations
  * so tests never fail with "Invalid file descriptor to ICU data received".

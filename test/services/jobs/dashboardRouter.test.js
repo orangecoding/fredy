@@ -25,6 +25,7 @@ describe('api/routes/dashboardRouter.js', () => {
     vi.doMock(listingsStoragePath, () => ({
       getListingsKpisForJobIds: () => ({ numberOfActiveListings: 0, medianPriceOfListings: 0 }),
       getProviderDistributionForJobIds: () => [],
+      getListingsPerDayForJobIds: () => [],
     }));
     vi.doMock(settingsStoragePath, () => ({
       getSettings: async () => ({ interval: 30 }),

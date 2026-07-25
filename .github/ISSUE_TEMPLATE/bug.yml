@@ -25,7 +25,7 @@ body:
         2. Click **"Enable debug logging" / "Debug-Logging aktivieren"**. A red banner
            appears across the whole app while recording is on.
         3. **Now reproduce the bug.** Trigger the broken job, click the failing
-           button, wait for the failing scrape — whatever it was.
+           button, wait for the failing scrape - whatever it was.
         4. Come back to **Settings → Debug** and confirm the progress bar moved
            (i.e. log entries were actually written). If it stayed at 0%, nothing was
            captured and the bundle won't help us.

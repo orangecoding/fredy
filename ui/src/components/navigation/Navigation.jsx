@@ -6,6 +6,7 @@
 import { useEffect, useState } from 'react';
 import { Nav } from '@douyinfe/semi-ui-19';
 import { IconStar, IconSetting, IconTerminal, IconHistogram, IconSidebar } from '@douyinfe/semi-icons';
+import IconEuro from '../icons/IconEuro.jsx';
 import logoWhite from '../../assets/logo_white.png';
 import heart from '../../assets/heart.png';
 import Logout from '../logout/Logout.jsx';
@@ -42,6 +43,7 @@ export default function Navigation({ isAdmin }) {
         { itemKey: '/listings/watchlist', text: t('nav.watchlist') },
       ],
     },
+    { itemKey: '/finance', text: t('nav.finance'), icon: <IconEuro /> },
   ];
 
   if (isAdmin) {

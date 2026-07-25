@@ -27,6 +27,7 @@ import { Layout } from '@douyinfe/semi-ui-19';
 import FredyFooter from './components/footer/FredyFooter.jsx';
 import WatchlistManagement from './views/listings/management/WatchlistManagement.jsx';
 import Dashboard from './views/dashboard/Dashboard.jsx';
+import FinanceCalculator from './views/finance/FinanceCalculator.jsx';
 import ListingDetail from './views/listings/ListingDetail.jsx';
 import NewsModal from './components/news/NewsModal.jsx';
 import { I18nProvider, availableLanguages } from './services/i18n/i18n.jsx';
@@ -46,15 +47,38 @@ export default function FredyApp() {
   const location = useLocation();
   const actions = useActions();
   const [loading, setLoading] = React.useState(true);
+  /** userId the stores were filled for, so a re-run of the init effect does not refetch. */
+  const initializedFor = React.useRef(null);
   const currentUser = useSelector((state) => state.user.currentUser);
   const versionUpdate = useSelector((state) => state.versionUpdate.versionUpdate);
   const settings = useSelector((state) => state.generalSettings.settings);
   const language = useSelector((state) => state.userSettings.settings.language);
 
   useEffect(() => {
+    // The effect re-runs once the user lands in the store, and by then everything this does
+    // has already happened - including the /api/login/user request below.
+    if (currentUser?.userId != null && initializedFor.current === currentUser.userId) {
+      setLoading(false);
+      return;
+    }
+
     async function init() {
-      await actions.user.getCurrentUser();
-      if (!needsLogin()) {
+      // Judge on the user this call just returned, not on the one in the render closure: on a
+      // hard refresh that closure is still null, so the guard below used to skip every load,
+      // drop `loading`, and render the whole app against empty stores. Anything that seeds
+      // component state from settings on mount (the finance calculator, view-mode toggles)
+      // then kept the blank values it saw.
+      const user = await actions.user.getCurrentUser();
+      const userId = user?.userId ?? null;
+
+      if (userId == null) {
+        initializedFor.current = null;
+        setLoading(false);
+        return;
+      }
+
+      if (initializedFor.current !== userId) {
+        initializedFor.current = userId;
         await actions.provider.getProvider();
         await actions.jobsData.getJobs();
         await actions.jobsData.getSharableUserList();
@@ -64,6 +88,7 @@ export default function FredyApp() {
         await actions.versionUpdate.getVersionUpdate();
         await actions.tracking.getTrackingPois();
       }
+
       setLoading(false);
     }
 
@@ -131,6 +156,7 @@ export default function FredyApp() {
                   <Route path="/listings/watchlist" element={<Listings mode="watchlist" />} />
                   <Route path="/listings/listing/:listingId" element={<ListingDetail />} />
                   <Route path="/map" element={<MapView />} />
+                  <Route path="/finance" element={<FinanceCalculator />} />
                   <Route path="/watchlistManagement" element={<WatchlistManagement />} />
 
                   {/* Permission-aware routes */}
