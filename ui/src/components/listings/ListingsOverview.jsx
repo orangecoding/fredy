@@ -44,6 +44,7 @@ const ListingsOverview = ({ mode = 'all' }) => {
   const isWatchlistMode = mode === 'watchlist';
   const listingsData = useSelector((state) => state.listingsData);
   const providers = useSelector((state) => state.provider);
+  const pois = useSelector((state) => state.tracking.pois);
   const jobs = useSelector((state) => state.jobsData.jobs);
   const userSettings = useSelector((state) => state.userSettings.settings);
   const actions = useActions();
@@ -345,6 +346,11 @@ const ListingsOverview = ({ mode = 'all' }) => {
             onChange={(val) => {
               setAffordabilityFilter(val ?? null);
               setPage(1);
+              // Counted when it is switched on, not when it is cleared, and not on every page
+              // load that happens to carry the filter in its URL.
+              if (val != null) {
+                actions.tracking.trackPoi(pois.FINANCE_AFFORDABILITY_FILTER_USED);
+              }
             }}
             value={affordabilityFilter}
             style={{ width: 150 }}
