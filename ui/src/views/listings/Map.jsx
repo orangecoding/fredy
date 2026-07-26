@@ -7,7 +7,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { parseBoolean, parseNumber, parseString, useSearchParamState } from '../../hooks/useSearchParamState.js';
 import { getAddresses } from '../../utils.js';
 import { renderToString } from 'react-dom/server';
-import maplibregl from 'maplibre-gl';
+import maplibregl from '../../components/map/maplibre.js';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useActions, useSelector } from '../../services/state/store.js';
 import { distanceMeters, generateCircleCoords, getBoundsFromCenter, getBoundsFromCoords } from './mapUtils.js';

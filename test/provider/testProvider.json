@@ -29,7 +29,7 @@
     "enabled": true
   },
   "mcMakler": {
-    "url": "https://www.mcmakler.de/immobilien/results?placeId=62649&search=Leipzig%252C+Sachsen&propertyTypes=APARTMENT&page=0",
+    "url": "https://www.mcmakler.de/immobilien?city=D%C3%BCsseldorf&placeId=62539",
     "enabled": true
   },
   "ohneMakler": {
@@ -56,10 +56,6 @@
   "wgGesucht": {
     "url": "https://www.wg-gesucht.de/wg-zimmer-in-Duesseldorf.30.0.1.0.html",
     "enabled": true
-  },
-  "wohnungsboerse": {
-    "url": "https://www.wohnungsboerse.net/searches/index?estate_marketing_types=kauf%2C1&marketing_type=kauf&estate_types%5B0%5D=1&is_rendite=0&estate_id=&zipcodes%5B%5D=&cities%5B%5D=Duesseldorf&districts%5B%5D=&term=D%C3%BCsseldorf&umkreiskm=&pricetext=&minprice=&maxprice=&sizetext=&minsize=&maxsize=&roomstext=&minrooms=&maxrooms=",
-    "IsActive": true
   },
   "deutscheWohnen": {
     "url": "https://www.deutsche-wohnen.com/mieten/mietangebote?rentType=miete&city=Berlin&immoType=wohnung",

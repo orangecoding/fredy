@@ -37,7 +37,7 @@ import {
   IconExpand,
   IconGridView,
 } from '@douyinfe/semi-icons';
-import maplibregl from 'maplibre-gl';
+import maplibregl from '../../components/map/maplibre.js';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import no_image from '../../assets/no_image.png';
 import * as timeService from '../../services/time/timeService.js';

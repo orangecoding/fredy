@@ -35,7 +35,9 @@ vi.mock('../lib/services/extractor/puppeteerExtractor.js', async (importOriginal
   }
   const { readFixture } = await import('./offlineFixtures.js');
   return {
-    default: (url) => readFixture(url),
+    // the options carry the provider's run name, which is the only way to map detail pages
+    // that live on a partner domain back to their fixture
+    default: (url, waitForSelector, options) => readFixture(url, options),
     launchBrowser: async () => ({ close: async () => {}, isConnected: () => true }),
     closeBrowser: async () => {},
   };

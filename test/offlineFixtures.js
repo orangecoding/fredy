@@ -53,11 +53,28 @@ function withRealEstateType(data, realEstateType) {
 }
 
 /**
+ * Providers name their extractor runs `<provider>_details…` when they load a detail page. That
+ * name is the only hint available for aggregators whose exposes live on a partner domain, so it
+ * resolves the provider when the hostname alone cannot.
+ *
+ * @param {{name?: string}} [options] options the provider passed to the extractor
+ * @returns {string|null} the provider name or null if the run was not a detail run
+ */
+function providerFromExtractorName(options) {
+  const match = /^([A-Za-z0-9]+)_details?/.exec(options?.name ?? '');
+  return match != null && testProviderConfig[match[1]] != null ? match[1] : null;
+}
+
+/**
  * Returns fixture HTML for the given URL by mapping hostname → provider name,
  * then distinguishing list vs detail pages by comparing the URL path against
  * the configured list URL path from testProvider.json.
+ *
+ * @param {string} url the url the provider asked the extractor for
+ * @param {{name?: string}} [options] options the provider passed to the extractor
+ * @returns {Promise<string|null>} the fixture content or null when none is available
  */
-export async function readFixture(url) {
+export async function readFixture(url, options) {
   let hostname, pathname;
   try {
     const parsed = new URL(url);
@@ -68,7 +85,11 @@ export async function readFixture(url) {
   }
 
   const providerName = hostnameToProvider[hostname];
-  if (!providerName) return null;
+  if (!providerName) {
+    // aggregators link to partner portals, so their detail fixture sits under an unknown hostname
+    const detailProvider = providerFromExtractorName(options);
+    return detailProvider == null ? null : tryReadFile(path.join(FIXTURES_DIR, `${detailProvider}_detail.html`));
+  }
 
   if (providerListPath[providerName] === pathname) {
     return tryReadFile(path.join(FIXTURES_DIR, `${providerName}.html`));

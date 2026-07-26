@@ -4,7 +4,7 @@
  */
 
 import { useEffect, useRef } from 'react';
-import maplibregl from 'maplibre-gl';
+import maplibregl from './maplibre.js';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import { fixMapboxDrawCompatibility, addDrawingControl, setupAreaFilterEventListeners } from './MapDrawingExtension.js';
@@ -68,6 +68,7 @@ export default function Map({
   const mapRef = useRef(null);
   const drawRef = useRef(null);
   const hasFittedToInitialAreaRef = useRef(false);
+  const isInitialStyleRef = useRef(true);
 
   // Initialize map - ONLY when container changes, never reinitialize
   useEffect(() => {
@@ -151,9 +152,17 @@ export default function Map({
 
   // Handle style changes
   useEffect(() => {
-    if (mapRef.current) {
-      mapRef.current.setStyle(STYLES[style]);
+    if (!mapRef.current) return;
+
+    // The map constructor already applied the initial style. Calling setStyle() again on mount
+    // starts a second, racing style load that finishes later and wipes every custom source/layer
+    // added in the meantime (3D buildings, distance circles), so skip the very first run.
+    if (isInitialStyleRef.current) {
+      isInitialStyleRef.current = false;
+      return;
     }
+
+    mapRef.current.setStyle(STYLES[style]);
   }, [style]);
 
   // Handle 3D buildings layer
@@ -161,7 +170,7 @@ export default function Map({
     if (!mapRef.current) return;
 
     const add3dLayer = () => {
-      if (!mapRef.current || !mapRef.current.isStyleLoaded()) return;
+      if (!mapRef.current) return;
       if (show3dBuildings) {
         if (!mapRef.current.getSource('openfreemap')) {
           mapRef.current.addSource('openfreemap', {
@@ -213,7 +222,23 @@ export default function Map({
       }
     };
 
-    add3dLayer();
+    // The style is not ready on mount, and `setStyle()` (see the effect above) drops every custom
+    // source/layer and reloads asynchronously, so the layer has to be (re)applied whenever a style
+    // finishes loading. `styledata` is the right signal for that: `isStyleLoaded()` is a stricter
+    // condition than what `addSource`/`addLayer` actually need (it also waits for every source to
+    // load its tiles) and right after a `setStyle()` call it still reports the outgoing style.
+    // The listener stays attached for the lifetime of the effect, and `add3dLayer` is idempotent.
+    const onStyleData = () => add3dLayer();
+
+    if (mapRef.current.isStyleLoaded()) {
+      add3dLayer();
+    }
+
+    mapRef.current.on('styledata', onStyleData);
+
+    return () => {
+      mapRef.current?.off('styledata', onStyleData);
+    };
   }, [show3dBuildings, style]);
 
   // Handle pitch for 3D

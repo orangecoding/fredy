@@ -16,7 +16,7 @@
   },
   {
     "url": "https://www.neubaukompass.de/neubau-immobilien/berlin-region/",
-    "shouldBecome": "https://www.neubaukompass.de/neubau-immobilien/berlin-region/?Sortierung=Id&Richtung=DESC",
+    "shouldBecome": "https://www.neubaukompass.de/neubau-immobilien/berlin-region/?sort=firstactivation",
     "id": "neubauKompass"
   },
   {

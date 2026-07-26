@@ -5,42 +5,15 @@
 
 /* eslint-disable no-console */
 
-import { readFile, writeFile, mkdir } from 'fs/promises';
+import { readFile, readdir, rm, writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import * as cheerio from 'cheerio';
+import { extractFirstDetailUrl } from './extractDetailUrl.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '../..');
 const FIXTURES_DIR = path.join(ROOT, 'test', 'testFixtures');
 const TEST_PROVIDER_PATH = path.join(ROOT, 'test', 'provider', 'testProvider.json');
-
-/**
- * Extracts the first listing link from HTML using the provider's link crawl selector.
- * Selector format: "css-selector@attribute | transform | ..."
- */
-function extractFirstLink(html, linkSelectorExpr, baseUrl) {
-  if (!linkSelectorExpr) return null;
-
-  const selectorPart = linkSelectorExpr.split('|')[0].trim();
-  let cssSelector = selectorPart;
-  let attribute = null;
-
-  const atMatch = selectorPart.match(/^(.+?)@(\w+)$/);
-  if (atMatch) {
-    cssSelector = atMatch[1].trim();
-    attribute = atMatch[2];
-  }
-
-  const $ = cheerio.load(html);
-  const el = $(cssSelector).first();
-  const value = attribute ? el.attr(attribute) : el.text().trim();
-
-  if (!value) return null;
-  if (value.startsWith('http')) return value;
-  if (value.startsWith('/')) return new URL(value, baseUrl).href;
-  return null;
-}
 
 async function downloadDeutscheWohnenFixtures(apiUrl, refererUrl) {
   console.log('\nDownloading deutscheWohnen...');
@@ -154,10 +127,12 @@ async function downloadHtmlProvider(name, providerConfig, launchBrowser, closeBr
     await writeFile(path.join(FIXTURES_DIR, `${name}.html`), html, 'utf-8');
     console.log(`  Saved ${name}.html`);
 
-    const needsDetailFixture = typeof providerConfig.fetchDetails === 'function' && providerConfig.crawlFields?.link;
+    // the detail url is taken from the normalized listing, so providers that build their link
+    // inside normalize() instead of exposing a `link` crawl field are covered as well
+    const needsDetailFixture = typeof providerConfig.fetchDetails === 'function';
 
     if (needsDetailFixture) {
-      const detailUrl = extractFirstLink(html, providerConfig.crawlFields.link, providerConfig.url);
+      const detailUrl = extractFirstDetailUrl(html, providerConfig);
       if (!detailUrl) {
         console.warn(`  Could not find detail URL in ${name} list page`);
         return;
@@ -177,10 +152,61 @@ async function downloadHtmlProvider(name, providerConfig, launchBrowser, closeBr
   }
 }
 
+/**
+ * Reduces the configured providers to those requested on the command line.
+ * Without arguments every provider is downloaded.
+ *
+ * @param {Record<string, object>} testProviderConfig all providers configured in testProvider.json
+ * @param {string[]} requestedProviders provider names passed as cli arguments (case insensitive)
+ * @returns {Record<string, object>} the providers to download fixtures for
+ * @throws {Error} if a requested provider is not configured in testProvider.json
+ */
+export function selectProviders(testProviderConfig, requestedProviders) {
+  if (requestedProviders.length === 0) return testProviderConfig;
+
+  const availableNames = Object.keys(testProviderConfig);
+  const selected = {};
+
+  for (const requested of requestedProviders) {
+    const name = availableNames.find((available) => available.toLowerCase() === requested.toLowerCase());
+    if (name == null) {
+      throw new Error(`Unknown provider '${requested}'. Available providers: ${availableNames.join(', ')}`);
+    }
+    selected[name] = testProviderConfig[name];
+  }
+
+  return selected;
+}
+
+/**
+ * Removes every file inside the fixtures directory so a full download starts from a clean slate.
+ * Prevents fixtures of providers that meanwhile got renamed or removed from lingering around.
+ *
+ * @param {string} fixturesDir the directory holding all fixtures
+ * @returns {Promise<number>} the number of deleted files
+ */
+export async function clearFixtures(fixturesDir) {
+  const entries = await readdir(fixturesDir, { withFileTypes: true });
+  // dot files are infrastructure, not fixtures - deleting .gitkeep would drop the directory from git
+  const files = entries.filter((entry) => entry.isFile() && !entry.name.startsWith('.'));
+
+  await Promise.all(files.map((file) => rm(path.join(fixturesDir, file.name))));
+
+  return files.length;
+}
+
 async function main() {
   await mkdir(FIXTURES_DIR, { recursive: true });
 
   const testProviderConfig = JSON.parse(await readFile(TEST_PROVIDER_PATH, 'utf-8'));
+  const requestedProviders = process.argv.slice(2);
+  const providersToDownload = selectProviders(testProviderConfig, requestedProviders);
+
+  // a partial download must keep the fixtures of all other providers intact
+  if (requestedProviders.length === 0) {
+    const deleted = await clearFixtures(FIXTURES_DIR);
+    console.log(`Removed ${deleted} existing fixture(s) before full download.`);
+  }
 
   const {
     launchBrowser,
@@ -188,7 +214,7 @@ async function main() {
     default: puppeteerExtractor,
   } = await import('../../lib/services/extractor/puppeteerExtractor.js');
 
-  for (const [name, cfg] of Object.entries(testProviderConfig)) {
+  for (const [name, cfg] of Object.entries(providersToDownload)) {
     const provider = await import(`../../lib/provider/${name}.js`);
     provider.init(cfg, [], []);
 
@@ -204,10 +230,13 @@ async function main() {
     }
   }
 
-  console.log('\nAll fixtures downloaded.');
+  console.log(`\nFixtures downloaded for: ${Object.keys(providersToDownload).join(', ')}`);
 }
 
-main().catch((err) => {
-  console.error('Error downloading fixtures:', err);
-  process.exit(1);
-});
+// only run when executed directly, so the helpers above stay importable from tests
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  main().catch((err) => {
+    console.error('Error downloading fixtures:', err);
+    process.exit(1);
+  });
+}

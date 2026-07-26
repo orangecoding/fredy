@@ -70,7 +70,13 @@ describe('#sparkasse testsuite()', () => {
         /** check the values if possible **/
         expect(notify.title).not.toBe('');
         expect(notify.address).not.toBe('');
+        if (notify.image != null) {
+          expect(notify.image).toMatch(/^https:\/\//);
+        }
       });
+      // the preview image lives outside of the card's link box, so it is the first
+      // thing to break when the card markup is restructured
+      expect(notificationObj.payload.some((notify) => notify.image)).toBe(true);
     },
     TEST_TIMEOUT,
   );
@@ -105,5 +111,50 @@ describe('#sparkasse testsuite()', () => {
       },
       TEST_TIMEOUT,
     );
+
+    it('should read description and address from the embedded Next.js payload', async () => {
+      const nextData = {
+        props: {
+          pageProps: {
+            estate: {
+              address: { street: 'Musterweg', streetNumber: '5', zip: '40545', city: 'Düsseldorf' },
+              frontendItems: [
+                {
+                  label: 'Lage',
+                  contents: [{ type: 'contentBoxes', data: [{ type: 'text', content: 'Ruhige Wohnlage am Rhein.' }] }],
+                },
+                { label: 'Anbieter', contents: [{ type: 'contactBox', data: [] }] },
+              ],
+            },
+          },
+        },
+      };
+      const extractDetails = vi
+        .fn()
+        .mockResolvedValue(
+          `<html><body><script id="__NEXT_DATA__" type="application/json">${JSON.stringify(nextData)}</script></body></html>`,
+        );
+      const listing = {
+        id: 'listing-1',
+        link: 'https://immobilien.sparkasse.de/expose/FID-1.html',
+        address: 'Düsseldorf / Oberkassel',
+      };
+
+      const enriched = await provider.config.fetchDetails(listing, browser, extractDetails);
+
+      expect(enriched.address).toBe('Musterweg 5, 40545 Düsseldorf');
+      expect(enriched.description).toBe('Lage\nRuhige Wohnlage am Rhein.');
+      expect(extractDetails).toHaveBeenCalledWith(listing.link, 'body', expect.objectContaining({ browser }));
+    });
+
+    it('should keep the listing when the detail page carries no estate payload', async () => {
+      const listing = { id: 'listing-1', link: 'https://immobilien.sparkasse.de/expose/FID-1.html', address: 'Bonn' };
+
+      const withoutPayload = vi.fn().mockResolvedValue('<html><body></body></html>');
+      expect(await provider.config.fetchDetails(listing, browser, withoutPayload)).toBe(listing);
+
+      const withoutPage = vi.fn().mockResolvedValue(null);
+      expect(await provider.config.fetchDetails(listing, browser, withoutPage)).toBe(listing);
+    });
   });
 });
