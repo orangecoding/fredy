@@ -18,7 +18,7 @@ import Jobs from './views/jobs/Jobs';
 
 import './App.less';
 import TrackingModal from './components/tracking/TrackingModal.jsx';
-import { Banner, LocaleProvider } from '@douyinfe/semi-ui-19';
+import { LocaleProvider } from '@douyinfe/semi-ui-19';
 import VersionBanner from './components/version/VersionBanner.jsx';
 import Listings from './views/listings/Listings.jsx';
 import MapView from './views/listings/Map.jsx';
@@ -32,6 +32,7 @@ import ListingDetail from './views/listings/ListingDetail.jsx';
 import NewsModal from './components/news/NewsModal.jsx';
 import { I18nProvider, availableLanguages } from './services/i18n/i18n.jsx';
 import DebugLoggingBanner from './components/debug/DebugLoggingBanner.jsx';
+import DemoBanner from './components/demo/DemoBanner.jsx';
 
 const semiLocaleModules = import.meta.glob('/node_modules/@douyinfe/semi-ui-19/lib/es/locale/source/*.js', {
   eager: true,
@@ -132,18 +133,7 @@ export default function FredyApp() {
               <Content className="app__content">
                 {versionUpdate?.newVersion && <VersionBanner />}
                 <DebugLoggingBanner />
-                {settings.demoMode && (
-                  <>
-                    <Banner
-                      fullMode={true}
-                      type="info"
-                      bordered
-                      closeIcon={null}
-                      description="You're currently viewing the demo version of Fredy. Jobs won't scrape websites, and any changes you make will be reverted at midnight."
-                    />
-                    <br />
-                  </>
-                )}
+                {settings.demoMode && <DemoBanner />}
                 {settings.analyticsEnabled === null && !settings.demoMode && <TrackingModal />}
                 {!settings.demoMode && <NewsModal />}
                 <Routes>

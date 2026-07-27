@@ -5,7 +5,7 @@
     "locale": "de-DE",
     "semiLocale": "de"
   },
-  "app.demoBanner": "Du nutzt gerade die Demo-Version von Fredy. Es werden keine Immo-Sites gescrapt, alle Änderungen werden um Mitternacht zurückgesetzt.",
+  "app.demoBanner": "Dies ist eine Demo-Instanz von Fredy. Alle Änderungen und Einstellungen werden um Mitternacht zurückgesetzt.",
   "nav.dashboard": "Dashboard",
   "nav.jobs": "Jobs",
   "nav.listings": "Inserate",
@@ -335,7 +335,7 @@
   "settings.analyticsHelp": "Anonyme Nutzungsdaten zur Verbesserung von Fredy (Anbieter, Adapter-Namen, Betriebssystem, Node-Version und Architektur).",
   "settings.analyticsEnable": "Analysen aktivieren",
   "settings.demoMode": "Demo-Modus",
-  "settings.demoModeHelp": "Im Demo-Modus sucht Fredy nicht nach Immobilien und alle Daten werden um Mitternacht auf Standardwerte zurückgesetzt.",
+  "settings.demoModeHelp": "Im Demo-Modus führt Fredy ausschließlich den eingebauten Demo-Job aus. Alles andere wird um Mitternacht auf Standardwerte zurückgesetzt.",
   "settings.demoModeEnable": "Demo-Modus aktivieren",
   "settings.searchInterval": "Suchintervall",
   "settings.searchIntervalHelp": "Intervall in Minuten für Anfragen an konfigurierte Dienste. Gehe nicht unter 5 Minuten, um nicht als Bot erkannt zu werden.",

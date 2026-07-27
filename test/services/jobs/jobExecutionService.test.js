@@ -12,7 +12,7 @@ describe('services/jobs/jobExecutionService', () => {
   let calls;
   let state;
 
-  async function initService() {
+  async function initService(settings = { demoMode: false }) {
     const root = (await import('node:path')).resolve('.');
     const svcPath = root + '/lib/services/jobs/jobExecutionService.js';
     const busPath = root + '/lib/services/events/event-bus.js';
@@ -70,6 +70,10 @@ describe('services/jobs/jobExecutionService', () => {
         async execute() {}
       },
     }));
+    vi.doMock(root + '/lib/services/demo/demoService.js', () => ({
+      DEMO_JOB_ID: 'demo-job',
+      isDemoJob: (jobId) => jobId === 'demo-job',
+    }));
     vi.doMock(root + '/lib/services/jobs/run-state.js', () => ({
       isRunning: () => false,
       markRunning: (id) => {
@@ -80,7 +84,7 @@ describe('services/jobs/jobExecutionService', () => {
     }));
 
     const mod = await import(svcPath);
-    mod.initJobExecutionService({ providers: state.providers, settings: { demoMode: false }, intervalMs: 0 });
+    mod.initJobExecutionService({ providers: state.providers, settings, intervalMs: 0 });
     return mod;
   }
 
@@ -201,5 +205,41 @@ describe('services/jobs/jobExecutionService', () => {
     expect(calls.launchBrowser).toEqual([['https://api.example/', {}]]);
     expect(calls.pipeline.map(({ browser }) => browser)).toEqual([state.browser, state.browser, state.browser]);
     expect(calls.closeBrowser).toEqual([state.browser]);
+  });
+
+  describe('demo mode', () => {
+    const demoJob = (id) => ({ id, enabled: true, userId: 'u1', provider: [], blacklist: [], notificationAdapter: [] });
+
+    it('runs only the demo job on a run-all', async () => {
+      state.jobsList = [demoJob('demo-job'), demoJob('other-job')];
+      state.jobsById = Object.fromEntries(state.jobsList.map((job) => [job.id, job]));
+
+      await initService({ demoMode: true });
+      bus.emit('jobs:runAll', { userId: null });
+      await vi.waitFor(() => expect(calls.markFinished).toEqual(['demo-job']));
+
+      expect(calls.lastRunUpdates.map((entry) => entry.id)).toEqual(['demo-job']);
+    });
+
+    it('refuses to run a job that is not the demo job', async () => {
+      state.jobsList = [demoJob('other-job')];
+      state.jobsById = Object.fromEntries(state.jobsList.map((job) => [job.id, job]));
+
+      await initService({ demoMode: true });
+      bus.emit('jobs:runOne', { jobId: 'other-job' });
+      await new Promise((resolve) => setTimeout(resolve, 20));
+
+      expect(calls.markRunning).toEqual([]);
+      expect(calls.lastRunUpdates).toEqual([]);
+    });
+
+    it('still runs the demo job when triggered manually', async () => {
+      state.jobsList = [demoJob('demo-job')];
+      state.jobsById = Object.fromEntries(state.jobsList.map((job) => [job.id, job]));
+
+      await initService({ demoMode: true });
+      bus.emit('jobs:runOne', { jobId: 'demo-job' });
+      await vi.waitFor(() => expect(calls.markFinished).toEqual(['demo-job']));
+    });
   });
 });

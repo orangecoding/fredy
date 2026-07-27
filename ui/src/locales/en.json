@@ -5,7 +5,7 @@
     "locale": "en-US",
     "semiLocale": "en_US"
   },
-  "app.demoBanner": "You're currently viewing the demo version of Fredy. Jobs won't scrape websites, and any changes you make will be reverted at midnight.",
+  "app.demoBanner": "This is a demo instance of Fredy. All changes and settings are reset daily.",
   "nav.dashboard": "Dashboard",
   "nav.jobs": "Jobs",
   "nav.listings": "Listings",
@@ -335,7 +335,7 @@
   "settings.analyticsHelp": "Anonymous usage data to help improve Fredy - provider names, adapter names, OS, Node version, and architecture.",
   "settings.analyticsEnable": "Enable analytics",
   "settings.demoMode": "Demo Mode",
-  "settings.demoModeHelp": "In demo mode, Fredy will not search for real estates and all data resets to defaults at midnight.",
+  "settings.demoModeHelp": "In demo mode, Fredy only runs the built-in Demo-Job. Everything else resets to defaults at midnight.",
   "settings.demoModeEnable": "Enable demo mode",
   "settings.searchInterval": "Search Interval",
   "settings.searchIntervalHelp": "Interval in minutes for running queries against configured services. Do not go below 5 minutes to avoid being detected as a bot.",

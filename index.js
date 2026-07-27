@@ -18,6 +18,8 @@ import SqliteConnection, { computeDbPath } from './lib/services/storage/SqliteCo
 import { initJobExecutionService } from './lib/services/jobs/jobExecutionService.js';
 import { ensureValidBinary } from './lib/services/ensureValidBinary.js';
 import { removeObsoleteProviders } from './lib/services/providers/providerCleanup.js';
+import { seedDemo, warnOnDefaultAdminPassword } from './lib/services/demo/demoService.js';
+import { initDemoCleanupCron } from './lib/services/crons/demo-cleanup-cron.js';
 
 // Ensure the CloakBrowser stealth Chromium binary is present and complete before
 // jobs run.  ensureValidBinary() also detects and auto-heals partial extractions
@@ -79,10 +81,17 @@ if (settings.demoMode) {
 
 await ensureAdminUserExists();
 await ensureDemoUserExists();
+
+// A demo instance must always present a working Fredy: the demo job is created on the first
+// start and repaired on every later one, so a drifted config can never leave the demo empty.
+await seedDemo(providers);
+await warnOnDefaultAdminPassword();
+
 await initTrackerCron();
 //do not wait for this to finish, let it run in the background
 initActiveCheckerCron();
 initGeocodingCron();
+await initDemoCleanupCron();
 
 logger.info(`Started Fredy successfully. Ui can be accessed via http://localhost:${settings.port}`);
 
