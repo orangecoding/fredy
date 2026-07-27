@@ -10,16 +10,21 @@ import IconEuro from '../icons/IconEuro.jsx';
 import logoWhite from '../../assets/logo_white.png';
 import heart from '../../assets/heart.png';
 import Logout from '../logout/Logout.jsx';
+import Donate from '../donate/Donate.jsx';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import './Navigate.less';
 import { useScreenWidth } from '../../hooks/screenWidth.js';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
+import { useSelector } from '../../services/state/store';
 
 export default function Navigation({ isAdmin }) {
   const t = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
+  // The demo instance is a showcase, not an installation someone maintains - asking its
+  // visitors for money would be begging on someone else's behalf.
+  const settings = useSelector((state) => state.generalSettings.settings);
 
   const width = useScreenWidth();
   const [collapsed, setCollapsed] = useState(width <= 850);
@@ -110,15 +115,22 @@ export default function Navigation({ isAdmin }) {
         </div>
       }
       footer={
-        <Nav.Footer className={`navigate__footer${collapsed ? ' navigate__footer--collapsed' : ''}`}>
-          <Logout text={!collapsed} />
-          <button
-            className="navigate__toggle-btn"
-            onClick={() => setCollapsed(!collapsed)}
-            title={collapsed ? t('nav.expandSidebar') : t('nav.collapseSidebar')}
-          >
-            <IconSidebar size="default" />
-          </button>
+        <Nav.Footer className="navigate__footer">
+          {!settings.demoMode && (
+            <div className="navigate__footer-donate">
+              <Donate collapsed={collapsed} />
+            </div>
+          )}
+          <div className={`navigate__footer-actions${collapsed ? ' navigate__footer-actions--collapsed' : ''}`}>
+            <Logout text={!collapsed} />
+            <button
+              className="navigate__toggle-btn"
+              onClick={() => setCollapsed(!collapsed)}
+              title={collapsed ? t('nav.expandSidebar') : t('nav.collapseSidebar')}
+            >
+              <IconSidebar size="default" />
+            </button>
+          </div>
         </Nav.Footer>
       }
     />

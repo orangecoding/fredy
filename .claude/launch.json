@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "fredy-frontend",
+      "runtimeExecutable": "yarn",
+      "runtimeArgs": ["run", "start:frontend:dev"],
+      "port": 5173
+    }
+  ]
+}

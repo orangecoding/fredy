@@ -23,22 +23,33 @@
     }
   }
 
+  // The footer is two stacked blocks now: the support button sits above the rule, the session
+  // controls below it. The rule therefore belongs to the lower block, not to the footer itself.
   &__footer {
+    display: flex;
+    flex-direction: column;
+    margin-top: auto;
+    flex-shrink: 0;
+    padding: 0 !important;
+  }
+
+  &__footer-donate {
+    padding: 0 8px 10px;
+  }
+
+  &__footer-actions {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
     gap: 6px;
-    padding: 1rem 8px 10px !important;
-    margin-top: auto;
-    flex-shrink: 0;
+    padding: 1rem 8px 10px;
     border-top: 1px solid @color-border;
 
     &--collapsed {
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 1rem 8px 10px !important;
       gap: 6px;
     }
   }
