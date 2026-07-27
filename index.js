@@ -77,8 +77,8 @@ if (settings.demoMode) {
   logger.info('Running in demo mode');
 }
 
-ensureAdminUserExists();
-ensureDemoUserExists();
+await ensureAdminUserExists();
+await ensureDemoUserExists();
 await initTrackerCron();
 //do not wait for this to finish, let it run in the background
 initActiveCheckerCron();
