@@ -1,0 +1,2394 @@
+<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><script>if(navigator.userAgent.match(/MSIE|Internet Explorer/i)||navigator.userAgent.match(/Trident\/7\..*?rv:11/i)){var href=document.location.href;if(!href.match(/[?&]nowprocket/)){if(href.indexOf("?")==-1){if(href.indexOf("#")==-1){document.location.href=href+"?nowprocket=1"}else{document.location.href=href.replace("#","?nowprocket=1#")}}else{if(href.indexOf("#")==-1){document.location.href=href+"&nowprocket=1"}else{document.location.href=href.replace("#","&nowprocket=1#")}}}}</script><script>(()=>{class RocketLazyLoadScripts{constructor(){this.v="2.0.4",this.userEvents=["keydown","keyup","mousedown","mouseup","mousemove","mouseover","mouseout","touchmove","touchstart","touchend","touchcancel","wheel","click","dblclick","input"],this.attributeEvents=["onblur","onclick","oncontextmenu","ondblclick","onfocus","onmousedown","onmouseenter","onmouseleave","onmousemove","onmouseout","onmouseover","onmouseup","onmousewheel","onscroll","onsubmit"]}async t(){this.i(),this.o(),/iP(ad|hone)/.test(navigator.userAgent)&&this.h(),this.u(),this.l(this),this.m(),this.k(this),this.p(this),this._(),await Promise.all([this.R(),this.L()]),this.lastBreath=Date.now(),this.S(this),this.P(),this.D(),this.O(),this.M(),await this.C(this.delayedScripts.normal),await this.C(this.delayedScripts.defer),await this.C(this.delayedScripts.async),await this.T(),await this.F(),await this.j(),await this.A(),window.dispatchEvent(new Event("rocket-allScriptsLoaded")),this.everythingLoaded=!0,this.lastTouchEnd&&await new Promise(t=>setTimeout(t,500-Date.now()+this.lastTouchEnd)),this.I(),this.H(),this.U(),this.W()}i(){this.CSPIssue=sessionStorage.getItem("rocketCSPIssue"),document.addEventListener("securitypolicyviolation",t=>{this.CSPIssue||"script-src-elem"!==t.violatedDirective||"data"!==t.blockedURI||(this.CSPIssue=!0,sessionStorage.setItem("rocketCSPIssue",!0))},{isRocket:!0})}o(){window.addEventListener("pageshow",t=>{this.persisted=t.persisted,this.realWindowLoadedFired=!0},{isRocket:!0}),window.addEventListener("pagehide",()=>{this.onFirstUserAction=null},{isRocket:!0})}h(){let t;function e(e){t=e}window.addEventListener("touchstart",e,{isRocket:!0}),window.addEventListener("touchend",function i(o){o.changedTouches[0]&&t.changedTouches[0]&&Math.abs(o.changedTouches[0].pageX-t.changedTouches[0].pageX)<10&&Math.abs(o.changedTouches[0].pageY-t.changedTouches[0].pageY)<10&&o.timeStamp-t.timeStamp<200&&(window.removeEventListener("touchstart",e,{isRocket:!0}),window.removeEventListener("touchend",i,{isRocket:!0}),"INPUT"===o.target.tagName&&"text"===o.target.type||(o.target.dispatchEvent(new TouchEvent("touchend",{target:o.target,bubbles:!0})),o.target.dispatchEvent(new MouseEvent("mouseover",{target:o.target,bubbles:!0})),o.target.dispatchEvent(new PointerEvent("click",{target:o.target,bubbles:!0,cancelable:!0,detail:1,clientX:o.changedTouches[0].clientX,clientY:o.changedTouches[0].clientY})),event.preventDefault()))},{isRocket:!0})}q(t){this.userActionTriggered||("mousemove"!==t.type||this.firstMousemoveIgnored?"keyup"===t.type||"mouseover"===t.type||"mouseout"===t.type||(this.userActionTriggered=!0,this.onFirstUserAction&&this.onFirstUserAction()):this.firstMousemoveIgnored=!0),"click"===t.type&&t.preventDefault(),t.stopPropagation(),t.stopImmediatePropagation(),"touchstart"===this.lastEvent&&"touchend"===t.type&&(this.lastTouchEnd=Date.now()),"click"===t.type&&(this.lastTouchEnd=0),this.lastEvent=t.type,t.composedPath&&t.composedPath()[0].getRootNode()instanceof ShadowRoot&&(t.rocketTarget=t.composedPath()[0]),this.savedUserEvents.push(t)}u(){this.savedUserEvents=[],this.userEventHandler=this.q.bind(this),this.userEvents.forEach(t=>window.addEventListener(t,this.userEventHandler,{passive:!1,isRocket:!0})),document.addEventListener("visibilitychange",this.userEventHandler,{isRocket:!0})}U(){this.userEvents.forEach(t=>window.removeEventListener(t,this.userEventHandler,{passive:!1,isRocket:!0})),document.removeEventListener("visibilitychange",this.userEventHandler,{isRocket:!0}),this.savedUserEvents.forEach(t=>{(t.rocketTarget||t.target).dispatchEvent(new window[t.constructor.name](t.type,t))})}m(){const t="return false",e=Array.from(this.attributeEvents,t=>"data-rocket-"+t),i="["+this.attributeEvents.join("],[")+"]",o="[data-rocket-"+this.attributeEvents.join("],[data-rocket-")+"]",s=(e,i,o)=>{o&&o!==t&&(e.setAttribute("data-rocket-"+i,o),e["rocket"+i]=new Function("event",o),e.setAttribute(i,t))};new MutationObserver(t=>{for(const n of t)"attributes"===n.type&&(n.attributeName.startsWith("data-rocket-")||this.everythingLoaded?n.attributeName.startsWith("data-rocket-")&&this.everythingLoaded&&this.N(n.target,n.attributeName.substring(12)):s(n.target,n.attributeName,n.target.getAttribute(n.attributeName))),"childList"===n.type&&n.addedNodes.forEach(t=>{if(t.nodeType===Node.ELEMENT_NODE)if(this.everythingLoaded)for(const i of[t,...t.querySelectorAll(o)])for(const t of i.getAttributeNames())e.includes(t)&&this.N(i,t.substring(12));else for(const e of[t,...t.querySelectorAll(i)])for(const t of e.getAttributeNames())this.attributeEvents.includes(t)&&s(e,t,e.getAttribute(t))})}).observe(document,{subtree:!0,childList:!0,attributeFilter:[...this.attributeEvents,...e]})}I(){this.attributeEvents.forEach(t=>{document.querySelectorAll("[data-rocket-"+t+"]").forEach(e=>{this.N(e,t)})})}N(t,e){const i=t.getAttribute("data-rocket-"+e);i&&(t.setAttribute(e,i),t.removeAttribute("data-rocket-"+e))}k(t){Object.defineProperty(HTMLElement.prototype,"onclick",{get(){return this.rocketonclick||null},set(e){this.rocketonclick=e,this.setAttribute(t.everythingLoaded?"onclick":"data-rocket-onclick","this.rocketonclick(event)")}})}S(t){function e(e,i){let o=e[i];e[i]=null,Object.defineProperty(e,i,{get:()=>o,set(s){t.everythingLoaded?o=s:e["rocket"+i]=o=s}})}e(document,"onreadystatechange"),e(window,"onload"),e(window,"onpageshow");try{Object.defineProperty(document,"readyState",{get:()=>t.rocketReadyState,set(e){t.rocketReadyState=e},configurable:!0}),document.readyState="loading"}catch(t){console.log("WPRocket DJE readyState conflict, bypassing")}}l(t){this.originalAddEventListener=EventTarget.prototype.addEventListener,this.originalRemoveEventListener=EventTarget.prototype.removeEventListener,this.savedEventListeners=[],EventTarget.prototype.addEventListener=function(e,i,o){o&&o.isRocket||!t.B(e,this)&&!t.userEvents.includes(e)||t.B(e,this)&&!t.userActionTriggered||e.startsWith("rocket-")||t.everythingLoaded?t.originalAddEventListener.call(this,e,i,o):(t.savedEventListeners.push({target:this,remove:!1,type:e,func:i,options:o}),"mouseenter"!==e&&"mouseleave"!==e||t.originalAddEventListener.call(this,e,t.savedUserEvents.push,o))},EventTarget.prototype.removeEventListener=function(e,i,o){o&&o.isRocket||!t.B(e,this)&&!t.userEvents.includes(e)||t.B(e,this)&&!t.userActionTriggered||e.startsWith("rocket-")||t.everythingLoaded?t.originalRemoveEventListener.call(this,e,i,o):t.savedEventListeners.push({target:this,remove:!0,type:e,func:i,options:o})}}J(t,e){this.savedEventListeners=this.savedEventListeners.filter(i=>{let o=i.type,s=i.target||window;return e!==o||t!==s||(this.B(o,s)&&(i.type="rocket-"+o),this.$(i),!1)})}H(){EventTarget.prototype.addEventListener=this.originalAddEventListener,EventTarget.prototype.removeEventListener=this.originalRemoveEventListener,this.savedEventListeners.forEach(t=>this.$(t))}$(t){t.remove?this.originalRemoveEventListener.call(t.target,t.type,t.func,t.options):this.originalAddEventListener.call(t.target,t.type,t.func,t.options)}p(t){let e;function i(e){return t.everythingLoaded?e:e.split(" ").map(t=>"load"===t||t.startsWith("load.")?"rocket-jquery-load":t).join(" ")}function o(o){function s(e){const s=o.fn[e];o.fn[e]=o.fn.init.prototype[e]=function(){return this[0]===window&&t.userActionTriggered&&("string"==typeof arguments[0]||arguments[0]instanceof String?arguments[0]=i(arguments[0]):"object"==typeof arguments[0]&&Object.keys(arguments[0]).forEach(t=>{const e=arguments[0][t];delete arguments[0][t],arguments[0][i(t)]=e})),s.apply(this,arguments),this}}if(o&&o.fn&&!t.allJQueries.includes(o)){const e={DOMContentLoaded:[],"rocket-DOMContentLoaded":[]};for(const t in e)document.addEventListener(t,()=>{e[t].forEach(t=>t())},{isRocket:!0});o.fn.ready=o.fn.init.prototype.ready=function(i){function s(){parseInt(o.fn.jquery)>2?setTimeout(()=>i.bind(document)(o)):i.bind(document)(o)}return"function"==typeof i&&(t.realDomReadyFired?!t.userActionTriggered||t.fauxDomReadyFired?s():e["rocket-DOMContentLoaded"].push(s):e.DOMContentLoaded.push(s)),o([])},s("on"),s("one"),s("off"),t.allJQueries.push(o)}e=o}t.allJQueries=[],o(window.jQuery),Object.defineProperty(window,"jQuery",{get:()=>e,set(t){o(t)}})}P(){const t=new Map;document.write=document.writeln=function(e){const i=document.currentScript,o=document.createRange(),s=i.parentElement;let n=t.get(i);void 0===n&&(n=i.nextSibling,t.set(i,n));const c=document.createDocumentFragment();o.setStart(c,0),c.appendChild(o.createContextualFragment(e)),s.insertBefore(c,n)}}async R(){return new Promise(t=>{this.userActionTriggered?t():this.onFirstUserAction=t})}async L(){return new Promise(t=>{document.addEventListener("DOMContentLoaded",()=>{this.realDomReadyFired=!0,t()},{isRocket:!0})})}async j(){return this.realWindowLoadedFired?Promise.resolve():new Promise(t=>{window.addEventListener("load",t,{isRocket:!0})})}M(){this.pendingScripts=[];this.scriptsMutationObserver=new MutationObserver(t=>{for(const e of t)e.addedNodes.forEach(t=>{"SCRIPT"!==t.tagName||t.noModule||t.isWPRocket||this.pendingScripts.push({script:t,promise:new Promise(e=>{const i=()=>{const i=this.pendingScripts.findIndex(e=>e.script===t);i>=0&&this.pendingScripts.splice(i,1),e()};t.addEventListener("load",i,{isRocket:!0}),t.addEventListener("error",i,{isRocket:!0}),setTimeout(i,1e3)})})})}),this.scriptsMutationObserver.observe(document,{childList:!0,subtree:!0})}async F(){await this.X(),this.pendingScripts.length?(await this.pendingScripts[0].promise,await this.F()):this.scriptsMutationObserver.disconnect()}D(){this.delayedScripts={normal:[],async:[],defer:[]},document.querySelectorAll("script[type$=rocketlazyloadscript]").forEach(t=>{t.hasAttribute("data-rocket-src")?t.hasAttribute("async")&&!1!==t.async?this.delayedScripts.async.push(t):t.hasAttribute("defer")&&!1!==t.defer||"module"===t.getAttribute("data-rocket-type")?this.delayedScripts.defer.push(t):this.delayedScripts.normal.push(t):this.delayedScripts.normal.push(t)})}async _(){await this.L();let t=[];document.querySelectorAll("script[type$=rocketlazyloadscript][data-rocket-src]").forEach(e=>{let i=e.getAttribute("data-rocket-src");if(i&&!i.startsWith("data:")){i.startsWith("//")&&(i=location.protocol+i);try{const o=new URL(i).origin;o!==location.origin&&t.push({src:o,crossOrigin:e.crossOrigin||"module"===e.getAttribute("data-rocket-type")})}catch(t){}}}),t=[...new Map(t.map(t=>[JSON.stringify(t),t])).values()],this.Y(t,"preconnect")}async G(t){if(await this.K(),!0!==t.noModule||!("noModule"in HTMLScriptElement.prototype))return new Promise(e=>{let i;function o(){(i||t).setAttribute("data-rocket-status","executed"),e()}try{if(navigator.userAgent.includes("Firefox/")||""===navigator.vendor||this.CSPIssue)i=document.createElement("script"),[...t.attributes].forEach(t=>{let e=t.nodeName;"type"!==e&&("data-rocket-type"===e&&(e="type"),"data-rocket-src"===e&&(e="src"),i.setAttribute(e,t.nodeValue))}),t.text&&(i.text=t.text),t.nonce&&(i.nonce=t.nonce),i.hasAttribute("src")?(i.addEventListener("load",o,{isRocket:!0}),i.addEventListener("error",()=>{i.setAttribute("data-rocket-status","failed-network"),e()},{isRocket:!0}),setTimeout(()=>{i.isConnected||e()},1)):(i.text=t.text,o()),i.isWPRocket=!0,t.parentNode.replaceChild(i,t);else{const i=t.getAttribute("data-rocket-type"),s=t.getAttribute("data-rocket-src");i?(t.type=i,t.removeAttribute("data-rocket-type")):t.removeAttribute("type"),t.addEventListener("load",o,{isRocket:!0}),t.addEventListener("error",i=>{this.CSPIssue&&i.target.src.startsWith("data:")?(console.log("WPRocket: CSP fallback activated"),t.removeAttribute("src"),this.G(t).then(e)):(t.setAttribute("data-rocket-status","failed-network"),e())},{isRocket:!0}),s?(t.fetchPriority="high",t.removeAttribute("data-rocket-src"),t.src=s):t.src="data:text/javascript;base64,"+window.btoa(unescape(encodeURIComponent(t.text)))}}catch(i){t.setAttribute("data-rocket-status","failed-transform"),e()}});t.setAttribute("data-rocket-status","skipped")}async C(t){const e=t.shift();return e?(e.isConnected&&await this.G(e),this.C(t)):Promise.resolve()}O(){this.Y([...this.delayedScripts.normal,...this.delayedScripts.defer,...this.delayedScripts.async],"preload")}Y(t,e){this.trash=this.trash||[];let i=!0;var o=document.createDocumentFragment();t.forEach(t=>{const s=t.getAttribute&&t.getAttribute("data-rocket-src")||t.src;if(s&&!s.startsWith("data:")){const n=document.createElement("link");n.href=s,n.rel=e,"preconnect"!==e&&(n.as="script",n.fetchPriority=i?"high":"low"),t.getAttribute&&"module"===t.getAttribute("data-rocket-type")&&(n.crossOrigin=!0),t.crossOrigin&&(n.crossOrigin=t.crossOrigin),t.integrity&&(n.integrity=t.integrity),t.nonce&&(n.nonce=t.nonce),o.appendChild(n),this.trash.push(n),i=!1}}),document.head.appendChild(o)}W(){this.trash.forEach(t=>t.remove())}async T(){try{document.readyState="interactive"}catch(t){}this.fauxDomReadyFired=!0;try{await this.K(),this.J(document,"readystatechange"),document.dispatchEvent(new Event("rocket-readystatechange")),await this.K(),document.rocketonreadystatechange&&document.rocketonreadystatechange(),await this.K(),this.J(document,"DOMContentLoaded"),document.dispatchEvent(new Event("rocket-DOMContentLoaded")),await this.K(),this.J(window,"DOMContentLoaded"),window.dispatchEvent(new Event("rocket-DOMContentLoaded"))}catch(t){console.error(t)}}async A(){try{document.readyState="complete"}catch(t){}try{await this.K(),this.J(document,"readystatechange"),document.dispatchEvent(new Event("rocket-readystatechange")),await this.K(),document.rocketonreadystatechange&&document.rocketonreadystatechange(),await this.K(),this.J(window,"load"),window.dispatchEvent(new Event("rocket-load")),await this.K(),window.rocketonload&&window.rocketonload(),await this.K(),this.allJQueries.forEach(t=>t(window).trigger("rocket-jquery-load")),await this.K(),this.J(window,"pageshow");const t=new Event("rocket-pageshow");t.persisted=this.persisted,window.dispatchEvent(t),await this.K(),window.rocketonpageshow&&window.rocketonpageshow({persisted:this.persisted})}catch(t){console.error(t)}}async K(){Date.now()-this.lastBreath>45&&(await this.X(),this.lastBreath=Date.now())}async X(){return document.hidden?new Promise(t=>setTimeout(t)):new Promise(t=>requestAnimationFrame(t))}B(t,e){return e===document&&"readystatechange"===t||(e===document&&"DOMContentLoaded"===t||(e===window&&"DOMContentLoaded"===t||(e===window&&"load"===t||e===window&&"pageshow"===t)))}static run(){(new RocketLazyLoadScripts).t()}}RocketLazyLoadScripts.run()})();</script>
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="profile" href="https://gmpg.org/xfn/11">
+
+	<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+	<style>img:is([sizes="auto" i], [sizes^="auto," i]) { contain-intrinsic-size: 3000px 1500px }</style>
+	
+	<meta name="thumbnail" class="wp-immomakler-meta-tag" content="https://www.imaxx.de/wp-content/uploads/immomakler/attachments/6b0ee92f1a3a57d566a1420ed7a98efd/5546995-huuql59sq7oytuwdpjyj6s7r-624581-a-backbonephoto-010_b_hd.jpg">
+	<meta name="geo.placename" class="wp-immomakler-meta-tag" content="Gießen">
+
+	<!-- BEGIN OpenGraph image section generated by WP-ImmoMakler RealEstate Plugin version 5.59.5.3 - https://www.wp-immomakler.de/ -->
+	<meta property="og:image" class="wp-immomakler-meta-tag" content="https://www.imaxx.de/wp-content/uploads/immomakler/attachments/6b0ee92f1a3a57d566a1420ed7a98efd/5546995-huuql59sq7oytuwdpjyj6s7r-624581-a-backbonephoto-010_b_hd-475x317.jpg">
+	<meta property="og:image:secure_url" class="wp-immomakler-meta-tag" content="https://www.imaxx.de/wp-content/uploads/immomakler/attachments/6b0ee92f1a3a57d566a1420ed7a98efd/5546995-huuql59sq7oytuwdpjyj6s7r-624581-a-backbonephoto-010_b_hd-475x317.jpg">
+	<meta property="og:image:width" class="wp-immomakler-meta-tag" content="1920">
+	<meta property="og:image:height" class="wp-immomakler-meta-tag" content="1280">
+	<meta property="og:image:type" class="wp-immomakler-meta-tag" content="image/jpeg">
+	<meta property="og:image:alt" class="wp-immomakler-meta-tag" content="Außenansicht">
+	<meta property="og:image" class="wp-immomakler-meta-tag" content="https://www.imaxx.de/wp-content/uploads/immomakler/attachments/6b0ee92f1a3a57d566a1420ed7a98efd/5546995-uh6nh3ojmb52naum3ta7yzlf-624581-a-backbonephoto-007_b_hd-475x317.jpg">
+	<meta property="og:image:secure_url" class="wp-immomakler-meta-tag" content="https://www.imaxx.de/wp-content/uploads/immomakler/attachments/6b0ee92f1a3a57d566a1420ed7a98efd/5546995-uh6nh3ojmb52naum3ta7yzlf-624581-a-backbonephoto-007_b_hd-475x317.jpg">
+	<meta property="og:image:width" class="wp-immomakler-meta-tag" content="1920">
+	<meta property="og:image:height" class="wp-immomakler-meta-tag" content="1280">
+	<meta property="og:image:type" class="wp-immomakler-meta-tag" content="image/jpeg">
+	<meta property="og:image:alt" class="wp-immomakler-meta-tag" content="Außenansicht">
+	<meta property="og:image" class="wp-immomakler-meta-tag" content="https://www.imaxx.de/wp-content/uploads/immomakler/attachments/6b0ee92f1a3a57d566a1420ed7a98efd/5546995-qqipo2kf9kbbr1chdzprttmf-kuche-475x356.jpg">
+	<meta property="og:image:secure_url" class="wp-immomakler-meta-tag" content="https://www.imaxx.de/wp-content/uploads/immomakler/attachments/6b0ee92f1a3a57d566a1420ed7a98efd/5546995-qqipo2kf9kbbr1chdzprttmf-kuche-475x356.jpg">
+	<meta property="og:image:width" class="wp-immomakler-meta-tag" content="1920">
+	<meta property="og:image:height" class="wp-immomakler-meta-tag" content="1440">
+	<meta property="og:image:type" class="wp-immomakler-meta-tag" content="image/jpeg">
+	<meta property="og:image:alt" class="wp-immomakler-meta-tag" content="Küche">
+	<meta property="og:image" class="wp-immomakler-meta-tag" content="https://www.imaxx.de/wp-content/uploads/immomakler/attachments/6b0ee92f1a3a57d566a1420ed7a98efd/5546995-xmwmraujjpgpmwfcdkzhyqtk-624581-b-backbonephoto-025_b_hd-475x317.jpg">
+	<meta property="og:image:secure_url" class="wp-immomakler-meta-tag" content="https://www.imaxx.de/wp-content/uploads/immomakler/attachments/6b0ee92f1a3a57d566a1420ed7a98efd/5546995-xmwmraujjpgpmwfcdkzhyqtk-624581-b-backbonephoto-025_b_hd-475x317.jpg">
+	<meta property="og:image:width" class="wp-immomakler-meta-tag" content="1920">
+	<meta property="og:image:height" class="wp-immomakler-meta-tag" content="1280">
+	<meta property="og:image:type" class="wp-immomakler-meta-tag" content="image/jpeg">
+	<meta property="og:image:alt" class="wp-immomakler-meta-tag" content="Außenansicht">
+	<meta property="og:image" class="wp-immomakler-meta-tag" content="https://www.imaxx.de/wp-content/uploads/immomakler/attachments/6b0ee92f1a3a57d566a1420ed7a98efd/5546995-nv6g8qt4sqlpa8wxlru8ubph-624581-b-backbonephoto-007_b_web-475x316.jpg">
+	<meta property="og:image:secure_url" class="wp-immomakler-meta-tag" content="https://www.imaxx.de/wp-content/uploads/immomakler/attachments/6b0ee92f1a3a57d566a1420ed7a98efd/5546995-nv6g8qt4sqlpa8wxlru8ubph-624581-b-backbonephoto-007_b_web-475x316.jpg">
+	<meta property="og:image:width" class="wp-immomakler-meta-tag" content="1920">
+	<meta property="og:image:height" class="wp-immomakler-meta-tag" content="1279">
+	<meta property="og:image:type" class="wp-immomakler-meta-tag" content="image/jpeg">
+	<meta property="og:image:alt" class="wp-immomakler-meta-tag" content="Außenansicht">
+	<meta property="og:image" class="wp-immomakler-meta-tag" content="https://www.imaxx.de/wp-content/uploads/immomakler/attachments/6b0ee92f1a3a57d566a1420ed7a98efd/5546995-5zipwdbbknd3qudohc2gaybs-624581-b-backbonephoto-010_b_web-475x317.jpg">
+	<meta property="og:image:secure_url" class="wp-immomakler-meta-tag" content="https://www.imaxx.de/wp-content/uploads/immomakler/attachments/6b0ee92f1a3a57d566a1420ed7a98efd/5546995-5zipwdbbknd3qudohc2gaybs-624581-b-backbonephoto-010_b_web-475x317.jpg">
+	<meta property="og:image:width" class="wp-immomakler-meta-tag" content="1920">
+	<meta property="og:image:height" class="wp-immomakler-meta-tag" content="1280">
+	<meta property="og:image:type" class="wp-immomakler-meta-tag" content="image/jpeg">
+	<meta property="og:image:alt" class="wp-immomakler-meta-tag" content="Außenansicht">
+	<!-- END OpenGraph image section generated by WP-ImmoMakler RealEstate OpenImmo Importer Plugin version 5.59.5.3 - https://www.wp-immomakler.de/ -->
+
+
+	<!-- BEGIN OpenGraph section generated by WP-ImmoMakler RealEstate Plugin version 5.59.5.3 - https://www.wp-immomakler.de/ -->
+	<meta property="og:updated_time" class="wp-immomakler-meta-tag" content="2026-07-24T00:00:00+02:00">
+	<!-- END OpenGraph section generated by WP-ImmoMakler RealEstate OpenImmo Importer Plugin version 5.59.5.3 - https://www.wp-immomakler.de/ -->
+
+
+	<!-- BEGIN schema.org section generated by WP-ImmoMakler RealEstate Plugin version 5.59.5.3 - https://www.wp-immomakler.de/ -->
+	<script type="application/ld+json" class="immomakler-schema-product">
+		{"@context":"https://schema.org","@type":["Product"],"name":"Etagenwohnung in Gie\u00dfen, 150 m\u00b2 - IMAXX Immobilien","description":"4-Zimmer-Wohnung in der Innenstadt von Gie\u00dfen - 4 Zimmer 150 m\u00b2 Etagenwohnung in Gie\u00dfen zum Kauf. Ausstattung: Balkon, Tiefgarage, Parkettboden, etc.","sku":"50683","offers":{"@type":"Offer","name":"Etagenwohnung in Gie\u00dfen, 150 m\u00b2 - IMAXX Immobilien","url":"https://www.imaxx.de/immobilien/wohnung-eigentumswohnung-etagenwohnung-in-giessen-kaufen-50683/","price":"526000","priceCurrency":"EUR","availability":"https://schema.org/InStock"},"image":["https://www.imaxx.de/wp-content/uploads/immomakler/attachments/6b0ee92f1a3a57d566a1420ed7a98efd/5546995-huuql59sq7oytuwdpjyj6s7r-624581-a-backbonephoto-010_b_hd-475x317.jpg"]}
+	</script>
+									
+	<!-- END schema.org section generated by WP-ImmoMakler RealEstate Plugin version 5.59.5.3 - https://www.wp-immomakler.de/ -->
+
+
+	<!-- This site is optimized with the Yoast SEO plugin v26.7 - https://yoast.com/wordpress/plugins/seo/ -->
+	<title>Etagenwohnung in Gießen, 150 m² - IMAXX Immobilien</title><link rel="preload" data-rocket-preload="" as="image" href="https://www.imaxx.de/wp-content/uploads/immomakler/attachments/6b0ee92f1a3a57d566a1420ed7a98efd/5546995-pn7nuxx4z5mn4lmzxwddfic5-624581-a-backbonephoto-016_b_web-900x600.jpg" fetchpriority="high">
+	<meta name="description" content="&quot;4-Zimmer-Wohnung in der Innenstadt von Gießen&quot; - 4 Zimmer 150 m² Etagenwohnung in Gießen zum Kauf. Ausstattung: Balkon, Tiefgarage, Parkettboden, etc.">
+	<link rel="canonical" href="https://www.imaxx.de/immobilien/wohnung-eigentumswohnung-etagenwohnung-in-giessen-kaufen-50683/">
+	<meta property="og:locale" content="de_DE">
+	<meta property="og:title" content="Etagenwohnung in Gießen, 150 m² - IMAXX Immobilien">
+	<meta property="og:description" content="&quot;4-Zimmer-Wohnung in der Innenstadt von Gießen&quot; - 4 Zimmer 150 m² Etagenwohnung in Gießen zum Kauf. Ausstattung: Balkon, Tiefgarage, Parkettboden, etc.">
+	<meta property="og:url" content="https://www.imaxx.de/immobilien/wohnung-eigentumswohnung-etagenwohnung-in-giessen-kaufen-50683/">
+	<meta property="og:site_name" content="IMAXX Immobilien">
+	<meta property="article:modified_time" content="2026-07-24T14:42:47+00:00">
+	<meta name="twitter:card" content="summary_large_image">
+	<script type="application/ld+json" class="yoast-schema-graph">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://www.imaxx.de/immobilien/wohnung-eigentumswohnung-etagenwohnung-in-giessen-kaufen-50683/","url":"https://www.imaxx.de/immobilien/wohnung-eigentumswohnung-etagenwohnung-in-giessen-kaufen-50683/","name":"Etagenwohnung in Gießen, 150 m² - IMAXX Immobilien","isPartOf":{"@id":"https://www.imaxx.de/#website"},"primaryImageOfPage":{"@id":"https://www.imaxx.de/immobilien/wohnung-eigentumswohnung-etagenwohnung-in-giessen-kaufen-50683/#primaryimage"},"image":{"@id":"https://www.imaxx.de/immobilien/wohnung-eigentumswohnung-etagenwohnung-in-giessen-kaufen-50683/#primaryimage"},"thumbnailUrl":"https://www.imaxx.de/wp-content/uploads/immomakler/attachments/6b0ee92f1a3a57d566a1420ed7a98efd/5546995-huuql59sq7oytuwdpjyj6s7r-624581-a-backbonephoto-010_b_hd.jpg","datePublished":"2026-07-23T22:00:00+00:00","dateModified":"2026-07-24T14:42:47+00:00","description":"\"4-Zimmer-Wohnung in der Innenstadt von Gießen\" - 4 Zimmer 150 m² Etagenwohnung in Gießen zum Kauf. Ausstattung: Balkon, Tiefgarage, Parkettboden, etc.","breadcrumb":{"@id":"https://www.imaxx.de/immobilien/wohnung-eigentumswohnung-etagenwohnung-in-giessen-kaufen-50683/#breadcrumb"},"inLanguage":"de","potentialAction":[{"@type":"ReadAction","target":["https://www.imaxx.de/immobilien/wohnung-eigentumswohnung-etagenwohnung-in-giessen-kaufen-50683/"]}]},{"@type":"ImageObject","inLanguage":"de","@id":"https://www.imaxx.de/immobilien/wohnung-eigentumswohnung-etagenwohnung-in-giessen-kaufen-50683/#primaryimage","url":"https://www.imaxx.de/wp-content/uploads/immomakler/attachments/6b0ee92f1a3a57d566a1420ed7a98efd/5546995-huuql59sq7oytuwdpjyj6s7r-624581-a-backbonephoto-010_b_hd.jpg","contentUrl":"https://www.imaxx.de/wp-content/uploads/immomakler/attachments/6b0ee92f1a3a57d566a1420ed7a98efd/5546995-huuql59sq7oytuwdpjyj6s7r-624581-a-backbonephoto-010_b_hd.jpg","width":1920,"height":1280,"caption":"Außenansicht"},{"@type":"BreadcrumbList","@id":"https://www.imaxx.de/immobilien/wohnung-eigentumswohnung-etagenwohnung-in-giessen-kaufen-50683/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Immobilien","item":"https://www.imaxx.de/immobilien/"},{"@type":"ListItem","position":2,"name":"4-Zimmer-Wohnung in der Innenstadt von Gießen"}]},{"@type":"WebSite","@id":"https://www.imaxx.de/#website","url":"https://www.imaxx.de/","name":"IMAXX Immobilien","description":"Die IMAXX Gruppe ist Ihr kompetenter Partner, wenn es um die Vermittlung privater und gewerblicher Immobilien geht.","publisher":{"@id":"https://www.imaxx.de/#organization"},"potentialAction":[{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://www.imaxx.de/?s={search_term_string}"},"query-input":{"@type":"PropertyValueSpecification","valueRequired":true,"valueName":"search_term_string"}}],"inLanguage":"de"},{"@type":"Organization","@id":"https://www.imaxx.de/#organization","name":"IMAXX Immobilien","url":"https://www.imaxx.de/","logo":{"@type":"ImageObject","inLanguage":"de","@id":"https://www.imaxx.de/#/schema/logo/image/","url":"https://www.imaxx.de/wp-content/uploads/logo.svg","contentUrl":"https://www.imaxx.de/wp-content/uploads/logo.svg","width":160,"height":24,"caption":"IMAXX Immobilien"},"image":{"@id":"https://www.imaxx.de/#/schema/logo/image/"}}]}</script>
+	<!-- / Yoast SEO plugin. -->
+
+
+<link rel="alternate" type="application/rss+xml" title="IMAXX Immobilien » Feed" href="https://www.imaxx.de/feed/">
+<link rel="alternate" type="application/rss+xml" title="IMAXX Immobilien » Kommentar-Feed" href="https://www.imaxx.de/comments/feed/">
+<link rel="preload" href="https://www.imaxx.de/wp-content/plugins/immomakler/skins/bootstrap3/vendors/bootstrap/fonts/glyphicons-halflings-regular.woff2" as="font" type="font/woff2" crossorigin="">
+<style id="wp-emoji-styles-inline-css">
+
+	img.wp-smiley, img.emoji {
+		display: inline !important;
+		border: none !important;
+		box-shadow: none !important;
+		height: 1em !important;
+		width: 1em !important;
+		margin: 0 0.07em !important;
+		vertical-align: -0.1em !important;
+		background: none !important;
+		padding: 0 !important;
+	}
+</style>
+<link rel="stylesheet" id="wp-block-library-css" href="https://www.imaxx.de/wp-includes/css/dist/block-library/style.min.css?ver=445a2f16d40fa247cd905908f0f5c402" media="all">
+<style id="classic-theme-styles-inline-css">
+/*! This file is auto-generated */
+.wp-block-button__link{color:#fff;background-color:#32373c;border-radius:9999px;box-shadow:none;text-decoration:none;padding:calc(.667em + 2px) calc(1.333em + 2px);font-size:1.125em}.wp-block-file__button{background:#32373c;color:#fff;text-decoration:none}
+</style>
+<style id="global-styles-inline-css">
+:root{--wp--preset--aspect-ratio--square: 1;--wp--preset--aspect-ratio--4-3: 4/3;--wp--preset--aspect-ratio--3-4: 3/4;--wp--preset--aspect-ratio--3-2: 3/2;--wp--preset--aspect-ratio--2-3: 2/3;--wp--preset--aspect-ratio--16-9: 16/9;--wp--preset--aspect-ratio--9-16: 9/16;--wp--preset--color--black: #000000;--wp--preset--color--cyan-bluish-gray: #abb8c3;--wp--preset--color--white: #ffffff;--wp--preset--color--pale-pink: #f78da7;--wp--preset--color--vivid-red: #cf2e2e;--wp--preset--color--luminous-vivid-orange: #ff6900;--wp--preset--color--luminous-vivid-amber: #fcb900;--wp--preset--color--light-green-cyan: #7bdcb5;--wp--preset--color--vivid-green-cyan: #00d084;--wp--preset--color--pale-cyan-blue: #8ed1fc;--wp--preset--color--vivid-cyan-blue: #0693e3;--wp--preset--color--vivid-purple: #9b51e0;--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple: linear-gradient(135deg,rgba(6,147,227,1) 0%,rgb(155,81,224) 100%);--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan: linear-gradient(135deg,rgb(122,220,180) 0%,rgb(0,208,130) 100%);--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange: linear-gradient(135deg,rgba(252,185,0,1) 0%,rgba(255,105,0,1) 100%);--wp--preset--gradient--luminous-vivid-orange-to-vivid-red: linear-gradient(135deg,rgba(255,105,0,1) 0%,rgb(207,46,46) 100%);--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray: linear-gradient(135deg,rgb(238,238,238) 0%,rgb(169,184,195) 100%);--wp--preset--gradient--cool-to-warm-spectrum: linear-gradient(135deg,rgb(74,234,220) 0%,rgb(151,120,209) 20%,rgb(207,42,186) 40%,rgb(238,44,130) 60%,rgb(251,105,98) 80%,rgb(254,248,76) 100%);--wp--preset--gradient--blush-light-purple: linear-gradient(135deg,rgb(255,206,236) 0%,rgb(152,150,240) 100%);--wp--preset--gradient--blush-bordeaux: linear-gradient(135deg,rgb(254,205,165) 0%,rgb(254,45,45) 50%,rgb(107,0,62) 100%);--wp--preset--gradient--luminous-dusk: linear-gradient(135deg,rgb(255,203,112) 0%,rgb(199,81,192) 50%,rgb(65,88,208) 100%);--wp--preset--gradient--pale-ocean: linear-gradient(135deg,rgb(255,245,203) 0%,rgb(182,227,212) 50%,rgb(51,167,181) 100%);--wp--preset--gradient--electric-grass: linear-gradient(135deg,rgb(202,248,128) 0%,rgb(113,206,126) 100%);--wp--preset--gradient--midnight: linear-gradient(135deg,rgb(2,3,129) 0%,rgb(40,116,252) 100%);--wp--preset--font-size--small: 13px;--wp--preset--font-size--medium: 20px;--wp--preset--font-size--large: 36px;--wp--preset--font-size--x-large: 42px;--wp--preset--spacing--20: 0.44rem;--wp--preset--spacing--30: 0.67rem;--wp--preset--spacing--40: 1rem;--wp--preset--spacing--50: 1.5rem;--wp--preset--spacing--60: 2.25rem;--wp--preset--spacing--70: 3.38rem;--wp--preset--spacing--80: 5.06rem;--wp--preset--shadow--natural: 6px 6px 9px rgba(0, 0, 0, 0.2);--wp--preset--shadow--deep: 12px 12px 50px rgba(0, 0, 0, 0.4);--wp--preset--shadow--sharp: 6px 6px 0px rgba(0, 0, 0, 0.2);--wp--preset--shadow--outlined: 6px 6px 0px -3px rgba(255, 255, 255, 1), 6px 6px rgba(0, 0, 0, 1);--wp--preset--shadow--crisp: 6px 6px 0px rgba(0, 0, 0, 1);}:where(.is-layout-flex){gap: 0.5em;}:where(.is-layout-grid){gap: 0.5em;}body .is-layout-flex{display: flex;}.is-layout-flex{flex-wrap: wrap;align-items: center;}.is-layout-flex > :is(*, div){margin: 0;}body .is-layout-grid{display: grid;}.is-layout-grid > :is(*, div){margin: 0;}:where(.wp-block-columns.is-layout-flex){gap: 2em;}:where(.wp-block-columns.is-layout-grid){gap: 2em;}:where(.wp-block-post-template.is-layout-flex){gap: 1.25em;}:where(.wp-block-post-template.is-layout-grid){gap: 1.25em;}.has-black-color{color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-color{color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-color{color: var(--wp--preset--color--white) !important;}.has-pale-pink-color{color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-color{color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-color{color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-color{color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-color{color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-color{color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-color{color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-color{color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-color{color: var(--wp--preset--color--vivid-purple) !important;}.has-black-background-color{background-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-background-color{background-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-background-color{background-color: var(--wp--preset--color--white) !important;}.has-pale-pink-background-color{background-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-background-color{background-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-background-color{background-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-background-color{background-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-background-color{background-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-background-color{background-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-background-color{background-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-background-color{background-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-background-color{background-color: var(--wp--preset--color--vivid-purple) !important;}.has-black-border-color{border-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-border-color{border-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-border-color{border-color: var(--wp--preset--color--white) !important;}.has-pale-pink-border-color{border-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-border-color{border-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-border-color{border-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-border-color{border-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-border-color{border-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-border-color{border-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-border-color{border-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-border-color{border-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-border-color{border-color: var(--wp--preset--color--vivid-purple) !important;}.has-vivid-cyan-blue-to-vivid-purple-gradient-background{background: var(--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple) !important;}.has-light-green-cyan-to-vivid-green-cyan-gradient-background{background: var(--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan) !important;}.has-luminous-vivid-amber-to-luminous-vivid-orange-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange) !important;}.has-luminous-vivid-orange-to-vivid-red-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-orange-to-vivid-red) !important;}.has-very-light-gray-to-cyan-bluish-gray-gradient-background{background: var(--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray) !important;}.has-cool-to-warm-spectrum-gradient-background{background: var(--wp--preset--gradient--cool-to-warm-spectrum) !important;}.has-blush-light-purple-gradient-background{background: var(--wp--preset--gradient--blush-light-purple) !important;}.has-blush-bordeaux-gradient-background{background: var(--wp--preset--gradient--blush-bordeaux) !important;}.has-luminous-dusk-gradient-background{background: var(--wp--preset--gradient--luminous-dusk) !important;}.has-pale-ocean-gradient-background{background: var(--wp--preset--gradient--pale-ocean) !important;}.has-electric-grass-gradient-background{background: var(--wp--preset--gradient--electric-grass) !important;}.has-midnight-gradient-background{background: var(--wp--preset--gradient--midnight) !important;}.has-small-font-size{font-size: var(--wp--preset--font-size--small) !important;}.has-medium-font-size{font-size: var(--wp--preset--font-size--medium) !important;}.has-large-font-size{font-size: var(--wp--preset--font-size--large) !important;}.has-x-large-font-size{font-size: var(--wp--preset--font-size--x-large) !important;}
+:where(.wp-block-post-template.is-layout-flex){gap: 1.25em;}:where(.wp-block-post-template.is-layout-grid){gap: 1.25em;}
+:where(.wp-block-columns.is-layout-flex){gap: 2em;}:where(.wp-block-columns.is-layout-grid){gap: 2em;}
+:root :where(.wp-block-pullquote){font-size: 1.5em;line-height: 1.6;}
+</style>
+<link data-minify="1" rel="stylesheet" id="wpa-css-css" href="https://www.imaxx.de/wp-content/cache/min/1/wp-content/plugins/honeypot/includes/css/wpa.css?ver=1776323406" media="all">
+<link rel="stylesheet" id="imaxx-quizzer-css" href="https://www.imaxx.de/wp-content/plugins/imaxx-quizzer/public/css/imaxx-quizzer-public.css?ver=1.0.0" media="all">
+<link data-minify="1" rel="stylesheet" id="immomakler-divi-css" href="https://www.imaxx.de/wp-content/cache/min/1/wp-content/plugins/immomakler/assets/css/divi/immomakler-divi.css?ver=1776323406" media="all">
+<link data-minify="1" rel="stylesheet" id="immomakler-bootstrap3-css" href="https://www.imaxx.de/wp-content/cache/min/1/wp-content/plugins/immomakler/skins/bootstrap3/vendors/bootstrap/css/immomakler-bootstrap.min.css?ver=1776323406" media="all">
+<link rel="stylesheet" id="immomakler-bootstrap-select-css" href="https://www.imaxx.de/wp-content/plugins/immomakler/skins/bootstrap3/vendors/bootstrap-select-1-13-18/css/bootstrap-select.min.css?ver=5.59.5.3" media="all">
+<link data-minify="1" rel="stylesheet" id="immomakler-nouislider-css" href="https://www.imaxx.de/wp-content/cache/min/1/wp-content/plugins/immomakler/vendors/nouislider/jquery.nouislider.css?ver=1776323406" media="all">
+<link data-minify="1" rel="stylesheet" id="fontawesome-4.7.0-css" href="https://www.imaxx.de/wp-content/cache/min/1/wp-content/themes/imaxx/assets/css/font-awesome.min.css?ver=1776323406" media="all">
+<link data-minify="1" rel="stylesheet" id="fontawesome-css" href="https://www.imaxx.de/wp-content/cache/min/1/ajax/libs/font-awesome/6.2.0/css/all.min.css?ver=1776323406" media="all">
+<link data-minify="1" rel="stylesheet" id="slick-theme-css" href="https://www.imaxx.de/wp-content/cache/background-css/1/www.imaxx.de/wp-content/cache/min/1/wp-content/themes/imaxx/assets/css/slick-theme.css?ver=1776323406&amp;wpr_t=1785125498" media="all">
+<link data-minify="1" rel="stylesheet" id="slick-css" href="https://www.imaxx.de/wp-content/cache/min/1/wp-content/themes/imaxx/assets/css/slick.css?ver=1776323406" media="all">
+<link data-minify="1" rel="stylesheet" id="imaxx-style-css" href="https://www.imaxx.de/wp-content/cache/background-css/1/www.imaxx.de/wp-content/cache/min/1/wp-content/themes/imaxx/style.css?ver=1776323406&amp;wpr_t=1785125498" media="all">
+<link data-minify="1" rel="stylesheet" id="imaxx-main-css" href="https://www.imaxx.de/wp-content/cache/background-css/1/www.imaxx.de/wp-content/cache/min/1/wp-content/themes/imaxx/assets/css/style.css?ver=1776323406&amp;wpr_t=1785125498" media="all">
+<link data-minify="1" rel="stylesheet" id="borlabs-cookie-custom-css" href="https://www.imaxx.de/wp-content/cache/min/1/wp-content/cache/borlabs-cookie/1/borlabs-cookie-1-de.css?ver=1776323406" media="all">
+<link data-minify="1" rel="stylesheet" id="immomakler-lightgallery-css" href="https://www.imaxx.de/wp-content/cache/background-css/1/www.imaxx.de/wp-content/cache/min/1/wp-content/plugins/immomakler/vendors/lightgallery-2-9-0/css/lightgallery-bundle.min.css?ver=1776323406&amp;wpr_t=1785125498" media="all">
+<link rel="stylesheet" id="galleria-theme-css" href="https://www.imaxx.de/wp-content/plugins/immomakler/vendors/galleria-1-6-1/themes/classic/galleria.classic.min.css?ver=5.59.5.3" media="all">
+<link data-minify="1" rel="stylesheet" id="immomakler-plus-css" href="https://www.imaxx.de/wp-content/cache/min/1/wp-content/plugins/immomakler/skins/bootstrap3/css/immomakler-plus.css?ver=1776323406" media="all">
+<link data-minify="1" rel="stylesheet" id="immomakler-parent-css" href="https://www.imaxx.de/wp-content/cache/min/1/wp-content/plugins/immomakler/skins/bootstrap3/css/immomakler.css?ver=1776323406" media="all">
+<style id="immomakler-parent-inline-css">
+.immomakler {--immomakler-primary-color: #af1615;--immomakler-primary-color-inverted: #ffffff;--immomakler-tour-icon-size: 50px;}.immomakler-archive {max-width: 1300px;}.immomakler-single {max-width: 1300px;}.immomakler-archive .immomakler-boxed .property-container {border-color: #dddddd;}.immomakler-archive .immomakler-boxed .property-container {background-color: #ffffff;}.immomakler-archive .immomakler-boxed .property-container .thumbnail img {aspect-ratio: 1.5;object-position: center center;}.immomakler-archive .immomakler-boxed .property-container {border-radius: 24px;}.immomakler-archive .immomakler-boxed .property-container div.property-thumbnail {border-radius: 23px 23px 0px 0px;}.immomakler-archive div.property-thumbnail,.immomakler-archive div.property-thumbnail .owl-carousel .owl-item img,.immomakler-archive .owl-carousel {aspect-ratio: 1.5;object-position: center center;}.immomakler-page .property-gallery-static img {aspect-ratio: 1.3422818791946;height: auto;}.galleria-theme-classic .galleria-thumbnails .galleria-image,.galleria-theme-classic .galleria-thumbnails-container,.galleria-theme-classic .galleria-thumb-nav-right,.galleria-theme-classic .galleria-thumb-nav-left {height: 80px;}.immomakler-archive .property-container.immomakler-archive-item-layout-condensed .immobilie-cart-addremove .in-cart.is-favorite:before {content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" fill="%23af1615" width="24px"><path d="m480-120-58-52q-101-91-167-157T150-447.5Q111-500 95.5-544T80-634q0-94 63-157t157-63q52 0 99 22t81 62q34-40 81-62t99-22q94 0 157 63t63 157q0 46-15.5 90T810-447.5Q771-395 705-329T538-172l-58 52Z"/></svg>')}.immomakler-archive .property-container.immomakler-archive-item-layout-condensed .immobilie-cart-addremove .in-cart.not-favorite:before {content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" fill="%23FFF" width="24px"><path d="m480-120-58-52q-101-91-167-157T150-447.5Q111-500 95.5-544T80-634q0-94 63-157t157-63q52 0 99 22t81 62q34-40 81-62t99-22q94 0 157 63t63 157q0 46-15.5 90T810-447.5Q771-395 705-329T538-172l-58 52Zm0-108q96-86 158-147.5t98-107q36-45.5 50-81t14-70.5q0-60-40-100t-100-40q-47 0-87 26.5T518-680h-76q-15-41-55-67.5T300-774q-60 0-100 40t-40 100q0 35 14 70.5t50 81q36 45.5 98 107T480-228Zm0-273Z"/></svg>')}.immomakler-archive .property-container.immomakler-archive-item-layout-condensed .property-status-bar {width: calc(100% - 55px);}
+</style>
+<link rel="stylesheet" id="immomakler-css" href="https://www.imaxx.de/wp-content/plugins/immomakler-child-skin/css/immomakler.css?ver=5.59.5.3.1700516836" media="all">
+<script type="rocketlazyloadscript" data-rocket-src="https://www.imaxx.de/wp-includes/js/tinymce/tinymce.min.js?ver=49110-20201110" id="wp-tinymce-root-js" data-rocket-defer="" defer=""></script>
+<script type="rocketlazyloadscript" data-rocket-src="https://www.imaxx.de/wp-includes/js/tinymce/plugins/compat3x/plugin.min.js?ver=49110-20201110" id="wp-tinymce-js" data-rocket-defer="" defer=""></script>
+<script type="rocketlazyloadscript" data-rocket-src="https://www.imaxx.de/wp-includes/js/jquery/jquery.min.js?ver=3.7.1" id="jquery-core-js" data-rocket-defer="" defer=""></script>
+<script type="rocketlazyloadscript" data-rocket-src="https://www.imaxx.de/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.4.1" id="jquery-migrate-js" data-rocket-defer="" defer=""></script>
+<script id="imaxx-quizzer-js-extra">
+var imaxx_ajax = {"ajaxurl":"https:\/\/www.imaxx.de\/wp-admin\/admin-ajax.php","childNiceSelect":"","parentNiceSelect":""};
+</script>
+<script type="rocketlazyloadscript" data-minify="1" data-rocket-src="https://www.imaxx.de/wp-content/cache/min/1/wp-content/plugins/imaxx-quizzer/public/js/imaxx-quizzer-public.js?ver=1776323407" id="imaxx-quizzer-js" data-rocket-defer="" defer=""></script>
+<script type="rocketlazyloadscript" data-rocket-src="https://www.imaxx.de/wp-content/plugins/immomakler/skins/bootstrap3/vendors/bootstrap-select-1-13-18/js/bootstrap-select.min.js?ver=5.59.5.3" id="immomakler-bootstrap-select-js" data-rocket-defer="" defer=""></script>
+<script type="rocketlazyloadscript" data-rocket-src="https://www.imaxx.de/wp-content/plugins/immomakler/vendors/nouislider/jquery.nouislider.min.js?ver=5.59.5.3" id="immomakler-nouislider-js" data-rocket-defer="" defer=""></script>
+<script id="snazzymaps-js-js-extra">
+var SnazzyDataForSnazzyMaps = [];
+SnazzyDataForSnazzyMaps={"id":8097,"name":"WY","description":"Map style for WY default color scheme","url":"https:\/\/snazzymaps.com\/style\/8097\/wy","imageUrl":"https:\/\/snazzy-maps-cdn.azureedge.net\/assets\/8097-wy.png?v=20170626083314","json":"[{\"featureType\":\"all\",\"elementType\":\"geometry.fill\",\"stylers\":[{\"weight\":\"2.00\"}]},{\"featureType\":\"all\",\"elementType\":\"geometry.stroke\",\"stylers\":[{\"color\":\"#9c9c9c\"}]},{\"featureType\":\"all\",\"elementType\":\"labels.text\",\"stylers\":[{\"visibility\":\"on\"}]},{\"featureType\":\"landscape\",\"elementType\":\"all\",\"stylers\":[{\"color\":\"#f2f2f2\"}]},{\"featureType\":\"landscape\",\"elementType\":\"geometry.fill\",\"stylers\":[{\"color\":\"#ffffff\"}]},{\"featureType\":\"landscape.man_made\",\"elementType\":\"geometry.fill\",\"stylers\":[{\"color\":\"#ffffff\"}]},{\"featureType\":\"poi\",\"elementType\":\"all\",\"stylers\":[{\"visibility\":\"off\"}]},{\"featureType\":\"road\",\"elementType\":\"all\",\"stylers\":[{\"saturation\":-100},{\"lightness\":45}]},{\"featureType\":\"road\",\"elementType\":\"geometry.fill\",\"stylers\":[{\"color\":\"#eeeeee\"}]},{\"featureType\":\"road\",\"elementType\":\"labels.text.fill\",\"stylers\":[{\"color\":\"#7b7b7b\"}]},{\"featureType\":\"road\",\"elementType\":\"labels.text.stroke\",\"stylers\":[{\"color\":\"#ffffff\"}]},{\"featureType\":\"road.highway\",\"elementType\":\"all\",\"stylers\":[{\"visibility\":\"simplified\"}]},{\"featureType\":\"road.arterial\",\"elementType\":\"labels.icon\",\"stylers\":[{\"visibility\":\"off\"}]},{\"featureType\":\"transit\",\"elementType\":\"all\",\"stylers\":[{\"visibility\":\"off\"}]},{\"featureType\":\"water\",\"elementType\":\"all\",\"stylers\":[{\"color\":\"#46bcec\"},{\"visibility\":\"on\"}]},{\"featureType\":\"water\",\"elementType\":\"geometry.fill\",\"stylers\":[{\"color\":\"#c8d7d4\"}]},{\"featureType\":\"water\",\"elementType\":\"labels.text.fill\",\"stylers\":[{\"color\":\"#070707\"}]},{\"featureType\":\"water\",\"elementType\":\"labels.text.stroke\",\"stylers\":[{\"color\":\"#ffffff\"}]}]","views":2309599,"favorites":6139,"createdBy":{"name":"StipeP","url":null},"createdOn":"2015-02-13T16:12:31.48","tags":["greyscale","light","monochrome"],"colors":["multi"]};
+</script>
+<script type="rocketlazyloadscript" data-minify="1" data-rocket-src="https://www.imaxx.de/wp-content/cache/min/1/wp-content/plugins/snazzy-maps/snazzymaps.js?ver=1776323407" id="snazzymaps-js-js" data-rocket-defer="" defer=""></script>
+<script data-no-optimize="1" data-no-minify="1" data-cfasync="false" nowprocket="" src="https://www.imaxx.de/wp-content/cache/borlabs-cookie/1/borlabs-cookie-config-de.json.js?ver=3.3.23-88" id="borlabs-cookie-config-js"></script>
+<script data-no-optimize="1" data-no-minify="1" data-cfasync="false" nowprocket="" src="https://www.imaxx.de/wp-content/plugins/borlabs-cookie/assets/javascript/borlabs-cookie-prioritize.min.js?ver=3.3.23" id="borlabs-cookie-prioritize-js"></script>
+<script type="rocketlazyloadscript" data-rocket-src="https://www.imaxx.de/wp-content/plugins/immomakler/assets/js/immomakler-consent.min.js?ver=5.59.5.3" id="immomakler-consent-js" data-rocket-defer="" defer=""></script>
+<script type="rocketlazyloadscript" data-rocket-src="https://www.imaxx.de/wp-content/plugins/immomakler/vendors/lightgallery-2-9-0/lightgallery.min.js?ver=5.59.5.3" id="lightgallery-js" data-rocket-defer="" defer=""></script>
+<script type="rocketlazyloadscript" data-rocket-src="https://www.imaxx.de/wp-content/plugins/immomakler/vendors/lightgallery-2-9-0/plugins/thumbnail/lg-thumbnail.min.js?ver=5.59.5.3" id="lightgallery-thumbnail-js" data-rocket-defer="" defer=""></script>
+<script type="rocketlazyloadscript" data-rocket-src="https://www.imaxx.de/wp-content/plugins/immomakler/vendors/lightgallery-2-9-0/plugins/zoom/lg-zoom.min.js?ver=5.59.5.3" id="lightgallery-zoom-js" data-rocket-defer="" defer=""></script>
+<script type="rocketlazyloadscript" data-rocket-src="https://www.imaxx.de/wp-content/plugins/immomakler/vendors/lightgallery-2-9-0/plugins/fullscreen/lg-fullscreen.min.js?ver=5.59.5.3" id="lightgallery-fullscreen-js" data-rocket-defer="" defer=""></script>
+<script type="rocketlazyloadscript" data-rocket-src="https://www.imaxx.de/wp-content/plugins/immomakler/vendors/galleria-1-6-1/galleria.min.js?ver=5.59.5.3" id="galleria-js" data-rocket-defer="" defer=""></script>
+<script type="rocketlazyloadscript" data-rocket-src="https://www.imaxx.de/wp-content/plugins/immomakler/vendors/galleria-1-6-1/themes/classic/galleria.classic.min.js?ver=5.59.5.3" id="galleria-theme-js" data-rocket-defer="" defer=""></script>
+<script type="rocketlazyloadscript" data-minify="1" data-rocket-src="https://www.imaxx.de/wp-content/cache/min/1/wp-content/plugins/immomakler/classes/plus/js/immomakler-shortcodes-loadmore.js?ver=1776323407" id="immomakler-shortcodes-loadmore-js" data-rocket-defer="" defer=""></script>
+<link rel="https://api.w.org/" href="https://www.imaxx.de/wp-json/"><link rel="alternate" title="JSON" type="application/json" href="https://www.imaxx.de/wp-json/wp/v2/immomakler_object/218173"><link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://www.imaxx.de/xmlrpc.php?rsd">
+
+<meta name="generator" content="WP-ImmoMakler Immobilien-Plugin für WordPress (WP-ImmoMakler 5 PLUS (500), Version 5.59.5.3) https://www.wp-immomakler.de/">
+<link rel="shortlink" href="https://www.imaxx.de/?p=218173">
+<link rel="alternate" title="oEmbed (JSON)" type="application/json+oembed" href="https://www.imaxx.de/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fwww.imaxx.de%2Fimmobilien%2Fwohnung-eigentumswohnung-etagenwohnung-in-giessen-kaufen-50683%2F">
+<link rel="alternate" title="oEmbed (XML)" type="text/xml+oembed" href="https://www.imaxx.de/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fwww.imaxx.de%2Fimmobilien%2Fwohnung-eigentumswohnung-etagenwohnung-in-giessen-kaufen-50683%2F&amp;format=xml">
+<meta name="format-detection" content="telephone=no"><meta name="ti-site-data" content="eyJyIjoiMTowITc6MCEzMDowIiwibyI6Imh0dHBzOlwvXC93d3cuaW1heHguZGVcL3dwLWFkbWluXC9hZG1pbi1hamF4LnBocD9hY3Rpb249dGlfb25saW5lX3VzZXJzX2dvb2dsZSZhbXA7cD0lMkZpbW1vYmlsaWVuJTJGd29obnVuZy1laWdlbnR1bXN3b2hudW5nLWV0YWdlbndvaG51bmctaW4tZ2llc3Nlbi1rYXVmZW4tNTA2ODMlMkYmYW1wO193cG5vbmNlPTEwYTA1NDQ0MjgifQ=="><script nowprocket="" data-borlabs-cookie-script-blocker-ignore="">
+if ('0' === '1' && ('0' === '1' || '1' === '1')) {
+    window['gtag_enable_tcf_support'] = true;
+}
+window.dataLayer = window.dataLayer || [];
+if (typeof gtag !== 'function') {
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+}
+gtag('set', 'developer_id.dYjRjMm', true);
+if ('0' === '1' || '1' === '1') {
+    if (window.BorlabsCookieGoogleConsentModeDefaultSet !== true) {
+        let getCookieValue = function (name) {
+            return document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || '';
+        };
+        let cookieValue = getCookieValue('borlabs-cookie-gcs');
+        let consentsFromCookie = {};
+        if (cookieValue !== '') {
+            consentsFromCookie = JSON.parse(decodeURIComponent(cookieValue));
+        }
+        let defaultValues = {
+            'ad_storage': 'denied',
+            'ad_user_data': 'denied',
+            'ad_personalization': 'denied',
+            'analytics_storage': 'denied',
+            'functionality_storage': 'denied',
+            'personalization_storage': 'denied',
+            'security_storage': 'denied',
+            'wait_for_update': 500,
+        };
+        gtag('consent', 'default', { ...defaultValues, ...consentsFromCookie });
+    }
+    window.BorlabsCookieGoogleConsentModeDefaultSet = true;
+    let borlabsCookieConsentChangeHandler = function () {
+        window.dataLayer = window.dataLayer || [];
+        if (typeof gtag !== 'function') { function gtag(){dataLayer.push(arguments);} }
+
+        let getCookieValue = function (name) {
+            return document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || '';
+        };
+        let cookieValue = getCookieValue('borlabs-cookie-gcs');
+        let consentsFromCookie = {};
+        if (cookieValue !== '') {
+            consentsFromCookie = JSON.parse(decodeURIComponent(cookieValue));
+        }
+
+        consentsFromCookie.analytics_storage = BorlabsCookie.Consents.hasConsent('google-analytics') ? 'granted' : 'denied';
+
+        BorlabsCookie.CookieLibrary.setCookie(
+            'borlabs-cookie-gcs',
+            JSON.stringify(consentsFromCookie),
+            BorlabsCookie.Settings.automaticCookieDomainAndPath.value ? '' : BorlabsCookie.Settings.cookieDomain.value,
+            BorlabsCookie.Settings.cookiePath.value,
+            BorlabsCookie.Cookie.getPluginCookie().expires,
+            BorlabsCookie.Settings.cookieSecure.value,
+            BorlabsCookie.Settings.cookieSameSite.value
+        );
+    }
+    document.addEventListener('borlabs-cookie-consent-saved', borlabsCookieConsentChangeHandler);
+    document.addEventListener('borlabs-cookie-handle-unblock', borlabsCookieConsentChangeHandler);
+}
+if ('0' === '1') {
+    gtag("js", new Date());
+    gtag("config", "G-12345", {"anonymize_ip": true});
+
+    (function (w, d, s, i) {
+        var f = d.getElementsByTagName(s)[0],
+            j = d.createElement(s);
+        j.async = true;
+        j.src =
+            "https://www.googletagmanager.com/gtag/js?id=" + i;
+        f.parentNode.insertBefore(j, f);
+    })(window, document, "script", "G-12345");
+}
+</script><script nowprocket="" data-no-optimize="1" data-no-minify="1" data-cfasync="false" data-borlabs-cookie-script-blocker-ignore="">
+    (function () {
+        if ('0' === '1' && '1' === '1') {
+            window['gtag_enable_tcf_support'] = true;
+        }
+        window.dataLayer = window.dataLayer || [];
+        if (typeof window.gtag !== 'function') {
+            window.gtag = function () {
+                window.dataLayer.push(arguments);
+            };
+        }
+        gtag('set', 'developer_id.dYjRjMm', true);
+        if ('1' === '1') {
+            let getCookieValue = function (name) {
+                return document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || '';
+            };
+            const gtmRegionsData = '{{ google-tag-manager-cm-regional-defaults }}';
+            let gtmRegions = [];
+            if (gtmRegionsData !== '\{\{ google-tag-manager-cm-regional-defaults \}\}') {
+                gtmRegions = JSON.parse(gtmRegionsData);
+            }
+            let defaultRegion = null;
+            for (let gtmRegionIndex in gtmRegions) {
+                let gtmRegion = gtmRegions[gtmRegionIndex];
+                if (gtmRegion['google-tag-manager-cm-region'] === '') {
+                    defaultRegion = gtmRegion;
+                } else {
+                    gtag('consent', 'default', {
+                        'ad_storage': gtmRegion['google-tag-manager-cm-default-ad-storage'],
+                        'ad_user_data': gtmRegion['google-tag-manager-cm-default-ad-user-data'],
+                        'ad_personalization': gtmRegion['google-tag-manager-cm-default-ad-personalization'],
+                        'analytics_storage': gtmRegion['google-tag-manager-cm-default-analytics-storage'],
+                        'functionality_storage': gtmRegion['google-tag-manager-cm-default-functionality-storage'],
+                        'personalization_storage': gtmRegion['google-tag-manager-cm-default-personalization-storage'],
+                        'security_storage': gtmRegion['google-tag-manager-cm-default-security-storage'],
+                        'region': gtmRegion['google-tag-manager-cm-region'].toUpperCase().split(','),
+						'wait_for_update': 500,
+                    });
+                }
+            }
+            let cookieValue = getCookieValue('borlabs-cookie-gcs');
+            let consentsFromCookie = {};
+            if (cookieValue !== '') {
+                consentsFromCookie = JSON.parse(decodeURIComponent(cookieValue));
+            }
+            let defaultValues = {
+                'ad_storage': defaultRegion === null ? 'denied' : defaultRegion['google-tag-manager-cm-default-ad-storage'],
+                'ad_user_data': defaultRegion === null ? 'denied' : defaultRegion['google-tag-manager-cm-default-ad-user-data'],
+                'ad_personalization': defaultRegion === null ? 'denied' : defaultRegion['google-tag-manager-cm-default-ad-personalization'],
+                'analytics_storage': defaultRegion === null ? 'denied' : defaultRegion['google-tag-manager-cm-default-analytics-storage'],
+                'functionality_storage': defaultRegion === null ? 'denied' : defaultRegion['google-tag-manager-cm-default-functionality-storage'],
+                'personalization_storage': defaultRegion === null ? 'denied' : defaultRegion['google-tag-manager-cm-default-personalization-storage'],
+                'security_storage': defaultRegion === null ? 'denied' : defaultRegion['google-tag-manager-cm-default-security-storage'],
+                'wait_for_update': 500,
+            };
+            gtag('consent', 'default', {...defaultValues, ...consentsFromCookie});
+            gtag('set', 'ads_data_redaction', true);
+        }
+
+        if ('0' === '1') {
+            let url = new URL(window.location.href);
+
+            if ((url.searchParams.has('gtm_debug') && url.searchParams.get('gtm_debug') !== '') || document.cookie.indexOf('__TAG_ASSISTANT=') !== -1 || document.documentElement.hasAttribute('data-tag-assistant-present')) {
+                /* GTM block start */
+                (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+                        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+                    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+                    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+                })(window,document,'script','dataLayer','GTM-MPXJRT9');
+                /* GTM block end */
+            } else {
+                /* GTM block start */
+                (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+                        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+                    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+                    'https://www.imaxx.de/wp-content/uploads/borlabs-cookie/' + i + '.js?ver=not-set-yet';f.parentNode.insertBefore(j,f);
+                })(window,document,'script','dataLayer','GTM-MPXJRT9');
+                /* GTM block end */
+            }
+        }
+
+
+        let borlabsCookieConsentChangeHandler = function () {
+            window.dataLayer = window.dataLayer || [];
+            if (typeof window.gtag !== 'function') {
+                window.gtag = function() {
+                    window.dataLayer.push(arguments);
+                };
+            }
+
+            let consents = BorlabsCookie.Cookie.getPluginCookie().consents;
+
+            if ('1' === '1') {
+                let gtmConsents = {};
+                let customConsents = {};
+
+				let services = BorlabsCookie.Services._services;
+
+				for (let service in services) {
+					if (service !== 'borlabs-cookie') {
+						customConsents['borlabs_cookie_' + service.replaceAll('-', '_')] = BorlabsCookie.Consents.hasConsent(service) ? 'granted' : 'denied';
+					}
+				}
+
+                if ('0' === '1') {
+                    gtmConsents = {
+                        'analytics_storage': BorlabsCookie.Consents.hasConsentForServiceGroup('statistics') === true ? 'granted' : 'denied',
+                        'functionality_storage': BorlabsCookie.Consents.hasConsentForServiceGroup('statistics') === true ? 'granted' : 'denied',
+                        'personalization_storage': BorlabsCookie.Consents.hasConsentForServiceGroup('statistics') === true ? 'granted' : 'denied',
+                        'security_storage': BorlabsCookie.Consents.hasConsentForServiceGroup('statistics') === true ? 'granted' : 'denied',
+                    };
+                } else {
+                    gtmConsents = {
+                        'ad_storage': BorlabsCookie.Consents.hasConsentForServiceGroup('statistics') === true ? 'granted' : 'denied',
+                        'ad_user_data': BorlabsCookie.Consents.hasConsentForServiceGroup('statistics') === true ? 'granted' : 'denied',
+                        'ad_personalization': BorlabsCookie.Consents.hasConsentForServiceGroup('statistics') === true ? 'granted' : 'denied',
+                        'analytics_storage': BorlabsCookie.Consents.hasConsentForServiceGroup('statistics') === true ? 'granted' : 'denied',
+                        'functionality_storage': BorlabsCookie.Consents.hasConsentForServiceGroup('statistics') === true ? 'granted' : 'denied',
+                        'personalization_storage': BorlabsCookie.Consents.hasConsentForServiceGroup('statistics') === true ? 'granted' : 'denied',
+                        'security_storage': BorlabsCookie.Consents.hasConsentForServiceGroup('statistics') === true ? 'granted' : 'denied',
+                    };
+                }
+                BorlabsCookie.CookieLibrary.setCookie(
+                    'borlabs-cookie-gcs',
+                    JSON.stringify(gtmConsents),
+                    BorlabsCookie.Settings.automaticCookieDomainAndPath.value ? '' : BorlabsCookie.Settings.cookieDomain.value,
+                    BorlabsCookie.Settings.cookiePath.value,
+                    BorlabsCookie.Cookie.getPluginCookie().expires,
+                    BorlabsCookie.Settings.cookieSecure.value,
+                    BorlabsCookie.Settings.cookieSameSite.value
+                );
+                gtag('consent', 'update', {...gtmConsents, ...customConsents});
+            }
+
+
+            for (let serviceGroup in consents) {
+                for (let service of consents[serviceGroup]) {
+                    if (!window.BorlabsCookieGtmPackageSentEvents.includes(service) && service !== 'borlabs-cookie') {
+                        window.dataLayer.push({
+                            event: 'borlabs-cookie-opt-in-' + service,
+                        });
+                        window.BorlabsCookieGtmPackageSentEvents.push(service);
+                    }
+                }
+            }
+            let afterConsentsEvent = document.createEvent('Event');
+            afterConsentsEvent.initEvent('borlabs-cookie-google-tag-manager-after-consents', true, true);
+            document.dispatchEvent(afterConsentsEvent);
+        };
+        window.BorlabsCookieGtmPackageSentEvents = [];
+        document.addEventListener('borlabs-cookie-consent-saved', borlabsCookieConsentChangeHandler);
+        document.addEventListener('borlabs-cookie-handle-unblock', borlabsCookieConsentChangeHandler);
+    })();
+</script>		<style type="text/css">
+					.site-title,
+			.site-description {
+				position: absolute;
+				clip: rect(1px, 1px, 1px, 1px);
+				}
+					</style>
+				<style id="wp-custom-css">
+			/*last property data item always 100%*/
+@media (max-width: 420px) {
+    .immomakler.immomakler-single .property-data:nth-of-type(2) .property-data--item:last-child {
+        flex: 0 0 100%;
+        width: 100%;
+    }
+}
+
+.wpcf7 p input.wpcf7-submit {
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+}
+.custom-controls input:checked + .wpcf7-list-item-label::after {
+  display: block;
+  position: absolute;
+  content: "";
+  background: #f60;
+  height: 20px;
+  left: 6px;
+  width: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 9;
+  border-radius: 50px;
+}
+
+@media only screen and (max-width: 1199px) {
+.imax-counter-wrapper {
+  display: block !important;
+}
+.imax-counter-wrapper .panel-grid-cell {
+  width: 100% !important;
+}
+	
+}
+
+.fmodal-close:hover{
+	text-decoration: none;
+}
+
+.img-text-accordion-block p{
+	font-weight: initial;
+}
+
+body .contact-form-wrapper .heading-block.mb-70 {
+    margin-bottom: 20px;
+}
+
+.imaxx-submit-wrapper{
+	padding: 0;
+}
+
+.admin-bar .fancybox-toolbar {
+    top: 32px;
+}
+
+.text-media-block .text-media-block-wrapper .text-block-wrapper .btn-download-wrapper{
+	-ms-overflow-style: none;
+    height: 480px;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+.text-media-block .text-media-block-wrapper .text-block-wrapper .btn-download-wrapper::-webkit-scrollbar{
+	display: none;
+}
+
+.big-img-slider-section .slick-slider{
+	max-width: 695px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.sow-accordion .sow-accordion-panel {
+	margin-bottom: 0 !important;
+	border-top: 1px solid #002d67 !important;
+}
+
+.sow-accordion .sow-accordion-panel:last-of-type {
+    border-bottom: 1px solid #002d67 !important;
+}
+
+.sow-accordion-panel .sow-accordion-panel-header{
+	 background-color: unset !important;
+	color: #002d67 !important;
+	padding: 0 !important;
+}
+
+.sow-accordion-panel .sow-accordion-panel-header:hover{
+	background-color: unset !important;
+}
+
+.sow-accordion-open-close-button {
+    display: none !important;
+}
+
+.sow-accordion-title{
+	  display: unset !important;
+	    padding: 24px 20% 24px 24px !important;
+    font-size: 32px;
+    line-height: 43px;
+	position: relative;
+}
+
+.sow-accordion-title::after{
+	    content: "\f107";
+    font-family: FontAwesome;
+    font-size: 30px;
+    position: absolute;
+    right: 24px;
+    top: 24px;
+    transition: all .3s ease-in-out;
+}
+
+.sow-accordion-panel-open > .sow-accordion-panel-header-container > .sow-accordion-panel-header > .sow-accordion-title::after{
+	transform: rotate(180deg);
+}
+
+.sow-accordion-panel-border{
+	background-color: unset !important;
+	padding: 24px 24px 80px 24px !important;
+}
+
+.so-widget-sow-accordion{
+	    margin: auto;
+}
+
+.sow-accordion-panel-border p{
+    font-size: 16px;
+    line-height: 28px;
+	color: #002d67;
+}
+
+.sow-accordion-panel-header:focus, .sow-accordion-panel-border:focus{
+	outline: none !important;
+}
+
+section.error-404 {
+    padding: 100px 0;
+	    background-size: cover;
+	position: relative;
+}
+
+section.error-404::before {
+    position: absolute;
+    content: '';
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: -1;
+}
+
+section.error-404 .btn-wrapper, section.error-404 .container {
+    text-align: center !important;
+}
+
+section.error-404 h2{
+	  font-size: 120px;
+    font-style: italic;
+}
+
+section.error-404 h4{
+	font-size: 25px;
+	margin-bottom: 40px;
+	text-transform: uppercase;
+}
+
+section.error-404 .btn-theme{
+	font-size: 16px;
+	padding: 14px;
+}
+
+section.error-404 *{
+	color: var(--white);
+}
+
+article.post h1.entry-title{
+	font-size: 70px;
+	color: #002d67;
+	margin-bottom: 40px;
+    font-weight: bold;
+}
+
+.post-thumbnail, .entry-meta, .entry-content, .entry-footer, .post-navigation, .comments-area {
+    margin-bottom: 25px;
+}
+
+.comments-area{
+padding: 40px 0;
+}
+
+.entry-content p {
+  line-height: 32px;
+}
+
+.entry-footer > span {
+    margin-right: 10px;
+}
+
+.post-navigation .nav-links {
+    display: -ms-grid;
+        display: grid;
+    -ms-grid-columns: calc(50% - 25px) 50px calc(50% - 25px);
+    grid-template-columns: calc(50% - 25px) calc(50% - 25px);
+    gap: 0 50px;
+}
+
+.post-navigation .nav-links a {
+    background: #ed540e;
+    border-radius: 16px;
+    color: var(--white);
+    font-weight: bold;
+    display: block;
+    font-size: 20px;
+    line-height: 28px;
+    overflow: hidden;
+    padding: 18px 25px;
+    position: relative;
+    text-align: center;
+    -webkit-transition: all .3s ease-in-out;
+    -o-transition: all .3s ease-in-out;
+    transition: all .3s ease-in-out;
+}
+
+.post-navigation .nav-links a::before{
+	background: #f60;
+    border-radius: 50%;
+    bottom: 0;
+    content: "";
+    height: 200%;
+    position: absolute;
+    right: 1%;
+    width: 105%;
+}
+
+.post-navigation .nav-links a * {
+    position: relative;
+}
+
+.post-navigation .nav-links a:hover, .comments-area input[type='submit']:hover
+ {
+    -webkit-transform: scale(1.05);
+        -ms-transform: scale(1.05);
+            transform: scale(1.05);
+}
+
+.comments-area .comment-reply-title {
+    color: #002d67;
+    font-size: 40px;
+    margin-bottom: 10px;
+    text-transform: capitalize;
+}
+
+.comments-area .comment-notes {
+    color: #f60;
+    font-weight: 500;
+	    font-size: 23px;
+    line-height: 34px;
+}
+
+comments-area p:not(.comment-form-cookies-consent) label {
+    display: block;
+	color: #002d67;
+}
+
+.comments-area input[type="url"],
+.comments-area input[type="text"],
+.comments-area input[type="email"],
+.comments-area input[type="name"],
+.comments-area textarea{
+	 border-radius: 10px;
+    font-size: 18px;
+    line-height: 24px;
+    padding: 12px 24px;
+    background-color: #f2f5f8;
+    border: 2px solid #f2f5f8;
+    color: #a4acb4;
+    font-weight: bold;
+    background-clip: padding-box;
+    -webkit-transition: border-color .15s ease-in-out,-webkit-box-shadow .15s ease-in-out;
+    transition: border-color .15s ease-in-out,-webkit-box-shadow .15s ease-in-out;
+    -o-transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out,-webkit-box-shadow .15s ease-in-out;
+	    width: 100%;
+}
+
+.comments-area input[type="url"]:focus,
+.comments-area input[type="text"]:focus,
+.comments-area input[type="email"]:focus,
+.comments-area input[type="name"]:focus,
+.comments-area textarea:focus{
+outline: none;
+	    border-color: #f2f5f8;
+    box-shadow: none;
+    color: #f60;
+    outline: 0;
+    background: #fff;
+}
+
+.comments-area input[type='submit'] {
+    background: #f60;
+    border: none;
+    font-weight: bold;
+    color: var(--white);
+    border-radius: 10px;
+    font-size: 20px;
+    line-height: 28px;
+    padding: 18px 25px;
+}
+
+.comments-area p:not(.comment-form-cookies-consent) label{
+	display: block;
+}
+
+.comments-area .comment-form-cookies-consent label{
+	display: unset;
+}
+
+/* accordion css */
+
+/* .panel-layout .panel-widget-style {
+    padding: 0 !important;
+}
+
+.panel-layout .panel-grid {
+    margin-bottom: 0 !important;
+}
+
+.panel-grid .panel-row-style {
+    padding-bottom: 0 !important;
+} */
+
+
+/*  Responsive queries */
+
+@media only screen and (min-width: 1440px){
+	.so-widget-sow-accordion{
+		    padding-left: 3px;
+    padding-right: 3px;
+		    max-width: 83.33333333%;
+	}
+	
+	.imaxx-accordion-wrapper .so-widget-sow-accordion{
+		max-width: 100%;
+	}
+}
+
+@media only screen and (min-width: 1800px){
+	.so-widget-sow-accordion{
+		    padding-left: 10px;
+    padding-right: 10px;
+	}
+}
+
+@media only screen and (max-width: 1799px){
+	.sow-accordion-title{
+		font-size: 28px;
+    line-height: 36px;
+	}
+	
+	
+	article.post h1.entry-title{
+	font-size: 60px;
+}
+	
+	.comments-area .comment-notes {
+	    font-size: 20px;
+    line-height: 33px;
+}
+}
+
+@media only screen and (max-width: 1439px){
+	.sow-accordion-title{
+		font-size: 25px;
+    line-height: 34px;
+	}
+	
+	.big-img-slider-section .slick-slider {
+		max-width: 750px;
+}
+/*	
+	.text-block h2 {
+    font-size: 40px !important;
+    line-height: 55px !important;
+}
+	
+	.text-block  h3 {
+    font-size: 30px !important;
+    line-height: 45px !important;
+}
+	*/
+	article.post h1.entry-title{
+	font-size: 50px;
+}
+	
+	.entry-content p {
+  line-height: 28px;
+}
+	
+	.comments-area .comment-notes {
+	  font-size: 18px;
+    line-height: 27px;
+}
+	
+	.post-navigation .nav-links a{
+		font-size: 18px;
+    line-height: 24px;
+    padding: 16px 20px;
+	}
+	
+	.comments-area input[type='submit']{
+		font-size: 18px;
+    line-height: 24px;
+    padding: 12px 20px;
+	}
+}
+
+@media only screen and (max-width: 1200px){
+	.big-img-slider-section .slick-slider {
+		max-width: 830px;
+}
+}
+
+@media only screen and (max-width: 991px){
+	.big-img-slider-section .slick-slider {
+		max-width: 615px;
+}
+	
+	.post-navigation .nav-links a{
+		padding: 11px 18px;
+	}
+}
+
+@media only screen and (max-width: 767px){
+	.big-img-slider-section .slick-slider {
+		max-width: 570px;
+		padding: 0 30px;
+		position: relative;
+}
+	
+	.big-img-slider .slick-dots{
+		left: 0;
+	}
+	
+	section.error-404{
+		padding: 70px 0;
+	}
+	
+}
+
+@media only screen and (max-width: 1439px){
+	.text-media-block .text-media-block-wrapper .text-block-wrapper .btn-download-wrapper{
+		    height: 400px;
+	}
+}
+
+@media only screen and (max-width: 767px){
+	
+	.post-navigation .nav-links{
+		gap: 25px 0;
+    grid-template-columns: 100%;
+	}
+	
+}
+
+@media only screen and (max-width: 575px){
+	
+	section.error-404 {
+    padding: 50px 0;
+}
+	
+	section.error-404 h2{
+		font-size: 100px;
+	}
+	
+	section.error-404 h4
+		font-size: 20px;
+	}
+	
+
+.imaxx-section-faqs {
+	padding: 100px 0;
+}
+.imaxx-section-heading-content {
+    background-color: #f2f6f9;
+    padding: 100px 0 20px;
+    margin-top: 100px;
+}
+.imaxx-section-faqs h2,
+.imaxx-section-heading-content h2 {
+
+	color: #002d67 !important;
+	font-weight: 700;
+}
+
+.imaxx-section-heading-content p {
+	color: #002d67 !important;
+	    font-family: GenosGFG-Regular !important;
+	font-size: 18px;
+    line-height: 1.5;
+}
+.imaxx-section-faqs .max-width-medium .panel-group {
+	max-width: 900px;
+	margin-left: auto;
+	margin-right: auto;
+}
+.imaxx-section-faqs .panel {
+	border: 1px solid #ededed;
+	border-radius: 10px;
+}
+.imaxx-section-faqs .panel + .panel {
+	margin-top: 12px;
+}
+.imaxx-section-faqs .panel-title {
+	margin: 0;
+	color: #002d67 !important;
+}
+.imaxx-section-faqs .panel-title a {
+  color: #002d67 !important;
+	padding: 16px 43px 16px 22px;
+	display: block;
+	position: relative;
+	width: 100%;
+	 font-family: GenosGFG-Regular !important;
+	font-size: 20px;
+    line-height: 1.3;
+	font-weight: 700;
+	text-decoration: none;
+}
+.imaxx-section-faqs .panel-collapse {
+	color: #002d67 !important;
+	    font-family: GenosGFG-Regular !important;
+	font-size: 16px;
+    line-height: 1.5;
+	padding: 0 22px 22px;
+}
+.imaxx-section-faqs .mb-80 {
+    margin-bottom: 30px;
+}
+.accordion-icon {
+	position: absolute;
+	right: 20px;
+	top: 50%;
+	transform: translatey(-50%);
+
+}
+.accordion-icon:after {
+	color: #002d67 ;
+    font-family: FontAwesome;
+    font-size: 16px;
+	content: '\f067';
+
+}
+[aria-expanded="true"] .accordion-icon:after {
+	content: '\f068';
+	color: #f60 ;
+}
+div#ez-toc-container {
+	padding: 50px;
+	border-radius: 15px;
+	margin-bottom: 50px;
+}
+.ez-toc-title-container {
+	text-align: center;
+	margin-bottom: 30px;
+}
+div#ez-toc-container .ez-toc-title {
+    font-size: 40px;
+    line-height: 1.3;
+    font-weight: 700;
+	margin-bottom: 30px;
+}
+#ez-toc-container ul {
+	display: grid;
+	grid-template-columns: repeat(3,1fr);
+	padding: 0;
+	margin: 0;
+	gap: 20px;
+}
+#ez-toc-container ul li {
+	position: relative;
+	display: flex;
+	width: 100%;
+	padding: 0;
+	margin: 0;
+}
+#ez-toc-container ul li a {
+    position: relative;
+    display: flex;
+    padding: 15px 20px;
+    color: #000 ;
+    background-color: #fff;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 18px !important;
+    line-height: 1.4;
+    align-items: center;
+	 justify-content: space-between;
+    width: 100%;
+	 gap: 15px;
+	border: 1px solid #ddd;
+}
+#ez-toc-container ul li a:hover {
+	text-decoration: none;
+
+}
+#ez-toc-container ul li a:after {
+		content: "\f107";
+    font-family: Fontawesome;
+		display: flex;
+	position: relative;
+
+		
+}
+@media (max-width: 1199px) {
+    .imaxx-section-heading-content {
+			padding: 80px 0 40px;
+			margin-top: 80px;
+	}
+	.imaxx-section-faqs {
+    padding: 80px 0;
+}
+	#ez-toc-container ul {
+		grid-template-columns: repeat(2,1fr);
+	}
+}
+
+@media (max-width: 991px) {
+    
+	#ez-toc-container ul {
+		grid-template-columns: repeat(1,1fr);
+	}
+	div#ez-toc-container {
+    padding: 36px;
+	}
+}
+
+@media (max-width: 767px) {
+    .imaxx-section-heading-content {
+			padding: 60px 0 20px;
+			margin-top: 60px;
+	}
+	.imaxx-section-faqs {
+    padding: 60px 0;
+  }
+	.imaxx-section-faqs .panel-title a {
+    font-size: 18px;
+		padding: 13px 34px 13px 15px;
+  } 
+	.accordion-icon {
+			right: 14px;
+	}
+	div#ez-toc-container {
+    padding: 30px 15px;
+		margin-bottom: 30px;
+	}
+	div#ez-toc-container .ez-toc-title {
+    font-size: 26px;
+    margin-bottom: 20px;
+	}
+	.ez-toc-title-container {
+			margin-bottom: 20px;
+	}
+	#ez-toc-container ul li a {
+    padding: 12px 15px;
+    font-size: 16px !important;
+	}
+	#ez-toc-container ul {
+    gap: 10px;
+	}
+}
+.maprow .panel-grid-cell .so-panel.widget .mapcover2 {
+    left: -2px;
+}
+.mapcover2 .custom-html-widget {
+	pointer-events: none;
+}		</style>
+		<noscript><style id="rocket-lazyload-nojs-css">.rll-youtube-player, [data-lazy-src]{display:none !important;}</style></noscript><style id="rocket-lazyrender-inline-css">[data-wpr-lazyrender] {content-visibility: auto;}</style><style id="wpr-lazyload-bg-container"></style><style id="wpr-lazyload-bg-exclusion"></style>
+<noscript>
+<style id="wpr-lazyload-bg-nostyle">.slick-loading .slick-list{--wpr-bg-73f7d456-399a-43d6-aac1-6a84501af872: url('https://www.imaxx.de/wp-content/themes/imaxx/assets/css/ajax-loader.gif');}.wpcf7 p input.wpcf7-submit{--wpr-bg-94689429-819a-406f-b049-4bce81dfac02: url('https://www.imaxx.de/wp-content/themes/imaxx/assets/img/input-design.png');}#standort-map .fc-item-meta span.icon-phone{--wpr-bg-d394b9e1-06df-4535-9adc-de33348d0e0a: url('https://www.imaxx.de/wp-content/uploads/phone-1.svg');}#standort-map .fc-item-meta span.icon-mail{--wpr-bg-badae6d5-2de2-4e2e-a5ff-b00fb8de9e3f: url('https://www.imaxx.de/wp-content/uploads/mail.svg');}#standort-map .fc-item-meta span.icon-globe{--wpr-bg-1a349094-8293-411e-9537-d07750da314c: url('https://www.imaxx.de/wp-content/uploads/map.svg');}.wpomp_map_parent:before{--wpr-bg-552535ba-b733-430e-92f5-6fafbd52c88d: url('https://www.imaxx.de/wp-content/themes/imaxx/assets/img/mapbg.png');}.lg-comment-box .fb-comments{--wpr-bg-daf33c55-d5af-49b6-91f6-ea9a028eedfb: url('https://www.imaxx.de/wp-content/plugins/immomakler/vendors/lightgallery-2-9-0/images/loading.gif');}.lg-outer .lg-item:not(.lg-start-end-progress){--wpr-bg-39a45ffb-e278-44db-839e-50e245a09343: url('https://www.imaxx.de/wp-content/plugins/immomakler/vendors/lightgallery-2-9-0/images/loading.gif');}.wpomp_map_parent:before{--wpr-bg-7975f70c-c55c-4af0-89b5-bbb52953b038: url('https://www.imaxx.de/wp-content/themes/imaxx/assets/img/mapbg.png');}</style>
+</noscript>
+<script type="application/javascript">const rocket_pairs = [{"selector":".slick-loading .slick-list","style":".slick-loading .slick-list{--wpr-bg-73f7d456-399a-43d6-aac1-6a84501af872: url('https:\/\/www.imaxx.de\/wp-content\/themes\/imaxx\/assets\/css\/ajax-loader.gif');}","hash":"73f7d456-399a-43d6-aac1-6a84501af872","url":"https:\/\/www.imaxx.de\/wp-content\/themes\/imaxx\/assets\/css\/ajax-loader.gif"},{"selector":".wpcf7 p input.wpcf7-submit","style":".wpcf7 p input.wpcf7-submit{--wpr-bg-94689429-819a-406f-b049-4bce81dfac02: url('https:\/\/www.imaxx.de\/wp-content\/themes\/imaxx\/assets\/img\/input-design.png');}","hash":"94689429-819a-406f-b049-4bce81dfac02","url":"https:\/\/www.imaxx.de\/wp-content\/themes\/imaxx\/assets\/img\/input-design.png"},{"selector":"#standort-map .fc-item-meta span.icon-phone","style":"#standort-map .fc-item-meta span.icon-phone{--wpr-bg-d394b9e1-06df-4535-9adc-de33348d0e0a: url('https:\/\/www.imaxx.de\/wp-content\/uploads\/phone-1.svg');}","hash":"d394b9e1-06df-4535-9adc-de33348d0e0a","url":"https:\/\/www.imaxx.de\/wp-content\/uploads\/phone-1.svg"},{"selector":"#standort-map .fc-item-meta span.icon-mail","style":"#standort-map .fc-item-meta span.icon-mail{--wpr-bg-badae6d5-2de2-4e2e-a5ff-b00fb8de9e3f: url('https:\/\/www.imaxx.de\/wp-content\/uploads\/mail.svg');}","hash":"badae6d5-2de2-4e2e-a5ff-b00fb8de9e3f","url":"https:\/\/www.imaxx.de\/wp-content\/uploads\/mail.svg"},{"selector":"#standort-map .fc-item-meta span.icon-globe","style":"#standort-map .fc-item-meta span.icon-globe{--wpr-bg-1a349094-8293-411e-9537-d07750da314c: url('https:\/\/www.imaxx.de\/wp-content\/uploads\/map.svg');}","hash":"1a349094-8293-411e-9537-d07750da314c","url":"https:\/\/www.imaxx.de\/wp-content\/uploads\/map.svg"},{"selector":".wpomp_map_parent","style":".wpomp_map_parent:before{--wpr-bg-552535ba-b733-430e-92f5-6fafbd52c88d: url('https:\/\/www.imaxx.de\/wp-content\/themes\/imaxx\/assets\/img\/mapbg.png');}","hash":"552535ba-b733-430e-92f5-6fafbd52c88d","url":"https:\/\/www.imaxx.de\/wp-content\/themes\/imaxx\/assets\/img\/mapbg.png"},{"selector":".lg-comment-box .fb-comments","style":".lg-comment-box .fb-comments{--wpr-bg-daf33c55-d5af-49b6-91f6-ea9a028eedfb: url('https:\/\/www.imaxx.de\/wp-content\/plugins\/immomakler\/vendors\/lightgallery-2-9-0\/images\/loading.gif');}","hash":"daf33c55-d5af-49b6-91f6-ea9a028eedfb","url":"https:\/\/www.imaxx.de\/wp-content\/plugins\/immomakler\/vendors\/lightgallery-2-9-0\/images\/loading.gif"},{"selector":".lg-outer .lg-item:not(.lg-start-end-progress)","style":".lg-outer .lg-item:not(.lg-start-end-progress){--wpr-bg-39a45ffb-e278-44db-839e-50e245a09343: url('https:\/\/www.imaxx.de\/wp-content\/plugins\/immomakler\/vendors\/lightgallery-2-9-0\/images\/loading.gif');}","hash":"39a45ffb-e278-44db-839e-50e245a09343","url":"https:\/\/www.imaxx.de\/wp-content\/plugins\/immomakler\/vendors\/lightgallery-2-9-0\/images\/loading.gif"},{"selector":".wpomp_map_parent","style":".wpomp_map_parent:before{--wpr-bg-7975f70c-c55c-4af0-89b5-bbb52953b038: url('https:\/\/www.imaxx.de\/wp-content\/themes\/imaxx\/assets\/img\/mapbg.png');}","hash":"7975f70c-c55c-4af0-89b5-bbb52953b038","url":"https:\/\/www.imaxx.de\/wp-content\/themes\/imaxx\/assets\/img\/mapbg.png"}]; const rocket_excluded_pairs = [];</script><meta name="generator" content="WP Rocket 3.20.2" data-wpr-features="wpr_lazyload_css_bg_img wpr_delay_js wpr_defer_js wpr_minify_js wpr_lazyload_images wpr_automatic_lazy_rendering wpr_oci wpr_minify_css wpr_preload_links wpr_desktop"><link rel="modulepreload" as="script" crossorigin="" href="https://www.imaxx.de/wp-content/plugins/borlabs-cookie/assets/javascript/borlabs-cookie-box.BYldwBgV.min.js"><link rel="modulepreload" as="script" crossorigin="" href="https://www.imaxx.de/wp-content/plugins/borlabs-cookie/assets/javascript/vue.Dw_966si.min.js"><link rel="modulepreload" as="script" crossorigin="" href="https://www.imaxx.de/wp-content/plugins/borlabs-cookie/assets/javascript/observer.BMp-L-iT.min.js"><link rel="modulepreload" as="script" crossorigin="" href="https://www.imaxx.de/wp-content/plugins/borlabs-cookie/assets/javascript/_plugin-vue_export-helper.DlAUqK2U.min.js"><link rel="modulepreload" as="script" crossorigin="" href="https://www.imaxx.de/wp-content/plugins/borlabs-cookie/assets/javascript/focus-loop.DwSKy5Yp.min.js"><link rel="modulepreload" as="script" crossorigin="" href="https://www.imaxx.de/wp-content/plugins/borlabs-cookie/assets/javascript/use-iabtcf-vendors.CPpwXsVk.min.js"><link rel="modulepreload" as="script" crossorigin="" href="https://www.imaxx.de/wp-content/plugins/borlabs-cookie/assets/javascript/iabtcf.DtInsVJR.min.js"><link rel="modulepreload" as="script" crossorigin="" href="https://www.imaxx.de/wp-content/plugins/borlabs-cookie/assets/javascript/use-iabtcf-purposes.CcWsEjGV.min.js"><link rel="modulepreload" as="script" crossorigin="" href="https://www.imaxx.de/wp-content/plugins/borlabs-cookie/assets/javascript/use-special-features.Bha8ZmXY.min.js"><link rel="modulepreload" as="script" crossorigin="" href="https://www.imaxx.de/wp-content/plugins/borlabs-cookie/assets/javascript/base-button.CIfxnnai.min.js"><link rel="stylesheet" crossorigin="" href="https://www.imaxx.de/wp-content/plugins/borlabs-cookie/assets/css/base-button.SpN0_16M.min.css"><link rel="modulepreload" as="script" crossorigin="" href="https://www.imaxx.de/wp-content/plugins/borlabs-cookie/assets/javascript/use-iabtcf-legitimate-interests.BqeyN2Ut.min.js"><link rel="stylesheet" crossorigin="" href="https://www.imaxx.de/wp-content/plugins/borlabs-cookie/assets/css/borlabs-cookie-box.BbNPIfpU.min.css"><link rel="modulepreload" as="script" crossorigin="" href="https://www.imaxx.de/wp-content/plugins/borlabs-cookie/assets/javascript/borlabs-widget.CjhxscPG.min.js"></head>
+
+<body data-rsssl="1" class="immomakler_object-template-default single single-immomakler_object postid-218173 wp-custom-logo immomakler-page no-sidebar">
+    <div class="fixed-social-contact">
+            <div class="contact-block">
+            <ul>
+                                    <li><a href="https://www.imaxx.de/kontakt/"><img src="https://www.imaxx.de/wp-content/uploads/paper-plane.svg" alt=""></a>
+
+                    </li>
+                                    <li><a href="tel:+49641932630"><img src="https://www.imaxx.de/wp-content/uploads/phone.svg" alt=""></a>
+
+                    </li>
+                                    <li><a href="https://www.imaxx.de/ueber-imaxx/unser-team/"><img src="https://www.imaxx.de/wp-content/uploads/people-group.svg" alt=""></a>
+
+                    </li>
+                            </ul>
+        </div>
+                <div class="social-block">
+            <ul>
+                                    <li><a href="http://www.facebook.de/imaxximmobilien"><img src="https://www.imaxx.de/wp-content/uploads/facebook.svg" alt=""></a>
+
+                    </li>
+                                    <li><a href="https://www.instagram.com/imaxx_immobilien/"><img src="https://www.imaxx.de/wp-content/uploads/instagram.svg" alt=""></a>
+
+                    </li>
+                                    <li><a href="https://de.linkedin.com/company/imaxx-gruppe"><img src="https://www.imaxx.de/wp-content/uploads/LinkedIn.png" alt=""></a>
+
+                    </li>
+                            </ul>
+        </div>
+    </div>
+<div id="page" class="site">
+	<a class="skip-link screen-reader-text" href="#primary">Skip to content</a> 
+	<header id="masthead" class="main-header fixed-header site-header">
+		<div class="container">
+            <div class="row">
+                <div class="col-xl-12">
+                    <nav class="navbar main-nav navbar-expand-lg">
+                        <div class="brandLogo">
+                            <a href="https://www.imaxx.de/" class="custom-logo-link" rel="home"><img width="160" height="24" src="https://www.imaxx.de/wp-content/uploads/logo.svg" class="custom-logo" alt="IMAXX Immobilien" decoding="async"></a>                                <p class="site-title"><a href="https://www.imaxx.de/" rel="home">IMAXX Immobilien</a></p>
+                                                            <p class="site-description">Die IMAXX Gruppe ist Ihr kompetenter Partner, wenn es um die Vermittlung privater und gewerblicher Immobilien geht.</p>
+                                                    </div>
+                        <div class="navbar-collapse" id="navbar">
+                            <div class="menu-wrapper">
+                                <ul class="nav navbar-nav secondary-menu d-flex d-md-none">
+                                    
+                                    
+                                                                    </ul>
+                                <div class="menu-main-menu-container"><ul id="primary-menu" class="nav navbar-nav primary-menu" itemscope="" itemtype="http://www.schema.org/SiteNavigationElement"><li id="menu-item-3032" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children dropdown menu-item-3032 nav-item"><a href="#" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-3032"><span itemprop="name">Immobilie kaufen</span></a>
+<span class="submenu-opener"></span><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-3032">
+	<li id="menu-item-23267" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-23267 nav-item"><a itemprop="url" href="https://www.imaxx.de/immobilien/?post_type=immomakler_object&amp;radius=1&amp;center&amp;vermarktungsart%5B0%5D=kauf&amp;typ%5B0%5D=haus" class="dropdown-item"><span itemprop="name">Haus kaufen</span></a></li>
+	<li id="menu-item-23268" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-23268 nav-item"><a itemprop="url" href="https://www.imaxx.de/immobilien/?post_type=immomakler_object&amp;radius=1&amp;center&amp;vermarktungsart%5B0%5D=kauf&amp;typ%5B0%5D=wohnung" class="dropdown-item"><span itemprop="name">Wohnung kaufen</span></a></li>
+	<li id="menu-item-1180" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1180 nav-item"><a itemprop="url" href="https://www.imaxx.de/bauland-hausbau/" class="dropdown-item"><span itemprop="name">Bauland &amp; Hausbau</span></a></li>
+	<li id="menu-item-14037" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-14037 nav-item"><a itemprop="url" href="https://www.imaxx.de/aktuelle-neubauprojekte/" class="dropdown-item"><span itemprop="name">Aktuelle Neubauprojekte</span></a></li>
+	<li id="menu-item-24630" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-24630 nav-item"><a itemprop="url" href="https://www.imaxx.de/vormerkservice/" class="dropdown-item"><span itemprop="name">Vormerkservice</span></a></li>
+</ul>
+</li>
+<li id="menu-item-3033" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children dropdown menu-item-3033 nav-item"><a href="#" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-3033"><span itemprop="name">Immobilie verkaufen</span></a>
+<span class="submenu-opener"></span><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-3033">
+	<li id="menu-item-1235" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1235 nav-item"><a itemprop="url" href="https://www.imaxx.de/premium-verkaeuferservice/" class="dropdown-item"><span itemprop="name">Premium Verkäuferservice</span></a></li>
+	<li id="menu-item-40242" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-40242 nav-item"><a itemprop="url" href="https://www.imaxx.de/ueber-imaxx/unser-team/" class="dropdown-item"><span itemprop="name">Unsere Immobilienexperten</span></a></li>
+	<li id="menu-item-24629" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-24629 nav-item"><a itemprop="url" href="https://www.imaxx.de/wertanalyse/" class="dropdown-item"><span itemprop="name">Immobilie bewerten</span></a></li>
+</ul>
+</li>
+<li id="menu-item-3014" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children dropdown menu-item-3014 nav-item"><a href="#" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-3014"><span itemprop="name">Kapitalanlage</span></a>
+<span class="submenu-opener"></span><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-3014">
+	<li id="menu-item-3015" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3015 nav-item"><a itemprop="url" href="https://www.imaxx.de/immobilien-als-kapitalanlage/" class="dropdown-item"><span itemprop="name">Immobilien als Kapitalanlage</span></a></li>
+	<li id="menu-item-19193" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-19193 nav-item"><a itemprop="url" href="https://www.imaxx.de/aktuelle-neubauprojekte/" class="dropdown-item"><span itemprop="name">Aktuelle Neubauprojekte</span></a></li>
+</ul>
+</li>
+<li id="menu-item-3034" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children dropdown menu-item-3034 nav-item"><a href="#" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-3034"><span itemprop="name">Vermietung</span></a>
+<span class="submenu-opener"></span><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-3034">
+	<li id="menu-item-19927" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-19927 nav-item"><a itemprop="url" href="https://www.imaxx.de/leistungen-vermietung/" class="dropdown-item"><span itemprop="name">Leistungen</span></a></li>
+	<li id="menu-item-24809" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-24809 nav-item"><a itemprop="url" href="https://www.imaxx.de/immobilien/?post_type=immomakler_object&amp;radius=1&amp;center&amp;vermarktungsart%5B0%5D=miete&amp;typ%5B0%5D=haus" class="dropdown-item"><span itemprop="name">Haus mieten</span></a></li>
+	<li id="menu-item-24811" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-24811 nav-item"><a itemprop="url" href="https://www.imaxx.de/immobilien/?post_type=immomakler_object&amp;radius=1&amp;center&amp;vermarktungsart%5B0%5D=miete&amp;typ%5B0%5D=wohnung" class="dropdown-item"><span itemprop="name">Wohnung mieten</span></a></li>
+	<li id="menu-item-20027" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-20027 nav-item"><a itemprop="url" href="https://www.imaxx.de/leistungen-vermietung/referenzen-vermietung/" class="dropdown-item"><span itemprop="name">Referenzen</span></a></li>
+</ul>
+</li>
+<li id="menu-item-3035" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children dropdown menu-item-3035 nav-item"><a href="#" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-3035"><span itemprop="name">Gewerbe</span></a>
+<span class="submenu-opener"></span><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-3035">
+	<li id="menu-item-1253" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1253 nav-item"><a itemprop="url" href="https://www.imaxx.de/leistungen-gewerbe/" class="dropdown-item"><span itemprop="name">Leistungen</span></a></li>
+	<li id="menu-item-24799" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-24799 nav-item"><a itemprop="url" href="https://www.imaxx.de/immobilien/?post_type=immomakler_object&amp;typ%5B0%5D=gastgewerbe&amp;typ%5B1%5D=pensionen&amp;typ%5B2%5D=halle-lager-produktion&amp;typ%5B3%5D=werkstatt&amp;typ%5B4%5D=renditeobjekt&amp;typ%5B5%5D=wohn-und-geschaeftshaus&amp;vermarktungsart%5B0%5D=kauf&amp;center&amp;collapse&amp;von-qm=0.00&amp;bis-qm=3200.00&amp;von-zimmer=0.00&amp;bis-zimmer=24.00&amp;von-kaltmiete=0.00&amp;bis-kaltmiete=9500.00&amp;von-kaufpreis=0.00&amp;bis-kaufpreis=3000000.00" class="dropdown-item"><span itemprop="name">Gewerbeimmobilie kaufen</span></a></li>
+	<li id="menu-item-24803" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-24803 nav-item"><a itemprop="url" href="https://www.imaxx.de/immobilien/?post_type=immomakler_object&amp;typ%5B0%5D=buero-praxis&amp;typ%5B1%5D=bueroflaeche&amp;typ%5B2%5D=buerohaus&amp;typ%5B3%5D=einzelhandel&amp;typ%5B4%5D=ladenflaeche&amp;typ%5B5%5D=verkaufsflaeche&amp;typ%5B6%5D=gastgewerbe&amp;typ%5B7%5D=gastronomie&amp;typ%5B8%5D=halle-lager-produktion&amp;typ%5B9%5D=halle&amp;typ%5B10%5D=industriehalle&amp;vermarktungsart%5B0%5D=miete&amp;center&amp;collapse&amp;von-qm=0.00&amp;bis-qm=3200.00&amp;von-zimmer=0.00&amp;bis-zimmer=24.00&amp;von-kaltmiete=0.00&amp;bis-kaltmiete=9500.00&amp;von-kaufpreis=0.00&amp;bis-kaufpreis=3000000.00" class="dropdown-item"><span itemprop="name">Gewerbeimmobilie mieten</span></a></li>
+</ul>
+</li>
+<li id="menu-item-3036" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children dropdown menu-item-3036 nav-item"><a href="#" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-3036"><span itemprop="name">Bauträger</span></a>
+<span class="submenu-opener"></span><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-3036">
+	<li id="menu-item-24787" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-24787 nav-item"><a itemprop="url" href="https://www.imaxx.de/bautraeger/" class="dropdown-item"><span itemprop="name">Leistungen</span></a></li>
+	<li id="menu-item-1261" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1261 nav-item"><a itemprop="url" href="https://www.imaxx.de/referenzen-bautraeger/" class="dropdown-item"><span itemprop="name">Referenzen</span></a></li>
+</ul>
+</li>
+<li id="menu-item-92736" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children dropdown menu-item-92736 nav-item"><a href="https://www.imaxx.de/ueber-imaxx/" aria-expanded="false" class="dropdown-toggle nav-link" id="menu-item-dropdown-92736"><span itemprop="name">Über IMAXX</span></a>
+<span class="submenu-opener"></span><ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-92736">
+	<li id="menu-item-178444" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-178444 nav-item"><a itemprop="url" href="https://www.imaxx.de/bad-hersfeld/" class="dropdown-item"><span itemprop="name">Immobilienmakler in Bad Hersfeld</span></a></li>
+	<li id="menu-item-92737" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-92737 nav-item"><a itemprop="url" href="https://www.imaxx.de/bad-homburg/" class="dropdown-item"><span itemprop="name">Immobilienmakler Bad Homburg</span></a></li>
+	<li id="menu-item-92738" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-92738 nav-item"><a itemprop="url" href="https://www.imaxx.de/bad-nauheim/" class="dropdown-item"><span itemprop="name">Immobilienmakler Bad Nauheim</span></a></li>
+	<li id="menu-item-92739" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-92739 nav-item"><a itemprop="url" href="https://www.imaxx.de/buedingen/" class="dropdown-item"><span itemprop="name">Immobilienmakler Büdingen</span></a></li>
+	<li id="menu-item-92740" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-92740 nav-item"><a itemprop="url" href="https://www.imaxx.de/butzbach/" class="dropdown-item"><span itemprop="name">Immobilienmakler Butzbach</span></a></li>
+	<li id="menu-item-92741" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-92741 nav-item"><a itemprop="url" href="https://www.imaxx.de/diez/" class="dropdown-item"><span itemprop="name">Immobilienmakler Diez</span></a></li>
+	<li id="menu-item-92742" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-92742 nav-item"><a itemprop="url" href="https://www.imaxx.de/friedberg/" class="dropdown-item"><span itemprop="name">Immobilienmakler Friedberg</span></a></li>
+	<li id="menu-item-92743" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-92743 nav-item"><a itemprop="url" href="https://www.imaxx.de/giessen/" class="dropdown-item"><span itemprop="name">Immobilienmakler Gießen</span></a></li>
+	<li id="menu-item-92744" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-92744 nav-item"><a itemprop="url" href="https://www.imaxx.de/horlofftal/" class="dropdown-item"><span itemprop="name">Immobilienmakler Horlofftal</span></a></li>
+	<li id="menu-item-92745" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-92745 nav-item"><a itemprop="url" href="https://www.imaxx.de/katzenelnbogen/" class="dropdown-item"><span itemprop="name">Immobilienmakler Katzenelnbogen</span></a></li>
+	<li id="menu-item-92746" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-92746 nav-item"><a itemprop="url" href="https://www.imaxx.de/langenselbold/" class="dropdown-item"><span itemprop="name">Immobilienmakler Langenselbold</span></a></li>
+	<li id="menu-item-92751" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-92751 nav-item"><a itemprop="url" href="https://www.imaxx.de/limburg/" class="dropdown-item"><span itemprop="name">Immobilienmakler Limburg</span></a></li>
+	<li id="menu-item-92747" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-92747 nav-item"><a itemprop="url" href="https://www.imaxx.de/marburg/" class="dropdown-item"><span itemprop="name">Immobilienmakler Marburg</span></a></li>
+	<li id="menu-item-92748" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-92748 nav-item"><a itemprop="url" href="https://www.imaxx.de/ober-moerlen/" class="dropdown-item"><span itemprop="name">Immobilienmakler Ober-Mörlen</span></a></li>
+	<li id="menu-item-92749" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-92749 nav-item"><a itemprop="url" href="https://www.imaxx.de/weilburg/" class="dropdown-item"><span itemprop="name">Immobilienmakler Weilburg</span></a></li>
+	<li id="menu-item-92750" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-92750 nav-item"><a itemprop="url" href="https://www.imaxx.de/wetzlar/" class="dropdown-item"><span itemprop="name">Immobilienmakler Wetzlar</span></a></li>
+</ul>
+</li>
+</ul></div>                            </div>
+                        </div>
+                        <ul class="nav navbar-nav secondary-menu d-none d-md-flex">
+                                                        
+                                                    </ul>
+                        <div class="navbar-toggler navbar-toggle-btn nav-open"> <span></span>
+                         <span></span>
+                         <span></span>
+
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+	<div id="content" class="site-content"><!--
+Hier den zwischen dem Header des individuellen Theme-Seitentemplates
+und WP-ImmoMakler fehlenden HTML-Code einfügen.
+
+Unterscheidung von Listenansicht und Detailansicht:
+if( is_immomakler_single() ) { ... } else { ... }
+-->
+
+
+<div class="container">
+	<div id="primary" class="content-area">
+		<main id="primary" class="site-main">
+<!-- BEGIN: WP-ImmoMakler® Immobilien-Importer Plugin 5.59.5.3 https://www.wp-immomakler.de -->
+
+	
+    <p id="breadcrumbs"><span><span><a href="https://www.imaxx.de/immobilien/">Immobilien</a></span>  <span class="breadcrumb_last" aria-current="page">4-Zimmer-Wohnung in der Innenstadt von Gießen</span></span></p>    
+	<div class="sy_property-actions">
+	<div class="sy_property-actions--left">
+    	<a role="button" href="https://www.imaxx.de/immobilien/?paged=1#id-50683">
+        	<span class="fas fa-chevron-left"></span> Zurück zur Liste    	</a>
+	</div>
+    
+        
+	<div class="sy_property-actions--right">
+				<a class="btn btn-default btn-sm immomakler-print-button" role="button" href="https://www.imaxx.de/immobilien/wohnung-eigentumswohnung-etagenwohnung-in-giessen-kaufen-50683/?pdf" target="_blank" rel="nofollow">
+			<span class="glyphicon glyphicon-print"></span> Druckansicht (PDF)		</a>
+						<a class="
+			btn btn-default btn-sm			immobilie-cart-addremove" title="
+		auf die Merkliste setzen" role="button" href="">
+				<span class="in-cart glyphicon
+				glyphicon-unchecked				"></span>
+				merken				<input type="hidden" class="property-item-id" name="in_cart" value="50683">
+			</a>
+		        <a class="btn-theme" role="button" href="#immomakler-contactform-panel">
+            <span>Exposé-Anfrage</span>
+        </a>
+	</div>
+</div>
+    <div class="row">
+    <div class="col-xxl-11">
+        <div class="heading-block text-color-blue mb-70 open-sans-bold-64">
+            <h1>4-Zimmer-Wohnung in der Innenstadt von Gießen</h1>
+        </div>
+    </div>
+</div>
+    
+
+    <div id="immo-galleryslider" class="panel-grid panel-has-style">
+
+
+        <div class="siteorigin-panels-stretch panel-row-style panel-row-style-for-immo-galleryslider" data-stretch-type="full-stretched-padded">
+
+            <section class="big-img-slider-section">
+
+                <div class="row">
+                    <div class="col-xxl-7 col-xl-9 m-auto">
+                        <div class="big-img-slider mt-80 both_pagination">
+
+
+                                                            <div class="single-big-img-slide rounded-corner-32">
+                                    <div class="image-block coverImage" style="background: url(https://www.imaxx.de/wp-content/uploads/immomakler/attachments/6b0ee92f1a3a57d566a1420ed7a98efd/5546995-huuql59sq7oytuwdpjyj6s7r-624581-a-backbonephoto-010_b_hd-900x600.jpg);"></div>
+                                                                            <div class="text-container background-color-blue text-color-white open-sans-regular-16" style="display: none">
+                                            <p>Außenansicht</p>
+                                        </div>
+                                                                    </div>
+                                                            <div class="single-big-img-slide rounded-corner-32">
+                                    <div class="image-block coverImage" style="background: url(https://www.imaxx.de/wp-content/uploads/immomakler/attachments/6b0ee92f1a3a57d566a1420ed7a98efd/5546995-uh6nh3ojmb52naum3ta7yzlf-624581-a-backbonephoto-007_b_hd-900x600.jpg);"></div>
+                                                                            <div class="text-container background-color-blue text-color-white open-sans-regular-16" style="display: none">
+                                            <p>Außenansicht</p>
+                                        </div>
+                                                                    </div>
+                                                            <div class="single-big-img-slide rounded-corner-32">
+                                    <div class="image-block coverImage" style="background: url(https://www.imaxx.de/wp-content/uploads/immomakler/attachments/6b0ee92f1a3a57d566a1420ed7a98efd/5546995-qqipo2kf9kbbr1chdzprttmf-kuche-900x675.jpg);"></div>
+                                                                            <div class="text-container background-color-blue text-color-white open-sans-regular-16" style="display: none">
+                                            <p>Küche</p>
+                                        </div>
+                                                                    </div>
+                                                            <div class="single-big-img-slide rounded-corner-32">
+                                    <div class="image-block coverImage" style="background: url(https://www.imaxx.de/wp-content/uploads/immomakler/attachments/6b0ee92f1a3a57d566a1420ed7a98efd/5546995-xmwmraujjpgpmwfcdkzhyqtk-624581-b-backbonephoto-025_b_hd-900x600.jpg);"></div>
+                                                                            <div class="text-container background-color-blue text-color-white open-sans-regular-16" style="display: none">
+                                            <p>Außenansicht</p>
+                                        </div>
+                                                                    </div>
+                                                            <div class="single-big-img-slide rounded-corner-32">
+                                    <div class="image-block coverImage" style="background: url(https://www.imaxx.de/wp-content/uploads/immomakler/attachments/6b0ee92f1a3a57d566a1420ed7a98efd/5546995-nv6g8qt4sqlpa8wxlru8ubph-624581-b-backbonephoto-007_b_web-900x600.jpg);"></div>
+                                                                            <div class="text-container background-color-blue text-color-white open-sans-regular-16" style="display: none">
+                                            <p>Außenansicht</p>
+                                        </div>
+                                                                    </div>
+                                                            <div class="single-big-img-slide rounded-corner-32">
+                                    <div class="image-block coverImage" style="background: url(https://www.imaxx.de/wp-content/uploads/immomakler/attachments/6b0ee92f1a3a57d566a1420ed7a98efd/5546995-5zipwdbbknd3qudohc2gaybs-624581-b-backbonephoto-010_b_web-900x600.jpg);"></div>
+                                                                            <div class="text-container background-color-blue text-color-white open-sans-regular-16" style="display: none">
+                                            <p>Außenansicht</p>
+                                        </div>
+                                                                    </div>
+                                                            <div class="single-big-img-slide rounded-corner-32">
+                                    <div class="image-block coverImage" style="background: url(https://www.imaxx.de/wp-content/uploads/immomakler/attachments/6b0ee92f1a3a57d566a1420ed7a98efd/5546995-xzndjktj7y2dhef9tumzynrw-624581-b-backbonephoto-013_b_web-900x600.jpg);"></div>
+                                                                            <div class="text-container background-color-blue text-color-white open-sans-regular-16" style="display: none">
+                                            <p>Außenansicht</p>
+                                        </div>
+                                                                    </div>
+                                                            <div class="single-big-img-slide rounded-corner-32">
+                                    <div class="image-block coverImage" style="background: url(https://www.imaxx.de/wp-content/uploads/immomakler/attachments/6b0ee92f1a3a57d566a1420ed7a98efd/5546995-jck5eqyeipikrke1qftykf7a-dachgeschoss-675x900.jpg);"></div>
+                                                                            <div class="text-container background-color-blue text-color-white open-sans-regular-16" style="display: none">
+                                            <p>Dachgeschoss</p>
+                                        </div>
+                                                                    </div>
+                                                            <div class="single-big-img-slide rounded-corner-32">
+                                    <div class="image-block coverImage" style="background: url(https://www.imaxx.de/wp-content/uploads/immomakler/attachments/6b0ee92f1a3a57d566a1420ed7a98efd/5546995-ngql3z3e8tuqpsl6wxklppzu-zimmer-900x675.jpg);"></div>
+                                                                            <div class="text-container background-color-blue text-color-white open-sans-regular-16" style="display: none">
+                                            <p>Zimmer</p>
+                                        </div>
+                                                                    </div>
+                                                            <div class="single-big-img-slide rounded-corner-32">
+                                    <div class="image-block coverImage" style="background: url(https://www.imaxx.de/wp-content/uploads/immomakler/attachments/6b0ee92f1a3a57d566a1420ed7a98efd/5546995-jwpetncd8wdy7chtmjfwwwyy-624581-b-backbonephoto-016_b_web-900x600.jpg);"></div>
+                                                                            <div class="text-container background-color-blue text-color-white open-sans-regular-16" style="display: none">
+                                            <p>Garage</p>
+                                        </div>
+                                                                    </div>
+                                                            <div class="single-big-img-slide rounded-corner-32">
+                                    <div class="image-block coverImage" style="background: url(https://www.imaxx.de/wp-content/uploads/immomakler/attachments/6b0ee92f1a3a57d566a1420ed7a98efd/5546995-jaecjv4dl8xjeqeihh7o3rgj-treppenaufgang-675x900.jpg);"></div>
+                                                                            <div class="text-container background-color-blue text-color-white open-sans-regular-16" style="display: none">
+                                            <p>Treppenaufgang</p>
+                                        </div>
+                                                                    </div>
+                                                            <div class="single-big-img-slide rounded-corner-32">
+                                    <div class="image-block coverImage" style="background: url(https://www.imaxx.de/wp-content/uploads/immomakler/attachments/6b0ee92f1a3a57d566a1420ed7a98efd/5546995-vsotuw3zucvj8bcyxt35aafh-624581-b-backbonephoto-019_web-900x600.jpg);"></div>
+                                                                            <div class="text-container background-color-blue text-color-white open-sans-regular-16" style="display: none">
+                                            <p>Außenansicht</p>
+                                        </div>
+                                                                    </div>
+                                                            <div class="single-big-img-slide rounded-corner-32">
+                                    <div class="image-block coverImage" style="background: url(https://www.imaxx.de/wp-content/uploads/immomakler/attachments/6b0ee92f1a3a57d566a1420ed7a98efd/5546995-uzw3dcza1jhphxhosletqgah-624581-b-backbonephoto-022_web-900x600.jpg);"></div>
+                                                                            <div class="text-container background-color-blue text-color-white open-sans-regular-16" style="display: none">
+                                            <p>Außenansicht</p>
+                                        </div>
+                                                                    </div>
+                                                            <div class="single-big-img-slide rounded-corner-32">
+                                    <div class="image-block coverImage" style="background: url(https://www.imaxx.de/wp-content/uploads/immomakler/attachments/6b0ee92f1a3a57d566a1420ed7a98efd/5546995-kkvsjajgsdz65oj23dhhcvjj-624581-b-backbonephoto-004_b_hd-900x600.jpg);"></div>
+                                                                            <div class="text-container background-color-blue text-color-white open-sans-regular-16" style="display: none">
+                                            <p>Außenansicht</p>
+                                        </div>
+                                                                    </div>
+                                                            <div class="single-big-img-slide rounded-corner-32">
+                                    <div class="image-block coverImage" style="background: url(https://www.imaxx.de/wp-content/uploads/immomakler/attachments/6b0ee92f1a3a57d566a1420ed7a98efd/5546995-b1gbvts4edcga5hv1i6pegh4-624581-b-backbonephoto-028_b_hd-900x600.jpg);"></div>
+                                                                            <div class="text-container background-color-blue text-color-white open-sans-regular-16" style="display: none">
+                                            <p>Außenansicht</p>
+                                        </div>
+                                                                    </div>
+                                                            <div class="single-big-img-slide rounded-corner-32">
+                                    <div class="image-block coverImage" style="background: url(https://www.imaxx.de/wp-content/uploads/immomakler/attachments/6b0ee92f1a3a57d566a1420ed7a98efd/5546995-a45okidgxff7kkabkbmf8jy6-624581-b-backbonephoto-001_b_hd-900x600.jpg);"></div>
+                                                                            <div class="text-container background-color-blue text-color-white open-sans-regular-16" style="display: none">
+                                            <p>Außenansicht</p>
+                                        </div>
+                                                                    </div>
+                                                            <div class="single-big-img-slide rounded-corner-32">
+                                    <div class="image-block coverImage" style="background: url(https://www.imaxx.de/wp-content/uploads/immomakler/attachments/6b0ee92f1a3a57d566a1420ed7a98efd/5546995-gabxaju1nvqx7prvoy954g9n-624581-a-backbonephoto-013_b_web-900x600.jpg);"></div>
+                                                                            <div class="text-container background-color-blue text-color-white open-sans-regular-16" style="display: none">
+                                            <p>Außenansicht</p>
+                                        </div>
+                                                                    </div>
+                                                            <div class="single-big-img-slide rounded-corner-32">
+                                    <div class="image-block coverImage" style="background: url(https://www.imaxx.de/wp-content/uploads/immomakler/attachments/6b0ee92f1a3a57d566a1420ed7a98efd/5546995-pn7nuxx4z5mn4lmzxwddfic5-624581-a-backbonephoto-016_b_web-900x600.jpg);"></div>
+                                                                            <div class="text-container background-color-blue text-color-white open-sans-regular-16" style="display: none">
+                                            <p>Außenansicht</p>
+                                        </div>
+                                                                    </div>
+                                                    </div>
+                    </div>
+                </div>
+
+            </section>
+
+        </div>
+    </div>
+
+
+
+        <div class="immomakler-single immomakler">
+
+        	
+<div class="row">
+    <div class="col-xs-12">
+                                    <div class="objectnumber">Objektnummer: 50683</div>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+
+        <div class="property-data">
+            <div class="property-data--item"><div class="property-data--item--top"><h2 class="property-subtitle"><span class="glyphicon glyphicon-map-marker"></span> 35390 Gießen, Etagenwohnung zum Kauf</h2>
+</div><div class="property-data--item--bottom"></div></div>        </div>
+
+        <div class="property-data">
+
+                            <div class="property-data--item">
+                    <div class="property-data--item--top">4</div>
+                    <div class="property-data--item--bottom">Zimmer</div>
+                </div>
+            
+                            <div class="property-data--item">
+                    <div class="property-data--item--top">150 m²</div>
+                    <div class="property-data--item--bottom">Wohnfläche&nbsp;ca.</div>
+                </div>
+            
+            
+            
+            
+                            <div class="property-data--item">
+                    <div class="property-data--item--top">526.000 EUR</div>
+                    <div class="property-data--item--bottom">Kaufpreis</div>
+                </div>
+            
+            <div class="property-data--item"><div class="property-data--item--top">3,57 % inkl. gesetzl. MwSt.<br></div><div class="property-data--item--bottom">Käufer­provision</div></div>        </div>
+    </div>
+</div>
+
+<!-- Lage -->
+<div class="row">
+    <div class="col-xs-12">
+        <div class="property-map panel panel-default">
+    <div class="panel-heading">
+        <h2>Lage</h2>
+    </div>
+    <div class="panel-body">
+                <p>Gießen überzeugt als lebendige Universitätsstadt im Herzen Hessens mit einer ausgezeichneten Infrastruktur und einer hohen Lebensqualität. Die Stadt bietet eine perfekte Mischung aus urbanem Flair und naturnahem Wohnen – ideal für Familien, Berufstätige und Studierende gleichermaßen.</p>
+<p>Die Innenstadt mit ihren zahlreichen Einkaufsmöglichkeiten, Restaurants, Cafés und Kultureinrichtungen ist schnell erreichbar und lädt zum Verweilen ein. Märkte, Galerien und ein vielfältiges Veranstaltungsangebot sorgen das ganze Jahr über für ein reges Stadtleben.</p>
+<p>Für Familien besonders attraktiv ist das dichte Netz an Kindertagesstätten, Schulen aller Weiterführenden Schulformen sowie die renommierte Justus-Liebig-Universität, die der Stadt ihr unverwechselbares akademisches Gepräge verleiht.</p>
+<p>Die Verkehrsanbindung ist hervorragend: Über die Autobahnen A45 und A480 sowie den Gießener Hauptbahnhof mit direkten Zugverbindungen nach Frankfurt am Main, Marburg und Kassel sind Pendler bestens angebunden. Auch der öffentliche Nahverkehr mit Bus und Stadtbahn erschließt alle Stadtteile zuverlässig.</p>
+<p>Wer Erholung in der Natur sucht, findet in den umliegenden Ausflugsmöglichkeiten entlang der Lahn, im Schiffenberger Wald oder im nahen Vogelsberg ideale Bedingungen für Wanderungen, Radtouren und Freizeitaktivitäten.</p>
+<p>Gießen verbindet damit alle Vorzüge einer modernen Mittelstadt mit einer entspannten Wohnatmosphäre – eine Investition mit Zukunft.</p>
+    
+    
+    </div>
+</div>    </div>
+</div>
+
+<!-- Objektbeschreibung, Objektdaten -->
+<div class="row">
+    <div class="col-xs-12">
+        <div class="property-map panel panel-default">
+            <div class="panel-heading">
+                <h2>Objekt­beschreibung</h2>
+            </div>
+            <div class="panel-body">
+                
+
+                            <p>Diese großzügige 4-Zimmer-Wohnung mit einer Wohnfläche von ca. 150 m² befindet sich in attraktiver und gleichzeitig ruhiger Innenstadtlage von Gießen und befindet sich unmittelbarer Nähe zur Justus-Liebig-Universität. </p>
+<p>Die Wohnung ist derzeit vermietet und eignet sich daher nicht nur zu eigener Nutzung, sondern auch als Kapitalanlage. Die Einheit erstreckt sich über zwei Ebenen und bietet ein großzügiges Wohnkonzept mit viel Platz und einer Vielfalt an Nutzungsmöglichkeiten. </p>
+<p>Die Wohnung umfasst 4 Zimmer, die sich ideal als Schlaf-, Kinder-, Gäste- oder Arbeitszimmer nutzen lassen, ein Badezimmer sowie der Wohn- und Essbereich. Das Herzstück der Wohnung bildet der großzügige und lichtdurchflutete Wohn- und Essbereich im Dachgeschoss. </p>
+<p>Die offene Raumgestaltung schafft eine einladende Wohnatmosphäre und bietet ausreichend Platz für gemeinsame Stunden mit Familie oder Freunden. Die angrenzende Küche fügt sich harmonisch in den Wohnbereich ein und sorgt für kurze Wege im Alltag. </p>
+<p>Ein eigener Stellplatz, ein Balkon sowie ein Abstellraum innerhalb der Wohnung runden das Immobilienangebot ab. Dank der hervorragenden Lage in der Gießener Innenstadt mit kurzen Wegen zur Justus-Liebig-Universität, zu Einkaufsmöglichkeiten, gastronomischen Angeboten sowie einer sehr guten Anbindung an den öffentlichen Nahverkehr vereint diese Immobilie Wohnqualität mit Urbanität und erfreut sich vor allem bei Studenten und Paaren, die am Puls des Geschehens leben möchten, hoher Beliebtheit. </p>
+<p>Ob als solide Kapitalanlage oder perspektivisch zur Eigennutzung – diese großzügige Wohnung überzeugt durch ihre Größe, die gelungene Raumaufteilung und ihre begehrte Lage. Wir haben Ihr Interesse geweckt? </p>
+<p>Gerne zeigen wir Ihnen die Immobilie bei einem persönlichen Besichtigungstermin. Hierfür freuen wir uns auf Ihre Anfrage.</p>
+                
+                
+    <h3>Objektdaten</h3>
+
+    <ul class="list-group">
+        
+        
+                                                        <li class="list-group-item data-objektnr_extern">
+                        <div class="row">
+                            <div class="dt col-sm-5">Objekt-ID</div>
+                            <div class="dd col-sm-7">50683</div>
+                        </div>
+                    </li>
+                                                                                    <li class="list-group-item data-objekt_typen">
+                        <div class="row">
+                            <div class="dt col-sm-5">Objekttypen</div>
+                            <div class="dd col-sm-7">Etagenwohnung, Wohnung</div>
+                        </div>
+                    </li>
+                                                                                                                                                                                                                                                                                                                                                                                                        <li class="list-group-item data-wohnflaeche">
+                        <div class="row">
+                            <div class="dt col-sm-5">Wohnfläche&nbsp;ca.</div>
+                            <div class="dd col-sm-7">150 m²</div>
+                        </div>
+                    </li>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <li class="list-group-item data-anzahl_zimmer">
+                        <div class="row">
+                            <div class="dt col-sm-5">Zimmer</div>
+                            <div class="dd col-sm-7">4</div>
+                        </div>
+                    </li>
+                                                                                                        <li class="list-group-item data-anzahl_schlafzimmer">
+                        <div class="row">
+                            <div class="dt col-sm-5">Schlafzimmer</div>
+                            <div class="dd col-sm-7">3</div>
+                        </div>
+                    </li>
+                                                                                                        <li class="list-group-item data-anzahl_badezimmer">
+                        <div class="row">
+                            <div class="dt col-sm-5">Badezimmer</div>
+                            <div class="dd col-sm-7">1</div>
+                        </div>
+                    </li>
+                                                                                                                                                                                                            <li class="list-group-item data-anzahl_balkone">
+                        <div class="row">
+                            <div class="dt col-sm-5">Balkone</div>
+                            <div class="dd col-sm-7">1</div>
+                        </div>
+                    </li>
+                                                                                                                                                <li class="list-group-item data-heizungsart">
+                        <div class="row">
+                            <div class="dt col-sm-5">Heizungsart</div>
+                            <div class="dd col-sm-7">Fernwärme</div>
+                        </div>
+                    </li>
+                                                                                                                                                                    <li class="list-group-item data-baujahr">
+                        <div class="row">
+                            <div class="dt col-sm-5">Baujahr</div>
+                            <div class="dd col-sm-7">1984</div>
+                        </div>
+                    </li>
+                                                                                                        <li class="list-group-item data-zustand">
+                        <div class="row">
+                            <div class="dt col-sm-5">Zustand</div>
+                            <div class="dd col-sm-7">gepflegt</div>
+                        </div>
+                    </li>
+                                                                                    <li class="list-group-item data-ausstatt_kategorie">
+                        <div class="row">
+                            <div class="dt col-sm-5">Ausstattung</div>
+                            <div class="dd col-sm-7">Standard</div>
+                        </div>
+                    </li>
+                                                                                                                                                                                                                                                                                                                <li class="list-group-item data-vermietet">
+                        <div class="row">
+                            <div class="dt col-sm-5">Status</div>
+                            <div class="dd col-sm-7">vermietet</div>
+                        </div>
+                    </li>
+                                                                                                                                                                                                            <li class="list-group-item data-stellplaetze_tiefgarage">
+                        <div class="row">
+                            <div class="dt col-sm-5">Tief­garagen­stell­platz</div>
+                            <div class="dd col-sm-7">16.000 EUR (Anzahl: 1)</div>
+                        </div>
+                    </li>
+                                                                                                                                                                                                                                <li class="list-group-item data-verfuegbar_ab">
+                        <div class="row">
+                            <div class="dt col-sm-5">Verfügbar ab</div>
+                            <div class="dd col-sm-7">vermietet</div>
+                        </div>
+                    </li>
+                                                                                                                                                                                                                        
+        
+
+                                                                                                                                                                                
+                        <li class="list-group-item data-kaufpreis">
+                            <div class="row price">
+                                <div class="dt col-sm-5">Kaufpreis</div>
+                                <div class="dd col-sm-7">526.000 EUR</div>
+                            </div>
+                        </li>
+                                    
+            
+        
+        
+        <li class="list-group-item data-aussen_courtage">    <div class="row price">        <div class="dt col-sm-5">Käufer­provision</div>        <div class="dd col-sm-7">3,57 % inkl. gesetzl. MwSt.<br></div>    </div></li>
+            </ul>
+<!-- .immobilie-details -->            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        				                
+        	<div class="property-features panel panel-default">
+    <div class="panel-heading"><h2>Ausstattung / Merkmale</h2></div>
+    <div class="panel-body">
+		<ul class="list-group">
+					<li class="list-group-item">✓ Badewanne</li>
+					<li class="list-group-item">✓ Balkon</li>
+					<li class="list-group-item">✓ Keller</li>
+					<li class="list-group-item">✓ Parkettboden</li>
+					<li class="list-group-item">✓ Tageslichtbad</li>
+					<li class="list-group-item">✓ Tiefgarage</li>
+				</ul>
+	</div>
+</div>
+        
+    </div>
+</div>
+
+<!-- Energieausweis -->
+<div class="row">
+    <div class="col-xs-12">
+        
+
+<div class="property-epass panel panel-default">
+	<div class="panel-heading"><h2>Energieausweis</h2></div>
+	<div class="panel-body">
+				<div class="epass-diagram-container">
+		<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 270 65" class="immomakler-epass-svg" style="enable-background:new 0 0 270 65;" xml:space="preserve">
+<style type="text/css">
+	.immomakler-epass-svg .st0{fill:url(#immomakler-epass-gradient-1);}
+	.immomakler-epass-svg .st1{fill:url(#immomakler-epass-gradient-2);}
+	.immomakler-epass-svg .st2{fill:none;stroke:#FFFFFF;stroke-width:1.1339;stroke-miterlimit:10;}
+	.immomakler-epass-svg .st3{fill:#7A7A7A;}
+	.immomakler-epass-svg .st4{font-family:Arial, Helvetica, sans-serif;}
+	.immomakler-epass-svg .st5{font-size:7px;}
+	.immomakler-epass-svg .st6{opacity:0.75;}
+	.immomakler-epass-svg .st7{fill:#FFFFFF;}
+	.immomakler-epass-svg .st8{font-size:9px;}
+	.immomakler-epass-svg .st9{display:none;}
+	.immomakler-epass-svg .st10{display:inline;fill:#FFFFFF;}
+	.immomakler-epass-svg .st11{font-family:Arial, Helvetica, sans-serif; font-weight: bolder;}
+	.immomakler-epass-svg .st12{font-size:13px;}
+</style>
+<g id="Balken-Farbig">
+	<linearGradient id="immomakler-epass-gradient-1" gradientUnits="userSpaceOnUse" x1="0" y1="60" x2="270" y2="60">
+		<stop offset="0" style="stop-color:#5FB95A"></stop>
+		<stop offset="0.5" style="stop-color:#EBC900"></stop>
+		<stop offset="1" style="stop-color:#EC2830"></stop>
+	</linearGradient>
+	<path class="st0" d="M270,55H0v2c0,4.4,3.6,8,8,8h254c4.4,0,8-3.6,8-8V55z"></path>
+	<linearGradient id="immomakler-epass-gradient-2" gradientUnits="userSpaceOnUse" x1="0" y1="32.9961" x2="270" y2="32.9961">
+		<stop offset="0" style="stop-color:#5FB95A"></stop>
+		<stop offset="0.5" style="stop-color:#EBC900"></stop>
+		<stop offset="1" style="stop-color:#EC2830"></stop>
+	</linearGradient>
+	<path class="st1" d="M262,23H8c-4.4,0-8,3.6-8,8v12h270V31C270,26.6,266.4,23,262,23z"></path>
+</g>
+<g id="Energieklassen-Trennlinien">
+	<line class="st2" x1="30" y1="23" x2="30" y2="43"></line>
+	<line class="st2" x1="50" y1="23" x2="50" y2="43"></line>
+	<line class="st2" x1="75" y1="23" x2="75" y2="43"></line>
+	<line class="st2" x1="100" y1="23" x2="100" y2="43"></line>
+	<line class="st2" x1="130" y1="23" x2="130" y2="43"></line>
+	<line class="st2" x1="160" y1="23" x2="160" y2="43"></line>
+	<line class="st2" x1="200" y1="23" x2="200" y2="43"></line>
+	<line class="st2" x1="250" y1="23" x2="250" y2="43"></line>
+</g>
+<g id="Zahlen-Energiebedarf">
+	<g id="Wert-fGEE_1_">
+		<text transform="matrix(1 0 0 1 0.2321 51.7067)" class="st3 st4 st5">0</text>
+	</g>
+	<g id="Wert-fGEE_3_">
+		<text transform="matrix(1 0 0 1 25.2088 51.7067)" class="st3 st4 st5">25</text>
+	</g>
+	<g id="Wert-fGEE_5_">
+		<text transform="matrix(1 0 0 1 50.1856 51.7067)" class="st3 st4 st5">50</text>
+	</g>
+	<g id="Wert-fGEE_7_">
+		<text transform="matrix(1 0 0 1 75.1624 51.7067)" class="st3 st4 st5">75</text>
+	</g>
+	<g id="Wert-fGEE_9_">
+		<text transform="matrix(1 0 0 1 100.1393 51.7067)" class="st3 st4 st5">100</text>
+	</g>
+	<g id="Wert-fGEE_11_">
+		<text transform="matrix(1 0 0 1 125.1161 51.7067)" class="st3 st4 st5">125</text>
+	</g>
+	<g id="Wert-fGEE_13_">
+		<text transform="matrix(1 0 0 1 150.0929 51.7067)" class="st3 st4 st5">150</text>
+	</g>
+	<g id="Wert-fGEE_15_">
+		<text transform="matrix(1 0 0 1 175.0697 51.7067)" class="st3 st4 st5">175</text>
+	</g>
+	<g id="Wert-fGEE_17_">
+		<text transform="matrix(1 0 0 1 200.0465 51.7067)" class="st3 st4 st5">200</text>
+	</g>
+	<g id="Wert-fGEE_19_">
+		<text transform="matrix(1 0 0 1 225.0233 51.7067)" class="st3 st4 st5">225</text>
+	</g>
+	<g id="Wert-fGEE_21_">
+		<text transform="matrix(1 0 0 1 250.0002 51.7067)" class="st3 st4 st5">250+</text>
+	</g>
+</g>
+<g id="Energieklassen_x5F_normal">
+	<g class="st6">
+		<text transform="matrix(1 0 0 1 256.7514 36.719)" class="st7 st4 st8">H</text>
+	</g>
+	<g class="st6">
+		<text transform="matrix(1 0 0 1 221.4995 36.719)" class="st7 st4 st8">G</text>
+	</g>
+	<g class="st6">
+		<text transform="matrix(1 0 0 1 177.2526 36.719)" class="st7 st4 st8">F</text>
+	</g>
+	<g class="st6">
+		<text transform="matrix(1 0 0 1 141.9987 36.719)" class="st7 st4 st8">E</text>
+	</g>
+	<g class="st9">
+		<text transform="matrix(1 0 0 1 111.7504 36.719)" class="st7 st4 st8">D</text>
+	</g>
+	<g class="st6">
+		<text transform="matrix(1 0 0 1 84.2503 36.719)" class="st7 st4 st8">C</text>
+	</g>
+	<g class="st6">
+		<text transform="matrix(1 0 0 1 60.0806 36.719)" class="st7 st4 st8">B</text>
+	</g>
+	<g class="st6">
+		<text transform="matrix(1 0 0 1 36.9986 36.719)" class="st7 st4 st8">A</text>
+	</g>
+	<g class="st6">
+		<text transform="matrix(1 0 0 1 9.3707 36.719)" class="st7 st4 st8">A+</text>
+	</g>
+</g>
+<g id="Energieklassen_x5F_over">
+	<g>
+        <g class="st9">
+			<text transform="matrix(1 0 0 1 255.4306 37.719)" class="st10 st11 st12">H</text>
+		</g>
+        <g class="st9">
+			<text transform="matrix(1 0 0 1 219.7238 37.719)" class="st10 st11 st12">G</text>
+		</g>
+        <g class="st9">
+			<text transform="matrix(1 0 0 1 176.4304 37.719)" class="st10 st11 st12">F</text>
+		</g>
+        <g class="st9">
+			<text transform="matrix(1 0 0 1 140.6647 37.719)" class="st10 st11 st12">E</text>
+		</g>
+        <g>
+			<text transform="matrix(1 0 0 1 110.3061 37.719)" class="st10 st11 st12">D</text>
+		</g>
+        <g class="st9">
+			<text transform="matrix(1 0 0 1 83.18 37.719)" class="st10 st11 st12">C</text>
+		</g>
+        <g class="st9">
+			<text transform="matrix(1 0 0 1 57.8062 37.719)" class="st10 st11 st12">B</text>
+		</g>
+        <g class="st9">
+			<text transform="matrix(1 0 0 1 35.3062 37.719)" class="st10 st11 st12">A</text>
+		</g>
+        <g class="st9">
+			<text transform="matrix(1 0 0 1 6.5103 37.719)" class="st10 st11 st12">A+</text>
+		</g>
+	</g>
+</g>
+<g id="Bezeichnung_x5F_Enenegiebedarf_x5F_oben">
+	<g id="Wert-fGEE_2_">
+		<text transform="matrix(1 0 0 1 5 6.0071)" class="st3 st4 st5 epass-svg-label">Endenergieverbrauch</text>
+	</g>
+	<g id="Wert-fGEE_4_">
+		<text transform="matrix(1 0 0 1 5 14.8298)"><tspan x="0" y="0" class="st3 st11 st5 epass-svg-value">125,00</tspan><tspan class="st3 st4 st5 epass-svg-unit"> kWh/(m²·a)</tspan></text>
+	</g>
+</g>
+<g id="Pfeil_x5F_oben">
+	<polygon transform="matrix(1 0 0 1 60.9 0)" class="st3" points="70.3,12.3 67.2,12.3 67.2,0 62.4,0 62.4,12.3 59.3,12.3 64.8,21 	"></polygon>
+</g>
+</svg>
+		</div>
+				
+	    <ul class="list-group">
+																		<li class="list-group-item">
+					<div class="row data-epass_epart">
+						<div class="dt col-xs-5">Energieausweistyp</div>
+						<div class="dd col-xs-7">Verbrauchs­ausweis</div>
+					</div>
+				</li>
+																						<li class="list-group-item">
+					<div class="row data-epass_ausstelldatum">
+						<div class="dt col-xs-5">Ausstellungsdatum</div>
+						<div class="dd col-xs-7">06.02.2018</div>
+					</div>
+				</li>
+															<li class="list-group-item">
+					<div class="row data-epass_gueltig_bis">
+						<div class="dt col-xs-5">Gültig bis</div>
+						<div class="dd col-xs-7">06.02.2028</div>
+					</div>
+				</li>
+															<li class="list-group-item">
+					<div class="row data-epass_gebaeudeart">
+						<div class="dt col-xs-5">Gebäudeart</div>
+						<div class="dd col-xs-7">Wohngebäude</div>
+					</div>
+				</li>
+															<li class="list-group-item">
+					<div class="row data-epass_baujahr">
+						<div class="dt col-xs-5">Baujahr</div>
+						<div class="dd col-xs-7">1984</div>
+					</div>
+				</li>
+															<li class="list-group-item">
+					<div class="row data-epass_primaerenergietraeger">
+						<div class="dt col-xs-5">Primärenergieträger</div>
+						<div class="dd col-xs-7">Fernwärme</div>
+					</div>
+				</li>
+															<li class="list-group-item">
+					<div class="row data-epass_energieverbrauchkennwert">
+						<div class="dt col-xs-5">Endenergie­verbrauch</div>
+						<div class="dd col-xs-7">125,00 kWh/(m²·a)</div>
+					</div>
+				</li>
+																																											<li class="list-group-item">
+					<div class="row data-epass_wertklasse">
+						<div class="dt col-xs-5">Energie­effizienz­klasse</div>
+						<div class="dd col-xs-7">D</div>
+					</div>
+				</li>
+									</ul>
+	</div>
+</div>
+    </div>
+</div>
+
+<!-- Kontakt -->
+<div class="row contactrow">
+    <div class="col-xs-4">
+        
+
+<div class="property-contact panel panel-default">
+    <div class="panel-heading">
+        <h2>Kontaktdaten</h2>
+    </div>
+    <div class="panel-body h-card vcard">
+
+
+
+
+
+    <div class="row">
+    <div class="col-sm-4 col-sm-push-8 contact-photo thumbnail u-photo photo">
+        <img width="360" height="360" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20360%20360'%3E%3C/svg%3E" class="attachment-immomakler-person-thumb size-immomakler-person-thumb wp-post-image" alt="Dennis Hofmann, IMAXX Gesellschaft für Immobilien-Marketing mbH" decoding="async" data-lazy-srcset="https://www.imaxx.de/wp-content/uploads/immomakler/attachments/90d7f852fe43fe5a22c4b72bb6bf0251/ha7ytosh11jlyj4m4zyyhicr-imaxx-immobilienmakler-d-hofmann-360x360.jpg 360w, https://www.imaxx.de/wp-content/uploads/immomakler/attachments/90d7f852fe43fe5a22c4b72bb6bf0251/ha7ytosh11jlyj4m4zyyhicr-imaxx-immobilienmakler-d-hofmann-110x110.jpg 110w, https://www.imaxx.de/wp-content/uploads/immomakler/attachments/90d7f852fe43fe5a22c4b72bb6bf0251/ha7ytosh11jlyj4m4zyyhicr-imaxx-immobilienmakler-d-hofmann-475x475.jpg 475w, https://www.imaxx.de/wp-content/uploads/immomakler/attachments/90d7f852fe43fe5a22c4b72bb6bf0251/ha7ytosh11jlyj4m4zyyhicr-imaxx-immobilienmakler-d-hofmann.jpg 750w" data-lazy-sizes="auto, (max-width: 360px) 100vw, 360px" data-lazy-src="https://www.imaxx.de/wp-content/uploads/immomakler/attachments/90d7f852fe43fe5a22c4b72bb6bf0251/ha7ytosh11jlyj4m4zyyhicr-imaxx-immobilienmakler-d-hofmann-360x360.jpg"><noscript><img width="360" height="360" src="https://www.imaxx.de/wp-content/uploads/immomakler/attachments/90d7f852fe43fe5a22c4b72bb6bf0251/ha7ytosh11jlyj4m4zyyhicr-imaxx-immobilienmakler-d-hofmann-360x360.jpg" class="attachment-immomakler-person-thumb size-immomakler-person-thumb wp-post-image" alt="Dennis Hofmann, IMAXX Gesellschaft für Immobilien-Marketing mbH" loading="lazy" decoding="async" srcset="https://www.imaxx.de/wp-content/uploads/immomakler/attachments/90d7f852fe43fe5a22c4b72bb6bf0251/ha7ytosh11jlyj4m4zyyhicr-imaxx-immobilienmakler-d-hofmann-360x360.jpg 360w, https://www.imaxx.de/wp-content/uploads/immomakler/attachments/90d7f852fe43fe5a22c4b72bb6bf0251/ha7ytosh11jlyj4m4zyyhicr-imaxx-immobilienmakler-d-hofmann-110x110.jpg 110w, https://www.imaxx.de/wp-content/uploads/immomakler/attachments/90d7f852fe43fe5a22c4b72bb6bf0251/ha7ytosh11jlyj4m4zyyhicr-imaxx-immobilienmakler-d-hofmann-475x475.jpg 475w, https://www.imaxx.de/wp-content/uploads/immomakler/attachments/90d7f852fe43fe5a22c4b72bb6bf0251/ha7ytosh11jlyj4m4zyyhicr-imaxx-immobilienmakler-d-hofmann.jpg 750w" sizes="auto, (max-width: 360px) 100vw, 360px" /></noscript>    </div>
+    <div class="col-sm-12">
+
+    <ul class="list-group">
+    
+    
+    
+                <li class="list-group-item sy_contactname">
+                <span class="p-name fn">Herr  Dennis Hofmann</span><br><span class="p-job-title title">Vertriebsleiter Region Gießen</span>        </li>
+                
+        
+        
+        
+                <li class="list-group-item adr">
+             <span class="p-street-address street-address">Plockstraße&nbsp;6-10</span><br><span class="p-postal-code postal-code">35390</span>&nbsp;<span class="p-locality locality">Gießen</span>
+        </li>
+                
+        
+        
+        
+                <li class="list-group-item tel">
+        	<i class="fa-solid fa-phone-flip"></i>
+        	<a href="tel:06419326322">0641 93263-22</a>
+        </li>
+                
+        
+
+                <li class="list-group-item email">
+        <i class="fa-solid fa-paper-plane"></i>
+             <a href="mailto:dennis.hofmann@imaxx.de">dennis.hofmann@imaxx.de</a>
+        </li>
+        
+
+
+                <li class="list-group-item hidden-print">
+            <a href="#immomakler-contactform-panel" role="button" class="btn btn-primary btn-block">zum Kontaktformular</a>
+        </li>
+                </ul>
+
+
+
+    </div>
+    </div> <!-- .row -->
+
+    </div> <!-- .panel-body -->
+</div> <!-- .immobilie-contact -->
+    </div>
+    <div class="col-xs-8">
+        	<div class="property-contactform panel panel-default hidden-print" id="immomakler-contactform-panel">
+	    <div class="panel-heading">
+	        <h2>Direktanfrage</h2>
+	    </div>
+	    <div class="panel-body">
+
+		
+				<div id="immomakler-contactform">
+							<form role="form" id="immomakler-contactform-form-3ae15wl4au" method="POST">
+
+				
+													<div class="form-group">
+											<div class="col-xs-12 col-sm-3">
+							<label for="title">Anrede</label>
+							<select class="form-control immomakler-contact-title" id="title" name="title">
+								<option value=""></option>
+								<option value="Herr">Herr</option>
+								<option value="Frau">Frau</option>
+															</select>
+						</div>
+																<div class="col-xs-12 col-sm-4">
+							<label for="firstname">Vorname</label>
+							<input type="text" class="form-control immomakler-contact-firstname" name="firstname" id="firstname" value="">
+						</div>
+						<div class="col-xs-12 col-sm-5">
+							<label for="name">Nachname *</label>
+							<input type="text" class="form-control immomakler-contact-name" name="name" id="name" value="">
+						</div>
+										</div>
+													<div class="form-group">
+						<div class="col-xs-12">
+							<label for="email">Ihre E-Mail-Adresse *</label>
+						</div>
+						<div class="col-xs-12">
+							<input type="email" class="form-control immomakler-contact-email" name="email" id="email" value="" required="">
+						</div>
+					</div>
+													<div class="form-group">
+						<div class="col-xs-12">
+							<label for="city">Ihre Adresse</label>
+						</div>
+											<div class="col-xs-9">
+							<input type="text" aria-label="Straße" placeholder="Straße" class="form-control immomakler-contact-street" name="street" value="">
+						</div>
+						<div class="col-xs-3">
+							<input type="text" aria-label="Hausnummer" placeholder="Nr." class="form-control immomakler-contact-streetnumber" name="streetnumber" value="">
+						</div>
+											<div class="col-xs-4">
+							<input type="text" aria-label="PLZ" placeholder="PLZ" class="form-control immomakler-contact-zipcode" name="zipcode" value="">
+						</div>
+						<div class="col-xs-8">
+							<input type="text" aria-label="Ort" placeholder="Ort" class="form-control immomakler-contact-city" name="city" id="city" value="">
+						</div>
+					</div>
+													<div class="form-group">
+						<div class="col-xs-12">
+							<label for="phone">Ihre Telefonnummer *</label>
+						</div>
+						<div class="col-xs-12">
+							<div class="immomakler-phone-wrapper" data-default-country="deu">
+								<button type="button" class="btn btn-default form-control immomakler-phone-prefix-button">
+									<span class="immomakler-phone-prefix-flag"></span>
+									<span class="immomakler-phone-prefix-text">+49</span>
+									<span class="immomakler-phone-prefix-caret">▾</span>
+								</button>
+								<ul class="immomakler-phone-prefix-dropdown" hidden=""></ul>
+								<input type="tel" class="form-control immomakler-contact-phone" name="phone" id="phone" value="" required="">
+							</div>
+							<input type="hidden" name="phone_country" id="phone_country" value="DE">
+							<input type="hidden" name="phone_prefix" id="phone_prefix" value="+49">
+						</div>
+					</div>
+																					<div class="form-group">
+						<div class="col-xs-12">
+							<label for="message">Ihre Nachricht *</label>
+						</div>
+						<div class="col-xs-12">
+							<textarea class="form-control immomakler-contact-message" rows="5" name="message" id="message" required="">Ich interessiere mich für das Angebot. Bitte nehmen Sie mit mir Kontakt auf.</textarea>
+						</div>
+					</div>
+				
+				
+				
+																					<div class="form-group">
+						<div class="col-xs-12">
+							<div class="checkbox">
+								<input type="checkbox" name="check_privacy" id="check_privacy" value="1" required="">
+								<label for="check_privacy">
+									Ich willige in die Verarbeitung meiner Daten zum Zweck der Bearbeitung meiner Anfrage ein und habe die <a href="https://www.imaxx.de/datenschutzerklaerung/" target="_blank">Datenschutzerklärung</a> gelesen. *								</label>
+							</div>
+						</div>
+					</div>
+												<div class="col-xs-12">
+					<span class="mandatory">* Pflichtangaben</span>
+				</div>
+					<div class="form-group immomakler-contactform-send">
+						<div class="col-xs-12 col-sm-4">
+														<input type="text" aria-label="Bitte nicht ausfüllen, dies ist ein Spamschutz-Feld" class="form-control immomakler-contact-sender-email" name="sender-email" value="" tabindex="-1" autocomplete="off">
+							<input type="hidden" name="request" value="send">
+							<input type="hidden" name="recipient" value="">
+							<input type="hidden" name="subject" value="">
+							<input type="hidden" name="posts" value="218173">
+														<button type="submit" class="submit btn btn-primary">Zahlungspflichtig bestellen</button>
+														<div class="send-over-https"><span class="glyphicon glyphicon-lock https-lock"></span>&nbsp;SSL-verschlüsselt</div>
+																				</div>
+						<div class="col-xs-12 col-sm-8">
+																				</div>
+					</div>
+				</form>
+				<script type="rocketlazyloadscript" data-rocket-type="text/javascript">window.addEventListener('DOMContentLoaded', function() {
+				(function($) {
+				  $(function() {
+					var contactform = $("#immomakler-contactform-form-3ae15wl4au");
+					contactform.submit(function(e) {
+						e.preventDefault();
+						contactform.find('button').attr('disabled', '');
+						$.post('https://www.imaxx.de/', contactform.serialize(), function(data) {
+
+						}).done(function(data) {
+
+							contactform.find('button').removeAttr('disabled');
+							contactform.replaceWith(data);
+					  });
+					return false;
+					});
+				  });
+				})(jQuery);
+				});</script>
+		<script type="rocketlazyloadscript">
+						document.addEventListener('DOMContentLoaded', () => {
+				const countries = [
+					{ iso: 'deu', name: 'Deutschland', prefix: '+49', flag: 'de.svg' },
+					{ iso: 'aut', name: 'Österreich',  prefix: '+43', flag: 'at.svg' },
+					{ iso: 'che', name: 'Schweiz',     prefix: '+41', flag: 'ch.svg' },
+					{ iso: 'esp', name: 'Spanien',     prefix: '+34', flag: 'es.svg' },
+				];
+
+				const wrappers = document.querySelectorAll('.immomakler-phone-wrapper');
+
+				wrappers.forEach(wrapper => {
+					const flagEl   = wrapper.querySelector('.immomakler-phone-prefix-flag');
+					const textEl   = wrapper.querySelector('.immomakler-phone-prefix-text');
+					const dropdown = wrapper.querySelector('.immomakler-phone-prefix-dropdown');
+					const button   = wrapper.querySelector('.immomakler-phone-prefix-button');
+
+					const hiddenCountry = document.querySelector('#phone_country');
+					const hiddenPrefix  = document.querySelector('#phone_prefix');
+
+					const defaultIsoRaw = wrapper.dataset.defaultCountry || 'deu';
+					const defaultIso    = defaultIsoRaw.toLowerCase();
+
+					const setCountry = c => {
+						flagEl.style.backgroundImage = `url('https://www.imaxx.de/wp-content/plugins/immomakler/assets/img/flags/${c.flag}')`;
+						textEl.textContent    = c.prefix;
+						hiddenCountry.value   = c.iso;
+						hiddenPrefix.value    = c.prefix;
+					};
+
+					{
+						const li = document.createElement('li');
+						li.innerHTML = `
+							<span class="immomakler-phone-prefix-flag"
+								  style="background-image:none"></span>
+							<span>Freie Eingabe</span>
+							<span style="opacity:.6"></span>
+						`;
+
+						li.addEventListener('click', () => {
+							flagEl.style.backgroundImage = `none`;
+							textEl.textContent = '';
+
+							hiddenCountry.value = 'CUSTOM';
+							hiddenPrefix.value  = ''; // no prefix
+
+							dropdown.hidden = true;
+						});
+
+						dropdown.appendChild(li);
+					}
+
+					countries.forEach(c => {
+						const li = document.createElement('li');
+						li.innerHTML = `
+							<span class="immomakler-phone-prefix-flag"
+								  style="background-image:url('https://www.imaxx.de/wp-content/plugins/immomakler/assets/img/flags/${c.flag}')"></span>
+							<span>${c.name}</span>
+							<span style="opacity:.6">${c.prefix}</span>
+						`;
+						li.addEventListener('click', () => {
+							setCountry(c);
+							dropdown.hidden = true;
+						});
+						dropdown.appendChild(li);
+					});
+
+					button.addEventListener('click', e => {
+						e.stopPropagation();
+						dropdown.hidden = !dropdown.hidden;
+					});
+
+					document.addEventListener('click', () => {
+						dropdown.hidden = true;
+					});
+
+					setCountry(countries.find(c => c.iso === defaultIso) ?? countries[0]);
+				});
+			});
+
+			document.addEventListener('DOMContentLoaded', () => {
+
+				document.querySelectorAll('form').forEach(form => {
+
+					let finalField = form.querySelector('#phone_final');
+					if (!finalField) {
+						finalField = document.createElement('input');
+						finalField.type = 'hidden';
+						finalField.name = 'phone_final';
+						finalField.id   = 'phone_final';
+						form.appendChild(finalField);
+					}
+
+					form.addEventListener('submit', () => {
+
+						const phoneInput  = form.querySelector('.immomakler-contact-phone');
+						const prefixInput = form.querySelector('#phone_prefix');
+						const country     = form.querySelector('#phone_country')?.value ?? '';
+
+						if (!phoneInput || !prefixInput) {
+							return;
+						}
+
+						let number = phoneInput.value.trim();
+						const prefix = prefixInput.value.trim();
+
+						if (country === 'CUSTOM') {
+							// Freie Eingabe → submit raw value
+							finalField.value = number;
+						} else {
+							// Strip leading zeros
+							number = number.replace(/^0+/, '');
+
+							// Prefix added only in hidden field
+							finalField.value = prefix + number;
+						}
+					});
+				});
+			});
+		</script>
+							</div>
+					</div>
+	</div>
+    <script type="rocketlazyloadscript">
+    document.getElementById('email').placeholder = "E-Mail-Adresse";
+    document.getElementById('phone').placeholder = "Rückrufnummer (Festnetz oder Handy)";
+    </script>
+    </div>
+</div>
+
+	
+		</div> <!-- .immomakler-single -->
+
+<!-- END: WP-ImmoMakler® Immobilien-Importer Plugin 5.59.5.3 https://www.wp-immomakler.de -->
+
+<!--
+Hier den zwischen WP-ImmoMakler und dem Footer des individuellen
+Theme-Seitentemplates fehlenden HTML-Code einfügen.
+
+Unterscheidung von Listenansicht und Detailansicht:
+if( is_immomakler_single() ) { ... } else { ... }
+-->
+</main></div></div></div>
+    	</div><!-- #content -->
+        <footer data-wpr-lazyrender="1" class="main-footer background-color-blue text-color-white pt-100 pb-100">
+            <div class="container">
+                <div class="row">
+                                           <div class="col-md-3">
+                            <div class="footer-logo-block"> 
+                                <a href="https://www.imaxx.de/"><img src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%200%200'%3E%3C/svg%3E" alt="" data-lazy-src="https://www.imaxx.de/wp-content/uploads/footer-logo.svg"><noscript><img src="https://www.imaxx.de/wp-content/uploads/footer-logo.svg" alt="" /></noscript> </a>
+                            </div>
+                        </div>
+                                        <div class="col-md-9">
+                        <div class="footer-links-block">
+
+                                                            <div class="upper-links">
+                                    <div class="menu-footer-menu-1-zeile-container"><ul id="menu-footer-menu-1-zeile" class="menu" itemscope="" itemtype="http://www.schema.org/SiteNavigationElement"><li id="menu-item-122325" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-122325"><a href="https://www.imaxx.de/imaxx-blog/">IMAXX Blog</a></li>
+<li id="menu-item-18994" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-18994"><a href="https://www.imaxx.de/ueber-imaxx/">Über IMAXX</a></li>
+<li id="menu-item-1494" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1494"><a href="https://www.imaxx.de/karriere/">Karriere</a></li>
+<li id="menu-item-1496" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1496"><a href="https://www.imaxx.de/kontakt/">Kontakt</a></li>
+</ul></div>                                </div>
+                            
+                                                            <div class="lower-links">
+                                    <div class="menu-footer-menu-2-zeile-container"><ul id="menu-footer-menu-2-zeile" class="menu" itemscope="" itemtype="http://www.schema.org/SiteNavigationElement"><li id="menu-item-936" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-936"><a href="https://www.imaxx.de/impressum/">Impressum</a></li>
+<li id="menu-item-930" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-privacy-policy menu-item-930"><a rel="privacy-policy" href="https://www.imaxx.de/datenschutzerklaerung/">Datenschutzerklärung</a></li>
+<li id="menu-item-762" class="borlabs-cookie-preference menu-item menu-item-type-custom menu-item-object-custom menu-item-762"><a href="#">Cookie-Einstellungen</a></li>
+<li id="menu-item-1064" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1064"><a target="_blank" href="https://imaxx.tipster.propstack.de/">zum Tippgeber</a></li>
+</ul></div>                                </div>
+                                                    </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+<!-- #page -->
+
+<!-- BEGIN Rich Snippet section generated by WP-ImmoMakler RealEstate Plugin version 5.59.5.3 - https://www.wp-immomakler.de/ -->
+<!--
+<PageMap>
+		<DataObject type="thumbnail">
+	<Attribute name="src" value="https://www.imaxx.de/wp-content/uploads/immomakler/attachments/6b0ee92f1a3a57d566a1420ed7a98efd/5546995-huuql59sq7oytuwdpjyj6s7r-624581-a-backbonephoto-010_b_hd.jpg"/>
+	<Attribute name="width" value="150"/>
+	<Attribute name="height" value="100"/>
+</DataObject>
+		<DataObject type="action">
+	<Attribute name="label" value="Direktkontakt"/>
+	<Attribute name="url" value="
+		https://www.imaxx.de/immobilien/wohnung-eigentumswohnung-etagenwohnung-in-giessen-kaufen-50683/#immomakler-contactform-panel	"/>
+	<Attribute name="class" value="email"/>
+</DataObject>
+<DataObject type="action">
+	<Attribute name="label" value="Exposee"/>
+	<Attribute name="url" value="https://www.imaxx.de/immobilien/wohnung-eigentumswohnung-etagenwohnung-in-giessen-kaufen-50683/"/>
+	<Attribute name="class" value="download"/>
+</DataObject>
+</PageMap>
+-->
+<!-- END Rich Snippet section generated by WP-ImmoMakler RealEstate Plugin version 5.59.5.3 - https://www.wp-immomakler.de/ -->
+		<script type="importmap" id="wp-importmap">
+{"imports":{"borlabs-cookie-core":"https:\/\/www.imaxx.de\/wp-content\/plugins\/borlabs-cookie\/assets\/javascript\/borlabs-cookie.min.js?ver=3.3.23"}}
+</script>
+<script type="module" src="https://www.imaxx.de/wp-content/plugins/borlabs-cookie/assets/javascript/borlabs-cookie.min.js?ver=3.3.23" id="borlabs-cookie-core-js-module" data-cfasync="false" data-no-minify="1" data-no-optimize="1"></script>
+<script type="module" src="https://www.imaxx.de/wp-content/plugins/borlabs-cookie/assets/javascript/borlabs-cookie-legacy-backward-compatibility.min.js?ver=3.3.23" id="borlabs-cookie-legacy-backward-compatibility-js-module"></script>
+<!--googleoff: all--><div data-nosnippet="" data-borlabs-cookie-consent-required="true" id="BorlabsCookieBox" data-v-app=""><!----></div><div id="BorlabsCookieWidget" class="brlbs-cmpnt-container" data-v-app=""><!----></div><!--googleon: all--><link data-minify="1" rel="stylesheet" id="so-css-imaxx-css" href="https://www.imaxx.de/wp-content/cache/background-css/1/www.imaxx.de/wp-content/cache/min/1/wp-content/uploads/so-css/so-css-imaxx.css?ver=1776323406&amp;wpr_t=1785125498" media="all">
+<script type="rocketlazyloadscript" data-minify="1" data-rocket-src="https://www.imaxx.de/wp-content/cache/min/1/wp-content/plugins/honeypot/includes/js/wpa.js?ver=1776323407" id="wpascript-js" data-rocket-defer="" defer=""></script>
+<script type="rocketlazyloadscript" id="wpascript-js-after">
+wpa_field_info = {"wpa_field_name":"zucxji9328","wpa_field_value":758467,"wpa_add_test":"no"}
+</script>
+<script type="rocketlazyloadscript" id="rocket-browser-checker-js-after">
+"use strict";var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||!1,descriptor.configurable=!0,"value"in descriptor&&(descriptor.writable=!0),Object.defineProperty(target,descriptor.key,descriptor)}}return function(Constructor,protoProps,staticProps){return protoProps&&defineProperties(Constructor.prototype,protoProps),staticProps&&defineProperties(Constructor,staticProps),Constructor}}();function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor))throw new TypeError("Cannot call a class as a function")}var RocketBrowserCompatibilityChecker=function(){function RocketBrowserCompatibilityChecker(options){_classCallCheck(this,RocketBrowserCompatibilityChecker),this.passiveSupported=!1,this._checkPassiveOption(this),this.options=!!this.passiveSupported&&options}return _createClass(RocketBrowserCompatibilityChecker,[{key:"_checkPassiveOption",value:function(self){try{var options={get passive(){return!(self.passiveSupported=!0)}};window.addEventListener("test",null,options),window.removeEventListener("test",null,options)}catch(err){self.passiveSupported=!1}}},{key:"initRequestIdleCallback",value:function(){!1 in window&&(window.requestIdleCallback=function(cb){var start=Date.now();return setTimeout(function(){cb({didTimeout:!1,timeRemaining:function(){return Math.max(0,50-(Date.now()-start))}})},1)}),!1 in window&&(window.cancelIdleCallback=function(id){return clearTimeout(id)})}},{key:"isDataSaverModeOn",value:function(){return"connection"in navigator&&!0===navigator.connection.saveData}},{key:"supportsLinkPrefetch",value:function(){var elem=document.createElement("link");return elem.relList&&elem.relList.supports&&elem.relList.supports("prefetch")&&window.IntersectionObserver&&"isIntersecting"in IntersectionObserverEntry.prototype}},{key:"isSlowConnection",value:function(){return"connection"in navigator&&"effectiveType"in navigator.connection&&("2g"===navigator.connection.effectiveType||"slow-2g"===navigator.connection.effectiveType)}}]),RocketBrowserCompatibilityChecker}();
+</script>
+<script id="rocket-preload-links-js-extra">
+var RocketPreloadLinksConfig = {"excludeUris":"\/immobilien\/merkliste\/|\/(?:.+\/)?feed(?:\/(?:.+\/?)?)?$|\/(?:.+\/)?embed\/|\/(index.php\/)?(.*)wp-json(\/.*|$)|\/refer\/|\/go\/|\/recommend\/|\/recommends\/","usesTrailingSlash":"1","imageExt":"jpg|jpeg|gif|png|tiff|bmp|webp|avif|pdf|doc|docx|xls|xlsx|php","fileExt":"jpg|jpeg|gif|png|tiff|bmp|webp|avif|pdf|doc|docx|xls|xlsx|php|html|htm","siteUrl":"https:\/\/www.imaxx.de","onHoverDelay":"100","rateThrottle":"3"};
+</script>
+<script type="rocketlazyloadscript" id="rocket-preload-links-js-after">
+(function() {
+"use strict";var r="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e},e=function(){function i(e,t){for(var n=0;n<t.length;n++){var i=t[n];i.enumerable=i.enumerable||!1,i.configurable=!0,"value"in i&&(i.writable=!0),Object.defineProperty(e,i.key,i)}}return function(e,t,n){return t&&i(e.prototype,t),n&&i(e,n),e}}();function i(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}var t=function(){function n(e,t){i(this,n),this.browser=e,this.config=t,this.options=this.browser.options,this.prefetched=new Set,this.eventTime=null,this.threshold=1111,this.numOnHover=0}return e(n,[{key:"init",value:function(){!this.browser.supportsLinkPrefetch()||this.browser.isDataSaverModeOn()||this.browser.isSlowConnection()||(this.regex={excludeUris:RegExp(this.config.excludeUris,"i"),images:RegExp(".("+this.config.imageExt+")$","i"),fileExt:RegExp(".("+this.config.fileExt+")$","i")},this._initListeners(this))}},{key:"_initListeners",value:function(e){-1<this.config.onHoverDelay&&document.addEventListener("mouseover",e.listener.bind(e),e.listenerOptions),document.addEventListener("mousedown",e.listener.bind(e),e.listenerOptions),document.addEventListener("touchstart",e.listener.bind(e),e.listenerOptions)}},{key:"listener",value:function(e){var t=e.target.closest("a"),n=this._prepareUrl(t);if(null!==n)switch(e.type){case"mousedown":case"touchstart":this._addPrefetchLink(n);break;case"mouseover":this._earlyPrefetch(t,n,"mouseout")}}},{key:"_earlyPrefetch",value:function(t,e,n){var i=this,r=setTimeout(function(){if(r=null,0===i.numOnHover)setTimeout(function(){return i.numOnHover=0},1e3);else if(i.numOnHover>i.config.rateThrottle)return;i.numOnHover++,i._addPrefetchLink(e)},this.config.onHoverDelay);t.addEventListener(n,function e(){t.removeEventListener(n,e,{passive:!0}),null!==r&&(clearTimeout(r),r=null)},{passive:!0})}},{key:"_addPrefetchLink",value:function(i){return this.prefetched.add(i.href),new Promise(function(e,t){var n=document.createElement("link");n.rel="prefetch",n.href=i.href,n.onload=e,n.onerror=t,document.head.appendChild(n)}).catch(function(){})}},{key:"_prepareUrl",value:function(e){if(null===e||"object"!==(void 0===e?"undefined":r(e))||!1 in e||-1===["http:","https:"].indexOf(e.protocol))return null;var t=e.href.substring(0,this.config.siteUrl.length),n=this._getPathname(e.href,t),i={original:e.href,protocol:e.protocol,origin:t,pathname:n,href:t+n};return this._isLinkOk(i)?i:null}},{key:"_getPathname",value:function(e,t){var n=t?e.substring(this.config.siteUrl.length):e;return n.startsWith("/")||(n="/"+n),this._shouldAddTrailingSlash(n)?n+"/":n}},{key:"_shouldAddTrailingSlash",value:function(e){return this.config.usesTrailingSlash&&!e.endsWith("/")&&!this.regex.fileExt.test(e)}},{key:"_isLinkOk",value:function(e){return null!==e&&"object"===(void 0===e?"undefined":r(e))&&(!this.prefetched.has(e.href)&&e.origin===this.config.siteUrl&&-1===e.href.indexOf("?")&&-1===e.href.indexOf("#")&&!this.regex.excludeUris.test(e.href)&&!this.regex.images.test(e.href))}}],[{key:"run",value:function(){"undefined"!=typeof RocketPreloadLinksConfig&&new n(new RocketBrowserCompatibilityChecker({capture:!0,passive:!0}),RocketPreloadLinksConfig).init()}}]),n}();t.run();
+}());
+</script>
+<script id="rocket_lazyload_css-js-extra">
+var rocket_lazyload_css_data = {"threshold":"300"};
+</script>
+<script id="rocket_lazyload_css-js-after">
+!function o(n,c,a){function u(t,e){if(!c[t]){if(!n[t]){var r="function"==typeof require&&require;if(!e&&r)return r(t,!0);if(s)return s(t,!0);throw(e=new Error("Cannot find module '"+t+"'")).code="MODULE_NOT_FOUND",e}r=c[t]={exports:{}},n[t][0].call(r.exports,function(e){return u(n[t][1][e]||e)},r,r.exports,o,n,c,a)}return c[t].exports}for(var s="function"==typeof require&&require,e=0;e<a.length;e++)u(a[e]);return u}({1:[function(e,t,r){"use strict";{const c="undefined"==typeof rocket_pairs?[]:rocket_pairs,a=(("undefined"==typeof rocket_excluded_pairs?[]:rocket_excluded_pairs).map(t=>{var e=t.selector;document.querySelectorAll(e).forEach(e=>{e.setAttribute("data-rocket-lazy-bg-"+t.hash,"excluded")})}),document.querySelector("#wpr-lazyload-bg-container"));var o=rocket_lazyload_css_data.threshold||300;const u=new IntersectionObserver(e=>{e.forEach(t=>{t.isIntersecting&&c.filter(e=>t.target.matches(e.selector)).map(t=>{var e;t&&((e=document.createElement("style")).textContent=t.style,a.insertAdjacentElement("afterend",e),t.elements.forEach(e=>{u.unobserve(e),e.setAttribute("data-rocket-lazy-bg-"+t.hash,"loaded")}))})})},{rootMargin:o+"px"});function n(){0<(0<arguments.length&&void 0!==arguments[0]?arguments[0]:[]).length&&c.forEach(t=>{try{document.querySelectorAll(t.selector).forEach(e=>{"loaded"!==e.getAttribute("data-rocket-lazy-bg-"+t.hash)&&"excluded"!==e.getAttribute("data-rocket-lazy-bg-"+t.hash)&&(u.observe(e),(t.elements||=[]).push(e))})}catch(e){console.error(e)}})}n(),function(){const r=window.MutationObserver;return function(e,t){if(e&&1===e.nodeType)return(t=new r(t)).observe(e,{attributes:!0,childList:!0,subtree:!0}),t}}()(document.querySelector("body"),n)}},{}]},{},[1]);
+</script>
+<script type="rocketlazyloadscript" data-minify="1" data-rocket-src="https://www.imaxx.de/wp-content/cache/min/1/wp-content/themes/imaxx/assets/js/navigation.js?ver=1776323407" id="imaxx-navigation-js" data-rocket-defer="" defer=""></script>
+<script type="rocketlazyloadscript" data-rocket-src="https://www.imaxx.de/wp-content/themes/imaxx/assets/js/slick.min.js?ver=1.8.0" id="slick-js" data-rocket-defer="" defer=""></script>
+<script type="rocketlazyloadscript" data-minify="1" data-rocket-src="https://www.imaxx.de/wp-content/cache/min/1/wp-content/themes/imaxx/assets/js/custom.js?ver=1776323407" id="imaxx-custom-js" data-rocket-defer="" defer=""></script>
+<script id="imaxx-custom-widget-js-extra">
+var ajax_action = {"ajax_url":"https:\/\/www.imaxx.de\/wp-admin\/admin-ajax.php","current_page":"1","max_page":"1","posts_per_page":"12"};
+</script>
+<script type="rocketlazyloadscript" data-minify="1" data-rocket-src="https://www.imaxx.de/wp-content/cache/min/1/wp-content/themes/imaxx/assets/js/custom-widget.js?ver=1776323407" id="imaxx-custom-widget-js" data-rocket-defer="" defer=""></script>
+<script type="rocketlazyloadscript" data-rocket-src="https://www.imaxx.de/wp-content/themes/imaxx/assets/js/index.min.js?ver=1.0.0" id="imaxx-index-js" data-rocket-defer="" defer=""></script>
+<script type="rocketlazyloadscript" data-minify="1" data-rocket-src="https://www.imaxx.de/wp-content/cache/min/1/wp-content/plugins/wp-leaflet-maps-pro/assets/js/vendor/jscrollpane/jscrollpane.js?ver=1776323407" id="jscrollpane-js" data-rocket-defer="" defer=""></script>
+<script type="rocketlazyloadscript" data-minify="1" data-rocket-src="https://www.imaxx.de/wp-content/cache/min/1/wp-content/plugins/wp-leaflet-maps-pro/assets/js/vendor/accordion/accordion.js?ver=1776323407" id="accordion-script-js" data-rocket-defer="" defer=""></script>
+<script type="rocketlazyloadscript" data-minify="1" data-rocket-src="https://www.imaxx.de/wp-content/cache/min/1/wp-content/plugins/wp-leaflet-maps-pro/assets/js/vendor/webfont/webfont.js?ver=1776323407" id="webfont-js" data-rocket-defer="" defer=""></script>
+<script type="rocketlazyloadscript" data-rocket-src="https://www.imaxx.de/wp-includes/js/imagesloaded.min.js?ver=5.0.0" id="imagesloaded-js" data-rocket-defer="" defer=""></script>
+<script type="rocketlazyloadscript" data-rocket-src="https://www.imaxx.de/wp-includes/js/masonry.min.js?ver=4.2.2" id="masonry-js" data-rocket-defer="" defer=""></script>
+<script type="rocketlazyloadscript" data-rocket-src="https://www.imaxx.de/wp-includes/js/jquery/jquery.masonry.min.js?ver=3.1.2b" id="jquery-masonry-js" data-rocket-defer="" defer=""></script>
+<script id="wplmp_frontend-js-extra">
+var wpomp_flocal = {"ajax_url":"https:\/\/www.imaxx.de\/wp-admin\/admin-ajax.php","nonce":"a6f9fa8b66"};
+</script>
+<script type="rocketlazyloadscript" data-rocket-src="https://www.imaxx.de/wp-content/plugins/wp-leaflet-maps-pro/assets/js/frontend.min.js?ver=1.0.8" id="wplmp_frontend-js" data-rocket-defer="" defer=""></script>
+			<script type="rocketlazyloadscript">window.addEventListener('DOMContentLoaded', function() {
+				(function($) {
+					$(function() {
+						$('#immomakler-search-agents-panel').on('click', '#immomakler-create-search-agent button[type="button"]', function(event) {
+							event.preventDefault();
+							let hasvalue = false;
+							$("#immomakler-search-form .immomakler-search-taxonomy").each(function( entry ) {
+								if ($( this ).val()){
+									hasvalue = true;
+								}
+							});
+							if($("#immomakler-radiussearch-center").val()) {
+								hasvalue = true;
+							}
+							if (!hasvalue) {
+								window.immomaklerConfirm({
+									texts: {
+										title: 'Suchauftrag',
+										body: 'Sie haben keine Suchauswahl getroffen. Möchten Sie wirklich einen Suchauftrag über den gesamten Bestand anlegen?',
+										cancelText: 'Abbrechen',
+										confirmText: 'Suchauftrag ohne Sucheinschränkung anlegen'
+									},
+									onConfirm: function() {
+										jQuery('#immomakler-create-search-agent').submit();
+									}
+								});
+							} else {
+								jQuery('#immomakler-create-search-agent').submit();
+							}
+						});
+					});
+				})(jQuery);
+			});</script>
+			<div class="immomakler">
+				<div data-immomakler-confirm="dialog" class="modal fade" tabindex="-1" role="dialog">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close" data-immomakler-confirm="close">
+							<span aria-hidden="true">×</span>
+							</button>
+							<div class="modal-title">Bitte bestätigen</div>
+						</div>
+						<div class="modal-body"></div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal" data-immomakler-confirm="cancel" aria-label="Abbrechen"></button>
+							<button type="button" class="btn btn-primary" data-immomakler-confirm="confirm" aria-label="Suchauftrag anlegen"></button>
+						</div>
+						</div><!-- /.modal-content -->
+					</div><!-- /.modal-dialog -->
+				</div><!-- /.modal -->
+			</div>
+			<div data-wpr-lazyrender="1" id="result"></div>
+			<template id="brlbs-cmpnt-cb-template-contact-form-seven-recaptcha">
+ <div class="brlbs-cmpnt-container brlbs-cmpnt-content-blocker brlbs-cmpnt-with-individual-styles" data-borlabs-cookie-content-blocker-id="contact-form-seven-recaptcha" data-borlabs-cookie-content=""><div class="brlbs-cmpnt-cb-preset-b brlbs-cmpnt-cb-cf7-recaptcha"> <div data-bg="https://www.imaxx.de/wp-content/uploads/borlabs-cookie/1/bct-google-recaptcha-main.png" class="brlbs-cmpnt-cb-thumbnail rocket-lazyload" style=""></div> <div class="brlbs-cmpnt-cb-main"> <div class="brlbs-cmpnt-cb-content"> <p class="brlbs-cmpnt-cb-description">Sie müssen den Inhalt von <strong>reCAPTCHA</strong> laden, um das Formular abzuschicken. Bitte beachten Sie, dass dabei Daten mit Drittanbietern ausgetauscht werden.</p> <a class="brlbs-cmpnt-cb-provider-toggle" href="#" data-borlabs-cookie-show-provider-information="" role="button">Mehr Informationen</a> </div> <div class="brlbs-cmpnt-cb-buttons"> <a class="brlbs-cmpnt-cb-btn" href="#" data-borlabs-cookie-unblock="" role="button">Inhalt entsperren</a> <a class="brlbs-cmpnt-cb-btn" href="#" data-borlabs-cookie-accept-service="" role="button" style="display: inherit">Erforderlichen Service akzeptieren und Inhalte entsperren</a> </div> </div> </div></div>
+</template>
+<script type="rocketlazyloadscript">
+(function() {
+    if (!document.querySelector('script[data-borlabs-cookie-script-blocker-id="contact-form-seven-recaptcha"]')) {
+        return;
+    }
+
+    const template = document.querySelector("#brlbs-cmpnt-cb-template-contact-form-seven-recaptcha");
+    const formsToInsertBlocker = document.querySelectorAll('form.wpcf7-form');
+
+    for (const form of formsToInsertBlocker) {
+        const blocked = template.content.cloneNode(true).querySelector('.brlbs-cmpnt-container');
+        form.after(blocked);
+
+        const btn = form.querySelector('.wpcf7-submit')
+        if (btn) {
+            btn.disabled = true
+        }
+    }
+})();
+</script><template id="brlbs-cmpnt-cb-template-contact-form-seven-turnstile">
+ <div class="brlbs-cmpnt-container brlbs-cmpnt-content-blocker brlbs-cmpnt-with-individual-styles" data-borlabs-cookie-content-blocker-id="contact-form-seven-turnstile" data-borlabs-cookie-content=""><div class="brlbs-cmpnt-cb-preset-b"> <div data-bg="https://www.imaxx.de/wp-content/uploads/borlabs-cookie/1/bct-cloudflare-turnstile-main.png" class="brlbs-cmpnt-cb-thumbnail rocket-lazyload" style=""></div> <div class="brlbs-cmpnt-cb-main"> <div class="brlbs-cmpnt-cb-content"> <p class="brlbs-cmpnt-cb-description">Sie sehen gerade einen Platzhalterinhalt von <strong>Turnstile</strong>. Um auf den eigentlichen Inhalt zuzugreifen, klicken Sie auf die Schaltfläche unten. Bitte beachten Sie, dass dabei Daten an Drittanbieter weitergegeben werden.</p> <a class="brlbs-cmpnt-cb-provider-toggle" href="#" data-borlabs-cookie-show-provider-information="" role="button">Mehr Informationen</a> </div> <div class="brlbs-cmpnt-cb-buttons"> <a class="brlbs-cmpnt-cb-btn" href="#" data-borlabs-cookie-unblock="" role="button">Inhalt entsperren</a> <a class="brlbs-cmpnt-cb-btn" href="#" data-borlabs-cookie-accept-service="" role="button" style="display: none">Erforderlichen Service akzeptieren und Inhalte entsperren</a> </div> </div> </div></div>
+</template>
+<script type="rocketlazyloadscript">
+(function() {
+    const template = document.querySelector("#brlbs-cmpnt-cb-template-contact-form-seven-turnstile");
+    const divsToInsertBlocker = document.querySelectorAll('body:has(script[data-borlabs-cookie-script-blocker-id="contact-form-seven-turnstile"]) .wpcf7-turnstile');
+    for (const div of divsToInsertBlocker) {
+        const cb = template.content.cloneNode(true).querySelector('.brlbs-cmpnt-container');
+        div.after(cb);
+
+        const form = div.closest('.wpcf7-form');
+        const btn = form?.querySelector('.wpcf7-submit');
+        if (btn) {
+            btn.disabled = true
+        }
+    }
+})()
+</script><template id="brlbs-cmpnt-cb-template-google-maps-site-origin">
+ <div class="brlbs-cmpnt-container brlbs-cmpnt-content-blocker brlbs-cmpnt-with-individual-styles" data-borlabs-cookie-content-blocker-id="google-maps-site-origin" data-borlabs-cookie-content=""><div class="brlbs-cmpnt-cb-preset-b brlbs-cmpnt-cb-google-maps-so"> <div data-bg="https://www.imaxx.de/wp-content/uploads/borlabs-cookie/1/brlbs-cb-google-maps-main.png" class="brlbs-cmpnt-cb-thumbnail rocket-lazyload" style=""></div> <div class="brlbs-cmpnt-cb-main"> <div class="brlbs-cmpnt-cb-content"> <p class="brlbs-cmpnt-cb-description">Sie sehen gerade einen Platzhalterinhalt von <strong>Google Maps</strong>. Um auf den eigentlichen Inhalt zuzugreifen, klicken Sie auf die Schaltfläche unten. Bitte beachten Sie, dass dabei Daten an Drittanbieter weitergegeben werden.</p> <a class="brlbs-cmpnt-cb-provider-toggle" href="#" data-borlabs-cookie-show-provider-information="" role="button">Mehr Informationen</a> </div> <div class="brlbs-cmpnt-cb-buttons"> <a class="brlbs-cmpnt-cb-btn" href="#" data-borlabs-cookie-unblock="" role="button">Inhalt entsperren</a> <a class="brlbs-cmpnt-cb-btn" href="#" data-borlabs-cookie-accept-service="" role="button" style="display: inherit">Erforderlichen Service akzeptieren und Inhalte entsperren</a> </div> </div> </div></div>
+</template>
+<script type="rocketlazyloadscript">
+(function() {
+    const template = document.querySelector("#brlbs-cmpnt-cb-template-google-maps-site-origin");
+    const divsToInsertBlocker = document.querySelectorAll('.so-widget-sow-google-map');
+    for (const div of divsToInsertBlocker) {
+        const cb = template.content.cloneNode(true).querySelector('.brlbs-cmpnt-container');
+        div.appendChild(cb);
+    }
+})()
+</script><template id="brlbs-cmpnt-cb-template-trust-index">
+ <div class="brlbs-cmpnt-container brlbs-cmpnt-content-blocker brlbs-cmpnt-with-individual-styles" data-borlabs-cookie-content-blocker-id="trust-index" data-borlabs-cookie-content=""><div class="brlbs-cmpnt-cb-preset-b brlbs-cmpnt-cb-trust-index"> <div data-bg="https://www.imaxx.de/wp-content/uploads/borlabs-cookie/1/29591_Trustindex_2-main.png" class="brlbs-cmpnt-cb-thumbnail rocket-lazyload" style=""></div> <div class="brlbs-cmpnt-cb-main"> <div class="brlbs-cmpnt-cb-content"> <p class="brlbs-cmpnt-cb-description">Sie sehen gerade einen Platzhalterinhalt von <strong>TrustIndex</strong>. Um auf den eigentlichen Inhalt zuzugreifen, klicken Sie auf die Schaltfläche unten. Bitte beachten Sie, dass dabei Daten an Drittanbieter weitergegeben werden.</p> <a class="brlbs-cmpnt-cb-provider-toggle" href="#" data-borlabs-cookie-show-provider-information="" role="button">Mehr Informationen</a> </div> <div class="brlbs-cmpnt-cb-buttons"> <a class="brlbs-cmpnt-cb-btn" href="#" data-borlabs-cookie-unblock="" role="button">Inhalt entsperren</a> <a class="brlbs-cmpnt-cb-btn" href="#" data-borlabs-cookie-accept-service="" role="button" style="display: inherit">Erforderlichen Service akzeptieren und Inhalte entsperren</a> </div> </div> </div></div>
+</template>
+<script data-borlabs-cookie-script-blocker-ignore="">
+(function() {
+    let trustindexInitTimeout = null;
+    window.addEventListener('brlbs-trustindex-init', (e) => {
+        if (trustindexInitTimeout != null) {
+            clearTimeout(trustindexInitTimeout);
+        }
+        trustindexInitTimeout = setTimeout(() => {
+            trustindexInitTimeout = null;
+            BorlabsCookie.Tools.onExist('Trustindex', () => { Trustindex.init(); });
+        }, 100);
+    });
+
+
+    const template = document.querySelector("#brlbs-cmpnt-cb-template-trust-index");
+    if (!template) { return; }
+
+    const divsToInsertBlocker = document.querySelectorAll('div[data-src^="https://cdn.trustindex.io/loader.js?"]');
+
+    for (const div of divsToInsertBlocker) {
+        const widgetId = div.dataset.src.replace('https://cdn.trustindex.io/loader.js?', '');
+        const blocked = template.content.cloneNode(true).querySelector('.brlbs-cmpnt-container');
+        const innerHtml = div.outerHTML + '<scr'+'ipt>window.dispatchEvent(new Event(\'brlbs-trustindex-init\'));</scr'+'ipt>'
+        blocked.dataset.borlabsCookieContent = btoa(unescape(encodeURIComponent(innerHtml)));
+        div.replaceWith(blocked);
+    }
+
+    const scriptsToInsertBlocker = document.querySelectorAll('script[data-borlabs-cookie-script-blocker-src^="https://cdn.trustindex.io/loader.js?"]');
+
+    for (const scr of scriptsToInsertBlocker) {
+        const widgetId = scr.dataset.borlabsCookieScriptBlockerSrc.replace('https://cdn.trustindex.io/loader.js?', '');
+        if (widgetId.startsWith('ver=')) {
+            continue;
+        }
+        const blocked = template.content.cloneNode(true).querySelector('.brlbs-cmpnt-container');
+        const innerHtml = '<scr'+'ipt>BorlabsCookie.Unblock.unblockScriptBlockerId(\'trust-index-'+widgetId+'\')</scr'+'ipt>'
+        blocked.dataset.borlabsCookieContent = btoa(unescape(encodeURIComponent(innerHtml)));
+        scr.after(blocked);
+    }
+})();
+</script><script>window.lazyLoadOptions=[{elements_selector:"img[data-lazy-src],.rocket-lazyload",data_src:"lazy-src",data_srcset:"lazy-srcset",data_sizes:"lazy-sizes",class_loading:"lazyloading",class_loaded:"lazyloaded",threshold:300,callback_loaded:function(element){if(element.tagName==="IFRAME"&&element.dataset.rocketLazyload=="fitvidscompatible"){if(element.classList.contains("lazyloaded")){if(typeof window.jQuery!="undefined"){if(jQuery.fn.fitVids){jQuery(element).parent().fitVids()}}}}}},{elements_selector:".rocket-lazyload",data_src:"lazy-src",data_srcset:"lazy-srcset",data_sizes:"lazy-sizes",class_loading:"lazyloading",class_loaded:"lazyloaded",threshold:300,}];window.addEventListener('LazyLoad::Initialized',function(e){var lazyLoadInstance=e.detail.instance;if(window.MutationObserver){var observer=new MutationObserver(function(mutations){var image_count=0;var iframe_count=0;var rocketlazy_count=0;mutations.forEach(function(mutation){for(var i=0;i<mutation.addedNodes.length;i++){if(typeof mutation.addedNodes[i].getElementsByTagName!=='function'){continue}
+if(typeof mutation.addedNodes[i].getElementsByClassName!=='function'){continue}
+images=mutation.addedNodes[i].getElementsByTagName('img');is_image=mutation.addedNodes[i].tagName=="IMG";iframes=mutation.addedNodes[i].getElementsByTagName('iframe');is_iframe=mutation.addedNodes[i].tagName=="IFRAME";rocket_lazy=mutation.addedNodes[i].getElementsByClassName('rocket-lazyload');image_count+=images.length;iframe_count+=iframes.length;rocketlazy_count+=rocket_lazy.length;if(is_image){image_count+=1}
+if(is_iframe){iframe_count+=1}}});if(image_count>0||iframe_count>0||rocketlazy_count>0){lazyLoadInstance.update()}});var b=document.getElementsByTagName("body")[0];var config={childList:!0,subtree:!0};observer.observe(b,config)}},!1)</script><script data-no-minify="1" async="" src="https://www.imaxx.de/wp-content/plugins/wp-rocket/assets/js/lazyload/17.8.3/lazyload.min.js"></script>
+
+
+</body></html><!-- This website is like a Rocket, isn't it? Performance optimized by WP Rocket. Learn more: https://wp-rocket.me - Debug: cached@1785118298 -->

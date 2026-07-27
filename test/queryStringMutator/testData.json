@@ -23,5 +23,15 @@
     "url": "https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/duesseldorf/wohnung-mieten?numberofrooms=1.5-&price=1.0-1000000.0&livingspace=1.0-10000.0&pricetype=rentpermonth&enteredFrom=result_list",
     "shouldBecome": "https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/duesseldorf/wohnung-mieten?numberofrooms=1.5-&price=1.0-1000000.0&livingspace=1.0-10000.0&pricetype=rentpermonth&enteredFrom=result_list&sorting=-firstactivation",
     "id": "immoscout"
+  },
+  {
+    "url": "https://www.imaxx.de/immobilien/?post_type=immomakler_object&radius=1&center&vermarktungsart%5B0%5D=kauf&typ%5B0%5D=wohnung",
+    "shouldBecome": "https://www.imaxx.de/immobilien/?post_type=immomakler_object&radius=1&center&vermarktungsart%5B0%5D=kauf&typ%5B0%5D=wohnung&im_order=datedesc",
+    "id": "imaxx"
+  },
+  {
+    "url": "https://www.engelvoelkers.com/de/de/propertysearch?businessArea%5B%5D=residential&placeIds%5B%5D=ChIJ8_KccStOqEcRhtFXjKWPuo0&propertyMarketingType%5B%5D=sale&sortingOptions%5B%5D=SALES_PRICE_DESC",
+    "shouldBecome": "https://www.engelvoelkers.com/de/de/propertysearch?businessArea%5B%5D=residential&placeIds%5B%5D=ChIJ8_KccStOqEcRhtFXjKWPuo0&propertyMarketingType%5B%5D=sale&sortingOptions%5B%5D=CREATED_AT_DESC",
+    "id": "engelVoelkers"
   }
 ]

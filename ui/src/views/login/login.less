@@ -1,3 +1,36 @@
+@import '../../tokens.less';
+
+@keyframes login-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes login-rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes login-scan {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(360%);
+  }
+}
+
 .login {
   display: flex;
   justify-content: center;
@@ -6,12 +39,13 @@
   height: 100%;
   overflow: hidden;
   position: relative;
+  background-color: @color-base;
 
   &__bgImage {
     background-size: cover;
     background-position: center;
-    filter: blur(10px) brightness(0.4);
-    -webkit-filter: blur(10px) brightness(0.4);
+    filter: blur(10px) brightness(0.5);
+    -webkit-filter: blur(10px) brightness(0.5);
     position: absolute;
     top: -20px;
     left: -20px;
@@ -20,29 +54,64 @@
     z-index: 0;
   }
 
+  // Vignette plus a warm accent glow behind the card, so the card reads as lit
+  &__glow {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(58% 55% at 50% 46%, @color-accent-glow 0%, transparent 62%),
+      radial-gradient(115% 95% at 50% 50%, transparent 28%, rgba(0, 0, 0, 0.55) 72%, rgba(0, 0, 0, 0.82) 100%);
+  }
+
   &__loginWrapper {
     position: relative;
     z-index: 1;
-    background: rgba(20, 20, 25, 0.7);
+    background: fade(@color-surface, 82%);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 24px;
-    padding: 3rem;
+    border: 1px solid @color-border;
+    border-radius: 14px;
+    padding: @space-8;
     width: 90%;
-    max-width: 500px;
+    max-width: 480px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    overflow: hidden;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+    animation: login-card-in 0.45s ease-out both;
+  }
 
+  // Signature: an accent hairline that sweeps the top edge while Fredy waits
+  &__scanLine {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, @color-accent-glow, transparent);
+    overflow: hidden;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 1px;
+      width: 38%;
+      background: linear-gradient(90deg, transparent, @color-accent, transparent);
+      animation: login-scan 4.4s ease-in-out infinite;
+    }
   }
 
   &__logoWrapper {
-    margin-bottom: 2.5rem;
+    margin-bottom: @space-8;
     display: flex;
     justify-content: center;
     width: 100%;
+    animation: login-rise-in 0.4s ease-out 0.1s both;
 
     .logo {
       position: static !important;
@@ -55,29 +124,111 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 1.2rem;
+    gap: @space-5;
   }
 
   &__inputGroup {
     width: 100%;
+    animation: login-rise-in 0.4s ease-out both;
+
+    &--first {
+      animation-delay: 0.16s;
+    }
+
+    &--second {
+      animation-delay: 0.22s;
+    }
+  }
+
+  &__label {
+    display: block;
+    margin: 0 0 @space-2 2px;
+    font-family: @font-mono;
+    font-size: @text-xs;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: @color-faint;
+    transition: color @transition-fast;
+  }
+
+  &__inputGroup:focus-within &__label {
+    color: @color-muted;
+  }
+
+  &__capsHint {
+    display: flex;
+    align-items: center;
+    gap: @space-2;
+    margin: @space-2 0 0 2px;
+    font-family: @font-mono;
+    font-size: @text-xs;
+    letter-spacing: 0.04em;
+    color: @color-warning;
+  }
+
+  // Semi kills focus rings globally (Index.less), the login brings the accent one back
+  .semi-input-wrapper {
+    border-radius: @radius-input;
+    transition:
+      border-color @transition-fast,
+      box-shadow @transition-fast;
+  }
+
+  .semi-input-wrapper-focus {
+    border-color: fade(@color-accent, 55%) !important;
+    box-shadow: 0 0 0 3px @color-accent-glow !important;
+  }
+
+  &__submit {
+    animation: login-rise-in 0.4s ease-out 0.28s both;
+    transition:
+      transform @transition-fast,
+      box-shadow @transition-fast;
+
+    &:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px -6px fade(@color-accent, 65%);
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+
+    &:focus-visible {
+      box-shadow: 0 0 0 3px @color-accent-glow !important;
+    }
   }
 
   // Mobile responsiveness
   @media (max-width: 480px) {
     &__loginWrapper {
-      padding: 2rem 1.5rem;
+      padding: @space-6 @space-5;
       width: 95%;
-      border-radius: 20px;
-      background: rgba(20, 20, 25, 0.85);
-
-      &::after {
-        opacity: 0.2;
-        filter: blur(10px);
-      }
+      background: fade(@color-surface, 92%);
     }
 
     &__logoWrapper {
-      margin-bottom: 1.5rem;
+      margin-bottom: @space-6;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &__loginWrapper,
+    &__logoWrapper,
+    &__inputGroup,
+    &__submit {
+      animation: none;
+    }
+
+    &__scanLine::after {
+      animation: none;
+      width: 100%;
+    }
+
+    &__submit:hover:not(:disabled) {
+      transform: none;
     }
   }
 }

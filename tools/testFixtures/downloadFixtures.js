@@ -109,6 +109,31 @@ async function downloadImmoscoutFixtures(mobileApiUrl) {
   console.log('  Saved immoscout_detail.json');
 }
 
+/**
+ * Fallback for providers that do not expose their listings through the markup (e.g. because they
+ * ship them inside an embedded json payload). Those have no crawl container the selector based
+ * {@link extractFirstDetailUrl} could work with, so the provider's own `getListings` is asked.
+ *
+ * @param {import('../../lib/types/providerConfig.js').ProviderConfig} providerConfig the initialized provider config
+ * @param {any} browser the browser used for the fixture download
+ * @returns {Promise<string|null>} absolute url of the first listing's detail page or null
+ */
+async function detailUrlFromGetListings(providerConfig, browser) {
+  if (typeof providerConfig.getListings !== 'function') return null;
+
+  try {
+    const listings = (await providerConfig.getListings(providerConfig.url, browser)) ?? [];
+    for (const listing of listings) {
+      const link = providerConfig.normalize(listing)?.link;
+      if (typeof link === 'string' && link.startsWith('http')) return link;
+    }
+  } catch (error) {
+    console.warn(`  Could not determine detail url via getListings: ${error.message}`);
+  }
+
+  return null;
+}
+
 async function downloadHtmlProvider(name, providerConfig, launchBrowser, closeBrowser, puppeteerExtractor) {
   console.log(`\nDownloading ${name}...`);
 
@@ -132,7 +157,8 @@ async function downloadHtmlProvider(name, providerConfig, launchBrowser, closeBr
     const needsDetailFixture = typeof providerConfig.fetchDetails === 'function';
 
     if (needsDetailFixture) {
-      const detailUrl = extractFirstDetailUrl(html, providerConfig);
+      const detailUrl =
+        extractFirstDetailUrl(html, providerConfig) ?? (await detailUrlFromGetListings(providerConfig, browser));
       if (!detailUrl) {
         console.warn(`  Could not find detail URL in ${name} list page`);
         return;
