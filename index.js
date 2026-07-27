@@ -17,6 +17,7 @@ import { getSettings } from './lib/services/storage/settingsStorage.js';
 import SqliteConnection, { computeDbPath } from './lib/services/storage/SqliteConnection.js';
 import { initJobExecutionService } from './lib/services/jobs/jobExecutionService.js';
 import { ensureValidBinary } from './lib/services/ensureValidBinary.js';
+import { removeObsoleteProviders } from './lib/services/providers/providerCleanup.js';
 
 // Ensure the CloakBrowser stealth Chromium binary is present and complete before
 // jobs run.  ensureValidBinary() also detects and auto-heals partial extractions
@@ -57,6 +58,11 @@ if (!fs.existsSync(sqliteDir)) {
 
 // Load provider modules once at startup
 const providers = await getProviders();
+
+// A provider that was deleted from lib/provider still lives on in the DB (in the provider config
+// of existing jobs and in the listings it found). Those leftovers can never be scraped or
+// re-checked again, so they are pruned before anything starts working with jobs or listings.
+removeObsoleteProviders(providers);
 
 similarityCache.initSimilarityCache();
 similarityCache.startSimilarityCacheReloader();
