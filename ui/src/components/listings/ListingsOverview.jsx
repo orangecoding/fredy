@@ -64,7 +64,7 @@ const ListingsOverview = ({ mode = 'all' }) => {
   const [freeTextFilter, setFreeTextFilter] = useSearchParamState(sp, 'q', null, parseString);
   const [watchListFilter, setWatchListFilter] = useSearchParamState(sp, 'watch', null, parseNullableBoolean);
   const [jobNameFilter, setJobNameFilter] = useSearchParamState(sp, 'job', null, parseString);
-  const [activityFilter, setActivityFilter] = useSearchParamState(sp, 'active', null, parseNullableBoolean);
+  const [activityFilter, setActivityFilter] = useSearchParamState(sp, 'active', true, parseNullableBoolean);
   const [providerFilter, setProviderFilter] = useSearchParamState(sp, 'provider', null, parseString);
   const [statusFilter, setStatusFilter] = useSearchParamState(sp, 'status', null, parseString);
   const [affordabilityFilter, setAffordabilityFilter] = useSearchParamState(sp, 'afford', null, parseString);
