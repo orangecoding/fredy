@@ -1,19 +1,9 @@
 {
-  "einsAImmobilien": "https://www.1a-immobilienmarkt.de/suchen/duesseldorf/wohnung-kaufen.html?search=yes&cfid=98b39c7e-b403-4764-8f3c-57bf590923d0&data_hash=f46f89548257740094dd708996adcd68&sort_type=newest",
-  "engelVoelkers": "https://www.engelvoelkers.com/de/de/propertysearch?businessArea%5B%5D=residential&currency=EUR&hasSessionBounds=true&mapMode=place_mode&measurementSystem=metric&page=1&placeIds%5B%5D=ChIJ8_KccStOqEcRhtFXjKWPuo0&placeName=Berlin%2C%20Deutschland&propertyMarketingType%5B%5D=sale&searchMode=classic&searchRadius=0&sortingOptions%5B%5D=SALES_PRICE_DESC",
-  "imaxx": "https://www.imaxx.de/immobilien/?post_type=immomakler_object&radius=1&center&vermarktungsart%5B0%5D=kauf&typ%5B0%5D=wohnung",
-  "immobilienDe": "https://www.immobilien.de/Wohnen/Suchergebnisse-51797.html?search._digest=true&search._filter=wohnen&search.flaeche_von=50&search.objektart=wohnung&search.preis_bis=1200&search.typ=mieten&search.umkreis=15&search.wo=district%3A2434%2C2695%2C2621%2C2700%2C2967%2C2734%2C2909%2C2955%2C2392%2C2746%2C2767%2C2982%2C2904%2C2612%2C2892%2C2587%2C2871%2C2975%2C2591%2C2887%2C2569%2C2640%2C2735&sort_col=*created_ts&sort_dir=desc",
-  "immowelt": "https://www.immowelt.de/classified-search?distributionTypes=Buy,Buy_Auction,Compulsory_Auction&estateTypes=House,Apartment&locations=AD08DE2350",
+  "einsAImmobilien": "https://www.1a-immobilienmarkt.de/suchen/duesseldorf/wohnung-mieten.html?search=yes&data_hash=7e07b47530b7935615e215d24028925b&sort_type=newest",
+  "engelVoelkers": "https://www.engelvoelkers.com/de/de/propertysearch?businessArea[]=residential&currency=EUR&hasSessionBounds=true&mapMode=place_mode&measurementSystem=metric&page=1&placeIds[]=ChIJ63d1dXzJuEcRsLMS7r1ZC2E&placeName=D%C3%BCsseldorf%2C%20Deutschland&propertyMarketingType[]=rent&searchMode=classic&searchRadius=0&sortingOptions[]=PUBLISHED_AT_DESC",
+  "immobilienDe": "https://www.immobilien.de/Wohnen/Suchergebnisse-51797.html?search._digest=true&search._filter=wohnen&search.flaeche_von=50&search.objektart=wohnung&search.preis_bis=1200&search.typ=mieten&search.umkreis=15&search.wo=city%3A15619",
+  "immowelt": "https://www.immowelt.de/classified-search?distributionTypes=Rent&estateTypes=House,Apartment&locations=AD08DE2112&order=DateDesc",
   "immoscout": "https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/duesseldorf/wohnung-mieten?enteredFrom=one_step_search",
-  "immoswp": "https://immo.swp.de/suchergebnisse?l=M%C3%BCnchen&r=0km&_multiselect_r=0km&ut=private&t=apartment%3Arental&a=de.muenchen&pf=&pt=&rf=0&rt=0&sf=50&st=&yf=&yt=&ff=&ft=&s=most_recently_updated_first&pa=&o=&ad=&u=",
-  "inberlinwohnen": "https://inberlinwohnen.de/wohnungsfinder/",
-  "kleinanzeigen": "https://www.kleinanzeigen.de/s-immobilien/duesseldorf/anzeige:angebote/wohnung/k0c195l2068r5",
-  "mcMakler": "https://www.mcmakler.de/immobilien?city=D%C3%BCsseldorf&placeId=62539",
-  "ohneMakler": "https://www.ohne-makler.net/immobilien/wohnung-kaufen/nordrhein-westfalen/dusseldorf/",
-  "neubauKompass": "https://www.neubaukompass.de/neubau-immobilien/duesseldorf-region/eigentumswohnung/",
-  "regionalimmobilien24": "https://www.regionalimmobilien24.de/rostock/rostock/kaufen/haus/-/-/-/?rd=5",
-  "sparkasse": "https://immobilien.sparkasse.de/immobilien/treffer?estateTypeGroupingId=403&marketingType=buy&perimeter=10&usageType=residential&zipCityEstateId=51.22422%2F6.78006%2F0__D%C3%BCsseldorf",
-  "schwarzesbrett": "https://schwarzesbrett.bremen.de/verkauf-und-angebote/mietobjekte",
-  "wgGesucht": "https://www.wg-gesucht.de/wg-zimmer-in-Duesseldorf.30.0.1.0.html",
-  "deutscheWohnen": "https://www.deutsche-wohnen.com/mieten/mietangebote?rentType=miete&city=Berlin&immoType=wohnung"
+  "immoswp": "https://immo.swp.de/suchergebnisse?l=D%C3%BCsseldorf&r=0km&_multiselect_r=0km&t=apartment%3Arental%3Aliving&a=de.duesseldorf&pf=&pt=&rf=&rt=&sf=50&st=&psf=&pst=&yf=&yt=&ff=&ft=&ba=&ro=0&s=most_recently_updated_first&pa=&o=&ad=&u=",
+  "kleinanzeigen": "https://www.kleinanzeigen.de/s-immobilien/duesseldorf/anzeige:angebote/wohnung/k0c195l2068r5"
 }
