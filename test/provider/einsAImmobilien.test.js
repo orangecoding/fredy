@@ -9,8 +9,11 @@ import { providerConfig, mockFredy } from '../utils.js';
 import { expect } from 'vitest';
 import * as provider from '../../lib/provider/einsAImmobilien.js';
 
+/** Run-scoped provider config, built per test via createConfig(). */
+let runConfig;
+
 describe('#einsAImmobilien testsuite()', () => {
-  provider.init(providerConfig.einsAImmobilien, []);
+  runConfig = provider.createConfig(providerConfig.einsAImmobilien, []);
   it('should test einsAImmobilien provider', async () => {
     const Fredy = await mockFredy();
     const mockedJob = {
@@ -20,7 +23,7 @@ describe('#einsAImmobilien testsuite()', () => {
       specFilter: null,
     };
     return await new Promise((resolve, reject) => {
-      const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache, undefined);
+      const fredy = new Fredy(runConfig, mockedJob, provider.metaInformation.id, similarityCache, undefined);
       fredy.execute().then((listings) => {
         if (listings == null || listings.length === 0) {
           reject('Listings is empty!');

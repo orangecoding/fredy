@@ -4,7 +4,7 @@
  */
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { parseBoolean, parseNumber, parseString, useSearchParamState } from '../../hooks/useSearchParamState.js';
+import { useUrlState, parseNumber, parseString, parseBoolean } from '../../hooks/useSearchParamState.js';
 import { getAddresses } from '../../utils.js';
 import { renderToString } from 'react-dom/server';
 import maplibregl from '../../components/map/maplibre.js';
@@ -18,12 +18,24 @@ import no_image from '../../assets/no_image.png';
 import _RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
 import './Map.less';
-import { xhrDelete } from '../../services/xhr.js';
+import { xhrDelete, errorMessage } from '../../services/xhr.js';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import ListingDeletionModal from '../../components/ListingDeletionModal.jsx';
 import Map from '../../components/map/Map.jsx';
 import Headline from '../../components/headline/Headline.jsx';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
+
+/**
+ * The map's URL-backed view state: which job, the distance ring, the basemap and the 3D layer.
+ *
+ * Module scope so its identity is stable for the hook's memo.
+ */
+const MAP_URL_STATE = {
+  job: { defaultValue: null, codec: parseString },
+  distance: { defaultValue: 0, codec: parseNumber },
+  style: { defaultValue: 'STANDARD', codec: parseString },
+  buildings: { defaultValue: false, codec: parseBoolean },
+};
 
 const RangeSlider = _RangeSlider?.default ?? _RangeSlider;
 
@@ -46,10 +58,13 @@ export default function MapView() {
   const defaultDeleteType = listingDeletionPref?.hardDelete ? 'hard' : 'soft';
 
   const jobs = useSelector((state) => state.jobsData.jobs);
-  const [jobId, setJobId] = useSearchParamState(sp, 'job', null, parseString);
-  const [distanceFilter, setDistanceFilter] = useSearchParamState(sp, 'distance', 0, parseNumber);
-  const [style] = useSearchParamState(sp, 'style', 'STANDARD', parseString);
-  const [show3dBuildings, setShow3dBuildings] = useSearchParamState(sp, 'buildings', false, parseBoolean);
+  // One grouped state rather than four independent setters: two of these can change in the same
+  // tick, and separate setSearchParams calls overwrite each other.
+  const { values: urlState, setValue: setUrlValue } = useUrlState(sp, MAP_URL_STATE);
+  const { job: jobId, distance: distanceFilter, style, buildings: show3dBuildings } = urlState;
+  const setJobId = (value) => setUrlValue('job', value);
+  const setDistanceFilter = (value) => setUrlValue('distance', value);
+  const setShow3dBuildings = (value) => setUrlValue('buildings', value);
 
   // Price range: stored as priceMin/priceMax URL params; default max derived from loaded listings
   const urlPriceMin = searchParams.has('priceMin') ? Number(searchParams.get('priceMin')) : null;
@@ -69,7 +84,7 @@ export default function MapView() {
       Toast.success(t('map.toastDeleted'));
       fetchListings();
     } catch (error) {
-      Toast.error(error.message || t('map.toastDeleteError'));
+      Toast.error(errorMessage(error, t('map.toastDeleteError')));
     } finally {
       setDeleteModalVisible(false);
       setListingToDelete(null);

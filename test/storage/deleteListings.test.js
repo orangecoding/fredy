@@ -22,6 +22,18 @@ const sqliteMock = {
     if (sqliteMock.__queryHandler) return sqliteMock.__queryHandler(sql, params);
     return [];
   },
+  // Batch updates run chunked inside a transaction so an unbounded id list cannot exceed
+  // SQLite's bound-parameter limit. Statements prepared on the transaction's db handle are
+  // recorded into the same `calls.execute` log, so the assertions below stay about the SQL.
+  withTransaction: (callback) =>
+    callback({
+      prepare: (sql) => ({
+        run: (params) => {
+          calls.execute.push({ sql, params });
+          return { changes: 1 };
+        },
+      }),
+    }),
   __queryHandler: null,
 };
 

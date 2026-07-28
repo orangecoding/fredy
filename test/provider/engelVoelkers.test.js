@@ -10,12 +10,15 @@ import { expect } from 'vitest';
 import * as provider from '../../lib/provider/engelVoelkers.js';
 import { launchBrowser, closeBrowser } from '../../lib/services/extractor/puppeteerExtractor.js';
 
+/** Run-scoped provider config, built per test via createConfig(). */
+let runConfig;
+
 // One browser shared across the whole suite so both requests (search + exposé) come from the
 // same warm session.
 const TEST_TIMEOUT = 120_000;
 
 describe('#engelVoelkers testsuite()', () => {
-  provider.init(providerConfig.engelVoelkers, []);
+  runConfig = provider.createConfig(providerConfig.engelVoelkers, []);
 
   let browser;
   let listings;
@@ -39,7 +42,7 @@ describe('#engelVoelkers testsuite()', () => {
       };
 
       const Fredy = await mockFredy();
-      const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache, browser);
+      const fredy = new Fredy(runConfig, mockedJob, provider.metaInformation.id, similarityCache, browser);
       listings = await fredy.execute();
 
       if (listings == null || listings.length === 0) {
@@ -79,7 +82,7 @@ describe('#engelVoelkers testsuite()', () => {
 
         // fetchDetails is called directly on an already scraped listing, so the search page does
         // not have to be crawled a second time.
-        const enriched = await provider.config.fetchDetails(listings[0], browser);
+        const enriched = await runConfig.fetchDetails(listings[0], browser);
 
         expect(enriched.link).toBe(listings[0].link);
         expect(enriched.address).toBeTypeOf('string');

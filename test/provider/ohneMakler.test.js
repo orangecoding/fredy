@@ -9,6 +9,9 @@ import { mockFredy, providerConfig } from '../utils.js';
 import { expect } from 'vitest';
 import * as provider from '../../lib/provider/ohneMakler.js';
 
+/** Run-scoped provider config, built per test via createConfig(). */
+let runConfig;
+
 describe('#ohneMakler testsuite()', () => {
   it('should test ohneMakler provider', async () => {
     const Fredy = await mockFredy();
@@ -18,9 +21,9 @@ describe('#ohneMakler testsuite()', () => {
       spatialFilter: null,
       specFilter: null,
     };
-    provider.init(providerConfig.ohneMakler, []);
+    runConfig = provider.createConfig(providerConfig.ohneMakler, []);
 
-    const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache, undefined);
+    const fredy = new Fredy(runConfig, mockedJob, provider.metaInformation.id, similarityCache, undefined);
 
     const listing = await fredy.execute();
 

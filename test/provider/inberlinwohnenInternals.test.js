@@ -8,6 +8,9 @@ import { providerConfig } from '../utils.js';
 import * as provider from '../../lib/provider/inberlinwohnen.js';
 import { buildHash } from '../../lib/utils.js';
 
+/** Run-scoped provider config, built per test via createConfig(). */
+let runConfig;
+
 // The portal is a Livewire app, so all listing data lives in `wire:snapshot`
 // attributes instead of markup. Every test here drives the provider with an
 // injected page extractor, which means no browser and no network is involved.
@@ -27,7 +30,7 @@ const resultPage = (ids, pagination = null) =>
 
 describe('#inberlinwohnen internals()', () => {
   beforeEach(() => {
-    provider.init(providerConfig.inberlinwohnen, []);
+    runConfig = provider.createConfig(providerConfig.inberlinwohnen, []);
   });
 
   afterEach(() => {
@@ -43,7 +46,7 @@ describe('#inberlinwohnen internals()', () => {
         .mockResolvedValueOnce(resultPage([3, 4]))
         .mockResolvedValueOnce(resultPage([5]));
 
-      const listings = await provider.config.getListings(
+      const listings = await runConfig.getListings(
         'https://inberlinwohnen.de/wohnungsfinder/?district=mitte&page=9',
         browser,
         extractPage,
@@ -68,7 +71,7 @@ describe('#inberlinwohnen internals()', () => {
         .mockResolvedValueOnce(resultPage([1, 2], paginationElement([1, 2, 3], 2)))
         .mockResolvedValueOnce(resultPage([2, 3]));
 
-      const listings = await provider.config.getListings(SEARCH_URL, browser, extractPage);
+      const listings = await runConfig.getListings(SEARCH_URL, browser, extractPage);
 
       expect(listings.map((listing) => JSON.parse(listing.id).data.item[0].id)).toEqual([1, 2, 3]);
     });
@@ -76,14 +79,14 @@ describe('#inberlinwohnen internals()', () => {
     it('should accept a recognized search without any results', async () => {
       const extractPage = vi.fn().mockResolvedValue(resultPage([], paginationElement([], 10)));
 
-      await expect(provider.config.getListings(SEARCH_URL, browser, extractPage)).resolves.toEqual([]);
+      await expect(runConfig.getListings(SEARCH_URL, browser, extractPage)).resolves.toEqual([]);
     });
 
     it('should reject pages without recognizable Livewire search data', async () => {
       const unrelatedSnapshot = `<div wire:snapshot='${listingSnapshot({ id: 'unrelated' })}'></div>`;
       const extractPage = vi.fn().mockResolvedValue(`${paginationElement([1], 10)}${unrelatedSnapshot}`);
 
-      await expect(provider.config.getListings(SEARCH_URL, browser, extractPage)).rejects.toThrow(
+      await expect(runConfig.getListings(SEARCH_URL, browser, extractPage)).rejects.toThrow(
         'contained 0 of 1 expected listings',
       );
     });
@@ -95,13 +98,13 @@ describe('#inberlinwohnen internals()', () => {
         .mockResolvedValueOnce(resultPage([1], pagination))
         .mockResolvedValueOnce(pagination);
 
-      await expect(provider.config.getListings(SEARCH_URL, browser, extractPage)).rejects.toThrow(
+      await expect(runConfig.getListings(SEARCH_URL, browser, extractPage)).rejects.toThrow(
         'page 2 contained 0 of 1 expected listings',
       );
     });
 
     it('should reject browser failures and excessive pagination', async () => {
-      await expect(provider.config.getListings(SEARCH_URL, browser, vi.fn().mockResolvedValue(null))).rejects.toThrow(
+      await expect(runConfig.getListings(SEARCH_URL, browser, vi.fn().mockResolvedValue(null))).rejects.toThrow(
         'could not be loaded',
       );
 
@@ -112,9 +115,9 @@ describe('#inberlinwohnen internals()', () => {
           1,
         ),
       );
-      await expect(
-        provider.config.getListings(SEARCH_URL, browser, vi.fn().mockResolvedValue(tooManyPages)),
-      ).rejects.toThrow('exceeding the safety limit');
+      await expect(runConfig.getListings(SEARCH_URL, browser, vi.fn().mockResolvedValue(tooManyPages))).rejects.toThrow(
+        'exceeding the safety limit',
+      );
     });
   });
 
@@ -126,7 +129,7 @@ describe('#inberlinwohnen internals()', () => {
       rooms: '2,0',
       area: '51,04',
     };
-    const normalize = (item, tuple = true) => provider.config.normalize({ id: listingSnapshot(item, tuple) });
+    const normalize = (item, tuple = true) => runConfig.normalize({ id: listingSnapshot(item, tuple) });
 
     it('should support object snapshots and rent fallbacks', () => {
       const objectListing = normalize({ ...baseItem, rentGross: '503,91' }, false);
@@ -173,7 +176,7 @@ describe('#inberlinwohnen internals()', () => {
       const extractDetails = vi.fn().mockResolvedValue(html);
       const listing = { id: 'listing-1', link: `https://${hostname}/listing/1`, description: 'Gesamtmiete: 600 €' };
 
-      const enriched = await provider.config.fetchDetails(listing, browser, extractDetails);
+      const enriched = await runConfig.fetchDetails(listing, browser, extractDetails);
 
       expect(enriched.description).toContain('Gesamtmiete: 600 €');
       expect(enriched.description).not.toBe(listing.description);
@@ -182,25 +185,25 @@ describe('#inberlinwohnen internals()', () => {
 
     it('should preserve listings when detail enrichment is unsupported or unavailable', async () => {
       const unsupported = { id: '1', link: 'https://example.com/listing/1', description: 'Original' };
-      expect(await provider.config.fetchDetails(unsupported, browser)).toBe(unsupported);
+      expect(await runConfig.fetchDetails(unsupported, browser)).toBe(unsupported);
 
       const supported = { ...unsupported, link: 'https://www.degewo.de/listing/1' };
       const extractDetails = vi.fn().mockResolvedValue(null);
-      expect(await provider.config.fetchDetails(supported, browser, extractDetails)).toBe(supported);
+      expect(await runConfig.fetchDetails(supported, browser, extractDetails)).toBe(supported);
 
       // stadtundland renders its exposes client side, so no selector is known
       const stadtUndLand = { ...unsupported, link: 'https://stadtundland.de/wohnungssuche/1' };
-      expect(await provider.config.fetchDetails(stadtUndLand, browser, extractDetails)).toBe(stadtUndLand);
+      expect(await runConfig.fetchDetails(stadtUndLand, browser, extractDetails)).toBe(stadtUndLand);
     });
   });
 
   describe('filter()', () => {
     it('should apply blacklist terms to titles and descriptions', () => {
-      provider.init(providerConfig.inberlinwohnen, ['wbs']);
+      runConfig = provider.createConfig(providerConfig.inberlinwohnen, ['wbs']);
 
-      expect(provider.config.filter({ title: 'Wohnung mit WBS', description: '' })).toBe(false);
-      expect(provider.config.filter({ title: 'Wohnung', description: 'WBS erforderlich' })).toBe(false);
-      expect(provider.config.filter({ title: 'Wohnung', description: 'Bezugsfertig' })).toBe(true);
+      expect(runConfig.filter({ title: 'Wohnung mit WBS', description: '' })).toBe(false);
+      expect(runConfig.filter({ title: 'Wohnung', description: 'WBS erforderlich' })).toBe(false);
+      expect(runConfig.filter({ title: 'Wohnung', description: 'Bezugsfertig' })).toBe(true);
     });
   });
 
@@ -218,13 +221,13 @@ describe('#inberlinwohnen internals()', () => {
       globalThis.fetch = fetchMock;
 
       try {
-        await expect(provider.config.activeTester('https://www.degewo.de/redirect')).resolves.toBe(1);
-        await expect(provider.config.activeTester('https://www.degewo.de/gone')).resolves.toBe(0);
-        await expect(provider.config.activeTester('https://www.degewo.de/removed')).resolves.toBe(0);
-        await expect(provider.config.activeTester('https://www.degewo.de/unavailable')).resolves.toBe(-1);
-        await expect(provider.config.activeTester('https://www.degewo.de/network-error')).resolves.toBe(-1);
+        await expect(runConfig.activeTester('https://www.degewo.de/redirect')).resolves.toBe(1);
+        await expect(runConfig.activeTester('https://www.degewo.de/gone')).resolves.toBe(0);
+        await expect(runConfig.activeTester('https://www.degewo.de/removed')).resolves.toBe(0);
+        await expect(runConfig.activeTester('https://www.degewo.de/unavailable')).resolves.toBe(-1);
+        await expect(runConfig.activeTester('https://www.degewo.de/network-error')).resolves.toBe(-1);
         // hosts outside of the portal and its partners must never be requested
-        await expect(provider.config.activeTester('http://127.0.0.1/private')).resolves.toBe(-1);
+        await expect(runConfig.activeTester('http://127.0.0.1/private')).resolves.toBe(-1);
 
         expect(fetchMock).toHaveBeenNthCalledWith(
           1,

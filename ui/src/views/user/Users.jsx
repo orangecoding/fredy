@@ -9,7 +9,7 @@ import { IconPlus } from '@douyinfe/semi-icons';
 import UserTable from '../../components/table/UserTable';
 import { useActions, useSelector } from '../../services/state/store';
 import UserRemovalModal from './UserRemovalModal';
-import { xhrDelete } from '../../services/xhr';
+import { xhrDelete, errorMessage } from '../../services/xhr';
 import { useNavigate } from 'react-router-dom';
 import Headline from '../../components/headline/Headline.jsx';
 import './Users.less';
@@ -39,7 +39,9 @@ const Users = function Users() {
       await actions.jobsData.getJobs();
       await actions.user.getUsers();
     } catch (error) {
-      Toast.error(error.error);
+      // Same wrong key as everywhere else: the rejection is `{ status, json }`, so `error.error`
+      // was undefined and a refused removal rendered an empty toast.
+      Toast.error(errorMessage(error, t('users.toastRemoveError')));
       setUserIdToBeRemoved(null);
     }
   };

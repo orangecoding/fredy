@@ -68,8 +68,14 @@ scheduler (every N minutes) or manual trigger via POST /api/jobs/:id/run
 
 **Providers** (`lib/provider/*.js`) - each module exports:
 - `metaInformation` - `{ id, name, baseUrl }`
-- `config` - `ProviderConfig` with `requiredFieldNames`, `crawlContainer`, `crawlFields`, `sortByDateParam`, `normalize()`, `filter()`, optional `getListings()`, `fetchDetails()`, `activeTester()`
-- `init(sourceConfig, blacklist)` - called before each job run; providers are **stateful modules** holding mutable `url` and `appliedBlackList` at module scope
+- `config` - the **static** `ProviderConfig` template: `requiredFieldNames`, `crawlContainer`, `crawlFields`, `sortByDateParam`, `normalize()`, optional `getListings()`, `fetchDetails()`, `activeTester()`. `url` is `null` here and there is no bound `filter`.
+- `createConfig(sourceConfig, blacklist)` - returns a **fresh** `ProviderConfig` per job run: the template plus this run's `url`, `enabled`, and a `filter` closed over this run's blacklist.
+
+Providers are **stateless**. Nothing run-specific may live at module scope: two jobs can execute
+concurrently (a manual run started while the scheduler is working), and shared mutable state let
+the second job overwrite the first one's URL and blacklist mid-run, storing listings under the
+wrong job. The same rule is why the Cheerio parser builds its document inside `parse()` instead of
+keeping a module-level `$`.
 
 **Notification adapters** (`lib/notification/adapter/*.js`) - each exports:
 - `config` - `{ id, name, description, fields }` (drives the UI form)

@@ -7,49 +7,80 @@
  * Zustand store for Fredy ui state.
  */
 import { create } from 'zustand';
-import { shallow } from 'zustand/shallow';
+import { useShallow } from 'zustand/react/shallow';
 import { xhrGet, xhrPost } from '../xhr.js';
 import queryString from 'query-string';
-import { mergeSection, stripSection } from '../../../../lib/services/finance/profileSections.js';
+
+/**
+ * Optional state-change logging, off unless VITE_DEBUG_STORE is set.
+ *
+ * It used to log the whole previous and next state on every single `set` in development. That
+ * retains two full snapshots per action in the console - including every loaded listing page - and
+ * makes the devtools sluggish exactly when the app has enough data to be worth debugging.
+ */
+const DEBUG_STORE = import.meta.env?.VITE_DEBUG_STORE === 'true';
 
 const logger = (config) => (set, get, api) =>
   config(
     (partial, replace) => {
+      if (!DEBUG_STORE) {
+        return set(partial, replace);
+      }
       const prev = get();
       set(partial, replace);
       const next = get();
-      if (process.env.NODE_ENV !== 'production') {
-        /* eslint-disable no-console */
-        console.info('[zustand] state changed:', { prev, next });
-        /* eslint-enable no-console */
-      }
+      // Only the keys that actually changed, rather than two copies of everything.
+      const changed = Object.keys(next).filter((key) => next[key] !== prev[key]);
+      /* eslint-disable no-console */
+      console.info('[zustand]', changed.join(', '), Object.fromEntries(changed.map((key) => [key, next[key]])));
+      /* eslint-enable no-console */
     },
     get,
     api,
   );
 
 /**
- * Write a finance profile to the server and mirror it into the store.
+ * Re-read the derived profile view after the profile changed.
  *
- * Saving a tab and deleting a tab differ only in the profile they produce, so the request and
- * the store update live here once rather than twice.
+ * Every finance surface reads the summary rather than deriving anything, so it has to be refreshed
+ * whenever the profile behind it moves - otherwise the chips keep quoting the old ceilings.
  *
  * @param {(updater: Function) => void} set Zustand setter.
- * @param {Object} profile The complete profile to persist.
- * @returns {Promise<Object>} The persisted profile.
+ * @returns {Promise<void>}
  */
-async function persistFinanceProfile(set, profile) {
+async function refreshFinanceSummary(set) {
   try {
-    await xhrPost('/api/user/settings/finance-profile', { finance_profile: profile });
+    const response = await xhrGet('/api/finance/profile-summary');
+    set((state) => ({ finance: { ...state.finance, summary: response.json } }));
+  } catch (Exception) {
+    console.error('Error while refreshing the finance profile summary. Error:', Exception);
+  }
+}
+
+/**
+ * Save or clear one tab of the finance profile, letting the server merge it into what is stored.
+ *
+ * The response carries the merged profile, so the store mirrors what the server decided rather
+ * than a second, locally computed guess at it.
+ *
+ * @param {(updater: Function) => void} set Zustand setter.
+ * @param {{section: 'rent'|'buy', profile?: Object, remove?: boolean}} payload
+ * @returns {Promise<Object>} The profile that is now stored.
+ */
+async function persistFinanceSection(set, payload) {
+  try {
+    const response = await xhrPost('/api/user/settings/finance-profile/section', payload);
+    const stored = response.json.finance_profile;
     set((state) => ({
       userSettings: {
         ...state.userSettings,
-        settings: { ...state.userSettings.settings, finance_profile: profile },
+        settings: { ...state.userSettings.settings, finance_profile: stored },
       },
     }));
-    return profile;
+    await refreshFinanceSummary(set);
+    return stored;
   } catch (Exception) {
-    console.error('Error while trying to persist the finance profile. Error:', Exception);
+    console.error('Error while trying to persist a finance profile section. Error:', Exception);
     throw Exception;
   }
 }
@@ -68,7 +99,7 @@ const loadingTracker = (config) => (set, get, api) => {
 // Create the Zustand store with slices and actions
 export const useFredyState = create(
   logger(
-    loadingTracker((set, get) => {
+    loadingTracker((set) => {
       // Async actions that directly set state (no separate reducer concept)
       const effects = {
         dashboard: {
@@ -82,6 +113,59 @@ export const useFredyState = create(
           },
         },
         finance: {
+          /**
+           * Load the derived view of the stored finance profile.
+           *
+           * All of it is computed server-side; the browser holds no finance math of its own.
+           * Called on boot and after every profile write.
+           */
+          async getProfileSummary() {
+            try {
+              const response = await xhrGet('/api/finance/profile-summary');
+              set((state) => ({ finance: { ...state.finance, summary: response.json } }));
+              return response.json;
+            } catch (Exception) {
+              console.error('Error while trying to load the finance profile summary. Error:', Exception);
+              return null;
+            }
+          },
+          /**
+           * Run the calculator against a draft profile the user is still editing.
+           *
+           * Returns the full breakdown plus the budget, ceilings and completeness flags for that
+           * draft, so the calculator's panels need one request rather than four.
+           *
+           * @param {Object} profile
+           * @returns {Promise<Object|null>} Null when the draft is not calculable yet.
+           */
+          async calculate(profile) {
+            try {
+              const response = await xhrPost('/api/finance/calculate', { profile });
+              return response.json;
+            } catch (Exception) {
+              // A 400 here is the normal "not enough entered yet" case, not a failure worth
+              // shouting about; the calculator simply shows nothing.
+              if (Exception?.status !== 400) {
+                console.error('Error while trying to calculate financing. Error:', Exception);
+              }
+              return null;
+            }
+          },
+          /**
+           * The financing breakdown for one listing, measured against the stored profile.
+           *
+           * @param {string} listingId
+           * @returns {Promise<Object|null>}
+           */
+          async getListingFinance(listingId) {
+            try {
+              const response = await xhrGet(`/api/finance/listing/${listingId}`);
+              return response.json;
+            } catch (Exception) {
+              console.error(`Error while trying to load the financing of listing ${listingId}. Error:`, Exception);
+              return null;
+            }
+          },
           async getAffordability(payload) {
             set((state) => ({ finance: { ...state.finance, loading: true } }));
             try {
@@ -390,15 +474,17 @@ export const useFredyState = create(
           },
           /**
            * Persist one tab (renting or buying) of the finance profile, leaving the other tab as
-           * it is already stored. The merge is done against the live stored profile so saving one
-           * tab never clobbers what the other tab saved earlier.
+           * it is already stored.
+           *
+           * The merge happens server-side against what is actually stored. Doing it here meant a
+           * second copy of the merge rules in the browser, and a lost update whenever two tabs
+           * saved from stale state.
            *
            * @param {{section: 'rent'|'buy', profile: Object}} params
            * @returns {Promise<Object>} The profile that is now stored.
            */
           async saveFinanceSection({ section, profile }) {
-            const stored = get().userSettings.settings.finance_profile ?? null;
-            return persistFinanceProfile(set, mergeSection(stored, section, profile));
+            return persistFinanceSection(set, { section, profile });
           },
           /**
            * Remove one tab (renting or buying) from the stored finance profile, keeping the
@@ -408,8 +494,7 @@ export const useFredyState = create(
            * @returns {Promise<Object>} The profile that is now stored.
            */
           async deleteFinanceSection(section) {
-            const stored = get().userSettings.settings.finance_profile ?? null;
-            return persistFinanceProfile(set, stripSection(stored, section));
+            return persistFinanceSection(set, { section, remove: true });
           },
           async setProviderDetails(providers) {
             try {
@@ -509,7 +594,7 @@ export const useFredyState = create(
       // Initial state
       const initial = {
         dashboard: { data: null },
-        finance: { data: null, loading: false },
+        finance: { data: null, loading: false, summary: null },
         notificationAdapter: [],
         listingsData: {
           totalNumber: 0,
@@ -551,15 +636,19 @@ export const useFredyState = create(
         userSettings: { ...effects.userSettings },
       };
 
-      // Wrap actions to track loading state
+      // Wrap actions to track loading state.
+      //
+      // The wrapper tags itself with the action's path, so useIsLoading() can look the flag up
+      // directly instead of scanning every slice and every action on every render to reverse-map
+      // a function back to its name.
       const wrappedActions = {};
       Object.keys(actions).forEach((slice) => {
         wrappedActions[slice] = {};
         Object.keys(actions[slice]).forEach((actionName) => {
           const originalAction = actions[slice][actionName];
           if (typeof originalAction === 'function') {
-            wrappedActions[slice][actionName] = async (...args) => {
-              const fullActionName = `${slice}.${actionName}`;
+            const fullActionName = `${slice}.${actionName}`;
+            const wrapped = async (...args) => {
               set((state) => ({ loading: { ...state.loading, [fullActionName]: true } }));
               try {
                 return await originalAction(...args);
@@ -567,6 +656,8 @@ export const useFredyState = create(
                 set((state) => ({ loading: { ...state.loading, [fullActionName]: false } }));
               }
             };
+            wrapped.actionPath = fullActionName;
+            wrappedActions[slice][actionName] = wrapped;
           } else {
             wrappedActions[slice][actionName] = originalAction;
           }
@@ -583,15 +674,19 @@ export const useFredyState = create(
 );
 
 /**
- * Selector hook, drop-in replacement for react-redux useSelector.
- * Pass a selector function and optional equality function. Defaults to shallow comparison.
+ * Selector hook.
+ *
+ * Wraps the selector in zustand's `useShallow`, so a selector returning a fresh object or array
+ * re-renders only when its contents change. zustand v5 removed the second `equalityFn` argument
+ * this used to pass; it was accepted and silently ignored, which meant every call site here had
+ * reference equality while looking like it had shallow equality.
+ *
  * @template T
  * @param {(state: FredyState) => T} selector
- * @param {(a: T, b: T) => boolean} [equalityFn]
  * @returns {T}
  */
-export function useSelector(selector, equalityFn = shallow) {
-  return useFredyState(selector, equalityFn);
+export function useSelector(selector) {
+  return useFredyState(useShallow(selector));
 }
 
 /**
@@ -604,25 +699,17 @@ export function useActions() {
 }
 
 /**
- * Hook to check if a specific action is currently loading.
+ * Whether a specific action is currently running.
+ *
+ * Subscribes to that one flag rather than to the whole `loading` object, so an unrelated request
+ * finishing no longer re-renders every component that asks about loading state. The action's path
+ * is read off the wrapper the store attached to it, instead of being recovered by scanning every
+ * slice on every render.
+ *
  * @param {Function} action - The action function from useActions()
  * @returns {boolean}
  */
 export function useIsLoading(action) {
-  const actions = useActions();
-  const loading = useSelector((state) => state.loading);
-
-  // Find the action name by comparing the function
-  let actionPath = null;
-  for (const slice in actions) {
-    for (const name in actions[slice]) {
-      if (actions[slice][name] === action) {
-        actionPath = `${slice}.${name}`;
-        break;
-      }
-    }
-    if (actionPath) break;
-  }
-
-  return !!loading[actionPath];
+  const actionPath = action?.actionPath ?? null;
+  return useFredyState((state) => (actionPath == null ? false : state.loading[actionPath] === true));
 }

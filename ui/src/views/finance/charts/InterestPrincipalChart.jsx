@@ -13,7 +13,6 @@ import {
   registerFinanceCharts,
   withAlpha,
 } from '../../../components/cards/chartTheme.js';
-import { aggregateByYear } from '../../../../../lib/services/finance/amortization.js';
 import { useTranslation, useLocale } from '../../../services/i18n/i18n.jsx';
 
 registerFinanceCharts();
@@ -33,7 +32,7 @@ export default function InterestPrincipalChart({ scenario, height = 280 }) {
   const locale = useLocale();
 
   const years = React.useMemo(
-    () => (scenario?.schedule?.months?.length > 0 ? aggregateByYear(scenario.schedule.months) : []),
+    () => (scenario?.schedule?.months?.length > 0 ? (scenario.schedule.years ?? []) : []),
     [scenario],
   );
 

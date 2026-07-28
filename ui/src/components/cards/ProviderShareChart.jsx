@@ -97,6 +97,13 @@ export default function ProviderShareChart({ data = [], totalListings = 0 }) {
       // chart.js grows the bars in on every mount by default, so the bar replayed a little
       // performance on each page load. A standing statistic should just be there.
       animation: false,
+      // The shared base uses `{ mode: 'index', intersect: false }`, which is right for the trend
+      // charts: many points along one axis, one series. This chart is the opposite shape - a
+      // single index carrying one dataset per provider - and index mode resolves the hovered
+      // *index*, which is always 0 here. It therefore reported the first provider no matter which
+      // segment the cursor was over. Hit-testing the element under the cursor is what this bar
+      // actually needs.
+      interaction: { mode: 'nearest', axis: 'x', intersect: true },
       layout: { padding: { top: 4, bottom: 4 } },
       scales: {
         x: { stacked: true, min: 0, max: 100, display: false, grid: { display: false } },

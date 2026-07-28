@@ -9,8 +9,11 @@ import { mockFredy, providerConfig } from '../utils.js';
 import { expect } from 'vitest';
 import * as provider from '../../lib/provider/immoswp.js';
 
+/** Run-scoped provider config, built per test via createConfig(). */
+let runConfig;
+
 describe('#immoswp testsuite()', () => {
-  provider.init(providerConfig.immoswp, [], []);
+  runConfig = provider.createConfig(providerConfig.immoswp, [], []);
   it('should test immoswp provider', async () => {
     const Fredy = await mockFredy();
     const mockedJob = {
@@ -21,7 +24,7 @@ describe('#immoswp testsuite()', () => {
     };
 
     return await new Promise((resolve, reject) => {
-      const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache, undefined);
+      const fredy = new Fredy(runConfig, mockedJob, provider.metaInformation.id, similarityCache, undefined);
 
       fredy.execute().then((listing) => {
         if (listing == null || listing.length === 0) {

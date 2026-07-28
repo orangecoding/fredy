@@ -3,7 +3,7 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { loadParser, parse } from '../../lib/services/extractor/parser/parser.js';
+import { parse } from '../../lib/services/extractor/parser/parser.js';
 
 /**
  * Extracts the detail page url of the first usable listing of a provider's list page.
@@ -20,7 +20,6 @@ import { loadParser, parse } from '../../lib/services/extractor/parser/parser.js
 export function extractFirstDetailUrl(html, providerConfig) {
   if (!html || !providerConfig?.crawlContainer || !providerConfig?.crawlFields) return null;
 
-  loadParser(html);
   const parsedListings = parse(providerConfig.crawlContainer, providerConfig.crawlFields, html, providerConfig.url);
   if (parsedListings == null || parsedListings.length === 0) return null;
 

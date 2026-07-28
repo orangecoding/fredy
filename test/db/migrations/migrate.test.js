@@ -244,7 +244,7 @@ describe('db/migrations/migrate.js - runMigrations', () => {
     expect(calls.sql.optimize).toBe(1);
   });
 
-  it('aborts with exitCode=1 when a migration throws, without applying insert', async () => {
+  it('throws when a migration throws, without applying insert', async () => {
     const fsMock = {
       existsSync: () => true,
       mkdirSync: () => {},
@@ -302,11 +302,19 @@ describe('db/migrations/migrate.js - runMigrations', () => {
     const mod = await import('../../../lib/services/storage/migrations/migrate.js');
     runMigrations = mod.runMigrations;
 
-    await runMigrations();
+    // Rejecting is what stops startup. Setting process.exitCode used to be the only signal, but
+    // the caller goes on to boot the API and the schedulers, so the exit code never took effect
+    // and Fredy served traffic against a half-migrated schema.
+    await expect(runMigrations()).rejects.toThrow(/Migration failed and was rolled back: 1\.bad\.js/);
 
-    expect(process.exitCode).toBe(1);
+    // The original failure has to survive, otherwise the log says what broke but not why.
+    await expect(runMigrations()).rejects.toMatchObject({ cause: expect.objectContaining({ message: 'boom' }) });
+
     // No insert into schema_migrations should be recorded since transaction failed
     const inserted = calls.sql.execute.find((e) => String(e.sql).includes('INSERT INTO schema_migrations'));
     expect(inserted).toBe(undefined);
+
+    // And it must not quietly mark the process as failed instead of surfacing the error.
+    expect(process.exitCode).toBe(prevExitCode);
   });
 });

@@ -9,6 +9,9 @@ import { mockFredy, providerConfig } from '../utils.js';
 import { expect } from 'vitest';
 import * as provider from '../../lib/provider/mcMakler.js';
 
+/** Run-scoped provider config, built per test via createConfig(). */
+let runConfig;
+
 describe('#mcMakler testsuite()', () => {
   it('should test mcMakler provider', async () => {
     const Fredy = await mockFredy();
@@ -18,9 +21,9 @@ describe('#mcMakler testsuite()', () => {
       spatialFilter: null,
       specFilter: null,
     };
-    provider.init(providerConfig.mcMakler, []);
+    runConfig = provider.createConfig(providerConfig.mcMakler, []);
 
-    const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache, undefined);
+    const fredy = new Fredy(runConfig, mockedJob, provider.metaInformation.id, similarityCache, undefined);
 
     const listing = await fredy.execute();
 

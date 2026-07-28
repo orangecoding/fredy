@@ -27,6 +27,26 @@ const returnOriginalSelectedProvider = (providerToEdit, provider) => {
   return provider.find((pro) => pro.id === providerToEdit.id);
 };
 
+/**
+ * Normalizes a url to its bare host, so that protocol (http/https) and a leading `www.` do not
+ * cause a false negative when comparing the user's input against the provider's base url.
+ */
+const normalizeHost = (url) => {
+  if (url == null) {
+    return null;
+  }
+  const trimmed = String(url).trim();
+  if (trimmed.length === 0) {
+    return null;
+  }
+  const withProtocol = /^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//.test(trimmed) ? trimmed : `https://${trimmed}`;
+  try {
+    return new URL(withProtocol).hostname.replace(/^www\./i, '').toLowerCase();
+  } catch {
+    return null;
+  }
+};
+
 export default function ProviderMutator({
   onVisibilityChanged,
   visible = false,
@@ -57,13 +77,9 @@ export default function ProviderMutator({
     if (selectedProvider == null || selectedProvider.length === 0 || providerUrl == null || providerUrl.length === 0) {
       return t('provider.validationSelectAndUrl');
     }
-    try {
-      const url = new URL(providerUrl);
-      if (selectedProvider.baseUrl.indexOf(url.origin) === -1) {
-        return t('provider.validationInvalidUrl');
-      }
-      /* eslint-disable no-unused-vars */
-    } catch (ignored) {
+    const inputHost = normalizeHost(providerUrl);
+    const baseHost = normalizeHost(selectedProvider.baseUrl);
+    if (inputHost == null || baseHost == null || inputHost !== baseHost) {
       return t('provider.validationInvalidUrl');
     }
     return null;

@@ -25,6 +25,17 @@ const sqliteMock = {
     if (sqliteMock.__queryHandler) return sqliteMock.__queryHandler(sql, params);
     return [];
   },
+  // Batch updates are chunked inside a transaction (see forEachIdChunk); statements prepared on
+  // the transaction's db handle land in the same `calls.execute` log as direct executes.
+  withTransaction: (callback) =>
+    callback({
+      prepare: (sql) => ({
+        run: (params) => {
+          calls.execute.push({ sql, params });
+          return { changes: 1 };
+        },
+      }),
+    }),
   __queryHandler: null,
 };
 

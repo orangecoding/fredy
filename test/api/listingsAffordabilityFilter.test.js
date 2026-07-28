@@ -173,16 +173,20 @@ describe('GET /table affordability filter', () => {
     expect(bandFromLastCall()).toBeNull();
   });
 
-  // This is the hottest endpoint in the app and hardly any request uses the filter, so the
-  // settings row must only be read when there is actually a band to derive from it.
-  it('does not read the user settings unless the filter is in play', async () => {
+  // This is the hottest endpoint in the app. Every row now carries its affordability verdict -
+  // the browser no longer derives it, so it cannot contradict the filter - which means the
+  // profile is needed on every request. What must not happen is reading it twice: the band and
+  // the verdicts share one lookup.
+  it('reads the user settings exactly once per request', async () => {
     const app = await buildApp();
 
     await app.inject({ method: 'GET', url: '/table' });
-    expect(getUserSettings).not.toHaveBeenCalled();
-
-    await app.inject({ method: 'GET', url: '/table?affordabilityFilter=affordable' });
+    expect(getUserSettings).toHaveBeenCalledTimes(1);
     expect(getUserSettings).toHaveBeenCalledWith('user-1');
+
+    getUserSettings.mockClear();
+    await app.inject({ method: 'GET', url: '/table?affordabilityFilter=affordable' });
+    expect(getUserSettings).toHaveBeenCalledTimes(1);
   });
 
   it('never takes price bounds from the request itself', async () => {

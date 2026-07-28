@@ -11,9 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import VerdictBanner from '../../finance/components/VerdictBanner.jsx';
 import ListingPayoffChart from '../../finance/charts/ListingPayoffChart.jsx';
 import { formatEuro } from '../../../components/cards/chartTheme.js';
-import { useFinanceProfile } from '../../../hooks/useFinanceProfile.js';
-import { computeFinanceResult } from '../../../../../lib/services/finance/calculate.js';
-import { computeBudget, scoreRentListing } from '../../../../../lib/services/finance/affordability.js';
+import { useActions } from '../../../services/state/store.js';
 import { useTranslation, useLocale } from '../../../services/i18n/i18n.jsx';
 
 import './ListingFinanceCard.less';
@@ -27,9 +25,10 @@ const { Text, Title } = Typography;
  * warm rent against the same budget - no loan, no amortization, so a much shorter card. Which
  * one is shown follows the deal type of the job that found the listing.
  *
- * Everything is computed in the browser from the price already in the listing payload, so there
- * is no extra request - and because it runs the same core as the calculator, the figures here
- * and on /finance are identical for the same price.
+ * The figures come from `GET /api/finance/listing/:id`, which runs the same core the calculator
+ * and the affordability filter run. The browser used to compute this itself from a copy of the
+ * finance modules; the copy is gone, because two implementations of the same amortization scoring
+ * the same listing is a contradiction waiting to be shipped.
  *
  * @param {Object} props
  * @param {{id: string, price: number, dealType?: 'rent'|'buy'}} props.listing
@@ -38,33 +37,34 @@ export default function ListingFinanceCard({ listing }) {
   const t = useTranslation();
   const locale = useLocale();
   const navigate = useNavigate();
-  const { profile, isComplete, rentComplete } = useFinanceProfile();
+  const actions = useActions();
+  const [finance, setFinance] = React.useState(null);
   const isRental = listing?.dealType === 'rent';
 
-  const result = React.useMemo(() => {
-    if (isRental || !isComplete || listing?.price == null) {
-      return null;
+  React.useEffect(() => {
+    if (listing?.id == null || listing?.price == null) {
+      setFinance(null);
+      return undefined;
     }
-    return computeFinanceResult({
-      ...profile,
-      financing: { ...profile.financing, purchasePrice: listing.price },
+    let cancelled = false;
+    actions.finance.getListingFinance(listing.id).then((payload) => {
+      if (!cancelled) setFinance(payload);
     });
-  }, [isRental, isComplete, profile, listing?.price]);
-
-  const rent = React.useMemo(() => {
-    if (!isRental || !rentComplete || listing?.price == null) {
-      return null;
-    }
-    return { scored: scoreRentListing(listing, profile), budget: computeBudget(profile) };
-  }, [isRental, rentComplete, profile, listing]);
+    return () => {
+      cancelled = true;
+    };
+  }, [listing?.id, listing?.price]);
 
   if (isRental) {
-    return rent?.scored == null ? null : <RentCard {...rent} t={t} locale={locale} />;
+    return finance?.scored == null ? null : (
+      <RentCard scored={finance.scored} budget={finance.budget} t={t} locale={locale} />
+    );
   }
 
-  // No profile or no price: stay out of the way entirely rather than showing an empty widget
-  // or nagging for setup.
-  if (!isComplete || result == null) {
+  // No profile, no price, or nothing loaded yet: stay out of the way entirely rather than showing
+  // an empty widget or nagging for setup.
+  const result = finance?.result ?? null;
+  if (result == null) {
     return null;
   }
 
@@ -133,7 +133,7 @@ export default function ListingFinanceCard({ listing }) {
       </dl>
 
       <div className="listingFinance__chart">
-        <ListingPayoffChart scenario={primary} currentAge={profile.personA?.age ?? null} />
+        <ListingPayoffChart scenario={primary} currentAge={finance?.profile?.personA?.age ?? null} />
       </div>
 
       <Text type="tertiary" size="small" className="listingFinance__footnote">
@@ -150,8 +150,8 @@ export default function ListingFinanceCard({ listing }) {
  * The rental variant: what leaves the account each month, and what is left afterwards.
  *
  * @param {Object} props
- * @param {import('../../../../../lib/types/finance.js').RentAffordability} props.scored
- * @param {import('../../../../../lib/types/finance.js').Budget} props.budget
+ * @param {import('../../../types/finance.js').RentAffordability} props.scored
+ * @param {import('../../../types/finance.js').Budget} props.budget
  * @param {(key: string, params?: Object) => string} props.t
  * @param {string} props.locale
  */

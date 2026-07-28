@@ -7,7 +7,6 @@ import { Tooltip } from '@douyinfe/semi-ui-19';
 
 import { VERDICT_COLORS, formatEuro, withAlpha } from '../cards/chartTheme.js';
 import { useFinanceProfile } from '../../hooks/useFinanceProfile.js';
-import { verdictForListing } from '../../../../lib/services/finance/affordability.js';
 import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
 
 import './AffordabilityChip.less';
@@ -15,21 +14,21 @@ import './AffordabilityChip.less';
 /**
  * A listing's affordability verdict, shown inline in the overview.
  *
- * Derived from the price, the deal type of the job that found it and the thresholds already in
- * state, so it costs no request and no per-row simulation. Renders nothing when the matching
- * half of the profile is missing - a household that has not said what it earns cannot be told
- * whether it can afford anything.
+ * The verdict travels with the listing row - the server decides it, against the same profile and
+ * the same thresholds it uses for the affordability filter. It used to be derived here from a copy
+ * of the finance modules, which meant a chip could contradict the filter that produced the row it
+ * sat on. Renders nothing when the matching half of the profile is missing: a household that has
+ * not said what it earns cannot be told whether it can afford anything.
  *
  * @param {Object} props
- * @param {number|null} props.price
+ * @param {'affordable'|'stretch'|'unaffordable'|null} [props.verdict] From the listings query.
  * @param {'rent'|'buy'|null} [props.dealType] Deal type of the job, from the listings query.
  */
-export default function AffordabilityChip({ price, dealType }) {
+export default function AffordabilityChip({ verdict, dealType }) {
   const t = useTranslation();
   const locale = useLocale();
   const { thresholds } = useFinanceProfile();
 
-  const verdict = verdictForListing(price, dealType, thresholds);
   if (verdict == null) {
     return null;
   }

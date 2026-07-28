@@ -42,7 +42,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import ListingDeletionModal from '../../ListingDeletionModal.jsx';
 import { useActions, useSelector } from '../../../services/state/store.js';
-import { xhrDelete, xhrPut, xhrPost } from '../../../services/xhr.js';
+import { xhrDelete, xhrPut, xhrPost, errorMessage } from '../../../services/xhr.js';
 import { debounce } from '../../../utils';
 import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-illustrations';
 import JobsTable from '../../table/JobsTable.jsx';
@@ -157,6 +157,15 @@ const JobGrid = () => {
     setDeleteModalVisible(true);
   };
 
+  // The store re-throws so a caller can react. These two buttons had no catch at all, so a
+  // refused write (a 403 on a locked-down instance) became an unhandled rejection: the toggle
+  // silently snapped back and nothing said why.
+  const switchViewMode = (mode) => {
+    actions.userSettings.setJobsViewMode(mode).catch((error) => {
+      Toast.error(errorMessage(error, t('common.settingSaveError')));
+    });
+  };
+
   const onListingRemoval = (jobId) => {
     const deletion = { type: 'listings', jobId };
     if (listingDeletionPref?.skipPrompt) {
@@ -185,7 +194,7 @@ const JobGrid = () => {
         actions.jobsData.getJobs(); // refresh select list too
       }
     } catch (error) {
-      Toast.error(error.message || t('jobs.toastDeleteError'));
+      Toast.error(errorMessage(error, t('jobs.toastDeleteError')));
     } finally {
       setDeleteModalVisible(false);
       setPendingDeletion(null);
@@ -199,7 +208,10 @@ const JobGrid = () => {
       loadData();
       actions.jobsData.getJobs(); // refresh the jobs slice read by the edit form so its switch isn't stale
     } catch (error) {
-      Toast.error(error.error);
+      // The rejection is `{ status, json }` - `error.error` was always undefined, so flipping the
+      // switch on a job the backend refuses (the demo job, most visibly) produced an empty toast
+      // and looked like the click had simply not registered.
+      Toast.error(errorMessage(error, t('jobs.toastStatusChangeError')));
     }
   };
 
@@ -277,7 +289,7 @@ const JobGrid = () => {
             <Button
               icon={<IconGridView />}
               theme={viewMode === 'grid' ? 'solid' : 'borderless'}
-              onClick={() => actions.userSettings.setJobsViewMode('grid')}
+              onClick={() => switchViewMode('grid')}
               aria-label={t('common.ariaGridView')}
               aria-pressed={viewMode === 'grid'}
             />
@@ -286,7 +298,7 @@ const JobGrid = () => {
             <Button
               icon={<IconList />}
               theme={viewMode === 'table' ? 'solid' : 'borderless'}
-              onClick={() => actions.userSettings.setJobsViewMode('table')}
+              onClick={() => switchViewMode('table')}
               aria-label={t('common.ariaTableView')}
               aria-pressed={viewMode === 'table'}
             />

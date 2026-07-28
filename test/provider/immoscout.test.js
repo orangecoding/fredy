@@ -9,13 +9,16 @@ import { mockFredy, providerConfig } from '../utils.js';
 import { get } from '../mocks/mockNotification.js';
 import * as provider from '../../lib/provider/immoscout.js';
 
+/** Run-scoped provider config, built per test via createConfig(). */
+let runConfig;
+
 // immoscout uses the mobile REST API (fetch-based, no browser). Both tests share
 // the same module-level listings so the API is only queried once, avoiding
 // duplicate requests that could trigger rate-limiting.
 const TEST_TIMEOUT = 120_000;
 
 describe('#immoscout provider testsuite()', () => {
-  provider.init(providerConfig.immoscout, [], []);
+  runConfig = provider.createConfig(providerConfig.immoscout, [], []);
 
   let liveListings;
 
@@ -31,7 +34,7 @@ describe('#immoscout provider testsuite()', () => {
       };
 
       return await new Promise((resolve, reject) => {
-        const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache, undefined);
+        const fredy = new Fredy(runConfig, mockedJob, provider.metaInformation.id, similarityCache, undefined);
         fredy.execute().then((listings) => {
           if (listings == null || listings.length === 0) {
             reject('Listings is empty!');
@@ -75,7 +78,7 @@ describe('#immoscout provider testsuite()', () => {
 
         // Call fetchDetails directly on the first live listing - no need to
         // re-query the search API. immoscout uses fetch (no browser).
-        const enriched = await provider.config.fetchDetails(liveListings[0]);
+        const enriched = await runConfig.fetchDetails(liveListings[0]);
 
         expect(enriched).toBeTruthy();
         expect(enriched.description).toBeTypeOf('string');

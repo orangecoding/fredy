@@ -49,9 +49,21 @@ if (process.env.TEST_MODE === 'offline') {
 }
 
 /**
- * @returns {Promise<typeof import('../lib/FredyPipelineExecutioner.js').default>}
+ * The pipeline, with the detail-page enrichment capped at one listing.
+ *
+ * The cap used to live in the pipeline itself as `process.env.NODE_ENV === 'test'`. It belongs
+ * here: a fixture run only needs to prove the enrichment path works once, and walking every
+ * listing's detail page makes the provider suites slow (and, in live mode, rude).
+ *
+ * @returns {Promise<typeof import('../lib/FredyPipelineExecutioner.js').default>} A subclass that
+ *   applies the cap, so the tests can keep constructing it with the production signature.
  */
 export const mockFredy = async () => {
   const mod = await import('../lib/FredyPipelineExecutioner.js');
-  return mod.default;
+  const FredyPipelineExecutioner = mod.default;
+  return class TestPipeline extends FredyPipelineExecutioner {
+    constructor(providerConfig, job, providerId, similarityCache, browser, options = {}) {
+      super(providerConfig, job, providerId, similarityCache, browser, { maxDetailFetches: 1, ...options });
+    }
+  };
 };

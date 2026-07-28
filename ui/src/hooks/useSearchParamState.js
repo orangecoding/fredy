@@ -3,9 +3,9 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
-// Preset parsers for common types
+// Preset codecs for the common types.
 export const parseString = {
   parse: (v) => v,
   stringify: (v) => v,
@@ -28,69 +28,71 @@ export const parseNullableBoolean = {
 };
 
 /**
- * Drop-in replacement for useState that syncs with URL search params.
- * Uses replace: true so filter changes don't add browser history entries.
+ * Read and write a group of URL search params as one piece of state.
  *
- * Requires a shared [searchParams, setSearchParams] pair from a single
- * useSearchParams() call in the component. This ensures multiple hooks
- * in the same component don't overwrite each other's params.
+ * The whole group is managed together on purpose. `setSearchParams` is not a React setState: it
+ * calls `navigate()`, and several calls in the same tick each read the location as it was before
+ * any of them ran, so the last one wins and the others are lost. That is why filter changes used
+ * to clobber each other.
  *
- * @param {[URLSearchParams, Function]} searchParamsPair - from useSearchParams()
- * @param {string} key - URL search param key
- * @param {*} defaultValue - value when param is absent
- * @param {{ parse: (s: string) => *, stringify: (v: *) => string|null }} [options]
+ * The previous fix batched individual per-key setters through a `WeakMap` keyed on the identity of
+ * `setSearchParams`, flushing them in a microtask. It worked, but it rested on react-router keeping
+ * that function referentially stable - an undocumented implementation detail, and the moment it
+ * stopped holding the original bug would come back silently. Managing the group means one
+ * `setSearchParams` call per update, so there is nothing to batch and nothing to depend on.
+ *
+ * @param {[URLSearchParams, Function]} searchParamsPair From a single `useSearchParams()` call.
+ * @param {Record<string, {defaultValue: *, codec?: {parse: Function, stringify: Function}}>} schema
+ *   One entry per param: its default, and how to move between string and value. Must be stable
+ *   across renders (module scope or `useMemo`). A value equal to the default is dropped from the
+ *   URL, so a pristine view has a clean address.
+ * @returns {{values: Record<string, *>, setValue: (key: string, value: *) => void,
+ *   setValues: (patch: Record<string, *>) => void}}
  */
-// WeakMap to store pending batched updates per setSearchParams function.
-// This lets multiple useSearchParamState hooks on the same component batch
-// their changes into a single setSearchParams call, preventing them from
-// overwriting each other.
-const pendingUpdates = new WeakMap();
+export function useUrlState([searchParams, setSearchParams], schema) {
+  // Keyed on the serialized params rather than the object: react-router hands out a new
+  // URLSearchParams instance on every render, which would defeat the memo.
+  const serialized = searchParams.toString();
+  const values = useMemo(() => {
+    const out = {};
+    for (const [key, { defaultValue, codec = parseString }] of Object.entries(schema)) {
+      const raw = searchParams.get(key);
+      out[key] = raw !== null ? codec.parse(raw) : defaultValue;
+    }
+    return out;
+  }, [serialized, schema]);
 
-export function useSearchParamState([searchParams, setSearchParams], key, defaultValue, options = {}) {
-  const { parse = (v) => v, stringify = (v) => String(v) } = options;
-
-  const rawValue = searchParams.get(key);
-  const value = rawValue !== null ? parse(rawValue) : defaultValue;
-
-  const setValue = useCallback(
-    (newValue) => {
-      // Collect the change
-      if (!pendingUpdates.has(setSearchParams)) {
-        pendingUpdates.set(setSearchParams, new Map());
-
-        // Schedule a single flush at the end of the current microtask
-        queueMicrotask(() => {
-          const updates = pendingUpdates.get(setSearchParams);
-          pendingUpdates.delete(setSearchParams);
-          if (!updates || updates.size === 0) return;
-
-          setSearchParams(
-            (prev) => {
-              const next = new URLSearchParams(prev);
-              for (const [k, entry] of updates) {
-                if (entry.remove) {
-                  next.delete(k);
-                } else {
-                  next.set(k, entry.serialized);
-                }
-              }
-              return next;
-            },
-            { replace: true },
-          );
-        });
-      }
-
-      const batch = pendingUpdates.get(setSearchParams);
-      const serialized = stringify(newValue);
-      if (newValue === defaultValue || newValue === null || newValue === undefined || serialized === null) {
-        batch.set(key, { remove: true });
-      } else {
-        batch.set(key, { remove: false, serialized });
-      }
+  /**
+   * Apply several params at once. One navigation, so nothing can be lost to a racing sibling.
+   */
+  const setValues = useCallback(
+    (patch) => {
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev);
+          for (const [key, value] of Object.entries(patch)) {
+            const entry = schema[key];
+            if (entry == null) continue;
+            const { defaultValue, codec = parseString } = entry;
+            const asString = value == null ? null : codec.stringify(value);
+            // The default never appears in the URL: its absence is what the default means.
+            if (value === defaultValue || value == null || asString == null) {
+              next.delete(key);
+            } else {
+              next.set(key, asString);
+            }
+          }
+          return next;
+        },
+        // Filter changes are not navigation; the back button should leave the page rather than
+        // walk back through every control the user touched.
+        { replace: true },
+      );
     },
-    [key, defaultValue, stringify, setSearchParams],
+    [setSearchParams, schema],
   );
 
-  return [value, setValue];
+  const setValue = useCallback((key, value) => setValues({ [key]: value }), [setValues]);
+
+  return { values, setValue, setValues };
 }

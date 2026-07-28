@@ -100,7 +100,7 @@ export function NumberField({
  * Income, age and living costs for one or two people, plus any debt already being serviced.
  *
  * @param {Object} props
- * @param {import('../../../../../lib/types/finance.js').FinanceProfile} props.profile
+ * @param {import('../../../types/finance.js').FinanceProfile} props.profile
  * @param {(patch: Object) => void} props.onChange Shallow-merged into the profile.
  */
 export default function ProfileForm({ profile, onChange }) {

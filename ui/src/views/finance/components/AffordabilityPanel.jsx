@@ -27,7 +27,7 @@ const { Text } = Typography;
  * off" for the whole database at once.
  *
  * @param {Object} props
- * @param {import('../../../../../lib/types/finance.js').FinanceProfile} props.profile
+ * @param {import('../../../types/finance.js').FinanceProfile} props.profile
  */
 export default function AffordabilityPanel({ profile }) {
   const t = useTranslation();

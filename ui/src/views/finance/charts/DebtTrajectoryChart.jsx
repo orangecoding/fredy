@@ -15,7 +15,6 @@ import {
   withAlpha,
   zinsbindungBandPlugin,
 } from '../../../components/cards/chartTheme.js';
-import { aggregateByYear } from '../../../../../lib/services/finance/amortization.js';
 import { useTranslation, useLocale } from '../../../services/i18n/i18n.jsx';
 
 registerFinanceCharts();
@@ -43,7 +42,7 @@ export default function DebtTrajectoryChart({ scenarios = [], currentAge = null,
       return { labels: [], datasets: [], fixedYears: 0 };
     }
 
-    const perScenario = usable.map((scenario) => aggregateByYear(scenario.schedule.months));
+    const perScenario = usable.map((scenario) => scenario.schedule.years ?? []);
     const longest = Math.max(...perScenario.map((years) => years.length));
     const yearLabels = Array.from({ length: longest }, (_, index) => `${index + 1}`);
 

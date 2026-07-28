@@ -9,12 +9,15 @@ import { mockFredy, providerConfig } from '../utils.js';
 import { get } from '../mocks/mockNotification.js';
 import * as provider from '../../lib/provider/deutscheWohnen.js';
 
+/** Run-scoped provider config, built per test via createConfig(). */
+let runConfig;
+
 // Deutsche Wohnen uses a JSON API (fetch-based, no browser). Both tests share
 // the same module-level listings so the API is only queried once.
 const TEST_TIMEOUT = 120_000;
 
 describe('#deutscheWohnen provider testsuite()', () => {
-  provider.init(providerConfig.deutscheWohnen, [], []);
+  runConfig = provider.createConfig(providerConfig.deutscheWohnen, [], []);
 
   let liveListings;
 
@@ -29,7 +32,7 @@ describe('#deutscheWohnen provider testsuite()', () => {
         specFilter: null,
       };
 
-      const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache, undefined);
+      const fredy = new Fredy(runConfig, mockedJob, provider.metaInformation.id, similarityCache, undefined);
 
       liveListings = await fredy.execute();
 
@@ -69,7 +72,7 @@ describe('#deutscheWohnen provider testsuite()', () => {
       async () => {
         if (!liveListings?.length) throw new Error('No listings from first test to enrich');
 
-        const enriched = await provider.config.fetchDetails(liveListings[0]);
+        const enriched = await runConfig.fetchDetails(liveListings[0]);
 
         expect(enriched).toBeTruthy();
         expect(enriched.link).toContain('https://www.deutsche-wohnen.com/');

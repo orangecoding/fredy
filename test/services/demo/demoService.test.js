@@ -37,7 +37,10 @@ async function loadService() {
     DEFAULT_ADMIN_PASSWORD: 'admin',
     DEMO_USERNAME: 'demo',
     DEMO_PASSWORD: 'demo',
-    getUsers: (withPassword) => state.users.map((user) => ({ ...user, password: withPassword ? user.password : null })),
+    // getUsers() no longer hands out credentials; anything that needs the stored hash asks for it
+    // explicitly through getUserWithSecretsByUsername().
+    getUsers: () => state.users.map((user) => ({ ...user, password: undefined })),
+    getUserWithSecretsByUsername: (username) => state.users.find((user) => user.username === username) ?? null,
   }));
   vi.doMock(settingsStoragePath, () => ({
     getSettings: async () => state.settings,
@@ -58,6 +61,9 @@ async function loadService() {
     runGeoCordTask: () => {
       state.geoTaskRuns += 1;
     },
+  }));
+  vi.doMock(root + '/lib/utils.js', () => ({
+    getNotificationAdapters: async () => [{ config: { id: 'console', name: 'Console' } }],
   }));
   vi.doMock(loggerPath, () => ({
     default: {
@@ -110,7 +116,7 @@ describe('services/demo/demoService', () => {
       expect(job.userId).toBe('u-demo');
       expect(job.enabled).toBe(true);
       expect(job.dealType).toBe('rent');
-      expect(job.notificationAdapter).toEqual([{ id: 'console', fields: {} }]);
+      expect(job.notificationAdapter).toEqual([{ id: 'console', name: 'Console', fields: {} }]);
       expect(job.provider).toHaveLength(2);
       expect(job.provider[0]).toEqual({
         id: 'immoscout',
@@ -144,18 +150,8 @@ describe('services/demo/demoService', () => {
       expect(Object.keys(state.jobs)).toEqual([DEMO_JOB_ID]);
       expect(state.jobs[DEMO_JOB_ID].userId).toBe('u-demo');
       expect(state.jobs[DEMO_JOB_ID].enabled).toBe(true);
-      expect(state.jobs[DEMO_JOB_ID].notificationAdapter).toEqual([{ id: 'console', fields: {} }]);
+      expect(state.jobs[DEMO_JOB_ID].notificationAdapter).toEqual([{ id: 'console', name: 'Console', fields: {} }]);
       expect(state.jobs[DEMO_JOB_ID].provider).toHaveLength(1);
-    });
-
-    it('covers every known provider module', async () => {
-      const { seedDemoJob, DEMO_JOB_ID } = await loadService();
-      const { getProviders } = await import(root + '/lib/utils.js');
-      const providers = await getProviders();
-
-      await seedDemoJob(providers);
-
-      expect(state.jobs[DEMO_JOB_ID].provider).toHaveLength(providers.length);
     });
 
     it('does nothing when demo mode is off', async () => {

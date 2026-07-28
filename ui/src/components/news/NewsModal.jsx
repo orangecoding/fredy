@@ -3,6 +3,7 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
+import { useState } from 'react';
 import { UserGuide } from '@douyinfe/semi-ui-19';
 import { useScreenWidth } from '../../hooks/screenWidth';
 import heart from '../../assets/heart.png';
@@ -21,6 +22,11 @@ const NewsModal = () => {
   const userSettingsLoaded = useSelector((state) => state.userSettings.loaded);
   const pois = useSelector((state) => state.tracking.pois);
   const actions = useActions();
+  // Closing the dialog is a decision the user just made; remembering it is a request that can
+  // fail. Those were the same thing before - visibility was read straight off the stored hash -
+  // so any rejected write (a 403, a database error) left the dialog on screen with no way past
+  // it, and the rejection itself went unhandled.
+  const [dismissed, setDismissed] = useState(false);
 
   if (newsConfig == null || newsConfig.content == null || newsConfig.content.length === 0 || screenWidth <= 768) {
     return null;
@@ -55,7 +61,13 @@ const NewsModal = () => {
   }));
 
   const handleClose = (poi) => {
-    actions.userSettings.setNewsHash(newsConfig.key);
+    setDismissed(true);
+    // Best effort: if the marker cannot be stored the news simply comes back on the next visit,
+    // which beats an error toast in front of someone who just closed a welcome dialog. The catch
+    // is what keeps it from surfacing as an unhandled rejection.
+    actions.userSettings.setNewsHash(newsConfig.key).catch((error) => {
+      console.warn('Could not remember that the news were read.', error);
+    });
     if (poi) {
       actions.tracking.trackPoi(poi);
     }
@@ -66,7 +78,7 @@ const NewsModal = () => {
       mode="modal"
       mask={true}
       steps={steps}
-      visible={userSettingsLoaded && newsHash !== newsConfig.key}
+      visible={!dismissed && userSettingsLoaded && newsHash !== newsConfig.key}
       onFinish={() => handleClose(pois.WELCOME_FINISHED)}
       onSkip={() => handleClose(pois.WELCOME_SKIPPED)}
       modalProps={{

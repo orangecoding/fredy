@@ -20,6 +20,7 @@ import { ensureValidBinary } from './lib/services/ensureValidBinary.js';
 import { removeObsoleteProviders } from './lib/services/providers/providerCleanup.js';
 import { seedDemo, warnOnDefaultAdminPassword } from './lib/services/demo/demoService.js';
 import { initDemoCleanupCron } from './lib/services/crons/demo-cleanup-cron.js';
+import { initSessionCleanupCron } from './lib/services/crons/session-cleanup-cron.js';
 
 // Ensure the CloakBrowser stealth Chromium binary is present and complete before
 // jobs run.  ensureValidBinary() also detects and auto-heals partial extractions
@@ -41,8 +42,15 @@ if (!isConfigAccessible) {
   process.exit(1);
 }
 
-// Run DB migrations once at startup and block until finished
-await runMigrations();
+// Run DB migrations once at startup and block until finished. A failure here is fatal: continuing
+// would start the API and the schedulers against a schema that is missing the failed migration and
+// everything after it.
+try {
+  await runMigrations();
+} catch (err) {
+  logger.error('Database migration failed. Refusing to start.', err.cause ?? err);
+  process.exit(1);
+}
 
 const settings = await getSettings();
 
@@ -92,8 +100,9 @@ await initTrackerCron();
 initActiveCheckerCron();
 initGeocodingCron();
 await initDemoCleanupCron();
+await initSessionCleanupCron();
 
 logger.info(`Started Fredy successfully. Ui can be accessed via http://localhost:${settings.port}`);
 
 // Initialize the lean Job Execution Service (schedules and bus listeners)
-initJobExecutionService({ providers, settings, intervalMs: INTERVAL });
+initJobExecutionService({ providers, intervalMs: INTERVAL });

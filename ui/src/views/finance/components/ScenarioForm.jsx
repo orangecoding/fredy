@@ -9,9 +9,7 @@ import { IconDelete, IconPlus } from '@douyinfe/semi-icons';
 import { SegmentPart } from '../../../components/segment/SegmentPart.jsx';
 import { NumberField } from './ProfileForm.jsx';
 import { CHART_PALETTE } from '../../../components/cards/chartTheme.js';
-import { DEFAULT_TILGUNG, DEFAULT_ZINSBINDUNG_YEARS } from '../../../../../lib/services/finance/constants.js';
-import { annuity } from '../../../../../lib/services/finance/amortization.js';
-import { tilgungFromPayment } from '../../../../../lib/services/finance/financing.js';
+import { DEFAULT_TILGUNG, DEFAULT_ZINSBINDUNG_YEARS } from '../../../services/finance/constants.js';
 import { useTranslation } from '../../../services/i18n/i18n.jsx';
 
 import './FinanceForms.less';
@@ -30,25 +28,31 @@ const MAX_SCENARIOS = 6;
  * Sollzins, either one fixes the other. Both are editable and each rewrites the other, so the
  * user can work from whichever number they actually have in mind.
  *
+ * Both conversions happen server-side: the calculation reports back whichever of the two the user
+ * did not set, so this form only records intent and renders the answer.
+ *
  * @param {Object} props
- * @param {import('../../../../../lib/types/finance.js').RateScenario[]} props.scenarios
- * @param {number} props.loanAmount Current loan, needed to convert between Tilgung and instalment.
+ * @param {import('../../../types/finance.js').RateScenario[]} props.scenarios What the user entered.
+ * @param {Array<{monthlyPayment: number, tilgung: number}>} [props.computed] The same scenarios as
+ *   the server calculated them, used to fill in the field the user left blank.
  * @param {(scenarios: Array) => void} props.onChange
  */
-export default function ScenarioForm({ scenarios, loanAmount = 0, onChange }) {
+export default function ScenarioForm({ scenarios, computed = [], onChange }) {
   const t = useTranslation();
 
   const update = (index, patch) =>
     onChange(scenarios.map((scenario, i) => (i === index ? { ...scenario, ...patch } : scenario)));
 
   // Editing the Tilgung drops any pinned instalment, so the instalment follows the percentage
-  // again. Editing the instalment pins it, and the Tilgung is derived from it on the way out.
+  // again.
   const setTilgung = (index, tilgung) => update(index, { tilgung, monthlyPayment: null });
+  // Editing the instalment pins it. The Tilgung it implies is recomputed server-side and synced
+  // back into the draft by the calculator, so the last known good value is kept here in the
+  // meantime. It must never be nulled: `num(null, DEFAULT_TILGUNG)` is 0, not the default
+  // (Number(null) is a finite 0), and a stored Tilgung of 0 inflates every affordability
+  // threshold by roughly half.
   const setPayment = (index, monthlyPayment) =>
-    update(index, {
-      monthlyPayment,
-      tilgung: tilgungFromPayment(loanAmount, scenarios[index]?.annualRate, monthlyPayment),
-    });
+    update(index, { monthlyPayment, tilgung: computed[index]?.tilgung ?? scenarios[index]?.tilgung });
 
   const add = () => {
     const last = scenarios[scenarios.length - 1];
@@ -90,17 +94,16 @@ export default function ScenarioForm({ scenarios, loanAmount = 0, onChange }) {
                 update(index, {
                   annualRate,
                   label: `${annualRate} %`,
-                  // A pinned instalment stays pinned; only the Tilgung it implies moves.
+                  // A pinned instalment stays pinned; the Tilgung it now implies is recomputed
+                  // server-side and synced back. Keep the last known value rather than nulling it.
                   tilgung:
-                    scenario.monthlyPayment != null
-                      ? tilgungFromPayment(loanAmount, annualRate, scenario.monthlyPayment)
-                      : scenario.tilgung,
+                    scenario.monthlyPayment != null ? (computed[index]?.tilgung ?? scenario.tilgung) : scenario.tilgung,
                 })
               }
             />
             <NumberField
               label={t('finance.form.tilgung')}
-              value={scenario.tilgung}
+              value={scenario.tilgung ?? computed[index]?.tilgung ?? null}
               step={0.1}
               max={100}
               suffix="%"
@@ -118,7 +121,7 @@ export default function ScenarioForm({ scenarios, loanAmount = 0, onChange }) {
             />
             <NumberField
               label={t('finance.form.monthlyPayment')}
-              value={Math.round(scenario.monthlyPayment ?? annuity(loanAmount, scenario.annualRate, scenario.tilgung))}
+              value={Math.round(scenario.monthlyPayment ?? computed[index]?.monthlyPayment ?? 0)}
               step={50}
               suffix="€"
               help={t('finance.form.monthlyPaymentHelp')}

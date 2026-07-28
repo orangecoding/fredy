@@ -3,15 +3,33 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
+import { useState } from 'react';
 import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-illustrations';
 import { format } from '../../services/time/timeService';
-import { Table, Button, Empty, Tag } from '@douyinfe/semi-ui-19';
+import { Table, Button, Empty, Tag, Toast } from '@douyinfe/semi-ui-19';
 import { IconDelete, IconEdit } from '@douyinfe/semi-icons';
 import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
+import { xhrGet } from '../../services/xhr.js';
 
 export default function UserTable({ user = [], onUserRemoval, onUserEdit } = {}) {
   const t = useTranslation();
   const locale = useLocale();
+  /**
+   * MCP tokens revealed so far, by user id. They are fetched on demand rather than shipped with
+   * the user list: a token is a permanent bearer credential, and having every user's sitting in
+   * the browser for the whole session is a needless place to lose them from.
+   */
+  const [revealedTokens, setRevealedTokens] = useState({});
+
+  const revealToken = async (userId) => {
+    try {
+      const response = await xhrGet(`/api/admin/users/${userId}/mcp-token`);
+      setRevealedTokens((previous) => ({ ...previous, [userId]: response.json.mcpToken }));
+    } catch (error) {
+      console.error('Error while trying to load the MCP token.', error);
+      Toast.error(t('users.mcpTokenLoadError'));
+    }
+  };
   const empty = (
     <Empty
       image={<IllustrationNoResult />}
@@ -61,19 +79,24 @@ export default function UserTable({ user = [], onUserRemoval, onUserEdit } = {})
         },
         {
           title: t('users.tableColumnMcpToken'),
-          dataIndex: 'mcpToken',
-          render: (value) => (
-            <span
-              style={{
-                fontFamily: 'JetBrains Mono, monospace',
-                fontSize: '0.85em',
-                wordBreak: 'break-all',
-                color: '#505050',
-              }}
-            >
-              {value || '---'}
-            </span>
-          ),
+          dataIndex: 'id',
+          render: (userId) =>
+            revealedTokens[userId] ? (
+              <span
+                style={{
+                  fontFamily: 'JetBrains Mono, monospace',
+                  fontSize: '0.85em',
+                  wordBreak: 'break-all',
+                  color: '#505050',
+                }}
+              >
+                {revealedTokens[userId]}
+              </span>
+            ) : (
+              <Button size="small" theme="borderless" onClick={() => revealToken(userId)}>
+                {t('users.mcpTokenReveal')}
+              </Button>
+            ),
         },
         {
           title: '',

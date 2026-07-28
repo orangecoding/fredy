@@ -81,7 +81,7 @@ const ListingsGrid = ({ listings, onWatch, onNavigate, onDelete, onRestore, isHi
               <div className="listingsGrid__card__price">
                 <IconCart size="small" />
                 {item.price}
-                <AffordabilityChip price={item.price} dealType={item.dealType} />
+                <AffordabilityChip verdict={item.affordabilityVerdict} dealType={item.dealType} />
               </div>
             )}
             {item.address && (

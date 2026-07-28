@@ -11,7 +11,7 @@ vi.mock('../../lib/services/storage/jobStorage.js', () => ({
   getJob: (jobKey) => ({ id: jobKey, name: jobKey }),
 }));
 vi.mock('../../lib/services/markdown.js', () => ({
-  markdown2Html: () => '',
+  readAdapterReadme: () => '',
 }));
 
 function ok(body = 'ok') {

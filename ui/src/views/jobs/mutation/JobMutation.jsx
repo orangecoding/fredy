@@ -12,7 +12,7 @@ import ProviderMutator from './components/provider/ProviderMutator';
 import AreaFilter from './components/areaFilter/AreaFilter';
 import Headline from '../../../components/headline/Headline';
 import { useActions, useSelector } from '../../../services/state/store';
-import { xhrPost } from '../../../services/xhr';
+import { xhrPost, errorMessage } from '../../../services/xhr';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { Divider, Input, Switch, Button, TagInput, Toast, Select, Row, Col } from '@douyinfe/semi-ui-19';
 import './JobMutation.less';
@@ -117,8 +117,11 @@ export default function JobMutator() {
       Toast.success(t('jobs.mutation.saved'));
       navigate('/jobs');
     } catch (Exception) {
-      console.error(Exception.json.message);
-      Toast.error(Exception.json != null ? Exception.json.message : Exception);
+      // The rejection carries the reason under `json.error`; reading `json.message` produced
+      // `Toast.error(undefined)`, so a refused save (a 403 in demo mode, a validation error)
+      // rendered an empty toast and looked like nothing had happened at all.
+      console.error('Error while trying to save the job.', Exception);
+      Toast.error(errorMessage(Exception, t('jobs.mutation.saveError')));
     }
   };
 

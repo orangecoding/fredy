@@ -44,7 +44,7 @@ import * as timeService from '../../services/time/timeService.js';
 import { formatEuroPrice } from '../../services/price/priceService.js';
 import { distanceMeters, getBoundsFromCoords } from './mapUtils.js';
 import { getAddresses } from '../../utils.js';
-import { xhrPost, xhrDelete } from '../../services/xhr.js';
+import { xhrPost, xhrDelete, errorMessage } from '../../services/xhr.js';
 import ListingDeletionModal from '../../components/ListingDeletionModal.jsx';
 
 import Headline from '../../components/headline/Headline.jsx';
@@ -54,7 +54,6 @@ import ListingFinanceCard from './components/ListingFinanceCard.jsx';
 import './ListingDetail.less';
 import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
 import { useFinanceProfile } from '../../hooks/useFinanceProfile.js';
-import { verdictForListing } from '../../../../lib/services/finance/affordability.js';
 import { VERDICT_COLORS, formatEuro, withAlpha } from '../../components/cards/chartTheme.js';
 
 const { Title, Text } = Typography;
@@ -255,7 +254,7 @@ export default function ListingDetail() {
       Toast.success(t('listing.detail.toastDeleted'));
       navigate('/listings');
     } catch (e) {
-      Toast.error(e.message || t('listing.detail.toastDeleteError'));
+      Toast.error(errorMessage(e, t('listing.detail.toastDeleteError')));
     } finally {
       setDeleteModalVisible(false);
     }
@@ -360,10 +359,10 @@ export default function ListingDetail() {
     },
   ];
 
-  // The verdict belongs next to the price, not only in the costing block further down. Which
-  // yardstick applies follows the deal type of the job that found this listing; the matching
-  // half of the profile being empty yields no verdict at all.
-  const affordabilityVerdict = verdictForListing(listing.price, listing.dealType, financeThresholds);
+  // The verdict belongs next to the price, not only in the costing block further down. It comes
+  // with the listing from the server, decided against the same profile and thresholds the
+  // affordability filter uses, so this page can never disagree with the row the user clicked.
+  const affordabilityVerdict = listing.affordabilityVerdict ?? null;
   const isRental = listing.dealType === 'rent';
 
   if (affordabilityVerdict) {

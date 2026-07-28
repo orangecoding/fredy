@@ -5,7 +5,7 @@
 
 import React from 'react';
 
-import { xhrGet, xhrPost } from '../../../services/xhr';
+import { xhrGet, xhrPost, errorMessage } from '../../../services/xhr';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useActions } from '../../../services/state/store';
 import { Divider, Input, Switch, Button, Toast } from '@douyinfe/semi-ui-19';
@@ -60,8 +60,10 @@ const UserMutator = function UserMutator() {
       Toast.success(t('users.mutation.saved'));
       navigate('/users');
     } catch (error) {
-      console.error(error);
-      Toast.error(error.json.error);
+      // `error.json` is absent when the request never reached the backend, and reading `.error`
+      // off it threw a second time inside the catch - which left the user with no toast at all.
+      console.error('Error while trying to save the user.', error);
+      Toast.error(errorMessage(error, t('users.mutation.saveError')));
     }
   };
 

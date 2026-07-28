@@ -11,6 +11,9 @@ import * as provider from '../../lib/provider/sparkasse.js';
 import * as mockStore from '../mocks/mockStore.js';
 import { launchBrowser, closeBrowser } from '../../lib/services/extractor/puppeteerExtractor.js';
 
+/** Run-scoped provider config, built per test via createConfig(). */
+let runConfig;
+
 // One browser shared across the whole suite so both requests (search + detail)
 // come from the same warm session. This prevents the second request from being
 // flagged as a cold-start bot hit.
@@ -38,9 +41,9 @@ describe('#sparkasse testsuite()', () => {
         spatialFilter: null,
         specFilter: null,
       };
-      provider.init(providerConfig.sparkasse, []);
+      runConfig = provider.createConfig(providerConfig.sparkasse, []);
 
-      const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache, browser);
+      const fredy = new Fredy(runConfig, mockedJob, provider.metaInformation.id, similarityCache, browser);
 
       liveListings = await fredy.execute();
 
@@ -97,7 +100,7 @@ describe('#sparkasse testsuite()', () => {
 
         // Call fetchDetails directly on the first live listing - no need to
         // re-scrape the search page. The shared browser keeps the session warm.
-        const enriched = await provider.config.fetchDetails(liveListings[0], browser);
+        const enriched = await runConfig.fetchDetails(liveListings[0], browser);
 
         expect(enriched).toBeTruthy();
         expect(enriched.link).toContain('https://immobilien.sparkasse.de');
@@ -140,7 +143,7 @@ describe('#sparkasse testsuite()', () => {
         address: 'Düsseldorf / Oberkassel',
       };
 
-      const enriched = await provider.config.fetchDetails(listing, browser, extractDetails);
+      const enriched = await runConfig.fetchDetails(listing, browser, extractDetails);
 
       expect(enriched.address).toBe('Musterweg 5, 40545 Düsseldorf');
       expect(enriched.description).toBe('Lage\nRuhige Wohnlage am Rhein.');
@@ -151,10 +154,10 @@ describe('#sparkasse testsuite()', () => {
       const listing = { id: 'listing-1', link: 'https://immobilien.sparkasse.de/expose/FID-1.html', address: 'Bonn' };
 
       const withoutPayload = vi.fn().mockResolvedValue('<html><body></body></html>');
-      expect(await provider.config.fetchDetails(listing, browser, withoutPayload)).toBe(listing);
+      expect(await runConfig.fetchDetails(listing, browser, withoutPayload)).toBe(listing);
 
       const withoutPage = vi.fn().mockResolvedValue(null);
-      expect(await provider.config.fetchDetails(listing, browser, withoutPage)).toBe(listing);
+      expect(await runConfig.fetchDetails(listing, browser, withoutPage)).toBe(listing);
     });
   });
 });

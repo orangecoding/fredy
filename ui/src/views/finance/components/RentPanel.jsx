@@ -3,15 +3,13 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import React from 'react';
 import { Typography } from '@douyinfe/semi-ui-19';
 
 import { SegmentPart } from '../../../components/segment/SegmentPart.jsx';
 import { FieldLabel, NumberField } from './ProfileForm.jsx';
 import BudgetChart from '../charts/BudgetChart.jsx';
 import { formatEuro } from '../../../components/cards/chartTheme.js';
-import { computeBudget, rentThresholds } from '../../../../../lib/services/finance/affordability.js';
-import { DEFAULT_NEBENKOSTEN_PCT } from '../../../../../lib/services/finance/constants.js';
+import { DEFAULT_NEBENKOSTEN_PCT } from '../../../services/finance/constants.js';
 import { useTranslation, useLocale } from '../../../services/i18n/i18n.jsx';
 
 import './FinanceForms.less';
@@ -26,22 +24,24 @@ const { Text } = Typography;
  * much the Nebenkosten add on top of the cold rent a portal quotes. Everything else follows from
  * the household block above, measured by the same 35 % rule the purchase side uses.
  *
+ * The budget and the ceilings are handed in rather than computed here: they come back with the
+ * draft's calculation from the server, which is the only place the finance math lives.
+ *
  * @param {Object} props
- * @param {import('../../../../../lib/types/finance.js').FinanceProfile} props.profile
+ * @param {import('../../../types/finance.js').FinanceProfile} props.profile
+ * @param {Object|null} props.budget The household budget for the current draft.
+ * @param {import('../../../types/finance.js').RentThresholds|null} props.thresholds Rent ceilings for the draft.
  * @param {(patch: Object) => void} props.onChange Shallow-merged into profile.renting.
  */
-export default function RentPanel({ profile, onChange }) {
+export default function RentPanel({ profile, budget, thresholds, onChange }) {
   const t = useTranslation();
   const locale = useLocale();
-
-  const budget = React.useMemo(() => computeBudget(profile), [profile]);
-  const thresholds = React.useMemo(() => rentThresholds(profile), [profile]);
 
   // None of these four is self-explanatory from its label alone: two are ceilings measured on
   // different figures (cold as listed, warm as paid), one is the band above the comfortable
   // ceiling, and one is plain cash flow that ignores the rule entirely.
   const facts =
-    thresholds == null
+    thresholds == null || budget == null
       ? []
       : [
           {

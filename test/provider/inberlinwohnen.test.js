@@ -14,6 +14,9 @@ import { get } from '../mocks/mockNotification.js';
 import * as mockStore from '../mocks/mockStore.js';
 import * as provider from '../../lib/provider/inberlinwohnen.js';
 
+/** Run-scoped provider config, built per test via createConfig(). */
+let runConfig;
+
 // The portal renders every result page server side, so a single run walks
 // through all pages of the search. One shared browser keeps that session warm.
 const TEST_TIMEOUT = 120_000;
@@ -40,9 +43,9 @@ describe('#inberlinwohnen testsuite()', () => {
         spatialFilter: null,
         specFilter: null,
       };
-      provider.init(providerConfig.inberlinwohnen, []);
+      runConfig = provider.createConfig(providerConfig.inberlinwohnen, []);
 
-      const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache, browser);
+      const fredy = new Fredy(runConfig, mockedJob, provider.metaInformation.id, similarityCache, browser);
 
       liveListings = await fredy.execute();
 
@@ -71,7 +74,9 @@ describe('#inberlinwohnen testsuite()', () => {
         expect(notify.link).toMatch(/^https:\/\//);
         expect(notify.price).toContain('€');
         expect(notify.size).toContain('m²');
-        expect(notify.rooms).toContain('Zimmer');
+        // The unit follows the job owner's interface language; the mocked user settings carry
+        // none, so it is the English default rather than the hard-coded "Zimmer" it used to be.
+        expect(notify.rooms).toMatch(/^\d+([.,]\d+)? rooms$/);
         expect(notify.address).toContain('Berlin');
         expect(notify.description).toContain('Gesamtmiete:');
       });
@@ -95,7 +100,7 @@ describe('#inberlinwohnen testsuite()', () => {
       async () => {
         if (!liveListings?.length) throw new Error('No listings from first test to enrich');
 
-        const enriched = await provider.config.fetchDetails(liveListings[0], browser);
+        const enriched = await runConfig.fetchDetails(liveListings[0], browser);
 
         expect(enriched).toBeTruthy();
         expect(enriched.link).toBe(liveListings[0].link);

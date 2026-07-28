@@ -11,6 +11,9 @@ import * as provider from '../../lib/provider/schwarzesbrett.js';
 import * as mockStore from '../mocks/mockStore.js';
 import { launchBrowser, closeBrowser } from '../../lib/services/extractor/puppeteerExtractor.js';
 
+/** Run-scoped provider config, built per test via createConfig(). */
+let runConfig;
+
 // One browser shared across the whole suite so both requests (search + detail)
 // come from the same warm session. This prevents the second request from being
 // flagged as a cold-start bot hit by the portal's Cloudflare protection.
@@ -38,9 +41,9 @@ describe('#schwarzesbrett testsuite()', () => {
         spatialFilter: null,
         specFilter: null,
       };
-      provider.init(providerConfig.schwarzesbrett, [], []);
+      runConfig = provider.createConfig(providerConfig.schwarzesbrett, [], []);
 
-      const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache, browser);
+      const fredy = new Fredy(runConfig, mockedJob, provider.metaInformation.id, similarityCache, browser);
 
       liveListings = await fredy.execute();
 
@@ -83,7 +86,7 @@ describe('#schwarzesbrett testsuite()', () => {
 
         // Call fetchDetails directly on the first live listing - no need to
         // re-scrape the search page. The shared browser keeps the session warm.
-        const enriched = await provider.config.fetchDetails(liveListings[0], browser);
+        const enriched = await runConfig.fetchDetails(liveListings[0], browser);
 
         expect(enriched).toBeTruthy();
         expect(enriched.link).toContain('https://schwarzesbrett.bremen.de/show/');

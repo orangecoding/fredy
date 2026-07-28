@@ -23,9 +23,8 @@ import CostBreakdownChart from './charts/CostBreakdownChart.jsx';
 import BudgetChart from './charts/BudgetChart.jsx';
 
 import { useActions, useSelector } from '../../services/state/store.js';
+import { errorMessage } from '../../services/xhr.js';
 import { useFinanceProfile } from '../../hooks/useFinanceProfile.js';
-import { computeFinanceResult } from '../../../../lib/services/finance/calculate.js';
-import { isProfileComplete, isRentProfileComplete } from '../../../../lib/services/finance/affordability.js';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
 
 import './FinanceCalculator.less';
@@ -35,6 +34,17 @@ const { TabPane } = Tabs;
 
 /** Recompute is cheap but not free; this keeps typing smooth without a visible lag. */
 const RECALC_DEBOUNCE_MS = 250;
+
+/**
+ * What the form renders against before the server has said anything.
+ *
+ * Only needs the keys the panels dereference without guarding. Everything else is filled in by the
+ * normalized profile that comes back with the first calculation.
+ */
+const EMPTY_DRAFT = Object.freeze({
+  financing: Object.freeze({ scenarios: Object.freeze([]) }),
+  renting: Object.freeze({}),
+});
 
 /**
  * The Save/Delete row under a tab. Save persists this tab (and the shared household); Delete,
@@ -98,8 +108,16 @@ export default function FinanceCalculator() {
   const { profile: storedProfile, stored, anyComplete } = useFinanceProfile();
   const pois = useSelector((state) => state.tracking.pois);
 
-  const [draft, setDraft] = React.useState(storedProfile);
-  const [result, setResult] = React.useState(null);
+  // Never `{}`: the Buy tab dereferences `draft.financing.scenarios`, and there is no error
+  // boundary in the app, so one failed profile-summary request would blank the whole page. The
+  // shape below is the minimum the forms read; the server's normalized profile replaces it as
+  // soon as it arrives.
+  const [draft, setDraft] = React.useState(() => storedProfile ?? EMPTY_DRAFT);
+  // The whole payload of POST /api/finance/calculate for the current draft: the breakdown, the
+  // budget, the ceilings, and whether each half of the draft is usable. All of it is computed
+  // server-side - the browser holds no finance math - so one request answers every panel here.
+  const [draftSummary, setDraftSummary] = React.useState(null);
+  const result = draftSummary?.result ?? null;
   // Which section has a request in flight, so only the button that was clicked spins.
   const [saving, setSaving] = React.useState(null);
   const [deleting, setDeleting] = React.useState(null);
@@ -120,7 +138,7 @@ export default function FinanceCalculator() {
   // triggered elsewhere - would otherwise leave every field on its blank default. Once the
   // user has typed, their draft wins: a profile arriving late must never overwrite edits.
   React.useEffect(() => {
-    if (edited.current) {
+    if (edited.current || storedProfile == null) {
       return;
     }
     const price = Number(prefillPrice);
@@ -133,11 +151,46 @@ export default function FinanceCalculator() {
     // re-running this one whenever the URL changes would throw away edits in progress.
   }, [storedProfile]);
 
-  // Recompute off the main input path so long amortization runs never block keystrokes.
+  // Debounced so a keystroke does not fire a request, and guarded so a slow answer for an older
+  // draft cannot overwrite a newer one.
   React.useEffect(() => {
-    const handle = window.setTimeout(() => setResult(computeFinanceResult(draft)), RECALC_DEBOUNCE_MS);
-    return () => window.clearTimeout(handle);
+    let cancelled = false;
+    const handle = window.setTimeout(async () => {
+      const payload = await actions.finance.calculate(draft);
+      if (!cancelled) setDraftSummary(payload);
+    }, RECALC_DEBOUNCE_MS);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(handle);
+    };
   }, [draft]);
+
+  // A pinned instalment implies a Tilgung, and only the server computes it. Once a calculation
+  // lands, that value is written back into the draft so what gets saved carries a real percentage
+  // rather than a stale one. Guarded by an equality check, so this converges in one pass instead
+  // of looping.
+  React.useEffect(() => {
+    const computed = draftSummary?.result?.financing?.scenarios;
+    if (!Array.isArray(computed) || computed.length === 0) {
+      return;
+    }
+    const scenarios = draft?.financing?.scenarios;
+    if (!Array.isArray(scenarios)) {
+      return;
+    }
+    let changed = false;
+    const synced = scenarios.map((scenario, index) => {
+      const derived = computed[index]?.tilgung;
+      if (scenario.monthlyPayment == null || derived == null || scenario.tilgung === derived) {
+        return scenario;
+      }
+      changed = true;
+      return { ...scenario, tilgung: derived };
+    });
+    if (changed) {
+      setDraft((current) => ({ ...current, financing: { ...current.financing, scenarios: synced } }));
+    }
+  }, [draftSummary]);
 
   const patchProfile = (patch) => {
     edited.current = true;
@@ -162,8 +215,8 @@ export default function FinanceCalculator() {
       // user leaves, which would measure typing rather than adoption.
       actions.tracking.trackPoi(section === 'rent' ? pois.FINANCE_RENT_PROFILE_SAVED : pois.FINANCE_BUY_PROFILE_SAVED);
       Toast.success(t('finance.saved'));
-    } catch {
-      Toast.error(t('finance.saveFailed'));
+    } catch (error) {
+      Toast.error(errorMessage(error, t('finance.saveFailed')));
     } finally {
       setSaving(null);
     }
@@ -175,8 +228,8 @@ export default function FinanceCalculator() {
       await actions.userSettings.deleteFinanceSection(section);
       actions.tracking.trackPoi(pois.FINANCE_PROFILE_DELETED);
       Toast.success(t('finance.deleted'));
-    } catch {
-      Toast.error(t('finance.deleteFailed'));
+    } catch (error) {
+      Toast.error(errorMessage(error, t('finance.deleteFailed')));
     } finally {
       setDeleting(null);
     }
@@ -194,21 +247,22 @@ export default function FinanceCalculator() {
    */
   const autoSaveSection = async (section) => {
     const alreadySaved = section === 'rent' ? stored?.renting != null : stored?.financing != null;
-    const usable = section === 'rent' ? isRentProfileComplete(draft) : isProfileComplete(draft);
+    const usable = section === 'rent' ? draftRentComplete : draftComplete;
     if (!alreadySaved || !usable || saving != null || deleting != null) {
       return;
     }
     try {
       await actions.userSettings.saveFinanceSection({ section, profile: draft });
-    } catch {
-      Toast.error(t('finance.saveFailed'));
+    } catch (error) {
+      Toast.error(errorMessage(error, t('finance.saveFailed')));
     }
   };
 
   // A tab can be saved once its own inputs are usable: renting never needs equity or a
-  // Bundesland, so the two are judged independently.
-  const draftComplete = isProfileComplete(draft);
-  const draftRentComplete = isRentProfileComplete(draft);
+  // Bundesland, so the two are judged independently. Both verdicts come back with the draft's
+  // calculation rather than being re-derived here.
+  const draftComplete = draftSummary?.isComplete === true;
+  const draftRentComplete = draftSummary?.rentComplete === true;
   // Whether each tab is currently persisted, which is what the Delete button acts on.
   const rentSaved = stored?.renting != null;
   const buySaved = stored?.financing != null;
@@ -270,7 +324,12 @@ export default function FinanceCalculator() {
           </Text>
 
           <div onBlur={() => autoSaveSection('rent')}>
-            <RentPanel profile={draft} onChange={patchRenting} />
+            <RentPanel
+              profile={draft}
+              budget={draftSummary?.budget ?? null}
+              thresholds={draftSummary?.thresholds?.rent ?? null}
+              onChange={patchRenting}
+            />
           </div>
 
           <SectionActions
@@ -305,11 +364,17 @@ export default function FinanceCalculator() {
           <Row gutter={[16, 16]}>
             <Col xs={24} lg={10} xl={9}>
               <div onBlur={() => autoSaveSection('buy')}>
-                <PropertyForm financing={draft.financing} onChange={patchFinancing} />
+                <PropertyForm
+                  financing={draft.financing ?? EMPTY_DRAFT.financing}
+                  costs={result?.financing?.closingCosts ?? null}
+                  totalCost={result?.financing?.totalCost ?? null}
+                  loanAmount={result?.financing?.loanAmount ?? null}
+                  onChange={patchFinancing}
+                />
               </div>
               <ScenarioForm
-                scenarios={draft.financing.scenarios}
-                loanAmount={result?.financing?.loanAmount ?? 0}
+                scenarios={draft.financing?.scenarios ?? []}
+                computed={result?.financing?.scenarios ?? []}
                 onChange={(scenarios) => patchFinancing({ scenarios })}
               />
             </Col>

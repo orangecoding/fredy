@@ -242,17 +242,21 @@ async function main() {
 
   for (const [name, cfg] of Object.entries(providersToDownload)) {
     const provider = await import(`../../lib/provider/${name}.js`);
-    provider.init(cfg, [], []);
+    // Providers are stateless: createConfig() returns a fresh, fully-resolved config instead of
+    // the old init() mutating a shared one. `runConfig.url` is what init() used to write into
+    // `provider.config.url`, including any rewrite the provider applies (immoscout's mobile API,
+    // deutscheWohnen's JSON endpoint).
+    const runConfig = provider.createConfig(cfg, [], []);
 
     switch (name) {
       case 'immoscout':
-        await downloadImmoscoutFixtures(provider.config.url);
+        await downloadImmoscoutFixtures(runConfig.url);
         break;
       case 'deutscheWohnen':
-        await downloadDeutscheWohnenFixtures(provider.config.url, cfg.url);
+        await downloadDeutscheWohnenFixtures(runConfig.url, cfg.url);
         break;
       default:
-        await downloadHtmlProvider(name, provider.config, launchBrowser, closeBrowser, puppeteerExtractor);
+        await downloadHtmlProvider(name, runConfig, launchBrowser, closeBrowser, puppeteerExtractor);
     }
   }
 

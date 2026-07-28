@@ -60,7 +60,7 @@ const ListingsTable = ({
             {item.price ? (
               <>
                 {formatEuroPrice(item.price)}
-                <AffordabilityChip price={item.price} dealType={item.dealType} />
+                <AffordabilityChip verdict={item.affordabilityVerdict} dealType={item.dealType} />
               </>
             ) : (
               <span className="listingsTable__row__empty">---</span>

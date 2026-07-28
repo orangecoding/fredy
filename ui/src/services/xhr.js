@@ -106,15 +106,30 @@ export function xhrDelete(url, data, contentType = 'application/json; charset=ut
     })
       .then((response) => parseJSON(response))
       .then((response) => resolve(response))
-      .catch((error) => {
-        if (error.json != null && error.json.message != null) {
-          reject(error.json.message);
-        } else {
-          reject({ errors: [`Unspecified Network error`] });
-        }
-      });
+      // Rejects with the same `{ status, json }` shape as the other helpers. It used to reject
+      // with a bare string or `{ errors: [...] }`, so callers reading `error.message` (which none
+      // of the shapes ever carried) always fell through to their generic message.
+      .catch((error) => reject(error));
   });
 }
+/**
+ * Pull a human-readable message out of a rejected request.
+ *
+ * All four helpers reject with `{ status, json }`, and the backend puts its explanation under
+ * either `error` or `message` depending on the route. Callers used to read `error.message`, which
+ * no rejection shape ever carried, so a real server message ("you cannot remove the demo job")
+ * was always replaced by a generic one.
+ *
+ * @param {unknown} rejection - Whatever the helper rejected with.
+ * @param {string} fallback - Shown when the response carried no message.
+ * @returns {string}
+ */
+export function errorMessage(rejection, fallback) {
+  const json = rejection?.json;
+  const message = json?.error ?? json?.message;
+  return typeof message === 'string' && message.length > 0 ? message : fallback;
+}
+
 function parseJSON(response) {
   return new Promise((resolve, reject) =>
     response

@@ -9,6 +9,9 @@ import { mockFredy, providerConfig } from '../utils.js';
 import { expect } from 'vitest';
 import * as provider from '../../lib/provider/regionalimmobilien24.js';
 
+/** Run-scoped provider config, built per test via createConfig(). */
+let runConfig;
+
 describe('#regionalimmobilien24 testsuite()', () => {
   it('should test regionalimmobilien24 provider', async () => {
     const Fredy = await mockFredy();
@@ -18,9 +21,9 @@ describe('#regionalimmobilien24 testsuite()', () => {
       spatialFilter: null,
       specFilter: null,
     };
-    provider.init(providerConfig.regionalimmobilien24, []);
+    runConfig = provider.createConfig(providerConfig.regionalimmobilien24, []);
 
-    const fredy = new Fredy(provider.config, mockedJob, provider.metaInformation.id, similarityCache, undefined);
+    const fredy = new Fredy(runConfig, mockedJob, provider.metaInformation.id, similarityCache, undefined);
 
     const listing = await fredy.execute();
 

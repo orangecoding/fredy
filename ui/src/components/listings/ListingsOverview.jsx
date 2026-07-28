@@ -4,12 +4,7 @@
  */
 
 import { useState, useEffect, useMemo, useRef } from 'react';
-import {
-  useSearchParamState,
-  parseNumber,
-  parseString,
-  parseNullableBoolean,
-} from '../../hooks/useSearchParamState.js';
+import { useUrlState, parseNumber, parseString, parseNullableBoolean } from '../../hooks/useSearchParamState.js';
 import {
   Button,
   Pagination,
@@ -25,7 +20,7 @@ import {
 import { IconSearch, IconArrowUp, IconArrowDown, IconGridView, IconList } from '@douyinfe/semi-icons';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import ListingDeletionModal from '../ListingDeletionModal.jsx';
-import { xhrDelete, xhrPost } from '../../services/xhr.js';
+import { xhrDelete, xhrPost, errorMessage } from '../../services/xhr.js';
 import { useActions, useSelector } from '../../services/state/store.js';
 import { debounce } from '../../utils';
 import FilterSelect from './FilterSelect.jsx';
@@ -37,6 +32,32 @@ import './ListingsOverview.less';
 import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
 import { useFinanceProfile } from '../../hooks/useFinanceProfile.js';
 import { formatEuro } from '../cards/chartTheme.js';
+
+/**
+ * Listings fetched per page. Large enough that the grid fills a desktop screen without paging,
+ * small enough that a page stays quick to render.
+ * @type {number}
+ */
+const LISTINGS_PAGE_SIZE = 40;
+
+/**
+ * Every filter this page keeps in the URL, with its default and its codec.
+ *
+ * Module scope so its identity is stable: {@link useUrlState} memoizes on it.
+ */
+const LISTINGS_URL_STATE = {
+  page: { defaultValue: 1, codec: parseNumber },
+  sort: { defaultValue: 'created_at', codec: parseString },
+  dir: { defaultValue: 'desc', codec: parseString },
+  q: { defaultValue: null, codec: parseString },
+  watch: { defaultValue: null, codec: parseNullableBoolean },
+  job: { defaultValue: null, codec: parseString },
+  active: { defaultValue: true, codec: parseNullableBoolean },
+  provider: { defaultValue: null, codec: parseString },
+  status: { defaultValue: null, codec: parseString },
+  afford: { defaultValue: null, codec: parseString },
+  hidden: { defaultValue: false, codec: parseNullableBoolean },
+};
 
 const ListingsOverview = ({ mode = 'all' }) => {
   const t = useTranslation();
@@ -56,19 +77,29 @@ const ListingsOverview = ({ mode = 'all' }) => {
   const listingDeletionPref = userSettings?.listing_deletion_preference;
   const defaultDeleteType = listingDeletionPref?.hardDelete ? 'hard' : 'soft';
 
-  const [page, setPage] = useSearchParamState(sp, 'page', 1, parseNumber);
-  const pageSize = 40;
+  // One source of truth for the page size: it is sent with the query and drives the pagination
+  // control, and those two disagreeing would silently misreport how many pages there are.
+  const pageSize = LISTINGS_PAGE_SIZE;
 
-  const [sortField, setSortField] = useSearchParamState(sp, 'sort', 'created_at', parseString);
-  const [sortDir, setSortDir] = useSearchParamState(sp, 'dir', 'desc', parseString);
-  const [freeTextFilter, setFreeTextFilter] = useSearchParamState(sp, 'q', null, parseString);
-  const [watchListFilter, setWatchListFilter] = useSearchParamState(sp, 'watch', null, parseNullableBoolean);
-  const [jobNameFilter, setJobNameFilter] = useSearchParamState(sp, 'job', null, parseString);
-  const [activityFilter, setActivityFilter] = useSearchParamState(sp, 'active', true, parseNullableBoolean);
-  const [providerFilter, setProviderFilter] = useSearchParamState(sp, 'provider', null, parseString);
-  const [statusFilter, setStatusFilter] = useSearchParamState(sp, 'status', null, parseString);
-  const [affordabilityFilter, setAffordabilityFilter] = useSearchParamState(sp, 'afford', null, parseString);
-  const [hiddenOnly, setHiddenOnly] = useSearchParamState(sp, 'hidden', false, parseNullableBoolean);
+  // One piece of state for every filter. Each control here changes two params at once (its own,
+  // plus the page reset), and separate per-key setters would race each other into the URL.
+  const { values, setValue, setValues } = useUrlState(sp, LISTINGS_URL_STATE);
+  const {
+    page,
+    sort: sortField,
+    dir: sortDir,
+    q: freeTextFilter,
+    watch: watchListFilter,
+    job: jobNameFilter,
+    active: activityFilter,
+    provider: providerFilter,
+    status: statusFilter,
+    afford: affordabilityFilter,
+    hidden: hiddenOnly,
+  } = values;
+  const setPage = (value) => setValue('page', value);
+  const setSortField = (value) => setValue('sort', value);
+  const setSortDir = (value) => setValue('dir', value);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [listingToDelete, setListingToDelete] = useState(null);
   const [newAvailableCount, setNewAvailableCount] = useState(0);
@@ -174,8 +205,7 @@ const ListingsOverview = ({ mode = 'all' }) => {
   const handleFilterChange = useMemo(
     () =>
       debounce((value) => {
-        setFreeTextFilter(value || null);
-        setPage(1);
+        setValues({ q: value || null, page: 1 });
       }, 500),
     [],
   );
@@ -237,6 +267,15 @@ const ListingsOverview = ({ mode = 'all' }) => {
     navigate(`/listings/listing/${id}`);
   };
 
+  // The store re-throws so a caller can react. These two buttons had no catch at all, so a
+  // refused write (a 403 on a locked-down instance) became an unhandled rejection: the toggle
+  // silently snapped back and nothing said why.
+  const switchViewMode = (mode) => {
+    actions.userSettings.setListingsViewMode(mode).catch((error) => {
+      Toast.error(errorMessage(error, t('common.settingSaveError')));
+    });
+  };
+
   const confirmDeletion = async (hardDelete, remember, id = listingToDelete) => {
     try {
       if (remember) {
@@ -246,7 +285,7 @@ const ListingsOverview = ({ mode = 'all' }) => {
       Toast.success(t('listings.toastDeleted'));
       loadData();
     } catch (error) {
-      Toast.error(error.message || t('listings.toastDeleteError'));
+      Toast.error(errorMessage(error, t('listings.toastDeleteError')));
     } finally {
       setDeleteModalVisible(false);
       setListingToDelete(null);
@@ -280,14 +319,11 @@ const ListingsOverview = ({ mode = 'all' }) => {
               value={activityRadioValue}
               onChange={(e) => {
                 const v = e.target.value;
-                if (v === 'hidden') {
-                  setHiddenOnly(true);
-                  setActivityFilter(null);
-                } else {
-                  setHiddenOnly(false);
-                  setActivityFilter(v === 'all' ? null : v === 'true');
-                }
-                setPage(1);
+                setValues(
+                  v === 'hidden'
+                    ? { hidden: true, active: null, page: 1 }
+                    : { hidden: false, active: v === 'all' ? null : v === 'true', page: 1 },
+                );
               }}
             >
               <Radio value="all">{t('listings.filterAll')}</Radio>
@@ -307,8 +343,7 @@ const ListingsOverview = ({ mode = 'all' }) => {
                 value={watchListFilter === null ? 'all' : String(watchListFilter)}
                 onChange={(e) => {
                   const v = e.target.value;
-                  setWatchListFilter(v === 'all' ? null : v === 'true');
-                  setPage(1);
+                  setValues({ watch: v === 'all' ? null : v === 'true', page: 1 });
                 }}
               >
                 <Radio value="all">{t('listings.filterAll')}</Radio>
@@ -324,8 +359,7 @@ const ListingsOverview = ({ mode = 'all' }) => {
           placeholder={t('listings.filterStatusPlaceholder')}
           showClear
           onChange={(val) => {
-            setStatusFilter(val ?? null);
-            setPage(1);
+            setValues({ status: val ?? null, page: 1 });
           }}
           value={statusFilter}
           style={{ width: 150 }}
@@ -344,8 +378,7 @@ const ListingsOverview = ({ mode = 'all' }) => {
             placeholder={t('listings.filterAffordabilityPlaceholder')}
             showClear
             onChange={(val) => {
-              setAffordabilityFilter(val ?? null);
-              setPage(1);
+              setValues({ afford: val ?? null, page: 1 });
               // Counted when it is switched on, not when it is cleared, and not on every page
               // load that happens to carry the filter in its URL.
               if (val != null) {
@@ -366,8 +399,7 @@ const ListingsOverview = ({ mode = 'all' }) => {
           placeholder={t('listings.filterProviderPlaceholder')}
           showClear
           onChange={(val) => {
-            setProviderFilter(val);
-            setPage(1);
+            setValues({ provider: val ?? null, page: 1 });
           }}
           value={providerFilter}
           style={{ width: 130 }}
@@ -384,8 +416,7 @@ const ListingsOverview = ({ mode = 'all' }) => {
           placeholder={t('listings.filterJobPlaceholder')}
           showClear
           onChange={(val) => {
-            setJobNameFilter(val);
-            setPage(1);
+            setValues({ job: val ?? null, page: 1 });
           }}
           value={jobNameFilter}
           style={{ width: 130 }}
@@ -430,7 +461,7 @@ const ListingsOverview = ({ mode = 'all' }) => {
             <Button
               icon={<IconGridView />}
               theme={viewMode === 'grid' ? 'solid' : 'borderless'}
-              onClick={() => actions.userSettings.setListingsViewMode('grid')}
+              onClick={() => switchViewMode('grid')}
               aria-label={t('common.ariaGridView')}
               aria-pressed={viewMode === 'grid'}
             />
@@ -439,7 +470,7 @@ const ListingsOverview = ({ mode = 'all' }) => {
             <Button
               icon={<IconList />}
               theme={viewMode === 'table' ? 'solid' : 'borderless'}
-              onClick={() => actions.userSettings.setListingsViewMode('table')}
+              onClick={() => switchViewMode('table')}
               aria-label={t('common.ariaTableView')}
               aria-pressed={viewMode === 'table'}
             />

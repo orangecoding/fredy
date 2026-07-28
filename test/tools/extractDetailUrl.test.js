@@ -9,6 +9,9 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { extractFirstDetailUrl } from '../../tools/testFixtures/extractDetailUrl.js';
 
+/** Run-scoped provider config, built per test via createConfig(). */
+let runConfig;
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const FIXTURES_DIR = path.join(__dirname, '..', 'testFixtures');
 const TEST_PROVIDER_PATH = path.join(__dirname, '..', 'provider', 'testProvider.json');
@@ -28,22 +31,22 @@ describe('extractFirstDetailUrl', () => {
   for (const providerName of providersWithDetailPages) {
     it(`finds the detail url in the ${providerName} list fixture`, async () => {
       const provider = await import(`../../lib/provider/${providerName}.js`);
-      provider.init(testProviderConfig[providerName], [], []);
+      runConfig = provider.createConfig(testProviderConfig[providerName], [], []);
 
       const html = readFileSync(path.join(FIXTURES_DIR, `${providerName}.html`), 'utf-8');
-      const detailUrl = extractFirstDetailUrl(html, provider.config);
+      const detailUrl = extractFirstDetailUrl(html, runConfig);
 
       expect(detailUrl).toBeTruthy();
       expect(detailUrl).toMatch(/^https?:\/\//);
-      expect(detailUrl).not.toBe(provider.config.url);
+      expect(detailUrl).not.toBe(runConfig.url);
     });
   }
 
   it('returns null when the crawl container matches nothing', async () => {
     const provider = await import('../../lib/provider/immowelt.js');
-    provider.init(testProviderConfig.immowelt, [], []);
+    runConfig = provider.createConfig(testProviderConfig.immowelt, [], []);
 
-    expect(extractFirstDetailUrl('<html><body>nothing here</body></html>', provider.config)).toBeNull();
+    expect(extractFirstDetailUrl('<html><body>nothing here</body></html>', runConfig)).toBeNull();
   });
 
   it('returns null for an incomplete provider config', () => {

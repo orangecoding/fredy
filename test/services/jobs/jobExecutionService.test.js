@@ -37,8 +37,11 @@ describe('services/jobs/jobExecutionService', () => {
       getUsers: () => state.users.slice(),
       getUser: (id) => state.users.find((u) => u.id === id) || null,
     }));
+    // The service reads settings live rather than from a snapshot handed in at startup, so demo
+    // mode and working hours follow the settings UI without a restart. The mock therefore has to
+    // serve what the scenario configured.
     vi.doMock(settingsStoragePath, () => ({
-      getSettings: async () => ({}),
+      getSettings: async () => settings,
     }));
     vi.doMock(brokerPath, () => ({
       sendToUsers: (...args) => calls.sent.push(args),
@@ -84,7 +87,7 @@ describe('services/jobs/jobExecutionService', () => {
     }));
 
     const mod = await import(svcPath);
-    mod.initJobExecutionService({ providers: state.providers, settings, intervalMs: 0 });
+    mod.initJobExecutionService({ providers: state.providers, intervalMs: 0 });
     return mod;
   }
 
@@ -175,10 +178,11 @@ describe('services/jobs/jobExecutionService', () => {
   });
 
   it('launches and reuses a single shared browser across all providers in a job', async () => {
+    // Providers hand out a fresh config per run instead of mutating a shared one, so the double
+    // mirrors that: createConfig() returns a new object every time it is called.
     const provider = (id, config) => ({
       metaInformation: { id },
-      config,
-      init: vi.fn(),
+      createConfig: vi.fn((sourceConfig, blacklist) => ({ ...config, blacklist })),
     });
     state.providers = [
       provider('api-provider', { url: 'https://api.example/', getListings: vi.fn() }),

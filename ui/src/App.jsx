@@ -48,49 +48,79 @@ export default function FredyApp() {
   const location = useLocation();
   const actions = useActions();
   const [loading, setLoading] = React.useState(true);
-  /** userId the stores were filled for, so a re-run of the init effect does not refetch. */
+  /** userId the stores were actually filled for. Only set once the requests have landed. */
   const initializedFor = React.useRef(null);
+  /**
+   * Whether a fill is in flight.
+   *
+   * The effect runs twice on a hard refresh - once on mount, once when the user lands in the
+   * store - and without this the second run saw the ref already set, dropped `loading`, and
+   * rendered the route while the first run was still fetching. Anything that seeds its state
+   * from a store slice on mount (the job editor's twelve fields, view-mode toggles) then kept
+   * the empty values it saw and never recovered.
+   */
+  const initInFlight = React.useRef(false);
   const currentUser = useSelector((state) => state.user.currentUser);
   const versionUpdate = useSelector((state) => state.versionUpdate.versionUpdate);
   const settings = useSelector((state) => state.generalSettings.settings);
   const language = useSelector((state) => state.userSettings.settings.language);
 
   useEffect(() => {
-    // The effect re-runs once the user lands in the store, and by then everything this does
-    // has already happened - including the /api/login/user request below.
+    // Already filled for this user: nothing to do. Checked against the ref, which is only set
+    // after the requests resolved, so this cannot short-circuit a fill that is still running.
     if (currentUser?.userId != null && initializedFor.current === currentUser.userId) {
       setLoading(false);
       return;
     }
 
     async function init() {
-      // Judge on the user this call just returned, not on the one in the render closure: on a
-      // hard refresh that closure is still null, so the guard below used to skip every load,
-      // drop `loading`, and render the whole app against empty stores. Anything that seeds
-      // component state from settings on mount (the finance calculator, view-mode toggles)
-      // then kept the blank values it saw.
-      const user = await actions.user.getCurrentUser();
-      const userId = user?.userId ?? null;
-
-      if (userId == null) {
-        initializedFor.current = null;
-        setLoading(false);
+      // A second run must not race the first one to `setLoading(false)`.
+      if (initInFlight.current) {
         return;
       }
+      initInFlight.current = true;
+      try {
+        // Judge on the user this call just returned, not on the one in the render closure: on a
+        // hard refresh that closure is still null, so the guard below used to skip every load,
+        // drop `loading`, and render the whole app against empty stores. Anything that seeds
+        // component state from settings on mount (the finance calculator, view-mode toggles)
+        // then kept the blank values it saw.
+        const user = await actions.user.getCurrentUser();
+        const userId = user?.userId ?? null;
 
-      if (initializedFor.current !== userId) {
-        initializedFor.current = userId;
-        await actions.provider.getProvider();
-        await actions.jobsData.getJobs();
-        await actions.jobsData.getSharableUserList();
-        await actions.notificationAdapter.getAdapter();
-        await actions.generalSettings.getGeneralSettings();
-        await actions.userSettings.getUserSettings();
-        await actions.versionUpdate.getVersionUpdate();
-        await actions.tracking.getTrackingPois();
+        if (userId == null) {
+          initializedFor.current = null;
+          setLoading(false);
+          return;
+        }
+
+        if (initializedFor.current !== userId) {
+          // These are independent of each other, so they go out together. Awaiting them one after
+          // the other meant nine serial round trips before the first pixel.
+          await Promise.all([
+            actions.provider.getProvider(),
+            actions.jobsData.getJobs(),
+            actions.jobsData.getSharableUserList(),
+            actions.notificationAdapter.getAdapter(),
+            actions.generalSettings.getGeneralSettings(),
+            actions.userSettings.getUserSettings(),
+            // Powers every finance surface; derived server-side so the browser holds no such math.
+            actions.finance.getProfileSummary(),
+          ]);
+          // Marked done only now: a route that seeds its state from the store on mount must not
+          // be rendered before the store actually holds it.
+          initializedFor.current = userId;
+          // Nothing in the first render depends on these two - the version banner and the
+          // tracking modal appear when they arrive - so they must not hold up the app.
+          // getVersionUpdate in particular reaches out to api.github.com.
+          actions.versionUpdate.getVersionUpdate();
+          actions.tracking.getTrackingPois();
+        }
+
+        setLoading(false);
+      } finally {
+        initInFlight.current = false;
       }
-
-      setLoading(false);
     }
 
     init();

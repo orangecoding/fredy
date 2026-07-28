@@ -39,6 +39,9 @@ describe('api/routes/dashboardRouter.js', () => {
     const instance = Fastify({ logger: false });
     instance.addHook('onRequest', async (request) => {
       request.session = { currentUser: state.currentUser, createdAt: Date.now() };
+      // Stands in for authHook, which resolves the session's user once per request and hangs it
+      // here. The access rule reads it instead of querying the database per call.
+      request.currentUser = { id: state.currentUser, isAdmin: state.admin };
     });
     await instance.register(plugin, { prefix: '/api/dashboard' });
     await instance.ready();

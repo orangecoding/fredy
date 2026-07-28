@@ -8,12 +8,17 @@ import Fastify from 'fastify';
 
 vi.mock('../../lib/services/storage/listingsStorage.js', () => ({
   queryListings: vi.fn(() => ({ totalNumber: 0, page: 1, result: [] })),
+  getListingById: vi.fn(() => null),
+}));
+vi.mock('../../lib/services/storage/settingsStorage.js', () => ({
+  getUserSettings: vi.fn(() => ({})),
 }));
 vi.mock('../../lib/services/tracking/Tracker.js', () => ({ trackPoi: vi.fn() }));
 vi.mock('../../lib/services/logger.js', () => ({ default: { error: vi.fn(), info: vi.fn(), debug: vi.fn() } }));
 vi.mock('../../lib/api/security.js', () => ({ isAdmin: vi.fn(() => false) }));
 
-import { queryListings } from '../../lib/services/storage/listingsStorage.js';
+import { queryListings, getListingById } from '../../lib/services/storage/listingsStorage.js';
+import { getUserSettings } from '../../lib/services/storage/settingsStorage.js';
 import { trackPoi } from '../../lib/services/tracking/Tracker.js';
 import financePlugin from '../../lib/api/routes/financeRouter.js';
 
@@ -67,12 +72,29 @@ describe('POST /calculate', () => {
 
     expect(response.statusCode).toBe(200);
     const body = response.json();
-    expect(body.financing.loanAmount).toBeCloseTo(366280, 2);
-    expect(body.financing.primary.monthlyPayment).toBeGreaterThan(0);
-    expect(body.verdict).toBe('affordable');
-    expect(body.debtFreeAges).toHaveLength(2);
-    expect(body.thresholds.affordableMaxPrice).toBeGreaterThan(0);
-    expect(body.recommendation.maxAffordablePrice).toBeGreaterThan(0);
+    // The breakdown sits under `result`; alongside it come the budget, the ceilings and the
+    // completeness flags for the same draft, so the calculator page needs one request rather
+    // than four for what it puts on screen.
+    expect(body.result.financing.loanAmount).toBeCloseTo(366280, 2);
+    expect(body.result.financing.primary.monthlyPayment).toBeGreaterThan(0);
+    expect(body.result.verdict).toBe('affordable');
+    expect(body.result.debtFreeAges).toHaveLength(2);
+    expect(body.result.thresholds.affordableMaxPrice).toBeGreaterThan(0);
+    expect(body.result.recommendation.maxAffordablePrice).toBeGreaterThan(0);
+  });
+
+  it('carries the draft summary the calculator renders around the breakdown', async () => {
+    const app = await buildApp();
+    const response = await app.inject({ method: 'POST', url: '/calculate', payload: { profile: PROFILE } });
+
+    const body = response.json();
+    expect(body.isComplete).toBe(true);
+    expect(body.budget.disposable).toBeTypeOf('number');
+    expect(body.thresholds).toHaveProperty('buy');
+    expect(body.thresholds).toHaveProperty('rent');
+    // The normalized profile comes back too: the form seeds from it, and normalizing is itself a
+    // rule (defaults for equity, Bundesland, scenarios) that must not be reimplemented client-side.
+    expect(body.profile.financing.scenarios.length).toBeGreaterThan(0);
   });
 
   it('records that the calculator was used', async () => {
@@ -129,7 +151,7 @@ describe('POST /calculate', () => {
     });
 
     expect(response.statusCode).toBe(200);
-    expect(response.json().financing.scenarios.length).toBeGreaterThan(0);
+    expect(response.json().result.financing.scenarios.length).toBeGreaterThan(0);
   });
 });
 
@@ -284,5 +306,120 @@ describe('POST /affordability', () => {
     expect(body.items[0].dealType).toBe('rent');
     expect(body.thresholds.rent).not.toBeNull();
     expect(body.thresholds.buy).toBeNull();
+  });
+});
+
+/**
+ * The finance math lives only on the server now; the browser asks for answers rather than
+ * computing them. These two endpoints are what the UI leans on for that.
+ */
+describe('GET /profile-summary', () => {
+  it('derives the stored profile without being handed one', async () => {
+    getUserSettings.mockReturnValue({ finance_profile: PROFILE });
+    const app = await buildApp();
+
+    const body = (await app.inject({ method: 'GET', url: '/profile-summary' })).json();
+
+    expect(getUserSettings).toHaveBeenCalledWith('user-1');
+    expect(body.isComplete).toBe(true);
+    expect(body.anyComplete).toBe(true);
+    expect(body.thresholds.buy.affordableMaxPrice).toBeGreaterThan(0);
+    expect(body.budget.disposable).toBeTypeOf('number');
+    // The form seeds from the normalized profile, so it comes back too.
+    expect(body.profile.financing.bundesland).toBe('NW');
+  });
+
+  it('reports an empty profile as unusable rather than failing', async () => {
+    getUserSettings.mockReturnValue({});
+    const app = await buildApp();
+
+    const body = (await app.inject({ method: 'GET', url: '/profile-summary' })).json();
+
+    expect(body.isComplete).toBe(false);
+    expect(body.rentComplete).toBe(false);
+    expect(body.anyComplete).toBe(false);
+    expect(body.thresholds.buy).toBeNull();
+  });
+
+  it('judges the two halves independently', async () => {
+    // A household that only ever rents fills in income and living costs, never equity.
+    getUserSettings.mockReturnValue({
+      finance_profile: {
+        personA: { enabled: true, age: 30, primaryIncome: 3000 },
+        livingCosts: 1000,
+        renting: { nebenkostenPct: 25 },
+      },
+    });
+    const app = await buildApp();
+
+    const body = (await app.inject({ method: 'GET', url: '/profile-summary' })).json();
+
+    expect(body.rentComplete).toBe(true);
+    expect(body.isComplete).toBe(false);
+    expect(body.anyComplete).toBe(true);
+  });
+});
+
+describe('GET /listing/:listingId', () => {
+  beforeEach(() => {
+    getUserSettings.mockReturnValue({ finance_profile: PROFILE });
+  });
+
+  it('runs the full amortization for a purchase, against this listing’s price', async () => {
+    getListingById.mockReturnValue(listing('a', 300000, 'buy'));
+    const app = await buildApp();
+
+    const body = (await app.inject({ method: 'GET', url: '/listing/a' })).json();
+
+    expect(body.dealType).toBe('buy');
+    expect(body.scored).toBeNull();
+    // The listing's price replaces the profile's, so the card answers for this property.
+    expect(body.result.financing.purchasePrice).toBe(300000);
+    expect(body.result.financing.primary.monthlyPayment).toBeGreaterThan(0);
+    // The schedule carries its own yearly rollup, so the charts derive nothing.
+    expect(body.result.financing.primary.schedule.years.length).toBeGreaterThan(0);
+  });
+
+  it('scores a rental against the rent ceilings instead', async () => {
+    getListingById.mockReturnValue(listing('r', 1200, 'rent'));
+    const app = await buildApp();
+
+    const body = (await app.inject({ method: 'GET', url: '/listing/r' })).json();
+
+    expect(body.dealType).toBe('rent');
+    expect(body.result).toBeNull();
+    expect(body.scored.coldRent).toBe(1200);
+    expect(body.scored.verdict).toBeTypeOf('string');
+  });
+
+  it('scopes to the caller, so a foreign listing is not found', async () => {
+    getListingById.mockReturnValue(null);
+    const app = await buildApp();
+
+    const response = await app.inject({ method: 'GET', url: '/listing/someone-elses' });
+
+    expect(response.statusCode).toBe(404);
+    expect(getListingById).toHaveBeenCalledWith('someone-elses', 'user-1', false);
+  });
+
+  it('returns no figures for a listing without a price', async () => {
+    getListingById.mockReturnValue({ ...listing('n', null, 'buy'), price: null });
+    const app = await buildApp();
+
+    const body = (await app.inject({ method: 'GET', url: '/listing/n' })).json();
+
+    expect(body.result).toBeNull();
+    expect(body.scored).toBeNull();
+  });
+
+  it('returns no figures when the matching half of the profile is missing', async () => {
+    getUserSettings.mockReturnValue({ finance_profile: null });
+    getListingById.mockReturnValue(listing('a', 300000, 'buy'));
+    const app = await buildApp();
+
+    const body = (await app.inject({ method: 'GET', url: '/listing/a' })).json();
+
+    expect(body.isComplete).toBe(false);
+    expect(body.result).toBeNull();
   });
 });

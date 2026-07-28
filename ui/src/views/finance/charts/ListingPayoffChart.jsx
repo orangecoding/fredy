@@ -14,7 +14,6 @@ import {
   registerFinanceCharts,
   zinsbindungBandPlugin,
 } from '../../../components/cards/chartTheme.js';
-import { aggregateByYear } from '../../../../../lib/services/finance/amortization.js';
 import { useTranslation, useLocale } from '../../../services/i18n/i18n.jsx';
 
 registerFinanceCharts();
@@ -38,7 +37,7 @@ export default function ListingPayoffChart({ scenario, currentAge = null, height
   const startYear = React.useMemo(() => new Date().getFullYear(), []);
 
   const years = React.useMemo(
-    () => (scenario?.schedule?.months?.length > 0 ? aggregateByYear(scenario.schedule.months) : []),
+    () => (scenario?.schedule?.months?.length > 0 ? (scenario.schedule.years ?? []) : []),
     [scenario],
   );
 
