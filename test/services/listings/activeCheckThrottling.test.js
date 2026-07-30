@@ -29,7 +29,9 @@ describe('alive checker throttling', () => {
         job_id TEXT,
         is_active INTEGER,
         manually_deleted INTEGER DEFAULT 0,
-        last_checked_at INTEGER
+        last_checked_at INTEGER,
+        inactive_since INTEGER,
+        active_check_failures INTEGER DEFAULT 0
       );
     `);
 
@@ -50,12 +52,14 @@ describe('alive checker throttling', () => {
     db.close();
   });
 
-  const addListing = (id, { isActive = 1, lastCheckedAt = null, deleted = 0 } = {}) =>
+  const addListing = (id, { isActive = 1, lastCheckedAt = null, deleted = 0, failures = 0 } = {}) =>
     db
       .prepare(
-        'INSERT INTO listings (id, link, provider, job_id, is_active, manually_deleted, last_checked_at) VALUES (?,?,?,?,?,?,?)',
+        'INSERT INTO listings (id, link, provider, job_id, is_active, manually_deleted, last_checked_at, active_check_failures) VALUES (?,?,?,?,?,?,?,?)',
       )
-      .run(id, `https://example.com/${id}`, 'immowelt', 'job-1', isActive, deleted, lastCheckedAt);
+      .run(id, `https://example.com/${id}`, 'immowelt', 'job-1', isActive, deleted, lastCheckedAt, failures);
+
+  const rowOf = (id) => db.prepare('SELECT * FROM listings WHERE id = ?').get(id);
 
   const dueIds = (opts = {}) =>
     listingsStorage.getListingsDueForActiveCheck({ now: NOW, ...opts }).map((row) => row.id);
@@ -111,11 +115,95 @@ describe('alive checker throttling', () => {
     ]);
   });
 
+  describe('failure streaks', () => {
+    it('re-probes a listing with a failure streak after a day instead of a week', () => {
+      addListing('flaky', { lastCheckedAt: NOW - 2 * DAY, failures: 3 });
+      addListing('healthy', { lastCheckedAt: NOW - 2 * DAY });
+      // The streak has to reach the limit in days, otherwise a blocked portal keeps a dead listing
+      // alive for months. A listing nobody had trouble with stays on the seven-day window.
+      expect(dueIds()).toEqual(['flaky']);
+    });
+
+    it('leaves a freshly failed listing alone until the retry window passes', () => {
+      addListing('failed-an-hour-ago', { lastCheckedAt: NOW - 60 * 60 * 1000, failures: 1 });
+      expect(dueIds()).toEqual([]);
+    });
+
+    it('stops probing a listing that already reached the failure limit', () => {
+      // The checker deactivates those, so seeing one here means something went wrong - it must not
+      // keep costing requests either way.
+      addListing('exhausted', { lastCheckedAt: NOW - 30 * DAY, failures: 10 });
+      expect(dueIds()).toEqual([]);
+    });
+
+    it('honours a custom retry window', () => {
+      addListing('flaky', { lastCheckedAt: NOW - 2 * DAY, failures: 1 });
+      expect(dueIds({ failureRetryMs: 7 * DAY })).toEqual([]);
+      expect(dueIds({ failureRetryMs: DAY })).toEqual(['flaky']);
+    });
+  });
+
+  describe('recordActiveCheckFailures', () => {
+    it('counts one more failure and stops the listing from being due again today', () => {
+      addListing('flaky');
+      expect(listingsStorage.recordActiveCheckFailures(['flaky'], { checkedAt: NOW })).toEqual([]);
+      expect(rowOf('flaky').active_check_failures).toBe(1);
+      expect(dueIds()).toEqual([]);
+    });
+
+    it('reports a listing whose streak reached the limit', () => {
+      addListing('done-for', { failures: 9 });
+      expect(listingsStorage.recordActiveCheckFailures(['done-for'], { checkedAt: NOW })).toEqual(['done-for']);
+    });
+
+    it('honours a custom limit', () => {
+      addListing('flaky', { failures: 1 });
+      expect(listingsStorage.recordActiveCheckFailures(['flaky'], { checkedAt: NOW, failureLimit: 2 })).toEqual([
+        'flaky',
+      ]);
+    });
+
+    it('handles a batch beyond the SQLite parameter limit', () => {
+      const ids = [];
+      for (let i = 0; i < 1500; i++) {
+        addListing(`bulk-${i}`, { failures: 9 });
+        ids.push(`bulk-${i}`);
+      }
+      expect(listingsStorage.recordActiveCheckFailures(ids, { checkedAt: NOW })).toHaveLength(1500);
+    });
+
+    it('is a no-op for an empty list', () => {
+      expect(listingsStorage.recordActiveCheckFailures([])).toEqual([]);
+    });
+  });
+
+  describe('deactivateListings', () => {
+    it('stamps when the listing went offline, which starts the retention period', () => {
+      addListing('gone');
+      listingsStorage.deactivateListings(['gone'], NOW);
+      expect(rowOf('gone')).toMatchObject({ is_active: 0, inactive_since: NOW, active_check_failures: 0 });
+    });
+
+    it('keeps the original timestamp when a listing is deactivated again', () => {
+      addListing('gone');
+      listingsStorage.deactivateListings(['gone'], NOW - 10 * DAY);
+      listingsStorage.deactivateListings(['gone'], NOW);
+      // Otherwise a second sighting would hand an already-expired listing a fresh grace period.
+      expect(rowOf('gone').inactive_since).toBe(NOW - 10 * DAY);
+    });
+  });
+
   describe('markListingsChecked', () => {
     it('stops a listing from coming back as due', () => {
       addListing('probed');
       listingsStorage.markListingsChecked(['probed'], NOW);
       expect(dueIds()).toEqual([]);
+    });
+
+    it('clears the failure streak, because the probe answered this time', () => {
+      addListing('recovered', { failures: 4 });
+      listingsStorage.markListingsChecked(['recovered'], NOW);
+      expect(rowOf('recovered').active_check_failures).toBe(0);
     });
 
     it('handles a batch beyond the SQLite parameter limit', () => {

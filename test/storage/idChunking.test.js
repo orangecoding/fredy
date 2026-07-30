@@ -31,7 +31,9 @@ describe('listing id batches larger than the SQLite parameter limit', () => {
         address TEXT,
         price REAL,
         is_active INTEGER DEFAULT 1,
-        manually_deleted INTEGER DEFAULT 0
+        manually_deleted INTEGER DEFAULT 0,
+        inactive_since INTEGER,
+        active_check_failures INTEGER DEFAULT 0
       );
     `);
     const insert = db.prepare(
