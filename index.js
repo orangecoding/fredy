@@ -21,6 +21,7 @@ import { removeObsoleteProviders } from './lib/services/providers/providerCleanu
 import { seedDemo, warnOnDefaultAdminPassword } from './lib/services/demo/demoService.js';
 import { initDemoCleanupCron } from './lib/services/crons/demo-cleanup-cron.js';
 import { initSessionCleanupCron } from './lib/services/crons/session-cleanup-cron.js';
+import { initListingRetentionCron } from './lib/services/crons/listing-retention-cron.js';
 
 // Ensure the CloakBrowser stealth Chromium binary is present and complete before
 // jobs run.  ensureValidBinary() also detects and auto-heals partial extractions
@@ -101,6 +102,7 @@ initActiveCheckerCron();
 initGeocodingCron();
 await initDemoCleanupCron();
 await initSessionCleanupCron();
+await initListingRetentionCron();
 
 logger.info(`Started Fredy successfully. Ui can be accessed via http://localhost:${settings.port}`);
 

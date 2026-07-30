@@ -66,6 +66,7 @@ export function useAdminSettings(settings) {
   const [sqlitePath, setSqlitePath] = React.useState(null);
   const [baseUrl, setBaseUrl] = React.useState('');
   const [sessionTTL, setSessionTTL] = React.useState('');
+  const [listingRetentionDays, setListingRetentionDays] = React.useState(14);
 
   // Seeded from the store, and re-seeded whenever it changes identity - the settings request may
   // still have been in flight when this mounted.
@@ -80,6 +81,7 @@ export function useAdminSettings(settings) {
     setSqlitePath(settings?.sqlitepath);
     setBaseUrl(settings?.baseUrl ?? '');
     setSessionTTL(settings?.sessionTTL ?? '');
+    setListingRetentionDays(settings?.listingRetentionDays ?? 14);
   }, [settings]);
 
   const handleStore = async () => {
@@ -102,6 +104,16 @@ export function useAdminSettings(settings) {
       Toast.error(t('settings.toastSqlitePathEmpty'));
       return;
     }
+    // A cleared field must not be sent: the backend would have to guess, and guessing on a setting
+    // that drives an irreversible delete is the wrong default either way.
+    if (
+      !Number.isInteger(Number(listingRetentionDays)) ||
+      listingRetentionDays === '' ||
+      listingRetentionDays == null
+    ) {
+      Toast.error(t('settings.toastListingRetentionInvalid'));
+      return;
+    }
     try {
       await xhrPost('/api/admin/generalSettings', {
         interval: scanInterval,
@@ -113,6 +125,7 @@ export function useAdminSettings(settings) {
         sqlitepath: sqlitePath,
         baseUrl,
         sessionTTL,
+        listingRetentionDays: Number(listingRetentionDays),
       });
     } catch (exception) {
       console.error(exception);
@@ -149,12 +162,15 @@ export function useAdminSettings(settings) {
     setBaseUrl,
     sessionTTL,
     setSessionTTL,
+    listingRetentionDays,
+    setListingRetentionDays,
     handleStore,
   };
 }
 
 /**
- * The instance tab: port, base URL, session lifetime, database location, analytics, demo mode.
+ * The instance tab: port, base URL, session lifetime, listing retention, database location,
+ * analytics, demo mode.
  *
  * @param {ReturnType<typeof useAdminSettings>} admin
  * @returns {React.ReactElement}
@@ -168,6 +184,8 @@ export function SystemSettingsTab(admin) {
     setBaseUrl,
     sessionTTL,
     setSessionTTL,
+    listingRetentionDays,
+    setListingRetentionDays,
     sqlitePath,
     setSqlitePath,
     analyticsEnabled,
@@ -206,6 +224,19 @@ export function SystemSettingsTab(admin) {
           placeholder={t('settings.sessionTTLPlaceholder')}
           value={sessionTTL}
           onChange={(value) => setSessionTTL(value)}
+        />
+      </SegmentPart>
+
+      <SegmentPart name={t('settings.listingRetention')} helpText={t('settings.listingRetentionHelp')}>
+        <InputNumber
+          min={0}
+          max={365}
+          placeholder={t('settings.listingRetentionPlaceholder')}
+          value={listingRetentionDays}
+          formatter={(value) => `${value}`.replace(/\D/g, '')}
+          onChange={(value) => setListingRetentionDays(value)}
+          suffix={t('settings.listingRetentionSuffix')}
+          style={{ maxWidth: 200 }}
         />
       </SegmentPart>
 
