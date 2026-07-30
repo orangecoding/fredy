@@ -31,6 +31,7 @@ import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-i
 import './ListingsOverview.less';
 import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
 import { useFinanceProfile } from '../../hooks/useFinanceProfile.js';
+import { useScrollRestoration } from '../../hooks/useScrollRestoration.js';
 import { formatEuro } from '../cards/chartTheme.js';
 
 /**
@@ -293,6 +294,11 @@ const ListingsOverview = ({ mode = 'all' }) => {
   };
 
   const listings = listingsData?.result || [];
+
+  // Opening a listing and coming back must land where the user left off - the overview is the
+  // one view people page through item by item, and starting at the top every time means finding
+  // your place by hand on every return. Keyed by mode so the watchlist keeps its own position.
+  useScrollRestoration(`listings:${mode}`, listings.length > 0);
 
   const activityRadioValue = isHiddenView ? 'hidden' : activityFilter === null ? 'all' : String(activityFilter);
 

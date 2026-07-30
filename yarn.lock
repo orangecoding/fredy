@@ -2193,10 +2193,10 @@ baseline-browser-mapping@^2.10.44:
   resolved "https://registry.yarnpkg.com/baseline-browser-mapping/-/baseline-browser-mapping-2.11.1.tgz#390b4714558634093df77add4acca0c5c0c1605e"
   integrity sha512-HYXq73DDpCtNzOmrFsm9eSwCvWCql0RzqjpDzXN9EadiLJ4DNat0nsZ/Bzmy+Ud12mb4/zKDY0cQ805ZzN+i0A==
 
-better-sqlite3@^13.0.1:
-  version "13.0.1"
-  resolved "https://registry.yarnpkg.com/better-sqlite3/-/better-sqlite3-13.0.1.tgz#7e537f7ec14f0bb419b6cd666b666d6bc00bbc1e"
-  integrity sha512-LYpmOXdkpQYf4wmlxkdzW01XGlOXNIbjLg45yNkh0FQ4814VbK9PdOFmhZpYbej+EZtR/i3FDdhEG98HqZdgnA==
+better-sqlite3@^13.0.2:
+  version "13.0.2"
+  resolved "https://registry.yarnpkg.com/better-sqlite3/-/better-sqlite3-13.0.2.tgz#c57fca130a596c2f627089c597becc44d4e2f077"
+  integrity sha512-jW6oufeDhXZaiX9Lw5A+oerVClx4iFrI6uDj1zu7SqUAjak9vbJvA0NEcKLNxHiQHb6kYCoFzzXYV0YOauhV3g==
   dependencies:
     node-addon-api "^8.0.0"
 
@@ -2417,10 +2417,10 @@ cliui@^9.0.1:
     strip-ansi "^7.1.0"
     wrap-ansi "^9.0.0"
 
-cloakbrowser@^0.5.2:
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/cloakbrowser/-/cloakbrowser-0.5.2.tgz#39c870727a9187ca506e053c020cff78340f2701"
-  integrity sha512-vXMWM1HzI87CGUrOobMpTu/GqPn2eZbNcImhMMjF/48/M12iZEWVolrquY3ot0YI++ddYjoVb71hkodpRsRlIg==
+cloakbrowser@^0.5.3:
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/cloakbrowser/-/cloakbrowser-0.5.3.tgz#28e2689f973b3de210d538b937e881c3849a2af0"
+  integrity sha512-awxjoA3y+id0H9m9278GXftCkgcRcJSWu9D1Oc5E76L063GyMkNbTii8ZCrEQ4zA7b3H3zjRWF+HCtwpHwrsrw==
   dependencies:
     tar "^7.0.0"
 
@@ -3304,10 +3304,10 @@ fastify-plugin@^6.0.0:
   resolved "https://registry.yarnpkg.com/fastify-plugin/-/fastify-plugin-6.0.0.tgz#7cd659c6aad5f3bf07b4c59205412351a47d39c8"
   integrity sha512-fZOty7z3O7vOliF6d8bHE3wiEh1KcNnKEQensSgTk9C1DvN6nRLS++XVd86v33Hw/8u9Un8A1zDrQ8ujcQDHEg==
 
-fastify@^5.10.0:
-  version "5.10.0"
-  resolved "https://registry.yarnpkg.com/fastify/-/fastify-5.10.0.tgz#3c94a52439259a66889dbad14e0fc3d6b1bc934e"
-  integrity sha512-A9L0ziuWGQHgEEVgF3davQ9vbD93IuX+lo2IsxapQmu5b/Y/ynn9m9K5JHt9dvyJXOFc5iN0Zk5GHEOqnzhWjg==
+fastify@^5.11.0:
+  version "5.11.0"
+  resolved "https://registry.yarnpkg.com/fastify/-/fastify-5.11.0.tgz#94ec5455504c303cf31d8826cbf6b32989c43db0"
+  integrity sha512-Y/Ecx1yt0hYzrQR+QVLbxaUN8wCX+MQzMevh29r5RRvlOIArmi4+WAXXaGl5Hw5gBr2wduZpZaT3gRCnXoyVgA==
   dependencies:
     "@fastify/ajv-compiler" "^4.0.5"
     "@fastify/error" "^4.0.0"
@@ -6018,10 +6018,10 @@ require-from-string@^2.0.2:
   resolved "https://registry.yarnpkg.com/require-from-string/-/require-from-string-2.0.2.tgz#89a7fdd938261267318eafe14f9c32e598c36909"
   integrity sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==
 
-resend@^6.18.0:
-  version "6.18.0"
-  resolved "https://registry.yarnpkg.com/resend/-/resend-6.18.0.tgz#da7e60519d18165c0017c339741979b7a5fc6b53"
-  integrity sha512-EjxZ9AVzywJgOlUoIJe9ytBWVrfbUtJbjeoLnRSvpU1sv97Hh9DSwhw+k8kiujrG4Rg4bzTBsjlmwWWuoOxSug==
+resend@^6.18.1:
+  version "6.18.1"
+  resolved "https://registry.yarnpkg.com/resend/-/resend-6.18.1.tgz#3277e72925b289f49f389c511bbba00125162dd7"
+  integrity sha512-XN8XIaDdKF+ziSQ3K23ndUcyhP7U3ze2gky6SPgYkuAOq54mH4Wdhwm7QylEQ3zlz0NzdX7/l1AgmJUZbdPI/Q==
   dependencies:
     postal-mime "2.7.5"
     standardwebhooks "1.0.0"

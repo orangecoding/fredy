@@ -82,6 +82,10 @@ export default function ListingDetail() {
   const [notesSaving, setNotesSaving] = useState(false);
 
   useEffect(() => {
+    document.querySelector('.app__content')?.scrollTo({ top: 0 });
+  }, [listingId]);
+
+  useEffect(() => {
     async function fetchListing() {
       try {
         setLoading(true);
