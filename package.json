@@ -1,6 +1,6 @@
 {
   "name": "fredy",
-  "version": "23.3.3",
+  "version": "23.3.4",
   "description": "Fredy - [F]ind [R]eal [E]state [D]amn Eas[y] - Fredy keeps searching for new apartments, houses, and flats in Germany on platforms like ImmoScout24, Immowelt, Immonet, eBay Kleinanzeigen, and WG-Gesucht and instantly delivers the results to you via Slack, Telegram, Email, Discord or ntfy, so you can focus on the more important things in life ;)",
   "scripts": {
     "prepare": "husky",
@@ -76,7 +76,7 @@
     "@modelcontextprotocol/sdk": "^1.30.0",
     "@sendgrid/mail": "8.1.6",
     "@turf/boolean-point-in-polygon": "^7.3.5",
-    "@vitejs/plugin-react": "6.0.4",
+    "@vitejs/plugin-react": "6.0.5",
     "adm-zip": "^0.6.0",
     "better-sqlite3": "^13.0.2",
     "chart.js": "^4.5.1",
@@ -84,7 +84,7 @@
     "cloakbrowser": "^0.5.3",
     "fastify": "^5.11.0",
     "handlebars": "4.7.9",
-    "maplibre-gl": "6.0.0",
+    "maplibre-gl": "6.1.0",
     "nanoid": "6.0.0",
     "node-cron": "^4.6.0",
     "node-fetch": "3.3.2",
@@ -103,7 +103,7 @@
     "resend": "^6.18.1",
     "semver": "^7.8.5",
     "slack": "11.0.2",
-    "vite": "8.1.5",
+    "vite": "8.2.0",
     "x-var": "^3.0.1",
     "zustand": "^5.0.14"
   },
