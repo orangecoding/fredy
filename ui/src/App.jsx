@@ -11,6 +11,7 @@ import GeneralSettings from './views/generalSettings/GeneralSettings';
 import JobMutation from './views/jobs/mutation/JobMutation';
 import UserMutator from './views/user/mutation/UserMutator';
 import { useActions, useSelector } from './services/state/store';
+import { useBrowserNotifications } from './hooks/useBrowserNotifications';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Login from './views/login/Login';
 import Users from './views/user/Users';
@@ -64,6 +65,8 @@ export default function FredyApp() {
   const versionUpdate = useSelector((state) => state.versionUpdate.versionUpdate);
   const settings = useSelector((state) => state.generalSettings.settings);
   const language = useSelector((state) => state.userSettings.settings.language);
+
+  useBrowserNotifications();
 
   useEffect(() => {
     // Already filled for this user: nothing to do. Checked against the ref, which is only set
@@ -134,49 +137,6 @@ export default function FredyApp() {
     window.addEventListener('fredy:unauthorized', onUnauthorized);
     return () => window.removeEventListener('fredy:unauthorized', onUnauthorized);
   }, []);
-
-  // Handle HTML5 Web Push Notifications from the browser notification adapter
-  useEffect(() => {
-    if (currentUser == null || Object.keys(currentUser).length === 0) return;
-
-    if (typeof window !== 'undefined' && 'Notification' in window) {
-      if (Notification.permission === 'default') {
-        Notification.requestPermission();
-      }
-    }
-
-    const src = new EventSource('/api/jobs/events');
-
-    const onBrowserNotification = (e) => {
-      try {
-        const data = JSON.parse(e.data || '{}');
-        if (data && 'Notification' in window && Notification.permission === 'granted') {
-          const notification = new Notification(data.title, {
-            body: data.body,
-            icon: data.image || '/ui/src/assets/heart.png',
-          });
-          notification.onclick = () => {
-            window.focus();
-            if (data.link) {
-              window.open(data.link, '_blank');
-            }
-          };
-        }
-      } catch (err) {
-        console.error('Error parsing browser notification SSE:', err);
-      }
-    };
-
-    src.addEventListener('notification:browser', onBrowserNotification);
-    src.onerror = () => {
-      // Browser automatically reconnects
-    };
-
-    return () => {
-      src.removeEventListener('notification:browser', onBrowserNotification);
-      src.close();
-    };
-  }, [currentUser?.userId]);
 
   const needsLogin = () => {
     return currentUser == null || Object.keys(currentUser).length === 0;

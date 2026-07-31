@@ -7,6 +7,7 @@ import { useState } from 'react';
 
 import { transform } from '../../../../../services/transformer/notificationAdapterTransformer';
 import { xhrPost, errorMessage } from '../../../../../services/xhr';
+import { triggerTestNotification } from '../../../../../services/notification/browserNotification';
 import Help from './NotificationHelpDisplay';
 import { useSelector } from '../../../../../services/state/store';
 import { Banner, Button, Form, Modal, Select, Switch } from '@douyinfe/semi-ui-19';
@@ -123,48 +124,7 @@ export default function NotificationAdapterMutator({
     }
 
     if (selectedAdapter.id === 'browser') {
-      if (typeof window !== 'undefined' && 'Notification' in window) {
-        if (Notification.permission === 'granted') {
-          const notification = new Notification('Test Call from Fredy', {
-            body: 'Everything works perfectly! Real-time listings will appear here.',
-            icon: '/ui/src/assets/heart.png',
-          });
-          notification.onclick = () => {
-            window.focus();
-          };
-          setSuccessMessage(t('notification.trySuccess'));
-        } else if (Notification.permission === 'denied') {
-          setValidationMessage(t('notification.browserPermissionDenied'));
-        } else {
-          const handlePermissionResult = (permission) => {
-            if (permission === 'granted') {
-              const notification = new Notification('Test Call from Fredy', {
-                body: 'Everything works perfectly! Real-time listings will appear here.',
-                icon: '/ui/src/assets/heart.png',
-              });
-              notification.onclick = () => {
-                window.focus();
-              };
-              setSuccessMessage(t('notification.trySuccess'));
-            } else if (permission === 'denied') {
-              setValidationMessage(t('notification.browserPermissionDenied'));
-            }
-          };
-
-          try {
-            const promise = Notification.requestPermission(handlePermissionResult);
-            if (promise && typeof promise.then === 'function') {
-              promise.then(handlePermissionResult).catch((err) => {
-                setValidationMessage(t('notification.tryError', { error: String(err) }));
-              });
-            }
-          } catch {
-            // Fallback for callback interface
-          }
-        }
-      } else {
-        setValidationMessage(t('notification.browserNotSupported'));
-      }
+      triggerTestNotification(t, setSuccessMessage, setValidationMessage);
       return;
     }
 
