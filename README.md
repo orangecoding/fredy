@@ -41,6 +41,11 @@ income, your living costs, what you have saved, and every listing is measured ag
 tells you which ones you can comfortably afford, which would be a stretch, and which are out of
 reach, for renting and for buying alike. See [Financing Calculator](#-financing-calculator).
 
+And it shows you how well connected a place is. The map draws the **public transport network**,
+marks every stop, and tells you which lines run there, where they go and when the next one
+leaves. Every listing also lists the stops closest to it, with walking distance. See
+[Public Transport](#public-transport).
+
 ------------------------------------------------------------------------
 
 ## ✨ Key Features
@@ -57,6 +62,8 @@ reach, for renting and for buying alike. See [Financing Calculator](#-financing-
 -   ⏱️ Customizable search intervals
 -   💶 Add your **personal financial situation** and see which listings you can actually
     afford, for renting and for buying
+-   Makes **public transport visible**: the network on the map, live departures per stop,
+    and the nearest stops for every listing
 
 ------------------------------------------------------------------------
 
@@ -230,6 +237,35 @@ mortgage answer or a rent answer depending on the listing.
 > **This is an estimate, not financial advice.** The Grunderwerbsteuer rates ship as editable
 > defaults and Bundesländer change them from time to time, so check the figure for your state
 > and get a binding offer from your bank before committing to anything.
+
+------------------------------------------------------------------------
+
+## Public Transport
+
+A listing that says "gute Verkehrsanbindung" tells you nothing. Fredy shows you the actual
+connection, on the map and on every listing, without leaving the app for a timetable.
+
+### On the map
+
+The map view has a **public transport layer**, switched on by default. It draws the rail,
+S-Bahn, U-Bahn, tram and light rail network, colour-coded by mode, and marks every station and
+bus stop with its own icon. It works on the standard map as well as on the satellite view, where
+the imagery itself shows nothing of the sort.
+
+Point at a stop and Fredy opens its **departure board**:
+
+- which lines call there, as colored badges
+- where each departure is headed
+- when it leaves, how many minutes that is from now, and how late it is running
+
+The layer can be turned off with the **ÖPNV** switch in the map panel. The setting lives in the
+URL, so a link you bookmark or share keeps it.
+
+### On every listing
+
+The marker popup on the map and the listing detail page both show the **three nearest stops**
+with their walking distance. Each one opens into the same departure board, so the question
+"how do I get to work from here" is answered on the listing itself.
 
 ------------------------------------------------------------------------
 
