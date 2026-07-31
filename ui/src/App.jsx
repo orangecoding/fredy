@@ -11,6 +11,7 @@ import GeneralSettings from './views/generalSettings/GeneralSettings';
 import JobMutation from './views/jobs/mutation/JobMutation';
 import UserMutator from './views/user/mutation/UserMutator';
 import { useActions, useSelector } from './services/state/store';
+import { useBrowserNotifications } from './hooks/useBrowserNotifications';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Login from './views/login/Login';
 import Users from './views/user/Users';
@@ -64,6 +65,8 @@ export default function FredyApp() {
   const versionUpdate = useSelector((state) => state.versionUpdate.versionUpdate);
   const settings = useSelector((state) => state.generalSettings.settings);
   const language = useSelector((state) => state.userSettings.settings.language);
+
+  useBrowserNotifications();
 
   useEffect(() => {
     // Already filled for this user: nothing to do. Checked against the ref, which is only set

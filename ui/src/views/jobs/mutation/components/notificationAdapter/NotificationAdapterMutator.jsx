@@ -7,6 +7,7 @@ import { useState } from 'react';
 
 import { transform } from '../../../../../services/transformer/notificationAdapterTransformer';
 import { xhrPost, errorMessage } from '../../../../../services/xhr';
+import { triggerTestNotification } from '../../../../../services/notification/browserNotification';
 import Help from './NotificationHelpDisplay';
 import { useSelector } from '../../../../../services/state/store';
 import { Banner, Button, Form, Modal, Select, Switch } from '@douyinfe/semi-ui-19';
@@ -119,6 +120,11 @@ export default function NotificationAdapterMutator({
     const validationResults = validate(selectedAdapter, t);
     if (validationResults.length > 0) {
       setValidationMessage(validationResults.join('<br/>'));
+      return;
+    }
+
+    if (selectedAdapter.id === 'browser') {
+      triggerTestNotification(t, setSuccessMessage, setValidationMessage);
       return;
     }
 

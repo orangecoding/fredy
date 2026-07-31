@@ -488,6 +488,8 @@
   "notification.save": "Speichern",
   "notification.trySuccess": "Es scheint geklappt zu haben! Bitte überprüfe deinen Dienst.",
   "notification.tryError": "Das hat leider nicht funktioniert :-( Ich habe folgenden Fehler erhalten: {{error}}",
+  "notification.browserPermissionDenied": "Browser-Benachrichtigungen sind blockiert. Bitte erlaube Benachrichtigungen in den Website-Einstellungen deines Browsers, um diesen Adapter zu verwenden.",
+  "notification.browserNotSupported": "Dein Browser oder deine aktuelle Verbindung unterstützt keine Desktop-Benachrichtigungen. Bitte stelle sicher, dass du einen modernen Browser über HTTPS oder localhost verwendest.",
   "notification.errorTitle": "Fehler",
   "notification.successTitle": "Super!",
   "notification.validationAllMandatory": "Alle Felder sind Pflichtfelder und müssen ausgefüllt werden.",
