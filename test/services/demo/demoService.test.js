@@ -116,7 +116,7 @@ describe('services/demo/demoService', () => {
       expect(job.userId).toBe('u-demo');
       expect(job.enabled).toBe(true);
       expect(job.dealType).toBe('rent');
-      expect(job.notificationAdapter).toEqual([{ id: 'console', name: 'Console', fields: {} }]);
+      expect(job.notificationAdapter).toEqual([{ id: 'demo', name: 'Demo', fields: {} }]);
       expect(job.provider).toHaveLength(2);
       expect(job.provider[0]).toEqual({
         id: 'immoscout',
@@ -150,7 +150,7 @@ describe('services/demo/demoService', () => {
       expect(Object.keys(state.jobs)).toEqual([DEMO_JOB_ID]);
       expect(state.jobs[DEMO_JOB_ID].userId).toBe('u-demo');
       expect(state.jobs[DEMO_JOB_ID].enabled).toBe(true);
-      expect(state.jobs[DEMO_JOB_ID].notificationAdapter).toEqual([{ id: 'console', name: 'Console', fields: {} }]);
+      expect(state.jobs[DEMO_JOB_ID].notificationAdapter).toEqual([{ id: 'demo', name: 'Demo', fields: {} }]);
       expect(state.jobs[DEMO_JOB_ID].provider).toHaveLength(1);
     });
 
