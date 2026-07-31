@@ -1,0 +1,144 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+/* Semi's CSS variables rather than the LESS tokens: these components render both inside the app
+   and inside MapLibre popups, which are themed through the same variables. */
+
+.transit-board {
+  font-size: 0.78rem;
+
+  &--state {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 0;
+  }
+
+  &__stop {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 0.85rem;
+  }
+
+  &__lines {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 6px;
+  }
+
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  &__row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__line {
+    min-width: 30px;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.72rem;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  &__headsign {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--semi-color-text-1);
+  }
+
+  &__time {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    color: var(--semi-color-text-0);
+  }
+
+  &__delay {
+    color: var(--semi-color-danger);
+    font-weight: 600;
+  }
+
+  &__countdown {
+    color: var(--semi-color-text-2);
+    font-size: 0.7rem;
+  }
+}
+
+.transit-stops {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  &--state {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+  }
+
+  &__item {
+    border-bottom: 1px solid var(--semi-color-border);
+    padding-bottom: 4px;
+
+    &:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    padding: 2px 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--semi-color-text-0);
+    font-size: 0.8rem;
+    text-align: left;
+
+    &:hover {
+      color: var(--semi-color-primary);
+    }
+  }
+
+  &__name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__distance {
+    color: var(--semi-color-text-2);
+    font-size: 0.72rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .transit-board {
+    padding: 4px 0 4px 20px;
+  }
+}

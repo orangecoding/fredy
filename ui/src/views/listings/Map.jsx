@@ -6,27 +6,36 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useUrlState, parseNumber, parseString, parseBoolean } from '../../hooks/useSearchParamState.js';
 import { getAddresses } from '../../utils.js';
-import { renderToString } from 'react-dom/server';
 import maplibregl from '../../components/map/maplibre.js';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useActions, useSelector } from '../../services/state/store.js';
-import { distanceMeters, generateCircleCoords, getBoundsFromCenter, getBoundsFromCoords } from './mapUtils.js';
+import {
+  distanceMeters,
+  generateCircleCoords,
+  getBoundsFromCenter,
+  getBoundsFromCoords,
+  groupListingsByPosition,
+} from './mapUtils.js';
 import { Banner, Select, Switch, Toast, Typography } from '@douyinfe/semi-ui-19';
-import { IconDelete, IconEyeOpened, IconLink } from '@douyinfe/semi-icons';
 
-import no_image from '../../assets/no_image.png';
 import _RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
 import './Map.less';
 import { xhrDelete, errorMessage } from '../../services/xhr.js';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import ListingDeletionModal from '../../components/ListingDeletionModal.jsx';
+import { createListingPopupContent } from './listingPopupContent.jsx';
 import Map from '../../components/map/Map.jsx';
 import Headline from '../../components/headline/Headline.jsx';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
+import { TRANSIT_STOPS_LAYER_ID } from '../../components/map/overlayLayers.js';
+import { keepPopupInView, mountPopupNode } from '../../components/map/popupContent.jsx';
+import DeparturesBoard from '../../components/transit/DeparturesBoard.jsx';
+import NearbyStops from '../../components/transit/NearbyStops.jsx';
 
 /**
- * The map's URL-backed view state: which job, the distance ring, the basemap and the 3D layer.
+ * The map's URL-backed view state: which job, the distance ring, the basemap and the optional
+ * overlays (3D buildings, public transport).
  *
  * Module scope so its identity is stable for the hook's memo.
  */
@@ -35,7 +44,17 @@ const MAP_URL_STATE = {
   distance: { defaultValue: 0, codec: parseNumber },
   style: { defaultValue: 'STANDARD', codec: parseString },
   buildings: { defaultValue: false, codec: parseBoolean },
+  // On by default: "how do I get out of here?" is asked about every flat, so the answer should be
+  // on screen without switching anything on first. `?transit=false` turns it off.
+  transit: { defaultValue: true, codec: parseBoolean },
 };
+
+/**
+ * Upper bound for a listing popup. It carries an image, five rows of details and the nearby stops,
+ * which MapLibre's 240px default squeezes into an unreadable column; the stylesheet narrows it
+ * again on phones.
+ */
+const LISTING_POPUP_MAX_WIDTH = '380px';
 
 const RangeSlider = _RangeSlider?.default ?? _RangeSlider;
 
@@ -47,6 +66,9 @@ export default function MapView() {
   const map = useRef(null);
   const markers = useRef([]);
   const homeMarkers = useRef([]);
+  // Every React tree mounted into a popup, so they can be torn down with their markers.
+  const popupRoots = useRef([]);
+  const [mapReady, setMapReady] = useState(false);
   const actions = useActions();
   const navigate = useNavigate();
   const sp = useSearchParams();
@@ -54,6 +76,7 @@ export default function MapView() {
   const listings = useSelector((state) => state.listingsData.mapListings);
   const userSettings = useSelector((state) => state.userSettings.settings);
   const homeAddresses = useMemo(() => getAddresses(userSettings), [userSettings]);
+  const language = userSettings?.language ?? 'en';
   const listingDeletionPref = userSettings?.listing_deletion_preference;
   const defaultDeleteType = listingDeletionPref?.hardDelete ? 'hard' : 'soft';
 
@@ -61,10 +84,11 @@ export default function MapView() {
   // One grouped state rather than four independent setters: two of these can change in the same
   // tick, and separate setSearchParams calls overwrite each other.
   const { values: urlState, setValue: setUrlValue } = useUrlState(sp, MAP_URL_STATE);
-  const { job: jobId, distance: distanceFilter, style, buildings: show3dBuildings } = urlState;
+  const { job: jobId, distance: distanceFilter, style, buildings: show3dBuildings, transit: showTransit } = urlState;
   const setJobId = (value) => setUrlValue('job', value);
   const setDistanceFilter = (value) => setUrlValue('distance', value);
   const setShow3dBuildings = (value) => setUrlValue('buildings', value);
+  const setShowTransit = (value) => setUrlValue('transit', value);
 
   // Price range: stored as priceMin/priceMax URL params; default max derived from loaded listings
   const urlPriceMin = searchParams.has('priceMin') ? Number(searchParams.get('priceMin')) : null;
@@ -149,7 +173,106 @@ export default function MapView() {
 
   const handleMapReady = (mapInstance) => {
     map.current = mapInstance;
+    setMapReady(true);
   };
+
+  // Hovering a stop of the transit overlay opens its departure board; a click does the same, so
+  // touch devices are not left out. The stop icons come from the vector tiles and carry
+  // OpenStreetMap ids, which mean nothing to a timetable - the backend resolves the stop from the
+  // coordinates and the name instead.
+  useEffect(() => {
+    if (!mapReady || !map.current || !showTransit) return undefined;
+
+    const mapInstance = map.current;
+    /** @type {{popup: import('maplibre-gl').Popup, key: string}|null} */
+    let open = null;
+    let closeTimer = null;
+
+    const cancelClose = () => {
+      clearTimeout(closeTimer);
+      closeTimer = null;
+    };
+
+    const closeNow = () => {
+      cancelClose();
+      open?.popup.remove();
+      open = null;
+    };
+
+    // A small grace period, so moving the pointer from the icon onto the popup does not close it.
+    const scheduleClose = () => {
+      cancelClose();
+      closeTimer = setTimeout(closeNow, 250);
+    };
+
+    const openDepartures = (event) => {
+      const feature = event.features?.[0];
+      if (!feature) return;
+
+      const [lng, lat] = feature.geometry.coordinates;
+      const name = feature.properties?.name;
+      const key = `${lng},${lat},${name ?? ''}`;
+
+      cancelClose();
+      if (open?.key === key) return; // already showing this stop
+      closeNow();
+
+      const container = document.createElement('div');
+      container.className = 'map-popup-content map-popup-content--transit';
+      const unmount = mountPopupNode(
+        container,
+        <DeparturesBoard lat={lat} lng={lng} name={name} showStopName limit={8} />,
+        language,
+      );
+
+      const popup = new maplibregl.Popup({
+        offset: 14,
+        maxWidth: '300px',
+        // It follows the pointer, so a close button would only be in the way, and closing it on
+        // every map click would fight the hover.
+        closeButton: false,
+        closeOnClick: false,
+      })
+        .setLngLat([lng, lat])
+        .setDOMContent(container)
+        .addTo(mapInstance);
+
+      popup.on('close', unmount);
+      keepPopupInView(mapInstance, popup);
+
+      // The popup is part of the hover target: as long as the pointer is on it, it stays.
+      const element = popup.getElement();
+      element?.addEventListener('mouseenter', cancelClose);
+      element?.addEventListener('mouseleave', scheduleClose);
+
+      open = { popup, key };
+    };
+
+    const showPointer = () => {
+      mapInstance.getCanvas().style.cursor = 'pointer';
+    };
+    const leaveStops = () => {
+      mapInstance.getCanvas().style.cursor = '';
+      scheduleClose();
+    };
+
+    mapInstance.on('click', TRANSIT_STOPS_LAYER_ID, openDepartures);
+    // `mousemove` rather than `mouseenter`: moving from one stop straight onto the next one stays
+    // inside the layer, so `mouseenter` would not fire again and the popup would show the wrong
+    // stop. `openDepartures` returns early when it is already the right one.
+    mapInstance.on('mousemove', TRANSIT_STOPS_LAYER_ID, openDepartures);
+    mapInstance.on('mouseenter', TRANSIT_STOPS_LAYER_ID, showPointer);
+    mapInstance.on('mouseleave', TRANSIT_STOPS_LAYER_ID, leaveStops);
+
+    return () => {
+      mapInstance.off('click', TRANSIT_STOPS_LAYER_ID, openDepartures);
+      mapInstance.off('mousemove', TRANSIT_STOPS_LAYER_ID, openDepartures);
+      mapInstance.off('mouseenter', TRANSIT_STOPS_LAYER_ID, showPointer);
+      mapInstance.off('mouseleave', TRANSIT_STOPS_LAYER_ID, leaveStops);
+      mapInstance.getCanvas().style.cursor = '';
+      closeNow();
+    };
+  }, [mapReady, showTransit, language]);
 
   const handleMapStyle = (value) => {
     setSearchParams(
@@ -259,6 +382,9 @@ export default function MapView() {
     homeMarkers.current.forEach((marker) => marker.remove());
     homeMarkers.current = [];
 
+    popupRoots.current.forEach((unmount) => unmount());
+    popupRoots.current = [];
+
     homeAddresses.forEach((home) => {
       const marker = new maplibregl.Marker({ color: 'red' })
         .setLngLat([home.coords.lng, home.coords.lat])
@@ -324,75 +450,62 @@ export default function MapView() {
       map.current.on('load', updateLayers);
     }
 
-    filterListings().forEach((listing) => {
-      if (
-        listing.latitude != null &&
-        listing.longitude != null &&
-        listing.latitude !== -1 &&
-        listing.longitude !== -1
-      ) {
-        const capitalizedProvider = listing.provider
-          ? listing.provider.charAt(0).toUpperCase() + listing.provider.slice(1)
-          : 'N/A';
+    // One marker per position rather than per listing: listings that share an address (a whole
+    // house, or a town that could only be geocoded to its centre) used to stack invisibly, with
+    // only the topmost one reachable.
+    groupListingsByPosition(filterListings()).forEach(({ lat, lng, listings: grouped }) => {
+      let popup = null;
+      let stopFit = null;
 
-        const popupContent = `
-          <div class="map-popup-content">
-            <img
-              src="${listing.image_url}"
-              onerror="this.onerror=null;this.src='${no_image}'"
-            />
-            <h4>${listing.title}</h4>
-            <div class="info">
-              <span><strong>${t('map.popupPrice')}</strong> ${listing.price ? listing.price + ' €' : t('common.na')}</span>
-              <span><strong>${t('map.popupAddress')}</strong> ${listing.address || t('common.na')}</span>
-              <span><strong>${t('map.popupJob')}</strong> ${listing.job_name || t('common.na')}</span>
-              <span><strong>${t('map.popupProvider')}</strong> ${capitalizedProvider}</span>
-              <span><strong>${t('map.popupSize')}</strong> ${listing.size != null ? `${listing.size} m²` : t('common.na')}</span>
-              <div style="display: flex; gap: 8px; margin-top: 8px; justify-content: space-between;">
-                <div class="map-popup-content__linkButton">
-                  <a href="${listing.link}" target="_blank" rel="noopener noreferrer">
-                    ${renderToString(<IconLink />)}
-                  </a>
-                </div>
-                <button
-                  class="map-popup-content__detailsButton"
-                  title="${t('map.popupViewDetails')}"
-                  onclick="viewDetails('${listing.id}')"
-                >
-                  ${renderToString(<IconEyeOpened />)}
-                </button>
-                <button
-                  class="map-popup-content__deleteButton"
-                  title="${t('map.popupRemove')}"
-                  onclick="deleteListing('${listing.id}')"
-                >
-                  ${renderToString(<IconDelete />)}
-                </button>
-              </div>
-            </div>
-          </div>`;
+      // Paging changes the popup's height, so it has to be fitted into the map again.
+      const refit = () => {
+        if (!popup || !map.current) return;
+        stopFit?.();
+        stopFit = keepPopupInView(map.current, popup);
+      };
 
-        const popup = new maplibregl.Popup({ offset: 25 }).setHTML(popupContent);
+      const { element, transitMount } = createListingPopupContent({ listings: grouped, t, onPageChange: refit });
 
-        let color = '#3FB1CE';
-        if (distanceFilter > 0 && homeAddresses.length > 0) {
-          const inRange = homeAddresses.some(
-            (home) =>
-              distanceMeters(home.coords.lat, home.coords.lng, listing.latitude, listing.longitude) <=
-              distanceFilter * 1000,
-          );
-          if (inRange) {
-            color = 'orange';
-          }
+      popup = new maplibregl.Popup({ offset: 25, maxWidth: LISTING_POPUP_MAX_WIDTH }).setDOMContent(element);
+
+      // The stop list is only worth a request once the popup is actually opened, and it is the
+      // same for the whole group, so it is mounted once and survives paging.
+      popup.on('open', () => {
+        refit();
+
+        if (!transitMount || transitMount.dataset.mounted === 'true') return;
+        transitMount.dataset.mounted = 'true';
+
+        const unmount = mountPopupNode(
+          transitMount,
+          <NearbyStops lat={lat} lng={lng} limit={3} departureLimit={5} />,
+          language,
+        );
+        popupRoots.current.push(unmount);
+      });
+
+      let color = '#3FB1CE';
+      if (distanceFilter > 0 && homeAddresses.length > 0) {
+        const inRange = homeAddresses.some(
+          (home) => distanceMeters(home.coords.lat, home.coords.lng, lat, lng) <= distanceFilter * 1000,
+        );
+        if (inRange) {
+          color = 'orange';
         }
-
-        const marker = new maplibregl.Marker({ color })
-          .setLngLat([listing.longitude, listing.latitude])
-          .setPopup(popup)
-          .addTo(map.current);
-
-        markers.current.push(marker);
       }
+
+      const marker = new maplibregl.Marker({ color }).setLngLat([lng, lat]).setPopup(popup).addTo(map.current);
+
+      if (grouped.length > 1) {
+        // Says how many listings hide behind this pin, so a stack is recognisable before opening it.
+        const badge = document.createElement('span');
+        badge.className = 'map-marker-badge';
+        badge.textContent = String(grouped.length);
+        badge.title = t('map.popupSameAddress', { count: grouped.length });
+        marker.getElement().appendChild(badge);
+      }
+
+      markers.current.push(marker);
     });
   }, [listings, priceRange, homeAddresses, distanceFilter]);
 
@@ -431,6 +544,7 @@ export default function MapView() {
             mapContainerRef={mapContainer}
             style={style}
             show3dBuildings={show3dBuildings}
+            showTransit={showTransit}
             onMapReady={handleMapReady}
           />
 
@@ -509,6 +623,13 @@ export default function MapView() {
                 onChange={(v) => setShow3dBuildings(v)}
                 disabled={style === 'SATELLITE'}
               />
+            </div>
+
+            <div className="map-view-container__panel-row">
+              <Text size="small" strong style={{ color: '#8892a4' }}>
+                {t('map.filterTransit')}
+              </Text>
+              <Switch size="small" checked={showTransit} onChange={(v) => setShowTransit(v)} />
             </div>
           </div>
         </div>

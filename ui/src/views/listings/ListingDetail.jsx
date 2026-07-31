@@ -51,6 +51,7 @@ import Headline from '../../components/headline/Headline.jsx';
 import IconEuro from '../../components/icons/IconEuro.jsx';
 import StatusControl from '../../components/listings/StatusControl.jsx';
 import ListingFinanceCard from './components/ListingFinanceCard.jsx';
+import NearbyStops from '../../components/transit/NearbyStops.jsx';
 import './ListingDetail.less';
 import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
 import { useFinanceProfile } from '../../hooks/useFinanceProfile.js';
@@ -519,6 +520,17 @@ export default function ListingDetail() {
                 <div ref={mapContainer} className="listing-detail__map-container" />
               )}
             </div>
+
+            {/* "How do I get out of here?" belongs right next to the map, and only makes sense
+                once the listing has coordinates to look up. */}
+            {hasGeo && (
+              <div className="listing-detail__transit">
+                <Title heading={4} className="listing-detail__map-title">
+                  {t('transit.nearbyTitle')}
+                </Title>
+                <NearbyStops lat={listing.latitude} lng={listing.longitude} limit={3} expandFirst />
+              </div>
+            )}
           </Col>
           <Col span={24} lg={12}>
             <div className="listing-detail__info-section">

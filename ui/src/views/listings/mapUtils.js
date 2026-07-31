@@ -36,6 +36,47 @@ export const distanceMeters = (lat1, lon1, lat2, lon2) => {
 };
 
 /**
+ * Coordinates are compared at six decimals, about 11 cm. Two listings geocoded to the same address
+ * come back with byte-identical coordinates, so this only guards against float noise - listings a
+ * few metres apart stay separate pins.
+ */
+const POSITION_PRECISION = 6;
+
+/**
+ * Groups listings that sit on the exact same spot.
+ *
+ * Several flats in one building, or a whole town's worth of listings that could only be geocoded to
+ * the town centre, end up as one pin with the others hidden underneath it. Grouping them lets a
+ * single marker page through all of them.
+ *
+ * Listings without usable coordinates are dropped - they have no place on the map.
+ *
+ * @param {Array<{latitude: number, longitude: number}>} listings
+ * @returns {Array<{lat: number, lng: number, listings: object[]}>} Groups in the order their first
+ * listing appeared.
+ */
+export const groupListingsByPosition = (listings) => {
+  const groups = new Map();
+
+  for (const listing of listings || []) {
+    const { latitude, longitude } = listing;
+    if (latitude == null || longitude == null || latitude === -1 || longitude === -1) {
+      continue;
+    }
+
+    const key = `${latitude.toFixed(POSITION_PRECISION)},${longitude.toFixed(POSITION_PRECISION)}`;
+    const group = groups.get(key);
+    if (group) {
+      group.listings.push(listing);
+    } else {
+      groups.set(key, { lat: latitude, lng: longitude, listings: [listing] });
+    }
+  }
+
+  return [...groups.values()];
+};
+
+/**
  * Generates an array of coordinates representing a circle on a map.
  *
  * To get this circle right, I'm approximating it with a polygon of 64 points.

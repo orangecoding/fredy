@@ -9,6 +9,8 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import { fixMapboxDrawCompatibility, addDrawingControl, setupAreaFilterEventListeners } from './MapDrawingExtension.js';
 import { getBoundsFromCoords } from '../../views/listings/mapUtils.js';
+import { applyBuildingsLayer, applyTransitLayers, OPENFREEMAP_GLYPHS_URL } from './overlayLayers.js';
+import { ensureTransitIcons } from './transitIcons.js';
 import './Map.less';
 
 export const GERMANY_BOUNDS = [
@@ -20,6 +22,9 @@ export const STYLES = {
   STANDARD: 'https://tiles.openfreemap.org/styles/bright',
   SATELLITE: {
     version: 8,
+    // Raster tiles need no glyphs, but the transit overlay labels its stops with them - the
+    // satellite imagery carries no names of its own.
+    glyphs: OPENFREEMAP_GLYPHS_URL,
     sources: {
       'satellite-tiles': {
         type: 'raster',
@@ -59,6 +64,7 @@ export const STYLES = {
 export default function Map({
   style = 'STANDARD',
   show3dBuildings = false,
+  showTransit = false,
   onMapReady = null,
   enableDrawing = false,
   initialSpatialFilter = null,
@@ -166,72 +172,23 @@ export default function Map({
   }, [style]);
 
   // Handle 3D buildings layer
+  //
+  // The style is not ready on mount, and `setStyle()` (see the effect above) drops every custom
+  // source/layer and reloads asynchronously, so the layers have to be (re)applied whenever a style
+  // finishes loading. `styledata` is the right signal for that: `isStyleLoaded()` is a stricter
+  // condition than what `addSource`/`addLayer` actually need (it also waits for every source to
+  // load its tiles) and right after a `setStyle()` call it still reports the outgoing style.
+  // The listener stays attached for the lifetime of the effect, and the `apply*` helpers are
+  // idempotent. The same pattern applies to the transit overlay below.
   useEffect(() => {
     if (!mapRef.current) return;
 
-    const add3dLayer = () => {
-      if (!mapRef.current) return;
-      if (show3dBuildings) {
-        if (!mapRef.current.getSource('openfreemap')) {
-          mapRef.current.addSource('openfreemap', {
-            type: 'vector',
-            url: 'https://tiles.openfreemap.org/planet',
-          });
-        }
-        if (!mapRef.current.getLayer('3d-buildings')) {
-          const layers = mapRef.current.getStyle().layers;
-          let labelLayerId;
-          for (let i = 0; i < layers.length; i++) {
-            if (layers[i].type === 'symbol' && layers[i].layout?.['text-field']) {
-              labelLayerId = layers[i].id;
-              break;
-            }
-          }
-          mapRef.current.addLayer(
-            {
-              id: '3d-buildings',
-              source: 'openfreemap',
-              'source-layer': 'building',
-              type: 'fill-extrusion',
-              minzoom: 15,
-              filter: ['!=', ['get', 'hide_3d'], true],
-              paint: {
-                'fill-extrusion-color': [
-                  'interpolate',
-                  ['linear'],
-                  ['get', 'render_height'],
-                  0,
-                  'lightgray',
-                  200,
-                  'royalblue',
-                  400,
-                  'lightblue',
-                ],
-                'fill-extrusion-height': ['interpolate', ['linear'], ['zoom'], 15, 0, 16, ['get', 'render_height']],
-                'fill-extrusion-base': ['case', ['>=', ['get', 'zoom'], 16], ['get', 'render_min_height'], 0],
-                'fill-extrusion-opacity': 0.6,
-              },
-            },
-            labelLayerId,
-          );
-        }
-      } else {
-        if (mapRef.current.getLayer('3d-buildings')) {
-          mapRef.current.removeLayer('3d-buildings');
-        }
-      }
+    const onStyleData = () => {
+      if (mapRef.current) applyBuildingsLayer(mapRef.current, show3dBuildings);
     };
 
-    // The style is not ready on mount, and `setStyle()` (see the effect above) drops every custom
-    // source/layer and reloads asynchronously, so the layer has to be (re)applied whenever a style
-    // finishes loading. `styledata` is the right signal for that: `isStyleLoaded()` is a stricter
-    // condition than what `addSource`/`addLayer` actually need (it also waits for every source to
-    // load its tiles) and right after a `setStyle()` call it still reports the outgoing style.
-    // The listener stays attached for the lifetime of the effect, and `add3dLayer` is idempotent.
-    const onStyleData = () => add3dLayer();
-
     if (mapRef.current.isStyleLoaded()) {
-      add3dLayer();
+      onStyleData();
     }
 
     mapRef.current.on('styledata', onStyleData);
@@ -240,6 +197,37 @@ export default function Map({
       mapRef.current?.off('styledata', onStyleData);
     };
   }, [show3dBuildings, style]);
+
+  // Handle public transport layer
+  useEffect(() => {
+    if (!mapRef.current) return;
+
+    const onStyleData = async () => {
+      const mapInstance = mapRef.current;
+      if (!mapInstance) return;
+
+      // The stop icons are custom images and a style load drops them, so they have to be back
+      // before the layer that references them is added - otherwise MapLibre draws nothing and
+      // complains about a missing image.
+      if (showTransit) {
+        await ensureTransitIcons(mapInstance);
+        // The map may have been torn down or restyled while the icons were being rasterised.
+        if (mapRef.current !== mapInstance) return;
+      }
+
+      applyTransitLayers(mapInstance, showTransit);
+    };
+
+    if (mapRef.current.isStyleLoaded()) {
+      onStyleData();
+    }
+
+    mapRef.current.on('styledata', onStyleData);
+
+    return () => {
+      mapRef.current?.off('styledata', onStyleData);
+    };
+  }, [showTransit, style]);
 
   // Handle pitch for 3D
   useEffect(() => {

@@ -56,7 +56,10 @@
 }
 
 .map-popup-content {
-  max-width: 250px;
+  // Wide enough for the address and the stop names to stay on one line on a desktop; the media
+  // query below takes it back to the old width where the screen cannot spare it.
+  width: 340px;
+  max-width: 100%;
   color: var(--semi-color-text-0);
 
   img {
@@ -65,6 +68,38 @@
     object-fit: cover;
     border-radius: 4px;
     margin-bottom: 0.5rem;
+  }
+
+  &__pager {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 0.5rem;
+  }
+
+  &__pagerLabel {
+    font-size: 0.8rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--semi-color-text-1);
+  }
+
+  &__pagerButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    border: 1px solid var(--semi-color-border);
+    border-radius: 6px;
+    background: var(--semi-color-fill-0);
+    color: var(--semi-color-text-0);
+    cursor: pointer;
+
+    &:hover {
+      background: var(--semi-color-fill-1);
+    }
   }
 
   h4 {
@@ -80,6 +115,23 @@
     display: flex;
     flex-direction: column;
     gap: 0.1rem;
+  }
+
+  &__transit {
+    margin-top: 0.6rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--semi-color-border);
+
+    strong {
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+  }
+
+  /* The stop popup carries nothing but the board, so it needs neither the image sizing nor the
+     250px cap the listing popup brings. */
+  &--transit {
+    max-width: 280px;
   }
 
   &__linkButton {
@@ -158,12 +210,48 @@
   }
 }
 
+/* Markers open a popup when clicked, so say so - the canvas' grab hand suggests dragging instead. */
+.maplibregl-marker {
+  cursor: pointer;
+}
+
+/* How many listings share this pin. */
+.map-marker-badge {
+  position: absolute;
+  top: -4px;
+  right: -6px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 3px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  background: @color-accent;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 16px;
+  text-align: center;
+  pointer-events: none;
+}
+
+/* A phone cannot spare 340px, and MapLibre's own max-width is set per popup in JS. */
+@media (max-width: 600px) {
+  .map-popup-content {
+    width: 240px;
+  }
+}
+
 /* Override MapLibre default popup styles */
 .maplibregl-popup-content {
   background-color: var(--semi-color-bg-1) !important;
   color: var(--semi-color-text-0) !important;
   border-radius: 8px !important;
   box-shadow: var(--semi-shadow-elevated) !important;
+  /* A listing popup with image, details and nearby stops easily outgrows the map. Capping it and
+     scrolling inside keeps the whole popup reachable; keepPopupInView() then pans the map so it
+     is fully on screen. */
+  max-height: 70vh;
+  overflow-y: auto;
 }
 
 .maplibregl-popup-tip {
