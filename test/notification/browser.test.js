@@ -11,7 +11,7 @@ vi.mock('../../lib/services/storage/jobStorage.js', () => ({
 }));
 
 vi.mock('../../lib/services/markdown.js', () => ({
-  markdown2Html: () => '',
+  readAdapterReadme: () => '',
 }));
 
 vi.mock('../../lib/services/sse/sse-broker.js', () => ({
