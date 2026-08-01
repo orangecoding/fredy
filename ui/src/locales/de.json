@@ -364,6 +364,19 @@
   "settings.listingRetentionHelp": "Anzahl an Tagen, die ein Inserat nach dem Offline-Gehen aufbewahrt wird. Bei 14 wird ein heute offline gegangenes Inserat am 15. Tag endgültig gelöscht. Inserate, deren Verfügbarkeitsprüfung dauerhaft fehlschlägt (z.B. weil der Provider Fredy blockt), gelten nach 10 fehlgeschlagenen Versuchen in Folge als offline. Inserate auf einer Merkliste werden nie gelöscht. 0 bedeutet, dass Offline-Inserate dauerhaft erhalten bleiben. Das Löschen kann nicht rückgängig gemacht werden.",
   "settings.listingRetentionPlaceholder": "Tage bis zur Löschung",
   "settings.listingRetentionSuffix": "Tage",
+  "settings.priceTracking": "Preisverfolgung",
+  "settings.priceTrackingHelp": "Liest die Preise bereits gefundener Inserate erneut, speichert den Verlauf und benachrichtigt dich, wenn sich ein Preis ändert.",
+  "settings.priceTrackingEnabled": "Preisänderungen verfolgen",
+  "settings.priceTrackingWarningTitle": "Die Preisverfolgung öffnet für jedes verfolgte Inserat eine echte Browserseite.",
+  "settings.priceTrackingWarningBody": "Das ist eine eigene, deutlich schwerere Anfrage als die Prüfung, ob ein Inserat noch online ist. Die Portale bemerken das. Wer sie zu häufig oder über zu viele Inserate gleichzeitig laufen lässt, riskiert, dass die IP dieser Instanz gesperrt wird. Eine gesperrte IP zerstört auch das normale Scraping, nicht nur die Preisverfolgung.",
+  "settings.priceTrackingWarningDefaults": "Die Voreinstellungen (alle 7 Tage, höchstens 100 Inserate pro Lauf) sind so gewählt, dass sie nicht auffallen. Verringere das Intervall oder erhöhe das Limit nur, wenn du dieses Risiko verstanden hast und deine IP wechseln kannst.",
+  "settings.priceCheckInterval": "Prüfintervall",
+  "settings.priceCheckIntervalHelp": "Wie lange ein Inserat unangetastet bleibt, bevor sein Preis erneut geprüft wird. Ein kleinerer Wert bedeutet aktuellere Preise und entsprechend mehr geladene Browserseiten. Standard 7. Ein Inserat auf einer Merkliste behält seinen Preisverlauf, wenn die Aufbewahrungsfrist aufräumt; bei einem Inserat, das niemand beobachtet, verschwindet der Verlauf zusammen mit dem Inserat.",
+  "settings.priceCheckLimit": "Inserate pro Lauf",
+  "settings.priceCheckLimitHelp": "Feste Obergrenze dafür, wie viele Inserate ein Lauf öffnen darf. Der Lauf endet dort, auch wenn mehr fällig wären; der Rest kommt beim nächsten Mal dran. Standard 100.",
+  "settings.priceChangeThreshold": "Schwelle für Benachrichtigungen",
+  "settings.priceChangeThresholdHelp": "Kleinere Änderungen werden im Verlauf gespeichert, aber nicht als Benachrichtigung verschickt. Das verhindert, dass Rundungsrauschen und Preisexperimente der Anbieter dich zuspammen. Standard 1 %.",
+  "settings.toastPriceTrackingInvalid": "Prüfintervall und Inserate pro Lauf müssen beide ganze Zahlen ab 1 sein.",
   "settings.sqlitePath": "SQLite-Datenbankpfad",
   "settings.sqlitePathHelp": "Das Verzeichnis, in dem Fredy seine SQLite-Datenbankdateien speichert.",
   "settings.sqlitePathWarning": "Das Ändern dieses Pfades kann zu Datenverlust führen. Starte Fredy sofort nach dem Speichern neu.",
@@ -797,5 +810,7 @@
   "finance.table.payoffHelp": "Bei der Rate, die die 35-%-Regel zulässt, nicht bei der Szenario-Tilgung.",
   "finance.warning.rateAboveAffordable": "Diese Rate liegt über den {{ceiling}}, die die 35-%-Regel zulässt. Machbar, aber es bleibt wenig Luft wenn sich etwas ändert.",
   "finance.form.monthlyPayment": "Monatliche Rate",
-  "finance.form.monthlyPaymentHelp": "Zins und Tilgung zusammen. Tilgung und Rate sind dieselbe Größe von zwei Seiten - änderst du das hier, wird die Tilgung neu berechnet."
+  "finance.form.monthlyPaymentHelp": "Zins und Tilgung zusammen. Tilgung und Rate sind dieselbe Größe von zwei Seiten - änderst du das hier, wird die Tilgung neu berechnet.",
+  "listings.priceChangeFrom": "Vorher {{price}}",
+  "listing.detail.priceHistory": "Preisverlauf"
 }

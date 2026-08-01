@@ -44,13 +44,14 @@ import * as timeService from '../../services/time/timeService.js';
 import { formatEuroPrice } from '../../services/price/priceService.js';
 import { distanceMeters, getBoundsFromCoords } from './mapUtils.js';
 import { getAddresses } from '../../utils.js';
-import { xhrPost, xhrDelete, errorMessage } from '../../services/xhr.js';
+import { xhrPost, xhrGet, xhrDelete, errorMessage } from '../../services/xhr.js';
 import ListingDeletionModal from '../../components/ListingDeletionModal.jsx';
 
 import Headline from '../../components/headline/Headline.jsx';
 import IconEuro from '../../components/icons/IconEuro.jsx';
 import StatusControl from '../../components/listings/StatusControl.jsx';
 import ListingFinanceCard from './components/ListingFinanceCard.jsx';
+import PriceHistoryChart from './components/PriceHistoryChart.jsx';
 import NearbyStops from '../../components/transit/NearbyStops.jsx';
 import './ListingDetail.less';
 import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
@@ -81,6 +82,7 @@ export default function ListingDetail() {
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [notesDraft, setNotesDraft] = useState('');
   const [notesSaving, setNotesSaving] = useState(false);
+  const [priceHistory, setPriceHistory] = useState([]);
 
   useEffect(() => {
     document.querySelector('.app__content')?.scrollTo({ top: 0 });
@@ -105,6 +107,27 @@ export default function ListingDetail() {
   useEffect(() => {
     setNotesDraft(listing?.notes ?? '');
   }, [listing?.id, listing?.notes]);
+
+  // Fetched separately from the listing rather than joined onto it: most views never draw the
+  // chart, and a series has no size bound, so it must not ride along on every listing read.
+  useEffect(() => {
+    let cancelled = false;
+    async function fetchPriceHistory() {
+      try {
+        // xhrGet resolves { status, json }, not the payload itself.
+        const { json } = await xhrGet(`/api/listings/${listingId}/priceHistory`);
+        if (!cancelled) setPriceHistory(Array.isArray(json) ? json : []);
+      } catch {
+        // A missing history is not an error worth interrupting the page for - the chart simply
+        // does not render.
+        if (!cancelled) setPriceHistory([]);
+      }
+    }
+    fetchPriceHistory();
+    return () => {
+      cancelled = true;
+    };
+  }, [listingId]);
 
   const hasGeo =
     listing?.latitude != null && listing?.longitude != null && listing?.latitude !== -1 && listing?.longitude !== -1;
@@ -549,6 +572,19 @@ export default function ListingDetail() {
                   </Descriptions.Item>
                 ))}
               </Descriptions>
+
+              {/* Directly under the figures it explains. The chart hides itself below two
+                  readings, so a listing whose price has never moved shows nothing at all rather
+                  than an empty frame. */}
+              {priceHistory.length >= 2 && (
+                <>
+                  <Divider margin="1.5rem" />
+                  <Title heading={6} style={{ marginBottom: '0.75rem' }}>
+                    {t('listing.detail.priceHistory')}
+                  </Title>
+                  <PriceHistoryChart data={priceHistory} locale={locale} />
+                </>
+              )}
 
               {/* The costing answers "can I have this?", which is the question asked right
                   after the price - so it comes before the sales copy, not after it. */}

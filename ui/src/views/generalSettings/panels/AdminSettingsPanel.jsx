@@ -67,6 +67,10 @@ export function useAdminSettings(settings) {
   const [baseUrl, setBaseUrl] = React.useState('');
   const [sessionTTL, setSessionTTL] = React.useState('');
   const [listingRetentionDays, setListingRetentionDays] = React.useState(14);
+  const [priceTrackingEnabled, setPriceTrackingEnabled] = React.useState(false);
+  const [priceCheckIntervalDays, setPriceCheckIntervalDays] = React.useState(7);
+  const [priceCheckLimitPerRun, setPriceCheckLimitPerRun] = React.useState(100);
+  const [priceChangeThresholdPercent, setPriceChangeThresholdPercent] = React.useState(1);
 
   // Seeded from the store, and re-seeded whenever it changes identity - the settings request may
   // still have been in flight when this mounted.
@@ -82,6 +86,10 @@ export function useAdminSettings(settings) {
     setBaseUrl(settings?.baseUrl ?? '');
     setSessionTTL(settings?.sessionTTL ?? '');
     setListingRetentionDays(settings?.listingRetentionDays ?? 14);
+    setPriceTrackingEnabled(settings?.priceTrackingEnabled === true);
+    setPriceCheckIntervalDays(settings?.priceCheckIntervalDays ?? 7);
+    setPriceCheckLimitPerRun(settings?.priceCheckLimitPerRun ?? 100);
+    setPriceChangeThresholdPercent(settings?.priceChangeThresholdPercent ?? 1);
   }, [settings]);
 
   const handleStore = async () => {
@@ -114,6 +122,18 @@ export function useAdminSettings(settings) {
       Toast.error(t('settings.toastListingRetentionInvalid'));
       return;
     }
+    // Only the interval and the limit are guarded here. They decide how much traffic Fredy sends at
+    // the portals, so a cleared field must not be silently coerced into a value the operator never
+    // chose - the threshold is allowed to be 0, which legitimately means "notify me about anything".
+    if (
+      !Number.isInteger(Number(priceCheckIntervalDays)) ||
+      Number(priceCheckIntervalDays) < 1 ||
+      !Number.isInteger(Number(priceCheckLimitPerRun)) ||
+      Number(priceCheckLimitPerRun) < 1
+    ) {
+      Toast.error(t('settings.toastPriceTrackingInvalid'));
+      return;
+    }
     try {
       await xhrPost('/api/admin/generalSettings', {
         interval: scanInterval,
@@ -126,6 +146,10 @@ export function useAdminSettings(settings) {
         baseUrl,
         sessionTTL,
         listingRetentionDays: Number(listingRetentionDays),
+        priceTrackingEnabled,
+        priceCheckIntervalDays: Number(priceCheckIntervalDays),
+        priceCheckLimitPerRun: Number(priceCheckLimitPerRun),
+        priceChangeThresholdPercent: Number(priceChangeThresholdPercent),
       });
     } catch (exception) {
       console.error(exception);
@@ -164,6 +188,14 @@ export function useAdminSettings(settings) {
     setSessionTTL,
     listingRetentionDays,
     setListingRetentionDays,
+    priceTrackingEnabled,
+    setPriceTrackingEnabled,
+    priceCheckIntervalDays,
+    setPriceCheckIntervalDays,
+    priceCheckLimitPerRun,
+    setPriceCheckLimitPerRun,
+    priceChangeThresholdPercent,
+    setPriceChangeThresholdPercent,
     handleStore,
   };
 }
@@ -296,6 +328,14 @@ export function ExecutionSettingsTab(admin) {
     setWorkingHourTo,
     proxyUrl,
     setProxyUrl,
+    priceTrackingEnabled,
+    setPriceTrackingEnabled,
+    priceCheckIntervalDays,
+    setPriceCheckIntervalDays,
+    priceCheckLimitPerRun,
+    setPriceCheckLimitPerRun,
+    priceChangeThresholdPercent,
+    setPriceChangeThresholdPercent,
     handleStore,
   } = admin;
 
@@ -344,6 +384,93 @@ export function ExecutionSettingsTab(admin) {
           value={proxyUrl}
           onChange={(value) => setProxyUrl(value)}
         />
+      </SegmentPart>
+
+      {/*
+        One block rather than four. The three dials are meaningless on their own - they only
+        describe how the sweep behaves once it exists - so presenting them as peers of the switch
+        invited reading them as four independent knobs. They stay visible while disabled so an
+        operator can see what turning the feature on would commit them to.
+      */}
+      <SegmentPart name={t('settings.priceTracking')} helpText={t('settings.priceTrackingHelp')}>
+        {/*
+          Above the switch, not below it. Turning this on is the moment the operator takes on the
+          risk, so the warning has to be in front of them beforehand, not revealed as a consequence.
+        */}
+        <Banner
+          fullMode={false}
+          type="warning"
+          closeIcon={null}
+          style={{ marginBottom: '12px' }}
+          title={t('settings.priceTrackingWarningTitle')}
+          description={
+            <>
+              <p style={{ margin: '0 0 8px' }}>{t('settings.priceTrackingWarningBody')}</p>
+              <p style={{ margin: 0 }}>{t('settings.priceTrackingWarningDefaults')}</p>
+            </>
+          }
+        />
+
+        <Checkbox checked={priceTrackingEnabled} onChange={(e) => setPriceTrackingEnabled(e.target.checked)}>
+          {t('settings.priceTrackingEnabled')}
+        </Checkbox>
+
+        <div
+          className={`generalSettings__subSettings${priceTrackingEnabled ? '' : ' generalSettings__subSettings--disabled'}`}
+        >
+          <div className="generalSettings__subSetting">
+            <label className="generalSettings__subSetting__label" htmlFor="priceCheckIntervalDays">
+              {t('settings.priceCheckInterval')}
+            </label>
+            <p className="generalSettings__subSetting__help">{t('settings.priceCheckIntervalHelp')}</p>
+            <InputNumber
+              id="priceCheckIntervalDays"
+              min={1}
+              max={30}
+              disabled={!priceTrackingEnabled}
+              value={priceCheckIntervalDays}
+              formatter={(value) => `${value}`.replace(/\D/g, '')}
+              onChange={(value) => setPriceCheckIntervalDays(value)}
+              suffix={t('settings.listingRetentionSuffix')}
+              style={{ maxWidth: 200 }}
+            />
+          </div>
+
+          <div className="generalSettings__subSetting">
+            <label className="generalSettings__subSetting__label" htmlFor="priceCheckLimitPerRun">
+              {t('settings.priceCheckLimit')}
+            </label>
+            <p className="generalSettings__subSetting__help">{t('settings.priceCheckLimitHelp')}</p>
+            <InputNumber
+              id="priceCheckLimitPerRun"
+              min={1}
+              max={500}
+              disabled={!priceTrackingEnabled}
+              value={priceCheckLimitPerRun}
+              formatter={(value) => `${value}`.replace(/\D/g, '')}
+              onChange={(value) => setPriceCheckLimitPerRun(value)}
+              style={{ maxWidth: 200 }}
+            />
+          </div>
+
+          <div className="generalSettings__subSetting">
+            <label className="generalSettings__subSetting__label" htmlFor="priceChangeThresholdPercent">
+              {t('settings.priceChangeThreshold')}
+            </label>
+            <p className="generalSettings__subSetting__help">{t('settings.priceChangeThresholdHelp')}</p>
+            <InputNumber
+              id="priceChangeThresholdPercent"
+              min={0}
+              max={50}
+              step={0.5}
+              disabled={!priceTrackingEnabled}
+              value={priceChangeThresholdPercent}
+              onChange={(value) => setPriceChangeThresholdPercent(value)}
+              suffix="%"
+              style={{ maxWidth: 200 }}
+            />
+          </div>
+        </div>
       </SegmentPart>
 
       <div className="generalSettings__save-row">

@@ -19,3 +19,7 @@ The table contains the following columns (all stored as `TEXT`):
   "image"
 ]
 ```
+
+### Price changes
+
+When price tracking is enabled (Settings > Price tracking, off by default), price changes are appended to a separate `price_change` table in the same database file, with columns `serviceName, jobKey, id, title, address, link, oldPrice, newPrice, changePercent, direction, observedAt`. The `listing` table is left alone, so a query that reads it for new listings does not have to learn to exclude anything.

@@ -41,3 +41,7 @@ Body:
 ```
 
 </details>
+
+### Price changes
+
+When price tracking is enabled (Settings > Price tracking, off by default), price changes are POSTed to the same endpoint under an `event: "priceChange"` discriminator, with the entries under `priceChanges` rather than `listings`. Each entry carries `oldPrice`, `newPrice`, `changePercent` and `direction` alongside the usual listing fields. A receiver written before this existed keeps parsing `listings` exactly as before.

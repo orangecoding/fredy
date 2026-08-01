@@ -1,0 +1,30 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../tokens.less';
+
+.priceChangeBadge {
+  display: inline-block;
+  margin-left: @space-2;
+  padding: 1px @space-2;
+  border-radius: @radius-chip;
+  font-size: @text-xs;
+  line-height: 1.5;
+  white-space: nowrap;
+  vertical-align: middle;
+  font-variant-numeric: tabular-nums;
+
+  // Semi's own success/danger tokens rather than fixed hex values, so the badge follows the theme
+  // and stays legible in dark mode.
+  &--down {
+    color: var(--semi-color-success);
+    background: var(--semi-color-success-light-default);
+  }
+
+  &--up {
+    color: var(--semi-color-danger);
+    background: var(--semi-color-danger-light-default);
+  }
+}

@@ -15,10 +15,10 @@ let state;
 /**
  * Load the alive-checker with its storage and provider lookup replaced.
  *
- * @param {(link: string) => number} [activeTester] The provider probe. Defaults to "still online".
+ * @param {(link: string) => number} [activityProbe] The provider probe. Defaults to "still online".
  * @returns {Promise<Function>} runActiveChecker
  */
-async function loadService(activeTester = (link) => state.testerResults[link] ?? 1) {
+async function loadService(activityProbe = (link) => state.testerResults[link] ?? 1) {
   vi.resetModules();
   vi.doMock(storagePath, () => ({
     getListingsDueForActiveCheck: () => state.due,
@@ -29,8 +29,12 @@ async function loadService(activeTester = (link) => state.testerResults[link] ??
       return state.exhausted;
     },
   }));
-  vi.doMock(utilsPath, () => ({
-    getProviders: async () => [{ metaInformation: { id: 'immowelt' }, config: { activeTester } }],
+  vi.doMock(utilsPath, async (importOriginal) => ({
+    // Partial mock: only the provider lookup is faked. `mapLimit` is the real concurrency helper,
+    // and substituting it would mean these tests no longer exercise the scheduling the service
+    // actually runs on.
+    ...(await importOriginal()),
+    getProviders: async () => [{ metaInformation: { id: 'immowelt' }, config: { activityProbe } }],
   }));
   vi.doMock(loggerPath, () => ({
     default: { debug: () => {}, info: () => {}, warn: () => {}, error: () => {} },

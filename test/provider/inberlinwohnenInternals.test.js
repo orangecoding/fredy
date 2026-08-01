@@ -207,7 +207,7 @@ describe('#inberlinwohnen internals()', () => {
     });
   });
 
-  describe('activeTester()', () => {
+  describe('activityProbe()', () => {
     it('should follow safe redirects when checking if a listing is active', async () => {
       const originalFetch = globalThis.fetch;
       const fetchMock = vi
@@ -221,13 +221,13 @@ describe('#inberlinwohnen internals()', () => {
       globalThis.fetch = fetchMock;
 
       try {
-        await expect(runConfig.activeTester('https://www.degewo.de/redirect')).resolves.toBe(1);
-        await expect(runConfig.activeTester('https://www.degewo.de/gone')).resolves.toBe(0);
-        await expect(runConfig.activeTester('https://www.degewo.de/removed')).resolves.toBe(0);
-        await expect(runConfig.activeTester('https://www.degewo.de/unavailable')).resolves.toBe(-1);
-        await expect(runConfig.activeTester('https://www.degewo.de/network-error')).resolves.toBe(-1);
+        await expect(runConfig.activityProbe('https://www.degewo.de/redirect')).resolves.toBe(1);
+        await expect(runConfig.activityProbe('https://www.degewo.de/gone')).resolves.toBe(0);
+        await expect(runConfig.activityProbe('https://www.degewo.de/removed')).resolves.toBe(0);
+        await expect(runConfig.activityProbe('https://www.degewo.de/unavailable')).resolves.toBe(-1);
+        await expect(runConfig.activityProbe('https://www.degewo.de/network-error')).resolves.toBe(-1);
         // hosts outside of the portal and its partners must never be requested
-        await expect(runConfig.activeTester('http://127.0.0.1/private')).resolves.toBe(-1);
+        await expect(runConfig.activityProbe('http://127.0.0.1/private')).resolves.toBe(-1);
 
         expect(fetchMock).toHaveBeenNthCalledWith(
           1,

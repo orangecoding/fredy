@@ -21,6 +21,40 @@
     justify-content: flex-end;
     margin-top: @space-2;
   }
+
+  // Settings that only mean something once their parent feature is switched on. Indented and
+  // rule-marked so the dependency is visible at a glance rather than only discoverable by toggling.
+  &__subSettings {
+    margin-top: @space-4;
+    padding-left: @space-4;
+    border-left: 2px solid @color-border-bright;
+    display: flex;
+    flex-direction: column;
+    gap: @space-4;
+    transition: opacity @transition-fast;
+
+    // Dimmed rather than hidden: an operator deciding whether to enable the feature should be able
+    // to see what they would be committing to before they commit to it.
+    &--disabled {
+      opacity: 0.45;
+    }
+  }
+
+  &__subSetting {
+    &__label {
+      display: block;
+      color: @color-text;
+      font-size: @text-base;
+      margin-bottom: 2px;
+    }
+
+    &__help {
+      margin: 0 0 @space-2;
+      color: @color-muted;
+      font-size: @text-sm;
+      line-height: 1.5;
+    }
+  }
 }
 
 // InputNumber fix

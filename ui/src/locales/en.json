@@ -364,6 +364,19 @@
   "settings.listingRetentionHelp": "Number of days a listing is kept after it went offline. With 14, a listing that went offline today is permanently deleted on the 15th day. Listings whose availability check keeps failing (e.g. because the provider blocks Fredy) count as offline after 10 failed attempts in a row. Listings on a watch list are never deleted. Set to 0 to keep offline listings forever. Deletion cannot be undone.",
   "settings.listingRetentionPlaceholder": "Days until deletion",
   "settings.listingRetentionSuffix": "days",
+  "settings.priceTracking": "Price tracking",
+  "settings.priceTrackingHelp": "Re-reads the price of listings you already have, records the history, and notifies you when a price moves.",
+  "settings.priceTrackingEnabled": "Track price changes",
+  "settings.priceTrackingWarningTitle": "Price tracking opens a real browser page for every tracked listing.",
+  "settings.priceTrackingWarningBody": "This is a separate, much heavier request than the check that tells Fredy whether a listing is still online. Portals notice it. Running it too often, or over too many listings at once, can get this instance's IP blocked, and a blocked IP breaks normal scraping too, not just price tracking.",
+  "settings.priceTrackingWarningDefaults": "The defaults (every 7 days, at most 100 listings per run) are chosen to stay under the radar. Lower the interval or raise the limit only if you understand that risk and can change your IP.",
+  "settings.priceCheckInterval": "Re-check interval",
+  "settings.priceCheckIntervalHelp": "How long a listing is left alone before its price is checked again. Lower means fresher prices and proportionally more browser page loads. Default 7. A listing on a watch list keeps its price history when the retention purge runs; a listing nobody watches loses the history along with the listing.",
+  "settings.priceCheckLimit": "Listings per run",
+  "settings.priceCheckLimitHelp": "Hard ceiling on how many listings one run may open. The run stops there even if more are due; the rest are picked up next time. Default 100.",
+  "settings.priceChangeThreshold": "Notification threshold",
+  "settings.priceChangeThresholdHelp": "Changes smaller than this are recorded in the history but not sent as a notification. Stops rounding noise and seller A/B tests from spamming you. Default 1%.",
+  "settings.toastPriceTrackingInvalid": "Re-check interval and listings per run must both be whole numbers of at least 1.",
   "settings.sqlitePath": "SQLite Database Path",
   "settings.sqlitePathHelp": "The directory where Fredy stores its SQLite database files.",
   "settings.sqlitePathWarning": "Changing this path may result in data loss. Restart Fredy immediately after saving.",
@@ -797,5 +810,7 @@
   "finance.table.payoffHelp": "At the rate the 35 % rule allows you, not at the scenario Tilgung.",
   "finance.warning.rateAboveAffordable": "This rate is above the {{ceiling}} the 35 % rule allows you. Possible, but it leaves little room if anything changes.",
   "finance.form.monthlyPayment": "Monthly rate",
-  "finance.form.monthlyPaymentHelp": "Interest and repayment together. Tilgung and instalment are the same quantity from opposite ends, so editing this rewrites the Tilgung."
+  "finance.form.monthlyPaymentHelp": "Interest and repayment together. Tilgung and instalment are the same quantity from opposite ends, so editing this rewrites the Tilgung.",
+  "listings.priceChangeFrom": "Previously {{price}}",
+  "listing.detail.priceHistory": "Price history"
 }

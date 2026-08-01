@@ -13,3 +13,7 @@ Authentication (optional):
 - Alternatively: set **Username** and **Password** for HTTP Basic auth.
 - The access token takes precedence over username/password when both are set.
 - See the ntfy docs: https://docs.ntfy.sh/publish/#authentication
+
+### Price changes
+
+This adapter also reports **price changes** when price tracking is enabled (Settings > Price tracking, off by default). A price change notification carries the old price, the new price and the percentage, and says whether the price went up or down. Changes smaller than the configured threshold are recorded in the listing's price history but are not sent, so rounding noise does not reach you.

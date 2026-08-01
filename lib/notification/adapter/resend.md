@@ -15,3 +15,7 @@ Notes & Troubleshooting:
 - Ensure the `from` address is verified or belongs to a verified domain in Resend.
 - If emails don't arrive, check your spam folder and Resend dashboard logs.
 - The template displays listing images via their public URLs; make sure images are reachable.
+
+### Price changes
+
+This adapter also reports **price changes** when price tracking is enabled (Settings > Price tracking, off by default). A price change notification carries the old price, the new price and the percentage, and says whether the price went up or down. Changes smaller than the configured threshold are recorded in the listing's price history but are not sent, so rounding noise does not reach you.

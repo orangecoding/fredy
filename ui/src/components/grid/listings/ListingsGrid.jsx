@@ -18,6 +18,7 @@ import * as timeService from '../../../services/time/timeService.js';
 import StatusControl from '../../listings/StatusControl.jsx';
 import ExternalListingLink from '../../listings/ExternalListingLink.jsx';
 import AffordabilityChip from '../../listings/AffordabilityChip.jsx';
+import PriceChangeBadge from '../../listings/PriceChangeBadge.jsx';
 
 import './ListingsGrid.less';
 import { useTranslation, useLocale } from '../../../services/i18n/i18n.jsx';
@@ -82,6 +83,11 @@ const ListingsGrid = ({ listings, onWatch, onNavigate, onDelete, onRestore, isHi
                 <IconCart size="small" />
                 {item.price}
                 <AffordabilityChip verdict={item.affordabilityVerdict} dealType={item.dealType} />
+                <PriceChangeBadge
+                  price={item.price}
+                  previousPrice={item.previous_price}
+                  changedAt={item.price_changed_at}
+                />
               </div>
             )}
             {item.address && (
