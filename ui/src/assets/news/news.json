@@ -1,13 +1,10 @@
 {
-  "key": "4af4975de7b0c1fefdeb69def7075ce972da3c1ede1292876d2beb7a4c5cfe7d",
+  "key": "4af4975de7b0c1fefdeb69def7075ce972da3c1ede1292876d2beb7a4c5cfe8d",
   "content": [
     {
-      "title": "Fredy now knows what you can afford",
-      "text": "Fredy can finally answer the question a listing page cannot: <b>what would this cost me every month, and does it fit?</b><br/><br/>On the new <b>Financing</b> page you enter your financial situation once. Your income, your living costs, anything you are already paying off. Fredy measures every listing against it and tells you what is comfortably affordable, what would be a stretch, and what is out of reach.<br/><br/>There is a tab for <b>renting</b> and one for <b>buying</b>, and they save separately. If you only ever rent, you are never asked about Grunderwerbsteuer."
-    },
-    {
-      "title": "Every job is now about renting or buying",
-      "text": "So that a 1.200 € rent is never mistaken for an absurdly cheap house, every job now says whether it searches for something to rent or to buy. <b>Your existing jobs were classified automatically</b>, so do have a quick look and correct any that guessed wrong.<br/><br/>Once your finance data is saved, it shows up where you need it: a verdict on each listing, an affordability filter in the overview, and a cost breakdown on the detail page.<br/><br/><i>All of this is an estimate, not financial advice. Ask your bank for a binding offer.</i>"
+      "title": "Fredy goes ÖPNV",
+      "text": "Finding a flat is one thing. Getting out of it every morning is another. Fredy now knows how well connected every listing is. Within the map view, you now have an ÖPNV layer which is enabled by default. This layer shows you the nearest bus/tram stop including the live data of which type of transportation leaves at a specific time :)",
+      "media": "1.png"
     }
   ]
 }
