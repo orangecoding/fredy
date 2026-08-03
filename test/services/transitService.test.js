@@ -8,12 +8,14 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 vi.mock('../../lib/services/transit/transitousClient.js', () => ({
   fetchNearbyStops: vi.fn(),
   fetchDepartures: vi.fn(),
+  fetchPlan: vi.fn(),
 }));
 
-import { fetchNearbyStops, fetchDepartures } from '../../lib/services/transit/transitousClient.js';
+import { fetchNearbyStops, fetchDepartures, fetchPlan } from '../../lib/services/transit/transitousClient.js';
 import {
   getNearbyStops,
   getDepartures,
+  getJourney,
   resolveStop,
   clearTransitCache,
 } from '../../lib/services/transit/transitService.js';
@@ -201,6 +203,59 @@ describe('transitService', () => {
       vi.advanceTimersByTime(31 * 1000);
       await getDepartures({ stopId: 'near' });
       expect(fetchDepartures).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe('getJourney', () => {
+    const itinerary = (overrides = {}) => ({
+      duration: 1440,
+      legs: [
+        { mode: 'WALK', duration: 300 },
+        { mode: 'SUBWAY', routeShortName: 'U6', duration: 840 },
+        { mode: 'WALK', duration: 300 },
+      ],
+      ...overrides,
+    });
+
+    it('normalizes duration to minutes and derives transfers from transit legs', async () => {
+      fetchPlan.mockResolvedValue([itinerary()]);
+
+      const journey = await getJourney(52.5, 13.4, 52.52, 13.41);
+
+      expect(journey.durationMinutes).toBe(24);
+      expect(journey.transfers).toBe(0);
+      expect(journey.legs).toEqual([
+        { mode: 'WALK', line: '', durationMinutes: 5 },
+        { mode: 'SUBWAY', line: 'U6', durationMinutes: 14 },
+        { mode: 'WALK', line: '', durationMinutes: 5 },
+      ]);
+    });
+
+    it('uses the upstream transfer count when present', async () => {
+      fetchPlan.mockResolvedValue([itinerary({ transfers: 2 })]);
+
+      expect((await getJourney(52.5, 13.4, 52.52, 13.41)).transfers).toBe(2);
+    });
+
+    it('returns null when no itinerary was found', async () => {
+      fetchPlan.mockResolvedValue([]);
+
+      expect(await getJourney(52.5, 13.4, 52.52, 13.41)).toBeNull();
+    });
+
+    it('returns null when the upstream lookup failed', async () => {
+      fetchPlan.mockResolvedValue(null);
+
+      expect(await getJourney(52.5, 13.4, 52.52, 13.41)).toBeNull();
+    });
+
+    it('serves a second lookup of the same pair from the cache', async () => {
+      fetchPlan.mockResolvedValue([itinerary()]);
+
+      await getJourney(52.5, 13.4, 52.52, 13.41);
+      await getJourney(52.5, 13.4, 52.52, 13.41);
+
+      expect(fetchPlan).toHaveBeenCalledTimes(1);
     });
   });
 });
