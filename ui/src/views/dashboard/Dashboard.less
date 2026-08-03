@@ -5,6 +5,23 @@
   flex-direction: column;
   flex: 1;
 
+  // Two things you can set running from here. The rule between them says they are separate
+  // actions rather than one control with a dropdown, which is what two adjacent borderless
+  // buttons otherwise read as.
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: @space-2;
+  }
+
+  &__actions-divider {
+    width: 1px;
+    align-self: stretch;
+    margin: 4px 0;
+    background: @color-border-bright;
+    flex-shrink: 0;
+  }
+
   &__section-label {
     display: block;
     font-size: @text-xs;

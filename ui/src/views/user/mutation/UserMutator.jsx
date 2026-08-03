@@ -8,12 +8,13 @@ import React from 'react';
 import { xhrGet, xhrPost, errorMessage } from '../../../services/xhr';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useActions } from '../../../services/state/store';
-import { Divider, Input, Switch, Button, Toast } from '@douyinfe/semi-ui-19';
+import { Divider, Input, Switch, Button, Toast, Typography } from '@douyinfe/semi-ui-19';
 import './UserMutator.less';
 import { SegmentPart } from '../../../components/segment/SegmentPart';
 import { IconPlusCircle, IconArrowLeft } from '@douyinfe/semi-icons';
-import Headline from '../../../components/headline/Headline.jsx';
 import { useTranslation } from '../../../services/i18n/i18n.jsx';
+
+const { Title } = Typography;
 
 const UserMutator = function UserMutator() {
   const t = useTranslation();
@@ -58,7 +59,7 @@ const UserMutator = function UserMutator() {
       });
       await actions.user.getUsers();
       Toast.success(t('users.mutation.saved'));
-      navigate('/users');
+      navigate('/admin/users');
     } catch (error) {
       // `error.json` is absent when the request never reached the backend, and reading `.error`
       // off it threw a second time inside the catch - which left the user with no toast at all.
@@ -69,19 +70,21 @@ const UserMutator = function UserMutator() {
 
   return (
     <>
-      <Headline
-        text={params.userId ? t('users.mutation.editTitle') : t('users.mutation.newTitle')}
-        actions={
-          <Button
-            icon={<IconArrowLeft />}
-            onClick={() => navigate('/users')}
-            theme="borderless"
-            style={{ color: '#909090' }}
-          >
-            {t('users.mutation.back')}
-          </Button>
-        }
-      />
+      {/* A sub-heading, not a page heading: the Administration layout above already provides the
+          h1, and stacking two of them reads as a mistake. */}
+      <div className="userMutator__header">
+        <Title heading={5} style={{ margin: 0 }}>
+          {params.userId ? t('users.mutation.editTitle') : t('users.mutation.newTitle')}
+        </Title>
+        <Button
+          icon={<IconArrowLeft />}
+          onClick={() => navigate('/admin/users')}
+          theme="borderless"
+          style={{ color: '#909090' }}
+        >
+          {t('users.mutation.back')}
+        </Button>
+      </div>
       <form className="userMutator">
         <SegmentPart name={t('users.mutation.sectionUsername')} helpText={t('users.mutation.usernameHelp')}>
           <Input
@@ -123,7 +126,7 @@ const UserMutator = function UserMutator() {
         </SegmentPart>
         <Divider margin="1rem" />
         <div className="userMutator__actions">
-          <Button size="small" theme="borderless" style={{ color: '#909090' }} onClick={() => navigate('/users')}>
+          <Button size="small" theme="borderless" style={{ color: '#909090' }} onClick={() => navigate('/admin/users')}>
             {t('users.mutation.cancel')}
           </Button>
           <Button size="small" type="primary" theme="solid" icon={<IconPlusCircle />} onClick={saveUser}>

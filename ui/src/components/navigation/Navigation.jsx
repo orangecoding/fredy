@@ -5,12 +5,20 @@
 
 import { useEffect, useState } from 'react';
 import { Nav } from '@douyinfe/semi-ui-19';
-import { IconStar, IconSetting, IconTerminal, IconHistogram, IconSidebar } from '@douyinfe/semi-icons';
+import {
+  IconStar,
+  IconSetting,
+  IconTerminal,
+  IconHistogram,
+  IconSidebar,
+  IconServerStroked,
+} from '@douyinfe/semi-icons';
 import IconEuro from '../icons/IconEuro.jsx';
 import logoWhite from '../../assets/logo_white.png';
 import heart from '../../assets/heart.png';
 import Logout from '../logout/Logout.jsx';
 import Donate from '../donate/Donate.jsx';
+import NewsHistory from '../news/NewsHistory.jsx';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import './Navigate.less';
@@ -51,22 +59,32 @@ export default function Navigation({ isAdmin }) {
     { itemKey: '/finance', text: t('nav.finance'), icon: <IconEuro /> },
   ];
 
+  // Two groups, not one. Which group a page sits in is the answer to "does this affect anyone but
+  // me", and it is an answer the old single Settings group could not give: an ordinary user and an
+  // administrator saw the same entry and had to open it to find out what was behind it.
+  items.push({
+    itemKey: 'settings',
+    text: t('nav.settings'),
+    icon: <IconSetting />,
+    items: [
+      { itemKey: '/settings/preferences', text: t('nav.preferences') },
+      { itemKey: '/settings/addresses', text: t('nav.addresses') },
+      { itemKey: '/settings/listings', text: t('nav.listingDetails') },
+    ],
+  });
+
   if (isAdmin) {
     items.push({
-      itemKey: 'settings',
-      text: t('nav.settings'),
-      icon: <IconSetting />,
+      itemKey: 'administration',
+      text: t('nav.administration'),
+      icon: <IconServerStroked />,
       items: [
-        { itemKey: '/users', text: t('nav.userManagement') },
-        { itemKey: '/generalSettings', text: t('nav.settingsPage') },
+        { itemKey: '/admin/system', text: t('nav.system') },
+        { itemKey: '/admin/execution', text: t('nav.execution') },
+        { itemKey: '/admin/users', text: t('nav.userManagement') },
+        { itemKey: '/admin/backup', text: t('nav.backup') },
+        { itemKey: '/admin/debug', text: t('nav.debug') },
       ],
-    });
-  } else {
-    items.push({
-      itemKey: 'settings',
-      text: t('nav.settings'),
-      icon: <IconSetting />,
-      items: [{ itemKey: '/generalSettings', text: t('nav.settingsPage') }],
     });
   }
 
@@ -116,6 +134,11 @@ export default function Navigation({ isAdmin }) {
       }
       footer={
         <Nav.Footer className="navigate__footer">
+          {/* Reachable at any time, unlike the dialog that appears on its own: dismissing that one
+              used to be the end of it, with no way back to what it had said. */}
+          <div className="navigate__footer-news">
+            <NewsHistory collapsed={collapsed} />
+          </div>
           {!settings.demoMode && (
             <div className="navigate__footer-donate">
               <Donate collapsed={collapsed} />

@@ -1,22 +1,29 @@
 @import '../../tokens.less';
 
-.generalSettings {
+.settingsShell {
   display: flex;
   flex-direction: column;
   flex: 1;
 
-  &__tab-content {
+  &__tabbar {
+    margin-bottom: 0;
+  }
+
+  &__content {
     padding: @space-4 0;
-  }
-
-  &__timePickerContainer {
     display: flex;
-    gap: @space-3;
-    flex-wrap: wrap;
-    align-items: center;
+    flex-direction: column;
+    gap: @space-4;
   }
 
-  &__save-row {
+  // A settings page holds a handful of cards, not a document. Keeping the column narrow means the
+  // label, the help text and the control stay within one eye movement of each other instead of the
+  // control drifting off to the right on a wide monitor.
+  &__page {
+    max-width: 860px;
+  }
+
+  &__saveRow {
     display: flex;
     justify-content: flex-end;
     margin-top: @space-2;
@@ -55,6 +62,13 @@
       line-height: 1.5;
     }
   }
+
+  &__timePickerContainer {
+    display: flex;
+    gap: @space-3;
+    flex-wrap: wrap;
+    align-items: center;
+  }
 }
 
 // InputNumber fix
@@ -67,12 +81,12 @@
 
 .semi-input-number-button-up,
 .semi-input-number-button-down {
-  background: rgba(255,255,255,0.06) !important;
+  background: rgba(255, 255, 255, 0.06) !important;
   border-color: @color-border-bright !important;
   color: @color-muted !important;
 
   &:hover {
-    background: rgba(255,255,255,0.12) !important;
+    background: rgba(255, 255, 255, 0.12) !important;
     color: @color-text !important;
   }
 }

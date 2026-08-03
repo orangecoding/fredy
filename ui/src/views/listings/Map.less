@@ -40,6 +40,14 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
+
+    // A setting that only means something once the layer above it is on. Indented and rule-marked
+    // so the dependency is visible rather than only discoverable by toggling.
+    &--nested {
+      margin-left: 10px;
+      padding-left: 10px;
+      border-left: 1px solid #262a3a;
+    }
   }
 
   &__price-slider {

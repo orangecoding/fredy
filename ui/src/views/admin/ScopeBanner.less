@@ -1,0 +1,55 @@
+@import '../../tokens.less';
+
+// Deliberately a hairline band and not a Semi Banner: a Banner reads as "something went wrong just
+// now", and this is a standing fact about the page rather than an alert. It has to be noticeable
+// enough to register on arrival and quiet enough to stop registering after that.
+.scopeBanner {
+  display: flex;
+  align-items: center;
+  gap: @space-2;
+  flex-wrap: wrap;
+  margin-bottom: @space-4;
+  padding: @space-2 @space-3;
+  border: 1px solid @color-orange-border;
+  border-left-width: 3px;
+  border-radius: @radius-chip;
+  background: @color-orange-bg;
+
+  &__icon {
+    color: @color-orange-text;
+    flex-shrink: 0;
+  }
+
+  &__label {
+    color: @color-orange-text;
+    font-size: @text-xs;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  &__text {
+    color: @color-muted;
+    font-size: @text-sm;
+    line-height: 1.5;
+  }
+
+  &__instance {
+    margin-left: auto;
+    color: @color-faint;
+    font-family: @font-mono;
+    font-size: @text-xs;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 40%;
+  }
+}
+
+@media (max-width: 640px) {
+  .scopeBanner__instance {
+    margin-left: 0;
+    max-width: 100%;
+  }
+}

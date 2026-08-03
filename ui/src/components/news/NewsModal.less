@@ -1,3 +1,135 @@
+@import '../../tokens.less';
+
 .semi-userGuide-modal-body-title {
   width: 100%;
+}
+
+.news {
+  &__title {
+    display: flex;
+    align-items: center;
+    gap: @space-2;
+  }
+
+  &__title-mark {
+    flex-shrink: 0;
+  }
+
+  &__version {
+    margin-left: auto;
+    color: @color-faint;
+    font-family: @font-mono;
+    font-size: @text-xs;
+    font-weight: 400;
+  }
+
+  &__entry {
+    text-align: left;
+    // Stated rather than inherited. The same markup is rendered inside two very different Semi
+    // containers - the UserGuide modal and a SideSheet - and only one of them passes the themed
+    // text colour down, so the sheet was rendering this prose in Semi's stock near-black.
+    color: @color-text;
+
+    p {
+      margin: 0;
+      line-height: 1.6;
+      color: @color-text;
+    }
+
+    a {
+      color: @color-accent;
+    }
+
+    b,
+    strong {
+      color: @color-text;
+    }
+  }
+
+  &__media {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: @space-3;
+    border-radius: @radius-card;
+  }
+
+  // The sheet is what a phone gets instead of the centred dialog, and what the reopenable history
+  // uses at every width.
+  &__sheet {
+    .semi-sidesheet-body {
+      padding-bottom: @space-8;
+      color: @color-text;
+    }
+  }
+
+  &__sheet-entry {
+    margin-bottom: @space-6;
+  }
+
+  &__release {
+    margin-bottom: @space-8;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &__releaseHeader {
+    display: flex;
+    align-items: baseline;
+    gap: @space-3;
+    padding-bottom: @space-2;
+    margin-bottom: @space-4;
+    border-bottom: 1px solid @color-border;
+  }
+
+  &__releaseVersion {
+    margin: 0;
+    font-family: @font-mono;
+    font-size: @text-md;
+    color: @color-text;
+  }
+
+  &__releaseDate {
+    color: @color-faint;
+    font-size: @text-sm;
+  }
+
+  &__historyEntry {
+    margin-bottom: @space-6;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &__historyEntryTitle {
+    margin: 0 0 @space-2;
+    font-size: @text-base;
+    color: @color-text;
+  }
+
+  // Matches the Donate and Logout buttons it sits beside in the sidebar footer.
+  &__historyTrigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: @space-2;
+    width: 100%;
+    padding: @space-2;
+    background: transparent;
+    border: 1px solid @color-border;
+    border-radius: @radius-btn;
+    color: @color-muted;
+    font-family: @font-ui;
+    font-size: @text-sm;
+    cursor: pointer;
+    transition: all @transition-fast;
+
+    &:hover {
+      border-color: @color-border-bright;
+      color: @color-text;
+      background: @color-fill-subtle;
+    }
+  }
 }

@@ -1,10 +1,36 @@
 {
-  "key": "4af4975de7b0c1fefdeb69def7075ce972da3c1ede1292876d2beb7a4c5cfe8d",
-  "content": [
+  "schemaVersion": 1,
+  "releases": [
     {
-      "title": "Fredy goes ÖPNV",
-      "text": "Finding a flat is one thing. Getting out of it every morning is another. Fredy now knows how well connected every listing is. Within the map view, you now have an ÖPNV layer which is enabled by default. This layer shows you the nearest bus/tram stop including the live data of which type of transportation leaves at a specific time :)",
-      "media": "1.png"
+      "version": "25.1.0",
+      "date": "2026-08-03",
+      "entries": [
+        {
+          "title": "Quality of life improvements",
+          "text": "This release is all about quality of life improvements. <br/> <ul><li>Map view improvements</li><li>ÖPNV popover behavior configurable (opens either on click or hover)</li><li>Settings are now more accessible, split between user and admin-settings</li><li>If price tracker is enabled, you can now start it manually</li></ul>"
+        }
+      ]
+    },
+    {
+      "version": "25.0.0",
+      "date": "2026-08-01",
+      "entries": [
+        {
+          "title": "Fredy watches the price",
+          "text": "A flat that has been on the market a while often gets cheaper, and until now there was no way to notice. Fredy can re-check the listings it has already found and record what they cost each time, so every listing carries its own price history and you hear about it when one drops. It is off by default: every check costs a page load at the portal, so switching it on is a decision you make deliberately. You will find it under <b>Administration &rarr; Execution</b>, together with the dials for how often Fredy looks and how many listings it touches per run."
+        }
+      ]
+    },
+    {
+      "version": "24.0.0",
+      "date": "2026-07-31",
+      "entries": [
+        {
+          "title": "Fredy goes ÖPNV",
+          "text": "Finding a flat is one thing. Getting out of it every morning is another. Fredy now knows how well connected every listing is. Within the map view, you now have an ÖPNV layer which is enabled by default. This layer shows you the nearest bus/tram stop including the live data of which type of transportation leaves at a specific time :)",
+          "media": "24.0.0-transit.png"
+        }
+      ]
     }
   ]
 }

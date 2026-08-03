@@ -57,9 +57,9 @@ function percentOf(used, total) {
  * poll answers that arrive after a manual enable or disable, so the UI does not flicker back to
  * the previous state for a few seconds.
  *
- * @returns {React.ReactElement} One to be rendered inside the page's Tabs.
+ * @returns {React.ReactElement}
  */
-export default function DebugPanel() {
+export default function DebugPage() {
   const t = useTranslation();
   const actions = useActions();
 
@@ -182,7 +182,7 @@ export default function DebugPanel() {
 
   return (
     <>
-      <div className="generalSettings__tab-content">
+      <div className="settingsShell__page">
         <SegmentPart name={t('settings.debugSectionName')}>
           <Banner
             type="info"
@@ -318,4 +318,4 @@ export default function DebugPanel() {
   );
 }
 
-DebugPanel.displayName = 'DebugPanel';
+DebugPage.displayName = 'DebugPage';

@@ -11,7 +11,6 @@ import { useActions, useSelector } from '../../services/state/store';
 import UserRemovalModal from './UserRemovalModal';
 import { xhrDelete, errorMessage } from '../../services/xhr';
 import { useNavigate } from 'react-router-dom';
-import Headline from '../../components/headline/Headline.jsx';
 import './Users.less';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
 
@@ -48,20 +47,19 @@ const Users = function Users() {
 
   return (
     <div className="users">
-      <Headline
-        text={t('users.title')}
-        actions={
-          <Button type="primary" theme="solid" icon={<IconPlus />} onClick={() => navigate('/users/new')}>
-            {t('users.newUser')}
-          </Button>
-        }
-      />
+      {/* No heading of its own: this renders inside the Administration layout, which already names
+          the page. A second h1 underneath the first one is noise. */}
+      <div className="settingsShell__saveRow">
+        <Button type="primary" theme="solid" icon={<IconPlus />} onClick={() => navigate('/admin/users/new')}>
+          {t('users.newUser')}
+        </Button>
+      </div>
       {!loading && (
         <React.Fragment>
           {userIdToBeRemoved && <UserRemovalModal onCancel={() => setUserIdToBeRemoved(null)} onOk={onUserRemoval} />}
           <UserTable
             user={users}
-            onUserEdit={(userId) => navigate(`/users/edit/${userId}`)}
+            onUserEdit={(userId) => navigate(`/admin/users/edit/${userId}`)}
             onUserRemoval={(userId) => setUserIdToBeRemoved(userId)}
           />
         </React.Fragment>

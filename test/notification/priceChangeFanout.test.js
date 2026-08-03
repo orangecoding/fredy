@@ -103,19 +103,6 @@ describe('notification/notify - price changes', () => {
   });
 });
 
-describe('every shipped adapter', () => {
-  it('implements sendPriceChange', async () => {
-    // The suite above replaces the adapter loader; this case needs the real one back.
-    vi.resetModules();
-    vi.doUnmock(utilsPath);
-    const { getNotificationAdapters } = await import(utilsPath);
-    const shipped = (await getNotificationAdapters()).filter((adapter) => adapter.config?.id != null);
-
-    const missing = shipped
-      .filter((adapter) => typeof adapter.sendPriceChange !== 'function')
-      .map((adapter) => adapter.config.id);
-
-    expect(missing).toEqual([]);
-    expect(shipped.length).toBeGreaterThan(10);
-  });
-});
+// The matching check against the adapters Fredy really ships lives in `shippedAdapters.test.js`.
+// It cannot run here: every case above replaces `lib/utils.js` with a mock, and unmocking it well
+// enough to load the real adapter directory raced the concurrent imports those adapters trigger.

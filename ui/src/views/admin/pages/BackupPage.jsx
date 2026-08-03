@@ -22,19 +22,19 @@ import { useTranslation } from '../../../services/i18n/i18n.jsx';
  * do is spelled out before anything is overwritten. An archive from a newer Fredy needs an
  * explicit override, because migrating a schema backwards is not something this can do.
  *
- * @param {Object} props
- * @param {boolean} props.demoMode Whether this instance runs in demo mode.
- * @param {boolean} props.isAdmin Whether the current user may actually perform the actions.
- * @returns {React.ReactElement} One to be rendered inside the page's Tabs.
+ * This used to sit among the personal settings, where every user could see it and the server was
+ * left to refuse them. A backup covers the whole database - every user's jobs and listings - so it
+ * is an operator action, and it now lives where the rest of them are.
+ *
+ * @returns {React.ReactElement}
  */
-export default function BackupPanel({ demoMode, isAdmin }) {
+export default function BackupPage() {
   const t = useTranslation();
   const fileInputRef = React.useRef(null);
   const [restoreModalVisible, setRestoreModalVisible] = React.useState(false);
   const [precheckInfo, setPrecheckInfo] = React.useState(null);
   const [restoreBusy, setRestoreBusy] = React.useState(false);
   const [selectedRestoreFile, setSelectedRestoreFile] = React.useState(null);
-  const currentUser = { isAdmin };
 
   const handleDownloadBackup = React.useCallback(async () => {
     try {
@@ -94,24 +94,10 @@ export default function BackupPanel({ demoMode, isAdmin }) {
 
   return (
     <>
-      <div className="generalSettings__tab-content">
-        {demoMode && !currentUser?.isAdmin && (
-          <Banner
-            fullMode={false}
-            type="warning"
-            closeIcon={null}
-            style={{ marginBottom: '12px' }}
-            description={t('settings.backupDemoWarning')}
-          />
-        )}
+      <div className="settingsShell__page">
         <SegmentPart name={t('settings.backupSectionName')} helpText={t('settings.backupHelp')}>
           <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
-            <Button
-              theme="solid"
-              icon={<IconSave />}
-              onClick={handleDownloadBackup}
-              disabled={demoMode && !currentUser?.isAdmin}
-            >
+            <Button theme="solid" icon={<IconSave />} onClick={handleDownloadBackup}>
               {t('settings.backupDownload')}
             </Button>
             <input
@@ -121,12 +107,7 @@ export default function BackupPanel({ demoMode, isAdmin }) {
               style={{ display: 'none' }}
               onChange={handleSelectRestoreFile}
             />
-            <Button
-              onClick={handleOpenFilePicker}
-              theme="light"
-              icon={<IconFolder />}
-              disabled={demoMode && !currentUser?.isAdmin}
-            >
+            <Button onClick={handleOpenFilePicker} theme="light" icon={<IconFolder />}>
               {t('settings.backupRestoreFromZip')}
             </Button>
           </div>
@@ -182,4 +163,4 @@ export default function BackupPanel({ demoMode, isAdmin }) {
   );
 }
 
-BackupPanel.displayName = 'BackupPanel';
+BackupPage.displayName = 'BackupPage';

@@ -77,6 +77,8 @@ export default function MapView() {
   const userSettings = useSelector((state) => state.userSettings.settings);
   const homeAddresses = useMemo(() => getAddresses(userSettings), [userSettings]);
   const language = userSettings?.language ?? 'en';
+  // Absent means off, which is why this needed no migration.
+  const transitHoverPopups = userSettings?.transit_hover_popups === true;
   const listingDeletionPref = userSettings?.listing_deletion_preference;
   const defaultDeleteType = listingDeletionPref?.hardDelete ? 'hard' : 'soft';
 
@@ -176,10 +178,12 @@ export default function MapView() {
     setMapReady(true);
   };
 
-  // Hovering a stop of the transit overlay opens its departure board; a click does the same, so
-  // touch devices are not left out. The stop icons come from the vector tiles and carry
-  // OpenStreetMap ids, which mean nothing to a timetable - the backend resolves the stop from the
-  // coordinates and the name instead.
+  // Clicking a stop of the transit overlay opens its departure board. Hovering does the same, but
+  // only for someone who asked for it: boards opening under the pointer while panning across a
+  // city full of stops is the sort of help nobody asked for, so it is off unless switched on.
+  //
+  // The stop icons come from the vector tiles and carry OpenStreetMap ids, which mean nothing to a
+  // timetable - the backend resolves the stop from the coordinates and the name instead.
   useEffect(() => {
     if (!mapReady || !map.current || !showTransit) return undefined;
 
@@ -187,6 +191,8 @@ export default function MapView() {
     /** @type {{popup: import('maplibre-gl').Popup, key: string}|null} */
     let open = null;
     let closeTimer = null;
+    /** Set while a click is opening a board, so the same click cannot also close it. */
+    let justOpened = false;
 
     const cancelClose = () => {
       clearTimeout(closeTimer);
@@ -228,16 +234,26 @@ export default function MapView() {
       const popup = new maplibregl.Popup({
         offset: 14,
         maxWidth: '300px',
-        // It follows the pointer, so a close button would only be in the way, and closing it on
-        // every map click would fight the hover.
-        closeButton: false,
+        // On hover the popup follows the pointer and leaving the stop closes it, so a close button
+        // would only be in the way. Opened by a click it stays put until something dismisses it,
+        // and then the button is the obvious way out - alongside Escape and a click elsewhere.
+        closeButton: !transitHoverPopups,
+        // Handled below instead: MapLibre's own version closes on any map click, including the one
+        // that just opened this popup.
         closeOnClick: false,
       })
         .setLngLat([lng, lat])
         .setDOMContent(container)
         .addTo(mapInstance);
 
-      popup.on('close', unmount);
+      // Also reached by the popup's own close button, which closes it without going through
+      // `closeNow` and would otherwise leave `open` pointing at a popup that is no longer there.
+      popup.on('close', () => {
+        unmount();
+        if (open?.popup === popup) {
+          open = null;
+        }
+      });
       keepPopupInView(mapInstance, popup);
 
       // The popup is part of the hover target: as long as the pointer is on it, it stays.
@@ -246,33 +262,87 @@ export default function MapView() {
       element?.addEventListener('mouseleave', scheduleClose);
 
       open = { popup, key };
+      // Consumed by `closeOnMapClick`, which runs for this very same click.
+      justOpened = event.type === 'click';
     };
 
     const showPointer = () => {
       mapInstance.getCanvas().style.cursor = 'pointer';
     };
-    const leaveStops = () => {
+    const clearPointer = () => {
       mapInstance.getCanvas().style.cursor = '';
+    };
+    const leaveStops = () => {
+      clearPointer();
       scheduleClose();
     };
 
+    // Anywhere on the map that is not another stop. The layer-specific handler above opens the
+    // board and this one runs for the same click, so the stop it was just opened for has to be
+    // excluded or the popup would close in the same breath as it appeared.
+    //
+    // Two guards rather than one, because getting this wrong makes the feature worse than it was:
+    // the flag is set by the opener itself and cannot disagree with it, and the feature query
+    // covers clicking straight from one stop to another.
+    const closeOnMapClick = (event) => {
+      if (justOpened) {
+        justOpened = false;
+        return;
+      }
+      if (open == null) return;
+      const onAStop = mapInstance.queryRenderedFeatures(event.point, { layers: [TRANSIT_STOPS_LAYER_ID] });
+      if (onAStop.length === 0) {
+        closeNow();
+      }
+    };
+
+    // Anywhere outside the map: the filter panel, the sidebar, the page around it. Canvas clicks
+    // never reach this usefully - the target is always the canvas - which is what `closeOnMapClick`
+    // is for.
+    const closeOnOutsideClick = (event) => {
+      if (open == null) return;
+      const insidePopup = open.popup.getElement()?.contains(event.target);
+      const insideMap = mapInstance.getContainer().contains(event.target);
+      if (!insidePopup && !insideMap) {
+        closeNow();
+      }
+    };
+
+    const closeOnEscape = (event) => {
+      if (event.key === 'Escape' && open != null) {
+        closeNow();
+      }
+    };
+
     mapInstance.on('click', TRANSIT_STOPS_LAYER_ID, openDepartures);
-    // `mousemove` rather than `mouseenter`: moving from one stop straight onto the next one stays
-    // inside the layer, so `mouseenter` would not fire again and the popup would show the wrong
-    // stop. `openDepartures` returns early when it is already the right one.
-    mapInstance.on('mousemove', TRANSIT_STOPS_LAYER_ID, openDepartures);
     mapInstance.on('mouseenter', TRANSIT_STOPS_LAYER_ID, showPointer);
-    mapInstance.on('mouseleave', TRANSIT_STOPS_LAYER_ID, leaveStops);
+    mapInstance.on('click', closeOnMapClick);
+    document.addEventListener('click', closeOnOutsideClick);
+    document.addEventListener('keydown', closeOnEscape);
+
+    if (transitHoverPopups) {
+      // `mousemove` rather than `mouseenter`: moving from one stop straight onto the next one
+      // stays inside the layer, so `mouseenter` would not fire again and the popup would show the
+      // wrong stop. `openDepartures` returns early when it is already the right one.
+      mapInstance.on('mousemove', TRANSIT_STOPS_LAYER_ID, openDepartures);
+      mapInstance.on('mouseleave', TRANSIT_STOPS_LAYER_ID, leaveStops);
+    } else {
+      mapInstance.on('mouseleave', TRANSIT_STOPS_LAYER_ID, clearPointer);
+    }
 
     return () => {
       mapInstance.off('click', TRANSIT_STOPS_LAYER_ID, openDepartures);
       mapInstance.off('mousemove', TRANSIT_STOPS_LAYER_ID, openDepartures);
       mapInstance.off('mouseenter', TRANSIT_STOPS_LAYER_ID, showPointer);
       mapInstance.off('mouseleave', TRANSIT_STOPS_LAYER_ID, leaveStops);
+      mapInstance.off('mouseleave', TRANSIT_STOPS_LAYER_ID, clearPointer);
+      mapInstance.off('click', closeOnMapClick);
+      document.removeEventListener('click', closeOnOutsideClick);
+      document.removeEventListener('keydown', closeOnEscape);
       mapInstance.getCanvas().style.cursor = '';
       closeNow();
     };
-  }, [mapReady, showTransit, language]);
+  }, [mapReady, showTransit, transitHoverPopups, language]);
 
   const handleMapStyle = (value) => {
     setSearchParams(
@@ -511,7 +581,10 @@ export default function MapView() {
 
   return (
     <>
-      <Headline text={t('map.title')} />
+      {/* The address caveat is a standing fact about this page, not something that just happened,
+          so it reads as a line under the title rather than as an info Banner competing with the
+          map for attention every single visit. */}
+      <Headline text={t('map.title')} subtitle={t('map.onlyValidAddresses')} />
       <div className="map-view-container">
         {homeAddresses.length === 0 && (
           <Banner
@@ -523,21 +596,12 @@ export default function MapView() {
             description={
               <span>
                 {t('map.noHomeAddressBefore')}
-                <Link to="/userSettings">{t('map.noHomeAddressLink')}</Link>
+                <Link to="/settings/addresses">{t('map.noHomeAddressLink')}</Link>
                 {t('map.noHomeAddressAfter')}
               </span>
             }
           />
         )}
-
-        <Banner
-          fullMode={true}
-          type="info"
-          bordered
-          closeIcon={null}
-          style={{ marginBottom: '8px' }}
-          description={t('map.onlyValidAddresses')}
-        />
 
         <div className="map-view-container__map-wrapper">
           <Map
@@ -631,6 +695,28 @@ export default function MapView() {
               </Text>
               <Switch size="small" checked={showTransit} onChange={(v) => setShowTransit(v)} />
             </div>
+
+            {/* Only offered while the layer it belongs to is on, and indented under it: on its own
+                it describes nothing. Unlike the switches above it, this one is a preference rather
+                than a view state, so it is stored per user instead of living in the URL. */}
+            {showTransit && (
+              <div className="map-view-container__panel-row map-view-container__panel-row--nested">
+                <Text size="small" style={{ color: '#8892a4' }}>
+                  {t('map.filterTransitHover')}
+                </Text>
+                <Switch
+                  size="small"
+                  checked={transitHoverPopups}
+                  onChange={async (value) => {
+                    try {
+                      await actions.userSettings.setTransitHoverPopups(value);
+                    } catch (error) {
+                      Toast.error(errorMessage(error, t('map.filterTransitHoverError')));
+                    }
+                  }}
+                />
+              </div>
+            )}
           </div>
         </div>
 

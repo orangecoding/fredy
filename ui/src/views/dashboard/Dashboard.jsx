@@ -12,19 +12,20 @@ import {
   IconDoubleChevronLeft,
   IconDoubleChevronRight,
   IconStarStroked,
-  IconNoteMoney,
   IconPlayCircle,
   IconPlusCircle,
 } from '@douyinfe/semi-icons';
 
 import { useSelector, useActions } from '../../services/state/store';
+// Semi's IconNoteMoney draws a yen note. Fredy quotes euros everywhere, so it gets a euro.
+import IconEuro from '../../components/icons/IconEuro.jsx';
 import KpiCard from '../../components/cards/KpiCard.jsx';
 import ProviderShareChart from '../../components/cards/ProviderShareChart.jsx';
 import TrendSparkline from '../../components/cards/TrendSparkline.jsx';
 import Headline from '../../components/headline/Headline.jsx';
 
 import './Dashboard.less';
-import { xhrPost } from '../../services/xhr.js';
+import { xhrPost, errorMessage } from '../../services/xhr.js';
 import { format } from '../../services/time/timeService.js';
 import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
 
@@ -67,7 +68,15 @@ export default function Dashboard() {
   const actions = useActions();
   const navigate = useNavigate();
   const dashboard = useSelector((state) => state.dashboard.data);
+  const currentUser = useSelector((state) => state.user.currentUser);
+  const generalSettings = useSelector((state) => state.generalSettings.settings);
   const [searching, setSearching] = React.useState(false);
+  const [trackingPrices, setTrackingPrices] = React.useState(false);
+
+  // Admin-only, and only worth offering when the feature is switched on: the sweep touches every
+  // tracked listing on the instance, so it is the same audience that configures it. Non-admins are
+  // not served `priceTrackingEnabled` at all, which is why both halves of this are needed.
+  const canRunPriceTracker = currentUser?.isAdmin === true && generalSettings?.priceTrackingEnabled === true;
 
   React.useEffect(() => {
     actions.dashboard.getDashboard();
@@ -88,6 +97,20 @@ export default function Dashboard() {
       Toast.error(t('dashboard.searchNowFailed'));
     } finally {
       setSearching(false);
+    }
+  };
+
+  const runPriceTracker = async () => {
+    setTrackingPrices(true);
+    try {
+      await xhrPost('/api/admin/price-tracking/run', null);
+      Toast.success(t('dashboard.priceTrackerStarted'));
+    } catch (error) {
+      // The backend says why - the feature is off, or a sweep is already going - and that is more
+      // useful than a generic failure.
+      Toast.error(errorMessage(error, t('dashboard.priceTrackerFailed')));
+    } finally {
+      setTrackingPrices(false);
     }
   };
 
@@ -132,9 +155,19 @@ export default function Dashboard() {
       <Headline
         text={t('dashboard.title')}
         actions={
-          <Button icon={<IconPlayCircle />} loading={searching} onClick={runNow} theme="borderless">
-            {t('dashboard.searchNowButton')}
-          </Button>
+          <div className="dashboard__actions">
+            <Button icon={<IconPlayCircle />} loading={searching} onClick={runNow} theme="borderless">
+              {t('dashboard.searchNowButton')}
+            </Button>
+            {canRunPriceTracker && (
+              <>
+                <span className="dashboard__actions-divider" aria-hidden="true" />
+                <Button icon={<IconEuro />} loading={trackingPrices} onClick={runPriceTracker} theme="borderless">
+                  {t('dashboard.priceTrackerButton')}
+                </Button>
+              </>
+            )}
+          </div>
         }
       />
 
@@ -203,7 +236,7 @@ export default function Dashboard() {
                     maximumFractionDigits: 0,
                   }).format(kpis.medianPriceOfListings)
             }
-            icon={<IconNoteMoney />}
+            icon={<IconEuro />}
             description={t('dashboard.kpiMedianPriceDesc')}
           />
         </Col>

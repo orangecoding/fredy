@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-illustrations';
 import { format } from '../../services/time/timeService';
 import { Table, Button, Empty, Tag, Toast } from '@douyinfe/semi-ui-19';
-import { IconDelete, IconEdit } from '@douyinfe/semi-icons';
+import { IconDelete, IconEdit, IconCopy } from '@douyinfe/semi-icons';
 import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
 import { xhrGet } from '../../services/xhr.js';
 
@@ -30,6 +30,39 @@ export default function UserTable({ user = [], onUserRemoval, onUserEdit } = {})
       Toast.error(t('users.mcpTokenLoadError'));
     }
   };
+
+  /**
+   * Put a revealed token on the clipboard.
+   *
+   * Falls back to a hidden textarea and `execCommand`, because the Clipboard API is only available
+   * on secure origins - and a self-hosted Fredy reached over plain http on the LAN is exactly the
+   * setup where somebody is copying a token to paste into their MCP client.
+   *
+   * @param {string} token
+   * @returns {Promise<void>}
+   */
+  const copyToken = async (token) => {
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(token);
+      } else {
+        const scratch = document.createElement('textarea');
+        scratch.value = token;
+        scratch.setAttribute('readonly', '');
+        scratch.style.position = 'fixed';
+        scratch.style.opacity = '0';
+        document.body.appendChild(scratch);
+        scratch.select();
+        document.execCommand('copy');
+        document.body.removeChild(scratch);
+      }
+      Toast.success(t('users.mcpTokenCopied'));
+    } catch (error) {
+      console.error('Error while trying to copy the MCP token.', error);
+      Toast.error(t('users.mcpTokenCopyError'));
+    }
+  };
+
   const empty = (
     <Empty
       image={<IllustrationNoResult />}
@@ -82,16 +115,26 @@ export default function UserTable({ user = [], onUserRemoval, onUserEdit } = {})
           dataIndex: 'id',
           render: (userId) =>
             revealedTokens[userId] ? (
-              <span
-                style={{
-                  fontFamily: 'JetBrains Mono, monospace',
-                  fontSize: '0.85em',
-                  wordBreak: 'break-all',
-                  color: '#505050',
-                }}
-              >
-                {revealedTokens[userId]}
-              </span>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+                <span
+                  style={{
+                    fontFamily: 'JetBrains Mono, monospace',
+                    fontSize: '0.85em',
+                    wordBreak: 'break-all',
+                    color: '#505050',
+                  }}
+                >
+                  {revealedTokens[userId]}
+                </span>
+                {/* A 71-character token is not something anyone should be selecting by hand. */}
+                <Button
+                  size="small"
+                  theme="borderless"
+                  icon={<IconCopy />}
+                  aria-label={t('users.mcpTokenCopy')}
+                  onClick={() => copyToken(revealedTokens[userId])}
+                />
+              </div>
             ) : (
               <Button size="small" theme="borderless" onClick={() => revealToken(userId)}>
                 {t('users.mcpTokenReveal')}

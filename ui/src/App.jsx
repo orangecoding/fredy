@@ -7,12 +7,20 @@ import React, { useEffect } from 'react';
 
 import InsufficientPermission from './components/permission/InsufficientPermission';
 import PermissionAwareRoute from './components/permission/PermissionAwareRoute';
-import GeneralSettings from './views/generalSettings/GeneralSettings';
+import SettingsLayout from './views/settings/SettingsLayout';
+import PreferencesPage from './views/settings/pages/PreferencesPage';
+import AddressesPage from './views/settings/pages/AddressesPage';
+import ListingDetailsPage from './views/settings/pages/ListingDetailsPage';
+import AdminLayout from './views/admin/AdminLayout';
+import SystemPage from './views/admin/pages/SystemPage';
+import ExecutionPage from './views/admin/pages/ExecutionPage';
+import BackupPage from './views/admin/pages/BackupPage';
+import DebugPage from './views/admin/pages/DebugPage';
 import JobMutation from './views/jobs/mutation/JobMutation';
 import UserMutator from './views/user/mutation/UserMutator';
 import { useActions, useSelector } from './services/state/store';
 import { useBrowserNotifications } from './hooks/useBrowserNotifications';
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation, useParams } from 'react-router-dom';
 import Login from './views/login/Login';
 import Users from './views/user/Users';
 import Jobs from './views/jobs/Jobs';
@@ -44,6 +52,21 @@ for (const [path, mod] of Object.entries(semiLocaleModules)) {
   const name = path.match(/\/source\/(\w+)\.js$/)?.[1];
   if (name) semiLocales[name] = mod.default ?? mod;
 }
+
+/**
+ * Carry the user id from the old edit URL over to the new one.
+ *
+ * `<Navigate to="/admin/users/edit/:userId">` would navigate to the literal string, so the
+ * parameter has to be read and put back.
+ *
+ * @returns {React.ReactElement}
+ */
+function LegacyUserEditRedirect() {
+  const { userId } = useParams();
+  return <Navigate to={`/admin/users/edit/${userId}`} replace />;
+}
+
+LegacyUserEditRedirect.displayName = 'LegacyUserEditRedirect';
 
 export default function FredyApp() {
   const location = useLocation();
@@ -182,33 +205,41 @@ export default function FredyApp() {
                   <Route path="/finance" element={<FinanceCalculator />} />
                   <Route path="/watchlistManagement" element={<WatchlistManagement />} />
 
-                  {/* Permission-aware routes */}
+                  {/* Settings that belong to whoever is signed in. No guard: they are theirs. */}
+                  <Route path="/settings" element={<SettingsLayout />}>
+                    <Route index element={<Navigate to="/settings/preferences" replace />} />
+                    <Route path="preferences" element={<PreferencesPage />} />
+                    <Route path="addresses" element={<AddressesPage />} />
+                    <Route path="listings" element={<ListingDetailsPage />} />
+                  </Route>
+
+                  {/* Settings that belong to the instance. Guarded once, at the parent, so a new
+                      page cannot be added without inheriting the check. */}
                   <Route
-                    path="/users/new"
+                    path="/admin"
                     element={
                       <PermissionAwareRoute currentUser={currentUser}>
-                        <UserMutator />
+                        <AdminLayout />
                       </PermissionAwareRoute>
                     }
-                  />
-                  <Route
-                    path="/users/edit/:userId"
-                    element={
-                      <PermissionAwareRoute currentUser={currentUser}>
-                        <UserMutator />
-                      </PermissionAwareRoute>
-                    }
-                  />
-                  <Route
-                    path="/users"
-                    element={
-                      <PermissionAwareRoute currentUser={currentUser}>
-                        <Users />
-                      </PermissionAwareRoute>
-                    }
-                  />
-                  <Route path="/userSettings" element={<Navigate to="/generalSettings" replace />} />
-                  <Route path="/generalSettings" element={<GeneralSettings />} />
+                  >
+                    <Route index element={<Navigate to="/admin/system" replace />} />
+                    <Route path="system" element={<SystemPage />} />
+                    <Route path="execution" element={<ExecutionPage />} />
+                    <Route path="users" element={<Users />} />
+                    <Route path="users/new" element={<UserMutator />} />
+                    <Route path="users/edit/:userId" element={<UserMutator />} />
+                    <Route path="backup" element={<BackupPage />} />
+                    <Route path="debug" element={<DebugPage />} />
+                  </Route>
+
+                  {/* The addresses these used to live at. Kept so existing bookmarks and the links
+                      in older notification emails still land somewhere sensible. */}
+                  <Route path="/generalSettings" element={<Navigate to="/settings/preferences" replace />} />
+                  <Route path="/userSettings" element={<Navigate to="/settings/preferences" replace />} />
+                  <Route path="/users" element={<Navigate to="/admin/users" replace />} />
+                  <Route path="/users/new" element={<Navigate to="/admin/users/new" replace />} />
+                  <Route path="/users/edit/:userId" element={<LegacyUserEditRedirect />} />
 
                   <Route path="/" element={<Navigate to="/dashboard" replace />} />
                   {/* Catch-all: an authenticated user landing on an unknown path (e.g. still on
