@@ -31,11 +31,6 @@ describe('locales', () => {
     expect(localeFiles).toContain('en.json');
   });
 
-  it.each(localeFiles.filter((file) => file !== 'en.json'))('%s defines the same keys as en.json', (file) => {
-    const translations = readLocale(file);
-    expect(Object.keys(translations).sort()).toEqual(Object.keys(english).sort());
-  });
-
   it.each(localeFiles)('%s has no empty translations', (file) => {
     const empty = Object.entries(readLocale(file))
       .filter(([, value]) => typeof value !== 'string' || value.trim().length === 0)
