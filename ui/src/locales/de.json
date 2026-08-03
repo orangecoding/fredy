@@ -321,6 +321,7 @@
   "transit.noStops": "Keine Haltestellen in der Nähe gefunden",
   "transit.departingNow": "jetzt",
   "transit.inMinutes": "in {{minutes}} Min.",
+  "transit.journeyTransfers": "{{count}} Umstiege",
   "transit.unknownLine": "Linie",
   "transit.mode.bus": "Bus",
   "transit.mode.coach": "Fernbus",

@@ -321,6 +321,7 @@
   "transit.noStops": "No stops found nearby",
   "transit.departingNow": "now",
   "transit.inMinutes": "in {{minutes}} min",
+  "transit.journeyTransfers": "{{count}} transfers",
   "transit.unknownLine": "Line",
   "transit.mode.bus": "Bus",
   "transit.mode.coach": "Coach",
