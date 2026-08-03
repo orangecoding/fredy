@@ -28,9 +28,7 @@ import { createListingPopupContent } from './listingPopupContent.jsx';
 import Map from '../../components/map/Map.jsx';
 import Headline from '../../components/headline/Headline.jsx';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
-import { TRANSIT_STOPS_LAYER_ID } from '../../components/map/overlayLayers.js';
 import { keepPopupInView, mountPopupNode } from '../../components/map/popupContent.jsx';
-import DeparturesBoard from '../../components/transit/DeparturesBoard.jsx';
 import NearbyStops from '../../components/transit/NearbyStops.jsx';
 
 /**
@@ -62,13 +60,11 @@ const { Text } = Typography;
 
 export default function MapView() {
   const t = useTranslation();
-  const mapContainer = useRef(null);
   const map = useRef(null);
   const markers = useRef([]);
   const homeMarkers = useRef([]);
   // Every React tree mounted into a popup, so they can be torn down with their markers.
   const popupRoots = useRef([]);
-  const [mapReady, setMapReady] = useState(false);
   const actions = useActions();
   const navigate = useNavigate();
   const sp = useSearchParams();
@@ -85,12 +81,10 @@ export default function MapView() {
   const jobs = useSelector((state) => state.jobsData.jobs);
   // One grouped state rather than four independent setters: two of these can change in the same
   // tick, and separate setSearchParams calls overwrite each other.
-  const { values: urlState, setValue: setUrlValue } = useUrlState(sp, MAP_URL_STATE);
+  const { values: urlState, setValue: setUrlValue, setValues } = useUrlState(sp, MAP_URL_STATE);
   const { job: jobId, distance: distanceFilter, style, buildings: show3dBuildings, transit: showTransit } = urlState;
   const setJobId = (value) => setUrlValue('job', value);
   const setDistanceFilter = (value) => setUrlValue('distance', value);
-  const setShow3dBuildings = (value) => setUrlValue('buildings', value);
-  const setShowTransit = (value) => setUrlValue('transit', value);
 
   // Price range: stored as priceMin/priceMax URL params; default max derived from loaded listings
   const urlPriceMin = searchParams.has('priceMin') ? Number(searchParams.get('priceMin')) : null;
@@ -160,206 +154,24 @@ export default function MapView() {
     };
   }, [navigate]);
 
-  useEffect(() => {
-    if (mapContainer.current && !map.current) {
-      const checkMapReady = () => {
-        if (mapContainer.current?.map) {
-          map.current = mapContainer.current.map;
-        } else {
-          setTimeout(checkMapReady, 100);
-        }
-      };
-      checkMapReady();
-    }
-  }, []);
-
   const handleMapReady = (mapInstance) => {
     map.current = mapInstance;
-    setMapReady(true);
   };
 
-  // Clicking a stop of the transit overlay opens its departure board. Hovering does the same, but
-  // only for someone who asked for it: boards opening under the pointer while panning across a
-  // city full of stops is the sort of help nobody asked for, so it is off unless switched on.
-  //
-  // The stop icons come from the vector tiles and carry OpenStreetMap ids, which mean nothing to a
-  // timetable - the backend resolves the stop from the coordinates and the name instead.
-  useEffect(() => {
-    if (!mapReady || !map.current || !showTransit) return undefined;
-
-    const mapInstance = map.current;
-    /** @type {{popup: import('maplibre-gl').Popup, key: string}|null} */
-    let open = null;
-    let closeTimer = null;
-    /** Set while a click is opening a board, so the same click cannot also close it. */
-    let justOpened = false;
-
-    const cancelClose = () => {
-      clearTimeout(closeTimer);
-      closeTimer = null;
-    };
-
-    const closeNow = () => {
-      cancelClose();
-      open?.popup.remove();
-      open = null;
-    };
-
-    // A small grace period, so moving the pointer from the icon onto the popup does not close it.
-    const scheduleClose = () => {
-      cancelClose();
-      closeTimer = setTimeout(closeNow, 250);
-    };
-
-    const openDepartures = (event) => {
-      const feature = event.features?.[0];
-      if (!feature) return;
-
-      const [lng, lat] = feature.geometry.coordinates;
-      const name = feature.properties?.name;
-      const key = `${lng},${lat},${name ?? ''}`;
-
-      cancelClose();
-      if (open?.key === key) return; // already showing this stop
-      closeNow();
-
-      const container = document.createElement('div');
-      container.className = 'map-popup-content map-popup-content--transit';
-      const unmount = mountPopupNode(
-        container,
-        <DeparturesBoard lat={lat} lng={lng} name={name} showStopName limit={8} />,
-        language,
-      );
-
-      const popup = new maplibregl.Popup({
-        offset: 14,
-        maxWidth: '300px',
-        // On hover the popup follows the pointer and leaving the stop closes it, so a close button
-        // would only be in the way. Opened by a click it stays put until something dismisses it,
-        // and then the button is the obvious way out - alongside Escape and a click elsewhere.
-        closeButton: !transitHoverPopups,
-        // Handled below instead: MapLibre's own version closes on any map click, including the one
-        // that just opened this popup.
-        closeOnClick: false,
-      })
-        .setLngLat([lng, lat])
-        .setDOMContent(container)
-        .addTo(mapInstance);
-
-      // Also reached by the popup's own close button, which closes it without going through
-      // `closeNow` and would otherwise leave `open` pointing at a popup that is no longer there.
-      popup.on('close', () => {
-        unmount();
-        if (open?.popup === popup) {
-          open = null;
-        }
-      });
-      keepPopupInView(mapInstance, popup);
-
-      // The popup is part of the hover target: as long as the pointer is on it, it stays.
-      const element = popup.getElement();
-      element?.addEventListener('mouseenter', cancelClose);
-      element?.addEventListener('mouseleave', scheduleClose);
-
-      open = { popup, key };
-      // Consumed by `closeOnMapClick`, which runs for this very same click.
-      justOpened = event.type === 'click';
-    };
-
-    const showPointer = () => {
-      mapInstance.getCanvas().style.cursor = 'pointer';
-    };
-    const clearPointer = () => {
-      mapInstance.getCanvas().style.cursor = '';
-    };
-    const leaveStops = () => {
-      clearPointer();
-      scheduleClose();
-    };
-
-    // Anywhere on the map that is not another stop. The layer-specific handler above opens the
-    // board and this one runs for the same click, so the stop it was just opened for has to be
-    // excluded or the popup would close in the same breath as it appeared.
-    //
-    // Two guards rather than one, because getting this wrong makes the feature worse than it was:
-    // the flag is set by the opener itself and cannot disagree with it, and the feature query
-    // covers clicking straight from one stop to another.
-    const closeOnMapClick = (event) => {
-      if (justOpened) {
-        justOpened = false;
-        return;
-      }
-      if (open == null) return;
-      const onAStop = mapInstance.queryRenderedFeatures(event.point, { layers: [TRANSIT_STOPS_LAYER_ID] });
-      if (onAStop.length === 0) {
-        closeNow();
-      }
-    };
-
-    // Anywhere outside the map: the filter panel, the sidebar, the page around it. Canvas clicks
-    // never reach this usefully - the target is always the canvas - which is what `closeOnMapClick`
-    // is for.
-    const closeOnOutsideClick = (event) => {
-      if (open == null) return;
-      const insidePopup = open.popup.getElement()?.contains(event.target);
-      const insideMap = mapInstance.getContainer().contains(event.target);
-      if (!insidePopup && !insideMap) {
-        closeNow();
-      }
-    };
-
-    const closeOnEscape = (event) => {
-      if (event.key === 'Escape' && open != null) {
-        closeNow();
-      }
-    };
-
-    mapInstance.on('click', TRANSIT_STOPS_LAYER_ID, openDepartures);
-    mapInstance.on('mouseenter', TRANSIT_STOPS_LAYER_ID, showPointer);
-    mapInstance.on('click', closeOnMapClick);
-    document.addEventListener('click', closeOnOutsideClick);
-    document.addEventListener('keydown', closeOnEscape);
-
-    if (transitHoverPopups) {
-      // `mousemove` rather than `mouseenter`: moving from one stop straight onto the next one
-      // stays inside the layer, so `mouseenter` would not fire again and the popup would show the
-      // wrong stop. `openDepartures` returns early when it is already the right one.
-      mapInstance.on('mousemove', TRANSIT_STOPS_LAYER_ID, openDepartures);
-      mapInstance.on('mouseleave', TRANSIT_STOPS_LAYER_ID, leaveStops);
-    } else {
-      mapInstance.on('mouseleave', TRANSIT_STOPS_LAYER_ID, clearPointer);
-    }
-
-    return () => {
-      mapInstance.off('click', TRANSIT_STOPS_LAYER_ID, openDepartures);
-      mapInstance.off('mousemove', TRANSIT_STOPS_LAYER_ID, openDepartures);
-      mapInstance.off('mouseenter', TRANSIT_STOPS_LAYER_ID, showPointer);
-      mapInstance.off('mouseleave', TRANSIT_STOPS_LAYER_ID, leaveStops);
-      mapInstance.off('mouseleave', TRANSIT_STOPS_LAYER_ID, clearPointer);
-      mapInstance.off('click', closeOnMapClick);
-      document.removeEventListener('click', closeOnOutsideClick);
-      document.removeEventListener('keydown', closeOnEscape);
-      mapInstance.getCanvas().style.cursor = '';
-      closeNow();
-    };
-  }, [mapReady, showTransit, transitHoverPopups, language]);
-
-  const handleMapStyle = (value) => {
-    setSearchParams(
-      (prev) => {
-        const next = new URLSearchParams(prev);
-        if (value === 'STANDARD') {
-          next.delete('style');
-        } else {
-          next.set('style', value);
-        }
-        if (value === 'SATELLITE') {
-          next.delete('buildings');
-        }
-        return next;
-      },
-      { replace: true },
-    );
+  /**
+   * The map's own controls report one patch per user action; write it straight into the URL.
+   *
+   * `setValues` drops any value equal to its declared default, so a pristine view keeps a clean
+   * address, and the map already clears the 3D buildings flag when the basemap goes to satellite.
+   *
+   * @param {{style?: string, show3dBuildings?: boolean, showTransit?: boolean}} patch
+   */
+  const handleControlsChange = (patch) => {
+    setValues({
+      ...('style' in patch ? { style: patch.style } : {}),
+      ...('show3dBuildings' in patch ? { buildings: patch.show3dBuildings } : {}),
+      ...('showTransit' in patch ? { transit: patch.showTransit } : {}),
+    });
   };
 
   const handlePriceRange = (val) => {
@@ -605,103 +417,17 @@ export default function MapView() {
 
         <div className="map-view-container__map-wrapper">
           <Map
-            mapContainerRef={mapContainer}
             style={style}
             show3dBuildings={show3dBuildings}
             showTransit={showTransit}
-            onMapReady={handleMapReady}
-          />
-
-          {/* Floating filter panel */}
-          <div className="map-view-container__floating-panel">
-            <div className="map-view-container__panel-row">
-              <Text size="small" strong style={{ color: '#8892a4' }}>
-                {t('map.filterJobLabel')}
-              </Text>
-              <Select
-                placeholder={t('map.filterJobPlaceholder')}
-                showClear
-                size="small"
-                onChange={(val) => setJobId(val)}
-                value={jobId}
-                style={{ width: 160 }}
-              >
-                {jobs?.map((j) => (
-                  <Select.Option key={j.id} value={j.id}>
-                    {j.name}
-                  </Select.Option>
-                ))}
-              </Select>
-            </div>
-
-            <div className="map-view-container__panel-row">
-              <Text size="small" strong style={{ color: '#8892a4' }}>
-                {t('map.filterDistanceLabel')}
-              </Text>
-              <Select
-                placeholder={t('map.filterDistanceNone')}
-                size="small"
-                onChange={(val) => setDistanceFilter(val)}
-                value={distanceFilter}
-                style={{ width: 100 }}
-              >
-                <Select.Option value={0}>{t('map.filterDistanceNone')}</Select.Option>
-                <Select.Option value={5}>5 km</Select.Option>
-                <Select.Option value={10}>10 km</Select.Option>
-                <Select.Option value={15}>15 km</Select.Option>
-                <Select.Option value={20}>20 km</Select.Option>
-                <Select.Option value={25}>25 km</Select.Option>
-              </Select>
-            </div>
-
-            <div className="map-view-container__panel-row">
-              <Text size="small" strong style={{ color: '#8892a4' }}>
-                {t('map.filterPriceLabel')}
-              </Text>
-              <div className="map-view-container__price-slider">
-                <div className="map__rangesliderLabels">
-                  <span>{priceRange[0]}</span>
-                  <span>{priceRange[1]}</span>
-                </div>
-                <RangeSlider min={0} max={getMaxPrice()} step={100} value={priceRange} onInput={handlePriceRange} />
-              </div>
-            </div>
-
-            <div className="map-view-container__panel-row">
-              <Text size="small" strong style={{ color: '#8892a4' }}>
-                {t('map.filterStyleLabel')}
-              </Text>
-              <Select size="small" value={style} onChange={(val) => handleMapStyle(val)} style={{ width: 110 }}>
-                <Select.Option value="STANDARD">{t('map.filterStyleStandard')}</Select.Option>
-                <Select.Option value="SATELLITE">{t('map.filterStyleSatellite')}</Select.Option>
-              </Select>
-            </div>
-
-            <div className="map-view-container__panel-row">
-              <Text size="small" strong style={{ color: '#8892a4' }}>
-                {t('map.filter3dBuildings')}
-              </Text>
-              <Switch
-                size="small"
-                checked={show3dBuildings}
-                onChange={(v) => setShow3dBuildings(v)}
-                disabled={style === 'SATELLITE'}
-              />
-            </div>
-
-            <div className="map-view-container__panel-row">
-              <Text size="small" strong style={{ color: '#8892a4' }}>
-                {t('map.filterTransit')}
-              </Text>
-              <Switch size="small" checked={showTransit} onChange={(v) => setShowTransit(v)} />
-            </div>
-
-            {/* Only offered while the layer it belongs to is on, and indented under it: on its own
-                it describes nothing. Unlike the switches above it, this one is a preference rather
-                than a view state, so it is stored per user instead of living in the URL. */}
-            {showTransit && (
-              <div className="map-view-container__panel-row map-view-container__panel-row--nested">
-                <Text size="small" style={{ color: '#8892a4' }}>
+            onControlsChange={handleControlsChange}
+            controlsMode="always"
+            transitExtra={
+              /* Only offered while the layer it belongs to is on, and indented under it: on its own
+                 it describes nothing. Unlike the switches around it, this one is a preference rather
+                 than a view state, so it is stored per user instead of living in the URL. */
+              <div className="map-panel__row map-panel__row--nested">
+                <Text size="small" className="map-panel__label">
                   {t('map.filterTransitHover')}
                 </Text>
                 <Switch
@@ -716,8 +442,68 @@ export default function MapView() {
                   }}
                 />
               </div>
-            )}
-          </div>
+            }
+            onMapReady={handleMapReady}
+            panels={
+              /* Filters that only mean something for listings, so they stay with the view that owns
+                 them. In the map's own panel column, which is what carries them into the fullscreen
+                 overlay. */
+              <div className="map-panel">
+                <div className="map-panel__row">
+                  <Text size="small" strong className="map-panel__label">
+                    {t('map.filterJobLabel')}
+                  </Text>
+                  <Select
+                    placeholder={t('map.filterJobPlaceholder')}
+                    showClear
+                    size="small"
+                    onChange={(val) => setJobId(val)}
+                    value={jobId}
+                    style={{ width: 160 }}
+                  >
+                    {jobs?.map((j) => (
+                      <Select.Option key={j.id} value={j.id}>
+                        {j.name}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </div>
+
+                <div className="map-panel__row">
+                  <Text size="small" strong className="map-panel__label">
+                    {t('map.filterDistanceLabel')}
+                  </Text>
+                  <Select
+                    placeholder={t('map.filterDistanceNone')}
+                    size="small"
+                    onChange={(val) => setDistanceFilter(val)}
+                    value={distanceFilter}
+                    style={{ width: 100 }}
+                  >
+                    <Select.Option value={0}>{t('map.filterDistanceNone')}</Select.Option>
+                    <Select.Option value={5}>5 km</Select.Option>
+                    <Select.Option value={10}>10 km</Select.Option>
+                    <Select.Option value={15}>15 km</Select.Option>
+                    <Select.Option value={20}>20 km</Select.Option>
+                    <Select.Option value={25}>25 km</Select.Option>
+                  </Select>
+                </div>
+
+                <div className="map-panel__row">
+                  <Text size="small" strong className="map-panel__label">
+                    {t('map.filterPriceLabel')}
+                  </Text>
+                  <div className="map-view-container__price-slider">
+                    <div className="map__rangesliderLabels">
+                      <span>{priceRange[0]}</span>
+                      <span>{priceRange[1]}</span>
+                    </div>
+                    <RangeSlider min={0} max={getMaxPrice()} step={100} value={priceRange} onInput={handlePriceRange} />
+                  </div>
+                </div>
+              </div>
+            }
+          />
         </div>
 
         <ListingDeletionModal

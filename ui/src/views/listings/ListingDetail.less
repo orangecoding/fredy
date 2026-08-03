@@ -3,9 +3,11 @@
 .listing-detail {
   padding-bottom: 2rem;
 
+  /* No backdrop-filter here on purpose: it would make the card a containing block for fixed
+     positioning, and the map inside it goes fullscreen by becoming `position: fixed`. Over the flat
+     app background the blur bought nothing anyway. */
   &__card {
     background-color: rgba(36, 36, 36, 0.9);
-    backdrop-filter: blur(8px);
     border: 1px solid var(--semi-color-border);
     margin-bottom: 2rem;
     overflow: hidden;
@@ -187,14 +189,45 @@
     gap: 8px;
   }
 
+  // Only sizes the map now. The border and the rounding belong to the shared `.map-container`
+  // inside it; having both would draw two.
   &__map-container {
     height: 400px;
     width: 100%;
-    border-radius: var(--semi-border-radius-medium);
-    border: 1px solid var(--semi-color-border);
 
     @media (max-width: 768px) {
       height: 300px;
+    }
+  }
+
+  // The instructions and the save button while the listing is being placed by hand. Inside the map
+  // shell, so it comes along when the map goes fullscreen.
+  &__pin-bar {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: calc(100% - 24px);
+    padding: 10px 14px;
+    border: 1px solid var(--semi-color-border);
+    border-radius: var(--semi-border-radius-medium);
+    background: rgba(22, 25, 38, 0.95);
+  }
+
+  &__pin-bar-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+
+    // The address can be long; it must not push the buttons off the bar.
+    > * {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
 

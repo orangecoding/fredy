@@ -18,9 +18,13 @@
     flex: none;
   }
 
-  .map-container {
+  /* The shell is the flex child now, not the canvas container it wraps. */
+  .map-shell {
     flex: 1 1 auto;
     min-height: 0;
+  }
+
+  .map-container {
     border-radius: @radius-card;
     overflow: hidden;
   }

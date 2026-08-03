@@ -18,38 +18,6 @@
     min-height: 0;
   }
 
-  &__floating-panel {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    z-index: 10;
-    background: rgba(22, 25, 38, 0.95);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid @color-border;
-    border-radius: @radius-card;
-    padding: 14px 16px;
-    min-width: 220px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  &__panel-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-
-    // A setting that only means something once the layer above it is on. Indented and rule-marked
-    // so the dependency is visible rather than only discoverable by toggling.
-    &--nested {
-      margin-left: 10px;
-      padding-left: 10px;
-      border-left: 1px solid #262a3a;
-    }
-  }
-
   &__price-slider {
     width: 140px;
   }

@@ -1,0 +1,61 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../../tokens.less';
+
+.addressEditor {
+  display: flex;
+  flex-direction: column;
+  gap: @space-4;
+  width: 380px;
+  max-width: 84vw;
+  padding: @space-2;
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    gap: @space-2;
+  }
+
+  &__title {
+    margin: 0 !important;
+  }
+
+  &__hint {
+    margin: 0 !important;
+    line-height: 1.5;
+  }
+
+  &__notFound {
+    display: flex;
+    flex-direction: column;
+    gap: @space-2;
+    padding: @space-3;
+    border: 1px solid var(--semi-color-warning-light-active);
+    border-radius: @radius-card;
+    background: var(--semi-color-warning-light-default);
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: @space-3;
+    padding-top: @space-3;
+    border-top: 1px solid var(--semi-color-border);
+  }
+
+  &__buttons {
+    display: flex;
+    align-items: center;
+    gap: @space-2;
+    margin-left: auto;
+  }
+
+  /* The address is a link; the pencil sits next to it and should not push the line around. */
+  &__trigger {
+    flex: none;
+  }
+}

@@ -67,7 +67,7 @@ async function downloadImmoscoutFixtures(mobileApiUrl) {
   const listResponse = await fetch(mobileApiUrl, {
     method: 'POST',
     headers: {
-      'User-Agent': 'ImmoScout_27.12_26.2_._',
+      'User-Agent': 'ImmoScout_28.1_26.5.2_._',
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ supportedResultListTypes: [], userData: {} }),

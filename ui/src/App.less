@@ -27,3 +27,10 @@
     }
   }
 }
+
+/* An expanded map covers the viewport, so the page underneath must stop scrolling. The scroll
+   container is the app shell rather than the body, which is why the map sets a body class instead
+   of touching `overflow` itself. */
+body.fredy-map-expanded .app__content {
+  overflow: hidden;
+}

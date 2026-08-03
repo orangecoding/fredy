@@ -417,6 +417,24 @@ export const useFredyState = create(
               throw Exception;
             }
           },
+          /**
+           * Replace a listing's address and position with one the user picked.
+           *
+           * The route answers with the stored row, but the detail view is re-read through
+           * `getListing` anyway: only that endpoint adds the affordability verdict, and a listing
+           * in the store without it would drop the chip until the next navigation.
+           *
+           * @param {string} listingId
+           * @param {{address: string, latitude: number, longitude: number}} position
+           */
+          async setListingAddress(listingId, { address, latitude, longitude }) {
+            try {
+              await xhrPost(`/api/listings/${listingId}/address`, { address, latitude, longitude });
+            } catch (Exception) {
+              console.error(`Error while trying to set address for listing ${listingId}. Error:`, Exception);
+              throw Exception;
+            }
+          },
           async restoreListings(ids) {
             try {
               await xhrPost('/api/listings/restore', { ids });

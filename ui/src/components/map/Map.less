@@ -3,6 +3,107 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
+@import '../../tokens.less';
+
+/*
+ * The shell is what expands. Going fullscreen is a class swap on this element rather than a second
+ * map in a modal, so the MapLibre instance below it is never torn down and the camera, the drawn
+ * polygon and every loaded tile survive the trip in both directions.
+ *
+ * That only works while no ancestor establishes a containing block for fixed positioning - a
+ * `transform`, `filter`, `backdrop-filter` or `contain` anywhere above would size the overlay to
+ * that element instead of the viewport.
+ */
+.map-shell {
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  &--expanded {
+    position: fixed;
+    inset: 0;
+    /* Under every Semi portal (Modal 1000, Toast 1010, Dropdown 1050, Popover 1060), so the style
+       dropdown, toasts and dialogs still open above an expanded map. */
+    z-index: 900;
+    background: var(--semi-color-bg-0);
+
+    .map-container {
+      border: none;
+      border-radius: 0;
+    }
+  }
+
+  &--picking .maplibregl-canvas-container {
+    cursor: crosshair;
+  }
+
+  /* Top right, one box per concern, stacked. MapLibre's own controls were moved to the left so
+     this corner belongs entirely to the panels. */
+  &__ui {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    /* Tight: the boxes are one stack, not separate widgets that happen to share a corner. */
+    gap: 4px;
+    /* Fixed, so every box in the column comes out the same width. */
+    width: min(300px, calc(100% - 24px));
+    max-height: calc(100% - 24px);
+    overflow-y: auto;
+    /* The column only reaches as far as its boxes; the map underneath stays draggable. */
+    pointer-events: none;
+
+    > * {
+      pointer-events: auto;
+    }
+  }
+
+  &__expand {
+    /* Square, and big enough to hit on a phone. */
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+  }
+}
+
+.map-panel {
+  background: rgba(22, 25, 38, 0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid @color-border;
+  border-radius: @radius-card;
+  padding: 14px 16px;
+  /* The column sets the width; every box fills it, so they line up. */
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  &__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    // A setting that only means something once the layer above it is on. Indented and rule-marked
+    // so the dependency is visible rather than only discoverable by toggling.
+    &--nested {
+      margin-left: 10px;
+      padding-left: 10px;
+      border-left: 1px solid #262a3a;
+    }
+  }
+
+  &__label {
+    color: #8892a4;
+  }
+}
+
 .map-container {
   height: 100%;
 }
