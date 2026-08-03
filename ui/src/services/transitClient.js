@@ -62,3 +62,46 @@ export async function getDepartures({ stopId, lat, lng, name, limit = 8 }) {
   const response = await xhrGet(`/api/transit/departures?${query}`);
   return response.json;
 }
+
+/**
+ * @typedef {Object} JourneyLeg
+ * @property {string} mode
+ * @property {string} line
+ * @property {number} durationMinutes
+ */
+
+/**
+ * @typedef {Object} Journey
+ * @property {number} durationMinutes - Total door-to-door duration, walking included.
+ * @property {number} transfers
+ * @property {JourneyLeg[]} legs
+ */
+
+/**
+ * Plans a public transport journey between two coordinates, e.g. a saved home/work address and a
+ * listing.
+ *
+ * Journey planning is heavier on the upstream community API than the lookups above, so only call
+ * this once per listing detail page view - never in a loop over a list of listings.
+ *
+ * @param {number} fromLat
+ * @param {number} fromLng
+ * @param {number} toLat
+ * @param {number} toLng
+ * @returns {Promise<Journey|null>} `null` when no connection was found or the lookup failed.
+ */
+export async function getJourney(fromLat, fromLng, toLat, toLng) {
+  const query = new URLSearchParams({
+    fromLat: String(fromLat),
+    fromLng: String(fromLng),
+    toLat: String(toLat),
+    toLng: String(toLng),
+  });
+
+  try {
+    const response = await xhrGet(`/api/transit/journey?${query}`);
+    return response.json;
+  } catch {
+    return null;
+  }
+}
