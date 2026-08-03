@@ -3,7 +3,7 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector, useActions } from '../../services/state/store.js';
 import {
@@ -38,12 +38,11 @@ import {
   IconGridView,
 } from '@douyinfe/semi-icons';
 import maplibregl from '../../components/map/maplibre.js';
-import Map from '../../components/map/Map.jsx';
+import 'maplibre-gl/dist/maplibre-gl.css';
 import no_image from '../../assets/no_image.png';
 import * as timeService from '../../services/time/timeService.js';
 import { formatEuroPrice } from '../../services/price/priceService.js';
-import { getBoundsFromCoords } from './mapUtils.js';
-import { applyRouteLayers, buildRouteData } from './detailMapLayers.js';
+import { distanceMeters, getBoundsFromCoords } from './mapUtils.js';
 import { getAddresses } from '../../utils.js';
 import { xhrPost, xhrGet, xhrDelete, errorMessage } from '../../services/xhr.js';
 import ListingDeletionModal from '../../components/ListingDeletionModal.jsx';
@@ -54,13 +53,17 @@ import StatusControl from '../../components/listings/StatusControl.jsx';
 import ListingFinanceCard from './components/ListingFinanceCard.jsx';
 import PriceHistoryChart from './components/PriceHistoryChart.jsx';
 import NearbyStops from '../../components/transit/NearbyStops.jsx';
-import AddressEditor from './components/AddressEditor.jsx';
+import JourneyBadge from '../../components/transit/JourneyBadge.jsx';
 import './ListingDetail.less';
 import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
 import { useFinanceProfile } from '../../hooks/useFinanceProfile.js';
 import { VERDICT_COLORS, formatEuro, withAlpha } from '../../components/cards/chartTheme.js';
 
 const { Title, Text } = Typography;
+
+const STYLES = {
+  STANDARD: 'https://tiles.openfreemap.org/styles/bright',
+};
 
 export default function ListingDetail() {
   const t = useTranslation();
@@ -74,19 +77,13 @@ export default function ListingDetail() {
   const homeAddresses = useMemo(() => getAddresses(userSettings), [userSettings]);
   const listingDeletionPref = userSettings?.listing_deletion_preference;
   const defaultDeleteType = listingDeletionPref?.hardDelete ? 'hard' : 'soft';
+  const mapContainer = useRef(null);
   const map = useRef(null);
-  const [mapReady, setMapReady] = useState(false);
   const [loading, setLoading] = useState(true);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [notesDraft, setNotesDraft] = useState('');
   const [notesSaving, setNotesSaving] = useState(false);
   const [priceHistory, setPriceHistory] = useState([]);
-  // Set while the user is placing the listing by hand: carries the address text they typed, waiting
-  // for the coordinates the map is about to give it.
-  const [pinDrop, setPinDrop] = useState(null);
-  const [pickedCoords, setPickedCoords] = useState(null);
-  const [pinSaving, setPinSaving] = useState(false);
-  const [mapExpanded, setMapExpanded] = useState(false);
 
   useEffect(() => {
     document.querySelector('.app__content')?.scrollTo({ top: 0 });
@@ -136,56 +133,34 @@ export default function ListingDetail() {
   const hasGeo =
     listing?.latitude != null && listing?.longitude != null && listing?.latitude !== -1 && listing?.longitude !== -1;
 
-  // Where the map opens. Without coordinates - the case pin dropping exists for - the user's own
-  // reference address is the best guess at the right part of the country; failing that, the map's
-  // own default view of Germany.
-  const mapCenter = hasGeo
-    ? [listing.longitude, listing.latitude]
-    : homeAddresses.length > 0
-      ? [homeAddresses[0].coords.lng, homeAddresses[0].coords.lat]
-      : undefined;
-
-  // Escape steps out of pin dropping first; the map keeps its own Escape for collapsing, which the
-  // next press then reaches.
   useEffect(() => {
-    if (!pinDrop) return undefined;
+    if (loading || !listing || !mapContainer.current || !hasGeo) return;
 
-    const onKeyDown = (event) => {
-      if (event.key !== 'Escape') return;
-      setPinDrop(null);
-      setPickedCoords(null);
-    };
-    document.addEventListener('keydown', onKeyDown);
-    return () => document.removeEventListener('keydown', onKeyDown);
-  }, [pinDrop]);
+    if (map.current) {
+      map.current.remove();
+    }
 
-  const handleMapReady = useCallback((mapInstance) => {
-    map.current = mapInstance;
-    setMapReady(true);
-  }, []);
+    map.current = new maplibregl.Map({
+      container: mapContainer.current,
+      style: STYLES.STANDARD,
+      center: [listing.longitude, listing.latitude],
+      zoom: 14,
+      cooperativeGestures: true,
+    });
 
-  // Everything drawn on top of the shared map: the listing, the reference addresses and the lines
-  // between them. The map itself is no longer created or destroyed here, so this only ever adds and
-  // removes its own markers.
-  useEffect(() => {
-    if (!mapReady || !map.current || !listing || !hasGeo) return undefined;
+    map.current.addControl(new maplibregl.NavigationControl(), 'top-right');
 
-    const mapInstance = map.current;
-    const markers = [];
+    new maplibregl.Marker({ color: '#3FB1CE' })
+      .setLngLat([listing.longitude, listing.latitude])
+      .setPopup(
+        new maplibregl.Popup({ offset: 25 }).setHTML(
+          `<h4>${t('listing.detail.mapPopupListingLocation')}</h4><p>${listing.address}</p>`,
+        ),
+      )
+      .addTo(map.current);
 
-    markers.push(
-      new maplibregl.Marker({ color: '#3FB1CE' })
-        .setLngLat([listing.longitude, listing.latitude])
-        .setPopup(
-          new maplibregl.Popup({ offset: 25 }).setHTML(
-            `<h4>${t('listing.detail.mapPopupListingLocation')}</h4><p>${listing.address}</p>`,
-          ),
-        )
-        .addTo(mapInstance),
-    );
-
-    homeAddresses.forEach((home) => {
-      markers.push(
+    if (homeAddresses.length > 0) {
+      homeAddresses.forEach((home) => {
         new maplibregl.Marker({ color: 'red' })
           .setLngLat([home.coords.lng, home.coords.lat])
           .setPopup(
@@ -193,34 +168,111 @@ export default function ListingDetail() {
               `<h4>${home.label || t('listing.detail.mapPopupHomeAddress')}</h4><p>${home.address}</p>`,
             ),
           )
-          .addTo(mapInstance),
-      );
-    });
+          .addTo(map.current);
+      });
 
-    if (homeAddresses.length > 0) {
       const bounds = getBoundsFromCoords([
         [listing.longitude, listing.latitude],
         ...homeAddresses.map((home) => [home.coords.lng, home.coords.lat]),
       ]);
-      mapInstance.fitBounds(bounds, { padding: 50, maxZoom: 15 });
-    } else {
-      // The map is built once and kept, so moving to another listing has to move the camera - the
-      // constructor's center belongs to whichever listing was open first.
-      mapInstance.jumpTo({ center: [listing.longitude, listing.latitude], zoom: 14 });
+
+      map.current.fitBounds(bounds, {
+        padding: 50,
+        maxZoom: 15,
+      });
+
+      const buildRouteData = () => ({
+        type: 'FeatureCollection',
+        features: homeAddresses.flatMap((home) => {
+          const distance = distanceMeters(listing.latitude, listing.longitude, home.coords.lat, home.coords.lng);
+          const midpoint = [(listing.longitude + home.coords.lng) / 2, (listing.latitude + home.coords.lat) / 2];
+          const labelPrefix = home.label ? `${home.label}: ` : '';
+          return [
+            {
+              type: 'Feature',
+              geometry: {
+                type: 'LineString',
+                coordinates: [
+                  [listing.longitude, listing.latitude],
+                  [home.coords.lng, home.coords.lat],
+                ],
+              },
+            },
+            {
+              type: 'Feature',
+              geometry: {
+                type: 'Point',
+                coordinates: midpoint,
+              },
+              properties: {
+                distance: `${labelPrefix}${Math.round(distance)} m`,
+              },
+            },
+          ];
+        }),
+      });
+
+      const drawLine = () => {
+        if (!map.current || !map.current.isStyleLoaded()) return;
+
+        if (map.current.getSource('route')) {
+          map.current.getSource('route').setData(buildRouteData());
+        } else {
+          map.current.addSource('route', {
+            type: 'geojson',
+            data: buildRouteData(),
+          });
+
+          map.current.addLayer({
+            id: 'route',
+            type: 'line',
+            source: 'route',
+            layout: {
+              'line-join': 'round',
+              'line-cap': 'round',
+            },
+            paint: {
+              'line-color': '#3FB1CE',
+              'line-width': 4,
+              'line-dasharray': [2, 1],
+            },
+            filter: ['==', '$type', 'LineString'],
+          });
+
+          map.current.addLayer({
+            id: 'route-distance',
+            type: 'symbol',
+            source: 'route',
+            layout: {
+              'text-field': ['get', 'distance'],
+              'text-size': 14,
+              'text-offset': [0, -1],
+              'text-allow-overlap': true,
+            },
+            paint: {
+              'text-color': '#ffffff',
+              'text-halo-color': '#3FB1CE',
+              'text-halo-width': 2,
+            },
+            filter: ['==', '$type', 'Point'],
+          });
+        }
+      };
+
+      if (map.current.isStyleLoaded()) {
+        drawLine();
+      } else {
+        map.current.on('load', drawLine);
+      }
     }
 
-    // `styledata` rather than a one-shot `load`: switching the basemap drops every custom source
-    // and layer, and the route has to come back with the new style. `applyRouteLayers` is
-    // idempotent for exactly that reason.
-    const drawRoute = () => applyRouteLayers(mapInstance, buildRouteData(listing, homeAddresses));
-    if (mapInstance.isStyleLoaded()) drawRoute();
-    mapInstance.on('styledata', drawRoute);
-
     return () => {
-      markers.forEach((marker) => marker.remove());
-      mapInstance.off('styledata', drawRoute);
+      if (map.current) {
+        map.current.remove();
+        map.current = null;
+      }
     };
-  }, [mapReady, listing, homeAddresses, hasGeo, t]);
+  }, [listing, loading, homeAddresses]);
 
   const confirmDeletion = async (hardDelete, remember) => {
     try {
@@ -273,54 +325,6 @@ export default function ListingDetail() {
       Toast.error(t('listing.detail.toastNotesError'));
     } finally {
       setNotesSaving(false);
-    }
-  };
-
-  /**
-   * Store an address the user picked, then re-read the listing so map, distances and the nearby
-   * stops all move to the new position.
-   *
-   * @param {{address: string, latitude: number, longitude: number}} position
-   */
-  const saveAddress = async (position) => {
-    try {
-      await actions.listingsData.setListingAddress(listingId, position);
-      await actions.listingsData.getListing(listingId);
-      Toast.success(t('listing.detail.toastAddressSaved'));
-    } catch (error) {
-      Toast.error(errorMessage(error, t('listing.detail.toastAddressError')));
-      throw error;
-    }
-  };
-
-  /**
-   * Hand over from "no such address" to putting the listing on the map by hand. The map is expanded
-   * for it: picking a building out of a 400px panel is not a fair ask.
-   *
-   * @param {string} address - What the user typed, kept as the address text.
-   */
-  const startPinDrop = (address) => {
-    setPinDrop({ address });
-    setPickedCoords(null);
-    setMapExpanded(true);
-  };
-
-  const cancelPinDrop = () => {
-    setPinDrop(null);
-    setPickedCoords(null);
-  };
-
-  const savePinnedAddress = async () => {
-    if (!pinDrop || !pickedCoords) return;
-    setPinSaving(true);
-    try {
-      await saveAddress({ address: pinDrop.address, latitude: pickedCoords.lat, longitude: pickedCoords.lng });
-      cancelPinDrop();
-      setMapExpanded(false);
-    } catch {
-      // saveAddress already told the user; staying in pin mode lets them try again.
-    } finally {
-      setPinSaving(false);
     }
   };
 
@@ -456,7 +460,6 @@ export default function ListingDetail() {
             ) : (
               <Text type="secondary">{t('listing.detail.noAddress')}</Text>
             )}
-            <AddressEditor isManual={listing.address_is_manual === 1} onSave={saveAddress} onPickOnMap={startPinDrop} />
           </Space>
           <Space wrap className="listing-detail__header-actions">
             <Button
@@ -535,53 +538,10 @@ export default function ListingDetail() {
               <Title heading={4} className="listing-detail__map-title">
                 {t('listing.detail.locationTitle')}
               </Title>
-              {/* A listing with no coordinates normally gets a warning instead of a map - but those
-                  are exactly the ones somebody wants to place by hand, so pin dropping brings the
-                  map out anyway. */}
-              {!hasGeo && !pinDrop ? (
+              {!hasGeo ? (
                 <Banner type="warning" bordered description={t('listing.detail.noGeoWarning')} />
               ) : (
-                <div className="listing-detail__map-container">
-                  {/* Public transport on by default: the first question about any flat is how to
-                      get out of it, and the answer should already be on screen. */}
-                  <Map
-                    initialCenter={mapCenter}
-                    initialZoom={hasGeo ? 14 : 10}
-                    defaultShowTransit
-                    cooperativeGestures
-                    expanded={mapExpanded}
-                    onExpandedChange={setMapExpanded}
-                    pickMode={pinDrop != null}
-                    onPick={setPickedCoords}
-                    onMapReady={handleMapReady}
-                  >
-                    {pinDrop != null && (
-                      <div className="listing-detail__pin-bar">
-                        <div className="listing-detail__pin-bar-text">
-                          <Text>
-                            {pickedCoords ? t('listing.detail.pinDropPicked') : t('listing.detail.pinDropHint')}
-                          </Text>
-                          <Text type="tertiary" size="small">
-                            {pinDrop.address}
-                          </Text>
-                        </div>
-                        <Button
-                          theme="solid"
-                          type="primary"
-                          size="small"
-                          disabled={!pickedCoords}
-                          loading={pinSaving}
-                          onClick={savePinnedAddress}
-                        >
-                          {t('listing.detail.pinDropSave')}
-                        </Button>
-                        <Button size="small" theme="borderless" onClick={cancelPinDrop}>
-                          {t('common.cancel')}
-                        </Button>
-                      </div>
-                    )}
-                  </Map>
-                </div>
+                <div ref={mapContainer} className="listing-detail__map-container" />
               )}
             </div>
 
@@ -672,11 +632,24 @@ export default function ListingDetail() {
                   <Space align="center" wrap>
                     <IconActivity style={{ fontSize: '18px', color: 'var(--semi-color-primary)' }} />
                     <Text strong>{t('listing.detail.distanceToHome')}</Text>
-                    {listing.distances.map((d) => (
-                      <Tag color="blue" key={d.label}>
-                        {d.label}: {d.meters} m
-                      </Tag>
-                    ))}
+                    {listing.distances.map((d) => {
+                      const home = homeAddresses.find((address) => address.label === d.label);
+                      return (
+                        <Space key={d.label} spacing={4}>
+                          <Tag color="blue">
+                            {d.label}: {d.meters} m
+                          </Tag>
+                          {home?.coords && (
+                            <JourneyBadge
+                              fromLat={listing.latitude}
+                              fromLng={listing.longitude}
+                              toLat={home.coords.lat}
+                              toLng={home.coords.lng}
+                            />
+                          )}
+                        </Space>
+                      );
+                    })}
                   </Space>
                 </>
               )}

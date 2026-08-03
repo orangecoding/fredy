@@ -9,10 +9,11 @@ import Fastify from 'fastify';
 vi.mock('../../lib/services/transit/transitService.js', () => ({
   getNearbyStops: vi.fn(),
   getDepartures: vi.fn(),
+  getJourney: vi.fn(),
 }));
 vi.mock('../../lib/services/logger.js', () => ({ default: { error: vi.fn(), warn: vi.fn(), info: vi.fn() } }));
 
-import { getNearbyStops, getDepartures } from '../../lib/services/transit/transitService.js';
+import { getNearbyStops, getDepartures, getJourney } from '../../lib/services/transit/transitService.js';
 import transitPlugin from '../../lib/api/routes/transitRoute.js';
 
 const STOP = { id: 'near', name: 'U Unter den Linden (Berlin)', lat: 52.516994, lng: 13.388876, distance: 12 };
@@ -131,6 +132,62 @@ describe('transit route', () => {
 
       expect(response.statusCode).toBe(502);
       expect(response.json().error).toBe('No departures available');
+    });
+  });
+
+  describe('GET /journey', () => {
+    const JOURNEY = { durationMinutes: 24, transfers: 1, legs: [] };
+
+    it('plans a journey between two coordinates', async () => {
+      getJourney.mockResolvedValue(JOURNEY);
+      const app = await buildApp();
+
+      const response = await app.inject({
+        method: 'GET',
+        url: '/api/transit/journey?fromLat=52.5&fromLng=13.4&toLat=52.52&toLng=13.41',
+      });
+
+      expect(response.statusCode).toBe(200);
+      expect(response.json()).toEqual(JOURNEY);
+      expect(getJourney).toHaveBeenCalledWith(52.5, 13.4, 52.52, 13.41);
+    });
+
+    it.each([
+      ['a missing fromLat', '/api/transit/journey?fromLng=13.4&toLat=52.52&toLng=13.41'],
+      ['a missing toLng', '/api/transit/journey?fromLat=52.5&fromLng=13.4&toLat=52.52'],
+      ['an out-of-range coordinate', '/api/transit/journey?fromLat=91&fromLng=13.4&toLat=52.52&toLng=13.41'],
+    ])('answers 400 for %s', async (_case, url) => {
+      const app = await buildApp();
+
+      const response = await app.inject({ method: 'GET', url });
+
+      expect(response.statusCode).toBe(400);
+      expect(getJourney).not.toHaveBeenCalled();
+    });
+
+    it('answers 502 when no journey could be planned', async () => {
+      getJourney.mockResolvedValue(null);
+      const app = await buildApp();
+
+      const response = await app.inject({
+        method: 'GET',
+        url: '/api/transit/journey?fromLat=52.5&fromLng=13.4&toLat=52.52&toLng=13.41',
+      });
+
+      expect(response.statusCode).toBe(502);
+      expect(response.json().error).toBe('No journey available');
+    });
+
+    it('answers 502 when the lookup throws', async () => {
+      getJourney.mockRejectedValue(new Error('upstream is down'));
+      const app = await buildApp();
+
+      const response = await app.inject({
+        method: 'GET',
+        url: '/api/transit/journey?fromLat=52.5&fromLng=13.4&toLat=52.52&toLng=13.41',
+      });
+
+      expect(response.statusCode).toBe(502);
     });
   });
 });

@@ -158,3 +158,24 @@ export function formatDistance(meters) {
   }
   return `${(meters / 1000).toFixed(1)} km`;
 }
+
+/**
+ * A journey duration in the units people use: minutes below an hour, `h min` above.
+ *
+ * @param {number} minutes
+ * @param {Object} [units]
+ * @param {string} [units.minuteUnit='min'] - Short unit for minutes, e.g. `min` or `dk`.
+ * @param {string} [units.hourUnit='h'] - Short unit for hours, e.g. `h` or `sa`.
+ * @returns {string}
+ */
+export function formatDuration(minutes, { minuteUnit = 'min', hourUnit = 'h' } = {}) {
+  if (!Number.isFinite(minutes)) {
+    return '';
+  }
+  if (minutes < 60) {
+    return `${Math.round(minutes)} ${minuteUnit}`;
+  }
+  const hours = Math.floor(minutes / 60);
+  const rest = Math.round(minutes % 60);
+  return rest === 0 ? `${hours} ${hourUnit}` : `${hours} ${hourUnit} ${rest} ${minuteUnit}`;
+}

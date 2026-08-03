@@ -306,6 +306,7 @@
   "transit.noStops": "Yakında durak bulunamadı",
   "transit.departingNow": "şimdi",
   "transit.inMinutes": "{{minutes}} dk içinde",
+  "transit.journeyTransfers": "{{count}} aktarma",
   "transit.unknownLine": "Hat",
   "transit.mode.bus": "Otobüs",
   "transit.mode.coach": "Şehirlerarası otobüs",
