@@ -41,9 +41,11 @@ income, your living costs, what you have saved, and every listing is measured ag
 tells you which ones you can comfortably afford, which would be a stretch, and which are out of
 reach, for renting and for buying alike. See [Financing Calculator](#-financing-calculator).
 
-And it shows you how well connected a place is. The map draws the **public transport network**,
-marks every stop, and tells you which lines run there, where they go and when the next one
-leaves. Every listing also lists the stops closest to it, with walking distance. See
+And it shows you how well connected a place is. Not as a crow-flying kilometre, which in a city
+with a river and no bridge where you want one tells you nothing, but as the **time it actually
+takes** to get from your own front door to the flat, by public transport, car, bike or on foot.
+The map draws the **public transport network**, marks every stop, and tells you which lines run
+there and when the next one leaves. See [Travel Time](#travel-time) and
 [Public Transport](#public-transport).
 
 ------------------------------------------------------------------------
@@ -62,6 +64,8 @@ leaves. Every listing also lists the stops closest to it, with walking distance.
 -   ⏱️ Customizable search intervals
 -   💶 Add your **personal financial situation** and see which listings you can actually
     afford, for renting and for buying
+-   ⏱️ Shows the **real travel time** from your addresses to every listing, by public
+    transport, car, bike or on foot, and filters listings by it
 -   Makes **public transport visible**: the network on the map, live departures per stop,
     and the nearest stops for every listing
 
@@ -81,6 +85,17 @@ Fredy is proudly backed by the **JetBrains Open Source Support Program**.
   <source media="(prefers-color-scheme: dark)" srcset="https://www.jetbrains.com/company/brand/img/logo_jb_dos_3.svg">
   <source media="(prefers-color-scheme: light)" srcset="https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg">
   <img alt="Jetbrains Open Source" src="https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg">
+</picture>
+
+Timetables, journey planning and travel times are provided by
+[Transitous](https://transitous.org/), a community-run [MOTIS](https://github.com/motis-project/motis)
+instance. It is free, needs no API key, and is maintained by volunteers. Street and map data come
+from [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors. Please be considerate
+with the load you put on it, and see [their usage policy](https://transitous.org/api/) before
+pointing a large instance at it.
+
+<picture>
+  <img alt="https://transitous.org/" src="https://transitous.org/images/logo-text.svg">
 </picture>
 
 ------------------------------------------------------------------------
@@ -237,6 +252,70 @@ mortgage answer or a rent answer depending on the listing.
 > **This is an estimate, not financial advice.** The Grunderwerbsteuer rates ship as editable
 > defaults and Bundesländer change them from time to time, so check the figure for your state
 > and get a binding offer from your bank before committing to anything.
+
+------------------------------------------------------------------------
+
+## Travel Time
+
+Straight-line distance is a bad proxy for whether you could live somewhere. Two flats the same
+kilometre from your office can be eight minutes and fifty minutes away from it. Fredy measures the
+journey instead.
+
+Set your addresses under **Settings → Travel time**. Each one gets a name, and how you travel to it:
+public transport, by car, or on foot. For public transport you also pick a time of day, because a
+journey at eight in the morning is not the journey at midnight. The day is always the next working
+day, so every listing is measured against the same timetable and stays comparable.
+
+Travel times then show up wherever the distance already did: on listing cards and in the table, in
+the map popup, in your notifications, and on the listing detail page.
+
+### Filtering by it
+
+Both the listings overview and the map have a **"reachable within"** filter. Pick a mode and a
+ceiling, say public transport within 30 minutes, and the list filters or the map hides the pins that
+fail it. Listings Fredy has not measured yet are not shown by the filter, because it can only speak
+about journeys it knows.
+
+### Seeing the route
+
+On a listing's detail page, **Show route** draws the journey on the map: the straight line, the
+drive, the walk, or the public transport connection leg by leg in the operators' own line colours.
+Hovering the public transport time opens the journey itself, one row per leg with the line, the stop
+it goes to and how long that part takes.
+
+### Estimated and exact
+
+Two kinds of number, and Fredy always says which.
+
+**Estimated** is what the background sweep produces. Once per address, Fredy asks how long it takes
+to reach every stop in the region, then adds the walk from the closest one to the front door. That is
+one request per address no matter how many listings you have, which is what keeps this affordable on
+a service run by volunteers. Hover the *Estimated* chip and Fredy shows the stops it used, so you can
+check the number rather than take it on faith. Measured against exact routing across Berlin, it
+lands within a few minutes.
+
+**Exact** is what you get when you open a listing. Fredy asks for the real journey, which also fills
+in the car, bike and walking times and the drawable routes, and stores it so it is only paid for
+once.
+
+Nothing is invented. A mode that could not be routed is left out rather than shown as zero, and a
+listing that has not been measured yet says so. The straight-line distance is still there and still
+shown, so if a lookup fails you see exactly what you saw before.
+
+### For operators
+
+Sensible defaults, none of which need touching:
+
+| Setting | Default | What it does |
+|---|---|---|
+| `motisBaseUrl` | `https://api.transitous.org/api` | Point at your own MOTIS instance if you outgrow the public one. |
+| `travelTimeMaxMinutes` | `90` | How far the region-wide lookup reaches. Also the size dial. |
+| `travelTimeStreetLookupsPerRun` | `15` | Ceiling on street routings per sweep. `0` turns them off. |
+| `travelTimeLimitPerRun` | `500` | Listings one sweep works through. Not a request count. |
+| `travelTimeMaxAgeDays` | `30` | When a stored travel time is looked up again. |
+
+The sweep runs every two hours and never at startup. Street routing happens only where public
+transport cannot answer at all, where you asked for car or walking, and when you open a listing.
 
 ------------------------------------------------------------------------
 

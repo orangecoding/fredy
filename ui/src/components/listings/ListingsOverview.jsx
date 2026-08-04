@@ -22,7 +22,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import ListingDeletionModal from '../ListingDeletionModal.jsx';
 import { xhrDelete, xhrPost, errorMessage } from '../../services/xhr.js';
 import { useActions, useSelector } from '../../services/state/store.js';
-import { debounce } from '../../utils';
+import { debounce, getAddresses } from '../../utils';
+import { COMMUTE_OPTIONS, parseCommuteFilter } from '../transit/travelTimeFormat.js';
 import FilterSelect from './FilterSelect.jsx';
 import ListingsGrid from '../grid/listings/ListingsGrid.jsx';
 import ListingsTable from '../table/ListingsTable.jsx';
@@ -57,8 +58,22 @@ const LISTINGS_URL_STATE = {
   provider: { defaultValue: null, codec: parseString },
   status: { defaultValue: null, codec: parseString },
   afford: { defaultValue: null, codec: parseString },
+  // Mode and ceiling in one key, as `transit:30`. Two keys would let a bookmarked URL carry half a
+  // filter, which the server would then have to guess the other half of.
+  commute: { defaultValue: null, codec: parseString },
   hidden: { defaultValue: false, codec: parseNullableBoolean },
 };
+
+/**
+ * Turns the combined filter value into the two query parameters the API takes.
+ *
+ * @param {string|null} value - e.g. `transit:30`.
+ * @returns {{travelTimeMode: string, travelTimeMaxMinutes: number}|null}
+ */
+function toTravelTimeQuery(value) {
+  const parsed = parseCommuteFilter(value);
+  return parsed == null ? null : { travelTimeMode: parsed.mode, travelTimeMaxMinutes: parsed.maxMinutes };
+}
 
 const ListingsOverview = ({ mode = 'all' }) => {
   const t = useTranslation();
@@ -96,6 +111,7 @@ const ListingsOverview = ({ mode = 'all' }) => {
     provider: providerFilter,
     status: statusFilter,
     afford: affordabilityFilter,
+    commute: commuteFilter,
     hidden: hiddenOnly,
   } = values;
   const setPage = (value) => setValue('page', value);
@@ -106,6 +122,10 @@ const ListingsOverview = ({ mode = 'all' }) => {
   const [newAvailableCount, setNewAvailableCount] = useState(0);
 
   const isHiddenView = hiddenOnly === true;
+
+  // A commute filter without a reference address would return an empty page and look broken, so the
+  // control is not offered at all until there is something to measure from.
+  const hasAddresses = getAddresses(userSettings).length > 0;
 
   // In watchlist mode the watch filter is forced to "watched only" - regardless of the URL.
   const effectiveWatchListFilter = isWatchlistMode ? true : watchListFilter;
@@ -145,6 +165,9 @@ const ListingsOverview = ({ mode = 'all' }) => {
         // The server turns this into a price range from the saved profile; it ignores the
         // filter entirely when there is no profile to derive one from.
         affordabilityFilter,
+        // Only listings that have actually been routed can satisfy this, which is why the control
+        // is offered as an extra filter rather than as the default way to sort the page.
+        ...(toTravelTimeQuery(commuteFilter) ?? {}),
         hiddenOnly: isHiddenView ? true : undefined,
       },
     });
@@ -164,6 +187,7 @@ const ListingsOverview = ({ mode = 'all' }) => {
     watchListFilter,
     statusFilter,
     affordabilityFilter,
+    commuteFilter,
     hiddenOnly,
     isWatchlistMode,
   ]);
@@ -397,6 +421,29 @@ const ListingsOverview = ({ mode = 'all' }) => {
             <Select.Option value="affordable">{t('listings.filterAffordabilityYes')}</Select.Option>
             <Select.Option value="stretch">{t('listings.filterAffordabilityStretch')}</Select.Option>
             <Select.Option value="unaffordable">{t('listings.filterAffordabilityNo')}</Select.Option>
+          </FilterSelect>
+        )}
+
+        {/* Only offered once there is an address to measure a commute against, the same way the
+            affordability filter waits for a finance profile. */}
+        {hasAddresses && (
+          <FilterSelect
+            help={t('listings.filterCommuteHelp')}
+            placeholder={t('listings.filterCommutePlaceholder')}
+            showClear
+            onChange={(val) => {
+              setValues({ commute: val ?? null, page: 1 });
+            }}
+            value={commuteFilter}
+            style={{ width: 170 }}
+          >
+            {COMMUTE_OPTIONS.map(({ mode, minutes }) =>
+              minutes.map((max) => (
+                <Select.Option key={`${mode}:${max}`} value={`${mode}:${max}`}>
+                  {t('listings.filterCommuteOption', { mode: t(`travelTime.mode.${mode}`), minutes: max })}
+                </Select.Option>
+              )),
+            )}
           </FilterSelect>
         )}
 

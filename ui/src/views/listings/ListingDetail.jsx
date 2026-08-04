@@ -22,6 +22,7 @@ import {
   Toast,
   TextArea,
   Tooltip,
+  Select,
 } from '@douyinfe/semi-ui-19';
 import {
   IconArrowLeft,
@@ -44,6 +45,7 @@ import * as timeService from '../../services/time/timeService.js';
 import { formatEuroPrice } from '../../services/price/priceService.js';
 import { getBoundsFromCoords } from './mapUtils.js';
 import { applyRouteLayers, buildRouteData } from './detailMapLayers.js';
+import { TRAVEL_MODES } from '../../components/transit/travelTimeFormat.js';
 import { getAddresses } from '../../utils.js';
 import { xhrPost, xhrGet, xhrDelete, errorMessage } from '../../services/xhr.js';
 import ListingDeletionModal from '../../components/ListingDeletionModal.jsx';
@@ -54,6 +56,7 @@ import StatusControl from '../../components/listings/StatusControl.jsx';
 import ListingFinanceCard from './components/ListingFinanceCard.jsx';
 import PriceHistoryChart from './components/PriceHistoryChart.jsx';
 import NearbyStops from '../../components/transit/NearbyStops.jsx';
+import TravelTimes from '../../components/transit/TravelTimes.jsx';
 import AddressEditor from './components/AddressEditor.jsx';
 import './ListingDetail.less';
 import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
@@ -61,6 +64,22 @@ import { useFinanceProfile } from '../../hooks/useFinanceProfile.js';
 import { VERDICT_COLORS, formatEuro, withAlpha } from '../../components/cards/chartTheme.js';
 
 const { Title, Text } = Typography;
+
+/**
+ * Whether any address has a drawable route in this mode.
+ *
+ * Drives the note next to the picker: falling back to the straight line without saying so would
+ * look like the route simply is a straight line.
+ *
+ * @param {Array<Object>} travelTimes
+ * @param {string} mode
+ * @returns {boolean}
+ */
+function hasRouteFor(travelTimes, mode) {
+  return (Array.isArray(travelTimes) ? travelTimes : []).some((entry) =>
+    mode === 'transit' ? (entry.transit?.legs?.length ?? 0) > 0 : Boolean(entry[mode]?.geometry),
+  );
+}
 
 export default function ListingDetail() {
   const t = useTranslation();
@@ -87,6 +106,17 @@ export default function ListingDetail() {
   const [pickedCoords, setPickedCoords] = useState(null);
   const [pinSaving, setPinSaving] = useState(false);
   const [mapExpanded, setMapExpanded] = useState(false);
+  // The travel times as the detail page loaded them, kept here because the map needs the driving
+  // route that comes in the same answer. Seeded from the listing so a stored route is drawn without
+  // waiting for the request that only refines it.
+  const [routeTimes, setRouteTimes] = useState(listing?.travelTimes ?? []);
+  // Which route the map draws. Straight line to begin with, because that is the one that needs
+  // nothing fetched and so is never missing.
+  const [routeMode, setRouteMode] = useState('straight');
+
+  useEffect(() => {
+    setRouteTimes(listing?.travelTimes ?? []);
+  }, [listing?.id, listing?.travelTimes]);
 
   useEffect(() => {
     document.querySelector('.app__content')?.scrollTo({ top: 0 });
@@ -212,7 +242,8 @@ export default function ListingDetail() {
     // `styledata` rather than a one-shot `load`: switching the basemap drops every custom source
     // and layer, and the route has to come back with the new style. `applyRouteLayers` is
     // idempotent for exactly that reason.
-    const drawRoute = () => applyRouteLayers(mapInstance, buildRouteData(listing, homeAddresses));
+    const drawRoute = () =>
+      applyRouteLayers(mapInstance, buildRouteData(listing, homeAddresses, routeTimes, routeMode));
     if (mapInstance.isStyleLoaded()) drawRoute();
     mapInstance.on('styledata', drawRoute);
 
@@ -220,7 +251,7 @@ export default function ListingDetail() {
       markers.forEach((marker) => marker.remove());
       mapInstance.off('styledata', drawRoute);
     };
-  }, [mapReady, listing, homeAddresses, hasGeo, t]);
+  }, [mapReady, listing, homeAddresses, routeTimes, routeMode, hasGeo, t]);
 
   const confirmDeletion = async (hardDelete, remember) => {
     try {
@@ -678,6 +709,46 @@ export default function ListingDetail() {
                       </Tag>
                     ))}
                   </Space>
+                </>
+              )}
+
+              {/* Right below the straight-line distances, because the two answer the same question
+                  and the second one is the honest answer. It loads on its own: a listing found
+                  minutes ago has not been routed yet, and this is where somebody would look. */}
+              {listing.latitude != null && listing.longitude != null && (
+                <>
+                  <Divider margin="1.5rem" />
+                  <Text strong style={{ display: 'block', marginBottom: '0.5rem' }}>
+                    {t('travelTime.title')}
+                  </Text>
+                  <TravelTimes
+                    listingId={listing.id}
+                    travelTimes={listing.travelTimes}
+                    refine
+                    onLoaded={setRouteTimes}
+                  />
+
+                  {/* Sits under the times rather than on the map: it is the same question the
+                      numbers above answer, only drawn. A mode with no route stored falls back to
+                      the straight line, and says so. */}
+                  <div className="listingDetail__routePicker">
+                    <Text size="small" type="tertiary">
+                      {t('listing.detail.routeLabel')}
+                    </Text>
+                    <Select size="small" style={{ width: 170 }} value={routeMode} onChange={setRouteMode}>
+                      <Select.Option value="straight">{t('listing.detail.routeStraight')}</Select.Option>
+                      {TRAVEL_MODES.map((mode) => (
+                        <Select.Option key={mode.key} value={mode.key}>
+                          {mode.icon} {t(mode.labelKey)}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                    {routeMode !== 'straight' && !hasRouteFor(routeTimes, routeMode) && (
+                      <Text size="small" type="tertiary">
+                        {t('listing.detail.routeMissing')}
+                      </Text>
+                    )}
+                  </div>
                 </>
               )}
             </div>

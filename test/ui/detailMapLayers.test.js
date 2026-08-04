@@ -8,6 +8,7 @@ import {
   applyRouteLayers,
   buildRouteData,
   removeRouteLayers,
+  ROUTE_CASING_LAYER_ID,
   ROUTE_LABEL_LAYER_ID,
   ROUTE_LINE_LAYER_ID,
   ROUTE_SOURCE_ID,
@@ -80,13 +81,81 @@ describe('detailMapLayers', () => {
 
       expect(label.geometry.coordinates[0]).toBeCloseTo(6.7735, 6);
       expect(label.geometry.coordinates[1]).toBeCloseTo(51.2327, 6);
-      expect(label.properties.distance).toMatch(/^Work: \d+ m$/);
+      expect(label.properties.distance).toMatch(/^Work: [\d.]+ (m|km)$/);
     });
 
     it('leaves out the prefix when the address has no label', () => {
       const [, , , label] = buildRouteData(LISTING, HOMES).features;
 
-      expect(label.properties.distance).toMatch(/^\d+ m$/);
+      expect(label.properties.distance).toMatch(/^[\d.]+ (m|km)$/);
+    });
+
+    it('draws the road actually driven when a route has been worked out', () => {
+      // Three points near the listing, encoded the way MOTIS ships geometry.
+      const travelTimes = [
+        {
+          label: 'Work',
+          car: { minutes: 14, distanceMeters: 5400, geometry: 'ygtvh^wmwt~FoFrH??wcAhnA' },
+        },
+      ];
+
+      const [line, label] = buildRouteData(LISTING, HOMES, travelTimes, 'car').features;
+
+      expect(line.geometry.coordinates.length).toBeGreaterThan(2);
+      // Drawn from the listing outwards, like every other line this file produces.
+      expect(line.geometry.coordinates[line.geometry.coordinates.length - 1][1]).toBeCloseTo(52.52, 4);
+      expect(label.properties.distance).toBe('Work: 5.4 km · 14 min');
+    });
+
+    it('falls back to the straight line for an address that has no route yet', () => {
+      const travelTimes = [{ label: 'Work', car: { minutes: 14, distanceMeters: 5400 } }];
+
+      const [line] = buildRouteData(LISTING, HOMES, travelTimes, 'car').features;
+
+      expect(line.geometry.coordinates).toHaveLength(2);
+    });
+
+    it('defaults to the straight line, so nothing is drawn that was never asked for', () => {
+      const travelTimes = [{ label: 'Work', car: { minutes: 14, geometry: 'ygtvh^wmwt~FoFrH??wcAhnA' } }];
+
+      expect(buildRouteData(LISTING, HOMES, travelTimes).features[0].geometry.coordinates).toHaveLength(2);
+    });
+
+    it('draws a transit journey as one line per leg, in the line colours', () => {
+      const travelTimes = [
+        {
+          label: 'Work',
+          transit: {
+            minutes: 32,
+            legs: [
+              { mode: 'WALK', color: null, geometry: 'ygtvh^wmwt~FoFrH' },
+              { mode: 'METRO', color: '#eb7405', geometry: 'ygtvh^wmwt~FoFrH??wcAhnA' },
+            ],
+          },
+        },
+      ];
+
+      // One address only: the second has no travel time and would add its own straight line.
+      const features = buildRouteData(LISTING, [HOMES[0]], travelTimes, 'transit').features;
+      const lines = features.filter((f) => f.geometry.type === 'LineString');
+
+      expect(lines).toHaveLength(2);
+      // The walk keeps the default colour; the S-Bahn keeps its own.
+      expect(lines[0].properties.color).toBeUndefined();
+      expect(lines[1].properties.color).toBe('#eb7405');
+      // Dashed for what you walk, solid for what you ride.
+      expect(lines[0].properties.walking).toBe(true);
+      expect(lines[1].properties.walking).toBe(false);
+      expect(features.at(-1).properties.distance).toBe('Work: 32 min');
+    });
+
+    it('falls back to the straight line for a mode with no route stored', () => {
+      const travelTimes = [{ label: 'Work', transit: { minutes: 32 } }];
+
+      const lines = buildRouteData(LISTING, HOMES, travelTimes, 'transit').features.filter(
+        (f) => f.geometry.type === 'LineString',
+      );
+      expect(lines[0].geometry.coordinates).toHaveLength(2);
     });
 
     it('produces nothing without reference addresses', () => {
@@ -96,13 +165,15 @@ describe('detailMapLayers', () => {
   });
 
   describe('applyRouteLayers', () => {
-    it('adds the source and both layers', () => {
+    it('adds the source and all three layers, casing first', () => {
       const map = makeMap();
 
       applyRouteLayers(map, buildRouteData(LISTING, HOMES));
 
       expect(map.getSource(ROUTE_SOURCE_ID)).toBeDefined();
-      expect(layerIds(map)).toEqual([ROUTE_LINE_LAYER_ID, ROUTE_LABEL_LAYER_ID]);
+      // The casing has to go down first: it is what makes a route in an operator's own colour
+      // readable on top of a road of a similar colour.
+      expect(layerIds(map)).toEqual([ROUTE_CASING_LAYER_ID, ROUTE_LINE_LAYER_ID, ROUTE_LABEL_LAYER_ID]);
     });
 
     it('splits the two layers by geometry type', () => {
@@ -122,7 +193,7 @@ describe('detailMapLayers', () => {
       const nextData = buildRouteData(LISTING, [HOMES[0]]);
       applyRouteLayers(map, nextData);
 
-      expect(layerIds(map)).toEqual([ROUTE_LINE_LAYER_ID, ROUTE_LABEL_LAYER_ID]);
+      expect(layerIds(map)).toEqual([ROUTE_CASING_LAYER_ID, ROUTE_LINE_LAYER_ID, ROUTE_LABEL_LAYER_ID]);
       expect(map.getSource(ROUTE_SOURCE_ID).data).toBe(nextData);
     });
 

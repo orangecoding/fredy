@@ -80,6 +80,25 @@ describe('queryListings affordability band against real SQLite', () => {
         manually_deleted INTEGER DEFAULT 0
       );
       CREATE TABLE watch_list (id TEXT PRIMARY KEY, listing_id TEXT, user_id TEXT);
+      -- Empty, but it has to exist: every listing page reads the travel times of the rows it
+      -- returned, so a query against a schema without this table fails before it can be asserted on.
+      CREATE TABLE listing_travel_times (
+        listing_id TEXT NOT NULL,
+        label TEXT NOT NULL,
+        origin_lat REAL,
+        origin_lng REAL,
+        transit_minutes INTEGER,
+        transit_transfers INTEGER,
+        car_minutes INTEGER,
+        car_distance_meters INTEGER,
+        car_geometry TEXT,
+        bike_minutes INTEGER,
+        walk_minutes INTEGER,
+        is_estimate INTEGER NOT NULL DEFAULT 1,
+        reference_time INTEGER,
+        computed_at INTEGER,
+        PRIMARY KEY (listing_id, label)
+      );
     `);
 
     const insertJob = db.prepare(

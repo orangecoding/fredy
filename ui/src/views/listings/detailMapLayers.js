@@ -4,8 +4,10 @@
  */
 
 import { distanceMeters } from './mapUtils.js';
+import { decodePolyline, MOTIS_POLYLINE_PRECISION } from './polyline.js';
 
 export const ROUTE_SOURCE_ID = 'route';
+export const ROUTE_CASING_LAYER_ID = 'route-casing';
 export const ROUTE_LINE_LAYER_ID = 'route';
 export const ROUTE_LABEL_LAYER_ID = 'route-distance';
 
@@ -13,42 +15,161 @@ export const ROUTE_LABEL_LAYER_ID = 'route-distance';
 const ROUTE_COLOR = '#3FB1CE';
 
 /**
- * The straight lines from a listing to each of the user's reference addresses, with the distance
- * written at the midpoint.
+ * A distance in the units people use.
  *
- * As-the-crow-flies on purpose: it answers "how far out is this?" without pretending to know a
- * route, and it needs no routing service.
+ * @param {number} meters
+ * @returns {string}
+ */
+function formatDistance(meters) {
+  return meters < 1000 ? `${Math.round(meters)} m` : `${(meters / 1000).toFixed(1)} km`;
+}
+
+/**
+ * The point halfway along a line, measured by length rather than by vertex count.
+ *
+ * Taking the middle vertex would be wrong twice over: on a straight line there is no middle vertex
+ * at all, and on a real route the vertices bunch up around corners, so the middle one can sit well
+ * before the halfway mark.
+ *
+ * @param {Array<[number, number]>} coordinates
+ * @returns {[number, number]}
+ */
+function midpointOf(coordinates) {
+  if (coordinates.length < 2) {
+    return coordinates[0];
+  }
+
+  const lengths = [];
+  let total = 0;
+  for (let i = 1; i < coordinates.length; i++) {
+    const dx = coordinates[i][0] - coordinates[i - 1][0];
+    const dy = coordinates[i][1] - coordinates[i - 1][1];
+    const segment = Math.hypot(dx, dy);
+    lengths.push(segment);
+    total += segment;
+  }
+
+  let travelled = 0;
+  for (let i = 0; i < lengths.length; i++) {
+    if (travelled + lengths[i] >= total / 2) {
+      const ratio = lengths[i] === 0 ? 0 : (total / 2 - travelled) / lengths[i];
+      const [x1, y1] = coordinates[i];
+      const [x2, y2] = coordinates[i + 1];
+      return [x1 + (x2 - x1) * ratio, y1 + (y2 - y1) * ratio];
+    }
+    travelled += lengths[i];
+  }
+
+  return coordinates[coordinates.length - 1];
+}
+
+/**
+ * The drawable geometry of one address in one mode.
+ *
+ * A transit journey is several lines, not one - the walk, the U6, the change, the bus - so it comes
+ * back as a list. Everything else is a single line, and the straight line is what is left when a
+ * mode has no route stored yet.
+ *
+ * @param {{latitude: number, longitude: number}} listing
+ * @param {{label?: string, coords: {lat: number, lng: number}}} home
+ * @param {Object|undefined} travelTime - The stored entry for this address, if there is one.
+ * @param {'straight'|'car'|'bike'|'walk'|'transit'} routeMode
+ * @returns {{lines: Array<{coordinates: Array<[number, number]>, color: string|null}>, label: string}}
+ */
+function routeFor(listing, home, travelTime, routeMode) {
+  const straight = () => {
+    const meters = distanceMeters(listing.latitude, listing.longitude, home.coords.lat, home.coords.lng);
+    return {
+      lines: [
+        {
+          coordinates: [
+            [listing.longitude, listing.latitude],
+            [home.coords.lng, home.coords.lat],
+          ],
+          color: null,
+          walking: true,
+        },
+      ],
+      label: formatDistance(meters),
+    };
+  };
+
+  if (routeMode === 'straight' || travelTime == null) {
+    return straight();
+  }
+
+  if (routeMode === 'transit') {
+    const legs = Array.isArray(travelTime.transit?.legs) ? travelTime.transit.legs : [];
+    const lines = legs
+      .map((leg) => ({
+        coordinates: decodePolyline(leg.geometry, MOTIS_POLYLINE_PRECISION),
+        // The line's own colour where the feed carries one, so an S-Bahn reads as an S-Bahn. The
+        // walking legs deliberately get none and fall back to the route colour.
+        color: leg.mode === 'WALK' ? null : (leg.color ?? null),
+        walking: leg.mode === 'WALK',
+      }))
+      .filter((line) => line.coordinates.length > 1);
+
+    if (lines.length === 0) {
+      return straight();
+    }
+    // Drawn from the origin outwards here, unlike the straight line, because that is the direction
+    // the journey is described in and reversing several legs would only scramble their order.
+    return { lines, label: `${travelTime.transit.minutes} min` };
+  }
+
+  const mode = travelTime[routeMode];
+  const coordinates = mode?.geometry ? decodePolyline(mode.geometry, MOTIS_POLYLINE_PRECISION) : [];
+  if (coordinates.length < 2) {
+    return straight();
+  }
+
+  const parts = [mode.distanceMeters != null ? formatDistance(mode.distanceMeters) : null, `${mode.minutes} min`];
+  // MOTIS draws from the origin to the destination; the rest of this file draws from the listing
+  // outwards, so the label lands in the same place either way once reversed.
+  return {
+    lines: [{ coordinates: [...coordinates].reverse(), color: null }],
+    label: parts.filter(Boolean).join(' \u00b7 '),
+  };
+}
+
+/**
+ * The route from a listing to each of the user's reference addresses, with the distance written
+ * along it.
+ *
+ * Where a driving route has been worked out for this listing, that is what gets drawn - a line
+ * through the buildings in between says very little about a city with a river in it. Until then it
+ * falls back to the straight line, which needs no routing service and has always been what this
+ * drew.
  *
  * @param {{latitude: number, longitude: number}} listing
  * @param {Array<{label?: string, coords: {lat: number, lng: number}}>} homeAddresses
+ * @param {Array<Object>} [travelTimes] - Stored travel times of this listing, keyed by address label.
  * @returns {{type: 'FeatureCollection', features: Array<Object>}}
  */
-export function buildRouteData(listing, homeAddresses) {
+export function buildRouteData(listing, homeAddresses, travelTimes = [], routeMode = 'straight') {
   const homes = Array.isArray(homeAddresses) ? homeAddresses : [];
+  const byLabel = new Map((Array.isArray(travelTimes) ? travelTimes : []).map((entry) => [entry.label, entry]));
 
   return {
     type: 'FeatureCollection',
     features: homes.flatMap((home) => {
-      const distance = distanceMeters(listing.latitude, listing.longitude, home.coords.lat, home.coords.lng);
-      const midpoint = [(listing.longitude + home.coords.lng) / 2, (listing.latitude + home.coords.lat) / 2];
+      const { lines, label } = routeFor(listing, home, byLabel.get(home.label), routeMode);
       const labelPrefix = home.label ? `${home.label}: ` : '';
+      // Halfway along the whole journey rather than halfway along one leg, so the label lands on
+      // the middle of what is drawn even when it is drawn in five pieces.
+      const midpoint = midpointOf(lines.flatMap((line) => line.coordinates));
 
       return [
-        {
+        ...lines.map((line) => ({
           type: 'Feature',
-          geometry: {
-            type: 'LineString',
-            coordinates: [
-              [listing.longitude, listing.latitude],
-              [home.coords.lng, home.coords.lat],
-            ],
-          },
-          properties: {},
-        },
+          geometry: { type: 'LineString', coordinates: line.coordinates },
+          properties: { ...(line.color ? { color: line.color } : {}), walking: line.walking === true },
+        })),
         {
           type: 'Feature',
           geometry: { type: 'Point', coordinates: midpoint },
-          properties: { distance: `${labelPrefix}${Math.round(distance)} m` },
+          properties: { distance: `${labelPrefix}${label}` },
         },
       ];
     }),
@@ -80,13 +201,33 @@ export function applyRouteLayers(map, data) {
     map.addSource(ROUTE_SOURCE_ID, { type: 'geojson', data });
   }
 
+  // A dark casing under everything. Transit legs are drawn in their operator's colour, and a yellow
+  // bus line on top of a yellow motorway is invisible without one - which is exactly what happened.
+  if (map.getLayer(ROUTE_CASING_LAYER_ID) == null) {
+    map.addLayer({
+      id: ROUTE_CASING_LAYER_ID,
+      type: 'line',
+      source: ROUTE_SOURCE_ID,
+      layout: { 'line-join': 'round', 'line-cap': 'round' },
+      paint: { 'line-color': '#1b1b1b', 'line-width': 8, 'line-opacity': 0.55 },
+      filter: ['==', '$type', 'LineString'],
+    });
+  }
+
   if (map.getLayer(ROUTE_LINE_LAYER_ID) == null) {
     map.addLayer({
       id: ROUTE_LINE_LAYER_ID,
       type: 'line',
       source: ROUTE_SOURCE_ID,
       layout: { 'line-join': 'round', 'line-cap': 'round' },
-      paint: { 'line-color': ROUTE_COLOR, 'line-width': 4, 'line-dasharray': [2, 1] },
+      paint: {
+        // Per-feature colour where a transit leg carried one, the listing blue everywhere else.
+        'line-color': ['coalesce', ['get', 'color'], ROUTE_COLOR],
+        'line-width': 5,
+        // Dashed for the parts you walk, solid for the parts you ride. Reads as a journey rather
+        // than as one undifferentiated squiggle.
+        'line-dasharray': ['case', ['get', 'walking'], ['literal', [2, 1.5]], ['literal', [1, 0]]],
+      },
       filter: ['==', '$type', 'LineString'],
     });
   }
@@ -117,7 +258,7 @@ export function applyRouteLayers(map, data) {
 export function removeRouteLayers(map) {
   if (map == null) return;
 
-  for (const layerId of [ROUTE_LABEL_LAYER_ID, ROUTE_LINE_LAYER_ID]) {
+  for (const layerId of [ROUTE_LABEL_LAYER_ID, ROUTE_LINE_LAYER_ID, ROUTE_CASING_LAYER_ID]) {
     if (map.getLayer(layerId) != null) map.removeLayer(layerId);
   }
   if (map.getSource(ROUTE_SOURCE_ID) != null) map.removeSource(ROUTE_SOURCE_ID);

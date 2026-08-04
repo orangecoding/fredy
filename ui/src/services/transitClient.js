@@ -62,3 +62,30 @@ export async function getDepartures({ stopId, lat, lng, name, limit = 8 }) {
   const response = await xhrGet(`/api/transit/departures?${query}`);
   return response.json;
 }
+
+/**
+ * @typedef {Object} TravelTime
+ * @property {string} label - The address this journey starts from.
+ * @property {{minutes: number, transfers: number}} [transit]
+ * @property {{minutes: number, distanceMeters: number|null, geometry?: string}} [car]
+ * @property {{minutes: number}} [bike]
+ * @property {{minutes: number}} [walk]
+ * @property {number} referenceTime - The departure the times were computed for.
+ * @property {number} computedAt
+ */
+
+/**
+ * Loads how long it takes to reach a listing from each configured address.
+ *
+ * The backend answers from storage when it can and only routes when it has to, so this is safe to
+ * call when a detail page opens. A mode missing from an entry was not routable; an empty list means
+ * nothing has been computed yet, which the UI has to show as such rather than as "unreachable".
+ *
+ * @param {string} listingId
+ * @returns {Promise<TravelTime[]>}
+ */
+export async function getTravelTimes(listingId) {
+  const query = new URLSearchParams({ listingId: String(listingId) });
+  const response = await xhrGet(`/api/transit/travel-times?${query}`);
+  return response.json?.travelTimes ?? [];
+}

@@ -6,6 +6,7 @@
 import { renderToString } from 'react-dom/server';
 import { IconChevronLeft, IconChevronRight, IconDelete, IconEyeOpened, IconLink } from '@douyinfe/semi-icons';
 import no_image from '../../assets/no_image.png';
+import { availableModes, formatMinutes, hasAnyTime } from '../../components/transit/travelTimeFormat.js';
 
 /**
  * Builds the DOM for a listing popup on the map.
@@ -59,6 +60,45 @@ export function createListingPopupContent({ listings, t, onPageChange }) {
 }
 
 /**
+ * Escapes text that came from the user's own settings before it goes into the popup markup.
+ *
+ * @param {string} value
+ * @returns {string}
+ */
+function escapeHtml(value) {
+  return String(value).replace(
+    /[&<>"']/g,
+    (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char],
+  );
+}
+
+/**
+ * The travel times of one listing, as a line per address.
+ *
+ * Left out entirely when there is nothing routed. A popup is small and a row saying "unknown" would
+ * take space away from the fields that do have an answer.
+ *
+ * @param {object} listing
+ * @param {(key: string, vars?: Record<string, string|number>) => string} t
+ * @returns {string} Markup, or an empty string.
+ */
+function renderTravelTimes(listing, t) {
+  const usable = Array.isArray(listing.travelTimes) ? listing.travelTimes.filter(hasAnyTime) : [];
+  if (usable.length === 0) {
+    return '';
+  }
+
+  const lines = usable.map((entry) => {
+    const modes = availableModes(entry)
+      .map((mode) => `${mode.icon} ${formatMinutes(mode.minutes)}`)
+      .join(' · ');
+    return `${escapeHtml(entry.label)}: ${modes}`;
+  });
+
+  return `<span><strong>${t('travelTime.title')}</strong> ${lines.join('<br/>')}</span>`;
+}
+
+/**
  * The markup of a single listing inside the popup, with the pager on top when it is one of several.
  *
  * @param {object} listing
@@ -98,6 +138,7 @@ function renderListingBody(listing, index, total, t) {
       <span><strong>${t('map.popupJob')}</strong> ${listing.job_name || t('common.na')}</span>
       <span><strong>${t('map.popupProvider')}</strong> ${capitalizedProvider}</span>
       <span><strong>${t('map.popupSize')}</strong> ${listing.size != null ? `${listing.size} m²` : t('common.na')}</span>
+      ${renderTravelTimes(listing, t)}
       <div style="display: flex; gap: 8px; margin-top: 8px; justify-content: space-between;">
         <div class="map-popup-content__linkButton">
           <a href="${listing.link}" target="_blank" rel="noopener noreferrer">

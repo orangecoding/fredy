@@ -19,6 +19,7 @@ import StatusControl from '../../listings/StatusControl.jsx';
 import ExternalListingLink from '../../listings/ExternalListingLink.jsx';
 import AffordabilityChip from '../../listings/AffordabilityChip.jsx';
 import PriceChangeBadge from '../../listings/PriceChangeBadge.jsx';
+import CommuteBadge from '../../transit/CommuteBadge.jsx';
 
 import './ListingsGrid.less';
 import { useTranslation, useLocale } from '../../../services/i18n/i18n.jsx';
@@ -100,6 +101,9 @@ const ListingsGrid = ({ listings, onWatch, onNavigate, onDelete, onRestore, isHi
               <IconBriefcase />
               {item.provider}
             </div>
+            {/* Compact on purpose: on a card the commute is a number you scan past twenty others,
+                not something you read. The detail page shows the full picture. */}
+            <CommuteBadge travelTimes={item.travelTimes} />
             <div className="listingsGrid__card__provider">{timeService.format(item.created_at, false, locale)}</div>
           </div>
 

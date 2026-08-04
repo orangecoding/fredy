@@ -68,7 +68,7 @@ export default function Navigation({ isAdmin }) {
     icon: <IconSetting />,
     items: [
       { itemKey: '/settings/preferences', text: t('nav.preferences') },
-      { itemKey: '/settings/addresses', text: t('nav.addresses') },
+      { itemKey: '/settings/travel-time', text: t('nav.travelTime') },
       { itemKey: '/settings/listings', text: t('nav.listingDetails') },
     ],
   });

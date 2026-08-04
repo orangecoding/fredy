@@ -90,6 +90,14 @@
                                                     <p class="meta"><strong>Address</strong><br/>{{#if this.address}}{{this.address}}{{else}}unknown{{/if}}</p>
                                                 </td>
                                             </tr>
+                                            {{#if this.commute}}
+                                            <tr><td class="sp-8"></td><td class="sp-8"></td></tr>
+                                            <tr>
+                                                <td colspan="2">
+                                                    <p class="meta"><strong>Commute</strong><br/>{{this.commute}}</p>
+                                                </td>
+                                            </tr>
+                                            {{/if}}
                                         </table>
                                     </td>
                                 </tr>

@@ -30,6 +30,7 @@ import Headline from '../../components/headline/Headline.jsx';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
 import { keepPopupInView, mountPopupNode } from '../../components/map/popupContent.jsx';
 import NearbyStops from '../../components/transit/NearbyStops.jsx';
+import { COMMUTE_OPTIONS, parseCommuteFilter } from '../../components/transit/travelTimeFormat.js';
 
 /**
  * The map's URL-backed view state: which job, the distance ring, the basemap and the optional
@@ -40,6 +41,8 @@ import NearbyStops from '../../components/transit/NearbyStops.jsx';
 const MAP_URL_STATE = {
   job: { defaultValue: null, codec: parseString },
   distance: { defaultValue: 0, codec: parseNumber },
+  // Mode and ceiling in one key, as `transit:30`, so a bookmarked URL can never carry half a filter.
+  commute: { defaultValue: null, codec: parseString },
   style: { defaultValue: 'STANDARD', codec: parseString },
   buildings: { defaultValue: false, codec: parseBoolean },
   // On by default: "how do I get out of here?" is asked about every flat, so the answer should be
@@ -82,9 +85,17 @@ export default function MapView() {
   // One grouped state rather than four independent setters: two of these can change in the same
   // tick, and separate setSearchParams calls overwrite each other.
   const { values: urlState, setValue: setUrlValue, setValues } = useUrlState(sp, MAP_URL_STATE);
-  const { job: jobId, distance: distanceFilter, style, buildings: show3dBuildings, transit: showTransit } = urlState;
+  const {
+    job: jobId,
+    distance: distanceFilter,
+    commute: commuteFilter,
+    style,
+    buildings: show3dBuildings,
+    transit: showTransit,
+  } = urlState;
   const setJobId = (value) => setUrlValue('job', value);
   const setDistanceFilter = (value) => setUrlValue('distance', value);
+  const setCommuteFilter = (value) => setUrlValue('commute', value);
 
   // Price range: stored as priceMin/priceMax URL params; default max derived from loaded listings
   const urlPriceMin = searchParams.has('priceMin') ? Number(searchParams.get('priceMin')) : null;
@@ -138,8 +149,32 @@ export default function MapView() {
     const min = priceRange[0];
     const max = priceRange[1] && priceRange[1] > 0 ? priceRange[1] : getMaxPrice();
 
-    return listings.filter((listing) => listing.price && listing.price >= min && listing.price <= max);
+    return listings
+      .filter((listing) => listing.price && listing.price >= min && listing.price <= max)
+      .filter(withinCommute);
   };
+
+  /**
+   * Whether a listing is reachable within the selected ceiling.
+   *
+   * Unlike the distance ring, which only recolours pins, this one hides them: a commute ceiling is
+   * asked as "show me only what I could actually live with", and a pin that fails it is noise.
+   *
+   * A listing that has not been routed yet has nothing to answer with and drops out. That is why the
+   * control sits next to a legend saying so, rather than being on by default.
+   *
+   * @param {Object} listing
+   * @returns {boolean}
+   */
+  function withinCommute(listing) {
+    const parsed = parseCommuteFilter(commuteFilter);
+    if (parsed == null) {
+      return true;
+    }
+    return (Array.isArray(listing.travelTimes) ? listing.travelTimes : []).some(
+      (entry) => entry?.[parsed.mode]?.minutes != null && entry[parsed.mode].minutes <= parsed.maxMinutes,
+    );
+  }
 
   useEffect(() => {
     window.deleteListing = (id) => deleteListingRef.current(id);
@@ -253,7 +288,7 @@ export default function MapView() {
         });
       }
     }
-  }, [homeAddresses, distanceFilter, listings]);
+  }, [homeAddresses, distanceFilter, commuteFilter, listings]);
 
   useEffect(() => {
     if (!map.current) return;
@@ -389,7 +424,7 @@ export default function MapView() {
 
       markers.current.push(marker);
     });
-  }, [listings, priceRange, homeAddresses, distanceFilter]);
+  }, [listings, priceRange, homeAddresses, distanceFilter, commuteFilter]);
 
   return (
     <>
@@ -408,7 +443,7 @@ export default function MapView() {
             description={
               <span>
                 {t('map.noHomeAddressBefore')}
-                <Link to="/settings/addresses">{t('map.noHomeAddressLink')}</Link>
+                <Link to="/settings/travel-time">{t('map.noHomeAddressLink')}</Link>
                 {t('map.noHomeAddressAfter')}
               </span>
             }
@@ -488,6 +523,33 @@ export default function MapView() {
                     <Select.Option value={25}>25 km</Select.Option>
                   </Select>
                 </div>
+
+                {/* Only offered once there is an address to measure a commute from. Unlike the
+                    distance ring above, which recolours pins, this one hides them: a commute
+                    ceiling is asked as "show me only what I could live with". */}
+                {homeAddresses.length > 0 && (
+                  <div className="map-panel__row">
+                    <Text size="small" strong className="map-panel__label">
+                      {t('map.filterCommuteLabel')}
+                    </Text>
+                    <Select
+                      placeholder={t('map.filterCommuteNone')}
+                      showClear
+                      size="small"
+                      onChange={(val) => setCommuteFilter(val ?? null)}
+                      value={commuteFilter}
+                      style={{ width: 150 }}
+                    >
+                      {COMMUTE_OPTIONS.map(({ mode, minutes }) =>
+                        minutes.map((max) => (
+                          <Select.Option key={`${mode}:${max}`} value={`${mode}:${max}`}>
+                            {t('listings.filterCommuteOption', { mode: t(`travelTime.mode.${mode}`), minutes: max })}
+                          </Select.Option>
+                        )),
+                      )}
+                    </Select>
+                  </div>
+                )}
 
                 <div className="map-panel__row">
                   <Text size="small" strong className="map-panel__label">

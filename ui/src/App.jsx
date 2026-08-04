@@ -9,7 +9,7 @@ import InsufficientPermission from './components/permission/InsufficientPermissi
 import PermissionAwareRoute from './components/permission/PermissionAwareRoute';
 import SettingsLayout from './views/settings/SettingsLayout';
 import PreferencesPage from './views/settings/pages/PreferencesPage';
-import AddressesPage from './views/settings/pages/AddressesPage';
+import TravelTimePage from './views/settings/pages/TravelTimePage';
 import ListingDetailsPage from './views/settings/pages/ListingDetailsPage';
 import AdminLayout from './views/admin/AdminLayout';
 import SystemPage from './views/admin/pages/SystemPage';
@@ -209,7 +209,10 @@ export default function FredyApp() {
                   <Route path="/settings" element={<SettingsLayout />}>
                     <Route index element={<Navigate to="/settings/preferences" replace />} />
                     <Route path="preferences" element={<PreferencesPage />} />
-                    <Route path="addresses" element={<AddressesPage />} />
+                    <Route path="travel-time" element={<TravelTimePage />} />
+                    {/* Was "addresses" until the page grew from a list of places into how travel
+                        time to them is measured. */}
+                    <Route path="addresses" element={<Navigate to="/settings/travel-time" replace />} />
                     <Route path="listings" element={<ListingDetailsPage />} />
                   </Route>
 

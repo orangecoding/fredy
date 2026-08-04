@@ -2,6 +2,16 @@
   "schemaVersion": 1,
   "releases": [
     {
+      "version": "25.2.0",
+      "date": "2026-08-04",
+      "entries": [
+        {
+          "title": "Routing got even better",
+          "text": "In this release, I gave routing and travel time some more love. <br/> <ul><li>Real travel times on every listing</li><li>A \"reachable within\" filter</li><li>The real route drawn on the (details)map</li><li>Settings → Addresses is now Settings → Travel time</li></ul><br/>Fpr more information, see the github release notes."
+        }
+      ]
+    },
+    {
       "version": "25.1.0",
       "date": "2026-08-03",
       "entries": [

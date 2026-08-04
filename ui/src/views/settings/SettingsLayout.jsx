@@ -22,7 +22,7 @@ export default function SettingsLayout() {
 
   const tabs = [
     { path: '/settings/preferences', label: t('settings.tabPreferences'), icon: <IconHome size="small" /> },
-    { path: '/settings/addresses', label: t('settings.tabAddresses'), icon: <IconMapPin size="small" /> },
+    { path: '/settings/travel-time', label: t('settings.tabTravelTime'), icon: <IconMapPin size="small" /> },
     { path: '/settings/listings', label: t('settings.tabListingDetails'), icon: <IconListView size="small" /> },
   ];
 

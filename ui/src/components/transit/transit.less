@@ -142,3 +142,189 @@
     padding: 4px 0 4px 20px;
   }
 }
+
+.travel-times {
+  font-size: 0.78rem;
+
+  &--state {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 0;
+  }
+
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__entry {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 4px 10px;
+  }
+
+  &__label {
+    color: var(--semi-color-text-1);
+    font-weight: 600;
+    /* Wide enough for "Home"/"Work" so several addresses line up under each other, but allowed to
+       grow rather than truncate a label the user chose themselves. */
+    min-width: 3.5rem;
+  }
+
+  &__modes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+  }
+
+  &__mode {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
+    white-space: nowrap;
+  }
+
+  &__minutes {
+    color: var(--semi-color-text-0);
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__transfers,
+  &__distance {
+    color: var(--semi-color-text-2);
+    font-size: 0.72rem;
+  }
+
+  &__estimate {
+    color: var(--semi-color-text-2);
+    font-size: 0.68rem;
+    border: 1px solid var(--semi-color-border);
+    border-radius: 3px;
+    padding: 0 4px;
+    cursor: help;
+  }
+
+  &__attribution {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.68rem;
+  }
+
+  /* In a map popup there is no room for the reference note or the road distance, so the entries
+     collapse to a single line each. */
+  &--compact {
+    .travel-times__entry {
+      flex-wrap: nowrap;
+    }
+
+    .travel-times__label {
+      min-width: 0;
+    }
+  }
+}
+
+.commute-badge {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px 10px;
+  font-size: 0.72rem;
+  color: var(--semi-color-text-2);
+
+  &__item {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 3px;
+    white-space: nowrap;
+  }
+
+  &__minutes {
+    color: var(--semi-color-text-1);
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 6rem;
+  }
+}
+
+/* The public transport figure opens its journey on hover, so it has to look like it does. */
+.travel-times__mode--detailed {
+  cursor: help;
+  text-decoration: underline dotted var(--semi-color-border);
+  text-underline-offset: 3px;
+}
+
+.transit-journey {
+  /* Wide enough for a station name and its time, narrow enough to stay a popover. */
+  min-width: 240px;
+  max-width: 340px;
+  font-size: 0.78rem;
+
+  &__title {
+    font-weight: 600;
+    color: var(--semi-color-text-0);
+    margin-bottom: 6px;
+
+    &--spaced {
+      margin-top: 10px;
+    }
+  }
+
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  &__leg {
+    display: grid;
+    /* Fixed first column so the line badges line up under each other rather than ragging. */
+    grid-template-columns: 3.6rem 1fr auto;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__badge {
+    background: var(--semi-color-fill-2);
+    color: var(--semi-color-text-0);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &--walk {
+      background: transparent;
+      border: 1px dashed var(--semi-color-border);
+      color: var(--semi-color-text-2);
+      font-weight: 500;
+    }
+  }
+
+  &__where {
+    color: var(--semi-color-text-0);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__time {
+    color: var(--semi-color-text-2);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+}

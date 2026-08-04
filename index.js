@@ -23,6 +23,7 @@ import { initDemoCleanupCron } from './lib/services/crons/demo-cleanup-cron.js';
 import { initSessionCleanupCron } from './lib/services/crons/session-cleanup-cron.js';
 import { initListingRetentionCron } from './lib/services/crons/listing-retention-cron.js';
 import { initPriceTrackingCron } from './lib/services/crons/price-tracking-cron.js';
+import { initTravelTimeCron } from './lib/services/crons/travel-time-cron.js';
 
 // Ensure the CloakBrowser stealth Chromium binary is present and complete before
 // jobs run.  ensureValidBinary() also detects and auto-heals partial extractions
@@ -117,6 +118,9 @@ await initListingRetentionCron();
 // Schedules only. Unlike the others this one is never run on start: it renders a browser page per
 // listing, and a restart is the worst moment to begin doing that.
 initPriceTrackingCron();
+// Same reasoning: schedule only. The sweep talks to a community routing service, and hammering it
+// every time an instance restarts is exactly the behaviour their usage policy asks projects to avoid.
+initTravelTimeCron();
 
 logger.info(`Started Fredy successfully. Ui can be accessed via http://localhost:${settings.port}`);
 

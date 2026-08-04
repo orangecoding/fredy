@@ -119,3 +119,20 @@
   background-color: @color-accent !important;
   height: 2px;
 }
+
+/* Sits next to an inline control - the departure pickers under an address - and has to read as a
+   caption for them rather than as another field label above them. */
+.settingsShell__inlineLabel {
+  color: var(--semi-color-text-2);
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+/* Explanation under an inline control, indented to read as belonging to it rather than to the
+   next field down. */
+.settingsShell__inlineHint {
+  color: var(--semi-color-text-2);
+  font-size: 0.72rem;
+  margin-top: 4px;
+  line-height: 1.4;
+}
