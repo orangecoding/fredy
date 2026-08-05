@@ -13,6 +13,15 @@ import './ProviderMutator.less';
 import { useScreenWidth } from '../../../../../hooks/screenWidth.js';
 import { useTranslation } from '../../../../../services/i18n/i18n.jsx';
 
+const SCAN_INTERVAL_OPTIONS = [
+  { value: 0, label: 'Use global interval' },
+  { value: 60, label: 'Every 1 hour' },
+  { value: 180, label: 'Every 3 hours' },
+  { value: 360, label: 'Every 6 hours' },
+  { value: 720, label: 'Every 12 hours' },
+  { value: 1440, label: 'Every 24 hours' },
+];
+
 const sortProvider = (a, b) => {
   if (a.key < b.key) {
     return -1;
@@ -58,17 +67,20 @@ export default function ProviderMutator({
   const provider = useSelector((state) => state.provider);
   const [selectedProvider, setSelectedProvider] = useState(null);
   const [providerUrl, setProviderUrl] = useState(null);
+  const [scanIntervalMinutes, setScanIntervalMinutes] = useState(0);
   const [validationMessage, setValidationMessage] = useState(null);
 
   useEffect(() => {
     if (providerToEdit) {
       setSelectedProvider(returnOriginalSelectedProvider(providerToEdit, provider));
       setProviderUrl(providerToEdit.url);
+      setScanIntervalMinutes(Number(providerToEdit.scanIntervalMinutes) || 0);
     } else {
       setSelectedProvider(null);
       setProviderUrl(null);
+      setScanIntervalMinutes(0);
     }
-  }, [providerToEdit, visible]);
+  }, [providerToEdit, provider, visible]);
 
   const width = useScreenWidth();
   const isMobile = width <= 850;
@@ -85,38 +97,39 @@ export default function ProviderMutator({
     return null;
   };
 
+  const providerFormData = () => ({
+    url: providerUrl,
+    id: selectedProvider.id,
+    name: selectedProvider.name,
+    scanIntervalMinutes,
+  });
+
+  const resetAndClose = () => {
+    setProviderUrl(null);
+    setSelectedProvider(null);
+    setScanIntervalMinutes(0);
+    setValidationMessage(null);
+    onVisibilityChanged(false);
+  };
+
   const onSubmit = (doStore) => {
     if (doStore) {
       const validationResult = validate();
       if (validationResult == null) {
         if (providerToEdit != null) {
           onEditData({
-            newData: transform({
-              url: providerUrl,
-              id: selectedProvider.id,
-              name: selectedProvider.name,
-            }),
+            newData: transform(providerFormData()),
             oldProviderToEdit: providerToEdit,
           });
         } else {
-          onData(
-            transform({
-              url: providerUrl,
-              id: selectedProvider.id,
-              name: selectedProvider.name,
-            }),
-          );
+          onData(transform(providerFormData()));
         }
-        setProviderUrl(null);
-        setSelectedProvider(null);
-        onVisibilityChanged(false);
+        resetAndClose();
       } else {
         setValidationMessage(validationResult);
       }
     } else {
-      setProviderUrl(null);
-      setSelectedProvider(null);
-      onVisibilityChanged(false);
+      resetAndClose();
     }
   };
 
@@ -183,6 +196,19 @@ export default function ProviderMutator({
           setProviderUrl(e.target.value);
         }}
       />
+      <br />
+      <br />
+      <div style={{ marginBottom: '0.5rem', fontWeight: 600 }}>Minimum scan interval</div>
+      <Select
+        value={scanIntervalMinutes}
+        optionList={SCAN_INTERVAL_OPTIONS}
+        onChange={(value) => setScanIntervalMinutes(Number(value) || 0)}
+        className="providerMutator__fields"
+        style={{ width: 220 }}
+      />
+      <p style={{ marginTop: '0.5rem', color: 'var(--semi-color-text-2)' }}>
+        The global interval remains the scheduler tick. This provider is skipped until its minimum interval has elapsed.
+      </p>
     </Modal>
   );
 }
