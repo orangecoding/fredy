@@ -25,7 +25,7 @@ const DEFAULT_DEPARTURE = { time: '08:00' };
 const DEPARTURE_TIMES = ['06:00', '07:00', '07:30', '08:00', '08:30', '09:00', '12:00', '17:00', '17:30', '18:00'];
 
 /** How an address can be measured. Public transport first, because it is the default. */
-const MODES = ['transit', 'car', 'walk'];
+const MODES = ['transit', 'car', 'bike', 'walk'];
 
 /**
  * The places distances are measured to.
