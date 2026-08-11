@@ -507,6 +507,50 @@ describe('refineTravelTimesForListing', () => {
     expect(state.planCalls).toHaveLength(0);
   });
 
+  it('records the mode the address is measured in, so the card keeps leading with it', async () => {
+    state.planResult = {
+      ok: true,
+      times: { transit: { minutes: 31, transfers: 1 }, car: { minutes: 12, distanceMeters: 5400, geometry: 'abc' } },
+    };
+
+    const { refine } = await loadSweeper();
+    await refine(listing, [address(), address({ label: 'Office', mode: 'car' })], { now: NOW });
+
+    const [home, office] = state.saved[0].entries;
+    expect(home.estimateMode).toBe('transit');
+    expect(office.estimateMode).toBe('car');
+  });
+
+  it('keeps the estimated transit time when the planner finds no connection', async () => {
+    // The sweep reached the listing by public transport; the planner has no itinerary for this one
+    // departure. Blanking the transit time here is what dropped the listing out of the public
+    // transport filter as soon as somebody opened it.
+    state.stored.set('l1', [storedRow()]);
+    state.planResult = { ok: true, times: { transit: null, car: { minutes: 12, distanceMeters: 5400 } } };
+
+    const { refine } = await loadSweeper();
+    await refine(listing, [address()], { now: NOW });
+
+    const [entry] = state.saved[0].entries;
+    expect(entry.transitMinutes).toBe(25);
+    expect(entry.transitTransfers).toBe(1);
+    expect(entry.carMinutes).toBe(12);
+    // Still a guess, and still able to say which stops it was made from.
+    expect(entry.isEstimate).toBe(true);
+    expect(entry.viaStops).toHaveLength(1);
+  });
+
+  it('writes no transit time when there was no estimate to keep either', async () => {
+    state.planResult = { ok: true, times: { transit: null, car: { minutes: 12, distanceMeters: 5400 } } };
+
+    const { refine } = await loadSweeper();
+    await refine(listing, [address()], { now: NOW });
+
+    const [entry] = state.saved[0].entries;
+    expect(entry.transitMinutes).toBeNull();
+    expect(entry.isEstimate).toBe(false);
+  });
+
   it('keeps the stored estimate when the exact lookup is unavailable', async () => {
     state.stored.set('l1', [storedRow()]);
     state.planResult = { ok: false, reason: 'unavailable' };

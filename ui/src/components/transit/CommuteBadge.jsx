@@ -3,15 +3,15 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { availableModes, formatMinutes, hasAnyTime } from './travelTimeFormat.js';
+import { formatMinutes, hasAnyTime, primaryMode } from './travelTimeFormat.js';
 import './transit.less';
 
 /**
  * The shortest way to say "and it takes this long to get there" on a listing card.
  *
- * A card is scanned, not read, so this shows one number per address - the fastest of the modes that
- * were routable - rather than the full breakdown the detail page carries. Renders nothing at all
- * when there is nothing to say, which is the case for every listing until the sweep has reached it.
+ * A card is scanned, not read, so this shows one number per address - the mode that address is
+ * measured in - rather than the full breakdown the detail page carries. Renders nothing at all when
+ * there is nothing to say, which is the case for every listing until the sweep has reached it.
  *
  * @param {Object} props
  * @param {Array<Object>} [props.travelTimes]
@@ -26,11 +26,11 @@ export default function CommuteBadge({ travelTimes }) {
   return (
     <div className="commute-badge">
       {usable.map((entry) => {
-        const fastest = availableModes(entry).reduce((best, mode) => (mode.minutes < best.minutes ? mode : best));
+        const mode = primaryMode(entry);
         return (
           <span key={entry.label} className="commute-badge__item" title={entry.label}>
-            <span aria-hidden="true">{fastest.icon}</span>
-            <span className="commute-badge__minutes">{formatMinutes(fastest.minutes)}</span>
+            <span aria-hidden="true">{mode.icon}</span>
+            <span className="commute-badge__minutes">{formatMinutes(mode.minutes)}</span>
             <span className="commute-badge__label">{entry.label}</span>
           </span>
         );

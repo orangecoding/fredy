@@ -66,6 +66,7 @@ describe('queryListings travel time filter against real SQLite', () => {
         car_geometry TEXT,
         bike_minutes INTEGER,
         walk_minutes INTEGER,
+        estimate_mode TEXT,
         is_estimate INTEGER NOT NULL DEFAULT 1,
         reference_time INTEGER,
         computed_at INTEGER,
@@ -160,6 +161,17 @@ describe('queryListings travel time filter against real SQLite', () => {
     expect(byId.get('car-only').travelTimes[0].transit).toBeUndefined();
     expect(byId.get('car-only').travelTimes[0].estimate).toBe(false);
     expect(byId.get('unrouted').travelTimes).toBeUndefined();
+  });
+
+  it('carries the mode each address is measured in, so a card can lead with it', () => {
+    db.prepare(`UPDATE listing_travel_times SET estimate_mode = 'car' WHERE listing_id = 'car-only'`).run();
+
+    const rows = listingsStorage.queryListings({ userId: USER, pageSize: 100 }).result;
+    const byId = new Map(rows.map((row) => [row.id, row]));
+
+    expect(byId.get('car-only').travelTimes[0].mode).toBe('car');
+    // Written before the mode was recorded. Null rather than a guess: the UI falls back on its own.
+    expect(byId.get('near').travelTimes[0].mode).toBeNull();
   });
 
   it('keeps the encoded driving route off list pages and puts it on the single listing', () => {

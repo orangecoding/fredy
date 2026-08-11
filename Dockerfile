@@ -15,8 +15,9 @@ FROM node:22-trixie-slim
 # NOTE: Real Windows fonts (Segoe UI, Calibri, etc.) can't be bundled here since
 # they require copying licensed files off an actual Windows install; the
 # resulting CLOAKBROWSER_SUPPRESS_FONT_WARNING startup notice is expected.
+# tini is the container's init (see ENTRYPOINT below) and must survive the build-tool purge.
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates fonts-liberation libasound2t64 \
+    curl ca-certificates tini fonts-liberation libasound2t64 \
     libatk-bridge2.0-0t64 libatk1.0-0t64 libcups2t64 libdbus-1-3 \
     libdrm2 libgbm1 libgtk-3-0t64 libnspr4 libnss3 \
     libx11-xcb1 libxcomposite1 libxdamage1 libxrandr2 xdg-utils \
@@ -69,4 +70,14 @@ VOLUME /conf
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
   CMD curl -f http://localhost:9998/ || exit 1
 
+# Run node under tini instead of as pid 1.
+#
+# Chromium spawns helper processes (crashpad handler, gpu, and - because of --no-zygote - one
+# process per renderer). Whenever the browser process dies before them, e.g. when a page crashes
+# it or Puppeteer has to kill it, those helpers are reparented to pid 1. libuv only waits for the
+# pids node itself spawned, so a node running as pid 1 never reaps them and every failed scrape
+# left two more `[chrome] <defunct>` entries behind until the container hit the pid limit.
+# tini reaps whatever it inherits and forwards signals (-g: to the whole process group), so
+# shutdown keeps working as before.
+ENTRYPOINT ["/usr/bin/tini", "-g", "--"]
 CMD ["node", "index.js"]
