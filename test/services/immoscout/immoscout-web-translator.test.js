@@ -210,6 +210,16 @@ describe('#immoscout-mobile URL conversion', () => {
     expect(queryParams.get('apartmenttypes')).toBe(apartmentType);
   });
 
+  // The tenantNetwork flag opts into the mobile API's "Mieter-Netzwerk" pool.
+  it('should forward the tenantNetwork flag when present in the web URL', () => {
+    const webUrl =
+      'https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/neuss-rhein-kreis/rommerskirchen/wohnung-mieten?enteredFrom=result_list&tenantNetwork=true';
+
+    const converted = convertWebToMobile(webUrl);
+    const queryParams = new URL(converted).searchParams;
+    expect(queryParams.get('tenantNetwork')).toBe('true');
+  });
+
   // Test URL conversion with unsupported query parameters
   it('should remove unsupported query parameters', () => {
     const webUrl = 'https://www.immobilienscout24.de/Suche/de/berlin/berlin/wohnung-mieten?minimuminternetspeed=100000';
