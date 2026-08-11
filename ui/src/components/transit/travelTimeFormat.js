@@ -99,6 +99,28 @@ export function availableModes(entry) {
 }
 
 /**
+ * The one mode to show when there is only room for one.
+ *
+ * The mode the address is measured in, which is the question the user actually asked - not the
+ * fastest one. Picking the fastest looked reasonable on a card and was not stable: a listing carries
+ * only its public transport estimate until somebody opens it, and the detail page then adds car,
+ * bike and walk, so the card would silently switch from the train to the car for a listing that had
+ * not changed at all. Rows written before the mode was recorded fall back to the first mode with an
+ * answer, which is public transport wherever there is one.
+ *
+ * @param {Object} entry
+ * @returns {{key: string, icon: string, labelKey: string, minutes: number, transfers?: number}|null}
+ * `null` when the entry has no answer at all.
+ */
+export function primaryMode(entry) {
+  const modes = availableModes(entry);
+  if (modes.length === 0) {
+    return null;
+  }
+  return modes.find((mode) => mode.key === entry?.mode) ?? modes[0];
+}
+
+/**
  * Whether an entry says anything at all.
  *
  * @param {Object} entry
