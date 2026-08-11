@@ -87,6 +87,8 @@ Fredy is proudly backed by the **JetBrains Open Source Support Program**.
   <img alt="Jetbrains Open Source" src="https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg">
 </picture>
 
+--------
+
 Timetables, journey planning and travel times are provided by
 [Transitous](https://transitous.org/), a community-run [MOTIS](https://github.com/motis-project/motis)
 instance. It is free, needs no API key, and is maintained by volunteers. Street and map data come
