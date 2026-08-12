@@ -6,7 +6,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const storage = vi.hoisted(() => ({
+  assignMailMessageToListing: vi.fn(),
   getMailAccountWithCredential: vi.fn(),
+  getOwnedListingsForMailMatching: vi.fn(),
+  getUnmatchedMailMessages: vi.fn(),
   markMailSyncFailed: vi.fn(),
   markMailSyncSuccessful: vi.fn(),
   storeMailMessage: vi.fn(),
@@ -70,13 +73,16 @@ beforeEach(() => {
     lastUid: null,
   });
   storage.storeMailMessage.mockReturnValue(true);
+  storage.getOwnedListingsForMailMatching.mockReturnValue([]);
+  storage.getUnmatchedMailMessages.mockReturnValue([]);
 });
 
 describe('syncMailAccount', () => {
   it('uses a bounded date search on first sync and stores plain-text messages', async () => {
     const client = createClient();
     const now = Date.parse('2026-08-12T12:00:00Z');
-    const result = await syncMailAccount('account-1', 'user-1', { clientFactory: () => client, now });
+    const matcher = vi.fn(async () => ({ matched: 1 }));
+    const result = await syncMailAccount('account-1', 'user-1', { clientFactory: () => client, matcher, now });
 
     expect(client.search).toHaveBeenCalledWith({ since: new Date('2026-07-13T12:00:00Z') }, { uid: true });
     expect(storage.storeMailMessage).toHaveBeenCalledWith(
@@ -90,7 +96,8 @@ describe('syncMailAccount', () => {
       }),
     );
     expect(storage.markMailSyncSuccessful).toHaveBeenCalledWith('account-1', '12', 41);
-    expect(result).toEqual({ fetched: 1, stored: 1, lastUid: 41 });
+    expect(matcher).toHaveBeenCalledWith('user-1');
+    expect(result).toEqual({ fetched: 1, stored: 1, matched: 1, lastUid: 41 });
   });
 
   it('resumes from the next UID when UIDVALIDITY is unchanged', async () => {
@@ -120,7 +127,7 @@ describe('syncMailAccount', () => {
     expect(client.search).toHaveBeenCalledWith({ uid: '42:*' }, { uid: true });
     expect(client.fetchOne).not.toHaveBeenCalled();
     expect(storage.markMailSyncSuccessful).toHaveBeenCalledWith('account-1', '12', 41);
-    expect(result).toEqual({ fetched: 0, stored: 0, lastUid: 41 });
+    expect(result).toEqual({ fetched: 0, stored: 0, matched: 0, lastUid: 41 });
   });
 
   it('does not download the source of a message larger than the safety limit', async () => {
