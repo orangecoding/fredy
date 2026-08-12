@@ -566,4 +566,4 @@ Guide](https://github.com/orangecoding/fredy/blob/master/CONTRIBUTING.md).
 ## ⭐ Star History
 
 [![Star History
-Chart](https://api.star-history.com/svg?repos=orangecoding/fredy&type=Date)](https://www.star-history.com/#orangecoding/fredy&Date)
+Chart](https://star-history.dera.page/svg?repos=orangecoding/fredy&type=Date)](https://star-history.dera.page/#orangecoding/fredy&Date)
