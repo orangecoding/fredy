@@ -34,6 +34,8 @@ vi.mock('../../lib/services/storage/SqliteConnection.js', () => ({ default: sqli
 
 const {
   assignMailMessageToListing,
+  getEnabledMailAccountsForSync,
+  getMatchedMailThreadAnchors,
   getUnmatchedMailMessages,
   removeMailMessageListingMatch,
   searchOwnedListingsForMailAssignment,
@@ -95,6 +97,22 @@ describe('mail matching storage ownership', () => {
       cursorSortAt: 1234,
       cursorId: 'message-9',
     });
+  });
+
+  it('scopes thread anchors to the mailbox owner', () => {
+    getMatchedMailThreadAnchors('user-1');
+
+    expect(sqliteMock.query).toHaveBeenCalledWith(expect.stringMatching(/a\.user_id = @userId/), {
+      userId: 'user-1',
+    });
+  });
+
+  it('lists only enabled accounts without selecting credentials', () => {
+    getEnabledMailAccountsForSync();
+
+    const sql = sqliteMock.query.mock.calls.at(-1)[0];
+    expect(sql).toMatch(/WHERE enabled = 1/);
+    expect(sql).not.toMatch(/password_encrypted/);
   });
 
   it('searches only owned listings and escapes SQL wildcards', () => {

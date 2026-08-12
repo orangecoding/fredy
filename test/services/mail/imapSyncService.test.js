@@ -8,6 +8,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 const storage = vi.hoisted(() => ({
   assignMailMessageToListing: vi.fn(),
   getMailAccountWithCredential: vi.fn(),
+  getMatchedMailThreadAnchors: vi.fn(),
   getOwnedListingsForMailMatching: vi.fn(),
   getUnmatchedMailMessages: vi.fn(),
   markMailSyncFailed: vi.fn(),
@@ -33,6 +34,7 @@ vi.mock('mailparser', () => ({
 }));
 
 const { syncMailAccount } = await import('../../../lib/services/mail/imapSyncService.js');
+const { simpleParser } = await import('mailparser');
 
 function createClient({ uids = [41], size = 500, uidValidity = 12 } = {}) {
   return {
@@ -73,6 +75,7 @@ beforeEach(() => {
     lastUid: null,
   });
   storage.storeMailMessage.mockReturnValue(true);
+  storage.getMatchedMailThreadAnchors.mockReturnValue([]);
   storage.getOwnedListingsForMailMatching.mockReturnValue([]);
   storage.getUnmatchedMailMessages.mockReturnValue([]);
 });
@@ -94,6 +97,10 @@ describe('syncMailAccount', () => {
         subject: 'Viewing invitation',
         textBody: 'You are invited.',
       }),
+    );
+    expect(simpleParser).toHaveBeenCalledWith(
+      expect.any(Buffer),
+      expect.objectContaining({ skipHtmlToText: false, skipTextToHtml: true }),
     );
     expect(storage.markMailSyncSuccessful).toHaveBeenCalledWith('account-1', '12', 41);
     expect(matcher).toHaveBeenCalledWith('user-1');
@@ -149,5 +156,19 @@ describe('syncMailAccount', () => {
       'authentication failed',
     );
     expect(storage.markMailSyncFailed).toHaveBeenCalledWith('account-1', 'authentication failed');
+  });
+
+  it('shares one IMAP operation between concurrent sync requests', async () => {
+    const client = createClient();
+    const clientFactory = vi.fn(() => client);
+
+    const [first, second] = await Promise.all([
+      syncMailAccount('account-1', 'user-1', { clientFactory }),
+      syncMailAccount('account-1', 'user-1', { clientFactory }),
+    ]);
+
+    expect(clientFactory).toHaveBeenCalledTimes(1);
+    expect(client.connect).toHaveBeenCalledTimes(1);
+    expect(second).toEqual(first);
   });
 });

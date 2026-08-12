@@ -150,8 +150,17 @@ configuring an account:
 export FREDY_MAIL_ENCRYPTION_KEY="$(openssl rand -base64 32)"
 ```
 
-For Docker, pass the same variable with `-e FREDY_MAIL_ENCRYPTION_KEY=...`. Keep the key outside
-the database backup and do not rotate or lose it without first removing the saved IMAP account.
+For Docker Compose, store the key in the `.env` file beside `docker-compose.yml`:
+
+``` bash
+FREDY_MAIL_ENCRYPTION_KEY=replace-with-the-generated-value
+# Optional; the default checks enabled accounts every ten minutes.
+FREDY_MAIL_SYNC_CRON="*/10 * * * *"
+```
+
+Keep the key outside the database backup and do not rotate or lose it without first removing the
+saved IMAP account. The fork image is published as `ghcr.io/emnl51/fredy:master`; override it with
+`FREDY_IMAGE` when testing another tag.
 
 ### With Unraid
 

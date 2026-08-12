@@ -92,6 +92,35 @@ describe('matchUnmatchedMailMessages', () => {
     expect(assign).toHaveBeenCalledWith(expect.objectContaining({ listingId: 'listing-1', method: 'address' }));
   });
 
+  it('inherits a listing match through a German email thread', async () => {
+    const assign = vi.fn(() => true);
+    const result = await matchUnmatchedMailMessages('user-1', {
+      messages: [
+        {
+          id: 'reply-1',
+          messageId: '<reply-1@example.com>',
+          inReplyTo: '<application-1@example.com>',
+          references: ['<application-1@example.com>'],
+          subject: 'AW: Ihre Anfrage',
+          textBody: 'Der Besichtigungstermin wurde bestätigt.',
+        },
+        {
+          id: 'application-1',
+          messageId: '<application-1@example.com>',
+          subject: 'Bestätigung Ihrer Anfrage 123456789',
+          textBody: null,
+        },
+      ],
+      listings,
+      assign,
+    });
+
+    expect(assign).toHaveBeenCalledWith(
+      expect.objectContaining({ messageId: 'reply-1', listingId: 'listing-1', method: 'thread', confidence: 95 }),
+    );
+    expect(result).toEqual({ processed: 2, matched: 2, ambiguous: 0 });
+  });
+
   it('leaves duplicate identifiers unmatched for manual selection', async () => {
     const assign = vi.fn(() => true);
     const result = await matchUnmatchedMailMessages('user-1', {

@@ -69,6 +69,7 @@
   "mail.status.not_invited": "Not invited",
   "mail.matchMethod.listing_code": "Listing code",
   "mail.matchMethod.address": "Address",
+  "mail.matchMethod.thread": "Email thread",
   "mail.matchMethod.manual": "Manual",
   "mail.loadError": "Could not load the mail inbox.",
   "mail.actionError": "The mail action failed.",

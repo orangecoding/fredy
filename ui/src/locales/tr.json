@@ -69,6 +69,7 @@
   "mail.status.not_invited": "Davet edilmedi",
   "mail.matchMethod.listing_code": "İlan kodu",
   "mail.matchMethod.address": "Adres",
+  "mail.matchMethod.thread": "E-posta zinciri",
   "mail.matchMethod.manual": "Manuel",
   "mail.loadError": "Posta kutusu yüklenemedi.",
   "mail.actionError": "E-posta işlemi başarısız oldu.",

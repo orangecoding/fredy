@@ -4,9 +4,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: ghcr.io/orangecoding/fredy
+    image: ${FREDY_IMAGE:-ghcr.io/emnl51/fredy:master}
     environment:
       - NODE_ENV=production
+      - FREDY_MAIL_ENCRYPTION_KEY=${FREDY_MAIL_ENCRYPTION_KEY:-}
+      - FREDY_MAIL_SYNC_CRON=${FREDY_MAIL_SYNC_CRON:-*/10 * * * *}
     volumes:
       - ./conf:/conf
       - ./db:/db

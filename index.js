@@ -24,6 +24,7 @@ import { initSessionCleanupCron } from './lib/services/crons/session-cleanup-cro
 import { initListingRetentionCron } from './lib/services/crons/listing-retention-cron.js';
 import { initPriceTrackingCron } from './lib/services/crons/price-tracking-cron.js';
 import { initTravelTimeCron } from './lib/services/crons/travel-time-cron.js';
+import { initMailSyncCron } from './lib/services/crons/mail-sync-cron.js';
 
 // Ensure the CloakBrowser stealth Chromium binary is present and complete before
 // jobs run.  ensureValidBinary() also detects and auto-heals partial extractions
@@ -121,6 +122,9 @@ initPriceTrackingCron();
 // Same reasoning: schedule only. The sweep talks to a community routing service, and hammering it
 // every time an instance restarts is exactly the behaviour their usage policy asks projects to avoid.
 initTravelTimeCron();
+// Mailboxes are not synchronized during startup. The fixed schedule avoids a
+// burst of external connections while migrations and browser services settle.
+initMailSyncCron();
 
 logger.info(`Started Fredy successfully. Ui can be accessed via http://localhost:${settings.port}`);
 

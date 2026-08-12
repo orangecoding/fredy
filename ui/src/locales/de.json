@@ -69,6 +69,7 @@
   "mail.status.not_invited": "Nicht eingeladen",
   "mail.matchMethod.listing_code": "Inseratscode",
   "mail.matchMethod.address": "Adresse",
+  "mail.matchMethod.thread": "E-Mail-Verlauf",
   "mail.matchMethod.manual": "Manuell",
   "mail.loadError": "Der Posteingang konnte nicht geladen werden.",
   "mail.actionError": "Die E-Mail-Aktion ist fehlgeschlagen.",
