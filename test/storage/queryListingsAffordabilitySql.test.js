@@ -207,4 +207,31 @@ describe('queryListings affordability band against real SQLite', () => {
     expect(byId['buy-cheap']).toBe('buy');
     expect(byId['rent-cheap']).toBe('rent');
   });
+
+  it('lets a shared user open a listing but rejects a foreign listing', () => {
+    db.prepare(`INSERT INTO jobs (id, user_id, name, shared_with_user, deal_type) VALUES (?, ?, ?, ?, 'rent')`).run(
+      'job-shared',
+      'owner-2',
+      'Shared job',
+      JSON.stringify([USER]),
+    );
+    db.prepare(`INSERT INTO jobs (id, user_id, name, shared_with_user, deal_type) VALUES (?, ?, ?, '[]', 'rent')`).run(
+      'job-foreign',
+      'owner-3',
+      'Foreign job',
+    );
+    db.prepare(`INSERT INTO listings (id, job_id, price, title) VALUES (?, ?, 900, ?)`).run(
+      'shared-listing',
+      'job-shared',
+      'Shared listing',
+    );
+    db.prepare(`INSERT INTO listings (id, job_id, price, title) VALUES (?, ?, 900, ?)`).run(
+      'foreign-listing',
+      'job-foreign',
+      'Foreign listing',
+    );
+
+    expect(listingsStorage.getListingById('shared-listing', USER)?.id).toBe('shared-listing');
+    expect(listingsStorage.getListingById('foreign-listing', USER)).toBeNull();
+  });
 });
