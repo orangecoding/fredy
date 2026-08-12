@@ -141,6 +141,18 @@ yarn run start:frontend  # in another terminal
 
 👉 Open <http://localhost:9998>
 
+### Incoming mail credentials
+
+The incoming-mail API encrypts every saved IMAP password. Set a stable 32-byte key before
+configuring an account:
+
+``` bash
+export FREDY_MAIL_ENCRYPTION_KEY="$(openssl rand -base64 32)"
+```
+
+For Docker, pass the same variable with `-e FREDY_MAIL_ENCRYPTION_KEY=...`. Keep the key outside
+the database backup and do not rotate or lose it without first removing the saved IMAP account.
+
 ### With Unraid
 
 Should you use [Unraid](https://unraid.net/), you can now install Fredy from the community store :)
