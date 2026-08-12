@@ -10,6 +10,7 @@ import {
   IconSetting,
   IconTerminal,
   IconHistogram,
+  IconMailStroked,
   IconSidebar,
   IconServerStroked,
 } from '@douyinfe/semi-icons';
@@ -57,6 +58,7 @@ export default function Navigation({ isAdmin }) {
       ],
     },
     { itemKey: '/finance', text: t('nav.finance'), icon: <IconEuro /> },
+    { itemKey: '/mail', text: t('nav.mail'), icon: <IconMailStroked /> },
   ];
 
   // Two groups, not one. Which group a page sits in is the answer to "does this affect anyone but

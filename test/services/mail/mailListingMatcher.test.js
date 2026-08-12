@@ -62,6 +62,25 @@ describe('matchUnmatchedMailMessages', () => {
     expect(result).toEqual({ processed: 1, matched: 1, ambiguous: 0 });
   });
 
+  it('matches a reference number embedded in a typical German reply', async () => {
+    const assign = vi.fn(() => true);
+    await matchUnmatchedMailMessages('user-1', {
+      messages: [
+        {
+          id: 'message-german-reference',
+          subject: 'Bestätigung Ihrer Anfrage – Objektnummer 123456789',
+          textBody: 'Vielen Dank für Ihr Interesse an der Wohnung.',
+        },
+      ],
+      listings,
+      assign,
+    });
+
+    expect(assign).toHaveBeenCalledWith(
+      expect.objectContaining({ listingId: 'listing-1', method: 'listing_code', confidence: 100 }),
+    );
+  });
+
   it('uses an exact normalized address when no listing code is present', async () => {
     const assign = vi.fn(() => true);
     await matchUnmatchedMailMessages('user-1', {

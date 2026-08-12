@@ -1,0 +1,150 @@
+@import '../../tokens.less';
+
+.mailInbox {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+
+  &__loading {
+    min-height: 360px;
+    display: grid;
+    place-items: center;
+  }
+
+  &__account {
+    margin-bottom: @space-6;
+  }
+
+  &__formGrid {
+    display: grid;
+    grid-template-columns: minmax(220px, 2fr) 120px minmax(220px, 2fr);
+    gap: @space-4;
+    margin-bottom: @space-4;
+
+    > label {
+      display: flex;
+      flex-direction: column;
+      gap: @space-2;
+
+      > span {
+        color: @color-muted;
+        font-size: @text-sm;
+      }
+    }
+  }
+
+  &__switches {
+    display: flex;
+    gap: @space-5;
+    align-items: flex-end;
+    padding-bottom: 6px;
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: @space-2;
+    }
+  }
+
+  &__accountActions,
+  &__messageHeader,
+  &__matchedListing,
+  &__summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: @space-3;
+  }
+
+  &__accountActions {
+    justify-content: flex-start;
+    margin-top: @space-4;
+    flex-wrap: wrap;
+  }
+
+  &__summary {
+    margin-bottom: @space-3;
+
+    h4 {
+      margin: 0;
+    }
+  }
+
+  &__messages {
+    display: grid;
+    gap: @space-3;
+  }
+
+  &__messageCard {
+    border-color: @color-border;
+  }
+
+  &__messageHeader h5 {
+    margin: 0 0 @space-1;
+  }
+
+  &__body {
+    margin: @space-3 0;
+    color: @color-muted;
+
+    summary {
+      cursor: pointer;
+    }
+
+    pre {
+      max-height: 280px;
+      overflow: auto;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      padding: @space-3;
+      background: @color-fill-subtle;
+      border-radius: @radius-input;
+      font-family: @font-ui;
+      font-size: @text-sm;
+    }
+  }
+
+  &__matchedListing {
+    margin-top: @space-3;
+    padding: @space-3;
+    background: @color-fill-subtle;
+    border-radius: @radius-input;
+  }
+
+  &__statusTag {
+    margin-top: @space-2;
+  }
+
+  &__assignment {
+    display: grid;
+    grid-template-columns: minmax(260px, 1fr) 150px auto;
+    gap: @space-2;
+    margin-top: @space-3;
+  }
+
+  @media (max-width: 900px) {
+    &__formGrid {
+      grid-template-columns: 1fr 120px;
+    }
+    &__assignment {
+      grid-template-columns: 1fr;
+    }
+    &__matchedListing {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 600px) {
+    &__formGrid {
+      grid-template-columns: 1fr;
+    }
+    &__messageHeader {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+    &__switches {
+      align-items: flex-start;
+    }
+  }
+}
