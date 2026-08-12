@@ -9,14 +9,15 @@ import { IconChevronDown } from '@douyinfe/semi-icons';
 
 import './StatusControl.less';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
+import { LISTING_STATUSES } from '../../services/listingStatus.js';
 
 /**
- * @typedef {('applied'|'rejected'|'accepted'|null)} ListingStatus
+ * @typedef {('applied'|'invited'|'visited'|'documents_sent'|'accepted'|'rejected'|'not_invited'|null)} ListingStatus
  */
 
 /**
  * Shared control for setting a listing's user-decision status
- * (Applied / Rejected / Accepted).
+ * through the complete application lifecycle.
  *
  * Both compact (table/grid rows) and full (listing detail header) modes
  * render a Button that picks up the project's CI tokens via the
@@ -35,9 +36,7 @@ export default function StatusControl({ status = null, onChange, compact = false
 
   const STATUS_OPTIONS = [
     { value: null, label: t('listings.status.none') },
-    { value: 'applied', label: t('listings.status.applied') },
-    { value: 'rejected', label: t('listings.status.rejected') },
-    { value: 'accepted', label: t('listings.status.accepted') },
+    ...LISTING_STATUSES.map((value) => ({ value, label: t(`listings.status.${value}`) })),
   ];
 
   const STATUS_TOOLTIP = t('listings.status.tooltip');

@@ -367,8 +367,12 @@ export default function ListingDetail() {
 
   const statusKeyMap = {
     applied: 'listing.detail.statusApplied',
+    invited: 'listing.detail.statusInvited',
+    visited: 'listing.detail.statusVisited',
+    documents_sent: 'listing.detail.statusDocumentsSent',
     accepted: 'listing.detail.statusAccepted',
     rejected: 'listing.detail.statusRejected',
+    not_invited: 'listing.detail.statusNotInvited',
   };
   const statusLabel = listing.status?.status ? t(statusKeyMap[listing.status.status] ?? listing.status.status) : null;
 

@@ -17,7 +17,10 @@
   border: 1px solid @color-border-bright !important;
   border-radius: @radius-btn !important;
   background: transparent !important;
-  transition: color @transition-fast, border-color @transition-fast, background @transition-fast;
+  transition:
+    color @transition-fast,
+    border-color @transition-fast,
+    background @transition-fast;
 
   &:hover {
     color: @color-text !important;
@@ -44,6 +47,33 @@
     }
   }
 
+  &--invited {
+    color: #c084fc !important;
+    border-color: rgba(192, 132, 252, 0.4) !important;
+    background: rgba(192, 132, 252, 0.08) !important;
+    &:hover {
+      background: rgba(192, 132, 252, 0.14) !important;
+    }
+  }
+
+  &--visited {
+    color: #fb923c !important;
+    border-color: rgba(251, 146, 60, 0.4) !important;
+    background: rgba(251, 146, 60, 0.08) !important;
+    &:hover {
+      background: rgba(251, 146, 60, 0.14) !important;
+    }
+  }
+
+  &--documents_sent {
+    color: #facc15 !important;
+    border-color: rgba(250, 204, 21, 0.4) !important;
+    background: rgba(250, 204, 21, 0.08) !important;
+    &:hover {
+      background: rgba(250, 204, 21, 0.14) !important;
+    }
+  }
+
   &--rejected {
     color: @color-error !important;
     border-color: rgba(251, 113, 133, 0.4) !important;
@@ -59,6 +89,15 @@
     background: rgba(52, 211, 153, 0.08) !important;
     &:hover {
       background: rgba(52, 211, 153, 0.14) !important;
+    }
+  }
+
+  &--not_invited {
+    color: @color-muted !important;
+    border-color: rgba(148, 163, 184, 0.4) !important;
+    background: rgba(148, 163, 184, 0.08) !important;
+    &:hover {
+      background: rgba(148, 163, 184, 0.14) !important;
     }
   }
 }

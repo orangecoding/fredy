@@ -34,6 +34,7 @@ import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
 import { useFinanceProfile } from '../../hooks/useFinanceProfile.js';
 import { useScrollRestoration } from '../../hooks/useScrollRestoration.js';
 import { formatEuro } from '../cards/chartTheme.js';
+import { LISTING_STATUSES } from '../../services/listingStatus.js';
 
 /**
  * Listings fetched per page. Large enough that the grid fills a desktop screen without paging,
@@ -394,9 +395,11 @@ const ListingsOverview = ({ mode = 'all' }) => {
           value={statusFilter}
           style={{ width: 150 }}
         >
-          <Select.Option value="applied">{t('listings.filterStatusApplied')}</Select.Option>
-          <Select.Option value="rejected">{t('listings.filterStatusRejected')}</Select.Option>
-          <Select.Option value="accepted">{t('listings.filterStatusAccepted')}</Select.Option>
+          {LISTING_STATUSES.map((status) => (
+            <Select.Option key={status} value={status}>
+              {t(`listings.status.${status}`)}
+            </Select.Option>
+          ))}
           <Select.Option value="none">{t('listings.filterStatusNone')}</Select.Option>
         </FilterSelect>
 

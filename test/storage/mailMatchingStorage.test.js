@@ -32,8 +32,12 @@ const sqliteMock = vi.hoisted(() => ({
 
 vi.mock('../../lib/services/storage/SqliteConnection.js', () => ({ default: sqliteMock }));
 
-const { assignMailMessageToListing, getUnmatchedMailMessages, removeMailMessageListingMatch } =
-  await import('../../lib/services/storage/mailStorage.js');
+const {
+  assignMailMessageToListing,
+  getUnmatchedMailMessages,
+  removeMailMessageListingMatch,
+  searchOwnedListingsForMailAssignment,
+} = await import('../../lib/services/storage/mailStorage.js');
 
 beforeEach(() => {
   calls.length = 0;
@@ -51,13 +55,13 @@ describe('mail matching storage ownership', () => {
         userId: 'user-1',
         method: 'manual',
         confidence: 100,
-        status: 'applied',
+        status: 'documents_sent',
       }),
     ).toBe(true);
 
     expect(calls.find((call) => /INSERT INTO mail_message_listing_matches/.test(call.sql))).toBeTruthy();
     const statusCall = calls.find((call) => /UPDATE listings SET status/.test(call.sql));
-    expect(JSON.parse(statusCall.params.status).status).toBe('applied');
+    expect(JSON.parse(statusCall.params.status).status).toBe('documents_sent');
     const watchCall = calls.find((call) => /INSERT INTO watch_list/.test(call.sql));
     expect(watchCall.params).toEqual(expect.objectContaining({ listingId: 'listing-1', userId: 'user-1' }));
   });
@@ -90,6 +94,17 @@ describe('mail matching storage ownership', () => {
       limit: 200,
       cursorSortAt: 1234,
       cursorId: 'message-9',
+    });
+  });
+
+  it('searches only owned listings and escapes SQL wildcards', () => {
+    searchOwnedListingsForMailAssignment('user-1', '50%_Berlin', 500);
+
+    expect(sqliteMock.query).toHaveBeenCalledWith(expect.stringMatching(/j\.user_id = @userId/), {
+      userId: 'user-1',
+      query: '50%_berlin',
+      pattern: '%50\\%\\_berlin%',
+      limit: 200,
     });
   });
 });
