@@ -1,0 +1,81 @@
+@import '../../../tokens.less';
+
+.relatedMail {
+  margin-top: @space-5;
+  padding-top: @space-5;
+  border-top: 1px solid var(--semi-color-border);
+
+  &__title {
+    display: flex;
+    align-items: center;
+    gap: @space-2;
+    margin-bottom: @space-3;
+
+    h4 {
+      margin: 0;
+    }
+  }
+
+  &__loading {
+    display: grid;
+    place-items: center;
+    min-height: 80px;
+  }
+
+  &__list {
+    display: grid;
+    gap: @space-2;
+  }
+
+  &__item {
+    padding: @space-3;
+    border: 1px solid @color-border;
+    border-radius: @radius-input;
+    background: @color-fill-subtle;
+  }
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: @space-3;
+  }
+
+  &__identity {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: @space-1;
+
+    > span {
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__body {
+    margin-top: @space-3;
+    color: @color-muted;
+
+    summary {
+      cursor: pointer;
+    }
+
+    pre {
+      max-height: 320px;
+      overflow: auto;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      padding: @space-3;
+      background: rgba(0, 0, 0, 0.16);
+      border-radius: @radius-input;
+      font-family: @font-ui;
+      font-size: @text-sm;
+    }
+  }
+
+  @media (max-width: 600px) {
+    &__header {
+      flex-direction: column;
+    }
+  }
+}

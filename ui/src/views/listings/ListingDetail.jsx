@@ -58,6 +58,7 @@ import PriceHistoryChart from './components/PriceHistoryChart.jsx';
 import NearbyStops from '../../components/transit/NearbyStops.jsx';
 import TravelTimes from '../../components/transit/TravelTimes.jsx';
 import AddressEditor from './components/AddressEditor.jsx';
+import RelatedMailList from './components/RelatedMailList.jsx';
 import './ListingDetail.less';
 import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
 import { useFinanceProfile } from '../../hooks/useFinanceProfile.js';
@@ -367,8 +368,12 @@ export default function ListingDetail() {
 
   const statusKeyMap = {
     applied: 'listing.detail.statusApplied',
+    invited: 'listing.detail.statusInvited',
+    visited: 'listing.detail.statusVisited',
+    documents_sent: 'listing.detail.statusDocumentsSent',
     accepted: 'listing.detail.statusAccepted',
     rejected: 'listing.detail.statusRejected',
+    not_invited: 'listing.detail.statusNotInvited',
   };
   const statusLabel = listing.status?.status ? t(statusKeyMap[listing.status.status] ?? listing.status.status) : null;
 
@@ -661,6 +666,8 @@ export default function ListingDetail() {
               {/* The costing answers "can I have this?", which is the question asked right
                   after the price - so it comes before the sales copy, not after it. */}
               <ListingFinanceCard listing={listing} />
+
+              <RelatedMailList listingId={listing.id} />
 
               {/* Without the matching half of the profile there is nothing to compute, so offer
                   the way to create it instead of hiding the feature completely. */}

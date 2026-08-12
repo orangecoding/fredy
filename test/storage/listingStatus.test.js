@@ -67,6 +67,12 @@ describe('listingsStorage.setListingStatus', () => {
     expect(parsed.setAt).toBeLessThanOrEqual(after);
   });
 
+  it.each(['invited', 'visited', 'documents_sent', 'not_invited'])('accepts the %s application stage', (status) => {
+    listingsStorage.setListingStatus('listing-1', status);
+
+    expect(JSON.parse(calls.execute.at(-1).params.status).status).toBe(status);
+  });
+
   it('accepts null to clear the status (no JSON wrapping)', () => {
     listingsStorage.setListingStatus('listing-2', null);
     expect(calls.execute[0].params).toEqual({ id: 'listing-2', status: null });
@@ -105,10 +111,10 @@ describe('listingsStorage.queryListings statusFilter', () => {
   });
 
   it('extracts the inner status field via json_extract for a concrete status', () => {
-    listingsStorage.queryListings({ statusFilter: 'applied', userId: 'u1', isAdmin: true });
+    listingsStorage.queryListings({ statusFilter: 'documents_sent', userId: 'u1', isAdmin: true });
     const pageQuery = calls.query.find((c) => !/COUNT\(1\)/.test(c.sql));
     expect(pageQuery.sql).toMatch(/json_extract\(l\.status, '\$\.status'\) = @statusValue/);
-    expect(pageQuery.params.statusValue).toBe('applied');
+    expect(pageQuery.params.statusValue).toBe('documents_sent');
   });
 
   it('ignores unknown statusFilter values silently', () => {

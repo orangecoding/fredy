@@ -1,0 +1,65 @@
+@import '../../../tokens.less';
+
+.mailboxSettings {
+  &__loading {
+    min-height: 360px;
+    display: grid;
+    place-items: center;
+  }
+
+  &__formGrid {
+    display: grid;
+    grid-template-columns: minmax(220px, 2fr) 120px minmax(220px, 2fr);
+    gap: @space-4;
+    margin-bottom: @space-4;
+
+    > label {
+      display: flex;
+      flex-direction: column;
+      gap: @space-2;
+
+      > span {
+        color: @color-muted;
+        font-size: @text-sm;
+      }
+    }
+  }
+
+  &__switches {
+    display: flex;
+    gap: @space-5;
+    align-items: flex-end;
+    padding-bottom: 6px;
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: @space-2;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: @space-3;
+    justify-content: flex-start;
+    margin-top: @space-4;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 900px) {
+    &__formGrid {
+      grid-template-columns: 1fr 120px;
+    }
+  }
+
+  @media (max-width: 600px) {
+    &__formGrid {
+      grid-template-columns: 1fr;
+    }
+
+    &__switches {
+      align-items: flex-start;
+    }
+  }
+}

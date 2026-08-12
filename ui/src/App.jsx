@@ -12,6 +12,7 @@ import PreferencesPage from './views/settings/pages/PreferencesPage';
 import TravelTimePage from './views/settings/pages/TravelTimePage';
 import ListingDetailsPage from './views/settings/pages/ListingDetailsPage';
 import NotificationsPage from './views/settings/pages/NotificationsPage';
+import MailboxPage from './views/settings/pages/MailboxPage';
 import AdminLayout from './views/admin/AdminLayout';
 import SystemPage from './views/admin/pages/SystemPage';
 import ExecutionPage from './views/admin/pages/ExecutionPage';
@@ -38,6 +39,7 @@ import FredyFooter from './components/footer/FredyFooter.jsx';
 import WatchlistManagement from './views/listings/management/WatchlistManagement.jsx';
 import Dashboard from './views/dashboard/Dashboard.jsx';
 import FinanceCalculator from './views/finance/FinanceCalculator.jsx';
+import MailInbox from './views/mail/MailInbox.jsx';
 import ListingDetail from './views/listings/ListingDetail.jsx';
 import NewsModal from './components/news/NewsModal.jsx';
 import { I18nProvider, availableLanguages } from './services/i18n/i18n.jsx';
@@ -204,6 +206,7 @@ export default function FredyApp() {
                   <Route path="/listings/listing/:listingId" element={<ListingDetail />} />
                   <Route path="/map" element={<MapView />} />
                   <Route path="/finance" element={<FinanceCalculator />} />
+                  <Route path="/mail" element={<MailInbox />} />
                   <Route path="/watchlistManagement" element={<WatchlistManagement />} />
 
                   {/* Settings that belong to whoever is signed in. No guard: they are theirs. */}
@@ -216,6 +219,7 @@ export default function FredyApp() {
                     <Route path="addresses" element={<Navigate to="/settings/travel-time" replace />} />
                     <Route path="listings" element={<ListingDetailsPage />} />
                     <Route path="notifications" element={<NotificationsPage />} />
+                    <Route path="mailbox" element={<MailboxPage />} />
                   </Route>
 
                   {/* Settings that belong to the instance. Guarded once, at the parent, so a new
