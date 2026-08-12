@@ -13,6 +13,7 @@ const listingsStoragePath = root + '/lib/services/storage/listingsStorage.js';
 const sqlitePath = root + '/lib/services/storage/SqliteConnection.js';
 const geocodingCronPath = root + '/lib/services/crons/geocoding-cron.js';
 const loggerPath = root + '/lib/services/logger.js';
+const configuredAdapterStoragePath = root + '/lib/services/storage/configuredAdapterStorage.js';
 
 /** Mutable state the mocked storages read from and write into. */
 let state;
@@ -62,8 +63,14 @@ async function loadService() {
       state.geoTaskRuns += 1;
     },
   }));
-  vi.doMock(root + '/lib/utils.js', () => ({
-    getNotificationAdapters: async () => [{ config: { id: 'console', name: 'Console' } }],
+  vi.doMock(configuredAdapterStoragePath, () => ({
+    VISIBILITY: { PRIVATE: 'private', ADMIN: 'admin', EVERYONE: 'everyone' },
+    getAllChannels: () => state.channels,
+    upsertChannel: (channel) => {
+      const id = channel.id || `channel-${state.channels.length + 1}`;
+      state.channels.push({ ...channel, id });
+      return id;
+    },
   }));
   vi.doMock(loggerPath, () => ({
     default: {
@@ -86,6 +93,7 @@ describe('services/demo/demoService', () => {
       inactiveDeletes: [],
       warnings: [],
       geoTaskRuns: 0,
+      channels: [],
     };
   });
 
@@ -106,7 +114,7 @@ describe('services/demo/demoService', () => {
   });
 
   describe('seedDemoJob', () => {
-    it('creates the demo job with the console adapter and dealType rent', async () => {
+    it('creates the demo job with a channel referencing the demo adapter and dealType rent', async () => {
       const { seedDemoJob, DEMO_JOB_ID, DEMO_JOB_NAME } = await loadService();
 
       await seedDemoJob([provider('immoscout', 'Immoscout'), provider('kleinanzeigen', 'Kleinanzeigen')]);
@@ -116,7 +124,10 @@ describe('services/demo/demoService', () => {
       expect(job.userId).toBe('u-demo');
       expect(job.enabled).toBe(true);
       expect(job.dealType).toBe('rent');
-      expect(job.notificationAdapter).toEqual([{ id: 'demo', name: 'Demo', fields: {} }]);
+      expect(job.notificationAdapter).toEqual([{ configuredAdapterId: 'channel-1' }]);
+      expect(state.channels).toEqual([
+        { id: 'channel-1', userId: 'u-demo', adapterId: 'demo', name: 'Demo', fields: {}, visibility: 'private' },
+      ]);
       expect(job.provider).toHaveLength(2);
       expect(job.provider[0]).toEqual({
         id: 'immoscout',
@@ -124,6 +135,16 @@ describe('services/demo/demoService', () => {
         url: expect.stringContaining('immobilienscout24.de'),
         enabled: true,
       });
+    });
+
+    it('reuses the demo channel on a repeat seeding instead of creating a duplicate', async () => {
+      const { seedDemoJob, DEMO_JOB_ID } = await loadService();
+
+      await seedDemoJob([provider('immoscout', 'Immoscout')]);
+      await seedDemoJob([provider('immoscout', 'Immoscout')]);
+
+      expect(state.channels).toHaveLength(1);
+      expect(state.jobs[DEMO_JOB_ID].notificationAdapter).toEqual([{ configuredAdapterId: 'channel-1' }]);
     });
 
     it('skips a provider module that has no demo url', async () => {
@@ -150,7 +171,7 @@ describe('services/demo/demoService', () => {
       expect(Object.keys(state.jobs)).toEqual([DEMO_JOB_ID]);
       expect(state.jobs[DEMO_JOB_ID].userId).toBe('u-demo');
       expect(state.jobs[DEMO_JOB_ID].enabled).toBe(true);
-      expect(state.jobs[DEMO_JOB_ID].notificationAdapter).toEqual([{ id: 'demo', name: 'Demo', fields: {} }]);
+      expect(state.jobs[DEMO_JOB_ID].notificationAdapter).toEqual([{ configuredAdapterId: 'channel-1' }]);
       expect(state.jobs[DEMO_JOB_ID].provider).toHaveLength(1);
     });
 

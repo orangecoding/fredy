@@ -7,12 +7,13 @@ html {
   width: 100%;
   font-family: @font-ui;
   background-color: @color-base;
-  background-image: radial-gradient(ellipse at 60% 0%, rgba(224,74,56,0.05) 0%, transparent 55%);
+  background-image: radial-gradient(ellipse at 60% 0%, rgba(224, 74, 56, 0.05) 0%, transparent 55%);
   background-attachment: fixed;
 }
 
 @media (max-width: 768px) {
-  body, html {
+  body,
+  html {
     background-attachment: scroll;
   }
 }
@@ -27,25 +28,25 @@ body {
   --semi-color-primary: @color-accent !important;
   --semi-color-primary-hover: @color-accent-dim !important;
   --semi-color-primary-active: @color-accent-dim !important;
-  --semi-color-primary-light-default: rgba(224,74,56,0.12) !important;
-  --semi-color-primary-light-hover: rgba(224,74,56,0.18) !important;
-  --semi-color-primary-light-active: rgba(224,74,56,0.22) !important;
+  --semi-color-primary-light-default: rgba(224, 74, 56, 0.12) !important;
+  --semi-color-primary-light-hover: rgba(224, 74, 56, 0.18) !important;
+  --semi-color-primary-light-active: rgba(224, 74, 56, 0.22) !important;
   --semi-color-text-0: @color-text !important;
   --semi-color-text-1: @color-text !important;
   --semi-color-text-2: @color-muted !important;
   --semi-color-text-3: @color-faint !important;
-  --semi-color-fill-0: rgba(255,255,255,0.04) !important;
-  --semi-color-fill-1: rgba(255,255,255,0.06) !important;
-  --semi-color-fill-2: rgba(255,255,255,0.08) !important;
+  --semi-color-fill-0: rgba(255, 255, 255, 0.04) !important;
+  --semi-color-fill-1: rgba(255, 255, 255, 0.06) !important;
+  --semi-color-fill-2: rgba(255, 255, 255, 0.08) !important;
   --semi-font-family: @font-ui !important;
 }
 
 // Semi table row overrides
 .semi-table-row-head {
-  background-color: rgba(255,255,255,0.06) !important;
+  background-color: rgba(255, 255, 255, 0.06) !important;
 }
 .semi-table-row-head .semi-table-row-cell {
-  background-color: rgba(255,255,255,0.06) !important;
+  background-color: rgba(255, 255, 255, 0.06) !important;
   color: @color-muted !important;
   font-size: @text-xs;
   text-transform: uppercase;
@@ -62,10 +63,19 @@ body {
 }
 
 // Scrollbar
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: @color-surface; }
-::-webkit-scrollbar-thumb { background: @color-border-bright; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: @color-muted; }
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: @color-surface;
+}
+::-webkit-scrollbar-thumb {
+  background: @color-border-bright;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: @color-muted;
+}
 
 .semi-icon:not(.semi-tabs-bar .semi-tabs-tab .semi-icon):not(.semi-checkbox .semi-icon) {
   vertical-align: middle;
@@ -111,7 +121,7 @@ button:focus-visible,
 }
 
 .semi-modal-mask {
-  background: rgba(0,0,0,0.7) !important;
+  background: rgba(0, 0, 0, 0.7) !important;
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
 }

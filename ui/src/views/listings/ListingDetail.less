@@ -39,7 +39,7 @@
         margin-top: 0.5rem;
 
         .semi-button {
-            flex: 1;
+          flex: 1;
         }
       }
     }
@@ -121,7 +121,9 @@
     border-radius: @radius-input !important;
     box-shadow: none !important;
     outline: none !important;
-    transition: border-color @transition-fast, background @transition-fast !important;
+    transition:
+      border-color @transition-fast,
+      background @transition-fast !important;
 
     textarea {
       background: transparent !important;
@@ -149,12 +151,12 @@
     border-radius: @radius-btn !important;
     &:hover {
       color: @color-text !important;
-      background: rgba(255,255,255,0.06) !important;
+      background: rgba(255, 255, 255, 0.06) !important;
     }
     &--active {
       color: @color-accent !important;
-      border-color: rgba(224,74,56,0.4) !important;
-      background: rgba(224,74,56,0.08) !important;
+      border-color: rgba(224, 74, 56, 0.4) !important;
+      background: rgba(224, 74, 56, 0.08) !important;
     }
   }
 
@@ -170,11 +172,14 @@
     font-family: @font-ui;
     font-weight: 500;
     text-decoration: none;
-    transition: color @transition-fast, border-color @transition-fast, background @transition-fast;
+    transition:
+      color @transition-fast,
+      border-color @transition-fast,
+      background @transition-fast;
     &:hover {
       color: @color-text;
-      border-color: rgba(255,255,255,0.25);
-      background: rgba(255,255,255,0.06);
+      border-color: rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.06);
     }
   }
 
@@ -256,12 +261,12 @@
 }
 
 .listing-detail-popup {
-    .map-popup-content {
-        padding: 5px;
-        h4 {
-            margin: 5px 0;
-        }
+  .map-popup-content {
+    padding: 5px;
+    h4 {
+      margin: 5px 0;
     }
+  }
 }
 
 /* The route picker under the travel times. One row, wrapping on a phone, and the hint reads as a

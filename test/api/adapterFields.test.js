@@ -7,7 +7,7 @@ import { describe, it, expect, vi } from 'vitest';
 import path from 'path';
 import {
   assertAdapterFieldsAllowed,
-  sanitiseNotificationAdapter,
+  assertPrivilegedFieldsUnchanged,
   PRIVILEGED_ADAPTER_FIELDS,
 } from '../../lib/services/security/adapterFields.js';
 
@@ -16,31 +16,31 @@ describe('privileged notification adapter fields', () => {
     expect(PRIVILEGED_ADAPTER_FIELDS.sqlite).toContain('dbPath');
   });
 
-  describe('sanitiseNotificationAdapter (job save)', () => {
-    const withDbPath = (dbPath) => [{ id: 'sqlite', fields: { dbPath } }];
-
+  describe('assertPrivilegedFieldsUnchanged (channel save)', () => {
     it('lets an admin set anything', () => {
-      expect(sanitiseNotificationAdapter(withDbPath('/etc/whatever.db'), null, true).ok).toBe(true);
+      expect(assertPrivilegedFieldsUnchanged('sqlite', { dbPath: '/etc/x.db' }, {}, true).ok).toBe(true);
     });
 
-    it('rejects a non-admin introducing the field on a new job', () => {
-      const result = sanitiseNotificationAdapter(withDbPath('/etc/whatever.db'), null, false);
-      expect(result).toMatchObject({ ok: false, adapterId: 'sqlite', field: 'dbPath' });
-    });
-
-    it('rejects a non-admin changing an admin-set value', () => {
-      const existingJob = { notificationAdapter: [{ id: 'sqlite', fields: { dbPath: 'listings.db' } }] };
-      expect(sanitiseNotificationAdapter(withDbPath('/etc/other.db'), existingJob, false).ok).toBe(false);
+    it('rejects a non-admin introducing the field', () => {
+      expect(assertPrivilegedFieldsUnchanged('sqlite', { dbPath: '/etc/x.db' }, {}, false)).toMatchObject({
+        ok: false,
+        adapterId: 'sqlite',
+        field: 'dbPath',
+      });
     });
 
     it('allows a non-admin echoing back the stored value unchanged', () => {
-      const existingJob = { notificationAdapter: [{ id: 'sqlite', fields: { dbPath: 'listings.db' } }] };
-      expect(sanitiseNotificationAdapter(withDbPath('listings.db'), existingJob, false).ok).toBe(true);
+      expect(
+        assertPrivilegedFieldsUnchanged('sqlite', { dbPath: 'listings.db' }, { dbPath: 'listings.db' }, false).ok,
+      ).toBe(true);
+    });
+
+    it('treats an empty value as not setting the field', () => {
+      expect(assertPrivilegedFieldsUnchanged('sqlite', { dbPath: '' }, {}, false).ok).toBe(true);
     });
 
     it('ignores adapters without privileged fields', () => {
-      const adapters = [{ id: 'slack', fields: { token: 'x' } }];
-      expect(sanitiseNotificationAdapter(adapters, null, false).ok).toBe(true);
+      expect(assertPrivilegedFieldsUnchanged('slack', { token: 'x' }, {}, false).ok).toBe(true);
     });
   });
 

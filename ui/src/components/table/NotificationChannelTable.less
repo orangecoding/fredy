@@ -1,0 +1,57 @@
+.notificationChannelTable {
+  margin-bottom:1rem;
+
+  &__tools {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+
+  /* Destinations are chat ids, channel names and mail addresses. A monospaced face keeps a column
+     of them scannable and stops a long webhook host from reading as prose. */
+  &__destination {
+    font-family: var(--semi-font-family-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 13px;
+    color: var(--semi-color-text-1);
+    word-break: break-all;
+  }
+
+  /* Below 700px every column collapses into this one cell. */
+  &__stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  &__stackHead {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  &__stackName {
+    font-weight: 600;
+  }
+
+  &__stackMeta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    font-size: 12px;
+    color: var(--semi-color-text-2);
+  }
+
+  /* The stacked cell already carries the labels in its own layout, so the single remaining column
+     header would just say "Channel" above a card. */
+  @media (max-width: 700px) {
+    .semi-table-thead {
+      display: none;
+    }
+
+    .notificationChannelTable__tools {
+      justify-content: flex-start;
+    }
+  }
+}

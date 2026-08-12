@@ -174,15 +174,32 @@ picks up the newest listings first.
 
 ### Adapter 📡
 
-An **adapter** is the channel through which Fredy notifies you (Slack,
+An **adapter** is a way of reaching you (Slack,
 Telegram, Email, ntfy, discord ...).\
 Each adapter has its own configuration (e.g. API keys, webhook URLs).\
 You can use multiple adapters at once --- Fredy will send new listings
 through all of them.
 
+### Notification channel 🔔
+
+A **channel** is one saved adapter configuration --- "Telegram → family chat", say.\
+You set it up once under **Settings → Notifications** and reuse it in as many jobs as you
+like. Rotating a token means editing one channel instead of every job that used it.
+
+A job can hold several channels of the same type, so "Telegram → family chat" and
+"Telegram → work chat" can both be on the same search.
+
+Every channel belongs to whoever created it. An administrator can additionally share one with
+all users, or with other administrators only. Sharing lets other people *send* through a
+channel --- it never shows them its credentials. Anyone who wants their own variant can
+duplicate the channel and fill in their own.
+
+Deleting a channel is blocked while a job still uses it, so a search can never quietly stop
+notifying you.
+
 ### Job 📅
 
-A **job** combines providers and adapters.\
+A **job** combines providers and notification channels.\
 Example: "Search apartments on ImmoScout24 + Immowelt and send results
 to Slack + Telegram."\
 Jobs run automatically at the interval you configure (see

@@ -82,6 +82,15 @@ keeping a module-level `$`.
 - `send({ serviceName, newListings, notificationConfig, jobKey, baseUrl })`
 - Loaded dynamically at startup via `fs.readdirSync`
 
+Field definitions carry two optional flags that the UI and the API read declaratively, so neither
+needs per-adapter code:
+- `secret: true` - a credential. Never serialised to anyone who may not edit the channel, and
+  masked in the form. Every token, password, API key and webhook URL must carry it.
+- `target: true` - the one field naming the destination. Drives the "Destination" column.
+
+An adapter *configuration* is separate from the adapter itself: it is a row in `configured_adapter`
+("a notification channel" in the UI) that many jobs can reference.
+
 ### Key services
 
 | Service | Location | Notes |
@@ -89,6 +98,7 @@ keeping a module-level `$`.
 | Event bus | `lib/services/events/event-bus.js` | Plain `EventEmitter`; events: `jobs:runAll`, `jobs:runOne`, `jobs:status` |
 | SSE broker | `lib/services/sse/sse-broker.js` | Per-userId `Set<ServerResponse>`; heartbeat every 25s; pushes job status to UI |
 | Similarity cache | `lib/services/similarity-check/` | In-memory SHA-256 Set; refreshes hourly; per-job cross-provider dedup by title+price+address |
+| Notification channels | `lib/services/storage/configuredAdapterStorage.js` | Saved adapter configurations (`configured_adapter`). Jobs store `[{configuredAdapterId}]`; `jobStorage` hydrates those back into `{id, name, fields}` on every read, so the pipeline never sees the indirection. Who may use vs. edit a channel: `lib/services/security/channelAccess.js` |
 | SqliteConnection | `lib/services/storage/SqliteConnection.js` | Singleton, WAL mode; `execute()`, `query()`, `withTransaction()` |
 | Migrations | `lib/services/storage/migrations/` | Numbered JS files each exporting `up(db)`; checksum-tracked in `schema_migrations` |
 | Extractor | `lib/services/extractor/` | Orchestrates Puppeteer + Cheerio; shared browser instance per job |

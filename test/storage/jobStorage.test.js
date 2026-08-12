@@ -42,13 +42,15 @@ describe('jobStorage.getJobs', () => {
 
   it('filters out disabled jobs by default (WHERE j.enabled = 1)', () => {
     jobStorage.getJobs();
-    expect(calls.query).toHaveLength(1);
+    // 2 calls: the jobs query itself, plus the channel lookup that hydrates notificationAdapter.
+    expect(calls.query).toHaveLength(2);
     expect(calls.query[0].sql).toMatch(/WHERE j\.enabled = 1/);
   });
 
   it('includes disabled jobs when includeDisabled is true', () => {
     jobStorage.getJobs({ includeDisabled: true });
-    expect(calls.query).toHaveLength(1);
+    // 2 calls: the jobs query itself, plus the channel lookup that hydrates notificationAdapter.
+    expect(calls.query).toHaveLength(2);
     expect(calls.query[0].sql).not.toMatch(/WHERE j\.enabled = 1/);
   });
 

@@ -7,13 +7,14 @@ import { useState } from 'react';
 import { IconHorn } from '@douyinfe/semi-icons';
 import { SegmentPart } from '../../../components/segment/SegmentPart.jsx';
 import { Banner, Button, Checkbox, Space, Typography } from '@douyinfe/semi-ui-19';
-import NotificationAdapterMutator from '../../jobs/mutation/components/notificationAdapter/NotificationAdapterMutator.jsx';
+import NotificationChannelPicker from '../../jobs/mutation/components/notificationAdapter/NotificationChannelPicker.jsx';
 import { useTranslation } from '../../../services/i18n/i18n.jsx';
 
 export default function WatchlistManagement() {
   const t = useTranslation();
   const [notificationChooserVisible, setNotificationChooserVisible] = useState(false);
-  const [notificationAdapterData, setNotificationAdapterData] = useState([]);
+  // Local only, exactly as before: this page is still a stub and nothing here is persisted yet.
+  const [selectedChannels, setSelectedChannels] = useState([]);
   //TODO: Set default
   const [activityChanges, setActivityChanges] = useState(false);
   const [priceChanges, setPriceChanges] = useState(false);
@@ -47,19 +48,11 @@ export default function WatchlistManagement() {
         </Typography.Title>
         <Button onClick={() => setNotificationChooserVisible(true)}>{t('watchlist.selectNotificationMethod')}</Button>
 
-        <NotificationAdapterMutator
-          title={t('watchlist.addNotificationTitle')}
-          description={t('watchlist.addNotificationDescription')}
+        <NotificationChannelPicker
           visible={notificationChooserVisible}
-          onVisibilityChanged={(visible) => {
-            setNotificationChooserVisible(visible);
-          }}
-          selected={notificationAdapterData}
-          editNotificationAdapter={null}
-          onData={(data) => {
-            const oldData = [...notificationAdapterData].filter((o) => o.id !== data.id);
-            setNotificationAdapterData([...oldData, data]);
-          }}
+          selectedIds={selectedChannels.map((channel) => channel.id)}
+          onClose={() => setNotificationChooserVisible(false)}
+          onPick={(channel) => setSelectedChannels((current) => [...current, channel])}
         />
       </SegmentPart>
     </div>

@@ -3,10 +3,11 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { Fragment, useState, useCallback } from 'react';
+import { Fragment, useState, useCallback, useEffect } from 'react';
 
-import NotificationAdapterMutator from './components/notificationAdapter/NotificationAdapterMutator';
-import NotificationAdapterTable from '../../../components/table/NotificationAdapterTable';
+import NotificationChannelPicker from './components/notificationAdapter/NotificationChannelPicker';
+import NotificationChannelEditor from './components/notificationAdapter/NotificationChannelEditor';
+import NotificationChannelTable from '../../../components/table/NotificationChannelTable';
 import ProviderTable from '../../../components/table/ProviderTable';
 import ProviderMutator from './components/provider/ProviderMutator';
 import AreaFilter from './components/areaFilter/AreaFilter';
@@ -27,6 +28,7 @@ import {
   IconUser,
   IconFilter,
   IconHome,
+  IconSetting,
 } from '@douyinfe/semi-icons';
 import { useTranslation } from '../../../services/i18n/i18n.jsx';
 
@@ -41,6 +43,7 @@ export default function JobMutator() {
 
   const jobs = useSelector((state) => state.jobsData.jobs);
   const shareableUserList = useSelector((state) => state.jobsData.shareableUserList);
+  const allChannels = useSelector((state) => state.notificationChannels.channels);
   const params = useParams();
   const location = useLocation();
 
@@ -53,7 +56,12 @@ export default function JobMutator() {
   const defaultBlacklist = sourceJob?.blacklist || [];
   const defaultName = jobToClone ? `Copy of - ${sourceJob?.name}` : sourceJob?.name || null;
   const defaultProviderData = sourceJob?.provider || [];
-  const defaultNotificationAdapter = sourceJob?.notificationAdapter || [];
+  // The job stores references; a read hands back the hydrated adapter shape carrying the channel
+  // id. The table renders the channel DTO, so the ids are resolved against the loaded channel list
+  // - which arrives asynchronously, hence the effect below rather than a plain initial value.
+  const sourceChannelIds = (sourceJob?.notificationAdapter || [])
+    .map((adapter) => adapter.configuredAdapterId)
+    .filter(Boolean);
   const defaultEnabled = sourceJob?.enabled ?? true;
   const defaultShareWithUsers = sourceJob?.shared_with_user ?? [];
   const defaultSpatialFilter = sourceJob?.spatialFilter || null;
@@ -64,12 +72,12 @@ export default function JobMutator() {
 
   const [providerToEdit, setProviderToEdit] = useState(null);
   const [providerCreationVisible, setProviderCreationVisibility] = useState(false);
-  const [notificationCreationVisible, setNotificationCreationVisibility] = useState(false);
-  const [editNotificationAdapter, setEditNotificationAdapter] = useState(null);
+  const [pickerVisible, setPickerVisible] = useState(false);
+  const [channelEditor, setChannelEditor] = useState(null);
   const [providerData, setProviderData] = useState(defaultProviderData);
   const [name, setName] = useState(defaultName);
   const [blacklist, setBlacklist] = useState(defaultBlacklist);
-  const [notificationAdapterData, setNotificationAdapterData] = useState(defaultNotificationAdapter);
+  const [selectedChannels, setSelectedChannels] = useState([]);
   const [shareWithUsers, setShareWithUsers] = useState(defaultShareWithUsers);
   const [enabled, setEnabled] = useState(defaultEnabled);
   const [spatialFilter, setSpatialFilter] = useState(defaultSpatialFilter);
@@ -83,6 +91,20 @@ export default function JobMutator() {
     setSpatialFilter(data);
   }, []);
 
+  useEffect(() => {
+    actions.notificationChannels.getChannels();
+  }, [actions]);
+
+  // Resolve the job's stored channel ids once the channel list has loaded. Guarded on the state
+  // still being empty so that a later refresh of the list cannot undo the user's edits.
+  useEffect(() => {
+    if (allChannels.length === 0 || sourceChannelIds.length === 0) return;
+    setSelectedChannels((current) => {
+      if (current.length > 0) return current;
+      return sourceChannelIds.map((id) => allChannels.find((channel) => channel.id === id)).filter(Boolean);
+    });
+  }, [allChannels, sourceChannelIds]);
+
   const handleSpecFilterChange = (key, value) => {
     if (!SPEC_FILTERS.map(({ key }) => key).includes(key)) return;
 
@@ -90,7 +112,7 @@ export default function JobMutator() {
   };
 
   const isSavingEnabled = () => {
-    return Boolean(notificationAdapterData.length && providerData.length && name && dealType);
+    return Boolean(selectedChannels.length && providerData.length && name && dealType);
   };
 
   const handleProviderEdit = (data) => {
@@ -103,7 +125,7 @@ export default function JobMutator() {
     try {
       await xhrPost('/api/jobs', {
         provider: providerData,
-        notificationAdapter: notificationAdapterData,
+        notificationAdapter: selectedChannels.map((channel) => ({ configuredAdapterId: channel.id })),
         shareWithUsers,
         name,
         blacklist,
@@ -137,23 +159,29 @@ export default function JobMutator() {
         providerToEdit={providerToEdit}
       />
 
-      {notificationCreationVisible && (
-        <NotificationAdapterMutator
-          visible={notificationCreationVisible}
-          onVisibilityChanged={(visible) => {
-            setEditNotificationAdapter(null);
-            setNotificationCreationVisibility(visible);
-          }}
-          selected={notificationAdapterData}
-          editNotificationAdapter={
-            editNotificationAdapter == null
-              ? null
-              : notificationAdapterData.find((adapter) => adapter.id === editNotificationAdapter)
+      <NotificationChannelPicker
+        visible={pickerVisible}
+        selectedIds={selectedChannels.map((channel) => channel.id)}
+        onClose={() => setPickerVisible(false)}
+        onPick={(channel) => setSelectedChannels((current) => [...current, channel])}
+      />
+
+      {channelEditor && (
+        <NotificationChannelEditor
+          visible
+          mode={channelEditor.mode}
+          channelId={channelEditor.channelId}
+          // Opened from inside a job, even one *other* job matters: the person editing is thinking
+          // about this job alone and would not expect to change somebody else's.
+          warnUsageAbove={2}
+          onClose={() => setChannelEditor(null)}
+          onSaved={(saved) =>
+            setSelectedChannels((current) =>
+              // A "Duplicate instead" from the editor returns a different channel, so the job is
+              // repointed at the copy and the original is left alone for the jobs still using it.
+              current.map((channel) => (channel.id === channelEditor.channelId ? saved : channel)),
+            )
           }
-          onData={(data) => {
-            const oldData = [...notificationAdapterData].filter((o) => o.id !== data.id);
-            setNotificationAdapterData([...oldData, data]);
-          }}
         />
       )}
 
@@ -235,25 +263,46 @@ export default function JobMutator() {
           name={t('jobs.mutation.sectionNotifications')}
           helpText={t('jobs.mutation.notificationsHelp')}
         >
-          <Button
-            type="primary"
-            className="jobMutation__newButton"
-            icon={<IconPlusCircle />}
-            onClick={() => setNotificationCreationVisibility(true)}
-          >
-            {t('jobs.mutation.addNotification')}
-          </Button>
+          <div className="jobMutation__notificationActions">
+            <Button
+              type="primary"
+              className="jobMutation__newButton"
+              icon={<IconPlusCircle />}
+              onClick={() => setPickerVisible(true)}
+            >
+              {t('jobs.mutation.addNotification')}
+            </Button>
+            <Button
+              type="secondary"
+              icon={<IconSetting />}
+              className="jobMutation__newButton"
+              onClick={() => navigate('/settings/notifications')}
+            >
+              {t('notification.channels.manage')}
+            </Button>
+          </div>
 
-          <NotificationAdapterTable
-            notificationAdapter={notificationAdapterData}
-            onRemove={(adapterId) => {
-              setEditNotificationAdapter(null);
-              setNotificationAdapterData(notificationAdapterData.filter((adapter) => adapter.id !== adapterId));
+          <NotificationChannelTable
+            channels={selectedChannels}
+            // Detach, not delete: taking a channel off this job must never remove it from the
+            // instance. Deleting lives on the Settings page and is blocked while a job uses it.
+            actions={['test', 'edit', 'clone', 'detach']}
+            showVisibility={false}
+            showUsage={false}
+            emptyText={t('notification.channels.emptyInJob')}
+            onTest={async (channel) => {
+              try {
+                await actions.notificationChannels.tryChannel(channel.id);
+                Toast.success(t('notification.trySuccess'));
+              } catch (error) {
+                Toast.error(t('notification.tryError', { error: errorMessage(error, t('common.unknownError')) }));
+              }
             }}
-            onEdit={(adapterId) => {
-              setEditNotificationAdapter(adapterId);
-              setNotificationCreationVisibility(true);
-            }}
+            onEdit={(channel) => setChannelEditor({ mode: 'edit', channelId: channel.id })}
+            onClone={(channel) => setChannelEditor({ mode: 'clone', channelId: channel.id })}
+            onDetach={(channel) =>
+              setSelectedChannels((current) => current.filter((selected) => selected.id !== channel.id))
+            }
           />
         </SegmentPart>
         <Divider margin="1rem" />

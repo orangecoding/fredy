@@ -1,0 +1,46 @@
+.channelEditor {
+  &__banner {
+    margin-bottom: 0.75rem;
+
+    /* Semi's banner ships a generous block padding meant for page-width notices. Inside a modal
+       that is mostly form, it pushes the first field below the fold. */
+    .semi-banner-content {
+      padding: 0.5rem 0.75rem;
+    }
+
+    p {
+      margin: 0;
+    }
+  }
+
+  &__bannerTitle {
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  &__field {
+    margin-bottom: 0.85rem;
+  }
+
+  &__label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--semi-color-text-0);
+  }
+
+  &__extra {
+    margin-top: 0.25rem;
+    font-size: 12px;
+    line-height: 1.45;
+    color: var(--semi-color-text-2);
+  }
+
+  &__switchRow {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+}

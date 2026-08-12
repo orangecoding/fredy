@@ -8,7 +8,7 @@
  */
 import { create } from 'zustand';
 import { useShallow } from 'zustand/react/shallow';
-import { xhrGet, xhrPost } from '../xhr.js';
+import { xhrGet, xhrPost, xhrDelete } from '../xhr.js';
 import queryString from 'query-string';
 
 /**
@@ -187,6 +187,50 @@ export const useFredyState = create(
             } catch (Exception) {
               console.error(`Error while trying to get resource for api/jobs/notificationAdapter. Error:`, Exception);
             }
+          },
+          /**
+           * Test-fire a draft that has not been saved yet.
+           *
+           * The saved-channel equivalent is `notificationChannels.tryChannel`, which fires with the
+           * values already in the database. A draft has no id, so its values have to travel with
+           * the request - which is also why this one cannot be used for an existing channel whose
+           * secrets the client never received.
+           */
+          async tryDraft(adapterId, fields) {
+            await xhrPost('/api/jobs/notificationAdapter/try', { id: adapterId, fields });
+          },
+        },
+        notificationChannels: {
+          async getChannels() {
+            try {
+              const response = await xhrGet('/api/notificationChannels');
+              set(() => ({ notificationChannels: { channels: [...response.json], loaded: true } }));
+            } catch (Exception) {
+              console.error('Error while trying to get resource for api/notificationChannels. Error:', Exception);
+            }
+          },
+          /**
+           * Load one channel including its field values.
+           *
+           * Deliberately not written into the slice: this is editor state, and a bag of credentials
+           * sitting in a global store is a leak waiting for the next `console.log(state)`. The
+           * server only reveals the secret values to someone who may edit the channel.
+           */
+          async loadChannel(channelId) {
+            const response = await xhrGet(`/api/notificationChannels/${channelId}`);
+            return response.json;
+          },
+          async saveChannel(payload) {
+            const response = await xhrPost('/api/notificationChannels', payload);
+            await effects.notificationChannels.getChannels();
+            return response.json;
+          },
+          async removeChannel(channelId) {
+            await xhrDelete(`/api/notificationChannels/${channelId}`);
+            await effects.notificationChannels.getChannels();
+          },
+          async tryChannel(channelId) {
+            await xhrPost(`/api/notificationChannels/${channelId}/try`, {});
           },
         },
         generalSettings: {
@@ -640,6 +684,7 @@ export const useFredyState = create(
         dashboard: { data: null },
         finance: { data: null, loading: false, summary: null },
         notificationAdapter: [],
+        notificationChannels: { channels: [], loaded: false },
         listingsData: {
           totalNumber: 0,
           page: 1,
@@ -669,6 +714,7 @@ export const useFredyState = create(
         dashboard: { ...effects.dashboard },
         finance: { ...effects.finance },
         notificationAdapter: { ...effects.notificationAdapter },
+        notificationChannels: { ...effects.notificationChannels },
         generalSettings: { ...effects.generalSettings },
         demoMode: { ...effects.demoMode },
         versionUpdate: { ...effects.versionUpdate },

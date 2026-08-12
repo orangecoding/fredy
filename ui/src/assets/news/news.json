@@ -2,6 +2,16 @@
   "schemaVersion": 1,
   "releases": [
     {
+      "version": "26.0.0",
+      "date": "2026-08-12",
+      "entries": [
+        {
+          "title": "Set up a notification once, use it everywhere",
+          "text": "Until now, every job carried its own copy of your Telegram token. Ten jobs meant ten copies, and rotating that token meant editing all ten. <br/><br/>A saved configuration is now called a <b>notification channel</b>, and it lives in one place: <b>Settings &rarr; Notification channels</b>. Set one up there, then pick it in as many jobs as you like. Edit it once and every job follows. <br/><br/>Your existing setups have been moved over for you, so nothing needs doing. A few things that were awkward before now just work: a job can hold two channels of the same kind (family chat and work chat, both on Telegram), you can duplicate a channel instead of filling the whole form again, and deleting one is blocked while a job still uses it, so a search can never quietly stop notifying you. <br/><br/>Admins can also share a channel with everyone on the instance. Sharing lets other people send through it, it never shows them the credentials."
+        }
+      ]
+    },
+    {
       "version": "25.2.0",
       "date": "2026-08-04",
       "entries": [

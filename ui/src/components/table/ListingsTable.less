@@ -118,26 +118,29 @@
     &__star {
       width: 30px;
       height: 30px;
-      background: rgba(0,0,0,0.28);
-      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(0, 0, 0, 0.28);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       padding: 0;
-      transition: background @transition-fast, border-color @transition-fast, transform @transition-fast;
+      transition:
+        background @transition-fast,
+        border-color @transition-fast,
+        transform @transition-fast;
       flex-shrink: 0;
 
       &:hover {
-        background: rgba(0,0,0,0.48);
-        border-color: rgba(255,255,255,0.22);
+        background: rgba(0, 0, 0, 0.48);
+        border-color: rgba(255, 255, 255, 0.22);
         transform: translateY(-1px);
       }
 
       &:focus-visible {
         outline: none;
-        box-shadow: 0 0 0 2px rgba(224,74,56,0.35);
+        box-shadow: 0 0 0 2px rgba(224, 74, 56, 0.35);
       }
 
       svg {
