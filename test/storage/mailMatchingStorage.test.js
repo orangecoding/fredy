@@ -36,6 +36,7 @@ const {
   assignMailMessageToListing,
   getEnabledMailAccountsForSync,
   getMatchedMailThreadAnchors,
+  getMailMessagesForListing,
   getUnmatchedMailMessages,
   removeMailMessageListingMatch,
   searchOwnedListingsForMailAssignment,
@@ -104,6 +105,15 @@ describe('mail matching storage ownership', () => {
 
     expect(sqliteMock.query).toHaveBeenCalledWith(expect.stringMatching(/a\.user_id = @userId/), {
       userId: 'user-1',
+    });
+  });
+
+  it('lists related messages through the requesting mailbox owner', () => {
+    getMailMessagesForListing('user-1', 'listing-1');
+
+    expect(sqliteMock.query).toHaveBeenCalledWith(expect.stringMatching(/a\.user_id = @userId/), {
+      userId: 'user-1',
+      listingId: 'listing-1',
     });
   });
 
