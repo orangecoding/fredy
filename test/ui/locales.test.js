@@ -71,6 +71,7 @@ describe('locales', () => {
       'mail.status.not_invited',
       'mail.matchMethod.listing_code',
       'mail.matchMethod.address',
+      'mail.matchMethod.thread',
       'mail.matchMethod.manual',
     ];
     const usedKeys = [...new Set([...directKeys, ...dynamicKeys, 'nav.mail'])];

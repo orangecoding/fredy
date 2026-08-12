@@ -7,6 +7,7 @@ import Database from 'better-sqlite3';
 import { describe, expect, it } from 'vitest';
 import { up as createInbox } from '../../lib/services/storage/migrations/sql/32.mail-inbox.js';
 import { up as createMatches } from '../../lib/services/storage/migrations/sql/33.mail-listing-matches.js';
+import { up as addThreadMethod } from '../../lib/services/storage/migrations/sql/34.mail-thread-match-method.js';
 
 describe('mail listing matches migration', () => {
   it('stores one match per message and cascades deleted source rows', () => {
@@ -33,8 +34,20 @@ describe('mail listing matches migration', () => {
         (message_id, listing_id, method, confidence, created_at, updated_at)
       VALUES ('message-1', 'listing-1', 'listing_code', 100, 1, 1);
     `);
+    addThreadMethod(db);
 
     expect(db.prepare(`SELECT listing_id FROM mail_message_listing_matches`).get().listing_id).toBe('listing-1');
+    db.exec(`
+      INSERT INTO mail_messages
+        (id, account_id, mailbox, uid_validity, uid, created_at)
+      VALUES ('message-2', 'account-1', 'INBOX', '1', 2, 2);
+      INSERT INTO mail_message_listing_matches
+        (message_id, listing_id, method, confidence, created_at, updated_at)
+      VALUES ('message-2', 'listing-1', 'thread', 95, 2, 2);
+    `);
+    expect(
+      db.prepare(`SELECT method FROM mail_message_listing_matches WHERE message_id = 'message-2'`).get().method,
+    ).toBe('thread');
     expect(() =>
       db
         .prepare(
