@@ -61,6 +61,10 @@ function toForm(settings) {
     workingHours: {
       from: settings?.workingHours?.from ?? null,
       to: settings?.workingHours?.to ?? null,
+      // Empty rather than pre-filled with the browser's zone: an installation that has been
+      // running in the server's zone must not have its window quietly moved to the operator's
+      // zone the next time they save an unrelated field on this page.
+      timeZone: settings?.workingHours?.timeZone ?? null,
     },
     proxyUrl: settings?.proxyUrl ?? '',
     priceTrackingEnabled: settings?.priceTrackingEnabled === true,
@@ -74,7 +78,8 @@ function toForm(settings) {
  * Whether any of `fields` differs between two forms.
  *
  * JSON comparison rather than a deep-equal helper: the only non-primitive here is `workingHours`,
- * whose two keys are written in a fixed order by `toForm`.
+ * whose keys are written in a fixed order by `toForm`. Anything added to that object has to be
+ * added there too, or an edit to it will not register as a change.
  *
  * @param {Object} a
  * @param {Object} b

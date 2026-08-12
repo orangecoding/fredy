@@ -3,11 +3,13 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { TimePicker, Button, Checkbox, Input, InputNumber, Banner } from '@douyinfe/semi-ui-19';
+import { TimePicker, Button, Checkbox, Input, InputNumber, Banner, Select } from '@douyinfe/semi-ui-19';
 import { IconSave } from '@douyinfe/semi-icons';
 import { useOutletContext } from 'react-router-dom';
+import { useMemo } from 'react';
 
 import { SegmentPart } from '../../../components/segment/SegmentPart';
+import { timeZoneOptions } from '../../../services/time/timeService';
 
 /**
  * @param {number} ts
@@ -41,6 +43,7 @@ function formatFromTBackend(time) {
  */
 export default function ExecutionPage() {
   const { t, form, setField, setWorkingHour, executionDirty, savingExecution, saveExecution } = useOutletContext();
+  const zones = useMemo(() => timeZoneOptions(form.workingHours.timeZone), [form.workingHours.timeZone]);
 
   return (
     <div className="settingsShell__page">
@@ -72,6 +75,22 @@ export default function ExecutionPage() {
             value={formatFromTBackend(form.workingHours.to)}
             placeholder=""
             onChange={(val) => setWorkingHour('to', val == null ? null : formatFromTimestamp(val))}
+          />
+          {/*
+            Searchable rather than a plain list: there are well over four hundred zones, and an
+            operator knows the name of theirs. Clearable because an empty value is a real state -
+            it means the window follows the server's own zone, which is what every installation did
+            before this setting existed.
+          */}
+          <Select
+            filter
+            showClear
+            optionList={zones}
+            value={form.workingHours.timeZone ?? undefined}
+            placeholder={t('settings.workingHoursTimeZonePlaceholder')}
+            insetLabel={t('settings.workingHoursTimeZone')}
+            onChange={(val) => setWorkingHour('timeZone', val == null || val === '' ? null : val)}
+            style={{ minWidth: 260 }}
           />
         </div>
       </SegmentPart>
