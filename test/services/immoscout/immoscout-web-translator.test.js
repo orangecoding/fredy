@@ -185,6 +185,17 @@ describe('#immoscout-mobile URL conversion', () => {
     expect(queryParams.get('newbuilding')).toBe('true');
   });
 
+  // "Anlageimmobilien" is its own real estate type on the mobile API and its web
+  // path carries neither a "-kaufen" nor a "-mieten" suffix.
+  it('should convert anlageimmobilie to the investment real estate type', () => {
+    const webUrl = 'https://www.immobilienscout24.de/Suche/de/berlin/berlin/anlageimmobilie';
+
+    const converted = convertWebToMobile(webUrl);
+    const queryParams = new URL(converted).searchParams;
+    expect(queryParams.get('realestatetype')).toBe('investment');
+    expect(queryParams.get('geocodes')).toBe('/de/berlin/berlin');
+  });
+
   // Sanity check: the corresponding "-mieten" slugs must remain untouched
   // by the suffix-based realType resolution introduced above.
   it.each([
@@ -197,6 +208,16 @@ describe('#immoscout-mobile URL conversion', () => {
     const queryParams = new URL(converted).searchParams;
     expect(queryParams.get('realestatetype')).toBe('apartmentrent');
     expect(queryParams.get('apartmenttypes')).toBe(apartmentType);
+  });
+
+  // The tenantNetwork flag opts into the mobile API's "Mieter-Netzwerk" pool.
+  it('should forward the tenantNetwork flag when present in the web URL', () => {
+    const webUrl =
+      'https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/neuss-rhein-kreis/rommerskirchen/wohnung-mieten?enteredFrom=result_list&tenantNetwork=true';
+
+    const converted = convertWebToMobile(webUrl);
+    const queryParams = new URL(converted).searchParams;
+    expect(queryParams.get('tenantNetwork')).toBe('true');
   });
 
   // Test URL conversion with unsupported query parameters
