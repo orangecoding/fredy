@@ -134,7 +134,9 @@ describe('queryListings affordabilityBand', () => {
   it('keeps the user scoping clause in place', () => {
     listingsStorage.queryListings({ userId: 'u1', affordabilityBand: buyOnly(30000, 412000) });
 
-    expect(pageQuery().sql).toContain('j.user_id = @userId');
+    expect(pageQuery().sql).toContain('l.job_id IN');
+    expect(pageQuery().sql).toContain('scoped_job.user_id = @userId');
+    expect(pageQuery().sql).toContain('json_each(scoped_job.shared_with_user)');
   });
 
   it('ignores non-numeric bounds rather than emitting a broken clause', () => {

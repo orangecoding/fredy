@@ -210,6 +210,20 @@ describe('listingsStorage.getListingById', () => {
     const row = listingsStorage.getListingById('missing', 'u1', true);
     expect(row).toBeNull();
   });
+
+  it('checks only the selected listing job for a non-admin user', () => {
+    sqliteMock.__queryHandler = () => [];
+
+    listingsStorage.getListingById('a', 'u1', false);
+
+    const { sql, params } = calls.query[0];
+    expect(sql).toContain('EXISTS');
+    expect(sql).toContain('scoped_job.id = l.job_id');
+    expect(sql).toContain('scoped_job.user_id = @userId');
+    expect(sql).toContain('json_each(scoped_job.shared_with_user)');
+    expect(sql).not.toContain('l.job_id IN');
+    expect(params).toMatchObject({ id: 'a', userId: 'u1' });
+  });
 });
 
 describe('watchListStorage.ensureWatch', () => {
