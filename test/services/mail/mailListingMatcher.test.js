@@ -84,4 +84,26 @@ describe('matchUnmatchedMailMessages', () => {
     expect(assign).not.toHaveBeenCalled();
     expect(result).toEqual({ processed: 1, matched: 0, ambiguous: 1 });
   });
+
+  it('paginates past recent nonmatches so older messages are not starved', async () => {
+    const assign = vi.fn(() => true);
+    const getMessages = vi
+      .fn()
+      .mockReturnValueOnce([
+        { id: 'new-2', subject: 'Newsletter', textBody: null, matchSortAt: 300 },
+        { id: 'new-1', subject: 'General reply', textBody: null, matchSortAt: 200 },
+      ])
+      .mockReturnValueOnce([{ id: 'old-match', subject: 'Ihre Anfrage 123456789', textBody: null, matchSortAt: 100 }]);
+
+    const result = await matchUnmatchedMailMessages('user-1', {
+      getMessages,
+      pageSize: 2,
+      listings,
+      assign,
+    });
+
+    expect(getMessages).toHaveBeenNthCalledWith(2, 'user-1', 2, { sortAt: 200, id: 'new-1' });
+    expect(assign).toHaveBeenCalledWith(expect.objectContaining({ messageId: 'old-match', listingId: 'listing-1' }));
+    expect(result).toEqual({ processed: 3, matched: 1, ambiguous: 0 });
+  });
 });

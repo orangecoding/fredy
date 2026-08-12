@@ -32,7 +32,7 @@ const sqliteMock = vi.hoisted(() => ({
 
 vi.mock('../../lib/services/storage/SqliteConnection.js', () => ({ default: sqliteMock }));
 
-const { assignMailMessageToListing, removeMailMessageListingMatch } =
+const { assignMailMessageToListing, getUnmatchedMailMessages, removeMailMessageListingMatch } =
   await import('../../lib/services/storage/mailStorage.js');
 
 beforeEach(() => {
@@ -58,6 +58,8 @@ describe('mail matching storage ownership', () => {
     expect(calls.find((call) => /INSERT INTO mail_message_listing_matches/.test(call.sql))).toBeTruthy();
     const statusCall = calls.find((call) => /UPDATE listings SET status/.test(call.sql));
     expect(JSON.parse(statusCall.params.status).status).toBe('applied');
+    const watchCall = calls.find((call) => /INSERT INTO watch_list/.test(call.sql));
+    expect(watchCall.params).toEqual(expect.objectContaining({ listingId: 'listing-1', userId: 'user-1' }));
   });
 
   it('does not assign a listing outside the mailbox owner', () => {
@@ -78,5 +80,16 @@ describe('mail matching storage ownership', () => {
     expect(removeMailMessageListingMatch('message-1', 'user-1')).toBe(true);
     expect(calls[0].sql).toMatch(/a\.user_id = @userId/);
     expect(calls[0].params).toEqual({ messageId: 'message-1', userId: 'user-1' });
+  });
+
+  it('uses a stable timestamp and id cursor for unmatched message pages', () => {
+    getUnmatchedMailMessages('user-1', 200, { sortAt: 1234, id: 'message-9' });
+
+    expect(sqliteMock.query).toHaveBeenCalledWith(expect.stringMatching(/m\.id < @cursorId/), {
+      userId: 'user-1',
+      limit: 200,
+      cursorSortAt: 1234,
+      cursorId: 'message-9',
+    });
   });
 });
