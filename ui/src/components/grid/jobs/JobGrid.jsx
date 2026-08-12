@@ -358,7 +358,7 @@ const JobGrid = () => {
                   <div className="jobGrid__card__stat jobGrid__card__stat--purple">
                     <span className="jobGrid__card__stat__number">{job.notificationAdapter?.length || 0}</span>
                     <span className="jobGrid__card__stat__label">
-                      <IconBell size="small" /> {t('jobs.cardAdapters')}
+                      <IconBell size="small" /> {t('jobs.cardChannels')}
                     </span>
                   </div>
                 </div>

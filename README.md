@@ -112,7 +112,7 @@ You can try out Fredy here: [Fredy Demo](https://fredy-demo.orange-coding.net/)
 ### With Docker
 
 > [!NOTE]
-> In order to start Fredy, you must provide a config.json. As a start, use the one in this repo: https://github.com/orangecoding/fredy/blob/master/conf/config.json
+> No configuration file is needed to start. Fredy creates `/conf/config.json` on first run if it is missing. That file only holds the database path, everything else is configured in the Web UI and stored in the database.
 
 ``` bash
 docker run -d --name fredy \
@@ -135,8 +135,8 @@ docker logs fredy -f
 
 ``` bash
 yarn
-yarn run start:backend   # in one terminal
-yarn run start:frontend  # in another terminal
+yarn run build:frontend  # builds the Web UI into ui/public
+yarn run start:backend   # serves the UI and the API on port 9998
 ```
 
 👉 Open <http://localhost:9998>
@@ -161,7 +161,7 @@ Should you use [Unraid](https://unraid.net/), you can now install Fredy from the
 
 ## 🧩 Core Concepts
 
-Fredy is built around three simple concepts:
+Fredy is built around a handful of simple concepts:
 
 ### Provider 🌐
 
@@ -172,26 +172,27 @@ Fredy.\
 ⚠️ Always make sure the search results are sorted by **date**, so Fredy
 picks up the newest listings first.
 
-### Adapter 📡
+### Notification adapter 📡
 
-An **adapter** is a way of reaching you (Slack,
+An **adapter** is a *kind* of connection Fredy can send through (Slack,
 Telegram, Email, ntfy, discord ...).\
-Each adapter has its own configuration (e.g. API keys, webhook URLs).\
-You can use multiple adapters at once --- Fredy will send new listings
-through all of them.
+Each adapter decides what it needs from you, for example an API key or a webhook URL.\
+You never configure an adapter on its own. You configure a **channel**, which is one
+filled-in adapter.
 
 ### Notification channel 🔔
 
-A **channel** is one saved adapter configuration --- "Telegram → family chat", say.\
-You set it up once under **Settings → Notifications** and reuse it in as many jobs as you
-like. Rotating a token means editing one channel instead of every job that used it.
+A **channel** is one saved adapter configuration, "Telegram → family chat", say.\
+You set it up once under **Settings → Notification channels** and reuse it in as many jobs
+as you like. Rotating a token means editing one channel instead of every job that used it.
 
-A job can hold several channels of the same type, so "Telegram → family chat" and
+A job can hold as many channels as you want, and every new listing goes out through all of
+them at once. Several channels of the same type are fine, so "Telegram → family chat" and
 "Telegram → work chat" can both be on the same search.
 
 Every channel belongs to whoever created it. An administrator can additionally share one with
 all users, or with other administrators only. Sharing lets other people *send* through a
-channel --- it never shows them its credentials. Anyone who wants their own variant can
+channel, it never shows them its credentials. Anyone who wants their own variant can
 duplicate the channel and fill in their own.
 
 Deleting a channel is blocked while a job still uses it, so a search can never quietly stop
@@ -202,12 +203,12 @@ notifying you.
 A **job** combines providers and notification channels.\
 Example: "Search apartments on ImmoScout24 + Immowelt and send results
 to Slack + Telegram."\
-Jobs run automatically at the interval you configure (see
-`/conf/config.json`).
+Jobs run automatically at the interval you configure under **Administration → Execution**,
+where you can also restrict them to working hours.
 
 ### MCP Server 🤖
 
-Starting with **V20**, Fredy ships with a built-in **MCP Server **. This allows you to connect Fredy to LLMs (like Claude, ChatGPT, or local models via LM Studio) and query your real estate data using natural language.
+Starting with **V20**, Fredy ships with a built-in **MCP Server**. This allows you to connect Fredy to LLMs (like Claude, ChatGPT, or local models via LM Studio) and query your real estate data using natural language.
 The local LLM can even enrich existing listings by checking the listing online.   
 
 For more information on how to set it up and use it, please refer to the [MCP Readme](lib/mcp/README.md).
@@ -381,7 +382,7 @@ On a **server / VPS the requests usually originate from a datacenter IP**, and p
 
 A **residential proxy** routes Fredy's browser through the internet connection of a real household, so the provider sees a "normal user" IP instead of a datacenter. For German portals, use a **German (DE) residential** (or mobile/4G) proxy. Plain VPNs and **datacenter proxies do not help** here, they share the same bad reputation as your server.
 
-**Configure it** under **Settings → Execution → Proxy URL**. Supported formats:
+**Configure it** under **Administration → Execution → Proxy URL**. Supported formats:
 
 ```
 http://user:pass@host:port
@@ -410,7 +411,7 @@ This is not an endorsement, pick whatever fits your budget. For low-volume use l
 Fredy is completely free (and will always remain free). However, it would be a huge help if you’d allow me to collect some analytical data.
 Before you freak out, let me explain...  
 If you agree, Fredy will send a ping once every 6 hours to my internal tracking project (Will be open sourced soon).  
-The data includes: names of active adapters/providers, OS, architecture, Node version, and language. The information is entirely anonymous and helps me understand which adapters/providers are most frequently used.</p>
+The data includes: which notification adapters and providers are in use (the type only, for example `slack`, never your channels, their names or their credentials), OS, architecture, Node version, and language. The information is entirely anonymous and helps me understand which adapters/providers are most frequently used.</p>
 
 **Thanks**🤘
 
@@ -434,11 +435,11 @@ a debug bundle due to privacy reasons!
 
 **Capturing a debug bundle**
 
-1. Open Fredy as an **admin** and go to **Settings → Debug**.
+1. Open Fredy as an **admin** and go to **Administration → Debug**.
 2. Click **"Enable debug logging" / "Debug-Logging aktivieren"**. A red banner appears on
    every page while recording is on.
 3. **Reproduce the bug**.
-4. Come back to **Settings → Debug** and check the progress bar, if it stayed at 0 %,
+4. Come back to **Administration → Debug** and check the progress bar, if it stayed at 0 %,
    nothing was captured.
 5. Click **"Download debug information" / "Debug Informationen herunterladen"**. You get a
    zip named `YYYY-MM-DD-FredyDebug-<version>.zip` containing two files:
@@ -485,7 +486,7 @@ yarn run test:offline
 ## Download new fixtures
 If you have to refresh the fixtures (every once in a while needed because the providers change their code), run this command:
 ``` bash
-yarn run download-fixtures
+yarn run test:download-fixtures
 ```
 
 ## Adding a new language
@@ -518,7 +519,7 @@ The `_meta` fields:
 
 > **Important:** `semiLocale` must exactly match a locale filename from the Semi UI locale sources (without the `.js` extension). See the [available Semi UI locales on GitHub](https://github.com/DouyinFE/semi-design/tree/main/packages/semi-ui/locale/source) for the full list of supported keys.
 
-After adding the file, rebuild the frontend (`yarn build:frontend` or restart the dev server) and the new language will appear automatically in **Settings → User Settings → Language**.
+After adding the file, rebuild the frontend (`yarn build:frontend` or restart the dev server) and the new language will appear automatically in **Settings → Preferences → Language**.
 
 ------------------------------------------------------------------------
 
@@ -536,9 +537,9 @@ flowchart TD
         C2["Provider 2"]
         C3["Provider 3"]
   end
- subgraph NotificationAdapters["Notification Adapters"]
-        F1["Adapter 1"]
-        F2["Adapter 2"]
+ subgraph NotificationChannels["Notification Channels"]
+        F1["Channel 1"]
+        F2["Channel 2"]
   end
 
     A1 --> B["FredyPipelineExecutioner"]
@@ -549,8 +550,7 @@ flowchart TD
     C2 --> D
     C3 --> D
     D --> E{"Duplicate?"}
-    E -- No --> F1
-    F1 --> F2
+    E -- No --> F1 & F2
 ```
 
 ------------------------------------------------------------------------
