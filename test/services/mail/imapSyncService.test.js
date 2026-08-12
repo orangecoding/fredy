@@ -114,6 +114,22 @@ describe('syncMailAccount', () => {
     expect(storage.markMailSyncSuccessful).toHaveBeenCalledWith('account-1', '12', 41);
   });
 
+  it('filters the cursor UID returned by an empty reversed IMAP range', async () => {
+    storage.getMailAccountWithCredential.mockReturnValue({
+      ...storage.getMailAccountWithCredential(),
+      uidValidity: '12',
+      lastUid: 41,
+    });
+    const client = createClient({ uids: [41] });
+
+    const result = await syncMailAccount('account-1', 'user-1', { clientFactory: () => client });
+
+    expect(client.search).toHaveBeenCalledWith({ uid: '42:*' }, { uid: true });
+    expect(client.fetchOne).not.toHaveBeenCalled();
+    expect(storage.markMailSyncSuccessful).toHaveBeenCalledWith('account-1', '12', 41);
+    expect(result).toEqual({ fetched: 0, stored: 0, matched: 0, lastUid: 41 });
+  });
+
   it('does not download the source of a message larger than the safety limit', async () => {
     const client = createClient({ size: 2 * 1024 * 1024 });
 
