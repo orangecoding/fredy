@@ -372,6 +372,14 @@ with their walking distance. Each one opens into the same departure board, so th
 
 Immoscout has implemented advanced bot detection. In order to work around this, we are using a reversed engineered version of their mobile api. See [Immoscout Reverse Engineering Documentation](https://github.com/orangecoding/fredy/blob/master/reverse-engineered-immoscout.md)
 
+Paste the search URL from your browser as usual. Beside flats and houses this covers plots, garages, WG rooms, short term lets, assisted living and foreclosures, region, radius and drawn-shape searches, and the "pretty" URLs the website generates when a search carries a single filter (`haus-mit-garage-kaufen`, `3-zimmer-wohnung-mieten`, `wohnung-bis-800-euro-warm`, ...). Commercial searches (offices, shops, gastronomy) are not supported.
+
+Two things are worth knowing:
+
+-   A filter that Immoscout's own API does not offer for the type you are searching (a pets filter on a house purchase, say) is **dropped** and logged, because sending it makes their API reject the whole search.
+-   A filter Fredy has no translation for yet is dropped as well, and says so in the log: `no translator for query parameter "..." ... please report the search URL`. Your search then runs **wider** than you set it, so if results look too broad, check the log first.
+-   If a search URL cannot be mapped at all, the job fails with `Real estate type not found: <path>`. Please open an issue with the URL, it is a one line fix.
+
 ## 🛡️ Bot Detection & Proxies
 
 Most browser-based providers (immowelt, immonet, kleinanzeigen, ...) are scraped through a hardened headless browser ([CloakBrowser](https://www.npmjs.com/package/cloakbrowser)). It makes the **browser fingerprint** indistinguishable from a real Chrome, which is enough when you run Fredy on a normal home connection.

@@ -11,6 +11,22 @@
     "url": "https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/duesseldorf/haus-mit-garage-kaufen?enteredFrom=result_list",
     "type": "housebuy"
   },
+  "rentGarage": {
+    "url": "https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/duesseldorf/garage-mieten",
+    "type": "garagerent"
+  },
+  "flatshareRoom": {
+    "url": "https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/duesseldorf/wg-zimmer",
+    "type": "flatshareroom"
+  },
+  "buyPlot": {
+    "url": "https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/duesseldorf/grundstueck-kaufen",
+    "type": "livingbuysite"
+  },
+  "roomCountApartment": {
+    "url": "https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/duesseldorf/3-zimmer-wohnung-mieten",
+    "type": "apartmentrent"
+  },
   "rentApartment": {
     "url": "https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/duesseldorf/wohnung-mieten?numberofrooms=1.5-&price=1.0-1000000.0&livingspace=1.0-10000.0&pricetype=rentpermonth&enteredFrom=result_list",
     "type": "apartmentrent"

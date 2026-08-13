@@ -3,8 +3,13 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { convertWebToMobile } from '../../../lib/services/immoscout/immoscout-web-translator.js';
-import { describe, expect, it, vi } from 'vitest';
+import {
+  convertImmoscoutListingToMobileListing,
+  convertWebToMobile,
+  listKnownWebPaths,
+} from '../../../lib/services/immoscout/immoscout-web-translator.js';
+import logger from '../../../lib/services/logger.js';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { readFile } from 'fs/promises';
 import { buildFetchMock } from '../../offlineFixtures.js';
 
@@ -14,333 +19,312 @@ if (process.env.TEST_MODE === 'offline') {
   vi.stubGlobal('fetch', buildFetchMock());
 }
 
+const DUESSELDORF = 'https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/duesseldorf';
+const BERLIN = 'https://www.immobilienscout24.de/Suche/de/berlin/berlin';
+
+/** Converts a web URL and hands back its mobile query parameters. */
+const paramsOf = (webUrl) => new URL(convertWebToMobile(webUrl)).searchParams;
+
 describe('#immoscout-mobile URL conversion', () => {
-  // Test shape URL conversion
+  // The path tables and the per-type parameter rules have their own tests in web-paths.test.js and
+  // param-support.test.js; what follows is the URL assembly on top of them.
+
+  it('should convert a full web URL to mobile URL', () => {
+    const webUrl = `${BERLIN}/wohnung-mieten?heatingtypes=central,selfcontainedcentral&haspromotion=false&numberofrooms=2.0-5.0&livingspace=10.0-25.0&energyefficiencyclasses=a,b,c,d,e,f,g,h,a_plus&exclusioncriteria=projectlisting,swapflat&equipment=parking,cellar,builtinkitchen,lift,garden,guesttoilet,balcony&petsallowedtypes=no,yes,negotiable&price=10.0-100.0&constructionyear=1920-2026&apartmenttypes=halfbasement,penthouse,other,loft,groundfloor,terracedflat,raisedgroundfloor,roofstorey,apartment,maisonette&pricetype=calculatedtotalrent&floor=2-7&enteredFrom=result_list`;
+    const expectedMobileUrl =
+      'https://api.mobile.immobilienscout24.de/search/list?apartmenttypes=halfbasement,penthouse,other,loft,groundfloor,terracedflat,raisedgroundfloor,roofstorey,apartment,maisonette&constructionyear=1920-2026&energyefficiencyclasses=a,b,c,d,e,f,g,h,a_plus&equipment=parking,cellar,builtinkitchen,lift,garden,guesttoilet,balcony&exclusioncriteria=projectlisting,swapflat&floor=2-7&geocodes=%2Fde%2Fberlin%2Fberlin&haspromotion=false&heatingtypes=central,selfcontainedcentral&livingspace=10.0-25.0&numberofrooms=2.0-5.0&petsallowedtypes=no,yes,negotiable&price=10.0-100.0&pricetype=calculatedtotalrent&realestatetype=apartmentrent&searchType=region';
+
+    expect(convertWebToMobile(webUrl)).toBe(expectedMobileUrl);
+  });
+
   it('should convert a full web URL with shape to mobile URL', () => {
     const webUrl =
       'https://www.immobilienscout24.de/Suche/shape/haus-kaufen?shape=aW9yfkhfa3htQXJgUGlnYEBmekhte3BAcXNAfWBsQGNyQ2lkUHVvbEB3eX5Ab25WYn5Fa2BLaGRQY29FaGtTfEhme3xBdHBEdHFMamlHbmdRfHhMcmxPeHlWYnpS&price=-600000.0&ground=240.0-&enteredFrom=result_list';
     const expectedMobileUrl =
-      'https://api.mobile.immobilienscout24.de/search/list?exclusioncriteria=swapflat&ground=240.0-&price=-600000.0&realestatetype=housebuy&searchType=shape&shape=ior~H_kxmAr%60Pig%60%40fzHm%7Bp%40qs%40%7D%60l%40crCidPuol%40wy~%40onVb~Ek%60KhdPcoEhkS%7CHf%7B%7CAtpDtqLjiGngQ%7CxLrlOxyVbzR';
+      'https://api.mobile.immobilienscout24.de/search/list?ground=240.0-&price=-600000.0&realestatetype=housebuy&searchType=shape&shape=ior~H_kxmAr%60Pig%60%40fzHm%7Bp%40qs%40%7D%60l%40crCidPuol%40wy~%40onVb~Ek%60KhdPcoEhkS%7CHf%7B%7CAtpDtqLjiGngQ%7CxLrlOxyVbzR';
 
-    const actualMobileUrl = convertWebToMobile(webUrl);
-    expect(actualMobileUrl).toBe(expectedMobileUrl);
+    expect(convertWebToMobile(webUrl)).toBe(expectedMobileUrl);
   });
 
-  // A shape drawn by hand on the map arrives as a bare polyline rather than base64. Decoding one of
-  // those does not throw, it quietly returns broken UTF-8, and ImmoScout answers 400 "Cannot parse
-  // shape", so the polyline has to reach the mobile API byte for byte.
-  it('should pass a raw polyline shape through untouched', () => {
-    const polyline =
-      '}{jwHy|qh@jCKdCgAvB_BdB}BzAaCjAqCfAqC~@uCt@iCh@eCZkCLyC?_EO}Ea@}Ea@iE_@{D]aDe@gDi@gDo@uCu@kBcB_AeDOiE?iDCgCMuBOkDCkG?yFRgD`@cB\\{A`@eBx@aB|@kAbAy@rAe@bBUxCAhE?dFh@fGlAzGbBbHlBxGdB`FrAhDz@xBh@nAf@l@RNNXkCkMJR~B|EnCpErCnDtClCvC~ApCh@rCJpC?';
-    const webUrl = `https://www.immobilienscout24.de/Suche/shape/haus-kaufen?shape=${encodeURIComponent(polyline)}&price=-600000.0`;
+  // The mobile API takes the equipment vocabulary exactly as the website spells it; the camel case
+  // variants the translator used to build (builtInKitchen, guestToilet) return the same results, so
+  // the values are forwarded untouched.
+  it('should forward equipment values as the website spells them', () => {
+    const webUrl = `${BERLIN}/wohnung-mieten?equipment=builtinkitchen,guesttoilet,handicappedaccessible`;
 
-    const shape = new URL(convertWebToMobile(webUrl)).searchParams.get('shape');
-
-    expect(shape).toBe(polyline);
-    // U+FFFD is what a base64 decode of a polyline leaves behind, and the symptom the API rejects.
-    expect(shape).not.toContain('�');
+    expect(paramsOf(webUrl).get('equipment')).toBe('builtinkitchen,guesttoilet,handicappedaccessible');
   });
 
-  // The base64 flavour uses `.` where base64 would use `=`, because a bare `=` in a query string
-  // value is asking for trouble. Both padding lengths have to survive the substitution, so the two
-  // polylines below are picked for byte lengths that pad to `..` and to `.` respectively.
-  it.each([
-    ['..', 'ymrwHidih@`IkS_Aal@oTsVoViClw@g'],
-    ['.', 'ymrwHidih@`IkS_Aal@oTsVoViClw@g@'],
-  ])('should decode a base64 shape padded with %s', (padding, polyline) => {
-    const padded = Buffer.from(polyline, 'utf-8').toString('base64').replace(/=+$/, padding);
-    expect(padded.endsWith(padding)).toBe(true);
-    const webUrl = `https://www.immobilienscout24.de/Suche/shape/haus-kaufen?shape=${encodeURIComponent(padded)}`;
+  describe('locations', () => {
+    it('should take the region from the path', () => {
+      const queryParams = paramsOf(`${DUESSELDORF}/wohnung-mieten`);
 
-    expect(new URL(convertWebToMobile(webUrl)).searchParams.get('shape')).toBe(polyline);
+      expect(queryParams.get('searchType')).toBe('region');
+      expect(queryParams.get('geocodes')).toBe('/de/nordrhein-westfalen/duesseldorf');
+    });
+
+    // Picking single districts replaces the path's city with numeric geocodes.
+    it('should let numeric geocodes from the query replace the path region', () => {
+      const webUrl =
+        'https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/haus-kaufen?geocodes=1276010037,1276010014';
+
+      expect(paramsOf(webUrl).get('geocodes')).toBe('1276010037,1276010014');
+    });
+
+    it('should convert a radius search to geocoordinates', () => {
+      const webUrl = `https://www.immobilienscout24.de/Suche/radius/haus-kaufen?centerofsearchaddress=D%C3%BCsseldorf&geocoordinates=51.22496%3B6.77567%3B5.0&price=1.0-1.0E7`;
+
+      const queryParams = paramsOf(webUrl);
+      expect(queryParams.get('searchType')).toBe('radius');
+      expect(queryParams.get('geocoordinates')).toBe('51.22496;6.77567;5.0');
+      expect(queryParams.get('geocodes')).toBeNull();
+    });
+
+    it('should carry a drawn shape over as a polyline', () => {
+      const polyline = 'ior~H_kxmAr`Pig`@fzH';
+      const webUrl = `https://www.immobilienscout24.de/Suche/shape/haus-kaufen?shape=${encodeURIComponent(polyline)}`;
+
+      const queryParams = paramsOf(webUrl);
+      expect(queryParams.get('searchType')).toBe('shape');
+      expect(queryParams.get('shape')).toBe(polyline);
+      expect(queryParams.get('geocodes')).toBeNull();
+    });
+
+    it('should throw when a shape search carries no shape', () => {
+      expect(() =>
+        convertWebToMobile('https://www.immobilienscout24.de/Suche/shape/haus-kaufen?price=-600000.0'),
+      ).toThrow('Shape search URL is missing the required "shape" query parameter');
+    });
   });
 
-  // Base64 that decodes to bytes no polyline could contain is not a shape we can use. Sending the
-  // mangled decode would be strictly worse than sending what we were given, so the input wins.
-  it('should keep the original value when a base64 decode yields no polyline', () => {
-    const shape = Buffer.from([0x00, 0x01, 0x02, 0xff, 0xfe]).toString('base64');
-    const webUrl = `https://www.immobilienscout24.de/Suche/shape/haus-kaufen?shape=${encodeURIComponent(shape)}`;
+  describe('path filters', () => {
+    // A filter the web UI folded into the path has to reach the mobile API as a parameter, or the
+    // search silently widens to everything.
+    it.each([
+      ['haus-mit-garage-kaufen', 'housebuy', 'equipment', 'parking'],
+      ['einfamilienhaus-mieten', 'houserent', 'buildingtypes', 'singlefamilyhouse'],
+      ['penthouse-kaufen', 'apartmentbuy', 'apartmenttypes', 'penthouse'],
+      ['neubauwohnung-mieten', 'apartmentrent', 'newbuilding', 'true'],
+      ['luxushaus-kaufen', 'housebuy', 'luxurypromotion', 'true'],
+      ['3-zimmer-wohnung-mieten', 'apartmentrent', 'numberofrooms', '3.0-3.5'],
+      ['wg-zimmer', 'flatshareroom', 'geocodes', '/de/nordrhein-westfalen/duesseldorf'],
+    ])('should turn %s into %s with %s=%s', (slug, realEstateType, param, value) => {
+      const queryParams = paramsOf(`${DUESSELDORF}/${slug}`);
 
-    expect(new URL(convertWebToMobile(webUrl)).searchParams.get('shape')).toBe(shape);
+      expect(queryParams.get('realestatetype')).toBe(realEstateType);
+      expect(queryParams.get(param)).toBe(value);
+    });
+
+    it('should keep the query params alongside the path filter', () => {
+      const webUrl = `${DUESSELDORF}/haus-mit-garage-kaufen?price=-600000.0&livingspace=120.0-&enteredFrom=result_list`;
+
+      const queryParams = paramsOf(webUrl);
+      expect(queryParams.get('equipment')).toBe('parking');
+      expect(queryParams.get('price')).toBe('-600000.0');
+      expect(queryParams.get('livingspace')).toBe('120.0-');
+    });
+
+    it('should throw an error for a path we cannot map', () => {
+      expect(() => convertWebToMobile(`${DUESSELDORF}/gewerbeflaeche-mieten`)).toThrow(
+        'Real estate type not found: gewerbeflaeche-mieten',
+      );
+    });
+
+    // The SEO slug for a maximum warm rent, and the coldrent search that uses no slug at all.
+    it('should convert a SEO apartment max warmrent path to rent + price + pricetype', () => {
+      const queryParams = paramsOf(`${DUESSELDORF}/wohnung-bis-800-euro-warm?livingspace=-800.0`);
+
+      expect(queryParams.get('realestatetype')).toBe('apartmentrent');
+      expect(queryParams.get('price')).toBe('-800');
+      expect(queryParams.get('pricetype')).toBe('calculatedtotalrent');
+      expect(queryParams.get('livingspace')).toBe('-800.0');
+    });
+
+    it('should convert a max coldrent search via the regular wohnung-mieten path', () => {
+      const webUrl = `${DUESSELDORF}/wohnung-mieten?price=-800.0&livingspace=-800.0&pricetype=rentpermonth`;
+
+      const queryParams = paramsOf(webUrl);
+      expect(queryParams.get('price')).toBe('-800.0');
+      expect(queryParams.get('pricetype')).toBe('rentpermonth');
+    });
   });
 
-  // Test URL conversion
-  it('should convert a full web URL to mobile URL', () => {
-    const webUrl =
-      'https://www.immobilienscout24.de/Suche/de/berlin/berlin/wohnung-mieten?heatingtypes=central,selfcontainedcentral&haspromotion=false&numberofrooms=2.0-5.0&livingspace=10.0-25.0&energyefficiencyclasses=a,b,c,d,e,f,g,h,a_plus&exclusioncriteria=projectlisting,swapflat&equipment=parking,cellar,builtinkitchen,lift,garden,guesttoilet,balcony&petsallowedtypes=no,yes,negotiable&price=10.0-100.0&constructionyear=1920-2026&apartmenttypes=halfbasement,penthouse,other,loft,groundfloor,terracedflat,raisedgroundfloor,roofstorey,apartment,maisonette&pricetype=calculatedtotalrent&floor=2-7&enteredFrom=result_list';
-    const expectedMobileUrl =
-      'https://api.mobile.immobilienscout24.de/search/list?apartmenttypes=halfbasement,penthouse,other,loft,groundfloor,terracedflat,raisedgroundfloor,roofstorey,apartment,maisonette&constructionyear=1920-2026&energyefficiencyclasses=a,b,c,d,e,f,g,h,a_plus&equipment=parking,cellar,builtInKitchen,lift,garden,guestToilet,balcony&exclusioncriteria=swapflat,projectlisting&floor=2-7&geocodes=%2Fde%2Fberlin%2Fberlin&haspromotion=false&heatingtypes=central,selfcontainedcentral&livingspace=10.0-25.0&numberofrooms=2.0-5.0&petsallowedtypes=no,yes,negotiable&price=10.0-100.0&pricetype=calculatedtotalrent&realestatetype=apartmentrent&searchType=region';
+  describe('precedence', () => {
+    // Query parameters replace what the path implied, exactly as on the website:
+    // "haus-mit-garage-kaufen?equipment=cellar" searches for a cellar, not for both.
+    it('should let an explicit query param replace the path filter', () => {
+      expect(paramsOf(`${DUESSELDORF}/haus-mit-garage-kaufen?equipment=cellar`).get('equipment')).toBe('cellar');
+      expect(paramsOf(`${DUESSELDORF}/einfamilienhaus-kaufen?buildingtypes=bungalow`).get('buildingtypes')).toBe(
+        'bungalow',
+      );
+      expect(paramsOf(`${BERLIN}/wohnung-bis-800-euro-warm?price=100-500`).get('price')).toBe('100-500');
+    });
 
-    const actualMobileUrl = convertWebToMobile(webUrl);
-    expect(actualMobileUrl).toBe(expectedMobileUrl);
+    it('should keep the path filter when the query says nothing about it', () => {
+      expect(paramsOf(`${DUESSELDORF}/haus-mit-garage-kaufen?price=-600000.0`).get('equipment')).toBe('parking');
+    });
   });
 
-  // The mobile API now uses swapflat directly for the default rental filter.
-  it('should default exclusioncriteria to swapflat for regular apartment searches', () => {
-    const webUrl = 'https://www.immobilienscout24.de/Suche/de/berlin/berlin/wohnung-mieten?price=-1500.0';
+  describe('exclusion criteria', () => {
+    // Rent apartment searches hide exchange flats unless the URL says otherwise.
+    it('should default exclusioncriteria to swapflat for regular apartment searches', () => {
+      expect(paramsOf(`${BERLIN}/wohnung-mieten?price=-1500.0`).get('exclusioncriteria')).toBe('swapflat');
+    });
 
-    const converted = convertWebToMobile(webUrl);
-    const queryParams = new URL(converted).searchParams;
-    expect(queryParams.get('exclusioncriteria')).toBe('swapflat');
+    it('should apply the swapflat default to apartment rent SEO paths too', () => {
+      expect(paramsOf(`${BERLIN}/wohnung-mit-balkon-mieten`).get('exclusioncriteria')).toBe('swapflat');
+    });
+
+    // Houses and buy searches have no default at all - the website sends none either.
+    it.each(['haus-mieten', 'haus-kaufen', 'wohnung-kaufen', 'anlageimmobilie'])(
+      'should not add a default exclusion for %s',
+      (slug) => {
+        expect(paramsOf(`${BERLIN}/${slug}`).get('exclusioncriteria')).toBeNull();
+      },
+    );
+
+    // An explicit list replaces the default rather than adding to it, which is what the website
+    // does: "wohnung-mieten?exclusioncriteria=projectlisting" lets exchange flats back in.
+    it('should let an explicit exclusioncriteria replace the default', () => {
+      expect(paramsOf(`${BERLIN}/wohnung-mieten?exclusioncriteria=projectlisting`).get('exclusioncriteria')).toBe(
+        'projectlisting',
+      );
+    });
+
+    it('should pass every exclusion value through', () => {
+      const webUrl = `${DUESSELDORF}/haus-kaufen?exclusioncriteria=projectlisting,foreclosure,unbuilthome`;
+
+      expect(paramsOf(webUrl).get('exclusioncriteria').split(',').sort()).toEqual([
+        'foreclosure',
+        'projectlisting',
+        'unbuilthome',
+      ]);
+    });
+
+    it('should exclude projectlisting and swapflat for bestandswohnung-mieten', () => {
+      expect(paramsOf(`${BERLIN}/bestandswohnung-mieten`).get('exclusioncriteria').split(',').sort()).toEqual([
+        'projectlisting',
+        'swapflat',
+      ]);
+    });
+
+    it('should remove the swapflat default for mietwohnungen-mit-tauschwohnungen', () => {
+      expect(paramsOf(`${BERLIN}/mietwohnungen-mit-tauschwohnungen`).get('exclusioncriteria')).toBeNull();
+      expect(
+        paramsOf(`${BERLIN}/mietwohnungen-mit-tauschwohnungen?exclusioncriteria=projectlisting`).get(
+          'exclusioncriteria',
+        ),
+      ).toBe('projectlisting');
+    });
   });
 
-  // Values that are spelled differently on the web must be translated for the
-  // mobile API, while swapflat stays unchanged.
-  it('should translate projectlisting and keep swapflat', () => {
-    const webUrl =
-      'https://www.immobilienscout24.de/Suche/de/berlin/berlin/wohnung-mieten?exclusioncriteria=projectlisting,swapflat';
+  describe('unsupported parameters', () => {
+    beforeEach(() => vi.spyOn(logger, 'warn').mockImplementation(() => {}));
+    afterEach(() => vi.restoreAllMocks());
 
-    const converted = convertWebToMobile(webUrl);
-    const queryParams = new URL(converted).searchParams;
-    expect(queryParams.get('exclusioncriteria').split(',').sort()).toEqual(['projectlisting', 'swapflat']);
+    // A 412 from the mobile API makes the provider return nothing at all, so a filter the type does
+    // not accept must not reach the URL. Which combination is legal is param-support.test.js's job.
+    it.each([
+      ['haspromotion=true', 'haus-kaufen', 'haspromotion'],
+      ['ground=300.0-', 'wohnung-mieten', 'ground'],
+      ['floor=2-7', 'haus-mieten', 'floor'],
+      ['equipment=parking', 'anlageimmobilie', 'equipment'],
+      ['pricetype=calculatedtotalrent', 'haus-mieten', 'pricetype'],
+    ])('should drop %s on %s', (queryParam, slug, param) => {
+      expect(paramsOf(`${DUESSELDORF}/${slug}?${queryParam}`).get(param)).toBeNull();
+      expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining(param));
+    });
+
+    // Filters the translator used to throw away although the mobile API supports them.
+    it.each([
+      ['rented=true', 'haus-kaufen', 'rented', 'true'],
+      ['minimuminternetspeed=100000', 'wohnung-mieten', 'minimuminternetspeed', '100000'],
+      ['osmtags=subway,park', 'wohnung-mieten', 'osmtags', 'subway,park'],
+      ['freeofcourtageonly=true', 'haus-kaufen', 'freeofcourtageonly', 'true'],
+      ['sorting=-firstactivation', 'wg-zimmer', 'sorting', '-firstactivation'],
+    ])('should forward %s on %s', (queryParam, slug, param, value) => {
+      expect(paramsOf(`${DUESSELDORF}/${slug}?${queryParam}`).get(param)).toBe(value);
+    });
+
+    it('should remove the website noise without a word', () => {
+      const converted = convertWebToMobile(
+        `${BERLIN}/wohnung-mieten?enteredFrom=result_list&referrer=newsletter&utm_source=mail`,
+      );
+
+      expect(converted).not.toContain('enteredFrom');
+      expect(converted).not.toContain('referrer');
+      expect(converted).not.toContain('utm_source');
+      expect(logger.warn).not.toHaveBeenCalled();
+    });
+
+    // A filter we have no translator for must be visible in the logs rather than vanishing: it is
+    // the only signal that ImmoScout grew a filter Fredy does not know yet.
+    it('should log a filter it has no translator for', () => {
+      const converted = convertWebToMobile(`${BERLIN}/wohnung-mieten?listingtags=holzbalken`);
+
+      expect(converted).not.toContain('listingtags');
+      expect(logger.warn).toHaveBeenCalledWith(
+        expect.stringContaining('no translator for query parameter "listingtags=holzbalken"'),
+      );
+    });
+
+    // The same has to hold for a filter folded into the path, so a slug table entry that names a
+    // parameter nobody registered cannot go unnoticed either.
+    it('should keep the location parameters out of the report', () => {
+      convertWebToMobile(
+        'https://www.immobilienscout24.de/Suche/radius/haus-kaufen?geocoordinates=51.2;6.7;5.0&centerofsearchaddress=D%C3%BCsseldorf',
+      );
+
+      expect(logger.warn).not.toHaveBeenCalled();
+    });
   });
 
-  // Bestandswohnungen use the projectlisting exclusion by default.
-  it('should set exclusioncriteria=projectlisting for bestandswohnung-mieten', () => {
-    const webUrl = 'https://www.immobilienscout24.de/Suche/de/berlin/berlin/bestandswohnung-mieten';
+  describe('malformed input', () => {
+    it('should throw an error for invalid URL', () => {
+      expect(() => convertWebToMobile('invalid-url')).toThrow('Invalid URL: invalid-url');
+    });
 
-    const converted = convertWebToMobile(webUrl);
-    const queryParams = new URL(converted).searchParams;
-    expect(queryParams.get('exclusioncriteria').split(',').sort()).toEqual(['projectlisting', 'swapflat']);
+    it('should throw an error for unexpected path format', () => {
+      expect(() => convertWebToMobile('https://www.immobilienscout24.de/invalid/path/format')).toThrow(
+        'Unexpected path format: /invalid/path/format',
+      );
+    });
   });
 
-  // Exchange-apartment searches must not inherit the swapflat default, but any
-  // explicit exclusioncriteria from the URL should still pass through.
-  it('should remove the swapflat default for mietwohnungen-mit-tauschwohnungen', () => {
-    const webUrl =
-      'https://www.immobilienscout24.de/Suche/de/berlin/berlin/mietwohnungen-mit-tauschwohnungen?exclusioncriteria=projectlisting';
+  describe('expose URLs', () => {
+    it('should rewrite a web expose URL to the mobile API', () => {
+      expect(convertImmoscoutListingToMobileListing('https://www.immobilienscout24.de/expose/158382494')).toBe(
+        'https://api.mobile.immobilienscout24.de/expose/158382494',
+      );
+    });
 
-    const converted = convertWebToMobile(webUrl);
-    const queryParams = new URL(converted).searchParams;
-    expect(queryParams.get('exclusioncriteria')).toBe('projectlisting');
+    it.each([null, undefined, ''])('should return null for %s', (url) => {
+      expect(convertImmoscoutListingToMobileListing(url)).toBeNull();
+    });
   });
 
-  // Test URL conversion of web-only SEO path
-  it('should convert a SEO web path to the correct query params', () => {
-    const webUrl = 'https://www.immobilienscout24.de/Suche/de/berlin/berlin/wohnung-mit-balkon-mieten?equipment=garden';
+  // Replays the whole catalogue of known paths against the real mobile API. A path ImmoScout
+  // retired, or a parameter a type stopped accepting, shows up as a 412 here and nowhere else -
+  // the offline fixtures cannot notice either. Skipped offline, where fetch is mocked.
+  it.skipIf(process.env.TEST_MODE === 'offline')(
+    'should be accepted by the mobile API for every known web path',
+    { timeout: 180_000 },
+    async () => {
+      const rejected = [];
+      for (const path of listKnownWebPaths()) {
+        const url = convertWebToMobile(`${DUESSELDORF}/${path}`).replace('/search/list?', '/search/total?');
 
-    const converted = convertWebToMobile(webUrl);
-    const queryParams = new URL(converted).searchParams;
-    expect(queryParams.get('equipment').split(',')).toEqual(expect.arrayContaining(['garden', 'balcony']));
-  });
+        const response = await fetch(url, { headers: { 'User-Agent': 'ImmoScout_28.1_26.5.2_._' } });
+        const body = await response.json();
+        if (!response.ok || body.error) {
+          rejected.push(`${path}: ${response.status} ${JSON.stringify(body).slice(0, 160)}`);
+        }
+        await new Promise((resolve) => setTimeout(resolve, 250));
+      }
 
-  // Test URL conversion of SEO web path for max warmrent. The ImmoScout web UI
-  // generates this special SEO slug instead of explicit price/pricetype params
-  // when the user configures a "Warmmiete" filter (real-world URL).
-  it('should convert a SEO apartment max warmrent path to rent + price + pricetype', () => {
-    const webUrl =
-      'https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/duesseldorf/wohnung-bis-800-euro-warm?livingspace=-800.0&enteredFrom=result_list';
-
-    const converted = convertWebToMobile(webUrl);
-    const queryParams = new URL(converted).searchParams;
-    expect(queryParams.get('realestatetype')).toBe('apartmentrent');
-    expect(queryParams.get('price')).toBe('-800');
-    expect(queryParams.get('pricetype')).toBe('calculatedtotalrent');
-    expect(queryParams.get('geocodes')).toBe('/de/nordrhein-westfalen/duesseldorf');
-    expect(queryParams.get('livingspace')).toBe('-800.0');
-  });
-
-  // Same SEO pattern for houses ("haus-bis-X-euro-warm" → houserent).
-  it('should convert a SEO house max warmrent path to rent + price + pricetype', () => {
-    const webUrl = 'https://www.immobilienscout24.de/Suche/de/berlin/berlin/haus-bis-1500-euro-warm';
-
-    const converted = convertWebToMobile(webUrl);
-    const queryParams = new URL(converted).searchParams;
-    expect(queryParams.get('realestatetype')).toBe('houserent');
-    expect(queryParams.get('price')).toBe('-1500');
-    expect(queryParams.get('pricetype')).toBe('calculatedtotalrent');
-  });
-
-  // Sanity check: max coldrent ("Kaltmiete") does NOT use an SEO slug. The web
-  // UI keeps the regular "wohnung-mieten" path and passes explicit
-  // price + pricetype query params, which the existing translator already
-  // handles (real-world URL).
-  it('should convert a max coldrent search via the regular wohnung-mieten path', () => {
-    const webUrl =
-      'https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/duesseldorf/wohnung-mieten?price=-800.0&livingspace=-800.0&pricetype=rentpermonth&enteredFrom=result_list';
-
-    const converted = convertWebToMobile(webUrl);
-    const queryParams = new URL(converted).searchParams;
-    expect(queryParams.get('realestatetype')).toBe('apartmentrent');
-    expect(queryParams.get('price')).toBe('-800.0');
-    expect(queryParams.get('pricetype')).toBe('rentpermonth');
-    expect(queryParams.get('geocodes')).toBe('/de/nordrhein-westfalen/duesseldorf');
-  });
-
-  // Explicit query params win over the SEO slug's implicit defaults.
-  it('should let explicit query params override SEO path price defaults', () => {
-    const webUrl = 'https://www.immobilienscout24.de/Suche/de/berlin/berlin/wohnung-bis-800-euro-warm?price=100-500';
-
-    const converted = convertWebToMobile(webUrl);
-    const queryParams = new URL(converted).searchParams;
-    expect(queryParams.get('realestatetype')).toBe('apartmentrent');
-    expect(queryParams.get('price')).toBe('100-500');
-    expect(queryParams.get('pricetype')).toBe('calculatedtotalrent');
-  });
-
-  // Buy-side apartment sub-type SEO paths.
-  it.each([
-    ['souterrainwohnung-kaufen', 'halfbasement'],
-    ['erdgeschosswohnung-kaufen', 'groundfloor'],
-    ['hochparterrewohnung-kaufen', 'raisedgroundfloor'],
-    ['etagenwohnung-kaufen', 'apartment'],
-    ['loft-kaufen', 'loft'],
-    ['maisonette-kaufen', 'maisonette'],
-    ['terrassenwohnung-kaufen', 'terracedflat'],
-    ['penthouse-kaufen', 'penthouse'],
-    ['dachgeschosswohnung-kaufen', 'roofstorey'],
-  ])('should convert %s to apartmentbuy with apartmenttype %s', (slug, apartmentType) => {
-    const webUrl = `https://www.immobilienscout24.de/Suche/de/berlin/berlin/${slug}`;
-
-    const converted = convertWebToMobile(webUrl);
-    const queryParams = new URL(converted).searchParams;
-    expect(queryParams.get('realestatetype')).toBe('apartmentbuy');
-    expect(queryParams.get('apartmenttypes')).toBe(apartmentType);
-  });
-
-  // Buy-side equipment/feature SEO paths follow the same "-kaufen" suffix
-  // pattern as the apartment sub-types above (also verified live).
-  it.each([
-    ['wohnung-mit-garage-kaufen', 'parking'],
-    ['wohnung-mit-einbaukueche-kaufen', 'builtinkitchen'],
-    ['wohnung-mit-keller-kaufen', 'cellar'],
-    ['barrierefreie-wohnung-kaufen', 'handicappedaccessible'],
-  ])('should convert %s to apartmentbuy with equipment %s', (slug, equipment) => {
-    const webUrl = `https://www.immobilienscout24.de/Suche/de/berlin/berlin/${slug}`;
-
-    const converted = convertWebToMobile(webUrl);
-    const queryParams = new URL(converted).searchParams;
-    expect(queryParams.get('realestatetype')).toBe('apartmentbuy');
-    expect(queryParams.get('equipment')).toBe(equipment);
-  });
-
-  it('should convert neubauwohnung-kaufen to apartmentbuy with newbuilding=true', () => {
-    const webUrl = 'https://www.immobilienscout24.de/Suche/de/berlin/berlin/neubauwohnung-kaufen';
-
-    const converted = convertWebToMobile(webUrl);
-    const queryParams = new URL(converted).searchParams;
-    expect(queryParams.get('realestatetype')).toBe('apartmentbuy');
-    expect(queryParams.get('newbuilding')).toBe('true');
-  });
-
-  // "Anlageimmobilien" is its own real estate type on the mobile API and its web
-  // path carries neither a "-kaufen" nor a "-mieten" suffix.
-  it('should convert anlageimmobilie to the investment real estate type', () => {
-    const webUrl = 'https://www.immobilienscout24.de/Suche/de/berlin/berlin/anlageimmobilie';
-
-    const converted = convertWebToMobile(webUrl);
-    const queryParams = new URL(converted).searchParams;
-    expect(queryParams.get('realestatetype')).toBe('investment');
-    expect(queryParams.get('geocodes')).toBe('/de/berlin/berlin');
-  });
-
-  // Sanity check: the corresponding "-mieten" slugs must remain untouched
-  // by the suffix-based realType resolution introduced above.
-  it.each([
-    ['souterrainwohnung-mieten', 'halfbasement'],
-    ['dachgeschosswohnung-mieten', 'roofstorey'],
-  ])('should keep %s resolving to apartmentrent with apartmenttype %s', (slug, apartmentType) => {
-    const webUrl = `https://www.immobilienscout24.de/Suche/de/berlin/berlin/${slug}`;
-
-    const converted = convertWebToMobile(webUrl);
-    const queryParams = new URL(converted).searchParams;
-    expect(queryParams.get('realestatetype')).toBe('apartmentrent');
-    expect(queryParams.get('apartmenttypes')).toBe(apartmentType);
-  });
-
-  // House SEO paths. The web UI folds a single house filter into the path itself, so
-  // "Haus kaufen" plus the Garage filter arrives as "haus-mit-garage-kaufen" and never as
-  // "haus-kaufen?equipment=parking". Unmapped, such a path has no real estate type at all and the
-  // job dies on "Real estate type not found" (#378). Each expectation below is the search
-  // ImmoScout's own web app resolves that path to.
-  it.each([
-    ['haus-mit-garage-kaufen', 'housebuy', 'equipment', 'parking'],
-    ['haus-mit-garage-mieten', 'houserent', 'equipment', 'parking'],
-    ['haus-mit-keller-kaufen', 'housebuy', 'equipment', 'cellar'],
-    ['haus-mit-keller-mieten', 'houserent', 'equipment', 'cellar'],
-    ['einfamilienhaus-kaufen', 'housebuy', 'buildingtypes', 'singlefamilyhouse'],
-    ['einfamilienhaus-mieten', 'houserent', 'buildingtypes', 'singlefamilyhouse'],
-    ['doppelhaushaelfte-kaufen', 'housebuy', 'buildingtypes', 'semidetachedhouse'],
-    ['reihenhaus-kaufen', 'housebuy', 'buildingtypes', 'terracehouse'],
-    ['reihenhaus-mieten', 'houserent', 'buildingtypes', 'terracehouse'],
-    ['bungalow-kaufen', 'housebuy', 'buildingtypes', 'bungalow'],
-    ['mehrfamilienhaus-kaufen', 'housebuy', 'buildingtypes', 'multifamilyhouse'],
-    ['bauernhaus-kaufen', 'housebuy', 'buildingtypes', 'farmhouse'],
-    ['villa-kaufen', 'housebuy', 'buildingtypes', 'villa'],
-    ['villa-mieten', 'houserent', 'buildingtypes', 'villa'],
-    ['neubauhaus-kaufen', 'housebuy', 'newbuilding', 'true'],
-    ['neubauhaus-mieten', 'houserent', 'newbuilding', 'true'],
-    ['luxushaus-kaufen', 'housebuy', 'luxurypromotion', 'true'],
-  ])('should convert %s to %s with %s=%s', (slug, realEstateType, param, value) => {
-    const webUrl = `https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/duesseldorf/${slug}`;
-
-    const converted = convertWebToMobile(webUrl);
-    const queryParams = new URL(converted).searchParams;
-    expect(queryParams.get('realestatetype')).toBe(realEstateType);
-    expect(queryParams.get(param)).toBe(value);
-    expect(queryParams.get('geocodes')).toBe('/de/nordrhein-westfalen/duesseldorf');
-  });
-
-  // The filter folded into the path must survive alongside the remaining query params.
-  it('should keep the query params of a house SEO path', () => {
-    const webUrl =
-      'https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/duesseldorf/haus-mit-garage-kaufen?price=-600000.0&livingspace=120.0-&enteredFrom=result_list';
-
-    const converted = convertWebToMobile(webUrl);
-    const queryParams = new URL(converted).searchParams;
-    expect(queryParams.get('realestatetype')).toBe('housebuy');
-    expect(queryParams.get('equipment')).toBe('parking');
-    expect(queryParams.get('price')).toBe('-600000.0');
-    expect(queryParams.get('livingspace')).toBe('120.0-');
-  });
-
-  // A house SEO path can be combined with an explicit buildingtypes filter, in which case the
-  // query param is the one the web app keeps.
-  it('should let an explicit buildingtypes param override the house SEO path', () => {
-    const webUrl =
-      'https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/duesseldorf/einfamilienhaus-kaufen?buildingtypes=bungalow';
-
-    const converted = convertWebToMobile(webUrl);
-    expect(new URL(converted).searchParams.get('buildingtypes')).toBe('bungalow');
-  });
-
-  // Only the buy side of "luxushaus" exists on the web (the rent path answers 410), so no
-  // houserent mapping may be invented for it.
-  it('should not map luxushaus-mieten', () => {
-    const webUrl = 'https://www.immobilienscout24.de/Suche/de/berlin/berlin/luxushaus-mieten';
-
-    expect(() => convertWebToMobile(webUrl)).toThrow('Real estate type not found: luxushaus-mieten');
-  });
-
-  // The tenantNetwork flag opts into the mobile API's "Mieter-Netzwerk" pool.
-  it('should forward the tenantNetwork flag when present in the web URL', () => {
-    const webUrl =
-      'https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/neuss-rhein-kreis/rommerskirchen/wohnung-mieten?enteredFrom=result_list&tenantNetwork=true';
-
-    const converted = convertWebToMobile(webUrl);
-    const queryParams = new URL(converted).searchParams;
-    expect(queryParams.get('tenantNetwork')).toBe('true');
-  });
-
-  // Test URL conversion with unsupported query parameters
-  it('should remove unsupported query parameters', () => {
-    const webUrl = 'https://www.immobilienscout24.de/Suche/de/berlin/berlin/wohnung-mieten?minimuminternetspeed=100000';
-    const converted = convertWebToMobile(webUrl);
-    expect(converted).not.toContain('minimuminternetspeed');
-  });
-
-  // Test URL conversion with invalid URL
-  it('should throw an error for invalid URL', () => {
-    const invalidUrl = 'invalid-url';
-
-    expect(() => convertWebToMobile(invalidUrl)).toThrow('Invalid URL: invalid-url');
-  });
-
-  // Test URL conversion with unexpected path format
-  it('should throw an error for unexpected path format', () => {
-    const webUrl = 'https://www.immobilienscout24.de/invalid/path/format';
-    expect(() => convertWebToMobile(webUrl)).toThrow('Unexpected path format: /invalid/path/format');
-  });
+      expect(rejected).toEqual([]);
+    },
+  );
 
   it('shouldFindResultsForEveryTestData', async () => {
     for (const webUrlKey of Object.keys(testData)) {
@@ -364,7 +348,6 @@ describe('#immoscout-mobile URL conversion', () => {
 
       expect([null, true]).toContain(response.ok);
       const responseBody = await response.json();
-      expect(responseBody.totalResults).toBeGreaterThan(0);
       expect(responseBody.totalResults).toBeGreaterThan(0);
       expect(responseBody.resultListItems.length).toBeGreaterThan(0);
       expect(responseBody.resultListItems.filter((r) => r.type === 'EXPOSE_RESULT')[0].item.realEstateType).toBe(type);
