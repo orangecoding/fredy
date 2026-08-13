@@ -26,6 +26,16 @@ function readLocale(file) {
 const localeFiles = fs.readdirSync(localeDir).filter((file) => file.endsWith('.json'));
 const english = readLocale('en.json');
 
+/**
+ * A `t('some.key')` translation call in a component.
+ *
+ * The lookbehind is what keeps this honest: without it the pattern also matches the tail of any
+ * method whose name ends in `t`, so an ordinary `params.get('returnTo')` or `url.set('x')` would be
+ * reported as a missing translation key and fail the suite for no reason.
+ * @type {RegExp}
+ */
+const TRANSLATION_CALL = /(?<![\w.$])t\('([^']+)'\)/g;
+
 describe('locales', () => {
   it('ships english as the fallback language', () => {
     expect(localeFiles).toContain('en.json');
@@ -40,12 +50,30 @@ describe('locales', () => {
 
   it('translates every key the login screen uses', () => {
     const login = fs.readFileSync(path.join(localeDir, '../views/login/Login.jsx'), 'utf-8');
-    const usedKeys = [...login.matchAll(/t\('([^']+)'\)/g)].map((match) => match[1]);
+    const usedKeys = [...login.matchAll(TRANSLATION_CALL)].map((match) => match[1]);
 
     expect(usedKeys.length).toBeGreaterThan(0);
     for (const key of usedKeys) {
       expect(Object.keys(english)).toContain(key);
     }
+  });
+
+  // Guards the pattern itself rather than a component, so the next `.get('x')` added to a screen
+  // fails review on its merits instead of on a phantom missing translation.
+  it('reads translation calls without mistaking methods that merely end in t', () => {
+    const source = `
+      const label = t('login.usernameLabel');
+      const returnTo = new URLSearchParams(location.search).get('returnTo');
+      url.searchParams.set('page');
+      const first = items.at('0');
+      const shown = pending ? t('login.loginButtonPending') : t('login.loginButton');
+    `;
+
+    expect([...source.matchAll(TRANSLATION_CALL)].map((match) => match[1])).toEqual([
+      'login.usernameLabel',
+      'login.loginButtonPending',
+      'login.loginButton',
+    ]);
   });
 
   it('translates every key the donate dialog uses', () => {
