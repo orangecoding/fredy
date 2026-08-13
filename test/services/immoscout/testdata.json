@@ -7,6 +7,10 @@
     "url": "https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/duesseldorf/haus-kaufen?numberofrooms=1.0-10000.0&price=1.0-1000000.0E7&livingspace=1.0-10000.0&enteredFrom=result_list",
     "type": "housebuy"
   },
+  "buyHouseWithGarage": {
+    "url": "https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/duesseldorf/haus-mit-garage-kaufen?enteredFrom=result_list",
+    "type": "housebuy"
+  },
   "rentApartment": {
     "url": "https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/duesseldorf/wohnung-mieten?numberofrooms=1.5-&price=1.0-1000000.0&livingspace=1.0-10000.0&pricetype=rentpermonth&enteredFrom=result_list",
     "type": "apartmentrent"

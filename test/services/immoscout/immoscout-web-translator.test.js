@@ -248,6 +248,70 @@ describe('#immoscout-mobile URL conversion', () => {
     expect(queryParams.get('apartmenttypes')).toBe(apartmentType);
   });
 
+  // House SEO paths. The web UI folds a single house filter into the path itself, so
+  // "Haus kaufen" plus the Garage filter arrives as "haus-mit-garage-kaufen" and never as
+  // "haus-kaufen?equipment=parking". Unmapped, such a path has no real estate type at all and the
+  // job dies on "Real estate type not found" (#378). Each expectation below is the search
+  // ImmoScout's own web app resolves that path to.
+  it.each([
+    ['haus-mit-garage-kaufen', 'housebuy', 'equipment', 'parking'],
+    ['haus-mit-garage-mieten', 'houserent', 'equipment', 'parking'],
+    ['haus-mit-keller-kaufen', 'housebuy', 'equipment', 'cellar'],
+    ['haus-mit-keller-mieten', 'houserent', 'equipment', 'cellar'],
+    ['einfamilienhaus-kaufen', 'housebuy', 'buildingtypes', 'singlefamilyhouse'],
+    ['einfamilienhaus-mieten', 'houserent', 'buildingtypes', 'singlefamilyhouse'],
+    ['doppelhaushaelfte-kaufen', 'housebuy', 'buildingtypes', 'semidetachedhouse'],
+    ['reihenhaus-kaufen', 'housebuy', 'buildingtypes', 'terracehouse'],
+    ['reihenhaus-mieten', 'houserent', 'buildingtypes', 'terracehouse'],
+    ['bungalow-kaufen', 'housebuy', 'buildingtypes', 'bungalow'],
+    ['mehrfamilienhaus-kaufen', 'housebuy', 'buildingtypes', 'multifamilyhouse'],
+    ['bauernhaus-kaufen', 'housebuy', 'buildingtypes', 'farmhouse'],
+    ['villa-kaufen', 'housebuy', 'buildingtypes', 'villa'],
+    ['villa-mieten', 'houserent', 'buildingtypes', 'villa'],
+    ['neubauhaus-kaufen', 'housebuy', 'newbuilding', 'true'],
+    ['neubauhaus-mieten', 'houserent', 'newbuilding', 'true'],
+    ['luxushaus-kaufen', 'housebuy', 'luxurypromotion', 'true'],
+  ])('should convert %s to %s with %s=%s', (slug, realEstateType, param, value) => {
+    const webUrl = `https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/duesseldorf/${slug}`;
+
+    const converted = convertWebToMobile(webUrl);
+    const queryParams = new URL(converted).searchParams;
+    expect(queryParams.get('realestatetype')).toBe(realEstateType);
+    expect(queryParams.get(param)).toBe(value);
+    expect(queryParams.get('geocodes')).toBe('/de/nordrhein-westfalen/duesseldorf');
+  });
+
+  // The filter folded into the path must survive alongside the remaining query params.
+  it('should keep the query params of a house SEO path', () => {
+    const webUrl =
+      'https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/duesseldorf/haus-mit-garage-kaufen?price=-600000.0&livingspace=120.0-&enteredFrom=result_list';
+
+    const converted = convertWebToMobile(webUrl);
+    const queryParams = new URL(converted).searchParams;
+    expect(queryParams.get('realestatetype')).toBe('housebuy');
+    expect(queryParams.get('equipment')).toBe('parking');
+    expect(queryParams.get('price')).toBe('-600000.0');
+    expect(queryParams.get('livingspace')).toBe('120.0-');
+  });
+
+  // A house SEO path can be combined with an explicit buildingtypes filter, in which case the
+  // query param is the one the web app keeps.
+  it('should let an explicit buildingtypes param override the house SEO path', () => {
+    const webUrl =
+      'https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/duesseldorf/einfamilienhaus-kaufen?buildingtypes=bungalow';
+
+    const converted = convertWebToMobile(webUrl);
+    expect(new URL(converted).searchParams.get('buildingtypes')).toBe('bungalow');
+  });
+
+  // Only the buy side of "luxushaus" exists on the web (the rent path answers 410), so no
+  // houserent mapping may be invented for it.
+  it('should not map luxushaus-mieten', () => {
+    const webUrl = 'https://www.immobilienscout24.de/Suche/de/berlin/berlin/luxushaus-mieten';
+
+    expect(() => convertWebToMobile(webUrl)).toThrow('Real estate type not found: luxushaus-mieten');
+  });
+
   // The tenantNetwork flag opts into the mobile API's "Mieter-Netzwerk" pool.
   it('should forward the tenantNetwork flag when present in the web URL', () => {
     const webUrl =
