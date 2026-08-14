@@ -23,7 +23,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import './Navigate.less';
 import { useScreenWidth } from '../../hooks/screenWidth.js';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
-import { useSelector } from '../../services/state/store';
 import { navTreeFor, resolveActiveKey } from './navModel.js';
 
 /**
@@ -42,9 +41,6 @@ export default function Navigation({ isAdmin }) {
   const t = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  // The demo instance is a showcase, not an installation someone maintains - asking its
-  // visitors for money would be begging on someone else's behalf.
-  const settings = useSelector((state) => state.generalSettings.settings);
 
   const width = useScreenWidth();
   const [collapsed, setCollapsed] = useState(width <= 850);
@@ -104,11 +100,12 @@ export default function Navigation({ isAdmin }) {
           <div className="navigate__footer-news">
             <NewsHistory collapsed={collapsed} />
           </div>
-          {!settings.demoMode && (
-            <div className="navigate__footer-donate">
-              <Donate collapsed={collapsed} />
-            </div>
-          )}
+          {/* Shown on the demo instance too. The demo is where most people meet Fredy for the
+              first time, so hiding the one place it asks for support removed it from exactly the
+              audience that has just seen what the project does. */}
+          <div className="navigate__footer-donate">
+            <Donate collapsed={collapsed} />
+          </div>
           <div className={`navigate__footer-actions${collapsed ? ' navigate__footer-actions--collapsed' : ''}`}>
             <Logout text={!collapsed} />
             <button
