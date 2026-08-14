@@ -25,6 +25,12 @@
 
 # Fredy 🏡 - Your Self-Hosted Real Estate Finder for Germany
 
+> [!IMPORTANT]
+> This repository is an independently maintained fork of
+> [orangecoding/fredy](https://github.com/orangecoding/fredy). Fork-specific features and releases
+> may evolve separately, while developments from the upstream project are regularly reviewed and
+> integrated when they are compatible with this fork's direction.
+
 Finding an apartment or house in Germany can be stressful and
 time-consuming.\
 **Fredy** makes it easier: it automatically scrapes **ImmoScout24,
