@@ -44,7 +44,7 @@ describe('manual appointment routes', () => {
   it('lists only appointments for the signed-in user', async () => {
     const response = await (await app()).inject({ method: 'GET', url: '/' });
     expect(response.statusCode).toBe(200);
-    expect(listManualAppointments).toHaveBeenCalledWith('u1', { includeArchived: true });
+    expect(listManualAppointments).toHaveBeenCalledWith('u1', { includeArchived: true, isAdmin: false });
   });
 
   it('creates an appointment only for an accessible listing', async () => {
@@ -57,7 +57,12 @@ describe('manual appointment routes', () => {
     });
     expect(response.statusCode).toBe(200);
     expect(saveManualAppointment).toHaveBeenCalledWith(
-      expect.objectContaining({ listingId: 'l1', userId: 'u1', startsAt: 2000 }),
+      expect.objectContaining({
+        listingId: 'l1',
+        userId: 'u1',
+        startsAt: 2000,
+        timezone: 'Europe/Berlin',
+      }),
     );
 
     userCanAccessListing.mockReturnValue(false);
@@ -76,6 +81,11 @@ describe('manual appointment routes', () => {
       payload: { state: 'completed' },
     });
     expect(response.statusCode).toBe(200);
-    expect(setManualAppointmentState).toHaveBeenCalledWith({ appointmentId: 'a1', userId: 'u1', state: 'completed' });
+    expect(setManualAppointmentState).toHaveBeenCalledWith({
+      appointmentId: 'a1',
+      userId: 'u1',
+      isAdmin: false,
+      state: 'completed',
+    });
   });
 });

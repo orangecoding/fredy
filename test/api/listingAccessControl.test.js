@@ -34,7 +34,26 @@ const sqliteMock = {
       .filter((id) => LISTINGS[id] && (LISTINGS[id].owner === userId || LISTINGS[id].sharedWith.includes(userId)))
       .map((id) => ({ id }));
   },
-  withTransaction: (cb) => cb({ prepare: () => ({ run: () => ({ changes: 1 }) }) }),
+  withTransaction: (cb) =>
+    cb({
+      prepare: (sql) => ({
+        run: (params) => {
+          executed.push({ sql, params });
+          return { changes: 1 };
+        },
+        get: (params) => {
+          executed.push({ sql, params });
+          return {
+            id: 'appointment-1',
+            listingId: params.listingId,
+            startsAt: params.startsAt,
+            timezone: params.timezone,
+            location: params.location,
+            state: 'scheduled',
+          };
+        },
+      }),
+    }),
 };
 
 vi.mock('../../lib/services/storage/SqliteConnection.js', () => ({ default: sqliteMock }));
