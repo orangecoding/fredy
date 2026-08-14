@@ -111,3 +111,42 @@
     --card-glow: @color-gray-border;
   }
 }
+
+/* A card that leads somewhere. It is a real button so it is reachable by keyboard, but it must not
+   look like one: the chevron and the hover lift are what say it is clickable. */
+.dashboard-card__button {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dashboard-card__chevron {
+  margin-left: auto;
+  color: @color-faint;
+  transition: color @transition-fast;
+}
+
+.dashboard-card--clickable {
+  transition:
+    border-color @transition-fast,
+    transform @transition-fast;
+
+  &:hover {
+    border-color: @color-border-bright !important;
+    transform: translateY(-1px);
+
+    .dashboard-card__chevron {
+      color: @color-text;
+    }
+  }
+
+  &:focus-within {
+    border-color: @color-border-bright !important;
+  }
+}

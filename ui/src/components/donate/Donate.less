@@ -1,9 +1,55 @@
 @import '../../tokens.less';
 
 .donate {
+  position: relative;
   width: 100%;
 
+  // The aurora sits on the container, not on the button. On the button it was clipped by the
+  // button's own `overflow: hidden`, so all that survived was a faint tint on the inside - which is
+  // not what light around a thing looks like. Out here it spills past the border and the button
+  // sits on top of it.
+  &::before {
+    content: '';
+    position: absolute;
+    // Less spread upwards than in the other three directions: "What's new" sits directly above with
+    // no gap, and a halo reaching past it stops reading as this button's.
+    inset: -5px -11px -11px;
+    z-index: 0;
+    // Purely decorative, and it covers the button's own hit area.
+    pointer-events: none;
+    background:
+      radial-gradient(52% 66% at 26% 50%, @color-accent 0%, transparent 68%),
+      radial-gradient(44% 58% at 74% 42%, fade(@color-purple-text, 70%) 0%, transparent 70%),
+      radial-gradient(40% 54% at 52% 72%, fade(@color-orange-text, 60%) 0%, transparent 68%);
+    filter: blur(14px);
+    // The resting brightness, and what a reduced-motion viewer sees, since the pulse below is what
+    // otherwise owns this property.
+    opacity: 0.8;
+    // Two animations rather than one, on periods that do not divide into each other: the light
+    // drifts on a 26s cycle and brightens on a 9s one, so the pair only returns to the same state
+    // roughly every four minutes. A single keyframe track reads as a loop no matter how slow it is,
+    // and a loop is the one thing an aurora never looks like.
+    animation:
+      donate-aurora-drift 26s ease-in-out infinite alternate,
+      donate-aurora-pulse 9s ease-in-out infinite;
+    // A blurred layer is composited on its own anyway; saying so keeps the pulse off the main
+    // thread's repaint path.
+    will-change: opacity, transform;
+    transition: filter @transition-fast;
+  }
+
+  // Brightness, not opacity: the pulse animates opacity continuously, and a transition on the same
+  // property would be overridden by it - the hover would simply do nothing.
+  &:hover::before {
+    filter: blur(14px) brightness(1.35);
+  }
+
   &__btn {
+    // Above the aurora, and opaque, so the glow reads as a halo around the button rather than as a
+    // wash behind its label. Matches the sidebar's own surface, so the button itself stays flat.
+    position: relative;
+    z-index: 1;
+    background: @color-surface;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -12,8 +58,7 @@
     height: 34px;
     padding: 0 10px;
     border: 1px solid @color-border;
-    background: transparent;
-    color: @color-muted;
+    color: @color-text;
     border-radius: @radius-btn;
     cursor: pointer;
     font-family: @font-ui;
@@ -22,13 +67,11 @@
     white-space: nowrap;
     overflow: hidden;
     transition:
-      background @transition-fast,
       border-color @transition-fast,
       color @transition-fast;
 
     &:hover {
-      background: @color-fill-subtle;
-      border-color: @color-border-bright;
+      border-color: @color-accent;
       color: @color-text;
     }
 
@@ -37,6 +80,17 @@
       padding: 0;
       margin: 0 auto;
     }
+  }
+
+  // Red where everything around it is grey, which is what makes the button findable at all.
+  &__btn-heart {
+    color: @color-accent;
+    flex: none;
+  }
+
+  &__btn-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &__content {
@@ -104,5 +158,53 @@
     font-size: @text-xs;
     color: @color-faint;
     margin: 0;
+  }
+}
+
+/* Where the light is. Slow and small on purpose: this sits in the sidebar on every screen, so
+   anything faster would be movement in the corner of the eye all day. Runs `alternate`, so it
+   reverses back along its own path instead of snapping home at the end of a cycle. */
+@keyframes donate-aurora-drift {
+  0% {
+    transform: translate3d(-6%, -3%, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(5%, 4%, 0) scale(1.12);
+  }
+
+  100% {
+    transform: translate3d(-3%, 2%, 0) scale(1.04);
+  }
+}
+
+/* How bright it is. The two peaks are deliberately unequal and off-centre - a single symmetric
+   swell reads as a heartbeat, which is a much more mechanical thing than light behaving oddly.
+   The whole range is 0.16 wide against gradients that are themselves under full opacity, so it
+   registers as the corner of the screen breathing rather than as something flashing. */
+@keyframes donate-aurora-pulse {
+  0%,
+  100% {
+    opacity: 0.68;
+  }
+
+  32% {
+    opacity: 0.86;
+  }
+
+  61% {
+    opacity: 0.73;
+  }
+
+  84% {
+    opacity: 0.8;
+  }
+}
+
+/* Someone who has asked for less motion gets the colour and none of the movement - neither the
+   drift nor the pulse, which is why the base rule still carries a resting opacity of its own. */
+@media (prefers-reduced-motion: reduce) {
+  .donate::before {
+    animation: none;
   }
 }

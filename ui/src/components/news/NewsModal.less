@@ -109,20 +109,25 @@
     color: @color-text;
   }
 
-  // Matches the Donate and Logout buttons it sits beside in the sidebar footer.
+  // Matches the Donate button it sits directly above in the sidebar footer, down to the height and
+  // the type size. The two were a few pixels apart in both, which is more noticeable than being
+  // plainly different would have been.
   &__historyTrigger {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: @space-2;
     width: 100%;
-    padding: @space-2;
+    height: 34px;
+    padding: 0 10px;
     background: transparent;
     border: 1px solid @color-border;
     border-radius: @radius-btn;
     color: @color-muted;
     font-family: @font-ui;
-    font-size: @text-sm;
+    font-size: @text-base;
+    font-weight: 500;
+    white-space: nowrap;
     cursor: pointer;
     transition: all @transition-fast;
 

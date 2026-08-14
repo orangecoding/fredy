@@ -6,11 +6,15 @@
 @import '../../../../../tokens.less';
 
 /* The map fills whatever is left after the search field, rather than the field eating into a
-   fixed map height and pushing the drawing controls out of view. */
+   fixed map height and pushing the drawing controls out of view.
+   The overall height comes from whatever wraps this - the job form gives it a modest one that the
+   user can expand - rather than being fixed at 50rem here, which made the form 800px taller than
+   it needed to be whether or not anyone wanted to draw. */
 .areaFilter {
   display: flex;
   flex-direction: column;
-  height: 50rem;
+  height: 100%;
+  min-height: 0;
 
   &__search {
     width: 100%;

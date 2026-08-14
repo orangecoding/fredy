@@ -29,9 +29,17 @@ import './NotificationChannelPicker.less';
  * @param {string[]} [props.selectedIds] - Channels already on this job, hidden from the list.
  * @param {() => void} props.onClose
  * @param {(channel: Object) => void} props.onPick
+ * @param {() => void} [props.onManageChannels] - How to leave for the Settings page. The job form
+ *   passes one that carries a way back, since leaving unmounts the form the user is filling in.
  * @returns {React.ReactElement|null}
  */
-export default function NotificationChannelPicker({ visible, selectedIds = [], onClose, onPick } = {}) {
+export default function NotificationChannelPicker({
+  visible,
+  selectedIds = [],
+  onClose,
+  onPick,
+  onManageChannels,
+} = {}) {
   const t = useTranslation();
   const actions = useActions();
   const navigate = useNavigate();
@@ -64,6 +72,10 @@ export default function NotificationChannelPicker({ visible, selectedIds = [], o
         onClick={(event) => {
           event.preventDefault();
           onClose();
+          if (onManageChannels != null) {
+            onManageChannels();
+            return;
+          }
           navigate('/settings/notifications');
         }}
       >

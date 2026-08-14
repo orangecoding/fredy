@@ -43,14 +43,27 @@ export default function NewsHistory({ collapsed }) {
     return Number.isNaN(date.getTime()) ? null : date.toLocaleDateString(locale, { dateStyle: 'long' });
   };
 
+  const trigger = (
+    <button className="news__historyTrigger" onClick={() => setVisible(true)} aria-label={t('news.historyTitle')}>
+      <IconGift size="default" />
+      {!collapsed && <span>{t('news.historyTrigger')}</span>}
+    </button>
+  );
+
   return (
     <>
-      <Tooltip content={t('news.historyTitle')} position="right" trigger={collapsed ? 'hover' : 'custom'}>
-        <button className="news__historyTrigger" onClick={() => setVisible(true)} aria-label={t('news.historyTitle')}>
-          <IconGift size="default" />
-          {!collapsed && <span>{t('news.historyTrigger')}</span>}
-        </button>
-      </Tooltip>
+      {/* The tooltip only exists for the icon rail, where the label is hidden and the button needs
+          something to name it. It used to be rendered either way and switched off with
+          trigger="custom" when expanded - where it never fired, but its wrapper is inline, so the
+          button's `width: 100%` resolved against its own text and came out narrower than the
+          Support button below it. */}
+      {collapsed ? (
+        <Tooltip content={t('news.historyTitle')} position="right">
+          {trigger}
+        </Tooltip>
+      ) : (
+        trigger
+      )}
 
       <SideSheet
         title={t('news.historyTitle')}

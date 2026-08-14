@@ -3,7 +3,7 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { Fragment, useState, useCallback, useEffect } from 'react';
+import { Fragment, useState, useCallback, useEffect, useRef } from 'react';
 
 import NotificationChannelPicker from './components/notificationAdapter/NotificationChannelPicker';
 import NotificationChannelEditor from './components/notificationAdapter/NotificationChannelEditor';
@@ -15,9 +15,18 @@ import Headline from '../../../components/headline/Headline';
 import { useActions, useSelector } from '../../../services/state/store';
 import { xhrPost, errorMessage } from '../../../services/xhr';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
-import { Divider, Input, Switch, Button, TagInput, Toast, Select, Row, Col } from '@douyinfe/semi-ui-19';
+import { Input, Switch, Button, TagInput, Toast, Select, Banner, Collapse, Tooltip } from '@douyinfe/semi-ui-19';
 import './JobMutation.less';
 import { SegmentPart } from '../../../components/segment/SegmentPart';
+import { loadDraft, saveDraft, clearDraft } from '../../../services/jobs/jobDraft.js';
+import { missingRequirements } from '../../../services/jobs/jobValidation.js';
+import { summariseJobRefinements } from '../../../services/jobs/jobSummary.js';
+import { withReturnTo } from '../../../services/routes/returnTo.js';
+import { formatEuro } from '../../../components/cards/chartTheme.js';
+// The frontend copy of the server's detection. The two must agree: the pipeline falls back to its
+// own when a job carries no deal type, so a form that guessed differently would show one thing and
+// store another. Kept in step by test/ui/dealTypeCopyInSync.test.js.
+import { detectDealTypeFromUrl } from '../../../services/jobs/dealType.js';
 import {
   IconArrowLeft,
   IconBell,
@@ -30,10 +39,11 @@ import {
   IconHome,
   IconSetting,
 } from '@douyinfe/semi-icons';
-import { useTranslation } from '../../../services/i18n/i18n.jsx';
+import { useTranslation, useLocale } from '../../../services/i18n/i18n.jsx';
 
 export default function JobMutator() {
   const t = useTranslation();
+  const locale = useLocale();
 
   const SPEC_FILTERS = [
     { key: 'maxPrice', translation: t('jobs.mutation.filterMaxPrice') },
@@ -83,8 +93,18 @@ export default function JobMutator() {
   const [spatialFilter, setSpatialFilter] = useState(defaultSpatialFilter);
   const [specFilter, setSpecFilter] = useState(defaultSpecFilter);
   const [dealType, setDealType] = useState(defaultDealType);
+  /** Whether the value in the deal type field was guessed rather than chosen. */
+  const [dealTypeWasInferred, setDealTypeWasInferred] = useState(false);
   const navigate = useNavigate();
   const actions = useActions();
+
+  /** Whether the drawing map has been given the full height it used to always occupy. */
+  const [areaExpanded, setAreaExpanded] = useState(false);
+
+  const draftId = params.jobId ?? null;
+  const [draftRestored, setDraftRestored] = useState(false);
+  /** Whether the restore attempt has run. Until it has, nothing may be written back over it. */
+  const draftChecked = useRef(false);
 
   // Memoize the spatial filter change handler to prevent map reinitializations
   const handleSpatialFilterChange = useCallback((data) => {
@@ -94,6 +114,96 @@ export default function JobMutator() {
   useEffect(() => {
     actions.notificationChannels.getChannels();
   }, [actions]);
+
+  // Pick up whatever was left behind last time. The two links this form offers - "Manage channels"
+  // and the picker's empty state - both navigate away and unmount it, and a first-time user has to
+  // follow one of them, because a job needs a channel and channels are made on the Settings page.
+  // Without this, that detour silently threw away everything they had typed.
+  useEffect(() => {
+    if (draftChecked.current) return;
+    draftChecked.current = true;
+
+    const draft = loadDraft(draftId);
+    if (draft == null) return;
+
+    if (draft.name !== undefined) setName(draft.name);
+    if (draft.dealType !== undefined) setDealType(draft.dealType);
+    if (draft.providerData !== undefined) setProviderData(draft.providerData);
+    if (draft.selectedChannels !== undefined) setSelectedChannels(draft.selectedChannels);
+    if (draft.blacklist !== undefined) setBlacklist(draft.blacklist);
+    if (draft.shareWithUsers !== undefined) setShareWithUsers(draft.shareWithUsers);
+    if (draft.enabled !== undefined) setEnabled(draft.enabled);
+    if (draft.spatialFilter !== undefined) setSpatialFilter(draft.spatialFilter);
+    if (draft.specFilter !== undefined) setSpecFilter(draft.specFilter);
+    setDraftRestored(true);
+  }, [draftId]);
+
+  // Written straight through rather than debounced: the payload is a few hundred bytes and the
+  // write is synchronous, so a keystroke costs less than the render it already triggered.
+  useEffect(() => {
+    if (!draftChecked.current) return;
+    saveDraft(draftId, {
+      name,
+      dealType,
+      providerData,
+      selectedChannels,
+      blacklist,
+      shareWithUsers,
+      enabled,
+      spatialFilter,
+      specFilter,
+    });
+  }, [
+    draftId,
+    name,
+    dealType,
+    providerData,
+    selectedChannels,
+    blacklist,
+    shareWithUsers,
+    enabled,
+    spatialFilter,
+    specFilter,
+  ]);
+
+  // The deal type decides which half of the finance profile applies to everything this job finds,
+  // and the search URL the user just pasted almost always says which it is.
+  const inferredDealType =
+    providerData.map((provider) => detectDealTypeFromUrl(provider.url)).find((type) => type != null) ?? null;
+
+  // Offered as a starting value, never as a decision: an ambiguous URL leaves the field empty, a
+  // value the user has already chosen is never overwritten, and the guess can always be corrected.
+  useEffect(() => {
+    if (dealType != null || inferredDealType == null) return;
+    setDealType(inferredDealType);
+    setDealTypeWasInferred(true);
+  }, [inferredDealType, dealType]);
+
+  /**
+   * Leave the form for somewhere that can only be reached by unmounting it, carrying a way back.
+   * @param {string} to
+   * @returns {void}
+   */
+  const leaveWithReturnPath = (to) => navigate(withReturnTo(to, `${location.pathname}${location.search}`));
+
+  const discardDraft = () => {
+    clearDraft(draftId);
+    setDraftRestored(false);
+    setName(defaultName);
+    setDealType(defaultDealType);
+    setProviderData(defaultProviderData);
+    setSelectedChannels([]);
+    setBlacklist(defaultBlacklist);
+    setShareWithUsers(defaultShareWithUsers);
+    setEnabled(defaultEnabled);
+    setSpatialFilter(defaultSpatialFilter);
+    setSpecFilter(defaultSpecFilter);
+  };
+
+  const leaveForm = () => {
+    clearDraft(draftId);
+    navigate('/jobs');
+  };
 
   // Resolve the job's stored channel ids once the channel list has loaded. Guarded on the state
   // still being empty so that a later refresh of the list cannot undo the user's edits.
@@ -111,9 +221,15 @@ export default function JobMutator() {
     setSpecFilter({ ...specFilter, [key]: value ? parseFloat(value) : null });
   };
 
-  const isSavingEnabled = () => {
-    return Boolean(selectedChannels.length && providerData.length && name && dealType);
-  };
+  // A list, not a boolean. A disabled Save with nothing explaining it leaves the user hunting
+  // through eight sections for whichever one is incomplete.
+  const missing = missingRequirements({ name, dealType, providerData, selectedChannels });
+
+  // What the collapsed section holds, so it does not have to be opened to find out.
+  const refinementSummary = summariseJobRefinements(
+    { blacklist, specFilter, spatialFilter, shareWithUsers, enabled },
+    { t, formatPrice: (value) => formatEuro(value, locale) },
+  );
 
   const handleProviderEdit = (data) => {
     setProviderData(
@@ -136,6 +252,9 @@ export default function JobMutator() {
         jobId: jobToBeEdit?.id || null,
       });
       await actions.jobsData.getJobs();
+      // Only once the save actually landed. Clearing before would throw the draft away on a
+      // rejection, which is exactly when it is worth the most.
+      clearDraft(draftId);
       Toast.success(t('jobs.mutation.saved'));
       navigate('/jobs');
     } catch (Exception) {
@@ -164,6 +283,7 @@ export default function JobMutator() {
         selectedIds={selectedChannels.map((channel) => channel.id)}
         onClose={() => setPickerVisible(false)}
         onPick={(channel) => setSelectedChannels((current) => [...current, channel])}
+        onManageChannels={() => leaveWithReturnPath('/settings/notifications')}
       />
 
       {channelEditor && (
@@ -188,17 +308,31 @@ export default function JobMutator() {
       <Headline
         text={jobToBeEdit ? t('jobs.mutation.editTitle') : t('jobs.mutation.createTitle')}
         actions={
-          <Button
-            icon={<IconArrowLeft />}
-            onClick={() => navigate('/jobs')}
-            theme="borderless"
-            style={{ color: '#909090' }}
-          >
+          <Button icon={<IconArrowLeft />} onClick={leaveForm} theme="borderless" style={{ color: '#909090' }}>
             {t('jobs.mutation.back')}
           </Button>
         }
       />
-      <form>
+      {draftRestored && (
+        <Banner
+          type="info"
+          fullMode={false}
+          closeIcon={null}
+          style={{ marginBottom: '1rem' }}
+          description={
+            <div className="jobMutation__draftBanner">
+              <span>{t('jobs.mutation.draftRestored')}</span>
+              <Button size="small" theme="borderless" onClick={discardDraft}>
+                {t('jobs.mutation.draftDiscard')}
+              </Button>
+            </div>
+          }
+        />
+      )}
+      <form className="jobMutation__form">
+        {/* The three things a job cannot exist without, and nothing else. Everything optional is
+            folded away below, so the shortest path to a working job is a straight read down this
+            column rather than a scroll past nine open cards. */}
         <SegmentPart name={t('jobs.mutation.sectionName')} Icon={IconPaperclip}>
           <Input
             autoFocus
@@ -210,29 +344,12 @@ export default function JobMutator() {
             onChange={(value) => setName(value)}
           />
         </SegmentPart>
-        <Divider margin="1rem" />
-        {/* Mandatory: everything financial about this job's listings - the affordability verdict,
-            the filter, which half of the finance profile applies - hangs off this one answer. */}
-        <SegmentPart
-          name={t('jobs.mutation.sectionDealType')}
-          Icon={IconHome}
-          helpText={t('jobs.mutation.dealTypeHelp')}
-        >
-          <Select
-            placeholder={t('jobs.mutation.dealTypePlaceholder')}
-            value={dealType}
-            onChange={(value) => setDealType(value)}
-            style={{ width: '100%', maxWidth: 220 }}
-          >
-            <Select.Option value="rent">{t('jobs.mutation.dealTypeRent')}</Select.Option>
-            <Select.Option value="buy">{t('jobs.mutation.dealTypeBuy')}</Select.Option>
-          </Select>
-        </SegmentPart>
-        <Divider margin="1rem" />
+
         <SegmentPart
           name={t('jobs.mutation.sectionProviders')}
           Icon={IconBriefcase}
           helpText={t('jobs.mutation.providersHelp')}
+          helpMode="popover"
         >
           <Button
             type="primary"
@@ -257,11 +374,35 @@ export default function JobMutator() {
             }}
           />
         </SegmentPart>
-        <Divider margin="1rem" />
+
+        {/* Directly under the providers, because that is where its value is read from: the hint
+            about a guessed answer has to sit next to the thing it was guessed from. */}
+        <SegmentPart
+          name={t('jobs.mutation.sectionDealType')}
+          Icon={IconHome}
+          helpText={t('jobs.mutation.dealTypeHelp')}
+          helpMode="popover"
+        >
+          <Select
+            placeholder={t('jobs.mutation.dealTypePlaceholder')}
+            value={dealType}
+            onChange={(value) => {
+              setDealType(value);
+              setDealTypeWasInferred(false);
+            }}
+            style={{ width: '100%', maxWidth: 220 }}
+          >
+            <Select.Option value="rent">{t('jobs.mutation.dealTypeRent')}</Select.Option>
+            <Select.Option value="buy">{t('jobs.mutation.dealTypeBuy')}</Select.Option>
+          </Select>
+          {dealTypeWasInferred && <p className="jobMutation__inferredHint">{t('jobs.mutation.dealTypeInferred')}</p>}
+        </SegmentPart>
+
         <SegmentPart
           Icon={IconBell}
           name={t('jobs.mutation.sectionNotifications')}
           helpText={t('jobs.mutation.notificationsHelp')}
+          helpMode="popover"
         >
           <div className="jobMutation__notificationActions">
             <Button
@@ -276,7 +417,7 @@ export default function JobMutator() {
               type="secondary"
               icon={<IconSetting />}
               className="jobMutation__newButton"
-              onClick={() => navigate('/settings/notifications')}
+              onClick={() => leaveWithReturnPath('/settings/notifications')}
             >
               {t('notification.channels.manage')}
             </Button>
@@ -305,27 +446,26 @@ export default function JobMutator() {
             }
           />
         </SegmentPart>
-        <Divider margin="1rem" />
-        <SegmentPart
-          Icon={IconFilter}
-          name={t('jobs.mutation.sectionBlacklist')}
-          helpText={t('jobs.mutation.blacklistHelp')}
-        >
-          <TagInput
-            value={blacklist || []}
-            placeholder={t('jobs.mutation.blacklistPlaceholder')}
-            onChange={(v) => setBlacklist([...v])}
-          />
-        </SegmentPart>
-        <Divider margin="1rem" />
-        {/* Both filters narrow the same search, so they belong beside each other where there is
-            room. The Col breakpoints collapse them back into a single column on a phone. */}
-        <Row gutter={[16, 16]} className="jobMutation__filterRow">
-          <Col xs={24} lg={12}>
+
+        {/* keepDOM={false} is the point of the fold, not a detail of it: the area filter mounts an
+            800px MapLibre canvas, and it used to do so on every visit to this form - including the
+            edits that never touch it. The header line says what is inside, so the section does not
+            have to be opened to find out. */}
+        <Collapse accordion={false} keepDOM={false} className="jobMutation__refine">
+          <Collapse.Panel
+            itemKey="refine"
+            header={
+              <span className="jobMutation__refineHeader">
+                <span className="jobMutation__refineTitle">{t('jobs.mutation.sectionRefine')}</span>
+                <span className="jobMutation__refineSummary">{refinementSummary}</span>
+              </span>
+            }
+          >
             <SegmentPart
               Icon={IconFilter}
               name={t('jobs.mutation.sectionCriteriaFilter')}
               helpText={t('jobs.mutation.criteriaFilterHelp')}
+              helpMode="popover"
             >
               <div className="jobMutation__specFilter">
                 {SPEC_FILTERS.map((filter) => (
@@ -342,13 +482,46 @@ export default function JobMutator() {
               </div>
             </SegmentPart>
 
-            {/* Sharing and activation are short controls. Stacking them under the criteria
-                filter fills the column the tall map leaves half empty, instead of pushing two
-                near-empty full-width cards below the fold. */}
+            <SegmentPart
+              Icon={IconFilter}
+              name={t('jobs.mutation.sectionBlacklist')}
+              helpText={t('jobs.mutation.blacklistHelp')}
+              helpMode="popover"
+            >
+              <TagInput
+                value={blacklist || []}
+                placeholder={t('jobs.mutation.blacklistPlaceholder')}
+                onChange={(v) => setBlacklist([...v])}
+              />
+            </SegmentPart>
+
+            <SegmentPart
+              Icon={IconFilter}
+              name={t('jobs.mutation.sectionAreaFilter')}
+              helpText={t('jobs.mutation.areaFilterHelp')}
+              helpMode="popover"
+            >
+              {/* Three steps rather than the four-sentence paragraph that used to describe this
+                  mouse gesture in prose, and inside the panel rather than above it, where the
+                  drawing actually happens. */}
+              <ol className="jobMutation__areaSteps">
+                <li>{t('jobs.mutation.areaStep1')}</li>
+                <li>{t('jobs.mutation.areaStep2')}</li>
+                <li>{t('jobs.mutation.areaStep3')}</li>
+              </ol>
+              <div className={`jobMutation__areaMap${areaExpanded ? ' jobMutation__areaMap--expanded' : ''}`}>
+                <AreaFilter spatialFilter={spatialFilter} onChange={handleSpatialFilterChange} />
+              </div>
+              <Button theme="borderless" size="small" onClick={() => setAreaExpanded((current) => !current)}>
+                {areaExpanded ? t('jobs.mutation.areaCollapse') : t('jobs.mutation.areaExpand')}
+              </Button>
+            </SegmentPart>
+
             <SegmentPart
               Icon={IconUser}
               name={t('jobs.mutation.sectionSharing')}
               helpText={t('jobs.mutation.sharingHelp')}
+              helpMode="popover"
             >
               {shareableUserList.length === 0 ? (
                 <div>{t('jobs.mutation.sharingNoUsers')}</div>
@@ -375,27 +548,48 @@ export default function JobMutator() {
               Icon={IconPlayCircle}
               name={t('jobs.mutation.sectionActivation')}
               helpText={t('jobs.mutation.activationHelp')}
+              helpMode="popover"
             >
               <Switch className="jobMutation__spaceTop" onChange={(checked) => setEnabled(checked)} checked={enabled} />
             </SegmentPart>
-          </Col>
-          <Col xs={24} lg={12}>
-            <SegmentPart
-              Icon={IconFilter}
-              name={t('jobs.mutation.sectionAreaFilter')}
-              helpText={t('jobs.mutation.areaFilterHelp')}
+          </Collapse.Panel>
+        </Collapse>
+
+        {/* Sticky, because on a phone the form is still taller than the screen and Save used to be
+            several screens below the fold. */}
+        <div className="jobMutation__footer">
+          <div className="jobMutation__footerActions">
+            {/* Cancel used to be `danger`, so the red button was the harmless one and Save sat next
+                to it in the colour that usually means "go ahead". */}
+            <Button type="tertiary" onClick={leaveForm}>
+              {t('jobs.mutation.cancel')}
+            </Button>
+            {/* What is still missing is on the button itself rather than printed above it: a
+                disabled Save with no reason sends people hunting through the sections, but a
+                standing list of complaints makes an unfinished form look like a broken one. */}
+            <Tooltip
+              content={
+                missing.length === 0 ? null : (
+                  <ul className="jobMutation__missingTooltip">
+                    {missing.map((requirement) => (
+                      <li key={requirement.key}>{t(requirement.labelKey)}</li>
+                    ))}
+                  </ul>
+                )
+              }
+              position="top"
+              trigger={missing.length === 0 ? 'custom' : 'hover'}
             >
-              <AreaFilter spatialFilter={spatialFilter} onChange={handleSpatialFilterChange} />
-            </SegmentPart>
-          </Col>
-        </Row>
-        <Divider margin="1rem" />
-        <Button type="danger" style={{ marginRight: '1rem' }} onClick={() => navigate('/jobs')}>
-          {t('jobs.mutation.cancel')}
-        </Button>
-        <Button type="primary" icon={<IconPlusCircle />} disabled={!isSavingEnabled()} onClick={mutateJob}>
-          {t('jobs.mutation.save')}
-        </Button>
+              {/* Semi does not fire hover events on a disabled button, so the tooltip needs a
+                  wrapper that is not disabled to hang from. */}
+              <span>
+                <Button type="primary" icon={<IconPlusCircle />} disabled={missing.length > 0} onClick={mutateJob}>
+                  {t('jobs.mutation.save')}
+                </Button>
+              </span>
+            </Tooltip>
+          </div>
+        </div>
       </form>
     </Fragment>
   );

@@ -107,3 +107,50 @@
     line-height: 1.6;
   }
 }
+
+/* Interval, last run and next run, as one line instead of three cards. */
+.dashboard__status {
+  display: flex;
+  align-items: center;
+  gap: @space-2;
+  flex-wrap: wrap;
+  margin-bottom: @space-4;
+  color: @color-muted;
+  font-size: @text-sm;
+
+  &-icon {
+    color: @color-faint;
+  }
+}
+
+/* Jobs that are not doing what their owner thinks they are. Only rendered when there are any. */
+.dashboard__attention {
+  &-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &-item {
+    display: flex;
+    align-items: center;
+    gap: @space-2;
+    padding: @space-2 0;
+    border-bottom: 1px solid @color-border;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &-icon {
+    flex: none;
+    color: @color-warning;
+  }
+
+  &-text {
+    flex: 1 1 auto;
+    color: @color-text;
+    font-size: @text-sm;
+  }
+}

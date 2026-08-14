@@ -43,7 +43,7 @@
       align-items: flex-start;
       justify-content: space-between;
       gap: 8px;
-      margin-bottom: 16px;
+      margin-bottom: 10px;
     }
 
     &__name {
@@ -67,24 +67,32 @@
 
     &__stats {
       display: flex;
-      gap: 8px;
+      gap: 6px;
+      // Without this the row is as wide as its contents demand and simply overflows the card.
+      min-width: 0;
     }
 
     &__stat {
-      flex: 1;
+      // `flex: 1` leaves `min-width: auto`, which means a flex item will not shrink below its own
+      // content. Three blocks each holding an icon and an unbreakable word therefore had a combined
+      // minimum wider than a narrow card, and the third one was clipped by the card's edge.
+      flex: 1 1 0;
+      min-width: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid transparent;
       border-radius: @radius-chip;
-      padding: 10px 4px 8px;
+      padding: 7px 4px 6px;
 
+      /* Was 22px. Three of them per card, on a grid of cards, is a lot of display type for what
+         are mostly single digits - it read as a scoreboard rather than as a list of searches. */
       &__number {
-        font-size: 22px;
+        font-size: 17px;
         font-weight: 600;
         color: @color-text;
-        line-height: 1.2;
+        line-height: 1.25;
       }
 
       &__label {
@@ -93,7 +101,24 @@
         display: flex;
         align-items: center;
         gap: 3px;
-        margin-top: 4px;
+        margin-top: 2px;
+        min-width: 0;
+        max-width: 100%;
+
+        // The icon keeps its size; the word is what gives, if anything has to.
+        svg {
+          flex: none;
+        }
+      }
+
+      // Its own element because `text-overflow` does not apply to a bare text node inside a flex
+      // container - it would be clipped mid-word instead of ellipsised. A backstop for the
+      // narrowest cards and the longest translations, not the normal state.
+      &__labelText {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
 
       &--blue {

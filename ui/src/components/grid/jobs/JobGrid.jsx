@@ -41,6 +41,15 @@ import {
 } from '@douyinfe/semi-icons';
 import { useNavigate } from 'react-router-dom';
 import ListingDeletionModal from '../../ListingDeletionModal.jsx';
+import FilterButton from '../../filters/FilterButton.jsx';
+import ActiveFilterChips from '../../filters/ActiveFilterChips.jsx';
+import FilterDrawer, { FilterGroup, FilterHelp } from '../../filters/FilterDrawer.jsx';
+import {
+  countActiveFilters,
+  describeActiveFilters,
+  clearFilter,
+  clearAllFilters,
+} from '../../../services/jobs/jobFilters.js';
 import { useActions, useSelector } from '../../../services/state/store.js';
 import { xhrDelete, xhrPut, xhrPost, errorMessage } from '../../../services/xhr.js';
 import { debounce } from '../../../utils';
@@ -74,6 +83,26 @@ const JobGrid = () => {
   const [activityFilter, setActivityFilter] = useState(null);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [pendingDeletion, setPendingDeletion] = useState(null); // { type: 'job'|'listings', jobId }
+  const [filtersOpen, setFiltersOpen] = useState(false);
+
+  // The same filter model the listings page uses, so the two pages behave identically rather than
+  // one hiding its filters behind a button while the other spreads them across the top.
+  const filterValues = { active: activityFilter };
+  const activeFilterCount = countActiveFilters(filterValues);
+
+  /**
+   * Apply a patch from the shared filter helpers to this page's local state.
+   * @param {Object} patch
+   * @returns {void}
+   */
+  const applyFilterPatch = (patch) => {
+    if ('active' in patch) {
+      setActivityFilter(patch.active);
+    }
+    if (patch.page != null) {
+      setPage(patch.page);
+    }
+  };
 
   const pendingJobIdRef = useRef(null);
   const evtSourceRef = useRef(null);
@@ -253,20 +282,6 @@ const JobGrid = () => {
           onChange={handleFilterChange}
         />
 
-        <RadioGroup
-          type="button"
-          buttonSize="middle"
-          value={activityFilter === null ? 'all' : String(activityFilter)}
-          onChange={(e) => {
-            const v = e.target.value;
-            setActivityFilter(v === 'all' ? null : v === 'true');
-          }}
-        >
-          <Radio value="all">{t('jobs.filterAll')}</Radio>
-          <Radio value="true">{t('jobs.filterActive')}</Radio>
-          <Radio value="false">{t('jobs.filterInactive')}</Radio>
-        </RadioGroup>
-
         <Select
           prefix={t('jobs.sortPrefix')}
           style={{ width: 200 }}
@@ -283,6 +298,8 @@ const JobGrid = () => {
           onClick={() => setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))}
           title={sortDir === 'asc' ? t('jobs.sortAscending') : t('jobs.sortDescending')}
         />
+
+        <FilterButton activeCount={activeFilterCount} onClick={() => setFiltersOpen(true)} />
 
         <div className="jobGrid__topbar__view-toggle">
           <Tooltip content={t('jobs.tooltipGridView')}>
@@ -306,6 +323,36 @@ const JobGrid = () => {
         </div>
       </div>
 
+      <ActiveFilterChips
+        chips={describeActiveFilters(filterValues, { t })}
+        onRemove={(key) => applyFilterPatch(clearFilter(key))}
+        onClearAll={() => applyFilterPatch(clearAllFilters())}
+      />
+
+      <FilterDrawer
+        visible={filtersOpen}
+        onClose={() => setFiltersOpen(false)}
+        activeCount={activeFilterCount}
+        onClearAll={() => applyFilterPatch(clearAllFilters())}
+      >
+        <FilterGroup title={t('listings.filterGroupShow')}>
+          <FilterHelp>{t('jobs.filterActivityHelp')}</FilterHelp>
+          <RadioGroup
+            type="button"
+            buttonSize="middle"
+            value={activityFilter === null ? 'all' : String(activityFilter)}
+            onChange={(e) => {
+              const value = e.target.value;
+              applyFilterPatch({ active: value === 'all' ? null : value === 'true', page: 1 });
+            }}
+          >
+            <Radio value="all">{t('jobs.filterAll')}</Radio>
+            <Radio value="true">{t('jobs.filterActive')}</Radio>
+            <Radio value="false">{t('jobs.filterInactive')}</Radio>
+          </RadioGroup>
+        </FilterGroup>
+      </FilterDrawer>
+
       {(jobsData?.result || []).length === 0 && (
         <Empty
           image={<IllustrationNoResult />}
@@ -317,12 +364,12 @@ const JobGrid = () => {
       {viewMode === 'grid' ? (
         <Row gutter={[16, 16]}>
           {(jobsData?.result || []).map((job) => (
-            <Col key={job.id} xs={24} sm={12} md={12} lg={8} xl={8} xxl={6}>
-              <Card className="jobGrid__card" bodyStyle={{ padding: '16px' }}>
+            <Col key={job.id} xs={24} sm={12} md={12} lg={8} xl={6} xxl={6}>
+              <Card className="jobGrid__card" bodyStyle={{ padding: '12px' }}>
                 <div className="jobGrid__card__header">
                   <div className="jobGrid__card__name">
                     <span className={`jobGrid__card__dot${job.enabled ? ' jobGrid__card__dot--active' : ''}`} />
-                    <Title heading={5} ellipsis={{ showTooltip: true }} className="jobGrid__title">
+                    <Title heading={6} ellipsis={{ showTooltip: true }} className="jobGrid__title">
                       {job.name}
                     </Title>
                   </div>
@@ -346,24 +393,33 @@ const JobGrid = () => {
                   <div className="jobGrid__card__stat jobGrid__card__stat--blue">
                     <span className="jobGrid__card__stat__number">{job.numberOfFoundListings || 0}</span>
                     <span className="jobGrid__card__stat__label">
-                      <IconHome size="small" /> {t('jobs.cardListings')}
+                      <IconHome size="small" />{' '}
+                      <span className="jobGrid__card__stat__labelText" title={t('jobs.cardListings')}>
+                        {t('jobs.cardListings')}
+                      </span>
                     </span>
                   </div>
                   <div className="jobGrid__card__stat jobGrid__card__stat--orange">
                     <span className="jobGrid__card__stat__number">{job.provider?.length || 0}</span>
                     <span className="jobGrid__card__stat__label">
-                      <IconBriefcase size="small" /> {t('jobs.cardProviders')}
+                      <IconBriefcase size="small" />{' '}
+                      <span className="jobGrid__card__stat__labelText" title={t('jobs.cardProviders')}>
+                        {t('jobs.cardProviders')}
+                      </span>
                     </span>
                   </div>
                   <div className="jobGrid__card__stat jobGrid__card__stat--purple">
                     <span className="jobGrid__card__stat__number">{job.notificationAdapter?.length || 0}</span>
                     <span className="jobGrid__card__stat__label">
-                      <IconBell size="small" /> {t('jobs.cardChannels')}
+                      <IconBell size="small" />{' '}
+                      <span className="jobGrid__card__stat__labelText" title={t('jobs.cardChannels')}>
+                        {t('jobs.cardChannels')}
+                      </span>
                     </span>
                   </div>
                 </div>
 
-                <Divider margin="12px" />
+                <Divider margin="8px" />
 
                 <div className="jobGrid__card__footer">
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -382,7 +438,7 @@ const JobGrid = () => {
                       <div>
                         <Button
                           type="primary"
-                          style={{ background: '#21aa21b5' }}
+                          style={{ background: '#3f8f68b5' }}
                           size="small"
                           theme="solid"
                           icon={<IconPlayCircle />}

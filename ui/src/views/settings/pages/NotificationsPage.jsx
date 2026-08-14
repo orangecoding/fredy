@@ -5,12 +5,14 @@
 
 import { useEffect, useState } from 'react';
 import { Banner, Button, Modal, Select, Toast } from '@douyinfe/semi-ui-19';
-import { IconPlusCircle } from '@douyinfe/semi-icons';
+import { IconPlusCircle, IconArrowLeft } from '@douyinfe/semi-icons';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import NotificationChannelTable from '../../../components/table/NotificationChannelTable';
 import NotificationChannelEditor from '../../jobs/mutation/components/notificationAdapter/NotificationChannelEditor';
 import { useActions, useSelector } from '../../../services/state/store';
 import { errorMessage } from '../../../services/xhr';
+import { sanitizeReturnTo } from '../../../services/routes/returnTo.js';
 import { useTranslation } from '../../../services/i18n/i18n.jsx';
 
 import './NotificationsPage.less';
@@ -33,6 +35,13 @@ export default function NotificationsPage() {
 
   const [editor, setEditor] = useState(null);
   const [pickingType, setPickingType] = useState(false);
+
+  // Someone sent here from a job they were half-way through filling in. The value is checked
+  // rather than trusted: it arrives in the URL, so a crafted link could otherwise point this
+  // button off the site entirely.
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const returnTo = sanitizeReturnTo(searchParams.get('returnTo'));
 
   useEffect(() => {
     actions.notificationChannels.getChannels();
@@ -81,6 +90,17 @@ export default function NotificationsPage() {
 
   return (
     <div>
+      {returnTo != null && (
+        <Button
+          icon={<IconArrowLeft />}
+          theme="borderless"
+          style={{ marginBottom: '1rem' }}
+          onClick={() => navigate(returnTo)}
+        >
+          {t('notification.channels.backToJob')}
+        </Button>
+      )}
+
       {currentUser?.isAdmin && (
         <Banner
           fullMode={false}

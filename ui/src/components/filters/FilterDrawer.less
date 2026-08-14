@@ -1,0 +1,43 @@
+@import '../../tokens.less';
+
+.filterDrawer {
+  &__group {
+    display: flex;
+    flex-direction: column;
+    gap: @space-2;
+    padding-bottom: @space-4;
+    margin-bottom: @space-4;
+    border-bottom: 1px solid @color-border-bright;
+
+    &:last-of-type {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+  }
+
+  &__groupTitle {
+    margin: 0;
+    color: @color-muted;
+    font-size: @text-sm;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  // The help text that used to live in a hover tooltip over a cramped row. There is room for it
+  // here, and a filter nobody can read the meaning of is a filter nobody uses.
+  &__help {
+    margin: @space-2 0 0;
+    color: @color-muted;
+    font-size: @text-sm;
+    line-height: 1.5;
+  }
+
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: @space-2;
+    width: 100%;
+  }
+}

@@ -68,8 +68,9 @@ export default function Donate({ collapsed }) {
         title={t('donate.button')}
         aria-label={t('donate.button')}
       >
-        <IconHeartStroked size="default" />
-        {!collapsed && <span>{t('donate.button')}</span>}
+        {/* The one red thing in the sidebar footer, which is the whole of how it asks. */}
+        <IconHeartStroked size="default" className="donate__btn-heart" />
+        {!collapsed && <span className="donate__btn-label">{t('donate.button')}</span>}
       </button>
 
       <Modal visible={visible} onCancel={() => setVisible(false)} footer={null} centered width={460}>

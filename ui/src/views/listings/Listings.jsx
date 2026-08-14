@@ -8,15 +8,20 @@ import Headline from '../../components/headline/Headline.jsx';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
 
 /**
- * @param {{ mode?: 'all' | 'watchlist' }} props
+ * Every listing Fredy has found.
+ *
+ * The watchlist used to be a second copy of this page behind its own route, differing only in one
+ * filter being forced on. It is the star in the toolbar now, so there is one listings page with one
+ * set of filters rather than two pages that had to be kept in step.
+ *
+ * @returns {React.ReactElement}
  */
-export default function Listings({ mode = 'all' }) {
+export default function Listings() {
   const t = useTranslation();
-  const title = mode === 'watchlist' ? t('listings.watchlistTitle') : t('listings.title');
   return (
     <>
-      <Headline text={title} />
-      <ListingsOverview mode={mode} />
+      <Headline text={t('listings.title')} />
+      <ListingsOverview />
     </>
   );
 }

@@ -26,21 +26,6 @@
     color: @color-muted;
   }
 
-  /* The criteria and area filters sit side by side. Without this the shorter of the two cards
-     stops halfway down and the row reads as two unrelated blocks instead of one filter step. */
-  /* The left column stacks the short controls (criteria, sharing, activation) beside the tall
-     map, which is what keeps them from running off the bottom of the page as full-width cards.
-     Column direction is explicit: the default row direction would sit them side by side. The
-     column is free to be shorter than the map, so only its trailing margin is trimmed. */
-  &__filterRow > .semi-col {
-    display: flex;
-    flex-direction: column;
-
-    > .segmentParts:last-child {
-      margin-bottom: 0;
-    }
-  }
-
   &__actions {
     display: flex;
     gap: @space-3;
@@ -58,4 +43,110 @@
   gap: 0.5rem;
   align-items: center;
   margin-bottom: 1rem;
+}
+
+.jobMutation__draftBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: @space-3;
+  width: 100%;
+}
+
+/* Why Save is disabled, shown on hovering it rather than as a block above it. The list was
+   accurate but it sat on the page permanently, so a form that was merely unfinished looked like a
+   form that had gone wrong. */
+.jobMutation__missingTooltip {
+  margin: 0;
+  padding-left: 1rem;
+  font-size: @text-sm;
+  line-height: 1.6;
+}
+
+/* Marks a value the form guessed rather than one the user chose. */
+.jobMutation__inferredHint {
+  margin: @space-2 0 0;
+  color: @color-muted;
+  font-size: @text-sm;
+}
+
+/* One column, full width. The cards carry their own internal measure; capping the form itself
+   left a band of empty page down the right of every section. */
+.jobMutation__form {
+  width: 100%;
+}
+
+/* The fold that holds everything optional. */
+.jobMutation__refine {
+  margin-bottom: @space-4;
+
+  .semi-collapse-header {
+    padding: @space-3 @space-4;
+    border: 1px solid @color-border;
+    border-radius: @radius-card;
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  /* Semi indents panel content by default, which stepped the refinement cards in from the ones
+     above them and made the column look ragged. */
+  .semi-collapse-content {
+    padding: @space-4 0 0;
+  }
+
+  .semi-collapse-content > div {
+    padding: 0;
+  }
+}
+
+.jobMutation__refineHeader {
+  display: flex;
+  align-items: baseline;
+  gap: @space-2;
+  flex-wrap: wrap;
+}
+
+.jobMutation__refineTitle {
+  color: @color-text;
+  font-weight: 700;
+}
+
+/* What is inside, so the section answers "anything in here?" while still closed. */
+.jobMutation__refineSummary {
+  color: @color-muted;
+  font-size: @text-sm;
+}
+
+/* Numbered, because drawing a polygon is a sequence of clicks and the order is the whole of it. */
+.jobMutation__areaSteps {
+  margin: 0 0 @space-3;
+  padding-left: 1.25rem;
+  color: @color-muted;
+  font-size: @text-sm;
+  line-height: 1.6;
+}
+
+/* Enough to place a neighbourhood on. The old fixed 50rem was most of a laptop screen, spent on a
+   control most jobs never use. */
+.jobMutation__areaMap {
+  height: 26rem;
+  margin-bottom: @space-2;
+  transition: height @transition-fast;
+
+  &--expanded {
+    height: 50rem;
+  }
+}
+
+/* Sits at the end of the form. It was sticky, to keep Save reachable on a long page - but with
+   the optional sections folded away the form is short enough not to need it, and a bar floating
+   over the area filter's map while scrolling was worse than the scroll it saved. */
+.jobMutation__footer {
+  padding: @space-4 0 0;
+  border-top: 1px solid @color-border;
+}
+
+.jobMutation__footerActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: @space-3;
 }

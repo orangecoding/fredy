@@ -6,9 +6,13 @@
 @color-border-bright: #383838;
 
 // Accent
-@color-accent: #e04a38;
-@color-accent-dim: #c13827;
-@color-accent-glow: rgba(224, 74, 56, 0.13);
+// A brick red rather than the vermillion this used to be (#e04a38, hsl 6/73/55). Same hue, so the
+// product still reads as Fredy, but roughly twenty points less saturation - the old one drew the
+// eye harder than any single control on a page deserves, and put every primary button in the same
+// register as a delete confirmation.
+@color-accent: #c0564a;
+@color-accent-dim: #a1443a;
+@color-accent-glow: rgba(192, 86, 74, 0.1);
 
 // Text
 @color-text: #efefef;
@@ -16,34 +20,39 @@
 @color-faint: #505050;
 
 // Semantic
-@color-success: #34d399;
-@color-success-dim: #065f46;
-@color-success-active: #21aa21;
-@color-error: #fb7185;
-@color-error-dim: #881337;
-@color-warning: #fbbf24;
-@color-info: #60a5fa;
+// Toned down alongside the accent. These sat at full tailwind-400 saturation, which on a near-black
+// surface glows rather than informs.
+@color-success: #4bab86;
+@color-success-dim: #08533e;
+@color-success-active: #3f8f68;
+@color-error: #d4707c;
+@color-error-dim: #7a1730;
+@color-warning: #d8a34a;
+@color-info: #6b93c4;
 
 // Fill overlays
 @color-fill-subtle: rgba(255, 255, 255, 0.04);
 @color-fill-overlay: rgba(255, 255, 255, 0.08);
 
 // KPI card accents
-@color-blue-text: #60a5fa;
-@color-blue-border: #3b6ea8;
-@color-blue-bg: rgba(96, 165, 250, 0.1);
-@color-orange-text: #fb923c;
-@color-orange-border: #c2622a;
-@color-orange-bg: rgba(251, 146, 60, 0.1);
-@color-green-text: #34d399;
-@color-green-border: #2a8a61;
-@color-green-bg: rgba(52, 211, 153, 0.1);
-@color-purple-text: #a78bfa;
-@color-purple-border: #6d4fc2;
-@color-purple-bg: rgba(167, 139, 250, 0.1);
+// Muted by roughly a third, and their borders taken well down. At full strength four saturated
+// blocks side by side competed with each other and with the accent, so a card carrying a routine
+// count read as urgent. The hues still separate the categories, which is all they are for.
+@color-blue-text: #7ba7d4;
+@color-blue-border: #33526f;
+@color-blue-bg: rgba(123, 167, 212, 0.07);
+@color-orange-text: #d69460;
+@color-orange-border: #7d5333;
+@color-orange-bg: rgba(214, 148, 96, 0.07);
+@color-green-text: #6cb597;
+@color-green-border: #2f6350;
+@color-green-bg: rgba(108, 181, 151, 0.07);
+@color-purple-text: #9d8fc9;
+@color-purple-border: #4f4374;
+@color-purple-bg: rgba(157, 143, 201, 0.07);
 @color-gray-text: #94a3b8;
 @color-gray-border: #323a47;
-@color-gray-bg: rgba(148, 163, 184, 0.1);
+@color-gray-bg: rgba(148, 163, 184, 0.07);
 
 // Typography
 @font-ui: 'Outfit', system-ui, sans-serif;
@@ -67,11 +76,13 @@
 @space-12: 48px;
 
 // Radius
-@radius-input: 10px;
-@radius-card: 10px;
-@radius-btn: 6px;
+// Tightened from 10px. Generously rounded corners are most of what made this read as playful; at
+// 6px the same layout reads as a tool without becoming a spreadsheet.
+@radius-input: 6px;
+@radius-card: 8px;
+@radius-btn: 4px;
 @radius-pill: 9999px;
-@radius-chip: 4px;
+@radius-chip: 3px;
 
 // Transitions
 @transition-fast: 0.15s ease-in-out;

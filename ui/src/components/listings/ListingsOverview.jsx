@@ -5,26 +5,32 @@
 
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useUrlState, parseNumber, parseString, parseNullableBoolean } from '../../hooks/useSearchParamState.js';
+import { Button, Pagination, Toast, Input, Select, Empty, Tooltip, Banner } from '@douyinfe/semi-ui-19';
 import {
-  Button,
-  Pagination,
-  Toast,
-  Input,
-  Select,
-  Empty,
-  Radio,
-  RadioGroup,
-  Tooltip,
-  Banner,
-} from '@douyinfe/semi-ui-19';
-import { IconSearch, IconArrowUp, IconArrowDown, IconGridView, IconList } from '@douyinfe/semi-icons';
+  IconSearch,
+  IconArrowUp,
+  IconArrowDown,
+  IconGridView,
+  IconList,
+  IconStar,
+  IconStarStroked,
+} from '@douyinfe/semi-icons';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import ListingDeletionModal from '../ListingDeletionModal.jsx';
 import { xhrDelete, xhrPost, errorMessage } from '../../services/xhr.js';
 import { useActions, useSelector } from '../../services/state/store.js';
 import { debounce, getAddresses } from '../../utils';
-import { COMMUTE_OPTIONS, parseCommuteFilter } from '../transit/travelTimeFormat.js';
+import { parseCommuteFilter } from '../transit/travelTimeFormat.js';
 import FilterSelect from './FilterSelect.jsx';
+import ListingsFilterPanel from './ListingsFilterPanel.jsx';
+import ActiveFilterChips from '../filters/ActiveFilterChips.jsx';
+import FilterButton from '../filters/FilterButton.jsx';
+import {
+  countActiveFilters,
+  describeActiveFilters,
+  clearFilter,
+  clearAllFilters,
+} from '../../services/listings/listingFilters.js';
 import ListingsGrid from '../grid/listings/ListingsGrid.jsx';
 import ListingsTable from '../table/ListingsTable.jsx';
 import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-illustrations';
@@ -75,10 +81,9 @@ function toTravelTimeQuery(value) {
   return parsed == null ? null : { travelTimeMode: parsed.mode, travelTimeMaxMinutes: parsed.maxMinutes };
 }
 
-const ListingsOverview = ({ mode = 'all' }) => {
+const ListingsOverview = () => {
   const t = useTranslation();
   const locale = useLocale();
-  const isWatchlistMode = mode === 'watchlist';
   const listingsData = useSelector((state) => state.listingsData);
   const providers = useSelector((state) => state.provider);
   const pois = useSelector((state) => state.tracking.pois);
@@ -120,6 +125,7 @@ const ListingsOverview = ({ mode = 'all' }) => {
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [listingToDelete, setListingToDelete] = useState(null);
   const [newAvailableCount, setNewAvailableCount] = useState(0);
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   const isHiddenView = hiddenOnly === true;
 
@@ -127,8 +133,7 @@ const ListingsOverview = ({ mode = 'all' }) => {
   // control is not offered at all until there is something to measure from.
   const hasAddresses = getAddresses(userSettings).length > 0;
 
-  // In watchlist mode the watch filter is forced to "watched only" - regardless of the URL.
-  const effectiveWatchListFilter = isWatchlistMode ? true : watchListFilter;
+  const activeFilterCount = countActiveFilters(values);
 
   // The filter says nothing about *why* a listing lands in a band, so its tooltip names the
   // ceilings it is measured against - both of them when the user set up both halves, because a
@@ -157,7 +162,7 @@ const ListingsOverview = ({ mode = 'all' }) => {
       sortdir: sortDir,
       freeTextFilter,
       filter: {
-        watchListFilter: effectiveWatchListFilter,
+        watchListFilter,
         jobNameFilter,
         activityFilter: isHiddenView ? null : activityFilter,
         providerFilter,
@@ -189,7 +194,6 @@ const ListingsOverview = ({ mode = 'all' }) => {
     affordabilityFilter,
     commuteFilter,
     hiddenOnly,
-    isWatchlistMode,
   ]);
 
   const loadDataRef = useRef(loadData);
@@ -321,10 +325,8 @@ const ListingsOverview = ({ mode = 'all' }) => {
 
   // Opening a listing and coming back must land where the user left off - the overview is the
   // one view people page through item by item, and starting at the top every time means finding
-  // your place by hand on every return. Keyed by mode so the watchlist keeps its own position.
-  useScrollRestoration(`listings:${mode}`, listings.length > 0);
-
-  const activityRadioValue = isHiddenView ? 'hidden' : activityFilter === null ? 'all' : String(activityFilter);
+  // your place by hand on every return.
+  useScrollRestoration('listings', listings.length > 0);
 
   return (
     <div className="listingsOverview">
@@ -341,145 +343,23 @@ const ListingsOverview = ({ mode = 'all' }) => {
           </span>
         </Tooltip>
 
-        <Tooltip content={t('listings.filterActivityHelp')} trigger="hover" position="top">
+        {/* The watchlist used to be a page of its own in the sidebar. It is a filter, and it was
+            always a filter - but it is the one people reach for daily, so it keeps a control out
+            here rather than being buried in the drawer with the rest. */}
+        <Tooltip
+          content={watchListFilter === true ? t('listings.watchlistToggleOff') : t('listings.watchlistToggleOn')}
+          position="top"
+        >
           <span className="listingsOverview__topbar__tooltipWrap">
-            <RadioGroup
-              type="button"
-              buttonSize="middle"
-              value={activityRadioValue}
-              onChange={(e) => {
-                const v = e.target.value;
-                setValues(
-                  v === 'hidden'
-                    ? { hidden: true, active: null, page: 1 }
-                    : { hidden: false, active: v === 'all' ? null : v === 'true', page: 1 },
-                );
-              }}
-            >
-              <Radio value="all">{t('listings.filterAll')}</Radio>
-              <Radio value="true">{t('listings.filterActive')}</Radio>
-              <Radio value="false">{t('listings.filterInactive')}</Radio>
-              <Radio value="hidden">{t('listings.filterHidden')}</Radio>
-            </RadioGroup>
+            <Button
+              icon={watchListFilter === true ? <IconStar /> : <IconStarStroked />}
+              theme={watchListFilter === true ? 'solid' : 'borderless'}
+              onClick={() => setValues({ watch: watchListFilter === true ? null : true, page: 1 })}
+              aria-pressed={watchListFilter === true}
+              aria-label={t('nav.watchlist')}
+            />
           </span>
         </Tooltip>
-
-        {!isWatchlistMode && (
-          <Tooltip content={t('listings.filterWatchHelp')} trigger="hover" position="top">
-            <span className="listingsOverview__topbar__tooltipWrap">
-              <RadioGroup
-                type="button"
-                buttonSize="middle"
-                value={watchListFilter === null ? 'all' : String(watchListFilter)}
-                onChange={(e) => {
-                  const v = e.target.value;
-                  setValues({ watch: v === 'all' ? null : v === 'true', page: 1 });
-                }}
-              >
-                <Radio value="all">{t('listings.filterAll')}</Radio>
-                <Radio value="true">{t('listings.filterWatched')}</Radio>
-                <Radio value="false">{t('listings.filterUnwatched')}</Radio>
-              </RadioGroup>
-            </span>
-          </Tooltip>
-        )}
-
-        <FilterSelect
-          help={t('listings.filterStatusHelp')}
-          placeholder={t('listings.filterStatusPlaceholder')}
-          showClear
-          onChange={(val) => {
-            setValues({ status: val ?? null, page: 1 });
-          }}
-          value={statusFilter}
-          style={{ width: 150 }}
-        >
-          <Select.Option value="applied">{t('listings.filterStatusApplied')}</Select.Option>
-          <Select.Option value="rejected">{t('listings.filterStatusRejected')}</Select.Option>
-          <Select.Option value="accepted">{t('listings.filterStatusAccepted')}</Select.Option>
-          <Select.Option value="none">{t('listings.filterStatusNone')}</Select.Option>
-        </FilterSelect>
-
-        {/* Only offered once the user has actually entered their financial data - there is
-            nothing to measure a listing against otherwise. */}
-        {financeComplete && (
-          <FilterSelect
-            help={affordabilityHelp}
-            placeholder={t('listings.filterAffordabilityPlaceholder')}
-            showClear
-            onChange={(val) => {
-              setValues({ afford: val ?? null, page: 1 });
-              // Counted when it is switched on, not when it is cleared, and not on every page
-              // load that happens to carry the filter in its URL.
-              if (val != null) {
-                actions.tracking.trackPoi(pois.FINANCE_AFFORDABILITY_FILTER_USED);
-              }
-            }}
-            value={affordabilityFilter}
-            style={{ width: 150 }}
-          >
-            <Select.Option value="affordable">{t('listings.filterAffordabilityYes')}</Select.Option>
-            <Select.Option value="stretch">{t('listings.filterAffordabilityStretch')}</Select.Option>
-            <Select.Option value="unaffordable">{t('listings.filterAffordabilityNo')}</Select.Option>
-          </FilterSelect>
-        )}
-
-        {/* Only offered once there is an address to measure a commute against, the same way the
-            affordability filter waits for a finance profile. */}
-        {hasAddresses && (
-          <FilterSelect
-            help={t('listings.filterCommuteHelp')}
-            placeholder={t('listings.filterCommutePlaceholder')}
-            showClear
-            onChange={(val) => {
-              setValues({ commute: val ?? null, page: 1 });
-            }}
-            value={commuteFilter}
-            style={{ width: 170 }}
-          >
-            {COMMUTE_OPTIONS.map(({ mode, minutes }) =>
-              minutes.map((max) => (
-                <Select.Option key={`${mode}:${max}`} value={`${mode}:${max}`}>
-                  {t('listings.filterCommuteOption', { mode: t(`travelTime.mode.${mode}`), minutes: max })}
-                </Select.Option>
-              )),
-            )}
-          </FilterSelect>
-        )}
-
-        <FilterSelect
-          help={t('listings.filterProviderHelp')}
-          placeholder={t('listings.filterProviderPlaceholder')}
-          showClear
-          onChange={(val) => {
-            setValues({ provider: val ?? null, page: 1 });
-          }}
-          value={providerFilter}
-          style={{ width: 130 }}
-        >
-          {providers?.map((p) => (
-            <Select.Option key={p.id} value={p.id}>
-              {p.name}
-            </Select.Option>
-          ))}
-        </FilterSelect>
-
-        <FilterSelect
-          help={t('listings.filterJobHelp')}
-          placeholder={t('listings.filterJobPlaceholder')}
-          showClear
-          onChange={(val) => {
-            setValues({ job: val ?? null, page: 1 });
-          }}
-          value={jobNameFilter}
-          style={{ width: 130 }}
-        >
-          {jobs?.map((j) => (
-            <Select.Option key={j.id} value={j.id}>
-              {j.name}
-            </Select.Option>
-          ))}
-        </FilterSelect>
 
         <FilterSelect
           help={t('listings.filterSortHelp')}
@@ -509,6 +389,8 @@ const ListingsOverview = ({ mode = 'all' }) => {
           </span>
         </Tooltip>
 
+        <FilterButton activeCount={activeFilterCount} onClick={() => setFiltersOpen(true)} />
+
         <div className="listingsOverview__topbar__view-toggle">
           <Tooltip content={t('listings.tooltipGridView')}>
             <Button
@@ -530,6 +412,25 @@ const ListingsOverview = ({ mode = 'all' }) => {
           </Tooltip>
         </div>
       </div>
+
+      <ActiveFilterChips
+        chips={describeActiveFilters(values, { t, jobs, providers })}
+        onRemove={(key) => setValues(clearFilter(key))}
+        onClearAll={() => setValues(clearAllFilters())}
+      />
+
+      <ListingsFilterPanel
+        visible={filtersOpen}
+        onClose={() => setFiltersOpen(false)}
+        values={values}
+        onChange={setValues}
+        jobs={jobs}
+        providers={providers}
+        financeComplete={financeComplete}
+        affordabilityHelp={affordabilityHelp}
+        hasAddresses={hasAddresses}
+        onAffordabilityUsed={() => actions.tracking.trackPoi(pois.FINANCE_AFFORDABILITY_FILTER_USED)}
+      />
 
       {newAvailableCount > 0 && (
         <Banner

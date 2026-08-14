@@ -25,7 +25,7 @@ import {
  */
 
 /** @type {string} tokens.less @color-accent */
-const ACCENT = '#e04a38';
+const ACCENT = '#c0564a';
 /** @type {string} tokens.less @color-border */
 const GRID = '#2a2a2a';
 /** @type {string} tokens.less @color-border-bright */
@@ -44,13 +44,13 @@ const FONT_MONO = "'JetBrains Mono', monospace";
  * Series colours, accent first so the primary scenario is always Fredy red and every other
  * scenario reads as a comparison against it.
  */
-export const CHART_PALETTE = [ACCENT, '#60a5fa', '#34d399', '#fbbf24', '#a78bfa', '#fb923c'];
+export const CHART_PALETTE = [ACCENT, '#7ba7d4', '#4bab86', '#d8a34a', '#9d8fc9', '#d69460'];
 
 /** Verdict colours, shared by the charts, the listing chips and the detail card. */
 export const VERDICT_COLORS = {
-  affordable: '#34d399',
-  stretch: '#fbbf24',
-  unaffordable: '#fb7185',
+  affordable: '#4bab86',
+  stretch: '#d8a34a',
+  unaffordable: '#d4707c',
 };
 
 export const CHART_COLORS = { ACCENT, GRID, GRID_BRIGHT, MUTED, TEXT, ELEVATED, FONT_UI, FONT_MONO };

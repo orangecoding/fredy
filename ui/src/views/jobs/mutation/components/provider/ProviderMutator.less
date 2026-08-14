@@ -1,5 +1,47 @@
+@import '../../../../../tokens.less';
+
 .providerMutator {
+  /* Both controls fill the dialog. They were pinned at 25rem inside a 50rem modal, which read as
+     two small boxes floating in the left half of it. */
   &__fields {
-    width: 25rem !important;
+    width: 100% !important;
   }
+
+  /* Numbered, because this is a procedure carried out across two browser tabs and the order is the
+     whole of it. Set small: it is a one-time instruction sitting above the controls it explains,
+     and at body size it dominated the dialog it belongs to. */
+  &__steps {
+    margin: 0 0 @space-4;
+    padding-left: 1.1rem;
+    color: @color-muted;
+    font-size: @text-sm;
+    line-height: 1.6;
+
+    li {
+      margin-bottom: 2px;
+    }
+  }
+
+  &__openLink {
+    display: inline-flex;
+    align-items: center;
+    gap: @space-1;
+    margin: @space-2 0 0;
+    color: @color-accent;
+    font-size: @text-sm;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__url {
+    margin-top: @space-3;
+  }
+}
+
+/* Semi sizes this off the widest option rather than the field, so it hung out past the dialog. */
+.providerMutator .semi-select-option-list-wrapper {
+  width: 100%;
 }

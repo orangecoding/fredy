@@ -28,6 +28,34 @@
     margin-top: 2px;
   }
 
+  // helpMode="popover": the explanation sits behind a mark beside the title instead of under it.
+  &__title {
+    display: inline-flex;
+    align-items: center;
+    gap: @space-2;
+  }
+
+  &__helpMark {
+    display: inline-flex;
+    color: @color-muted;
+    cursor: help;
+    transition: color @transition-fast;
+
+    &:hover,
+    &:focus-visible {
+      color: @color-text;
+    }
+  }
+
+  &__help {
+    max-width: 22rem;
+    padding: @space-2 @space-3;
+    color: @color-text;
+    font-size: @text-sm;
+    font-weight: 400;
+    line-height: 1.6;
+  }
+
   .semi-card-body {
     padding: 16px 20px !important;
   }

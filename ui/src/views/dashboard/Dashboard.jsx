@@ -9,14 +9,14 @@ import { useNavigate } from 'react-router-dom';
 import {
   IconTerminal,
   IconClock,
-  IconDoubleChevronLeft,
-  IconDoubleChevronRight,
   IconStarStroked,
   IconPlayCircle,
   IconPlusCircle,
+  IconAlertTriangle,
 } from '@douyinfe/semi-icons';
 
 import { useSelector, useActions } from '../../services/state/store';
+import { findJobsNeedingAttention, countJobsNeedingAttention } from '../../services/dashboard/attention.js';
 // Semi's IconNoteMoney draws a yen note. Fredy quotes euros everywhere, so it gets a euro.
 import IconEuro from '../../components/icons/IconEuro.jsx';
 import KpiCard from '../../components/cards/KpiCard.jsx';
@@ -68,6 +68,7 @@ export default function Dashboard() {
   const actions = useActions();
   const navigate = useNavigate();
   const dashboard = useSelector((state) => state.dashboard.data);
+  const jobs = useSelector((state) => state.jobsData.jobs);
   const currentUser = useSelector((state) => state.user.currentUser);
   const generalSettings = useSelector((state) => state.generalSettings.settings);
   const [searching, setSearching] = React.useState(false);
@@ -87,6 +88,10 @@ export default function Dashboard() {
   const providerShare = dashboard?.pie || [];
   const lastRun = dashboard?.general?.lastRun;
   const nextRun = dashboard?.general?.nextRun;
+
+  // Read off the jobs the app has already loaded, so this costs no request of its own.
+  const attention = findJobsNeedingAttention(jobs, { lastRun });
+  const attentionTotal = countJobsNeedingAttention(jobs, { lastRun });
 
   const runNow = async () => {
     setSearching(true);
@@ -171,35 +176,30 @@ export default function Dashboard() {
         }
       />
 
-      <div className="dashboard__section-label">{t('dashboard.sectionGeneral')}</div>
-      <Row gutter={[16, 16]} className="dashboard__row">
-        <Col xs={24} sm={12} md={8} lg={8} xl={8}>
-          <KpiCard
-            title={t('dashboard.searchInterval')}
-            value={`${dashboard?.general?.interval} min`}
-            icon={<IconClock />}
-            description={t('dashboard.searchIntervalDesc')}
-          />
-        </Col>
-        <Col xs={24} sm={12} md={8} lg={8} xl={8}>
-          <KpiCard
-            title={t('dashboard.lastSearch')}
-            value={timeValue(lastRun)}
-            icon={<IconDoubleChevronLeft />}
-            description={t('dashboard.lastSearchDesc')}
-          />
-        </Col>
-        <Col xs={24} sm={12} md={8} lg={8} xl={8}>
-          <KpiCard
-            title={t('dashboard.nextSearch')}
-            value={timeValue(nextRun)}
-            icon={<IconDoubleChevronRight />}
-            description={t('dashboard.nextSearchDesc')}
-          />
-        </Col>
-      </Row>
+      {/* Interval, last run and next run were three KPI cards. They are one line: nobody compares
+          them to each other, they are read as a single "is it running" glance, and as cards they
+          pushed the numbers people actually came for below the fold. */}
+      <div className="dashboard__status">
+        <IconClock className="dashboard__status-icon" />
+        <span>
+          {t('dashboard.statusInterval', { minutes: String(dashboard?.general?.interval ?? '?') })}
+          {lastRun != null && lastRun !== 0 && (
+            <>
+              {' · '}
+              {t('dashboard.statusLast')} {timeValue(lastRun)}
+            </>
+          )}
+          {nextRun != null && nextRun !== 0 && (
+            <>
+              {' · '}
+              {t('dashboard.statusNext')} {timeValue(nextRun)}
+            </>
+          )}
+        </span>
+      </div>
 
-      <div className="dashboard__section-label">{t('dashboard.sectionOverview')}</div>
+      {/* Every card here is a way into the thing it counts. They reported numbers and went
+          nowhere, which made the dashboard somewhere you pass through rather than start from. */}
       <Row gutter={[16, 16]} className="dashboard__row">
         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
           <KpiCard
@@ -208,6 +208,7 @@ export default function Dashboard() {
             value={!kpis.totalJobs ? '---' : kpis.totalJobs}
             icon={<IconTerminal />}
             description={t('dashboard.kpiJobsDesc')}
+            onClick={() => navigate('/jobs')}
           />
         </Col>
         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
@@ -221,6 +222,7 @@ export default function Dashboard() {
             description={t('dashboard.kpiListingsActiveDesc', {
               active: String(kpis.numberOfActiveListings ?? 0),
             })}
+            onClick={() => navigate('/listings')}
           />
         </Col>
         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
@@ -238,9 +240,38 @@ export default function Dashboard() {
             }
             icon={<IconEuro />}
             description={t('dashboard.kpiMedianPriceDesc')}
+            onClick={() => navigate('/listings?sort=price&dir=asc')}
           />
         </Col>
       </Row>
+
+      {/* Only when there is something to say. A permanent panel reading "all good" is a panel
+          people stop looking at, which defeats the point of having one. */}
+      {attention.length > 0 && (
+        <>
+          <div className="dashboard__section-label">{t('dashboard.sectionAttention')}</div>
+          <div className="dashboard__panel dashboard__attention">
+            <ul className="dashboard__attention-list">
+              {attention.map((entry) => (
+                <li key={entry.id} className="dashboard__attention-item">
+                  <IconAlertTriangle className="dashboard__attention-icon" />
+                  <span className="dashboard__attention-text">
+                    {t(`dashboard.attention.${entry.reason}`, { name: entry.name })}
+                  </span>
+                  <Button size="small" theme="borderless" onClick={() => navigate(`/jobs/edit/${entry.id}`)}>
+                    {t('dashboard.attentionFix')}
+                  </Button>
+                </li>
+              ))}
+            </ul>
+            {attentionTotal > attention.length && (
+              <Text type="tertiary" size="small">
+                {t('dashboard.attentionMore', { count: String(attentionTotal - attention.length) })}
+              </Text>
+            )}
+          </div>
+        </>
+      )}
 
       {trend?.perDay?.length > 0 && (
         <>

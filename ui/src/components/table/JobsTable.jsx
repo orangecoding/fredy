@@ -78,7 +78,7 @@ const JobsTable = ({ jobs, onRun, onEdit, onClone, onDeleteListings, onDeleteJob
             <Tooltip content={t('jobs.tableRunJob')}>
               <Button
                 type="primary"
-                style={{ background: '#21aa21b5' }}
+                style={{ background: '#3f8f68b5' }}
                 size="small"
                 theme="solid"
                 icon={<IconPlayCircle />}

@@ -17,7 +17,7 @@ import { useTranslation, useLocale } from '../../../services/i18n/i18n.jsx';
 registerFinanceCharts();
 
 /** Fixed colours per cost type, so a slice keeps its meaning between renders. */
-const SLICE_COLORS = ['#60a5fa', '#e04a38', '#fbbf24', '#a78bfa', '#909090'];
+const SLICE_COLORS = ['#7ba7d4', '#c0564a', '#d8a34a', '#9d8fc9', '#909090'];
 
 /**
  * Write the total into the hole of the doughnut.

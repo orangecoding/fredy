@@ -87,7 +87,7 @@ export default function UserTable({ user = [], onUserRemoval, onUserEdit } = {})
                   style={{
                     background: 'rgba(224,74,56,0.12)',
                     border: '1px solid rgba(224,74,56,0.35)',
-                    color: '#e04a38',
+                    color: '#c0564a',
                     borderRadius: 9999,
                     fontSize: 10,
                     fontWeight: 600,
@@ -150,7 +150,7 @@ export default function UserTable({ user = [], onUserRemoval, onUserEdit } = {})
                 style={{
                   background: 'transparent',
                   border: '1px solid rgba(251,113,133,0.2)',
-                  color: '#fb7185',
+                  color: '#d4707c',
                 }}
                 icon={<IconDelete />}
                 onClick={() => onUserRemoval(record.id)}
