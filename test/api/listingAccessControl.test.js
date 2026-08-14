@@ -186,6 +186,43 @@ describe('listing access control', () => {
       expect(executed).toHaveLength(0);
     });
 
+    it('requires a date and time when an invitation status is selected', async () => {
+      const reply = makeReply();
+      await routes['POST /:listingId/status'](
+        requestFor('alice', { status: 'invited' }, { listingId: 'mine-1' }),
+        reply,
+      );
+      expect(reply.statusCode).toBe(400);
+      expect(executed).toHaveLength(0);
+    });
+
+    it('stores a manual appointment together with an invitation status', async () => {
+      const reply = makeReply();
+      await routes['POST /:listingId/status'](
+        requestFor('alice', { status: 'invited', appointmentAt: 1786701600000 }, { listingId: 'mine-1' }),
+        reply,
+      );
+      expect(reply.statusCode).toBeNull();
+      expect(executed.some((call) => call.sql.includes('INSERT INTO manual_appointments'))).toBe(true);
+      expect(
+        executed.some(
+          (call) => call.sql.includes('SET status') && JSON.parse(call.params?.status ?? 'null')?.status === 'invited',
+        ),
+      ).toBe(true);
+    });
+
+    it('completes a scheduled appointment when the listing is marked visited', async () => {
+      const reply = makeReply();
+      await routes['POST /:listingId/status'](
+        requestFor('alice', { status: 'visited' }, { listingId: 'mine-1' }),
+        reply,
+      );
+      expect(reply.statusCode).toBeNull();
+      expect(
+        executed.some((call) => call.sql.includes("SET state = 'completed'") && call.params?.listingId === 'mine-1'),
+      ).toBe(true);
+    });
+
     it('rejects watching a foreign listing', async () => {
       const reply = makeReply();
       await routes['POST /watch'](requestFor('alice', { listingId: 'someone-elses' }), reply);

@@ -445,9 +445,12 @@ export const useFredyState = create(
               console.error('Error while trying to get resource for api/listings/map. Error:', Exception);
             }
           },
-          async setListingStatus(listingId, status) {
+          async setListingStatus(listingId, status, appointmentAt = null) {
             try {
-              await xhrPost(`/api/listings/${listingId}/status`, { status });
+              await xhrPost(`/api/listings/${listingId}/status`, {
+                status,
+                ...(appointmentAt == null ? {} : { appointmentAt, timezone: 'Europe/Berlin' }),
+              });
             } catch (Exception) {
               console.error(`Error while trying to set status for listing ${listingId}. Error:`, Exception);
               throw Exception;

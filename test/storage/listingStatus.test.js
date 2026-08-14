@@ -72,6 +72,14 @@ describe('listingsStorage.setListingStatus', () => {
     expect(calls.execute[0].params).toEqual({ id: 'listing-2', status: null });
   });
 
+  it.each(['invited', 'visited', 'documents_sent', 'not_invited'])(
+    'accepts the manual application status %s',
+    (status) => {
+      listingsStorage.setListingStatus('listing-2', status);
+      expect(JSON.parse(calls.execute[0].params.status).status).toBe(status);
+    },
+  );
+
   it('rejects invalid statuses', () => {
     expect(() => listingsStorage.setListingStatus('listing-3', 'maybe')).toThrow(/Invalid listing status/);
     expect(calls.execute).toHaveLength(0);

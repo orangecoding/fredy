@@ -281,9 +281,9 @@ export default function ListingDetail() {
     }
   };
 
-  const handleStatusChange = async (next) => {
+  const handleStatusChange = async (next, appointmentAt = null) => {
     try {
-      await actions.listingsData.setListingStatus(listing.id, next);
+      await actions.listingsData.setListingStatus(listing.id, next, appointmentAt);
       await actions.listingsData.getListing(listingId);
       Toast.success(next ? t('listings.toastStatusMarked', { status: next }) : t('listings.toastStatusCleared'));
     } catch (e) {
@@ -367,8 +367,12 @@ export default function ListingDetail() {
 
   const statusKeyMap = {
     applied: 'listing.detail.statusApplied',
+    invited: 'listings.status.invited',
+    visited: 'listings.status.visited',
+    documents_sent: 'listings.status.documentsSent',
     accepted: 'listing.detail.statusAccepted',
     rejected: 'listing.detail.statusRejected',
+    not_invited: 'listings.status.notInvited',
   };
   const statusLabel = listing.status?.status ? t(statusKeyMap[listing.status.status] ?? listing.status.status) : null;
 

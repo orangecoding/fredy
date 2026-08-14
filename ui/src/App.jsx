@@ -43,6 +43,7 @@ import NewsModal from './components/news/NewsModal.jsx';
 import { I18nProvider, availableLanguages } from './services/i18n/i18n.jsx';
 import DebugLoggingBanner from './components/debug/DebugLoggingBanner.jsx';
 import DemoBanner from './components/demo/DemoBanner.jsx';
+import Appointments from './views/appointments/Appointments.jsx';
 
 const semiLocaleModules = import.meta.glob('/node_modules/@douyinfe/semi-ui-19/lib/es/locale/source/*.js', {
   eager: true,
@@ -202,6 +203,7 @@ export default function FredyApp() {
                   <Route path="/listings" element={<Listings />} />
                   <Route path="/listings/watchlist" element={<Listings mode="watchlist" />} />
                   <Route path="/listings/listing/:listingId" element={<ListingDetail />} />
+                  <Route path="/appointments" element={<Appointments />} />
                   <Route path="/map" element={<MapView />} />
                   <Route path="/finance" element={<FinanceCalculator />} />
                   <Route path="/watchlistManagement" element={<WatchlistManagement />} />

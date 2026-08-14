@@ -1,0 +1,40 @@
+@import '../../tokens.less';
+
+.appointments {
+  &__loading {
+    display: grid;
+    min-height: 50vh;
+    place-items: center;
+  }
+  &__filters {
+    margin-bottom: 20px;
+  }
+  &__list {
+    display: grid;
+    gap: 16px;
+  }
+  &__card {
+    border: 1px solid @color-border;
+  }
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  &__actions {
+    display: grid;
+    grid-template-columns: minmax(220px, 1fr) auto auto auto;
+    gap: 10px;
+    margin-top: 18px;
+  }
+}
+
+@media (max-width: 760px) {
+  .appointments__header {
+    flex-direction: column;
+  }
+  .appointments__actions {
+    grid-template-columns: 1fr;
+  }
+}
