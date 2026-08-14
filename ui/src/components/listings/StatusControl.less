@@ -8,6 +8,11 @@
   line-height: 0;
 }
 
+.status-btn__appointment-label {
+  display: block;
+  margin-bottom: 8px;
+}
+
 // StatusControl shared base. Matches dimensions and border treatment
 // of the surrounding Watched / Open listing / Delete buttons in the
 // detail view, and shrinks via the --compact modifier for table rows
@@ -47,7 +52,16 @@
     }
   }
 
-  &--rejected {
+  &--invited,
+  &--visited,
+  &--documents_sent {
+    color: @color-info !important;
+    border-color: rgba(96, 165, 250, 0.4) !important;
+    background: rgba(96, 165, 250, 0.08) !important;
+  }
+
+  &--rejected,
+  &--not_invited {
     color: @color-error !important;
     border-color: rgba(251, 113, 133, 0.4) !important;
     background: rgba(251, 113, 133, 0.08) !important;

@@ -115,7 +115,7 @@ const ListingsGrid = ({ listings, onWatch, onNavigate, onDelete, onRestore, isHi
             <StatusControl
               status={item.status?.status ?? null}
               compact
-              onChange={(next) => onStatusChange?.(item, next)}
+              onChange={(next, appointmentAt) => onStatusChange?.(item, next, appointmentAt)}
               onTriggerClick={(e) => e.stopPropagation()}
             />
             <ExternalListingLink href={item.link} label={t('listings.tooltipOriginalListing')} />

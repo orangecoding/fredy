@@ -3,20 +3,20 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { useState } from 'react';
-import { Dropdown, Button, Tooltip } from '@douyinfe/semi-ui-19';
+import { useId, useState } from 'react';
+import { Dropdown, Button, Input, Modal, Tooltip } from '@douyinfe/semi-ui-19';
 import { IconChevronDown } from '@douyinfe/semi-icons';
 
 import './StatusControl.less';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
 
 /**
- * @typedef {('applied'|'rejected'|'accepted'|null)} ListingStatus
+ * @typedef {('applied'|'invited'|'visited'|'documents_sent'|'accepted'|'rejected'|'not_invited'|null)} ListingStatus
  */
 
 /**
  * Shared control for setting a listing's user-decision status
- * (Applied / Rejected / Accepted).
+ * across the fully manual application and appointment workflow.
  *
  * Both compact (table/grid rows) and full (listing detail header) modes
  * render a Button that picks up the project's CI tokens via the
@@ -30,13 +30,20 @@ import { useTranslation } from '../../services/i18n/i18n.jsx';
  */
 export default function StatusControl({ status = null, onChange, compact = false, onTriggerClick }) {
   const t = useTranslation();
+  const appointmentInputId = useId();
   const [open, setOpen] = useState(false);
   const [tooltipOpen, setTooltipOpen] = useState(false);
+  const [appointmentOpen, setAppointmentOpen] = useState(false);
+  const [appointmentValue, setAppointmentValue] = useState('');
 
   const STATUS_OPTIONS = [
     { value: null, label: t('listings.status.none') },
     { value: 'applied', label: t('listings.status.applied') },
+    { value: 'invited', label: t('listings.status.invited') },
+    { value: 'visited', label: t('listings.status.visited') },
+    { value: 'documents_sent', label: t('listings.status.documentsSent') },
     { value: 'rejected', label: t('listings.status.rejected') },
+    { value: 'not_invited', label: t('listings.status.notInvited') },
     { value: 'accepted', label: t('listings.status.accepted') },
   ];
 
@@ -49,6 +56,11 @@ export default function StatusControl({ status = null, onChange, compact = false
   const handlePick = (next) => {
     setOpen(false);
     if (next === status) return;
+    if (next === 'invited') {
+      setAppointmentValue('');
+      setAppointmentOpen(true);
+      return;
+    }
     onChange?.(next);
   };
 
@@ -98,16 +110,37 @@ export default function StatusControl({ status = null, onChange, compact = false
   );
 
   return (
-    <Dropdown
-      trigger="custom"
-      visible={open}
-      onVisibleChange={setOpen}
-      onClickOutSide={() => setOpen(false)}
-      position="bottom"
-      render={menu}
-      stopPropagation
-    >
-      <span className="status-btn__anchor">{trigger}</span>
-    </Dropdown>
+    <>
+      <Dropdown
+        trigger="custom"
+        visible={open}
+        onVisibleChange={setOpen}
+        onClickOutSide={() => setOpen(false)}
+        position="bottom"
+        render={menu}
+        stopPropagation
+      >
+        <span className="status-btn__anchor">{trigger}</span>
+      </Dropdown>
+      <Modal
+        title={t('appointments.promptTitle')}
+        visible={appointmentOpen}
+        okText={t('appointments.save')}
+        cancelText={t('appointments.cancel')}
+        okButtonProps={{ disabled: !appointmentValue }}
+        onCancel={() => setAppointmentOpen(false)}
+        onOk={() => {
+          const startsAt = new Date(appointmentValue).getTime();
+          if (!Number.isFinite(startsAt)) return;
+          setAppointmentOpen(false);
+          onChange?.('invited', startsAt);
+        }}
+      >
+        <label className="status-btn__appointment-label" htmlFor={appointmentInputId}>
+          {t('appointments.dateTime')}
+        </label>
+        <Input id={appointmentInputId} type="datetime-local" value={appointmentValue} onChange={setAppointmentValue} />
+      </Modal>
+    </>
   );
 }

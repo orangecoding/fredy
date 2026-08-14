@@ -256,9 +256,9 @@ const ListingsOverview = ({ mode = 'all' }) => {
     }
   };
 
-  const handleStatusChange = async (item, nextStatus) => {
+  const handleStatusChange = async (item, nextStatus, appointmentAt = null) => {
     try {
-      await actions.listingsData.setListingStatus(item.id, nextStatus);
+      await actions.listingsData.setListingStatus(item.id, nextStatus, appointmentAt);
       Toast.success(nextStatus ? `Marked as ${nextStatus}` : t('listings.toastStatusCleared'));
       loadData();
     } catch (e) {
@@ -395,7 +395,11 @@ const ListingsOverview = ({ mode = 'all' }) => {
           style={{ width: 150 }}
         >
           <Select.Option value="applied">{t('listings.filterStatusApplied')}</Select.Option>
+          <Select.Option value="invited">{t('listings.status.invited')}</Select.Option>
+          <Select.Option value="visited">{t('listings.status.visited')}</Select.Option>
+          <Select.Option value="documents_sent">{t('listings.status.documentsSent')}</Select.Option>
           <Select.Option value="rejected">{t('listings.filterStatusRejected')}</Select.Option>
+          <Select.Option value="not_invited">{t('listings.status.notInvited')}</Select.Option>
           <Select.Option value="accepted">{t('listings.filterStatusAccepted')}</Select.Option>
           <Select.Option value="none">{t('listings.filterStatusNone')}</Select.Option>
         </FilterSelect>

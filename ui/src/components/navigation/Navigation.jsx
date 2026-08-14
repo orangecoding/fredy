@@ -54,6 +54,7 @@ export default function Navigation({ isAdmin }) {
         { itemKey: '/listings', text: t('nav.listingsOverview') },
         { itemKey: '/map', text: t('nav.mapView') },
         { itemKey: '/listings/watchlist', text: t('nav.watchlist') },
+        { itemKey: '/appointments', text: t('nav.appointments') },
       ],
     },
     { itemKey: '/finance', text: t('nav.finance'), icon: <IconEuro /> },
