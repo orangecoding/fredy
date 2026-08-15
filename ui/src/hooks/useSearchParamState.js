@@ -24,7 +24,7 @@ export const parseBoolean = {
 // For state that is null | true | false
 export const parseNullableBoolean = {
   parse: (v) => (v === 'true' ? true : v === 'false' ? false : null),
-  stringify: (v) => (v === null ? "all" : String(v)),
+  stringify: (v) => (v === null ? 'all' : String(v)),
 };
 
 /**
