@@ -1,0 +1,39 @@
+name: Star History
+
+# Regenerates doc/star-history/*. GitHub restricted the stargazers endpoint to admins and
+# collaborators on 2026-06-30, which killed every hosted star chart service. Running inside the
+# repository we still have access, so the chart is generated here and committed.
+#
+# GITHUB_TOKEN is tried first. If it turns out not to count as a collaborator for that endpoint the
+# run does not fail - it falls back to recording the public star count for the day, and the curve
+# keeps growing from there. To get the exact history back in that case, add a fine grained PAT with
+# "Administration: read" on this repository as the STAR_HISTORY_TOKEN secret.
+on:
+  schedule:
+    - cron: '17 4 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  chart:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: node tools/starHistory/starHistory.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.STAR_HISTORY_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: Commit chart
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add doc/star-history
+          git diff --staged --quiet || git commit -m "chore: update star history [skip ci]"
+          git push

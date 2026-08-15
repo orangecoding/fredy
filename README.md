@@ -590,5 +590,9 @@ Guide](https://github.com/orangecoding/fredy/blob/master/CONTRIBUTING.md).
 
 ## ⭐ Star History
 
-[![Star History
-Chart](https://api.star-history.com/svg?repos=orangecoding/fredy&type=Date)](https://www.star-history.com/#orangecoding/fredy&Date)
+<a href="https://github.com/orangecoding/fredy/stargazers">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="doc/star-history/star-history-dark.svg">
+    <img alt="Fredy star history" src="doc/star-history/star-history-light.svg">
+  </picture>
+</a>
