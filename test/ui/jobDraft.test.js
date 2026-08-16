@@ -4,6 +4,8 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
+import fs from 'fs';
+import path from 'path';
 
 import {
   draftKey,
@@ -53,6 +55,7 @@ const aDraft = () => ({
   enabled: true,
   spatialFilter: null,
   specFilter: null,
+  commuteFilter: { action: 'notify', limits: { Work: 35 } },
 });
 
 describe('jobDraft', () => {
@@ -83,6 +86,10 @@ describe('jobDraft', () => {
       ['a blacklist word', { blacklist: ['x'] }],
       ['a deal type', { dealType: 'buy' }],
       ['a drawn area', { spatialFilter: { type: 'Polygon' } }],
+      // Not reachable on its own from the form, which needs a name before it can be saved, but the
+      // rule is "anything the user set is worth keeping" and singling this one out as not counting
+      // is how the field stops being carried at all.
+      ['a travel time limit', { commuteFilter: { action: 'notify', limits: { Work: 35 } } }],
     ])('counts %s', (_what, draft) => {
       expect(hasContent(draft)).toBe(true);
     });
@@ -150,6 +157,46 @@ describe('jobDraft', () => {
     it('drops an entry with no timestamp', () => {
       storage.setItem(draftKey(null), JSON.stringify({ version: 1, draft: aDraft() }));
       expect(loadDraft(null, storage)).toBeNull();
+    });
+  });
+
+  /**
+   * The form hands `saveDraft` an object literal and `pick` keeps only what {@link DRAFT_FIELDS}
+   * lists, so a field added to the form and not to the list is dropped without a word: the draft
+   * saves, restores, and is quietly missing that one piece of state. That is what happened to the
+   * commute filter. Comparing the two lists costs a regex and closes the gap for the next field.
+   */
+  describe('staying in step with the form', () => {
+    const form = fs.readFileSync(
+      path.join(import.meta.dirname, '../../ui/src/views/jobs/mutation/JobMutation.jsx'),
+      'utf-8',
+    );
+
+    it('carries every piece of state the job form asks it to keep', () => {
+      const [, literal] = form.match(/saveDraft\(draftId,\s*\{([^}]*)\}/) ?? [];
+      expect(literal).toBeDefined();
+      const saved = literal
+        .split(',')
+        .map((entry) => entry.trim())
+        .filter((entry) => entry.length > 0);
+
+      expect(saved.filter((field) => !DRAFT_FIELDS.includes(field))).toEqual([]);
+    });
+
+    /**
+     * Discarding a restored draft has to put every field back to what the job (or a blank form)
+     * started with. A field the reset forgets keeps the drafted value while the banner says it was
+     * thrown away, which is the one outcome worse than not offering the button.
+     */
+    it('has a reset for every field it restores', () => {
+      const restored = [...form.matchAll(/if \(draft\.(\w+) !== undefined\)/g)].map((match) => match[1]);
+      expect(restored.length).toBeGreaterThan(0);
+
+      const [, discard] = form.match(/const discardDraft = \(\) => \{([\s\S]*?)\n {2}\};/) ?? [];
+      expect(discard).toBeDefined();
+      expect(
+        restored.filter((field) => !new RegExp(`set${field[0].toUpperCase()}${field.slice(1)}\\(`).test(discard)),
+      ).toEqual([]);
     });
   });
 

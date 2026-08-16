@@ -39,7 +39,7 @@ import {
   IconGridView,
 } from '@douyinfe/semi-icons';
 import maplibregl from '../../components/map/maplibre.js';
-import Map from '../../components/map/Map.jsx';
+import MapCanvas from '../../components/map/Map.jsx';
 import no_image from '../../assets/no_image.png';
 import * as timeService from '../../services/time/timeService.js';
 import { formatEuroPrice } from '../../services/price/priceService.js';
@@ -575,7 +575,7 @@ export default function ListingDetail() {
                 <div className="listing-detail__map-container">
                   {/* Public transport on by default: the first question about any flat is how to
                       get out of it, and the answer should already be on screen. */}
-                  <Map
+                  <MapCanvas
                     initialCenter={mapCenter}
                     initialZoom={hasGeo ? 14 : 10}
                     defaultShowTransit
@@ -611,7 +611,7 @@ export default function ListingDetail() {
                         </Button>
                       </div>
                     )}
-                  </Map>
+                  </MapCanvas>
                 </div>
               )}
             </div>

@@ -13,3 +13,13 @@ export const send = (serviceName, payload) => {
 export const get = () => {
   return tmpStore;
 };
+
+/**
+ * Forget the last notification.
+ *
+ * Needed by any test asserting that nothing was sent: without it the previous test's payload is
+ * still here, and "no notification" reads exactly like "the one from before".
+ */
+export const reset = () => {
+  tmpStore = {};
+};

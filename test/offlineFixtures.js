@@ -102,6 +102,25 @@ export async function readFixture(url, options) {
 }
 
 /**
+ * Immowelt's listings come from its search BFF, which can only be reached from inside a browser
+ * that holds a DataDome cookie. Offline mode therefore replaces the whole transport module rather
+ * than a `fetch` or the extractor, and serves the two fixtures it would have produced.
+ *
+ * @returns {Promise<{classifieds: any[], detailHtml: string|null}>} the recorded BFF responses
+ */
+export async function readImmoweltFixtures() {
+  const [rawClassifieds, detailHtml] = await Promise.all([
+    tryReadFile(path.join(FIXTURES_DIR, 'immowelt_classifieds.json')),
+    tryReadFile(path.join(FIXTURES_DIR, 'immowelt_detail.html')),
+  ]);
+
+  return {
+    classifieds: rawClassifieds ? JSON.parse(rawClassifieds) : [],
+    detailHtml,
+  };
+}
+
+/**
  * Returns a fetch replacement that intercepts immoscout mobile API calls and
  * serves pre-downloaded JSON fixtures. Throws for any other URL to prevent
  * accidental live network traffic in offline mode.

@@ -246,6 +246,24 @@
   &__minutes {
     color: var(--semi-color-text-1);
     font-variant-numeric: tabular-nums;
+
+    /* Against a ceiling the user set, in the same three bands the map pins use. Semi's own
+       semantic colours rather than the map's hex values: this sits on a card that follows the
+       app's theme, and it has to stay readable in both of them. */
+    &--good {
+      color: var(--semi-color-success);
+      font-weight: 600;
+    }
+
+    &--acceptable {
+      color: var(--semi-color-warning);
+      font-weight: 600;
+    }
+
+    &--poor {
+      color: var(--semi-color-danger);
+      font-weight: 600;
+    }
   }
 
   &__label {

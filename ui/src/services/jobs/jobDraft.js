@@ -20,6 +20,11 @@
  * Bumped whenever the stored shape changes. An old payload is dropped rather than migrated: a draft
  * is worth minutes, and guessing at a shape that has since changed is how a stale value gets saved
  * onto a real job.
+ *
+ * A field merely *added* to {@link DRAFT_FIELDS} is not that kind of change and does not need a
+ * bump. An older draft simply has no key for it, the form leaves that piece of state at whatever the
+ * job it is editing already had, and nobody loses the half hour of typing a bump would have thrown
+ * away. What needs a bump is a field whose meaning or shape moved under the same name.
  * @type {number}
  */
 const VERSION = 1;
@@ -47,6 +52,7 @@ export const DRAFT_FIELDS = [
   'enabled',
   'spatialFilter',
   'specFilter',
+  'commuteFilter',
 ];
 
 /**
@@ -83,7 +89,8 @@ export function hasContent(draft) {
     (draft.shareWithUsers?.length ?? 0) > 0 ||
     draft.dealType != null ||
     draft.spatialFilter != null ||
-    draft.specFilter != null
+    draft.specFilter != null ||
+    draft.commuteFilter != null
   );
 }
 

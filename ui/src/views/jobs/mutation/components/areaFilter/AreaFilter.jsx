@@ -7,7 +7,7 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import { AutoComplete, Toast } from '@douyinfe/semi-ui-19';
 import { IconSearch } from '@douyinfe/semi-icons';
 
-import Map from '../../../../../components/map/Map.jsx';
+import MapCanvas from '../../../../../components/map/Map.jsx';
 import { debounce } from '../../../../../utils.js';
 import { xhrGet } from '../../../../../services/xhr.js';
 import { useTranslation } from '../../../../../services/i18n/i18n.jsx';
@@ -102,7 +102,7 @@ export default function AreaFilter({ spatialFilter = null, onChange = null }) {
       {/* The basemap and overlay state is left to the map: passing it here would make the controls
           it now shows read-only. Drawing a neighbourhood outline in a panel this size is fiddly,
           which is what the expand button is for. */}
-      <Map
+      <MapCanvas
         enableDrawing={true}
         initialSpatialFilter={spatialFilter}
         onDrawingChange={onChange}

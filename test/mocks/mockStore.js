@@ -38,6 +38,11 @@ export function getAddresses(settings) {
 export const updateListingDistances = (id, distances) => {
   // noop
 };
+/**
+ * The real one reads the stored journeys back onto the listings after a sweep. A test that wants
+ * travel times puts them on the listing itself, so here this only has to leave them alone.
+ */
+export const attachTravelTimes = (listings) => listings;
 export const deletedIds = [];
 export const deleteListingsById = (ids) => {
   deletedIds.push(...ids);

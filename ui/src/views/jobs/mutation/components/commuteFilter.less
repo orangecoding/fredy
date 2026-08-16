@@ -1,0 +1,96 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+/* One row per saved address, name on the left and the limit on the right, so several addresses
+   read as a column of the same question rather than as separate settings. */
+.commuteFilter {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  /* One line saying what to do with the boxes below it. Quiet enough that somebody who never sets a
+     limit scrolls past it, present enough that nobody has to find the help mark to learn that the
+     number is a maximum. */
+  &__intro {
+    margin: 0;
+    color: var(--semi-color-text-2);
+    font-size: 0.75rem;
+    max-width: 62ch;
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  &__place {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  &__label {
+    color: var(--semi-color-text-0);
+    font-weight: 600;
+  }
+
+  /* How the journey to this address is measured. Shown, not editable: it belongs to the address in
+     Settings, and seeing it here is what stops "35 min" reading as a driving time when it is a
+     train one. */
+  &__mode {
+    color: var(--semi-color-text-2);
+    font-size: 0.75rem;
+  }
+
+  /* Wide enough that a three digit number and the unit are not fighting each other: the suffix sits
+     inside the field, so a 130px box put "240" and "min" on top of one another. */
+  &__minutes {
+    width: 150px;
+  }
+
+  &__unit {
+    color: var(--semi-color-text-2);
+    font-size: 0.78rem;
+    white-space: nowrap;
+  }
+
+  /* A column, so the label sits above the control it names rather than beside it. The rule on top
+     separates the one decision that covers every address from the addresses themselves; read as a
+     stack it is clearly still part of this section, which it did not look like when the label, the
+     select and the explanation were three things sharing a wrapped row. */
+  &__action {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    margin-top: 4px;
+    padding-top: 12px;
+    border-top: 1px solid var(--semi-color-border);
+  }
+
+  /* Same register as the price and size labels next door: 12px, medium, one step brighter than the
+     explanatory text under it. */
+  &__actionLabel {
+    color: var(--semi-color-text-1);
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  /* Room for the longest option without pinning a pixel width that a phone cannot honour. The
+     fixed 280px this replaced overflowed the card on a narrow screen. */
+  &__actionSelect {
+    width: 100%;
+    max-width: 320px;
+  }
+
+  &__hint {
+    color: var(--semi-color-text-2);
+    font-size: 0.75rem;
+    max-width: 62ch;
+  }
+}

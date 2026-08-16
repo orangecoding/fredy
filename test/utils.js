@@ -43,6 +43,22 @@ vi.mock('../lib/services/extractor/puppeteerExtractor.js', async (importOriginal
   };
 });
 
+// Immowelt talks to its search BFF from inside the browser page (the only place a DataDome cookie
+// is worth anything), so neither the extractor mock nor the fetch mock above can intercept it. The
+// transport module is swapped out wholesale instead.
+vi.mock('../lib/services/immowelt/immoweltBff.js', async (importOriginal) => {
+  if (process.env.TEST_MODE !== 'offline') {
+    return importOriginal();
+  }
+  const { readImmoweltFixtures } = await import('./offlineFixtures.js');
+  return {
+    IMMOWELT_ORIGIN: 'https://www.immowelt.de',
+    searchClassifieds: async () => (await readImmoweltFixtures()).classifieds,
+    fetchExposeHtml: async () => (await readImmoweltFixtures()).detailHtml,
+    releaseSession: async () => {},
+  };
+});
+
 if (process.env.TEST_MODE === 'offline') {
   const { buildFetchMock } = await import('./offlineFixtures.js');
   vi.stubGlobal('fetch', buildFetchMock());

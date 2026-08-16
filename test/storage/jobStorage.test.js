@@ -118,3 +118,50 @@ describe('jobStorage.upsertJob deal type', () => {
     expect(update.params.dealType).toBe('rent');
   });
 });
+
+/**
+ * better-sqlite3 accepts a bound parameter the statement never mentions and simply drops it, so the
+ * only sign of a column added to the parameter object but forgotten in the INSERT is that the value
+ * is not there afterwards. That is how the commute filter of every newly created job was lost while
+ * editing an existing one stored it fine, and it is a mistake the next column can make just as
+ * easily. Checked as a rule rather than per column so it keeps holding without anyone remembering.
+ */
+describe('jobStorage.upsertJob binds nothing it does not write', () => {
+  let jobStorage;
+
+  beforeEach(async () => {
+    calls.execute.length = 0;
+    calls.query.length = 0;
+    sqliteMock.__queryHandler = null;
+    jobStorage = await import('../../lib/services/storage/jobStorage.js');
+  });
+
+  const aJob = {
+    name: 'Job',
+    provider: [],
+    notificationAdapter: [],
+    spatialFilter: { type: 'FeatureCollection' },
+    specFilter: { maxPrice: 1200 },
+    commuteFilter: { action: 'notify', limits: { Work: 35 } },
+    dealType: 'rent',
+  };
+
+  it.each([
+    ['insert', null, 'INSERT INTO jobs'],
+    ['update', (sql) => (sql.includes('SELECT id, user_id') ? [{ id: 'job-1', user_id: 'u1' }] : []), 'UPDATE jobs'],
+  ])('uses every parameter it binds on %s', (_what, queryHandler, statement) => {
+    sqliteMock.__queryHandler = queryHandler;
+    jobStorage.upsertJob({ ...aJob, jobId: statement.startsWith('UPDATE') ? 'job-1' : undefined, userId: 'u1' });
+
+    const call = calls.execute.find((c) => c.sql.includes(statement));
+    const unused = Object.keys(call.params).filter((name) => !call.sql.includes(`@${name}`));
+    expect(unused).toEqual([]);
+  });
+
+  it('writes the commute filter of a brand new job, not only of an edited one', () => {
+    jobStorage.upsertJob({ ...aJob, userId: 'u1' });
+    const insert = calls.execute.find((c) => c.sql.includes('INSERT INTO jobs'));
+    expect(insert.sql).toContain('commute_filter');
+    expect(JSON.parse(insert.params.commuteFilter)).toEqual(aJob.commuteFilter);
+  });
+});

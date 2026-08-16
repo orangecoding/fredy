@@ -85,7 +85,7 @@ const ListingsTable = ({
             )}
             {/* Under the address rather than in a column of its own: it is the same question, and a
                 column would be empty for every listing that has not been routed yet. */}
-            <CommuteBadge travelTimes={item.travelTimes} />
+            <CommuteBadge travelTimes={item.travelTimes} jobId={item.job_id} />
           </div>
 
           <div className="listingsTable__row__meta">

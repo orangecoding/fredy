@@ -1,0 +1,217 @@
+[
+  {
+    "brand": "immowelt",
+    "id": "26FQVY8WZMSV",
+    "status": "Published",
+    "hasAIEnrichment": true,
+    "metadata": {
+      "id": "26FQVY8WZMSV",
+      "legacyId": "ba8557a2-c888-46e4-954e-581a68116662",
+      "creationDate": "2026-08-16T12:25:29.93Z",
+      "updateDate": "2026-08-16T12:25:58.882Z"
+    },
+    "location": {
+      "address": {
+        "country": "DEU",
+        "city": "Mitte",
+        "zipCode": "10178",
+        "district": "Mitte"
+      },
+      "isAddressPublished": false
+    },
+    "hardFacts": {
+      "title": "Wohnung zur Miete",
+      "keyfacts": ["2 Zimmer", "93 m²"],
+      "facts": [
+        { "type": "numberOfRooms", "value": "2 Zimmer", "splitValue": "2", "label": "Zimmer" },
+        { "type": "livingSpace", "value": "93 m²", "splitValue": "93", "label": "m²" }
+      ],
+      "price": {
+        "value": "1.250 €",
+        "formatted": "1.250 €",
+        "additionalInformation": "Kaltmiete",
+        "addition": { "value": "Kaltmiete" },
+        "ariaLabel": "1250 €"
+      },
+      "prices": [
+        { "label": "Kaltmiete", "value": "1.250 €", "ariaLabel": "1250 €" },
+        { "label": "Warmmiete ca.", "value": "~1.455 €", "ariaLabel": "1454.6 €", "isEstimated": true }
+      ]
+    },
+    "gallery": {
+      "images": [
+        {
+          "key": "ccd20acc-bbf2-45fa-a232-1c417edc773b",
+          "url": "https://mms.immowelt.de/c/c/d/2/ccd20acc-bbf2-45fa-a232-1c417edc773b.jpg?ci_seal=eade73f020247c56ffdf910890c3f952d165ca96",
+          "description": "img0 (10)_08_15_2026.jpg",
+          "alt": "Wohnung zur Miete 1.250 € 2 Zimmer 93 m² Mitte Mitte 10178",
+          "title": "img0 (10)_08_15_2026.jpg",
+          "classification": { "name": "BALCONY" }
+        },
+        {
+          "key": "39704533-03b5-4b32-891d-cf9808f71cec",
+          "url": "https://mms.immowelt.de/3/9/7/0/39704533-03b5-4b32-891d-cf9808f71cec.jpg?ci_seal=1dead41a479139e7e1b89b58d385f69c35e9c456",
+          "description": "img0 (0)_08_15_2026.jpg",
+          "title": "img0 (0)_08_15_2026.jpg",
+          "classification": { "name": "LIVING_ROOM" }
+        }
+      ]
+    },
+    "tracking": {
+      "name": "classified",
+      "id": "26FQVY8WZMSV",
+      "price": 1250,
+      "estate_type": "av_2",
+      "distribution_type": "1",
+      "country": "Germany",
+      "city": "Berlin",
+      "region": "Berlin",
+      "province": "Berlin",
+      "currency": "EUR",
+      "zip_code": "10178",
+      "legacy_id": "ba8557a2-c888-46e4-954e-581a68116662",
+      "product_type": "standard",
+      "client_id": "1466998"
+    },
+    "provider": {
+      "intermediaryCard": {
+        "title": "Nauroth Immobilien GmbH",
+        "subtitle": "Gewerblicher Anbieter",
+        "display": true
+      },
+      "contactCard": { "title": "Herr Dominik Nauroth", "subtitle": "Dein Kontakt", "display": true, "logoUrl": null },
+      "isPrivateOwner": false,
+      "publisherType": "AGENCY",
+      "address": "Gudrunstraße 4, 50996 Köln",
+      "phoneNumbers": ["0178 286 22 07"]
+    },
+    "mainDescription": {
+      "headline": "Moderne 2-Zimmer-Wohnung mit Balkon im Herzen von Berlin Mitte",
+      "description": "Entdecken Sie diese stilvolle, vollständig renovierte 2-Zimmer-Wohnung in der pulsierenden Nachbarschaft von Mitte in Berlin. Mit einer großzügigen Fläche von 93 m² bietet diese Wohnung zwei komfortable Schlafzimmer, zwei Badezimmer und ein separates WC, ideal für Paare oder kleine Familien. Die Wohnung befindet sich im 4. Stock eines 7-stöckigen Gebäudes und besticht durch ihre lichtdurchfluteten Wohnräume und modernen Annehmlichkeiten.",
+      "metadata": { "language": "de" }
+    },
+    "type": "PROFESSIONAL",
+    "url": "https://www.immowelt.de/expose/ba8557a2-c888-46e4-954e-581a68116662",
+    "portal": "immowelt",
+    "rawData": {
+      "distributionType": "RENT",
+      "propertyType": "APARTMENT",
+      "geoIdHierarchy": [
+        { "id": "AD09DE475", "typeKey": "AD09" },
+        { "id": "AD08DE8634", "typeKey": "AD08" },
+        { "id": "AD02DE1", "typeKey": "AD02" }
+      ],
+      "price": 1454.6,
+      "offererMarketingKey": "BRT12900",
+      "providercity": "Köln",
+      "providerzipcode": "50996",
+      "surface": { "main": 93, "plot": null },
+      "nbroom": 2,
+      "contactLocationEnabled": false
+    },
+    "tags": { "has3DVisit": false, "hasBrokerageFee": false, "isNew": true },
+    "display": "classified",
+    "cps": "26FQVY8WZMSV"
+  },
+  {
+    "brand": "immowelt",
+    "id": "26IRLQ56QCSY",
+    "status": "Published",
+    "hasAIEnrichment": true,
+    "metadata": {
+      "id": "26IRLQ56QCSY",
+      "legacyId": "49a672de-eb74-421e-8e18-6005e369398c",
+      "creationDate": "2026-08-16T12:29:06.147Z",
+      "updateDate": "2026-08-16T12:29:06.642Z"
+    },
+    "location": {
+      "address": {
+        "country": "DEU",
+        "city": "Spandau",
+        "zipCode": "13599",
+        "district": "Spandau"
+      },
+      "isAddressPublished": false
+    },
+    "hardFacts": {
+      "title": "Wohnung zur Miete",
+      "titleAdditions": ["Tauschwohnung"],
+      "keyfacts": ["4 Zimmer", "85 m²"],
+      "facts": [
+        { "type": "numberOfRooms", "value": "4 Zimmer", "splitValue": "4", "label": "Zimmer" },
+        { "type": "livingSpace", "value": "85 m²", "splitValue": "85", "label": "m²" }
+      ],
+      "price": {
+        "value": "700 €",
+        "formatted": "700 €",
+        "additionalInformation": "Kaltmiete",
+        "addition": { "value": "Kaltmiete" },
+        "ariaLabel": "700 €"
+      },
+      "prices": [{ "label": "Kaltmiete", "value": "700 €", "ariaLabel": "700 €" }]
+    },
+    "gallery": {
+      "images": [
+        {
+          "key": "1f5fb376-81f7-459d-96f0-8b5aa8cc2bfc",
+          "url": "https://mms.immowelt.de/1/f/5/f/1f5fb376-81f7-459d-96f0-8b5aa8cc2bfc.webp?ci_seal=e8817b9cd461ffee235d24fbd0265b381b7c70fe",
+          "description": "Bild 1",
+          "alt": "Wohnung zur Miete Tauschwohnung 700 € 4 Zimmer 85 m² Spandau Spandau 13599",
+          "title": "Bild 1"
+        }
+      ]
+    },
+    "tracking": {
+      "name": "classified",
+      "id": "26IRLQ56QCSY",
+      "price": 700,
+      "estate_type": "av_2",
+      "distribution_type": "1",
+      "country": "Germany",
+      "city": "Berlin",
+      "region": "Berlin",
+      "province": "Berlin",
+      "currency": "EUR",
+      "zip_code": "13599",
+      "building_state": "NO_INFORMATION",
+      "legacy_id": "49a672de-eb74-421e-8e18-6005e369398c",
+      "product_type": "standard",
+      "client_id": "8345381"
+    },
+    "provider": {
+      "intermediaryCard": { "title": "Tauschwohnung GmbH", "subtitle": "Gewerblicher Anbieter", "display": true },
+      "contactCard": { "title": "Herr John Weinert", "subtitle": "Dein Kontakt", "display": true },
+      "isPrivateOwner": false,
+      "publisherType": "AGENCY",
+      "address": "c/o THE 9TH, Sandkaule 9-11, 53111 Bonn",
+      "phoneNumbers": ["+4922892939484"]
+    },
+    "mainDescription": {
+      "headline": "TAUSCHWOHNUNG Perfekt für Paare: Gemütliche Wohnung Charlottenburg/Spandau",
+      "description": "Es handelt es sich hierbei um ein Tauschangebot. (Anbieter-ID: 474366) In Berlin-Spandau(U-Haselhorst,Ecke-Saatwinklerdamm,grenzt an Charlottenburg/Moabit)biete ich meine gemütliche 4-Zimmer-Wohnung mit 85 m² zum Tausch an.Für nur 700 Euro Kaltmiete kannst du es dir hier bequem machen. Die Wohnung ist ideal für Paare oder kleine Familien, die ein neues Zuhause suchen. Eine Einbauküche,einen Balkon,sowie ein Privatparkplatz sind verfügbar. Wenn du eine größere Wohnung mit mindestens 5 Zimmern un...",
+      "metadata": { "language": "de" }
+    },
+    "type": "PROFESSIONAL",
+    "url": "https://www.immowelt.de/expose/49a672de-eb74-421e-8e18-6005e369398c",
+    "portal": "immowelt",
+    "rawData": {
+      "distributionType": "RENT",
+      "propertyType": "APARTMENT",
+      "geoIdHierarchy": [
+        { "id": "AD09DE479", "typeKey": "AD09" },
+        { "id": "AD08DE8634", "typeKey": "AD08" },
+        { "id": "AD02DE1", "typeKey": "AD02" }
+      ],
+      "price": 700,
+      "offererMarketingKey": "474366",
+      "providercity": "Bonn",
+      "providerzipcode": "53175",
+      "surface": { "main": 85, "plot": null },
+      "nbroom": 4,
+      "contactLocationEnabled": false
+    },
+    "tags": { "has3DVisit": false, "hasBrokerageFee": false, "isNew": true },
+    "display": "classified",
+    "cps": "26IRLQ56QCSY"
+  }
+]

@@ -97,10 +97,50 @@
       padding-left: 10px;
       border-left: 1px solid #262a3a;
     }
+
+    // The legend is a key, not a control: three swatches next to a label do not fit the
+    // label-left/control-right rhythm of the rows above without wrapping into it.
+    &--legend {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 6px;
+    }
   }
 
   &__label {
     color: #8892a4;
+  }
+}
+
+/* What the three pin colours on the listings map mean. Only rendered for users who set a commute
+   ceiling, which is what makes the pins coloured in the first place. */
+.map-commute-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+
+  &__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+  }
+
+  /* The panel is dark in both themes, so the text in it has to be too. Semi's own text tokens
+     invert with the theme and would put near-black lettering on this background in light mode,
+     which is why every other label in the panel overrides them as well. */
+  &__text {
+    color: #b6bfcd;
+  }
+
+  &__dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    flex: 0 0 auto;
+    /* A hairline so the amber swatch still has an edge against the panel, where it is the one of
+       the three that comes closest to the background it sits on. */
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
   }
 }
 

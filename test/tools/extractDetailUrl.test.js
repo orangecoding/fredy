@@ -23,9 +23,13 @@ const testProviderConfig = JSON.parse(readFileSync(TEST_PROVIDER_PATH, 'utf-8'))
  * These are exactly the selector shapes that used to break the fixture downloader:
  *  - immobilienDe: attribute on the crawl container itself (`@href`)
  *  - kleinanzeigen: attribute containing a dash (`.aditem@data-href`)
- *  - immowelt: selector that only resolves correctly when scoped to the crawl container (`a@href`)
+ *  - wgGesucht: selector that only resolves correctly when scoped to the crawl container (`a@href`)
+ *
+ * Immowelt used to be here as a third selector shape. It reads its listings from immowelt's search
+ * BFF now, so it has no crawl container to extract anything from and its fixtures are downloaded
+ * by a dedicated path in `downloadFixtures.js`.
  */
-const providersWithDetailPages = ['immobilienDe', 'kleinanzeigen', 'immowelt', 'wgGesucht', 'sparkasse'];
+const providersWithDetailPages = ['immobilienDe', 'kleinanzeigen', 'wgGesucht', 'sparkasse'];
 
 describe('extractFirstDetailUrl', () => {
   for (const providerName of providersWithDetailPages) {
@@ -43,8 +47,8 @@ describe('extractFirstDetailUrl', () => {
   }
 
   it('returns null when the crawl container matches nothing', async () => {
-    const provider = await import('../../lib/provider/immowelt.js');
-    runConfig = provider.createConfig(testProviderConfig.immowelt, [], []);
+    const provider = await import('../../lib/provider/kleinanzeigen.js');
+    runConfig = provider.createConfig(testProviderConfig.kleinanzeigen, [], []);
 
     expect(extractFirstDetailUrl('<html><body>nothing here</body></html>', runConfig)).toBeNull();
   });

@@ -6,11 +6,14 @@
 /**
  * What a job's optional settings add up to, in a line.
  *
- * The five of them - blacklist, price and size criteria, drawn area, sharing, activation - are
+ * The six of them - blacklist, price and size criteria, drawn area, commute limits, sharing,
+ * activation - are
  * folded into a collapsed section, and a collapsed section has to answer "is there anything in
  * here" without being opened. Otherwise the fold does not save the user anything: they open it
  * every time to check.
  */
+
+import { countCommuteLimits } from './commuteFilter.js';
 
 /**
  * Describe the refinements a job carries.
@@ -19,6 +22,7 @@
  * @param {string[]} [job.blacklist]
  * @param {{maxPrice?: number, minSize?: number, minRooms?: number}|null} [job.specFilter]
  * @param {Object|null} [job.spatialFilter]
+ * @param {{action?: string, limits?: Record<string, number>}|null} [job.commuteFilter]
  * @param {string[]} [job.shareWithUsers]
  * @param {boolean} [job.enabled]
  * @param {Object} context
@@ -46,6 +50,12 @@ export function describeJobRefinements(job, { t, formatPrice }) {
   }
   if (job?.spatialFilter != null) {
     parts.push(t('jobs.mutation.summaryArea'));
+  }
+  // The shortest true thing about it. Naming every address and its limit would be longer than the
+  // rest of the line put together, and the section is one click away for the detail.
+  const commuteLimits = countCommuteLimits(job?.commuteFilter);
+  if (commuteLimits > 0) {
+    parts.push(t('jobs.mutation.summaryCommute', { count: commuteLimits }));
   }
   if ((job?.shareWithUsers?.length ?? 0) > 0) {
     parts.push(t('jobs.mutation.summaryShared', { count: job.shareWithUsers.length }));

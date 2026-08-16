@@ -110,6 +110,60 @@ async function downloadImmoscoutFixtures(mobileApiUrl) {
 }
 
 /**
+ * Immowelt serves both its result list and its exposé from behind DataDome, so nothing here can be
+ * fetched with a plain `fetch` - the provider's own transport, which runs inside the browser page,
+ * is used instead. The two fixtures mirror exactly what it returns: the `/classifiedList` payload
+ * and one exposé's markup.
+ *
+ * @param {import('../../lib/types/providerConfig.js').ProviderConfig} runConfig the initialized provider config
+ * @param {Function} launchBrowser
+ * @param {Function} closeBrowser
+ * @returns {Promise<void>}
+ */
+async function downloadImmoweltFixtures(runConfig, launchBrowser, closeBrowser) {
+  console.log('\nDownloading immowelt...');
+
+  const { fetchExposeHtml, releaseSession } = await import('../../lib/services/immowelt/immoweltBff.js');
+  const browser = await launchBrowser(runConfig.url, {});
+
+  try {
+    const classifieds = await runConfig.getListings(runConfig.url, browser);
+    if (!classifieds?.length) {
+      console.warn('  Immowelt returned no classifieds - skipping fixtures');
+      return;
+    }
+
+    await writeFile(
+      path.join(FIXTURES_DIR, 'immowelt_classifieds.json'),
+      JSON.stringify(classifieds, null, 2),
+      'utf-8',
+    );
+    console.log(`  Saved immowelt_classifieds.json (${classifieds.length} listings)`);
+
+    const exposeUrl = classifieds
+      .map((entry) => runConfig.normalize(entry)?.link)
+      .find((link) => link?.startsWith('http'));
+    if (!exposeUrl) {
+      console.warn('  No exposé url among the classifieds - skipping detail fixture');
+      return;
+    }
+
+    console.log(`  Downloading immowelt detail (${exposeUrl})...`);
+    const detailHtml = await fetchExposeHtml(browser, exposeUrl);
+    if (!detailHtml) {
+      console.warn('  Failed to download immowelt detail');
+      return;
+    }
+
+    await writeFile(path.join(FIXTURES_DIR, 'immowelt_detail.html'), detailHtml, 'utf-8');
+    console.log('  Saved immowelt_detail.html');
+  } finally {
+    await releaseSession(browser);
+    await closeBrowser(browser);
+  }
+}
+
+/**
  * Fallback for providers that do not expose their listings through the markup (e.g. because they
  * ship them inside an embedded json payload). Those have no crawl container the selector based
  * {@link extractFirstDetailUrl} could work with, so the provider's own `getListings` is asked.
@@ -254,6 +308,9 @@ async function main() {
         break;
       case 'deutscheWohnen':
         await downloadDeutscheWohnenFixtures(runConfig.url, cfg.url);
+        break;
+      case 'immowelt':
+        await downloadImmoweltFixtures(runConfig, launchBrowser, closeBrowser);
         break;
       default:
         await downloadHtmlProvider(name, runConfig, launchBrowser, closeBrowser, puppeteerExtractor);

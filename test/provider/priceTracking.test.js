@@ -31,7 +31,7 @@ const EXPECTED_DETAIL_PRICE = {
   engelVoelkers: 24900000,
   imaxx: 526000,
   immobilienDe: 1070,
-  immowelt: 2474300,
+  immowelt: 1250,
   kleinanzeigen: 1600,
   schwarzesbrett: 75,
   sparkasse: 1618200,
@@ -64,6 +64,10 @@ const CUSTOM_LIST_PRICES = {
       .filter((item) => item.vermarktungsart_miete === '1')
       .map((item) => providerModule('deutscheWohnen').config.normalize({ id: item.wrk_id, price: item.preis })?.price)
       .filter((price) => price != null);
+  },
+  immowelt: () => {
+    const classifieds = JSON.parse(fs.readFileSync(path.join(FIXTURES, 'immowelt_classifieds.json'), 'utf8'));
+    return classifieds.map((entry) => providerModule('immowelt').config.normalize(entry)?.price).filter(Boolean);
   },
 };
 

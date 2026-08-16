@@ -9,14 +9,14 @@ import { mockFredy, providerConfig } from '../utils.js';
 import { expect } from 'vitest';
 import * as provider from '../../lib/provider/immowelt.js';
 import { launchBrowser, closeBrowser } from '../../lib/services/extractor/puppeteerExtractor.js';
+import { releaseSession } from '../../lib/services/immowelt/immoweltBff.js';
 
 /** Run-scoped provider config, built per test via createConfig(). */
 let runConfig;
 
-// One browser shared across the whole suite so both requests (search + detail)
-// come from the same warm session. Immowelt's CDN challenges cold sessions
-// aggressively; a shared warm browser prevents the second request from being
-// blocked as a bot hit.
+// One browser shared across the whole suite, because the session is the expensive part: the BFF
+// only answers requests issued from a page that already holds a DataDome cookie, and that cookie is
+// earned by a single warm-up navigation which both the search and the exposé fetch then reuse.
 const TEST_TIMEOUT = 180_000;
 
 describe('#immowelt testsuite()', () => {
@@ -28,6 +28,7 @@ describe('#immowelt testsuite()', () => {
   }, TEST_TIMEOUT);
 
   afterAll(async () => {
+    await releaseSession(browser);
     await closeBrowser(browser);
   });
 
@@ -84,15 +85,15 @@ describe('#immowelt testsuite()', () => {
       async () => {
         if (!liveListings?.length) throw new Error('No listings from first test to enrich');
 
-        // Call fetchDetails directly on the first live listing - no need to
-        // re-scrape the search page. The shared browser keeps the session warm.
+        // Call fetchDetails directly on the first live listing - no need to re-run the search. The
+        // shared browser keeps the session warm.
         const enriched = await runConfig.fetchDetails(liveListings[0], browser);
 
         expect(enriched).toBeTruthy();
         expect(enriched.link).toContain('https://www.immowelt.de');
         expect(enriched.address).toBeTypeOf('string');
         expect(enriched.address).not.toBe('');
-        // description is enriched from the detail page; falls back gracefully if blocked
+        // description is enriched from the exposé; falls back gracefully if blocked
         if (enriched.description != null) {
           expect(enriched.description).toBeTypeOf('string');
         }
@@ -100,4 +101,20 @@ describe('#immowelt testsuite()', () => {
       TEST_TIMEOUT,
     );
   });
+
+  // The card payload truncates the description at 500 characters, which is why fetchDetails still
+  // exists. Anything shorter than that is a complete description already, so only the truncated
+  // ones prove the enrichment did something.
+  it(
+    'reports the description immowelt sends with the card, truncation marker and all',
+    () => {
+      if (!liveListings?.length) throw new Error('No listings from first test to inspect');
+      for (const listing of liveListings) {
+        if (listing.description == null) continue;
+        expect(listing.description).toBeTypeOf('string');
+        expect(listing.description.length).toBeLessThanOrEqual(520);
+      }
+    },
+    TEST_TIMEOUT,
+  );
 });

@@ -2,6 +2,15 @@
   "schemaVersion": 1,
   "releases": [
     {
+      "version": "26.3.0",
+      "date": "2026-08-16",
+      "entries": [
+        {
+          "title": "Tell a job how far you are willing to travel",
+          "text": "Fredy already knew how long it takes to get from your saved addresses to every listing. Now a job can act on it. <br/><br/>In the job form, set how long the trip to each place may take. Leave a place empty and that search does not check it. Then pick what happens to a listing over the limit: <b>only mark it on the map</b>, <b>keep it but send no notification</b>, or <b>filter it out completely</b>. <br/><br/>Listings are coloured against that limit on the map and on their cards: green inside it, amber slightly over, red too far. Each one is graded by the job that found it, so the colours stay right with every job on screen. <br/><br/>Nothing is ever held back on a travel time Fredy could not work out."
+        }
+      ]
+    },    {
       "version": "26.0.0",
       "date": "2026-08-12",
       "entries": [

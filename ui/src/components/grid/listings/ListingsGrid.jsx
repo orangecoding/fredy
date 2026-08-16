@@ -103,7 +103,7 @@ const ListingsGrid = ({ listings, onWatch, onNavigate, onDelete, onRestore, isHi
             </div>
             {/* Compact on purpose: on a card the commute is a number you scan past twenty others,
                 not something you read. The detail page shows the full picture. */}
-            <CommuteBadge travelTimes={item.travelTimes} />
+            <CommuteBadge travelTimes={item.travelTimes} jobId={item.job_id} />
             <div className="listingsGrid__card__provider">{timeService.format(item.created_at, false, locale)}</div>
           </div>
 

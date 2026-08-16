@@ -66,6 +66,7 @@ describe('POST /api/jobs channel authorisation', () => {
         shared_with_user TEXT DEFAULT '[]',
         spatial_filter TEXT,
         spec_filter TEXT,
+        commute_filter TEXT,
         deal_type TEXT,
         last_run_at INTEGER
       );
