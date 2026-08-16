@@ -78,7 +78,21 @@ describe('POST /api/user/settings/home-address, what a save invalidates', () => 
     await save(app, [{ label: 'Work', address: 'Office Street 1', mode: 'transit' }]);
 
     expect(invalidations).toHaveLength(1);
-    expect(sweeps).toHaveLength(1);
+    await app.close();
+  });
+
+  /**
+   * Issue #418: a listing whose first geocode failed shows "no valid geocoordinates" until the
+   * six-hourly sweep comes round, and the only remedy anybody has found is to open this form and
+   * press Save. That has nothing to do with whether an address moved, so it must not sit behind the
+   * guard above, or the fix would be to take the remedy away.
+   */
+  it('always retries the geocoding of listings that have none, even on an unchanged save', async () => {
+    const app = await buildServer();
+    await save(app, [{ label: 'Work', address: 'Office Street 1', mode: 'transit' }]);
+    await save(app, [{ label: 'Work', address: 'Office Street 1', mode: 'transit' }]);
+
+    expect(sweeps).toHaveLength(2);
     await app.close();
   });
 

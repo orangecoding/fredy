@@ -245,6 +245,17 @@
     margin-bottom: 1rem !important;
   }
 
+  /* The "not looked up yet" banner carries a retry next to its sentence. Wrapping rather than
+     shrinking the text, so the button keeps its label on a narrow screen instead of the two of
+     them squeezing each other. */
+  &__noGeo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
   // Same gutter as the map above it, which it belongs to.
   &__transit {
     padding: 0 1.5rem 1.5rem;

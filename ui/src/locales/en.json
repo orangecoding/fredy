@@ -977,5 +977,11 @@
   "jobs.mutation.commuteActionHelp.exclude": "The listing is removed from the list as well. This is decided the first time Fredy sees it, so a listing whose travel time was not known yet is kept.",
   "jobs.mutation.summaryCommute": "Travel time limit on {{count}} place(s)",
   "jobs.mutation.commuteOrphanedLimits": "A travel time limit was set for {{labels}}, but there is no address by that name any more. It is not being applied. Change anything here and it will be removed.",
-  "jobs.mutation.commuteActionIdle": "Takes effect once you set a limit above."
+  "jobs.mutation.commuteActionIdle": "Takes effect once you set a limit above.",
+  "listing.detail.noGeoPending": "Fredy has not worked out where this is yet. It will try again on its own shortly.",
+  "listing.detail.geoRetry": "Try now",
+  "listing.detail.toastGeoFound": "Found it. The map is up to date.",
+  "listing.detail.toastGeoNotFound": "No place found for this address. You can place it on the map by hand instead.",
+  "listing.detail.toastGeoUnavailable": "The address service is not answering right now. Please try again in a few minutes.",
+  "listing.detail.toastGeoError": "Could not look up the coordinates for this listing."
 }

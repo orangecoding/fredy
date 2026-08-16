@@ -103,6 +103,8 @@ export default function ListingDetail() {
   // Set while the user is placing the listing by hand: carries the address text they typed, waiting
   // for the coordinates the map is about to give it.
   const [pinDrop, setPinDrop] = useState(null);
+  /** Whether a manual "try again" lookup is in flight, so the button can say so. */
+  const [geocodeRetrying, setGeocodeRetrying] = useState(false);
   const [pickedCoords, setPickedCoords] = useState(null);
   const [pinSaving, setPinSaving] = useState(false);
   const [mapExpanded, setMapExpanded] = useState(false);
@@ -165,6 +167,19 @@ export default function ListingDetail() {
 
   const hasGeo =
     listing?.latitude != null && listing?.longitude != null && listing?.latitude !== -1 && listing?.longitude !== -1;
+
+  /**
+   * Two very different reasons a listing has no position, which used to share one sentence.
+   *
+   * NULL means nobody has managed to look it up yet: the lookup at scrape time is best effort, and a
+   * timeout or a rate limit leaves it empty until the next sweep. That is temporary and worth
+   * retrying, and telling somebody their listing "has no valid geocoordinates" while its address sits
+   * on the same screen reads as a claim about the listing rather than about Fredy (issue #418).
+   *
+   * -1 is the geocoder's "looked, found nothing". That one really is about the address, it will not
+   * fix itself, and the way out is the pin drop rather than another lookup.
+   */
+  const geoUnresolved = !hasGeo && listing?.latitude === -1;
 
   // Where the map opens. Without coordinates - the case pin dropping exists for - the user's own
   // reference address is the best guess at the right part of the country; failing that, the map's
@@ -321,6 +336,36 @@ export default function ListingDetail() {
     } catch (error) {
       Toast.error(errorMessage(error, t('listing.detail.toastAddressError')));
       throw error;
+    }
+  };
+
+  /**
+   * Ask for this listing's coordinates again.
+   *
+   * The lookup at scrape time is best effort, so a timeout or a rate limit leaves a listing with an
+   * address on screen and nothing on the map. Until this button, the only remedy was the six-hourly
+   * sweep, or the trick of opening Settings and pressing Save (issue #418).
+   *
+   * Each answer gets its own message, because they ask for different things: wait, fix the address,
+   * or nothing at all.
+   */
+  const retryGeocoding = async () => {
+    setGeocodeRetrying(true);
+    try {
+      const response = await xhrPost(`/api/listings/${listingId}/geocode`, {});
+      const status = response?.json?.status;
+      if (status === 'found') {
+        await actions.listingsData.getListing(listingId);
+        Toast.success(t('listing.detail.toastGeoFound'));
+      } else if (status === 'unavailable') {
+        Toast.warning(t('listing.detail.toastGeoUnavailable'));
+      } else {
+        Toast.warning(t('listing.detail.toastGeoNotFound'));
+      }
+    } catch (error) {
+      Toast.error(errorMessage(error, t('listing.detail.toastGeoError')));
+    } finally {
+      setGeocodeRetrying(false);
     }
   };
 
@@ -570,7 +615,22 @@ export default function ListingDetail() {
                   are exactly the ones somebody wants to place by hand, so pin dropping brings the
                   map out anyway. */}
               {!hasGeo && !pinDrop ? (
-                <Banner type="warning" bordered description={t('listing.detail.noGeoWarning')} />
+                <Banner
+                  type="warning"
+                  bordered
+                  description={
+                    <div className="listing-detail__noGeo">
+                      <span>{geoUnresolved ? t('listing.detail.noGeoWarning') : t('listing.detail.noGeoPending')}</span>
+                      {/* Only for the temporary case. Offering "try again" for an address the
+                          geocoder has already rejected would be offering the same answer twice. */}
+                      {!geoUnresolved && (
+                        <Button size="small" loading={geocodeRetrying} onClick={retryGeocoding}>
+                          {t('listing.detail.geoRetry')}
+                        </Button>
+                      )}
+                    </div>
+                  }
+                />
               ) : (
                 <div className="listing-detail__map-container">
                   {/* Public transport on by default: the first question about any flat is how to

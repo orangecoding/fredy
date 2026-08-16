@@ -962,5 +962,11 @@
   "jobs.mutation.commuteActionHelp.exclude": "İlan listeden de çıkar. Buna ilk görüldüğünde karar verilir, yani yolculuk süresi henüz bilinmeyen bir ilan korunur.",
   "jobs.mutation.summaryCommute": "{{count}} yer için yolculuk süresi sınırı",
   "jobs.mutation.commuteOrphanedLimits": "{{labels}} için bir yolculuk süresi sınırı ayarlanmıştı ama artık bu isimde bir adres yok. Uygulanmıyor. Burada bir şey değiştirdiğinde kaldırılacak.",
-  "jobs.mutation.commuteActionIdle": "Yukarıda bir sınır belirlediğinde devreye girer."
+  "jobs.mutation.commuteActionIdle": "Yukarıda bir sınır belirlediğinde devreye girer.",
+  "listing.detail.noGeoPending": "Fredy buranın neresi olduğunu henüz çözemedi. Kısa süre içinde kendiliğinden tekrar deneyecek.",
+  "listing.detail.geoRetry": "Şimdi dene",
+  "listing.detail.toastGeoFound": "Bulundu. Harita güncel.",
+  "listing.detail.toastGeoNotFound": "Bu adrese ait bir yer bulunamadı. Bunun yerine ilanı haritaya elle yerleştirebilirsin.",
+  "listing.detail.toastGeoUnavailable": "Adres servisi şu anda yanıt vermiyor. Lütfen birkaç dakika sonra tekrar dene.",
+  "listing.detail.toastGeoError": "Bu ilanın koordinatları alınamadı."
 }

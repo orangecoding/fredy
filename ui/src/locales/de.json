@@ -977,5 +977,11 @@
   "jobs.mutation.commuteActionHelp.exclude": "Das Inserat verschwindet auch aus der Liste. Entschieden wird das beim ersten Fund, ein Inserat ohne bekannte Fahrzeit bleibt also erhalten.",
   "jobs.mutation.summaryCommute": "Fahrzeit-Limit für {{count}} Ort(e)",
   "jobs.mutation.commuteOrphanedLimits": "Für {{labels}} war ein Fahrzeit-Limit gesetzt, eine Adresse mit diesem Namen gibt es aber nicht mehr. Es greift nicht. Sobald du hier etwas änderst, wird es entfernt.",
-  "jobs.mutation.commuteActionIdle": "Greift, sobald du oben ein Limit setzt."
+  "jobs.mutation.commuteActionIdle": "Greift, sobald du oben ein Limit setzt.",
+  "listing.detail.noGeoPending": "Fredy hat noch nicht herausgefunden, wo das ist. Es versucht es demnächst von selbst noch einmal.",
+  "listing.detail.geoRetry": "Jetzt versuchen",
+  "listing.detail.toastGeoFound": "Gefunden. Die Karte ist aktuell.",
+  "listing.detail.toastGeoNotFound": "Zu dieser Adresse wurde kein Ort gefunden. Du kannst das Inserat stattdessen von Hand auf der Karte setzen.",
+  "listing.detail.toastGeoUnavailable": "Der Adressdienst antwortet gerade nicht. Bitte versuch es in ein paar Minuten noch einmal.",
+  "listing.detail.toastGeoError": "Die Koordinaten für dieses Inserat konnten nicht ermittelt werden."
 }
