@@ -421,7 +421,7 @@ export default function ListingDetail() {
     {
       key: t('listing.detail.fieldPrice'),
       value: listing.price ? (
-        <span className="listing-detail__price">{formatEuroPrice(listing.price)}</span>
+        <span className="listing-detail__price">{formatEuroPrice(listing.price, locale)}</span>
       ) : (
         t('common.na')
       ),

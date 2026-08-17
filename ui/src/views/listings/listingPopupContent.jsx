@@ -7,6 +7,7 @@ import { renderToString } from 'react-dom/server';
 import { IconChevronLeft, IconChevronRight, IconDelete, IconEyeOpened, IconLink } from '@douyinfe/semi-icons';
 import no_image from '../../assets/no_image.png';
 import { availableModes, formatMinutes, hasAnyTime } from '../../components/transit/travelTimeFormat.js';
+import { formatEuroPrice } from '../../services/price/priceService.js';
 
 /**
  * Builds the DOM for a listing popup on the map.
@@ -22,12 +23,14 @@ import { availableModes, formatMinutes, hasAnyTime } from '../../components/tran
  * @param {Object} params
  * @param {object[]} params.listings - The listings at this position, at least one.
  * @param {(key: string, vars?: Record<string, string|number>) => string} params.t
+ * @param {string} [params.locale] - BCP 47 locale for the price. This markup is built outside
+ * React, so the view hands its `useLocale()` value down.
  * @param {() => void} [params.onPageChange] - Called after the popup switched to another listing,
  * which changes its height.
  * @returns {{element: HTMLElement, transitMount: HTMLElement}} The popup content and the empty node
  * the nearby stops are to be rendered into.
  */
-export function createListingPopupContent({ listings, t, onPageChange }) {
+export function createListingPopupContent({ listings, t, locale, onPageChange }) {
   const element = document.createElement('div');
   element.className = 'map-popup-content';
 
@@ -43,7 +46,7 @@ export function createListingPopupContent({ listings, t, onPageChange }) {
   let index = 0;
 
   const render = () => {
-    body.innerHTML = renderListingBody(listings[index], index, listings.length, t);
+    body.innerHTML = renderListingBody(listings[index], index, listings.length, t, locale);
 
     const step = (delta) => {
       index = (index + delta + listings.length) % listings.length;
@@ -105,9 +108,10 @@ function renderTravelTimes(listing, t) {
  * @param {number} index - Zero based position within its group.
  * @param {number} total - Size of the group.
  * @param {(key: string, vars?: Record<string, string|number>) => string} t
+ * @param {string} [locale] - BCP 47 locale for the price.
  * @returns {string}
  */
-function renderListingBody(listing, index, total, t) {
+function renderListingBody(listing, index, total, t, locale) {
   const capitalizedProvider = listing.provider
     ? listing.provider.charAt(0).toUpperCase() + listing.provider.slice(1)
     : 'N/A';
@@ -133,7 +137,7 @@ function renderListingBody(listing, index, total, t) {
     />
     <h4>${listing.title}</h4>
     <div class="info">
-      <span><strong>${t('map.popupPrice')}</strong> ${listing.price ? listing.price + ' €' : t('common.na')}</span>
+      <span><strong>${t('map.popupPrice')}</strong> ${listing.price ? formatEuroPrice(listing.price, locale) : t('common.na')}</span>
       <span><strong>${t('map.popupAddress')}</strong> ${listing.address || t('common.na')}</span>
       <span><strong>${t('map.popupJob')}</strong> ${listing.job_name || t('common.na')}</span>
       <span><strong>${t('map.popupProvider')}</strong> ${capitalizedProvider}</span>

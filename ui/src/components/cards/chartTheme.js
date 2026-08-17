@@ -17,6 +17,8 @@ import {
   Tooltip,
 } from 'chart.js';
 
+import { formatEuroPrice } from '../../services/price/priceService.js';
+
 /*
  * Chart colours and typography, mirrored from ui/src/tokens.less.
  *
@@ -95,11 +97,10 @@ export function formatEuro(value, locale = 'de-DE') {
   if (value == null || !Number.isFinite(Number(value))) {
     return '–';
   }
-  return new Intl.NumberFormat(locale, {
-    style: 'currency',
-    currency: 'EUR',
-    maximumFractionDigits: 0,
-  }).format(Number(value));
+  // Rounded before it is handed over: `formatEuroPrice` keeps the cents a value actually has, and
+  // on an axis label or a tooltip those two digits are exactly the noise this function exists to
+  // drop. What is left is the same grouping and symbol the listings use.
+  return formatEuroPrice(Math.round(Number(value)), locale);
 }
 
 /**

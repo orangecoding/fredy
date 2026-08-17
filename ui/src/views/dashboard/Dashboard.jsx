@@ -26,6 +26,7 @@ import Headline from '../../components/headline/Headline.jsx';
 
 import './Dashboard.less';
 import { xhrPost, errorMessage } from '../../services/xhr.js';
+import { formatEuroPrice } from '../../services/price/priceService.js';
 import { format } from '../../services/time/timeService.js';
 import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
 
@@ -232,11 +233,9 @@ export default function Dashboard() {
             value={
               !kpis.medianPriceOfListings
                 ? '---'
-                : new Intl.NumberFormat(locale, {
-                    style: 'currency',
-                    currency: 'EUR',
-                    maximumFractionDigits: 0,
-                  }).format(kpis.medianPriceOfListings)
+                : // Rounded before formatting: an even number of listings averages the two middle
+                  // prices, and half a cent of that arithmetic is not a fact about the market.
+                  formatEuroPrice(Math.round(kpis.medianPriceOfListings), locale)
             }
             icon={<IconEuro />}
             description={t('dashboard.kpiMedianPriceDesc')}

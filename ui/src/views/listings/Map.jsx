@@ -30,7 +30,7 @@ import { createListingPopupContent } from './listingPopupContent.jsx';
 // component with no props, which fails somewhere inside it rather than where it was written.
 import MapCanvas from '../../components/map/Map.jsx';
 import Headline from '../../components/headline/Headline.jsx';
-import { useTranslation } from '../../services/i18n/i18n.jsx';
+import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
 import { keepPopupInView, mountPopupNode } from '../../components/map/popupContent.jsx';
 import NearbyStops from '../../components/transit/NearbyStops.jsx';
 import {
@@ -91,6 +91,7 @@ const { Text } = Typography;
 
 export default function MapView() {
   const t = useTranslation();
+  const locale = useLocale();
   const map = useRef(null);
   const markers = useRef([]);
   const homeMarkers = useRef([]);
@@ -433,7 +434,12 @@ export default function MapView() {
         stopFit = keepPopupInView(map.current, popup);
       };
 
-      const { element, transitMount } = createListingPopupContent({ listings: grouped, t, onPageChange: refit });
+      const { element, transitMount } = createListingPopupContent({
+        listings: grouped,
+        t,
+        locale,
+        onPageChange: refit,
+      });
 
       popup = new maplibregl.Popup({ offset: 25, maxWidth: LISTING_POPUP_MAX_WIDTH }).setDOMContent(element);
 

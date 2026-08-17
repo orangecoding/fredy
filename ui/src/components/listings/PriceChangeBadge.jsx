@@ -6,7 +6,7 @@
 import { Tooltip } from '@douyinfe/semi-ui-19';
 
 import { formatEuroPrice } from '../../services/price/priceService.js';
-import { useTranslation } from '../../services/i18n/i18n.jsx';
+import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
 import './PriceChangeBadge.less';
 
 /**
@@ -27,6 +27,7 @@ import './PriceChangeBadge.less';
  */
 export default function PriceChangeBadge({ price, previousPrice, changedAt }) {
   const t = useTranslation();
+  const locale = useLocale();
 
   const current = Number(price);
   const previous = Number(previousPrice);
@@ -39,7 +40,7 @@ export default function PriceChangeBadge({ price, previousPrice, changedAt }) {
   const label = `${dropped ? '↓' : '↑'} ${percent > 0 ? '+' : '-'}${Math.abs(percent).toFixed(1)} %`;
 
   const tooltip = [
-    t('listings.priceChangeFrom', { price: formatEuroPrice(previous) }),
+    t('listings.priceChangeFrom', { price: formatEuroPrice(previous, locale) }),
     changedAt ? new Date(Number(changedAt)).toLocaleDateString() : null,
   ]
     .filter(Boolean)
