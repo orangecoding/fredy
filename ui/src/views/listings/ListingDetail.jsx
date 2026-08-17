@@ -4,7 +4,7 @@
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router';
 import { useSelector, useActions } from '../../services/state/store.js';
 import {
   Typography,
@@ -39,7 +39,7 @@ import {
   IconGridView,
 } from '@douyinfe/semi-icons';
 import maplibregl from '../../components/map/maplibre.js';
-import MapCanvas from '../../components/map/Map.jsx';
+import MapCanvas, { HOME_MARKER_COLOR } from '../../components/map/Map.jsx';
 import no_image from '../../assets/no_image.png';
 import * as timeService from '../../services/time/timeService.js';
 import { formatEuroPrice } from '../../services/price/priceService.js';
@@ -231,7 +231,7 @@ export default function ListingDetail() {
 
     homeAddresses.forEach((home) => {
       markers.push(
-        new maplibregl.Marker({ color: 'red' })
+        new maplibregl.Marker({ color: HOME_MARKER_COLOR })
           .setLngLat([home.coords.lng, home.coords.lat])
           .setPopup(
             new maplibregl.Popup({ offset: 25 }).setHTML(

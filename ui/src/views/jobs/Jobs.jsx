@@ -3,7 +3,7 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { Button } from '@douyinfe/semi-ui-19';
 import { IconPlusCircle } from '@douyinfe/semi-icons';
 import JobGrid from '../../components/grid/jobs/JobGrid.jsx';

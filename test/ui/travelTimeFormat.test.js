@@ -13,7 +13,6 @@ import {
   hasAnyTime,
   parseCommuteFilter,
   primaryMode,
-  worstCommuteBand,
 } from '../../ui/src/components/transit/travelTimeFormat.js';
 
 describe('travelTimeFormat', () => {
@@ -156,38 +155,6 @@ describe('travelTimeFormat', () => {
     it('has nothing to say when only some other mode was measured', () => {
       const walkOnly = { label: 'Work', mode: 'walk', walk: { minutes: 8 } };
       expect(commuteBand(walkOnly, { label: 'Work', mode: 'transit', maxMinutes: 20 })).toBeNull();
-    });
-
-    describe('worstCommuteBand', () => {
-      const school = { label: 'School', mode: 'transit', maxMinutes: 20 };
-
-      it('lets the worst address decide', () => {
-        const times = [entry(10), entry(90, 'School')];
-        expect(worstCommuteBand(times, [work, school])).toBe('poor');
-        expect(worstCommuteBand([entry(10), entry(23, 'School')], [work, school])).toBe('acceptable');
-        expect(worstCommuteBand([entry(10), entry(12, 'School')], [work, school])).toBe('good');
-      });
-
-      it('ignores the addresses with no ceiling on them', () => {
-        expect(worstCommuteBand([entry(10), entry(90, 'School')], [work, { label: 'School' }])).toBe('good');
-      });
-
-      it('says nothing when nothing has been measured', () => {
-        expect(worstCommuteBand([], [work])).toBeNull();
-        expect(worstCommuteBand(null, [work])).toBeNull();
-        expect(worstCommuteBand([entry(10)], null)).toBeNull();
-      });
-
-      /**
-       * The API refuses two addresses under one name, but a settings blob written before it did can
-       * still hold a pair. Both are then graded against the one stored journey and the stricter
-       * ceiling decides, which is the same "every ceiling is a requirement" rule as everywhere else.
-       */
-      it('lets the stricter of two addresses sharing a name decide', () => {
-        const strict = { label: 'Work', mode: 'transit', maxMinutes: 20 };
-        expect(worstCommuteBand([entry(30)], [work, strict])).toBe('poor');
-        expect(worstCommuteBand([entry(30)], [strict, work])).toBe('poor');
-      });
     });
   });
 

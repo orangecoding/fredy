@@ -8,7 +8,7 @@ import React, { useEffect, useId } from 'react';
 import cityBackground from '../../assets/city_background.jpg';
 import Logo from '../../components/logo/Logo';
 import { xhrPost } from '../../services/xhr';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router';
 import { useActions, useSelector } from '../../services/state/store';
 import { Input, Button, Banner } from '@douyinfe/semi-ui-19';
 

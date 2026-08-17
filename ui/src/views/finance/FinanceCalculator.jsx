@@ -6,7 +6,7 @@
 import React from 'react';
 import { Button, Col, Collapse, Popconfirm, Row, Tabs, Toast, Typography } from '@douyinfe/semi-ui-19';
 import { IconSave, IconHome, IconKey, IconDelete } from '@douyinfe/semi-icons';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router';
 
 import Headline from '../../components/headline/Headline.jsx';
 import { SegmentPart } from '../../components/segment/SegmentPart.jsx';

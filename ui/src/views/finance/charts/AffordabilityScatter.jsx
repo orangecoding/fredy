@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { Scatter } from 'react-chartjs-2';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 import {
   CHART_COLORS,

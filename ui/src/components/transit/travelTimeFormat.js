@@ -81,12 +81,6 @@ export function addressesWithBudget(addresses, commuteFilter) {
 }
 
 /**
- * Bands from best to worst, so two of them can be compared without a lookup table.
- * @type {string[]}
- */
-const BAND_ORDER = ['good', 'acceptable', 'poor'];
-
-/**
  * The mode a limit is judged in.
  *
  * The one the address is set to, because that is the question the user asked - a limit of 35 next to
@@ -132,31 +126,6 @@ export function commuteBand(entry, address) {
     return 'good';
   }
   return minutes <= budget * ACCEPTABLE_FACTOR ? 'acceptable' : 'poor';
-}
-
-/**
- * The band a whole listing gets, across every address this search has a limit for.
- *
- * The worst one wins, for the same reason the server treats every limit as a requirement: a flat ten
- * minutes from the office and an hour and a half from the school is not a green flat.
- *
- * @param {Array<Object>|null|undefined} travelTimes
- * @param {Array<Object>|null|undefined} addresses - From {@link addressesWithBudget}.
- * @returns {'good'|'acceptable'|'poor'|null} `null` when no limit applies to this listing yet.
- */
-export function worstCommuteBand(travelTimes, addresses) {
-  const entries = Array.isArray(travelTimes) ? travelTimes : [];
-  let worst = null;
-  for (const address of Array.isArray(addresses) ? addresses : []) {
-    const band = commuteBand(
-      entries.find((entry) => entry?.label === address?.label),
-      address,
-    );
-    if (band != null && (worst == null || BAND_ORDER.indexOf(band) > BAND_ORDER.indexOf(worst))) {
-      worst = band;
-    }
-  }
-  return worst;
 }
 
 /**

@@ -10,7 +10,7 @@ import UserTable from '../../components/table/UserTable';
 import { useActions, useSelector } from '../../services/state/store';
 import UserRemovalModal from './UserRemovalModal';
 import { xhrDelete, errorMessage } from '../../services/xhr';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import './Users.less';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
 

@@ -5,7 +5,7 @@
 
 import { useId } from 'react';
 import { Banner, InputNumber, Select } from '@douyinfe/semi-ui-19';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 import { useSelector } from '../../../../services/state/store';
 import { useTranslation } from '../../../../services/i18n/i18n.jsx';

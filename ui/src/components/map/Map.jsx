@@ -35,6 +35,16 @@ const EXPANDED_BODY_CLASS = 'fredy-map-expanded';
 /** Colour of the pin the user drops in `pickMode`, distinct from listing blue and home red. */
 const PICK_MARKER_COLOR = '#f5a623';
 
+/**
+ * Colour of the pins standing for the user's own addresses, on every map that draws them.
+ *
+ * Named rather than repeated at the two call sites, which is all this constant is for: listing pins
+ * are the one blue, so red is unambiguous.
+ *
+ * @type {string}
+ */
+export const HOME_MARKER_COLOR = 'red';
+
 export const GERMANY_BOUNDS = [
   [5.866, 47.27], // Southwest coordinates
   [15.042, 55.059], // Northeast coordinates

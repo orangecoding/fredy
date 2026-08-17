@@ -18,7 +18,7 @@ import heart from '../../assets/heart.png';
 import Logout from '../logout/Logout.jsx';
 import Donate from '../donate/Donate.jsx';
 import NewsHistory from '../news/NewsHistory.jsx';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router';
 
 import './Navigate.less';
 import { useScreenWidth } from '../../hooks/screenWidth.js';

@@ -5,7 +5,7 @@
 
 import { TimePicker, Button, Checkbox, Input, InputNumber, Banner, Select } from '@douyinfe/semi-ui-19';
 import { IconSave } from '@douyinfe/semi-icons';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext } from 'react-router';
 import { useMemo } from 'react';
 
 import { SegmentPart } from '../../../components/segment/SegmentPart';

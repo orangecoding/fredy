@@ -5,7 +5,7 @@
 
 import { useEffect } from 'react';
 import { Modal } from '@douyinfe/semi-ui-19';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 import NotificationChannelTable from '../../../../../components/table/NotificationChannelTable';
 import { useActions, useSelector } from '../../../../../services/state/store';

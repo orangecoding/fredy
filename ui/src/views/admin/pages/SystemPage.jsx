@@ -5,7 +5,7 @@
 
 import { Button, Checkbox, Input, InputNumber, Banner } from '@douyinfe/semi-ui-19';
 import { IconSave } from '@douyinfe/semi-icons';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext } from 'react-router';
 
 import { SegmentPart } from '../../../components/segment/SegmentPart';
 

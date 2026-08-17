@@ -1,6 +1,6 @@
 {
   "name": "fredy",
-  "version": "26.3.2",
+  "version": "26.4.0",
   "description": "Fredy - [F]ind [R]eal [E]state [D]amn Eas[y] - Fredy keeps searching for new apartments, houses, and flats in Germany on platforms like ImmoScout24, Immowelt, Immonet, eBay Kleinanzeigen, and WG-Gesucht and instantly delivers the results to you via Slack, Telegram, Email, Discord or ntfy, so you can focus on the more important things in life ;)",
   "scripts": {
     "prepare": "husky",
@@ -56,7 +56,7 @@
   },
   "license": "Apache-2.0",
   "engines": {
-    "node": ">=22.0.0",
+    "node": ">=22.22.0",
     "npm": ">=7.0.0"
   },
   "browserslist": [
@@ -84,7 +84,7 @@
     "cloakbrowser": "^0.5.7",
     "fastify": "^5.12.0",
     "handlebars": "4.7.9",
-    "maplibre-gl": "6.3.0",
+    "maplibre-gl": "6.4.0",
     "nanoid": "6.0.1",
     "node-cron": "^4.6.0",
     "node-fetch": "3.3.2",
@@ -92,14 +92,13 @@
     "nodemailer": "^9.0.5",
     "p-throttle": "^8.1.0",
     "package-up": "^5.0.0",
-    "puppeteer-core": "^25.5.0",
+    "puppeteer-core": "^25.8.0",
     "query-string": "9.5.0",
     "react": "19.2.8",
     "react-chartjs-2": "^5.3.1",
     "react-dom": "19.2.8",
     "react-range-slider-input": "^3.3.5",
-    "react-router": "7.18.1",
-    "react-router-dom": "7.18.1",
+    "react-router": "8.3.0",
     "resend": "^6.20.0",
     "semver": "^7.8.5",
     "slack": "11.0.2",

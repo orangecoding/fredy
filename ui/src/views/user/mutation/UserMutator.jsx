@@ -6,7 +6,7 @@
 import React from 'react';
 
 import { xhrGet, xhrPost, errorMessage } from '../../../services/xhr';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router';
 import { useActions } from '../../../services/state/store';
 import { Divider, Input, Switch, Button, Toast, Typography } from '@douyinfe/semi-ui-19';
 import './UserMutator.less';

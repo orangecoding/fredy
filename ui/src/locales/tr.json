@@ -926,7 +926,6 @@
   "settings.addressModeLabel": "Ulaşım",
   "settings.addressDepartureHelp": "Toplu taşıma süreleri ne zaman yola çıktığına bağlıdır; bu yüzden bir sonraki iş günü bu saat için hesaplanır. Böylece tüm ilanlar karşılaştırılabilir kalır.",
   "settings.addressStreetModeHelp": "Araba ve yürüyüş süreleri saate bağlı değildir, bu yüzden saat sorulmaz. İlan başına tek tek hesaplanır ve kademeli olarak dolar.",
-  "map.commuteLegendLabel": "Yolculuk",
   "map.commuteBand.good": "Sınırın içinde",
   "map.commuteBand.acceptable": "Biraz üzerinde",
   "map.commuteBand.poor": "Çok uzak",

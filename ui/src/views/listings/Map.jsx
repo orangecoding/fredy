@@ -22,23 +22,18 @@ import _RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
 import './Map.less';
 import { xhrDelete, errorMessage } from '../../services/xhr.js';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router';
 import ListingDeletionModal from '../../components/ListingDeletionModal.jsx';
 import { createListingPopupContent } from './listingPopupContent.jsx';
 // Not imported as `Map`. This module is itself called Map.jsx, and a component of that name shadows
 // the global `Map` constructor for the whole file: `new Map()` then invokes a React function
 // component with no props, which fails somewhere inside it rather than where it was written.
-import MapCanvas from '../../components/map/Map.jsx';
+import MapCanvas, { HOME_MARKER_COLOR } from '../../components/map/Map.jsx';
 import Headline from '../../components/headline/Headline.jsx';
 import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
 import { keepPopupInView, mountPopupNode } from '../../components/map/popupContent.jsx';
 import NearbyStops from '../../components/transit/NearbyStops.jsx';
-import {
-  COMMUTE_OPTIONS,
-  addressesWithBudget,
-  parseCommuteFilter,
-  worstCommuteBand,
-} from '../../components/transit/travelTimeFormat.js';
+import { COMMUTE_OPTIONS, parseCommuteFilter } from '../../components/transit/travelTimeFormat.js';
 
 /**
  * The map's URL-backed view state: which job, the distance ring, the basemap and the optional
@@ -64,23 +59,6 @@ const MAP_URL_STATE = {
  * again on phones.
  */
 const LISTING_POPUP_MAX_WIDTH = '380px';
-
-/**
- * The pin colour that says whether a flat is somewhere you could actually live.
- *
- * Only ever used for listings found by a job with a commute limit: without one there is no line to
- * be on the wrong side of, and every pin stays the plain blue it has always been. Green and red are
- * the obvious pair; the amber in between exists because a limit is a rough number and "twelve
- * minutes over" deserves a different answer from "an hour over".
- */
-const COMMUTE_BAND_COLORS = {
-  good: '#2f9e5f',
-  acceptable: '#e0a13c',
-  poor: '#d1493c',
-};
-
-/** Which of two bands is the worse news, for a pin that stands for more than one listing. */
-const BAND_SEVERITY = { good: 0, acceptable: 1, poor: 2 };
 
 /** The plain pin, for every job without a limit and for anything not measured yet. */
 const DEFAULT_MARKER_COLOR = '#3FB1CE';
@@ -112,28 +90,6 @@ export default function MapView() {
   const defaultDeleteType = listingDeletionPref?.hardDelete ? 'hard' : 'soft';
 
   const jobs = useSelector((state) => state.jobsData.jobs);
-
-  /**
-   * The addresses a given job has a commute limit for, ready to judge one of its listings against.
-   *
-   * Keyed by job rather than resolved once for the whole map, because the limit belongs to the
-   * search: two jobs can disagree about the same office, and the "all jobs" view puts both of them
-   * on screen at the same time. Precomputed into a Map so a thousand pins do not each walk the job
-   * list.
-   */
-  const budgetedAddressesByJob = useMemo(() => {
-    const byJob = new Map();
-    for (const job of jobs ?? []) {
-      const budgeted = addressesWithBudget(homeAddresses, job?.commuteFilter);
-      if (budgeted.length > 0) {
-        byJob.set(job.id, budgeted);
-      }
-    }
-    return byJob;
-  }, [jobs, homeAddresses]);
-
-  /** Whether any job on this map has a limit at all, which is what the legend is worth showing for. */
-  const anyJobHasCommuteLimits = budgetedAddressesByJob.size > 0;
 
   // One grouped state rather than four independent setters: two of these can change in the same
   // tick, and separate setSearchParams calls overwrite each other.
@@ -213,8 +169,8 @@ export default function MapView() {
    * Unlike the distance ring, which only recolours pins, this one hides them: a commute ceiling is
    * asked as "show me only what I could actually live with", and a pin that fails it is noise.
    *
-   * A listing that has not been routed yet has nothing to answer with and drops out. That is why the
-   * control sits next to a legend saying so, rather than being on by default.
+   * A listing that has not been routed yet has nothing to answer with and drops out, which is why
+   * this is off until it is asked for rather than on by default.
    *
    * @param {Object} listing
    * @returns {boolean}
@@ -356,7 +312,7 @@ export default function MapView() {
     popupRoots.current = [];
 
     homeAddresses.forEach((home) => {
-      const marker = new maplibregl.Marker({ color: 'red' })
+      const marker = new maplibregl.Marker({ color: HOME_MARKER_COLOR })
         .setLngLat([home.coords.lng, home.coords.lat])
         .setPopup(
           new maplibregl.Popup({ offset: 25 }).setHTML(
@@ -459,25 +415,10 @@ export default function MapView() {
         popupRoots.current.push(unmount);
       });
 
-      // Judged against the limits of the job that found each listing, not against one global rule.
-      // That is what lets a pin be green for a search that accepts fifty minutes and red for one
-      // that does not, even while both are on screen at once.
-      //
-      // The listings behind one pin share a position but need not share a job, so the worst verdict
-      // among them wins, the same way it does across several addresses. A listing nothing has been
-      // measured for yet has no band at all and falls through to the ring colouring below rather
-      // than being painted red: not reached by the sweeper is not the same as too far away.
-      const band = grouped.reduce((worst, listing) => {
-        const listingBand = worstCommuteBand(listing.travelTimes, budgetedAddressesByJob.get(listing.job_id));
-        if (listingBand == null) return worst;
-        if (worst == null) return listingBand;
-        return BAND_SEVERITY[listingBand] > BAND_SEVERITY[worst] ? listingBand : worst;
-      }, null);
-
+      // The commute verdict is drawn as the shape underneath rather than onto the pin, so the only
+      // thing left that recolours a pin is the distance ring, which is asked for explicitly.
       let color = DEFAULT_MARKER_COLOR;
-      if (band != null) {
-        color = COMMUTE_BAND_COLORS[band];
-      } else if (distanceFilter > 0 && homeAddresses.length > 0) {
+      if (distanceFilter > 0 && homeAddresses.length > 0) {
         const inRange = homeAddresses.some(
           (home) => distanceMeters(home.coords.lat, home.coords.lng, lat, lng) <= distanceFilter * 1000,
         );
@@ -487,15 +428,6 @@ export default function MapView() {
       }
 
       const marker = new maplibregl.Marker({ color }).setLngLat([lng, lat]).setPopup(popup).addTo(map.current);
-
-      // Colour alone is not an answer for anybody who cannot tell these three apart, and a map is
-      // exactly where that bites. The band is said in words on the pin itself; the popup behind it
-      // carries the actual minutes per address.
-      if (band != null) {
-        const element = marker.getElement();
-        element.title = t(`map.commuteBand.${band}`);
-        element.setAttribute('aria-label', t(`map.commuteBand.${band}`));
-      }
 
       if (grouped.length > 1) {
         // Says how many listings hide behind this pin, so a stack is recognisable before opening it.
@@ -508,10 +440,7 @@ export default function MapView() {
 
       markers.current.push(marker);
     });
-    // `budgetedAddressesByJob` already follows `homeAddresses`, but it also follows the jobs, and it
-    // is read directly in here. Listed for that reason: the next person to give it another source
-    // should not have to notice that the pins quietly stopped being repainted.
-  }, [listings, priceRange, homeAddresses, budgetedAddressesByJob, distanceFilter, commuteFilter]);
+  }, [listings, priceRange, homeAddresses, distanceFilter, commuteFilter]);
 
   return (
     <>
@@ -611,29 +540,8 @@ export default function MapView() {
                   </Select>
                 </div>
 
-                {/* Says what the three pin colours mean, and only appears for the people who can
-                    see them: without a ceiling in Settings there is nothing to explain. */}
-                {anyJobHasCommuteLimits && (
-                  <div className="map-panel__row map-panel__row--legend">
-                    <Text size="small" strong className="map-panel__label">
-                      {t('map.commuteLegendLabel')}
-                    </Text>
-                    <div className="map-commute-legend">
-                      {['good', 'acceptable', 'poor'].map((band) => (
-                        <span key={band} className="map-commute-legend__item">
-                          <span
-                            className="map-commute-legend__dot"
-                            style={{ backgroundColor: COMMUTE_BAND_COLORS[band] }}
-                            aria-hidden="true"
-                          />
-                          <Text size="small" className="map-commute-legend__text">
-                            {t(`map.commuteBand.${band}`)}
-                          </Text>
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                {/* Only for the people it can answer for: without a ceiling in Settings there is no
+                    budget to draw an area from. */}
 
                 {/* Only offered once there is an address to measure a commute from. Unlike the
                     distance ring above, which recolours pins, this one hides them: a commute

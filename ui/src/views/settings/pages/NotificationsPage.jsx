@@ -6,7 +6,7 @@
 import { useEffect, useState } from 'react';
 import { Banner, Button, Modal, Select, Toast } from '@douyinfe/semi-ui-19';
 import { IconPlusCircle, IconArrowLeft } from '@douyinfe/semi-icons';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router';
 
 import NotificationChannelTable from '../../../components/table/NotificationChannelTable';
 import NotificationChannelEditor from '../../jobs/mutation/components/notificationAdapter/NotificationChannelEditor';

@@ -941,7 +941,6 @@
   "settings.addressModeLabel": "Unterwegs mit",
   "settings.addressDepartureHelp": "ÖPNV-Zeiten hängen davon ab, wann du losfährst. Sie werden deshalb für diese Uhrzeit am nächsten Werktag berechnet. So bleiben alle Inserate vergleichbar, statt den Fahrplan von zufällig irgendwann abzubilden.",
   "settings.addressStreetModeHelp": "Auto- und Fußwege hängen nicht von der Uhrzeit ab, deshalb wird keine abgefragt. Sie werden einzeln pro Inserat berechnet und füllen sich daher nach und nach.",
-  "map.commuteLegendLabel": "Fahrzeit",
   "map.commuteBand.good": "Innerhalb deines Limits",
   "map.commuteBand.acceptable": "Leicht darüber",
   "map.commuteBand.poor": "Zu weit",

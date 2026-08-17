@@ -6,7 +6,7 @@
 import React from 'react';
 import { Button, Typography } from '@douyinfe/semi-ui-19';
 import { IconArrowRight } from '@douyinfe/semi-icons';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 import VerdictBanner from '../../finance/components/VerdictBanner.jsx';
 import ListingPayoffChart from '../../finance/charts/ListingPayoffChart.jsx';

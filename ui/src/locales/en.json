@@ -941,7 +941,6 @@
   "settings.addressModeLabel": "Travel by",
   "settings.addressDepartureHelp": "Public transport times depend on when you set off, so they are worked out for this time on the next working day. That keeps every listing comparable instead of showing whatever the timetable happened to look like when Fredy last checked.",
   "settings.addressStreetModeHelp": "Driving and walking times do not depend on the time of day, so none is asked for. They are worked out one listing at a time, so they fill in gradually rather than all at once.",
-  "map.commuteLegendLabel": "Commute",
   "map.commuteBand.good": "Within your limit",
   "map.commuteBand.acceptable": "Slightly over",
   "map.commuteBand.poor": "Too far",

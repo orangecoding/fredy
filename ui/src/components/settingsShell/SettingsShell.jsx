@@ -4,7 +4,7 @@
  */
 
 import { Tabs } from '@douyinfe/semi-ui-19';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router';
 
 import Headline from '../headline/Headline.jsx';
 

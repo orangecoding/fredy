@@ -37,6 +37,21 @@
     cursor: crosshair;
   }
 
+  /*
+   * The basemap is drawn for daylight and arrives near-white, which is the brightest thing in the
+   * app by a wide margin: every panel around it sits on #0d0d0d. Toned down rather than swapped for
+   * a dark tile style, because the street detail people actually read the map for survives a dimmer
+   * far better than it survives being redrawn in grey on black.
+   *
+   * On the canvas element alone, not on any ancestor. Markers and popups are siblings of it inside
+   * the canvas container, so they keep their full colour and stay legible against the dimmed tiles,
+   * and the fixed-position fullscreen mode above is untouched: a filter on an *ancestor* of
+   * `.map-shell--expanded` would make it the containing block and size the overlay to itself.
+   */
+  .maplibregl-canvas {
+    filter: brightness(0.88) saturate(0.9);
+  }
+
   /* Top right, one box per concern, stacked. MapLibre's own controls were moved to the left so
      this corner belongs entirely to the panels. */
   &__ui {
@@ -98,49 +113,10 @@
       border-left: 1px solid #262a3a;
     }
 
-    // The legend is a key, not a control: three swatches next to a label do not fit the
-    // label-left/control-right rhythm of the rows above without wrapping into it.
-    &--legend {
-      align-items: flex-start;
-      flex-direction: column;
-      gap: 6px;
-    }
   }
 
   &__label {
     color: #8892a4;
-  }
-}
-
-/* What the three pin colours on the listings map mean. Only rendered for users who set a commute
-   ceiling, which is what makes the pins coloured in the first place. */
-.map-commute-legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 12px;
-
-  &__item {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    white-space: nowrap;
-  }
-
-  /* The panel is dark in both themes, so the text in it has to be too. Semi's own text tokens
-     invert with the theme and would put near-black lettering on this background in light mode,
-     which is why every other label in the panel overrides them as well. */
-  &__text {
-    color: #b6bfcd;
-  }
-
-  &__dot {
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    flex: 0 0 auto;
-    /* A hairline so the amber swatch still has an edge against the panel, where it is the one of
-       the three that comes closest to the background it sits on. */
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
   }
 }
 

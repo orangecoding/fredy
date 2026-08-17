@@ -3,7 +3,7 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router';
 
 export default function PermissionAwareRoute({ currentUser, children }) {
   const isAdmin = currentUser != null && currentUser.isAdmin;

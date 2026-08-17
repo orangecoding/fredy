@@ -6,7 +6,7 @@
 import React from 'react';
 import { Button, Select, Spin, Table, Tag, Tooltip, Typography } from '@douyinfe/semi-ui-19';
 import { IconSearch } from '@douyinfe/semi-icons';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 import { SegmentPart } from '../../../components/segment/SegmentPart.jsx';
 import { FieldLabel } from './ProfileForm.jsx';

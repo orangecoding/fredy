@@ -39,7 +39,7 @@ import {
   IconGridView,
   IconList,
 } from '@douyinfe/semi-icons';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import ListingDeletionModal from '../../ListingDeletionModal.jsx';
 import FilterButton from '../../filters/FilterButton.jsx';
 import ActiveFilterChips from '../../filters/ActiveFilterChips.jsx';

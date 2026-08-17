@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { Button, Col, Row, Toast, Tooltip, Typography } from '@douyinfe/semi-ui-19';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import {
   IconTerminal,
   IconClock,
