@@ -92,6 +92,12 @@ describe('useUrlState', () => {
       expect(state.params.has('q')).toBe(false);
     });
 
+    it('drops a number param set to null instead of writing "null"', () => {
+      const { pair, state } = makeSearchParams('page=3');
+      useUrlState(pair(), SCHEMA).setValue('page', null);
+      expect(state.params.has('page')).toBe(false);
+    });
+
     it('ignores keys the schema does not declare', () => {
       const { pair, state } = makeSearchParams();
       useUrlState(pair(), SCHEMA).setValues({ nonsense: 'x' });

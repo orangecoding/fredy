@@ -13,12 +13,12 @@ export const parseString = {
 
 export const parseNumber = {
   parse: (v) => Number(v),
-  stringify: (v) => String(v),
+  stringify: (v) => (v == null ? null : String(v)),
 };
 
 export const parseBoolean = {
   parse: (v) => v === 'true',
-  stringify: (v) => String(v),
+  stringify: (v) => (v == null ? null : String(v)),
 };
 
 // For state that is null | true | false
