@@ -140,6 +140,45 @@ describe('#immowelt fetchDetails', () => {
     expect(enriched.description).toContain('S Hackescher Markt');
   });
 
+  it('extracts multi-section descriptions from __UFRN_LIFECYCLE_SERVERREQUEST__ JSON payload', async () => {
+    const payload = JSON.stringify({
+      app_cldp: {
+        data: {
+          classified: {
+            sections: {
+              description: {
+                texts: [
+                  { headline: 'Beschreibung', text: 'Großes Haus mit Garten' },
+                  { headline: 'Lage', text: 'Ruhige Lage in Dresden' },
+                  { headline: 'Sonstiges', text: 'Keine Maklerprovision' },
+                ],
+              },
+            },
+          },
+        },
+      },
+    });
+    const html = `<html><head><script id="__UFRN_LIFECYCLE_SERVERREQUEST__">window["__UFRN_LIFECYCLE_SERVERREQUEST__"]=JSON.parse(${JSON.stringify(payload)});</script></head><body></body></html>`;
+    const enriched = await enrich(html);
+
+    expect(enriched.description).toContain('Großes Haus mit Garten');
+    expect(enriched.description).toContain('Ruhige Lage in Dresden');
+    expect(enriched.description).toContain('Keine Maklerprovision');
+  });
+
+  it('extracts additional description (Sonstiges) via DOM fallback', async () => {
+    const html = `<html><body>
+      <div data-testid="cdp-main-description-expandable-text">Helle 3-Zimmer-Wohnung</div>
+      <div data-testid="cdp-location-description-expandable-text">Zentrale Lage</div>
+      <div data-testid="cdp-additional-description-expandable-text">WBS erforderlich</div>
+    </body></html>`;
+    const enriched = await enrich(html);
+
+    expect(enriched.description).toContain('Helle 3-Zimmer-Wohnung');
+    expect(enriched.description).toContain('Zentrale Lage');
+    expect(enriched.description).toContain('WBS erforderlich');
+  });
+
   it('keeps the listing untouched when the exposé cannot be read', async () => {
     expect((await enrich(null)).description).toBe('short');
   });

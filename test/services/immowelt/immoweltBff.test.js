@@ -32,16 +32,31 @@ let requests;
  * @returns {any} something shaped enough like a puppeteer browser
  */
 function fakeBrowser(handler) {
+  let currentPageUrl = 'https://www.immowelt.de';
   const page = {
     isClosed: () => false,
-    goto: async () => {},
+    goto: async (url) => {
+      currentPageUrl = String(url);
+      if (String(url) === 'https://www.immowelt.de' || String(url) === 'https://www.immowelt.de/') {
+        return { status: () => 200 };
+      }
+      const res = handler(String(url));
+      const status = typeof res === 'object' && res !== null && 'status' in res ? res.status : 200;
+      return { status: () => status };
+    },
+    content: async () => {
+      const res = handler(currentPageUrl);
+      return typeof res === 'object' && res !== null && 'body' in res ? res.body : String(res);
+    },
     waitForFunction: async () => {},
     close: async () => {},
     evaluate: async (fn, ...args) => {
       const original = globalThis.fetch;
       globalThis.fetch = async (url, init) => {
         requests.push(String(url));
-        const { status, body } = handler(String(url), init);
+        const res = handler(String(url), init);
+        const status = typeof res === 'object' && res !== null && 'status' in res ? res.status : 200;
+        const body = typeof res === 'object' && res !== null && 'body' in res ? res.body : String(res);
         return { status, text: async () => body, json: async () => JSON.parse(body) };
       };
       try {
