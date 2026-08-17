@@ -3,15 +3,15 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import {
   convertSearchUrlToRequest,
   DEFAULT_ORDER,
   DEFAULT_PAGE_SIZE,
 } from '../../../lib/services/immowelt/immowelt-search-model.js';
-import logger from '../../../lib/services/logger.js';
-
 const BASE = 'https://www.immowelt.de/classified-search';
+
+const encodeLocation = (location) => Buffer.from(JSON.stringify(location)).toString('base64url');
 
 describe('#immowelt search model', () => {
   it('translates the minimal search a job url carries', () => {
@@ -58,15 +58,41 @@ describe('#immowelt search model', () => {
     });
   });
 
+  it('translates the current encoded radius location and construction year exactly', () => {
+    const locations = encodeLocation({
+      placeId: 'STRTDE123456',
+      radius: 2,
+      polyline: 'encoded-search-boundary',
+      coordinates: { lat: 1, lng: 2 },
+    });
+    const { criteria } = convertSearchUrlToRequest(
+      `${BASE}?distributionTypes=Buy&estateTypes=Apartment&locations=${locations}` +
+        `&spaceMin=80&spaceMax=105&yearOfConstructionMin=2010`,
+    );
+
+    expect(criteria).toEqual({
+      distributionTypes: ['Buy'],
+      estateTypes: ['Apartment'],
+      spaceMin: 80,
+      spaceMax: 105,
+      yearOfConstructionMin: 2010,
+      location: { polylines: ['encoded-search-boundary'] },
+    });
+  });
+
+  it('uses the place id when an encoded location has no radius polyline', () => {
+    const locations = encodeLocation({ placeId: 'STRTDE123456' });
+    const { criteria } = convertSearchUrlToRequest(`${BASE}?distributionTypes=Buy&locations=${locations}`);
+
+    expect(criteria.location).toEqual({ placeIds: ['STRTDE123456'] });
+  });
+
   // NaN serialises to null, which the BFF reads as "no limit" - the user would silently get
   // listings far outside the budget they typed.
-  it('drops a range filter that is not a number instead of sending NaN', () => {
-    const warn = vi.spyOn(logger, 'warn').mockImplementation(() => {});
-    const { criteria } = convertSearchUrlToRequest(`${BASE}?distributionTypes=Rent&locations=AD08DE8634&priceMax=abc`);
-
-    expect(criteria).not.toHaveProperty('priceMax');
-    expect(warn).toHaveBeenCalledWith(expect.stringContaining('priceMax'));
-    warn.mockRestore();
+  it('refuses a range filter that is not a number instead of widening the search', () => {
+    expect(() => convertSearchUrlToRequest(`${BASE}?distributionTypes=Rent&locations=AD08DE8634&priceMax=abc`)).toThrow(
+      /priceMax.*finite number/,
+    );
   });
 
   it('normalises the single-value enums to the PascalCase the BFF insists on', () => {
@@ -100,23 +126,39 @@ describe('#immowelt search model', () => {
     );
   });
 
+  it('refuses malformed encoded locations', () => {
+    expect(() => convertSearchUrlToRequest(`${BASE}?distributionTypes=Rent&locations=eyJbroken`)).toThrow(
+      /malformed encoded location/,
+    );
+  });
+
+  it('refuses an encoded location without a place id', () => {
+    const locations = encodeLocation({ polyline: 'encoded-search-boundary' });
+    expect(() => convertSearchUrlToRequest(`${BASE}?distributionTypes=Rent&locations=${locations}`)).toThrow(
+      /no valid 'placeId'/,
+    );
+  });
+
+  it('refuses an invalid encoded polyline', () => {
+    const locations = encodeLocation({ placeId: 'STRTDE123456', polyline: '' });
+    expect(() => convertSearchUrlToRequest(`${BASE}?distributionTypes=Rent&locations=${locations}`)).toThrow(
+      /invalid 'polyline'/,
+    );
+  });
+
   // A filter that is dropped without a word turns into notifications for exactly the flats the
   // user excluded on purpose.
-  it('warns about a filter it cannot translate', () => {
-    const warn = vi.spyOn(logger, 'warn').mockImplementation(() => {});
-    convertSearchUrlToRequest(`${BASE}?distributionTypes=Rent&locations=AD08DE8634&constructionYearMin=1990`);
-
-    expect(warn).toHaveBeenCalledWith(expect.stringContaining('constructionYearMin'));
-    warn.mockRestore();
+  it('refuses a filter it cannot translate instead of widening the search', () => {
+    expect(() =>
+      convertSearchUrlToRequest(`${BASE}?distributionTypes=Rent&locations=AD08DE8634&constructionYearMin=1990`),
+    ).toThrow(/constructionYearMin.*stopped/);
   });
 
   it('stays quiet about the tracking and view parameters every copied url carries', () => {
-    const warn = vi.spyOn(logger, 'warn').mockImplementation(() => {});
-    convertSearchUrlToRequest(
-      `${BASE}?distributionTypes=Rent&locations=AD08DE8634&serp_view=list&m=homepage_search&utm_source=newsletter&sr=1`,
-    );
-
-    expect(warn).not.toHaveBeenCalled();
-    warn.mockRestore();
+    expect(() =>
+      convertSearchUrlToRequest(
+        `${BASE}?distributionTypes=Rent&locations=AD08DE8634&serp_view=list&m=homepage_search&utm_source=newsletter&sr=1`,
+      ),
+    ).not.toThrow();
   });
 });
