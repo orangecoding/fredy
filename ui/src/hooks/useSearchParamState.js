@@ -13,18 +13,18 @@ export const parseString = {
 
 export const parseNumber = {
   parse: (v) => Number(v),
-  stringify: (v) => String(v),
+  stringify: (v) => (v == null ? null : String(v)),
 };
 
 export const parseBoolean = {
   parse: (v) => v === 'true',
-  stringify: (v) => String(v),
+  stringify: (v) => (v == null ? null : String(v)),
 };
 
 // For state that is null | true | false
 export const parseNullableBoolean = {
   parse: (v) => (v === 'true' ? true : v === 'false' ? false : null),
-  stringify: (v) => (v === null ? null : String(v)),
+  stringify: (v) => (v === null ? 'all' : String(v)),
 };
 
 /**
@@ -74,9 +74,9 @@ export function useUrlState([searchParams, setSearchParams], schema) {
             const entry = schema[key];
             if (entry == null) continue;
             const { defaultValue, codec = parseString } = entry;
-            const asString = value == null ? null : codec.stringify(value);
+            const asString = codec.stringify(value);
             // The default never appears in the URL: its absence is what the default means.
-            if (value === defaultValue || value == null || asString == null) {
+            if (value === defaultValue || asString == null) {
               next.delete(key);
             } else {
               next.set(key, asString);

@@ -39,7 +39,9 @@ describe('listingFilters', () => {
     });
 
     it('counts nothing once everything is cleared', () => {
-      expect(countActiveFilters({ ...defaults(), ...clearAllFilters() })).toBe(0);
+      const cleared = clearAllFilters();
+      expect(cleared.active).toBe(null);
+      expect(countActiveFilters({ ...defaults(), ...cleared })).toBe(0);
     });
 
     it('counts each filter once', () => {

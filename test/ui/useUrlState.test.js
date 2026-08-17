@@ -56,6 +56,11 @@ describe('useUrlState', () => {
       expect(values).toEqual({ page: 3, q: 'altbau', active: false, hidden: true });
     });
 
+    it('decodes active=all as null when schema default is true', () => {
+      const { pair } = makeSearchParams('active=all');
+      expect(useUrlState(pair(), SCHEMA).values.active).toBe(null);
+    });
+
     it('tells a nullable boolean apart from its default', () => {
       const { pair } = makeSearchParams('active=false');
       expect(useUrlState(pair(), SCHEMA).values.active).toBe(false);
@@ -75,10 +80,22 @@ describe('useUrlState', () => {
       expect(state.params.has('page')).toBe(false);
     });
 
+    it('stores active=all in URL when set to null if defaultValue is non-null', () => {
+      const { pair, state } = makeSearchParams();
+      useUrlState(pair(), SCHEMA).setValue('active', null);
+      expect(state.params.get('active')).toBe('all');
+    });
+
     it('drops a param set to null', () => {
       const { pair, state } = makeSearchParams('q=altbau');
       useUrlState(pair(), SCHEMA).setValue('q', null);
       expect(state.params.has('q')).toBe(false);
+    });
+
+    it('drops a number param set to null instead of writing "null"', () => {
+      const { pair, state } = makeSearchParams('page=3');
+      useUrlState(pair(), SCHEMA).setValue('page', null);
+      expect(state.params.has('page')).toBe(false);
     });
 
     it('ignores keys the schema does not declare', () => {
