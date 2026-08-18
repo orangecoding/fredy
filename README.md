@@ -25,10 +25,11 @@
 
 # Fredy 🏡 - Your Self-Hosted Real Estate Finder for Germany
 
-**Fredy** scrapes **ImmoScout24, Immowelt, Immonet, eBay Kleinanzeigen, WG-Gesucht and
-InBerlinWohnen**, drops duplicates across platforms, and notifies you via **Slack, Telegram,
-Email, ntfy, Discord and more** as soon as a new listing appears. Searches are managed from a
-Web UI, and you never see the same listing twice.
+**Fredy** scrapes **17 German real estate portals** (ImmoScout24, Immowelt, Kleinanzeigen,
+WG-Gesucht, Immobilien.de, McMakler and more, see [Provider](#provider-)), drops duplicates
+across platforms, and notifies you via **Slack, Telegram, Email, ntfy, Discord and more** as
+soon as a new listing appears. Searches are managed from a Web UI, and you never see the same
+listing twice.
 
 On top of the listing itself, Fredy answers two questions:
 
@@ -42,10 +43,24 @@ On top of the listing itself, Fredy answers two questions:
 
 ------------------------------------------------------------------------
 
+## 📖 Contents
+
+[Key Features](#-key-features) · [Sponsorship](#-sponsorship) · [Demo](#-demo) ·
+[Quick Start](#-quick-start) ·
+[Core Concepts](#-core-concepts) · [Financing Calculator](#-financing-calculator) ·
+[Travel Time](#travel-time) · [Public Transport](#public-transport) ·
+[Immoscout](#immoscout) · [Bot Detection & Proxies](#-bot-detection--proxies) ·
+[Analytics](#analytics) · [Debug Information](#-debug-information) ·
+[Development](#-development) · [Architecture](#-architecture) ·
+[Contributing](#-contributing) · [Credits & Data](#-credits--data) ·
+[License](#-license) · [Support](#-support)
+
+------------------------------------------------------------------------
+
 ## ✨ Key Features
 
--   🏠 Scrapes **ImmoScout24, Immowelt, Immonet, eBay Kleinanzeigen, WG-Gesucht,
-    InBerlinWohnen**
+-   🏠 Scrapes **17 German portals**: ImmoScout24, Immowelt, Kleinanzeigen, WG-Gesucht and
+    [13 more](#provider-)
 -   ⚡ Instant notifications: Slack, Telegram, Email (SMTP, SendGrid, Mailjet, Resend), ntfy,
     Discord, Mattermost, Pushover, Apprise and more
 -   🔎 Uses the **ImmoScout Mobile API** (reverse engineered)
@@ -60,34 +75,23 @@ On top of the listing itself, Fredy answers two questions:
 
 ------------------------------------------------------------------------
 
-## 🤝 Sponsorship [![](https://img.shields.io/static/v1?label=Sponsor&message=❤&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/orangecoding)
+## 🤝 Sponsorship
 
-I maintain Fredy and other open-source projects in my free time, if you find it useful, consider supporting the project ❤️
+I build and maintain Fredy in my free time. If it saves you some, consider chipping in ❤️
 
-#### Support me on
-[Ko-Fi](https://ko-fi.com/orangecoding) |  [Github](https://github.com/sponsors/orangecoding)
-----
+<a href="https://ko-fi.com/orangecoding"><img alt="Support me on Ko-fi" src="https://img.shields.io/badge/Ko--fi-Buy%20me%20a%20coffee-FF5E5B?style=for-the-badge&logo=kofi&logoColor=white"></a> <a href="https://github.com/sponsors/orangecoding"><img alt="Sponsor on GitHub" src="https://img.shields.io/badge/GitHub-Sponsor-EA4AAA?style=for-the-badge&logo=githubsponsors&logoColor=white"></a>
 
-Fredy is proudly backed by the **JetBrains Open Source Support Program**.   
+**Backed by**
 
+<a href="https://www.jetbrains.com/community/opensource/">
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://www.jetbrains.com/company/brand/img/logo_jb_dos_3.svg">
   <source media="(prefers-color-scheme: light)" srcset="https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg">
-  <img alt="Jetbrains Open Source" src="https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg">
+  <img alt="JetBrains Open Source Support Program" src="https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg" width="200">
 </picture>
+</a>
 
---------
-
-Timetables, journey planning and travel times are provided by
-[Transitous](https://transitous.org/), a community-run [MOTIS](https://github.com/motis-project/motis)
-instance. It is free, needs no API key, and is maintained by volunteers. Street and map data come
-from [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors. Please be considerate
-with the load you put on it, and see [their usage policy](https://transitous.org/api/) before
-pointing a large instance at it.
-
-<picture>
-  <img alt="https://transitous.org/" src="https://transitous.org/images/logo-text.svg">
-</picture>
+Fredy is supported by the **JetBrains Open Source Support Program**.
 
 ------------------------------------------------------------------------
 
@@ -111,6 +115,9 @@ docker run -d --name fredy \
   ghcr.io/orangecoding/fredy:master
 ```
 
+`:master` follows the master branch. To pin a release instead, use its version tag, for example
+`ghcr.io/orangecoding/fredy:26.5.1`. Images are built for `linux/amd64` and `linux/arm64`.
+
 Logs:
 
 ``` bash
@@ -119,7 +126,7 @@ docker logs fredy -f
 
 ### Manual (Node.js)
 
--   Requirement: **Node.js 22 or higher**
+-   Requirement: **Node.js 22.22.0 or higher** (see `engines` in `package.json`)
 -   Install dependencies and start:
 
 ``` bash
@@ -154,12 +161,21 @@ Fredy is built around a handful of simple concepts:
 
 ### Provider 🌐
 
-A **provider** is a real-estate platform (e.g. ImmoScout24, Immowelt,
-Immonet, Deutsche Wohnen, eBay Kleinanzeigen, WG-Gesucht).\
-When you create a job, you paste the search URL from the platform into
-Fredy.\
-⚠️ Always make sure the search results are sorted by **date**, so Fredy
-picks up the newest listings first.
+A **provider** is a real-estate platform. When you create a job, you paste the search URL from
+the platform into Fredy.\
+⚠️ Always make sure the search results are sorted by **date**, so Fredy picks up the newest
+listings first.
+
+Fredy ships with 17 providers:
+
+| | | |
+|---|---|---|
+| 1a Immobilien | Immo Südwest Presse | Neubau Kompass |
+| Deutsche Wohnen | Immobilien.de | OhneMakler |
+| Engel & Völkers | Immoscout | Regionalimmobilien24 |
+| IMAXX | Immowelt | Schwarzes Brett Bremen |
+| InBerlinWohnen | Kleinanzeigen | Sparkasse Immobilien |
+| McMakler | Wg gesucht | |
 
 ### Notification adapter 📡
 
@@ -361,7 +377,7 @@ Worth knowing:
 
 ## 🛡️ Bot Detection & Proxies
 
-Most browser-based providers (immowelt, immonet, kleinanzeigen, ...) are scraped through a hardened headless browser ([CloakBrowser](https://www.npmjs.com/package/cloakbrowser)). It makes the **browser fingerprint** indistinguishable from a real Chrome, which is enough when you run Fredy on a normal home connection.
+Most browser-based providers (kleinanzeigen, wg-gesucht, ohnemakler, ...) are scraped through a hardened headless browser ([CloakBrowser](https://www.npmjs.com/package/cloakbrowser)). It makes the **browser fingerprint** indistinguishable from a real Chrome, which is enough when you run Fredy on a normal home connection.
 
 On a **server / VPS the requests usually originate from a datacenter IP**, and providers behind anti-bot systems (e.g. AWS CloudFront/WAF) block those based on **IP reputation alone**, no matter how perfect the fingerprint is. The typical symptom: it works locally but you get `We have been detected as a bot :-/` on the server.
 
@@ -564,6 +580,48 @@ Thanks to everyone who has contributed!
 
 See the [Contributing
 Guide](https://github.com/orangecoding/fredy/blob/master/CONTRIBUTING.md).
+
+------------------------------------------------------------------------
+
+## 🗺️ Credits & Data
+
+Timetables, journey planning and travel times come from
+[Transitous](https://transitous.org/), a community-run [MOTIS](https://github.com/motis-project/motis)
+instance. It is free, needs no API key, and is maintained by volunteers, so please be considerate
+with the load you put on it and read [their usage policy](https://transitous.org/api/) before
+pointing a large instance at it. Street and map data come from
+[OpenStreetMap](https://www.openstreetmap.org/copyright) contributors.
+
+<a href="https://transitous.org/">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://transitous.org/images/logo-text.svg">
+  <source media="(prefers-color-scheme: light)" srcset="https://transitous.org/images/logo-text-dark.svg">
+  <img alt="Transitous" src="https://transitous.org/images/logo-text-dark.svg" width="180">
+</picture>
+</a>
+
+------------------------------------------------------------------------
+
+## 📄 License
+
+[Apache-2.0](LICENSE) with two additional conditions:
+
+- **Commons Clause** - you may not sell the software, or sell a product or service whose value
+  derives entirely or substantially from it. Self-hosting Fredy for yourself is explicitly fine.
+- **Attribution and Naming Clause** - substantial derivative works must credit the original
+  project "Fredy" and its author.
+
+Because of these conditions Fredy is **source-available, not OSI open source**. Read the full
+[LICENSE](LICENSE) before building anything commercial on top of it.
+
+------------------------------------------------------------------------
+
+## 💬 Support
+
+- **Bugs and feature requests**: [GitHub Issues](https://github.com/orangecoding/fredy/issues).
+  For bugs, attach a debug bundle, see [Debug Information](#-debug-information).
+- **An Immoscout search URL Fredy cannot map**: open an issue with the URL, it is usually a one
+  line fix.
 
 ------------------------------------------------------------------------
 
