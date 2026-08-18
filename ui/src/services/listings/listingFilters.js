@@ -217,9 +217,7 @@ export function filterConfiguredProviders(
     return providers;
   }
 
-  const relevantJobs = selectedJobId
-    ? jobs.filter((j) => j?.id === selectedJobId || j?.name === selectedJobId)
-    : jobs;
+  const relevantJobs = selectedJobId ? jobs.filter((j) => j?.id === selectedJobId || j?.name === selectedJobId) : jobs;
 
   const targetJobs = relevantJobs.length > 0 ? relevantJobs : jobs;
 

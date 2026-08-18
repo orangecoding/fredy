@@ -10,6 +10,7 @@ Setup:
 - For **STARTTLS** (port 587), leave Secure empty or set it to `false`.
 - Enter the username and password for authentication. For Gmail, use an [App Password](https://support.google.com/accounts/answer/185833).
 - Set the sender email address (must be allowed by your SMTP server).
+- To get a display name in the inbox instead of a bare address, write the sender as `Fredy <you@example.com>`.
 
 Multiple recipients:
 

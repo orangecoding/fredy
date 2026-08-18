@@ -228,9 +228,7 @@ describe('listingFilters', () => {
     });
 
     it('preserves an active provider filter even if no results currently match it', () => {
-      const jobs = [
-        { id: 'j1', name: 'Job 1', provider: [{ id: 'immoscout' }] },
-      ];
+      const jobs = [{ id: 'j1', name: 'Job 1', provider: [{ id: 'immoscout' }] }];
       const result = filterConfiguredProviders(allProviders, jobs, null, 'immowelt', ['immoscout']);
       expect(result).toEqual([
         { id: 'immoscout', name: 'ImmoScout24' },

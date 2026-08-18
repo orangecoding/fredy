@@ -84,7 +84,7 @@
     "cloakbrowser": "^0.5.7",
     "fastify": "^5.12.0",
     "handlebars": "4.7.9",
-    "maplibre-gl": "6.4.0",
+    "maplibre-gl": "6.4.1",
     "nanoid": "6.0.1",
     "node-cron": "^4.6.0",
     "node-fetch": "3.3.2",
@@ -123,6 +123,6 @@
     "lint-staged": "17.3.0",
     "nodemon": "^3.1.14",
     "prettier": "3.9.6",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.11"
   }
 }

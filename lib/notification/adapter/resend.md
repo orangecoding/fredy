@@ -6,6 +6,7 @@ Setup:
 - Create a Resend account: https://resend.com/
 - Create an API key and add it to Fredy's configuration.
 - Choose the sender address (e.g., you@yourdomain.com). Verify the domain (https://resend.com/domains/) in Resend before using it.
+- To get a display name in the inbox instead of a bare address, write the sender as `Fredy <you@yourdomain.com>`.
 - Optional for local testing: you can use `onboarding@resend.dev`, but Resend may restrict who you can send to when using test domains.
 
 Multiple recipients:
