@@ -8,7 +8,13 @@ import { Radio, RadioGroup, Select } from '@douyinfe/semi-ui-19';
 import FilterSelect from './FilterSelect.jsx';
 import FilterDrawer, { FilterGroup, FilterHelp } from '../filters/FilterDrawer.jsx';
 import { COMMUTE_OPTIONS } from '../transit/travelTimeFormat.js';
-import { showValueOf, showPatch, clearAllFilters, countActiveFilters } from '../../services/listings/listingFilters.js';
+import {
+  showValueOf,
+  showPatch,
+  clearAllFilters,
+  countActiveFilters,
+  filterConfiguredProviders,
+} from '../../services/listings/listingFilters.js';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
 
 /**
@@ -30,6 +36,7 @@ import { useTranslation } from '../../services/i18n/i18n.jsx';
  * @param {(patch: Object) => void} props.onChange Applies a URL patch.
  * @param {{id: string, name: string}[]} [props.jobs]
  * @param {{id: string, name: string}[]} [props.providers]
+ * @param {string[]|null} [props.availableProviders]
  * @param {boolean} props.financeComplete
  * @param {string} props.affordabilityHelp
  * @param {boolean} props.hasAddresses
@@ -43,6 +50,7 @@ export default function ListingsFilterPanel({
   onChange,
   jobs = [],
   providers = [],
+  availableProviders = null,
   financeComplete,
   affordabilityHelp,
   hasAddresses,
@@ -50,6 +58,14 @@ export default function ListingsFilterPanel({
 }) {
   const t = useTranslation();
   const activeCount = countActiveFilters(values);
+  const visibleProviders = filterConfiguredProviders(
+    providers,
+    jobs,
+    values.job,
+    values.provider,
+    availableProviders,
+  );
+
 
   return (
     <FilterDrawer
@@ -162,7 +178,7 @@ export default function ListingsFilterPanel({
           value={values.provider}
           style={{ width: '100%' }}
         >
-          {providers?.map((provider) => (
+          {visibleProviders?.map((provider) => (
             <Select.Option key={provider.id} value={provider.id}>
               {provider.name}
             </Select.Option>

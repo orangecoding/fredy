@@ -175,3 +175,71 @@ export function describeActiveFilters(values, { t, jobs = [], providers = [] }) 
     label: labels[key](),
   }));
 }
+/**
+ * Restricts the available providers to those for which results exist (or are configured
+ * in the user's jobs), so the filter dropdown only contains relevant providers.
+ *
+ * If `availableProviders` (from listing search results) is provided and non-empty,
+ * it narrows to providers present in those results. Otherwise, it falls back to
+ * providers configured across the user's jobs (or the selected job).
+ *
+ * When no jobs are configured yet or no providers can be derived, all providers are
+ * preserved as a fallback. A currently active provider filter is always preserved.
+ *
+ * @param {{id: string, name: string}[]} [providers]
+ * @param {Array<{id: string, name?: string, provider?: Array<{id?: string, name?: string}>}>} [jobs]
+ * @param {string|null} [selectedJobId]
+ * @param {string|null} [currentProviderId]
+ * @param {string[]|null} [availableProviders] Distinct provider IDs that have results
+ * @returns {{id: string, name: string}[]}
+ */
+export function filterConfiguredProviders(
+  providers = [],
+  jobs = [],
+  selectedJobId = null,
+  currentProviderId = null,
+  availableProviders = null,
+) {
+  if (!Array.isArray(providers) || providers.length === 0) {
+    return [];
+  }
+
+  // 1. If concrete result providers from listings exist, prioritize them
+  if (Array.isArray(availableProviders) && availableProviders.length > 0) {
+    const resultProviderIds = new Set(availableProviders);
+    return providers.filter(
+      (provider) => resultProviderIds.has(provider.id) || (currentProviderId && provider.id === currentProviderId),
+    );
+  }
+
+  // 2. Otherwise fall back to job configurations
+  if (!Array.isArray(jobs) || jobs.length === 0) {
+    return providers;
+  }
+
+  const relevantJobs = selectedJobId
+    ? jobs.filter((j) => j?.id === selectedJobId || j?.name === selectedJobId)
+    : jobs;
+
+  const targetJobs = relevantJobs.length > 0 ? relevantJobs : jobs;
+
+  const configuredProviderIds = new Set();
+  for (const job of targetJobs) {
+    if (Array.isArray(job?.provider)) {
+      for (const p of job.provider) {
+        const id = p?.id || p?.name;
+        if (id) {
+          configuredProviderIds.add(id);
+        }
+      }
+    }
+  }
+
+  if (configuredProviderIds.size === 0) {
+    return providers;
+  }
+
+  return providers.filter(
+    (provider) => configuredProviderIds.has(provider.id) || (currentProviderId && provider.id === currentProviderId),
+  );
+}

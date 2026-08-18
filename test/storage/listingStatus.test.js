@@ -158,6 +158,33 @@ describe('listingsStorage.queryListings hiddenOnly', () => {
   });
 });
 
+describe('listingsStorage.getAvailableProviders', () => {
+  let listingsStorage;
+
+  beforeEach(async () => {
+    calls.execute.length = 0;
+    calls.query.length = 0;
+    sqliteMock.__queryHandler = null;
+    listingsStorage = await import('../../lib/services/storage/listingsStorage.js');
+  });
+
+  it('queries distinct providers excluding manually deleted by default', () => {
+    sqliteMock.__queryHandler = () => [{ provider: 'immoscout' }, { provider: 'immowelt' }];
+    const result = listingsStorage.getAvailableProviders({ userId: 'u1', isAdmin: true });
+    expect(result).toEqual(['immoscout', 'immowelt']);
+    expect(calls.query[0].sql).toMatch(/SELECT DISTINCT l\.provider/);
+    expect(calls.query[0].sql).toMatch(/\(l\.manually_deleted = 0\)/);
+  });
+
+  it('filters by jobId when jobId is provided', () => {
+    sqliteMock.__queryHandler = () => [{ provider: 'immoscout' }];
+    const result = listingsStorage.getAvailableProviders({ jobId: 'job-1', userId: 'u1', isAdmin: true });
+    expect(result).toEqual(['immoscout']);
+    expect(calls.query[0].sql).toMatch(/\(l\.job_id = @jobId\)/);
+    expect(calls.query[0].params.jobId).toBe('job-1');
+  });
+});
+
 describe('listingsStorage.restoreListingsById', () => {
   let listingsStorage;
 
