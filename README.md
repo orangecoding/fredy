@@ -25,49 +25,38 @@
 
 # Fredy 🏡 - Your Self-Hosted Real Estate Finder for Germany
 
-Finding an apartment or house in Germany can be stressful and
-time-consuming.\
-**Fredy** makes it easier: it automatically scrapes **ImmoScout24,
-Immowelt, Immonet, eBay Kleinanzeigen, WG-Gesucht, and InBerlinWohnen** and notifies you
-instantly via **Slack, Telegram, Email, ntfy, discord and more** when new
-listings appear.
+**Fredy** scrapes **ImmoScout24, Immowelt, Immonet, eBay Kleinanzeigen, WG-Gesucht and
+InBerlinWohnen**, drops duplicates across platforms, and notifies you via **Slack, Telegram,
+Email, ntfy, Discord and more** as soon as a new listing appears. Searches are managed from a
+Web UI, and you never see the same listing twice.
 
-With a modern architecture, Fredy provides a **clean Web UI**, removes
-duplicates across platforms, and stores results so you never see the
-same listing twice.
+On top of the listing itself, Fredy answers two questions:
 
-Fredy also knows what a place would cost **you**. Enter your financial situation once, your
-income, your living costs, what you have saved, and every listing is measured against it. Fredy
-tells you which ones you can comfortably afford, which would be a stretch, and which are out of
-reach, for renting and for buying alike. See [Financing Calculator](#-financing-calculator).
-
-And it shows you how well connected a place is. Not as a crow-flying kilometre, which in a city
-with a river and no bridge where you want one tells you nothing, but as the **time it actually
-takes** to get from your own front door to the flat, by public transport, car, bike or on foot.
-The map draws the **public transport network**, marks every stop, and tells you which lines run
-there and when the next one leaves. See [Travel Time](#travel-time) and
-[Public Transport](#public-transport).
+- **What would this cost me?** Enter your income, living costs and savings once, and every
+  listing is measured against them: comfortably affordable, a stretch, or out of reach, for
+  renting and for buying. See [Financing Calculator](#-financing-calculator).
+- **How long would I actually travel?** Not straight-line distance, but the real journey from
+  your own address by public transport, car, bike or on foot. The map draws the transport
+  network, marks every stop and shows the next departures. See [Travel Time](#travel-time) and
+  [Public Transport](#public-transport).
 
 ------------------------------------------------------------------------
 
 ## ✨ Key Features
 
--   🏠 Scrapes **ImmoScout24, Immowelt, Immonet, eBay Kleinanzeigen,
-    WG-Gesucht, InBerlinWohnen**
--   ⚡ Instant notifications: Slack, Telegram, Email (SendGrid,
-    Mailjet), ntfy, discord 
+-   🏠 Scrapes **ImmoScout24, Immowelt, Immonet, eBay Kleinanzeigen, WG-Gesucht,
+    InBerlinWohnen**
+-   ⚡ Instant notifications: Slack, Telegram, Email (SMTP, SendGrid, Mailjet, Resend), ntfy,
+    Discord, Mattermost, Pushover, Apprise and more
 -   🔎 Uses the **ImmoScout Mobile API** (reverse engineered)
--   🌍 Runs anywhere: Docker, Node.js, self-hosted
--   🖥️ Intuitive **Web UI** to manage searches
--   🎯 Easy to use thanks to a user-friendly Web UI
+-   🖥️ **Web UI** to create and manage searches
 -   🔄 Deduplication across platforms
--   ⏱️ Customizable search intervals
--   💶 Add your **personal financial situation** and see which listings you can actually
-    afford, for renting and for buying
--   ⏱️ Shows the **real travel time** from your addresses to every listing, by public
-    transport, car, bike or on foot, and filters listings by it
--   Makes **public transport visible**: the network on the map, live departures per stop,
-    and the nearest stops for every listing
+-   ⏱️ Configurable search intervals and working hours
+-   💶 **Financing calculator**: which listings you can afford, for renting and for buying
+-   🚆 **Real travel times** from your addresses by public transport, car, bike or on foot,
+    plus a filter to match
+-   🗺️ **Public transport on the map**: the network, every stop, and live departures
+-   🌍 Runs anywhere: Docker, Node.js, self-hosted
 
 ------------------------------------------------------------------------
 
@@ -75,7 +64,7 @@ there and when the next one leaves. See [Travel Time](#travel-time) and
 
 I maintain Fredy and other open-source projects in my free time, if you find it useful, consider supporting the project ❤️
 
-#### Support me on 
+#### Support me on
 [Ko-Fi](https://ko-fi.com/orangecoding) |  [Github](https://github.com/sponsors/orangecoding)
 ----
 
@@ -182,21 +171,20 @@ filled-in adapter.
 
 ### Notification channel 🔔
 
-A **channel** is one saved adapter configuration, "Telegram → family chat", say.\
+A **channel** is one saved adapter configuration, for example "Telegram → family chat".\
 You set it up once under **Settings → Notification channels** and reuse it in as many jobs
-as you like. Rotating a token means editing one channel instead of every job that used it.
+as you like. Rotating a token then means editing one channel instead of every job that used it.
 
 A job can hold as many channels as you want, and every new listing goes out through all of
 them at once. Several channels of the same type are fine, so "Telegram → family chat" and
 "Telegram → work chat" can both be on the same search.
 
-Every channel belongs to whoever created it. An administrator can additionally share one with
-all users, or with other administrators only. Sharing lets other people *send* through a
-channel, it never shows them its credentials. Anyone who wants their own variant can
-duplicate the channel and fill in their own.
+Every channel belongs to whoever created it. An administrator can share one with all users, or
+with other administrators only. Sharing lets other people *send* through a channel, it never
+reveals its credentials. Anyone who needs their own variant can duplicate the channel and fill
+in their own.
 
-Deleting a channel is blocked while a job still uses it, so a search can never quietly stop
-notifying you.
+A channel that is still used by a job cannot be deleted.
 
 ### Job 📅
 
@@ -217,21 +205,19 @@ For more information on how to set it up and use it, please refer to the [MCP Re
 
 ## 💶 Financing Calculator
 
-Finding a place you like is one thing. Working out whether you can actually pay for it is
-another. The **Financing** page answers the question the listing page cannot: what would this
-cost me every month, and does it fit?
+The **Financing** page works out what a listing would cost you every month, and whether that
+fits your household.
 
-Every job now says whether it searches for something to **rent** or something to **buy**, and
-the finance page has one tab for each. Both sit on the same household block - income for one or
-two people, living costs, any loan you are already paying off - and both are judged by the same
-rule of thumb: housing costs plus existing debt at or below 35 % of net income.
+Every job declares whether it searches to **rent** or to **buy**, and the page has one tab for
+each. Both share the same household block (income for one or two people, living costs, any loan
+you are already paying off) and the same rule of thumb: housing costs plus existing debt at or
+below 35 % of net income.
 
 ### Renting
 
-Portals quote the Kaltmiete, but a household pays warm. Set the Nebenkosten surcharge once and
-Fredy reports the highest cold rent you can take on, what that comes to warm, and what is left
-over each month. Nothing else is asked for: someone who only ever rents is never made to answer
-a question about Grunderwerbsteuer.
+Portals quote Kaltmiete, households pay warm. Set the Nebenkosten surcharge once, and Fredy
+reports the highest cold rent you can take on, what that comes to warm, and what is left over
+each month. The renting tab asks for nothing beyond that.
 
 ### Buying
 
@@ -239,32 +225,30 @@ The buying tab models the purchase the way a German bank would, as an **Annuitä
 
 - the **monthly rate**, and how it splits into interest and repayment over the years
 - the **Kaufnebenkosten**: Grunderwerbsteuer for your Bundesland, Notar + Grundbuch, and the
-  Maklerprovision. On a 400.000 € house in NRW these add roughly 46.000 € that has to be
-  financed or covered from your own pocket
-- the **Restschuld** left when the Zinsbindung runs out, which is the amount you have to
-  refinance at whatever rates exist then
+  Maklerprovision. On a 400.000 € house in NRW these add roughly 46.000 € that you have to
+  finance or pay out of your own pocket
+- the **Restschuld** left when the Zinsbindung runs out, which you have to refinance at
+  whatever rates exist then
 - the **age at which you and your partner become debt-free**
 - the **highest purchase price** that keeps you inside the 35 % rule
 
-Several loan scenarios can be compared side by side. Each carries a Sollzins, a Tilgung, a
-Zinsbindung, a monthly rate and an optional Sondertilgung. Tilgung and monthly rate are the same
-number seen from opposite ends, so editing either one rewrites the other and you can work from
-whichever figure you actually have. The term is calculated at a constant Sollzins; what a
-follow-up loan costs after the Zinsbindung is anyone's guess, so the Restschuld is reported
-instead of a made-up rate.
+Loan scenarios can be compared side by side, each with a Sollzins, a Tilgung, a Zinsbindung, a
+monthly rate and an optional Sondertilgung. Tilgung and monthly rate describe the same thing
+from opposite ends, so editing one rewrites the other and you can enter whichever figure you
+have. The term is calculated at a constant Sollzins. Fredy does not guess what a follow-up loan
+will cost after the Zinsbindung, it reports the Restschuld instead.
 
-### It follows you around the app
+### Where the result shows up
 
-Each half saves and deletes on its own, and once a half is saved it shows up elsewhere:
+Each tab saves and deletes on its own. Once one is saved, its verdict appears elsewhere:
 
 - an **affordability filter** on the listings overview, next to the status and provider
   filters, plus a small verdict chip on each listing
 - a **rent card or a financing card** on the listing detail page, whichever matches the job
   that found the listing
 
-Which yardstick a listing gets follows the deal type of its job, so a 1.200 € rent is never
-mistaken for an absurdly cheap house. Everything stays hidden until the matching half exists,
-so nothing changes for anyone who does not use this.
+Which calculation a listing gets follows the deal type of its job, so a 1.200 € rent is never
+read as a very cheap house. Nothing appears until the matching tab is filled in.
 
 An LLM can ask the same question over MCP with the `calculate_financing` tool, which returns a
 mortgage answer or a rent answer depending on the listing.
@@ -277,24 +261,22 @@ mortgage answer or a rent answer depending on the listing.
 
 ## Travel Time
 
-Straight-line distance is a bad proxy for whether you could live somewhere. Two flats the same
-kilometre from your office can be eight minutes and fifty minutes away from it. Fredy measures the
-journey instead.
+Two flats the same kilometre from your office can be eight minutes and fifty minutes away from
+it. Fredy measures the journey instead of the distance.
 
-Set your addresses under **Settings → Travel time**. Each one gets a name, and how you travel to it:
-public transport, by car, or on foot. For public transport you also pick a time of day, because a
-journey at eight in the morning is not the journey at midnight. The day is always the next working
-day, so every listing is measured against the same timetable and stays comparable.
+Set your addresses under **Settings → Travel time**. Each gets a name and a mode: public
+transport, car, or on foot. For public transport you also pick a time of day, since a journey at
+eight in the morning is not the journey at midnight. The day is always the next working day, so
+every listing is measured against the same timetable.
 
 Travel times then show up wherever the distance already did: on listing cards and in the table, in
 the map popup, in your notifications, and on the listing detail page.
 
-### Filtering by it
+### Filtering
 
 Both the listings overview and the map have a **"reachable within"** filter. Pick a mode and a
-ceiling, say public transport within 30 minutes, and the list filters or the map hides the pins that
-fail it. Listings Fredy has not measured yet are not shown by the filter, because it can only speak
-about journeys it knows.
+ceiling, for example public transport within 30 minutes, and the list or the map drops everything
+above it. Listings Fredy has not measured yet are hidden by the filter.
 
 ### Seeing the route
 
@@ -305,31 +287,29 @@ it goes to and how long that part takes.
 
 ### Estimated and exact
 
-Two kinds of number, and Fredy always says which.
+Fredy reports two kinds of number and always labels which one you are looking at.
 
-**Estimated** is what the background sweep produces. Once per address, Fredy asks how long it takes
-to reach every stop in the region, then adds the walk from the closest one to the front door. That is
-one request per address no matter how many listings you have, which is what keeps this affordable on
-a service run by volunteers. Hover the *Estimated* chip and Fredy shows the stops it used, so you can
-check the number rather than take it on faith. Measured against exact routing across Berlin, it
-lands within a few minutes.
+**Estimated** comes from the background sweep. Once per address, Fredy asks how long it takes to
+reach every stop in the region, then adds the walk from the closest stop to the front door. That is
+one request per address no matter how many listings you have, which keeps the load on a
+volunteer-run service low. Hover the *Estimated* chip to see the stops it used. Compared against
+exact routing across Berlin, it lands within a few minutes.
 
-**Exact** is what you get when you open a listing. Fredy asks for the real journey, which also fills
-in the car, bike and walking times and the drawable routes, and stores it so it is only paid for
-once.
+**Exact** is fetched when you open a listing. Fredy requests the real journey, which also fills in
+the car, bike and walking times and the drawable routes, and stores it so it is only requested once.
 
-Nothing is invented. A mode that could not be routed is left out rather than shown as zero, and a
-listing that has not been measured yet says so. The straight-line distance is still there and still
-shown, so if a lookup fails you see exactly what you saw before.
+A mode that could not be routed is left out rather than shown as zero, and a listing that has not
+been measured yet says so. The straight-line distance is still shown, so a failed lookup leaves you
+no worse off than before.
 
 ### For operators
 
-Sensible defaults, none of which need touching:
+Defaults that normally need no change:
 
 | Setting | Default | What it does |
 |---|---|---|
 | `motisBaseUrl` | `https://api.transitous.org/api` | Point at your own MOTIS instance if you outgrow the public one. |
-| `travelTimeMaxMinutes` | `90` | How far the region-wide lookup reaches. Also the size dial. |
+| `travelTimeMaxMinutes` | `90` | How far the region-wide lookup reaches, and the main size dial. |
 | `travelTimeStreetLookupsPerRun` | `15` | Ceiling on street routings per sweep. `0` turns them off. |
 | `travelTimeLimitPerRun` | `500` | Listings one sweep works through. Not a request count. |
 | `travelTimeMaxAgeDays` | `30` | When a stored travel time is looked up again. |
@@ -341,15 +321,14 @@ transport cannot answer at all, where you asked for car or walking, and when you
 
 ## Public Transport
 
-A listing that says "gute Verkehrsanbindung" tells you nothing. Fredy shows you the actual
-connection, on the map and on every listing, without leaving the app for a timetable.
+"Gute Verkehrsanbindung" in a listing tells you nothing. Fredy shows the actual connection, on
+the map and on every listing, without a detour to a timetable site.
 
 ### On the map
 
 The map view has a **public transport layer**, switched on by default. It draws the rail,
 S-Bahn, U-Bahn, tram and light rail network, colour-coded by mode, and marks every station and
-bus stop with its own icon. It works on the standard map as well as on the satellite view, where
-the imagery itself shows nothing of the sort.
+bus stop with its own icon. It works on the standard map and on the satellite view.
 
 Point at a stop and Fredy opens its **departure board**:
 
@@ -363,8 +342,8 @@ URL, so a link you bookmark or share keeps it.
 ### On every listing
 
 The marker popup on the map and the listing detail page both show the **three nearest stops**
-with their walking distance. Each one opens into the same departure board, so the question
-"how do I get to work from here" is answered on the listing itself.
+with their walking distance. Each opens the same departure board, so "how do I get to work from
+here" is answered without leaving the listing.
 
 ------------------------------------------------------------------------
 
@@ -374,7 +353,7 @@ Immoscout has implemented advanced bot detection. In order to work around this, 
 
 Paste the search URL from your browser as usual. Beside flats and houses this covers plots, garages, WG rooms, short term lets, assisted living and foreclosures, region, radius and drawn-shape searches, and the "pretty" URLs the website generates when a search carries a single filter (`haus-mit-garage-kaufen`, `3-zimmer-wohnung-mieten`, `wohnung-bis-800-euro-warm`, ...). Commercial searches (offices, shops, gastronomy) are not supported.
 
-Two things are worth knowing:
+Worth knowing:
 
 -   A filter that Immoscout's own API does not offer for the type you are searching (a pets filter on a house purchase, say) is **dropped** and logged, because sending it makes their API reject the whole search.
 -   A filter Fredy has no translation for yet is dropped as well, and says so in the log: `no translator for query parameter "..." ... please report the search URL`. Your search then runs **wider** than you set it, so if results look too broad, check the log first.
@@ -419,7 +398,7 @@ This is not an endorsement, pick whatever fits your budget. For low-volume use l
 Fredy is completely free (and will always remain free). However, it would be a huge help if you’d allow me to collect some analytical data.
 Before you freak out, let me explain...  
 If you agree, Fredy will send a ping once every 6 hours to my internal tracking project (Will be open sourced soon).  
-The data includes: which notification adapters and providers are in use (the type only, for example `slack`, never your channels, their names or their credentials), OS, architecture, Node version, and language. The information is entirely anonymous and helps me understand which adapters/providers are most frequently used.</p>
+The data includes: which notification adapters and providers are in use (the type only, for example `slack`, never your channels, their names or their credentials), OS, architecture, Node version, and language. The information is entirely anonymous and helps me understand which adapters/providers are most frequently used.
 
 **Thanks**🤘
 
@@ -479,25 +458,25 @@ You should now be able to access _Fredy_ from your browser. Check your Terminal 
 
 ### Run Tests
 
-## "Online" tests
+#### "Online" tests
 These tests are directly executed against the actual providers.
 ``` bash
 yarn run test
 ```
 
-## "Offline" tests
+#### "Offline" tests
 These tests are using the test fixtures instead of the actual providers. Much faster and "good enough" to test the core functionality.
 ``` bash
 yarn run test:offline
 ```
 
-## Download new fixtures
+#### Download new fixtures
 If you have to refresh the fixtures (every once in a while needed because the providers change their code), run this command:
 ``` bash
 yarn run test:download-fixtures
 ```
 
-## Adding a new language
+### Adding a new language
 
 Fredy's UI is fully multilingual. Translation files live in `ui/src/locales/`. To add a new language, create a single JSON file there, no code changes required.
 
