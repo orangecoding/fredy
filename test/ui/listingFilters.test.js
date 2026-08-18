@@ -218,6 +218,26 @@ describe('listingFilters', () => {
       ]);
     });
 
+    it('narrows to providers for which results are present when availableProviders is provided', () => {
+      const jobs = [
+        { id: 'j1', name: 'Job 1', provider: [{ id: 'immoscout' }, { id: 'immowelt' }, { id: 'kleinanzeigen' }] },
+      ];
+      // Results only exist for immoscout
+      const result = filterConfiguredProviders(allProviders, jobs, null, null, ['immoscout']);
+      expect(result).toEqual([{ id: 'immoscout', name: 'ImmoScout24' }]);
+    });
+
+    it('preserves an active provider filter even if no results currently match it', () => {
+      const jobs = [
+        { id: 'j1', name: 'Job 1', provider: [{ id: 'immoscout' }] },
+      ];
+      const result = filterConfiguredProviders(allProviders, jobs, null, 'immowelt', ['immoscout']);
+      expect(result).toEqual([
+        { id: 'immoscout', name: 'ImmoScout24' },
+        { id: 'immowelt', name: 'Immowelt' },
+      ]);
+    });
+
     it('falls back to all providers when no jobs exist', () => {
       expect(filterConfiguredProviders(allProviders, [])).toEqual(allProviders);
       expect(filterConfiguredProviders(allProviders, null)).toEqual(allProviders);

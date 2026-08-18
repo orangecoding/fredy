@@ -36,6 +36,7 @@ import { useTranslation } from '../../services/i18n/i18n.jsx';
  * @param {(patch: Object) => void} props.onChange Applies a URL patch.
  * @param {{id: string, name: string}[]} [props.jobs]
  * @param {{id: string, name: string}[]} [props.providers]
+ * @param {string[]|null} [props.availableProviders]
  * @param {boolean} props.financeComplete
  * @param {string} props.affordabilityHelp
  * @param {boolean} props.hasAddresses
@@ -49,6 +50,7 @@ export default function ListingsFilterPanel({
   onChange,
   jobs = [],
   providers = [],
+  availableProviders = null,
   financeComplete,
   affordabilityHelp,
   hasAddresses,
@@ -56,7 +58,13 @@ export default function ListingsFilterPanel({
 }) {
   const t = useTranslation();
   const activeCount = countActiveFilters(values);
-  const visibleProviders = filterConfiguredProviders(providers, jobs, values.job, values.provider);
+  const visibleProviders = filterConfiguredProviders(
+    providers,
+    jobs,
+    values.job,
+    values.provider,
+    availableProviders,
+  );
 
 
   return (

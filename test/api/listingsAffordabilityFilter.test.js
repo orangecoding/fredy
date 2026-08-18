@@ -10,6 +10,7 @@ import Fastify from 'fastify';
 // translation and nothing else.
 vi.mock('../../lib/services/storage/listingsStorage.js', () => ({
   queryListings: vi.fn(() => ({ totalNumber: 0, page: 1, result: [] })),
+  getAvailableProviders: vi.fn(() => []),
   getListingsForMap: vi.fn(() => []),
   getListingById: vi.fn(() => null),
   setListingNotes: vi.fn(() => 1),
