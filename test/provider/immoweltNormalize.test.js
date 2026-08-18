@@ -147,4 +147,85 @@ describe('#immowelt fetchDetails', () => {
   it('keeps the listing untouched when the exposé no longer carries the description element', async () => {
     expect((await enrich('<html><body>nothing here</body></html>')).description).toBe('short');
   });
+
+  // The block immowelt heads with "Sonstiges" is where the terms people blacklist for - WBS,
+  // Tauschwohnung, provision notes - are spelled out. Reading only the first two blocks stored a
+  // description that looked complete and silently passed the blacklist.
+  it('reads the third description block, which has no box of its own on the page', async () => {
+    const html = `<html><body>
+      <div data-testid="cdp-main-description-expandable-text">Helle 3-Zimmer-Wohnung</div>
+      <div data-testid="cdp-location-description-expandable-text">Zentrale Lage</div>
+      <div data-testid="cdp-additional-description-expandable-text">WBS erforderlich</div>
+    </body></html>`;
+
+    expect((await enrich(html)).description).toBe('Helle 3-Zimmer-Wohnung\n\nZentrale Lage\n\nWBS erforderlich');
+  });
+});
+
+describe('#immowelt extractExposeDescription', () => {
+  const serverStateHtml = fs.readFileSync(path.join(FIXTURES, 'immowelt_detail_serverstate.html'), 'utf8');
+
+  it('reads every block out of the server state of a real exposé', () => {
+    const description = provider.extractExposeDescription(serverStateHtml);
+
+    expect(description).toContain('In Massivbauweise entstehen 2 nebeneinanderliegende Mehrfamilienhäuser');
+    expect(description).toContain('Südlich der Christian-Rath-Straße');
+    expect(description).toContain('Zukunftsorientiertes Wohnen mittels hoher Energieeffizienz');
+    expect(description).toContain('Weitere Informationen');
+  });
+
+  // The state is not truncated at the "show more" cut the markup applies, so it is the longer read
+  // of the two whenever a page carries both.
+  it('prefers the server state over the rendered markup', () => {
+    expect(provider.extractExposeDescription(serverStateHtml)).not.toContain('DOM FALLBACK MARKER');
+  });
+
+  it('falls back to the rendered markup when the page carries no server state', () => {
+    const html = `<html><body>
+      <div data-testid="cdp-main-description-expandable-text">Nur im Markup</div>
+    </body></html>`;
+
+    expect(provider.extractExposeDescription(html)).toBe('Nur im Markup');
+  });
+
+  it('turns the line breaks of the server state into real ones', () => {
+    expect(provider.extractExposeDescription(serverState({ description: { texts: [{ text: 'A<br>B' }] } }))).toBe(
+      'A\nB',
+    );
+  });
+
+  it('reads the individual sections when the exposé carries no headlined texts', () => {
+    const html = serverState({
+      mainDescription: { description: 'Zum Objekt' },
+      areaDescription: { description: 'Zur Lage' },
+      extendedInfoDescription: { description: 'Sonstiges' },
+    });
+
+    expect(provider.extractExposeDescription(html)).toBe('Zum Objekt\n\nZur Lage\n\nSonstiges');
+  });
+
+  // A description ending on a bracketed aside used to end the state's string literal early and
+  // lose the entire payload, because the literal was matched with a lazy regex.
+  it('survives a description that contains the end of the JSON.parse call', () => {
+    const html = serverState({ description: { texts: [{ text: 'Stellplatz (optional, 50 €");' }] } });
+
+    expect(provider.extractExposeDescription(html)).toBe('Stellplatz (optional, 50 €");');
+  });
+
+  it('returns null for an exposé that could not be loaded at all', () => {
+    expect(provider.extractExposeDescription(null)).toBeNull();
+    expect(provider.extractExposeDescription('<html><body>nothing here</body></html>')).toBeNull();
+  });
+
+  /**
+   * Build a page carrying `sections` the way immowelt's shell embeds it: a JSON document inside a
+   * JavaScript string literal.
+   *
+   * @param {object} sections the `classified.sections` of the exposé
+   * @returns {string} the page source
+   */
+  function serverState(sections) {
+    const payload = JSON.stringify({ app_cldp: { data: { classified: { sections } } } });
+    return `<html><head><script id="__UFRN_LIFECYCLE_SERVERREQUEST__">window["__UFRN_LIFECYCLE_SERVERREQUEST__"]=JSON.parse(${JSON.stringify(payload)});</script></head><body></body></html>`;
+  }
 });

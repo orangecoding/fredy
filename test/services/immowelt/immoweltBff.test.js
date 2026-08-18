@@ -170,6 +170,27 @@ describe('#immowelt bff transport', () => {
     expect(await fetchExposeHtml(browser, 'https://www.immowelt.de/expose/abc')).toBeNull();
   });
 
+  // Once DataDome has refused one exposé it refuses the rest, so asking for them is nothing but
+  // further strikes against an address that is already flagged.
+  it('stops asking for exposés after the first refusal of a run', async () => {
+    const browser = fakeBrowser(() => ({ status: 403, body: 'blocked' }));
+
+    expect(await fetchExposeHtml(browser, 'https://www.immowelt.de/expose/abc')).toBeNull();
+    expect(await fetchExposeHtml(browser, 'https://www.immowelt.de/expose/def')).toBeNull();
+
+    expect(requests).toEqual(['https://www.immowelt.de/expose/abc']);
+  });
+
+  it('gives the next run an unflagged session of its own', async () => {
+    const handler = () => ({ status: 200, body: '<html>expose</html>' });
+    const blocked = fakeBrowser(() => ({ status: 429, body: 'slow down' }));
+    await fetchExposeHtml(blocked, 'https://www.immowelt.de/expose/abc');
+
+    expect(await fetchExposeHtml(fakeBrowser(handler), 'https://www.immowelt.de/expose/abc')).toBe(
+      '<html>expose</html>',
+    );
+  });
+
   it('gives each browser its own session, so concurrent jobs cannot share one', async () => {
     const pages = [];
     const build = () => {

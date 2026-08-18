@@ -110,10 +110,53 @@ async function downloadImmoscoutFixtures(mobileApiUrl) {
 }
 
 /**
+ * Cut the exposé down to the script tag the provider reads its description out of.
+ *
+ * The full page is ~700 KB of micro-frontend bootstrap around it. Keeping the tag on its own gives
+ * the server-state path a fixture that stays small enough to read in a diff, and the marker in the
+ * body proves that path is preferred over the rendered markup - no exposé calls itself a fallback.
+ *
+ * @param {string} detailHtml the exposé page source
+ * @param {string} exposeUrl the url it was downloaded from, for the fixture's header comment
+ * @returns {Promise<void>}
+ */
+async function writeImmoweltServerState(detailHtml, exposeUrl) {
+  const open = detailHtml.indexOf('<script id="__UFRN_LIFECYCLE_SERVERREQUEST__">');
+  const close = open < 0 ? -1 : detailHtml.indexOf('</script>', open);
+  if (close < 0) {
+    console.warn('  Exposé carries no __UFRN_LIFECYCLE_SERVERREQUEST__ tag - skipping server state fixture');
+    return;
+  }
+
+  const fixture = `<!doctype html>
+<!--
+  Trimmed capture of ${exposeUrl}, kept for the server-state path of \`extractExposeDescription\`.
+
+  Everything but the \`__UFRN_LIFECYCLE_SERVERREQUEST__\` script tag is dropped: that tag is the one
+  the provider reads and it is here verbatim, so a change to immowelt's state shape breaks this
+  test the way it breaks production. The paragraph in the body is not from the capture - it is a
+  marker that proves the server state is preferred over the rendered markup, because no exposé
+  describes itself as a fallback.
+-->
+<html lang="de">
+  <head>
+    ${detailHtml.slice(open, close + '</script>'.length)}
+  </head>
+  <body>
+    <div data-testid="cdp-main-description-expandable-text">DOM FALLBACK MARKER</div>
+  </body>
+</html>
+`;
+
+  await writeFile(path.join(FIXTURES_DIR, 'immowelt_detail_serverstate.html'), fixture, 'utf-8');
+  console.log('  Saved immowelt_detail_serverstate.html');
+}
+
+/**
  * Immowelt serves both its result list and its exposé from behind DataDome, so nothing here can be
  * fetched with a plain `fetch` - the provider's own transport, which runs inside the browser page,
- * is used instead. The two fixtures mirror exactly what it returns: the `/classifiedList` payload
- * and one exposé's markup.
+ * is used instead. The three fixtures mirror exactly what it returns: the `/classifiedList`
+ * payload, one exposé's markup, and that exposé's embedded server state.
  *
  * @param {import('../../lib/types/providerConfig.js').ProviderConfig} runConfig the initialized provider config
  * @param {Function} launchBrowser
@@ -157,6 +200,8 @@ async function downloadImmoweltFixtures(runConfig, launchBrowser, closeBrowser) 
 
     await writeFile(path.join(FIXTURES_DIR, 'immowelt_detail.html'), detailHtml, 'utf-8');
     console.log('  Saved immowelt_detail.html');
+
+    await writeImmoweltServerState(detailHtml, exposeUrl);
   } finally {
     await releaseSession(browser);
     await closeBrowser(browser);

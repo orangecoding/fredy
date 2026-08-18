@@ -3,13 +3,12 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import {
   convertSearchUrlToRequest,
   DEFAULT_ORDER,
   DEFAULT_PAGE_SIZE,
 } from '../../../lib/services/immowelt/immowelt-search-model.js';
-import logger from '../../../lib/services/logger.js';
 
 const BASE = 'https://www.immowelt.de/classified-search';
 
@@ -27,16 +26,18 @@ describe('#immowelt search model', () => {
     expect(paging).toEqual({ page: 1, size: DEFAULT_PAGE_SIZE, order: 'DateDesc' });
   });
 
+  // The sample values are ones immowelt actually accepts - `Maisonette`, which stood here
+  // before, is not in its vocabulary at all (it calls that shape `Duplex`).
   it('splits every comma separated list, including multi valued distribution types', () => {
     const { criteria } = convertSearchUrlToRequest(
       `${BASE}?distributionTypes=Buy,Buy_Auction,Compulsory_Auction&estateTypes=House,Apartment` +
-        `&estateSubTypes=Penthouse,Maisonette&projectTypes=Stock,New_Build&featuresIncluded=Balcony_Terrace,Elevator` +
+        `&estateSubTypes=Penthouse,Loft&projectTypes=Stock,New_Build&featuresIncluded=Balcony_Terrace,Elevator` +
         `&locations=AD08DE2350,AD08DE8634`,
     );
 
     expect(criteria.distributionTypes).toEqual(['Buy', 'Buy_Auction', 'Compulsory_Auction']);
     expect(criteria.estateTypes).toEqual(['House', 'Apartment']);
-    expect(criteria.estateSubTypes).toEqual(['Penthouse', 'Maisonette']);
+    expect(criteria.estateSubTypes).toEqual(['Penthouse', 'Loft']);
     expect(criteria.projectTypes).toEqual(['Stock', 'New_Build']);
     expect(criteria.featuresIncluded).toEqual(['Balcony_Terrace', 'Elevator']);
     expect(criteria.location.placeIds).toEqual(['AD08DE2350', 'AD08DE8634']);
@@ -60,13 +61,10 @@ describe('#immowelt search model', () => {
 
   // NaN serialises to null, which the BFF reads as "no limit" - the user would silently get
   // listings far outside the budget they typed.
-  it('drops a range filter that is not a number instead of sending NaN', () => {
-    const warn = vi.spyOn(logger, 'warn').mockImplementation(() => {});
-    const { criteria } = convertSearchUrlToRequest(`${BASE}?distributionTypes=Rent&locations=AD08DE8634&priceMax=abc`);
-
-    expect(criteria).not.toHaveProperty('priceMax');
-    expect(warn).toHaveBeenCalledWith(expect.stringContaining('priceMax'));
-    warn.mockRestore();
+  it('refuses a range filter that is not a number instead of sending NaN', () => {
+    expect(() => convertSearchUrlToRequest(`${BASE}?distributionTypes=Rent&locations=AD08DE8634&priceMax=abc`)).toThrow(
+      /priceMax/,
+    );
   });
 
   it('normalises the single-value enums to the PascalCase the BFF insists on', () => {
@@ -100,23 +98,195 @@ describe('#immowelt search model', () => {
     );
   });
 
-  // A filter that is dropped without a word turns into notifications for exactly the flats the
-  // user excluded on purpose.
-  it('warns about a filter it cannot translate', () => {
-    const warn = vi.spyOn(logger, 'warn').mockImplementation(() => {});
-    convertSearchUrlToRequest(`${BASE}?distributionTypes=Rent&locations=AD08DE8634&constructionYearMin=1990`);
+  it('translates the construction year immowelt spells the same way in url and criteria', () => {
+    const { criteria } = convertSearchUrlToRequest(
+      `${BASE}?distributionTypes=Buy&locations=AD08DE9991&yearOfConstructionMin=2010&yearOfConstructionMax=2024`,
+    );
 
-    expect(warn).toHaveBeenCalledWith(expect.stringContaining('constructionYearMin'));
-    warn.mockRestore();
+    expect(criteria).toMatchObject({ yearOfConstructionMin: 2010, yearOfConstructionMax: 2024 });
   });
 
-  it('stays quiet about the tracking and view parameters every copied url carries', () => {
-    const warn = vi.spyOn(logger, 'warn').mockImplementation(() => {});
-    convertSearchUrlToRequest(
+  // Every name and type below was read off immowelt's own search model and then confirmed against
+  // the live BFF: it validates each field with typia and names the type it wanted.
+  it('carries the plot and bedroom ranges over as numbers', () => {
+    const { criteria } = convertSearchUrlToRequest(
+      `${BASE}?distributionTypes=Buy&locations=AD08DE9991` +
+        `&plotSpaceMin=500&plotSpaceMax=1200&numberOfBedroomsMin=2&numberOfBedroomsMax=4`,
+    );
+
+    expect(criteria).toMatchObject({
+      plotSpaceMin: 500,
+      plotSpaceMax: 1200,
+      numberOfBedroomsMin: 2,
+      numberOfBedroomsMax: 4,
+    });
+  });
+
+  it('splits the furnishing, use, build state and energy lists', () => {
+    const { criteria } = convertSearchUrlToRequest(
+      `${BASE}?distributionTypes=Rent&locations=AD08DE9991&furnished=Full,Part&useFor=Living` +
+        `&buildState=Mint_Condition&energyTypes=HEAT_PUMP&energyCertificateClass=A_PLUS,A` +
+        `&locationsInBuildingIncluded=Groundfloor&locationsInBuildingExcluded=Half_Basement`,
+    );
+
+    expect(criteria).toMatchObject({
+      furnished: ['Full', 'Part'],
+      useFor: ['Living'],
+      buildState: ['Mint_Condition'],
+      energyTypes: ['HEAT_PUMP'],
+      energyCertificateClass: ['A_PLUS', 'A'],
+      locationsInBuildingIncluded: ['Groundfloor'],
+      locationsInBuildingExcluded: ['Half_Basement'],
+    });
+  });
+
+  // `priceType` wants `WarmRent`, the WBS filter wants `Not_Applicable`. Running the second through
+  // the PascalCase rule of the first produces a value the BFF rejects outright.
+  it('leaves the WBS filter spelled the way the BFF wants it', () => {
+    const { criteria } = convertSearchUrlToRequest(
+      `${BASE}?distributionTypes=Rent&locations=AD08DE9991&certificateOfEligibilityNeeded=Not_Applicable`,
+    );
+
+    expect(criteria.certificateOfEligibilityNeeded).toBe('Not_Applicable');
+  });
+
+  it('reads the boolean filters as booleans, not as the strings they arrive in', () => {
+    const { criteria } = convertSearchUrlToRequest(
+      `${BASE}?distributionTypes=Rent&locations=AD08DE9991&isSaleGoodwill=false&availableFromIsLooseMode=true`,
+    );
+
+    expect(criteria).toMatchObject({ isSaleGoodwill: false, availableFromIsLooseMode: true });
+  });
+
+  it('refuses a boolean filter that is neither true nor false', () => {
+    expect(() =>
+      convertSearchUrlToRequest(`${BASE}?distributionTypes=Rent&locations=AD08DE9991&isSaleGoodwill=maybe`),
+    ).toThrow(/isSaleGoodwill/);
+  });
+
+  it('passes the move-in date through and refuses one the BFF would reject', () => {
+    const { criteria } = convertSearchUrlToRequest(
+      `${BASE}?distributionTypes=Rent&locations=AD08DE9991&availableFromMax=2026-09-01`,
+    );
+    expect(criteria.availableFromMax).toBe('2026-09-01');
+
+    expect(() =>
+      convertSearchUrlToRequest(`${BASE}?distributionTypes=Rent&locations=AD08DE9991&availableFromMax=01.09.2026`),
+    ).toThrow(/availableFromMax/);
+  });
+
+  // The BFF drops criteria keys it does not know without a word - a made-up key answers with the
+  // unfiltered result set - so mapping these would widen the search instead of narrowing it.
+  it('refuses the filters the search BFF has no field for at all', () => {
+    expect(() =>
+      convertSearchUrlToRequest(`${BASE}?distributionTypes=Rent&locations=AD08DE9991&keywords=Altbau`),
+    ).toThrow(/no field for keywords/);
+  });
+
+  // A filter that is dropped without a word turns into notifications for exactly the flats the
+  // user excluded on purpose, which is worse than a job that stops and says which filter it was.
+  it('refuses a filter it cannot translate instead of running a wider search', () => {
+    expect(() =>
+      convertSearchUrlToRequest(`${BASE}?distributionTypes=Rent&locations=AD08DE8634&energyCertificate=A_PLUS`),
+    ).toThrow(/energyCertificate/);
+  });
+
+  it('accepts the tracking and view parameters every copied url carries', () => {
+    const { criteria } = convertSearchUrlToRequest(
       `${BASE}?distributionTypes=Rent&locations=AD08DE8634&serp_view=list&m=homepage_search&utm_source=newsletter&sr=1`,
     );
 
-    expect(warn).not.toHaveBeenCalled();
-    warn.mockRestore();
+    expect(criteria.location).toEqual({ placeIds: ['AD08DE8634'] });
+  });
+});
+
+// The values in here are what immowelt itself put in the url and sent to `/serp-bff/search` for a
+// search area drawn on the map at Dresden.
+describe('#immowelt search model, map searches', () => {
+  const DRAWN = 'eyJkcmF3aW5ncyI6WyJhaHt2SG1geHJBP2l2SWpgQz8_aHZJa2BDPyJdfQ';
+  const POLYLINE = 'ah{vHm`xrA?ivIj`C??hvIk`C?';
+  const BBOX = 'MTMuNzIxNDU3MDAwMDAwMDAxLDUxLjA3NjI4LDEzLjc4NzM3Mjk5OTk5OTk5OSw1MS4xMDExMTk5OTk5OTk5OTU';
+
+  // Sent as a place id, this is the `PlaceIds must contain only alphanumeric valid location type`
+  // 400 that every map-drawn job died on after the upgrade.
+  it('decodes a drawn search area into the polylines the BFF expects', () => {
+    const { criteria } = convertSearchUrlToRequest(`${BASE}?distributionTypes=Buy&locations=${DRAWN}`);
+
+    expect(criteria.location).toEqual({ polylines: [POLYLINE] });
+  });
+
+  // The BFF intersects the two: Dresden plus a rectangle over one district answers with the 34
+  // listings of the rectangle rather than the city's 1411, so keeping the id would cut away the
+  // surroundings the area was drawn for. Immowelt's own map drops it too.
+  it('lets a drawn area replace the place it was drawn over', () => {
+    const { criteria } = convertSearchUrlToRequest(`${BASE}?distributionTypes=Buy&locations=AD08DE9991,${DRAWN}`);
+
+    expect(criteria.location).toEqual({ polylines: [POLYLINE] });
+  });
+
+  // The shape a radius saved around a place arrives in, reported in #424: the polyline is the
+  // circle's boundary, `radius` and `coordinates` describe the same circle a second time.
+  it('translates a saved radius into the polyline of its boundary', () => {
+    const encoded = Buffer.from(
+      JSON.stringify({ placeId: 'AD08DE9991', radius: 2, polyline: POLYLINE, coordinates: { lat: 51.05, lng: 13.73 } }),
+    ).toString('base64url');
+
+    const { criteria } = convertSearchUrlToRequest(`${BASE}?distributionTypes=Buy&locations=${encoded}`);
+
+    expect(criteria.location).toEqual({ polylines: [POLYLINE] });
+  });
+
+  it('keeps the place id of an encoded location that never had a boundary', () => {
+    const encoded = Buffer.from(JSON.stringify({ placeId: 'AD08DE9991' })).toString('base64url');
+
+    const { criteria } = convertSearchUrlToRequest(`${BASE}?distributionTypes=Buy&locations=${encoded}`);
+
+    expect(criteria.location).toEqual({ placeIds: ['AD08DE9991'] });
+  });
+
+  // Searching the place instead would cover the whole city rather than the 2 km the user saved.
+  it('refuses a radius whose boundary it cannot reproduce', () => {
+    const encoded = Buffer.from(JSON.stringify({ placeId: 'AD08DE9991', radius: 2 })).toString('base64url');
+
+    expect(() => convertSearchUrlToRequest(`${BASE}?distributionTypes=Buy&locations=${encoded}`)).toThrow(/radius/);
+  });
+
+  it('translates the map section into the polygon the BFF calls geometry', () => {
+    const { criteria } = convertSearchUrlToRequest(`${BASE}?distributionTypes=Buy&locations=AD08DE9991&bbox=${BBOX}`);
+
+    expect(criteria.location.geometry).toEqual({
+      type: 'Polygon',
+      coordinates: [
+        [
+          [13.721457000000001, 51.07628],
+          [13.787372999999999, 51.07628],
+          [13.787372999999999, 51.101119999999995],
+          [13.721457000000001, 51.101119999999995],
+          [13.721457000000001, 51.07628],
+        ],
+      ],
+    });
+  });
+
+  it('refuses a search area it would have to drop half of', () => {
+    const encoded = Buffer.from(JSON.stringify({ drawings: [POLYLINE], travelTimeMinutes: 25 })).toString('base64url');
+
+    expect(() => convertSearchUrlToRequest(`${BASE}?distributionTypes=Buy&locations=${encoded}`)).toThrow(
+      /travelTimeMinutes/,
+    );
+  });
+
+  it('refuses a map section that is not a bounding box', () => {
+    const broken = Buffer.from('somewhere near Dresden').toString('base64url');
+
+    expect(() =>
+      convertSearchUrlToRequest(`${BASE}?distributionTypes=Buy&locations=AD08DE9991&bbox=${broken}`),
+    ).toThrow(/map section/);
+  });
+
+  it('refuses an encoded area that carries nothing to search in', () => {
+    const empty = Buffer.from(JSON.stringify({ drawings: [] })).toString('base64url');
+
+    expect(() => convertSearchUrlToRequest(`${BASE}?distributionTypes=Buy&locations=${empty}`)).toThrow(/nothing to/);
   });
 });
