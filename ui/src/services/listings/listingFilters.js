@@ -175,3 +175,52 @@ export function describeActiveFilters(values, { t, jobs = [], providers = [] }) 
     label: labels[key](),
   }));
 }
+/**
+ * Restricts the available providers to those actually configured in the user's jobs,
+ * so the filter dropdown only contains providers for which results can exist.
+ *
+ * If a specific job is selected, only that job's configured providers are offered.
+ * When no jobs are configured yet or no providers can be derived, all providers are
+ * preserved as a fallback. A currently active provider filter is always preserved.
+ *
+ * @param {{id: string, name: string}[]} [providers]
+ * @param {Array<{id: string, name?: string, provider?: Array<{id?: string, name?: string}>}>} [jobs]
+ * @param {string|null} [selectedJobId]
+ * @param {string|null} [currentProviderId]
+ * @returns {{id: string, name: string}[]}
+ */
+export function filterConfiguredProviders(providers = [], jobs = [], selectedJobId = null, currentProviderId = null) {
+  if (!Array.isArray(providers) || providers.length === 0) {
+    return [];
+  }
+
+  if (!Array.isArray(jobs) || jobs.length === 0) {
+    return providers;
+  }
+
+  const relevantJobs = selectedJobId
+    ? jobs.filter((j) => j?.id === selectedJobId || j?.name === selectedJobId)
+    : jobs;
+
+  const targetJobs = relevantJobs.length > 0 ? relevantJobs : jobs;
+
+  const configuredProviderIds = new Set();
+  for (const job of targetJobs) {
+    if (Array.isArray(job?.provider)) {
+      for (const p of job.provider) {
+        const id = p?.id || p?.name;
+        if (id) {
+          configuredProviderIds.add(id);
+        }
+      }
+    }
+  }
+
+  if (configuredProviderIds.size === 0) {
+    return providers;
+  }
+
+  return providers.filter(
+    (provider) => configuredProviderIds.has(provider.id) || (currentProviderId && provider.id === currentProviderId),
+  );
+}

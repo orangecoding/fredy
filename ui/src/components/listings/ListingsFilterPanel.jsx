@@ -8,7 +8,13 @@ import { Radio, RadioGroup, Select } from '@douyinfe/semi-ui-19';
 import FilterSelect from './FilterSelect.jsx';
 import FilterDrawer, { FilterGroup, FilterHelp } from '../filters/FilterDrawer.jsx';
 import { COMMUTE_OPTIONS } from '../transit/travelTimeFormat.js';
-import { showValueOf, showPatch, clearAllFilters, countActiveFilters } from '../../services/listings/listingFilters.js';
+import {
+  showValueOf,
+  showPatch,
+  clearAllFilters,
+  countActiveFilters,
+  filterConfiguredProviders,
+} from '../../services/listings/listingFilters.js';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
 
 /**
@@ -50,6 +56,8 @@ export default function ListingsFilterPanel({
 }) {
   const t = useTranslation();
   const activeCount = countActiveFilters(values);
+  const visibleProviders = filterConfiguredProviders(providers, jobs, values.job, values.provider);
+
 
   return (
     <FilterDrawer
@@ -162,7 +170,7 @@ export default function ListingsFilterPanel({
           value={values.provider}
           style={{ width: '100%' }}
         >
-          {providers?.map((provider) => (
+          {visibleProviders?.map((provider) => (
             <Select.Option key={provider.id} value={provider.id}>
               {provider.name}
             </Select.Option>
