@@ -676,6 +676,30 @@ export const useFredyState = create(
               throw Exception;
             }
           },
+          /**
+           * Store which theme this user wants the interface painted in.
+           *
+           * The document is repainted by App.jsx reacting to this slice rather than from here, so
+           * that a theme arriving from the server on login takes the same path as one picked in
+           * the settings form.
+           *
+           * @param {'dark'|'light'} theme
+           * @returns {Promise<void>}
+           */
+          async setTheme(theme) {
+            try {
+              await xhrPost('/api/user/settings/theme', { theme });
+              set((state) => ({
+                userSettings: {
+                  ...state.userSettings,
+                  settings: { ...state.userSettings.settings, theme },
+                },
+              }));
+            } catch (Exception) {
+              console.error('Error while trying to update theme setting. Error:', Exception);
+              throw Exception;
+            }
+          },
         },
       };
 

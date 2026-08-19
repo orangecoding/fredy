@@ -1,3 +1,5 @@
+@import '../../tokens.less';
+
 .chartCard {
   /* Use provided background with slight transparency and a brighter mix */
   background: color-mix(in oklab, var(--card-bg, rgb(70 72 78)) 20%, white 80%);
@@ -18,7 +20,7 @@
     display: grid;
     place-items: center;
     height: 14rem;
-    color: #94a3b8;
+    color: @color-muted;
     font-size: 0.9rem;
   }
 }

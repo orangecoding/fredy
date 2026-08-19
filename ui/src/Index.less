@@ -1,3 +1,4 @@
+@import './themes.less';
 @import './tokens.less';
 
 body,
@@ -7,8 +8,13 @@ html {
   width: 100%;
   font-family: @font-ui;
   background-color: @color-base;
-  background-image: radial-gradient(ellipse at 60% 0%, rgba(192, 86, 74, 0.05) 0%, transparent 55%);
+  background-image: radial-gradient(ellipse at 60% 0%, @color-accent-glow 0%, transparent 55%);
   background-attachment: fixed;
+  color-scheme: dark;
+}
+
+body[theme-mode='light'] {
+  color-scheme: light;
 }
 
 @media (max-width: 768px) {
@@ -19,6 +25,10 @@ html {
 }
 
 // Semi UI theme overrides
+//
+// Semi ships both themes itself and picks between them on `body[theme-mode=dark]`; these only
+// restate the handful of colours where Fredy's palette differs from its defaults. The right-hand
+// sides are custom properties rather than compiled hexes, so one block covers both themes.
 body {
   --semi-color-bg-0: @color-base !important;
   --semi-color-bg-1: @color-surface !important;
@@ -28,25 +38,25 @@ body {
   --semi-color-primary: @color-accent !important;
   --semi-color-primary-hover: @color-accent-dim !important;
   --semi-color-primary-active: @color-accent-dim !important;
-  --semi-color-primary-light-default: rgba(192, 86, 74, 0.12) !important;
-  --semi-color-primary-light-hover: rgba(192, 86, 74, 0.18) !important;
-  --semi-color-primary-light-active: rgba(192, 86, 74, 0.22) !important;
+  --semi-color-primary-light-default: rgb(@color-accent-rgb / 12%) !important;
+  --semi-color-primary-light-hover: rgb(@color-accent-rgb / 18%) !important;
+  --semi-color-primary-light-active: rgb(@color-accent-rgb / 22%) !important;
   --semi-color-text-0: @color-text !important;
   --semi-color-text-1: @color-text !important;
   --semi-color-text-2: @color-muted !important;
   --semi-color-text-3: @color-faint !important;
-  --semi-color-fill-0: rgba(255, 255, 255, 0.04) !important;
-  --semi-color-fill-1: rgba(255, 255, 255, 0.06) !important;
-  --semi-color-fill-2: rgba(255, 255, 255, 0.08) !important;
+  --semi-color-fill-0: @color-fill-subtle !important;
+  --semi-color-fill-1: @color-fill-1 !important;
+  --semi-color-fill-2: @color-fill-2 !important;
   --semi-font-family: @font-ui !important;
 }
 
 // Semi table row overrides
 .semi-table-row-head {
-  background-color: rgba(255, 255, 255, 0.06) !important;
+  background-color: @color-fill-1 !important;
 }
 .semi-table-row-head .semi-table-row-cell {
-  background-color: rgba(255, 255, 255, 0.06) !important;
+  background-color: @color-fill-1 !important;
   color: @color-muted !important;
   font-size: @text-xs;
   text-transform: uppercase;
@@ -59,7 +69,7 @@ body {
   background-color: @color-base !important;
 }
 .semi-table-tbody .semi-table-row:hover .semi-table-row-cell {
-  background-color: @color-elevated !important;
+  background-color: @color-hover !important;
 }
 
 // Scrollbar
@@ -98,16 +108,16 @@ button:focus-visible,
   box-shadow: none !important;
 }
 
-// Semi Toast dark theme overrides
+// Semi Toast overrides
 .semi-toast-content {
   background-color: @color-elevated !important;
   border: 1px solid @color-border-bright !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
+  box-shadow: @shadow-md !important;
 }
 
-// Semi Modal dark theme overrides
+// Semi Modal overrides
 .semi-modal-content {
-  background: #161616 !important;
+  background: @color-surface !important;
   border: 1px solid @color-border !important;
   border-top: 3px solid @color-accent !important;
   border-radius: 14px !important;
@@ -121,7 +131,7 @@ button:focus-visible,
 }
 
 .semi-modal-mask {
-  background: rgba(0, 0, 0, 0.7) !important;
+  background: @color-scrim !important;
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
 }

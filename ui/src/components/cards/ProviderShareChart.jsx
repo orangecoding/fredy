@@ -6,7 +6,7 @@
 import React from 'react';
 import { Bar } from 'react-chartjs-2';
 
-import { CHART_PALETTE, CHART_COLORS, baseChartOptions, registerFinanceCharts, withAlpha } from './chartTheme.js';
+import { chartPalette, CHART_COLORS, baseChartOptions, registerFinanceCharts, withAlpha } from './chartTheme.js';
 import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
 
 import './ChartCard.less';
@@ -62,11 +62,12 @@ export default function ProviderShareChart({ data = [], totalListings = 0 }) {
     // percent, so one listing in a few hundred comes back as 0 and the provider vanished from
     // both the bar and the legend. The distribution is a GROUP BY, so every row it returns has
     // at least one listing - being in the list is what qualifies, not the rounded share.
+    const palette = chartPalette();
     return rows
       .map((row) => ({ label: row.label, value: Number(row.value) }))
       .filter((row) => row.label && Number.isFinite(row.value) && row.value >= 0)
       .sort((a, b) => b.value - a.value)
-      .map((row, index) => ({ ...row, color: CHART_PALETTE[index % CHART_PALETTE.length] }));
+      .map((row, index) => ({ ...row, color: palette[index % palette.length] }));
   }, [data]);
 
   const chartData = React.useMemo(

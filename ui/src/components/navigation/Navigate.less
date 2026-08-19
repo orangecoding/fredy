@@ -67,9 +67,9 @@
     gap: 8px;
     height: 32px;
     padding: 0 10px;
-    border: 1px solid rgba(251, 113, 133, 0.25);
-    background: rgba(251, 113, 133, 0.06);
-    color: #d4707c;
+    border: 1px solid rgb(@color-error-rgb / 25%);
+    background: rgb(@color-error-rgb / 6%);
+    color: @color-error;
     border-radius: @radius-btn;
     cursor: pointer;
     font-size: @text-sm;
@@ -82,8 +82,8 @@
     overflow: hidden;
 
     &:hover {
-      background: rgba(251, 113, 133, 0.12);
-      border-color: rgba(251, 113, 133, 0.4);
+      background: rgb(@color-error-rgb / 12%);
+      border-color: rgb(@color-error-rgb / 40%);
     }
 
     &--icon-only {
@@ -97,7 +97,7 @@
       border-radius: @radius-btn;
 
       &:hover {
-        background: rgba(251, 113, 133, 0.08);
+        background: rgb(@color-error-rgb / 8%);
       }
     }
   }
@@ -119,7 +119,7 @@
       color @transition-fast;
 
     &:hover {
-      background: rgba(255, 255, 255, 0.06);
+      background: @color-fill-1;
       color: @color-muted;
     }
   }
@@ -146,8 +146,8 @@
 
   &.semi-navigation-item-selected,
   &[aria-selected='true'] {
-    background: rgba(192, 86, 74, 0.12) !important;
-    border-color: rgba(192, 86, 74, 0.25) !important;
+    background: rgb(@color-accent-rgb / 12%) !important;
+    border-color: rgb(@color-accent-rgb / 25%) !important;
     color: @color-text !important;
 
     .semi-navigation-item-icon {
@@ -214,7 +214,7 @@
   background: @color-elevated !important;
   border: 1px solid @color-border !important;
   border-radius: @radius-card !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
+  box-shadow: @shadow-md !important;
   overflow: hidden !important;
 
   .semi-navigation-item {
@@ -224,13 +224,13 @@
     border-radius: @radius-btn !important;
 
     &:hover {
-      background: rgba(255, 255, 255, 0.06) !important;
+      background: @color-fill-1 !important;
       color: @color-text !important;
     }
 
     &.semi-navigation-item-selected,
     &.semi-dropdown-item-active {
-      background: rgba(192, 86, 74, 0.1) !important;
+      background: rgb(@color-accent-rgb / 10%) !important;
       border: none !important;
       color: @color-text !important;
 

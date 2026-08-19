@@ -1,0 +1,196 @@
+/*
+ * The two palettes, and the only file in the app that is allowed to contain a colour.
+ *
+ * Everything else refers to a colour through the semantic names in tokens.less, which are thin
+ * aliases onto the custom properties defined here. That indirection is what makes a theme
+ * switchable at all: Less variables are resolved at build time, so a stylesheet that compiled a
+ * hex into a rule can never show a different one at runtime.
+ *
+ * The two blocks below are deliberately complete rather than one block plus a handful of
+ * overrides. A partial light theme silently inherits whichever value the author of a dark rule
+ * happened to pick, and the first token that gets added to one block and forgotten in the other
+ * is invisible until someone switches themes. Every name that exists in one exists in the other.
+ *
+ * Included once, from Index.less. tokens.less is imported by roughly forty stylesheets and must
+ * therefore stay free of rules, or these blocks ship forty times over.
+ *
+ * The selector is Semi UI's own theme attribute (`body[theme-mode]`), so one attribute drives both
+ * Semi's component styles and ours. Semi only recognises `dark`; `light` reads as its default.
+ */
+
+:root {
+  // Backgrounds. Elevation runs lighter as it comes forward.
+  --f-base: #0d0d0d;
+  --f-surface: #161616;
+  --f-surface-rgb: 22 22 22;
+  --f-elevated: #1e1e1e;
+  // Hover on a row or a list entry, and the flat fill behind chips and code.
+  --f-hover: #1e1e1e;
+  --f-solid: #252525;
+  --f-border: #2a2a2a;
+  --f-border-bright: #383838;
+
+  // Accent
+  // A brick red rather than the vermillion this used to be (#e04a38, hsl 6/73/55). Same hue, so the
+  // product still reads as Fredy, but roughly twenty points less saturation - the old one drew the
+  // eye harder than any single control on a page deserves, and put every primary button in the same
+  // register as a delete confirmation.
+  --f-accent: #c0564a;
+  --f-accent-rgb: 192 86 74;
+  --f-accent-dim: #a1443a;
+  --f-accent-glow: rgb(192 86 74 / 10%);
+
+  // Text
+  --f-text: #efefef;
+  --f-muted: #909090;
+  --f-faint: #505050;
+
+  // Semantic
+  // Toned down alongside the accent. These sat at full tailwind-400 saturation, which on a near-black
+  // surface glows rather than informs.
+  --f-success: #4bab86;
+  --f-success-rgb: 75 171 134;
+  --f-success-dim: #08533e;
+  --f-success-active: #3f8f68;
+  --f-error: #d4707c;
+  --f-error-rgb: 212 112 124;
+  --f-error-dim: #7a1730;
+  --f-warning: #d8a34a;
+  --f-info: #6b93c4;
+  --f-info-rgb: 107 147 196;
+
+  // Fill overlays. Light on dark, dark on light - the one pair that has to invert rather than
+  // shift, because a white wash over a white card is nothing at all.
+  --f-fill-subtle: rgb(255 255 255 / 4%);
+  --f-fill-1: rgb(255 255 255 / 6%);
+  --f-fill-2: rgb(255 255 255 / 8%);
+  --f-fill-strong: rgb(255 255 255 / 12%);
+
+  // Text inputs. Their own pair because the two themes want opposite constructions: a wash of
+  // light lifts a field off a dark page, while on paper the field is the lighter thing and needs a
+  // drawn edge instead.
+  --f-input-bg: rgb(255 255 255 / 6%);
+  --f-input-border: rgb(255 255 255 / 10%);
+
+  // Scrims and shadows. A shadow on a near-black page can be near-black itself; on paper it has to
+  // be much lighter or every card looks like it is hovering an inch off the screen.
+  --f-scrim: rgb(0 0 0 / 70%);
+  --f-shadow-sm: 0 2px 8px rgb(0 0 0 / 45%);
+  --f-shadow-md: 0 6px 20px -6px rgb(0 0 0 / 55%);
+  --f-shadow-lg: 0 18px 44px -12px rgb(0 0 0 / 70%);
+
+  // KPI card accents
+  // Muted by roughly a third, and their borders taken well down. At full strength four saturated
+  // blocks side by side competed with each other and with the accent, so a card carrying a routine
+  // count read as urgent. The hues still separate the categories, which is all they are for.
+  --f-blue-text: #7ba7d4;
+  --f-blue-border: #33526f;
+  --f-blue-bg: rgb(123 167 212 / 7%);
+  --f-orange-text: #d69460;
+  --f-orange-text-rgb: 214 148 96;
+  --f-orange-border: #7d5333;
+  --f-orange-bg: rgb(214 148 96 / 7%);
+  --f-green-text: #6cb597;
+  --f-green-border: #2f6350;
+  --f-green-bg: rgb(108 181 151 / 7%);
+  --f-purple-text: #9d8fc9;
+  --f-purple-text-rgb: 157 143 201;
+  --f-purple-border: #4f4374;
+  --f-purple-bg: rgb(157 143 201 / 7%);
+  --f-gray-text: #94a3b8;
+  --f-gray-border: #323a47;
+  --f-gray-bg: rgb(148 163 184 / 7%);
+
+  // The three lights behind the Donate button. Their own tokens rather than the palette's: an
+  // aurora only reads as light when it is lighter than what it sits on, so on paper it becomes a
+  // pastel wash of the same three hues rather than three dark smudges.
+  --f-aurora-1: #c0564a;
+  --f-aurora-2: rgb(157 143 201 / 70%);
+  --f-aurora-3: rgb(214 148 96 / 60%);
+
+  // The panels that float over the map. Their own set because they sit on satellite imagery rather
+  // than on a page, and need to stay legible over both.
+  --f-map-panel: rgb(22 25 38 / 95%);
+  --f-map-panel-border: #262a3a;
+  --f-map-panel-text: #8892a4;
+  --f-map-panel-strong: #ffffff;
+}
+
+body[theme-mode='light'] {
+  // Paper rather than white. A pure #fff page under a warm red accent reads as unfinished, and
+  // leaves nothing to raise a card above.
+  --f-base: #f1f0ee;
+  --f-surface: #fbfbfa;
+  --f-surface-rgb: 251 251 250;
+  --f-elevated: #ffffff;
+  // Inverted from dark on purpose: on paper a surface comes forward by getting darker, not lighter.
+  --f-hover: #ebe9e6;
+  --f-solid: #e6e4e0;
+  --f-border: #e2e0dc;
+  --f-border-bright: #c8c5c0;
+
+  // Two steps darker than the dark-theme accent. The same red that carries white text at 4.5:1 on
+  // near-black falls to 4.4:1 against paper, which is the wrong side of AA for every primary button
+  // in the app. Same hue, same family, one notch of lightness.
+  --f-accent: #b04a3f;
+  --f-accent-rgb: 176 74 63;
+  --f-accent-dim: #963d34;
+  --f-accent-glow: rgb(176 74 63 / 8%);
+
+  --f-text: #1c1b1a;
+  --f-muted: #63605d;
+  --f-faint: #93908c;
+
+  // Darkened for contrast on paper. `-dim` is a fill rather than a foreground in both themes, so it
+  // inverts from a deep shade to a light tint instead of following its own hue down.
+  --f-success: #2f7d5d;
+  --f-success-rgb: 47 125 93;
+  --f-success-dim: #dcece4;
+  --f-success-active: #276b4f;
+  --f-error: #b03a4a;
+  --f-error-rgb: 176 58 74;
+  --f-error-dim: #f5dde1;
+  --f-warning: #9a6b12;
+  --f-info: #3a6ea5;
+  --f-info-rgb: 58 110 165;
+
+  --f-fill-subtle: rgb(0 0 0 / 3%);
+  --f-fill-1: rgb(0 0 0 / 5%);
+  --f-fill-2: rgb(0 0 0 / 7%);
+  --f-fill-strong: rgb(0 0 0 / 11%);
+
+  --f-input-bg: #ffffff;
+  --f-input-border: #d8d5d1;
+
+  --f-scrim: rgb(28 27 26 / 45%);
+  --f-shadow-sm: 0 2px 8px rgb(28 27 26 / 10%);
+  --f-shadow-md: 0 6px 20px -6px rgb(28 27 26 / 16%);
+  --f-shadow-lg: 0 18px 44px -12px rgb(28 27 26 / 22%);
+
+  --f-blue-text: #3c6c9c;
+  --f-blue-border: #c2d4e6;
+  --f-blue-bg: rgb(60 108 156 / 7%);
+  --f-orange-text: #9c5f28;
+  --f-orange-text-rgb: 156 95 40;
+  --f-orange-border: #e6d2b8;
+  --f-orange-bg: rgb(156 95 40 / 7%);
+  --f-green-text: #2f7d5d;
+  --f-green-border: #c3ddd0;
+  --f-green-bg: rgb(47 125 93 / 7%);
+  --f-purple-text: #665aa0;
+  --f-purple-text-rgb: 102 90 160;
+  --f-purple-border: #d0cbe4;
+  --f-purple-bg: rgb(102 90 160 / 7%);
+  --f-gray-text: #5c6774;
+  --f-gray-border: #d4d8de;
+  --f-gray-bg: rgb(92 103 116 / 7%);
+
+  --f-aurora-1: #f2a99d;
+  --f-aurora-2: rgb(190 178 232 / 75%);
+  --f-aurora-3: rgb(246 196 146 / 70%);
+
+  --f-map-panel: rgb(255 255 255 / 95%);
+  --f-map-panel-border: #dcdad6;
+  --f-map-panel-text: #5c6774;
+  --f-map-panel-strong: #1c1b1a;
+}

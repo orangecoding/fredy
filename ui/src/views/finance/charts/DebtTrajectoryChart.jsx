@@ -7,7 +7,8 @@ import React from 'react';
 import { Line } from 'react-chartjs-2';
 
 import {
-  CHART_PALETTE,
+  CHART_COLORS,
+  chartPalette,
   baseChartOptions,
   formatEuro,
   makeAreaGradient,
@@ -46,8 +47,9 @@ export default function DebtTrajectoryChart({ scenarios = [], currentAge = null,
     const longest = Math.max(...perScenario.map((years) => years.length));
     const yearLabels = Array.from({ length: longest }, (_, index) => `${index + 1}`);
 
+    const palette = chartPalette();
     const sets = usable.map((scenario, index) => {
-      const color = CHART_PALETTE[index % CHART_PALETTE.length];
+      const color = palette[index % palette.length];
       const isPrimary = index === 0;
       const years = perScenario[index];
 
@@ -102,7 +104,7 @@ export default function DebtTrajectoryChart({ scenarios = [], currentAge = null,
         ...base.scales,
         x: {
           ...base.scales.x,
-          title: { display: true, text: t('finance.chart.axisYears'), color: '#909090', font: { size: 11 } },
+          title: { display: true, text: t('finance.chart.axisYears'), color: CHART_COLORS.MUTED, font: { size: 11 } },
         },
       },
     };

@@ -16,8 +16,17 @@ import { useTranslation, useLocale } from '../../../services/i18n/i18n.jsx';
 
 registerFinanceCharts();
 
-/** Fixed colours per cost type, so a slice keeps its meaning between renders. */
-const SLICE_COLORS = ['#7ba7d4', '#c0564a', '#d8a34a', '#9d8fc9', '#909090'];
+/**
+ * Fixed hues per cost type, so a slice keeps its meaning between renders.
+ *
+ * Resolved per call rather than frozen into a constant: the hues themselves are theme tokens, and
+ * a list captured at import time would still be the dark ones after a switch to light.
+ *
+ * @returns {string[]}
+ */
+function sliceColors() {
+  return [CHART_COLORS.BLUE, CHART_COLORS.ACCENT, CHART_COLORS.WARNING, CHART_COLORS.PURPLE, CHART_COLORS.MUTED];
+}
 
 /**
  * Write the total into the hole of the doughnut.
@@ -112,12 +121,13 @@ export default function CostBreakdownChart({ financing, height = 280 }) {
     return <div className="chartCard__no__data">{t('finance.chart.noData')}</div>;
   }
 
+  const slices = sliceColors();
   const data = {
     labels,
     datasets: [
       {
         data: values,
-        backgroundColor: labels.map((_, index) => SLICE_COLORS[index % SLICE_COLORS.length]),
+        backgroundColor: labels.map((_, index) => slices[index % slices.length]),
         borderColor: CHART_COLORS.ELEVATED,
         borderWidth: 2,
         hoverOffset: 6,

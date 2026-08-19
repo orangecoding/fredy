@@ -510,7 +510,12 @@ export default function ListingDetail() {
       <Headline
         text={listing?.title || t('listing.detail.defaultTitle')}
         actions={
-          <Button icon={<IconArrowLeft />} onClick={() => navigate(-1)} theme="borderless" style={{ color: '#909090' }}>
+          <Button
+            icon={<IconArrowLeft />}
+            onClick={() => navigate(-1)}
+            theme="borderless"
+            style={{ color: 'var(--f-muted)' }}
+          >
             {t('listing.detail.back')}
           </Button>
         }

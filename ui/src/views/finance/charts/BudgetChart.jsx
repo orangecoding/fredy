@@ -89,11 +89,11 @@ export default function BudgetChart({ budget, monthlyRate = 0, rateLabel, height
   // any existing debt - puts the marker in a meaningful place. Leading with living costs would
   // push the mortgage block past the line even for a household well inside the rule.
   const segments = [
-    [t('finance.budget.existingDebt'), budget.existingDebtRate, withAlpha('#9d8fc9', 0.85)],
+    [t('finance.budget.existingDebt'), budget.existingDebtRate, withAlpha(CHART_COLORS.PURPLE, 0.85)],
     [rateLabel ?? t('finance.budget.mortgageRate'), monthlyRate, withAlpha(CHART_COLORS.ACCENT, 0.9)],
-    [t('finance.budget.livingCosts'), budget.livingCosts, withAlpha('#909090', 0.75)],
-    [t('finance.budget.buffer'), buffer, withAlpha('#4bab86', 0.5)],
-    [t('finance.budget.overspend'), overspend, withAlpha('#d4707c', 0.9)],
+    [t('finance.budget.livingCosts'), budget.livingCosts, withAlpha(CHART_COLORS.MUTED, 0.75)],
+    [t('finance.budget.buffer'), buffer, withAlpha(CHART_COLORS.SUCCESS, 0.5)],
+    [t('finance.budget.overspend'), overspend, withAlpha(CHART_COLORS.ERROR, 0.9)],
   ].filter(([, value]) => value > 0);
 
   const data = {

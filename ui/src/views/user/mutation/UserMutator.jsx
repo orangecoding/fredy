@@ -80,7 +80,7 @@ const UserMutator = function UserMutator() {
           icon={<IconArrowLeft />}
           onClick={() => navigate('/admin/users')}
           theme="borderless"
-          style={{ color: '#909090' }}
+          style={{ color: 'var(--f-muted)' }}
         >
           {t('users.mutation.back')}
         </Button>
@@ -126,7 +126,12 @@ const UserMutator = function UserMutator() {
         </SegmentPart>
         <Divider margin="1rem" />
         <div className="userMutator__actions">
-          <Button size="small" theme="borderless" style={{ color: '#909090' }} onClick={() => navigate('/admin/users')}>
+          <Button
+            size="small"
+            theme="borderless"
+            style={{ color: 'var(--f-muted)' }}
+            onClick={() => navigate('/admin/users')}
+          >
             {t('users.mutation.cancel')}
           </Button>
           <Button size="small" type="primary" theme="solid" icon={<IconPlusCircle />} onClick={saveUser}>

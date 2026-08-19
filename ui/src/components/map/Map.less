@@ -39,7 +39,7 @@
 
   /*
    * The basemap is drawn for daylight and arrives near-white, which is the brightest thing in the
-   * app by a wide margin: every panel around it sits on #0d0d0d. Toned down rather than swapped for
+   * app by a wide margin: every panel around it sits on the page background. Toned down rather than swapped for
    * a dark tile style, because the street detail people actually read the map for survives a dimmer
    * far better than it survives being redrawn in grey on black.
    *
@@ -81,12 +81,12 @@
     width: 36px;
     height: 36px;
     padding: 0;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+    box-shadow: @shadow-sm;
   }
 }
 
 .map-panel {
-  background: rgba(22, 25, 38, 0.95);
+  background: @color-map-panel;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border: 1px solid @color-border;
@@ -110,13 +110,13 @@
     &--nested {
       margin-left: 10px;
       padding-left: 10px;
-      border-left: 1px solid #262a3a;
+      border-left: 1px solid @color-map-panel-border;
     }
 
   }
 
   &__label {
-    color: #8892a4;
+    color: @color-map-panel-text;
   }
 }
 

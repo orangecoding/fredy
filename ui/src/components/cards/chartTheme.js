@@ -20,24 +20,31 @@ import {
 import { formatEuroPrice } from '../../services/price/priceService.js';
 
 /*
- * Chart colours and typography, mirrored from ui/src/tokens.less.
+ * Chart colours and typography, read from the theme rather than copied out of it.
  *
- * Less variables cannot be read from JavaScript, so these values are duplicated by hand.
- * When the palette changes in tokens.less, change it here too.
+ * A chart is painted onto a canvas, so it cannot inherit a colour the way an element does: every
+ * value has to be handed to chart.js as a concrete string. Reading them from the custom properties
+ * in themes.less at the moment they are needed is what lets one set of chart code serve both
+ * themes, and it removes the hand-maintained duplicate of the palette this file used to carry.
+ *
+ * The fallbacks are the dark palette, and only apply where there is no document to read from -
+ * server-side rendering and unit tests.
  */
 
-/** @type {string} tokens.less @color-accent */
-const ACCENT = '#c0564a';
-/** @type {string} tokens.less @color-border */
-const GRID = '#2a2a2a';
-/** @type {string} tokens.less @color-border-bright */
-const GRID_BRIGHT = '#383838';
-/** @type {string} tokens.less @color-muted */
-const MUTED = '#909090';
-/** @type {string} tokens.less @color-text */
-const TEXT = '#efefef';
-/** @type {string} tokens.less @color-elevated */
-const ELEVATED = '#1e1e1e';
+/**
+ * Resolve one theme token to the colour the document is currently using.
+ *
+ * @param {string} name Custom property name, e.g. `--f-accent`.
+ * @param {string} fallback Value to use when no document is available.
+ * @returns {string}
+ */
+function token(name, fallback) {
+  if (typeof window === 'undefined' || typeof document === 'undefined' || document.body == null) {
+    return fallback;
+  }
+  const value = window.getComputedStyle(document.body).getPropertyValue(name).trim();
+  return value === '' ? fallback : value;
+}
 
 const FONT_UI = "'Outfit', system-ui, sans-serif";
 const FONT_MONO = "'JetBrains Mono', monospace";
@@ -45,17 +52,95 @@ const FONT_MONO = "'JetBrains Mono', monospace";
 /**
  * Series colours, accent first so the primary scenario is always Fredy red and every other
  * scenario reads as a comparison against it.
+ *
+ * A function rather than a constant: the colours belong to whichever theme is on screen when the
+ * chart draws, and an array captured at import time would be the wrong one after a switch.
+ *
+ * @returns {string[]}
  */
-export const CHART_PALETTE = [ACCENT, '#7ba7d4', '#4bab86', '#d8a34a', '#9d8fc9', '#d69460'];
+export function chartPalette() {
+  return [
+    CHART_COLORS.ACCENT,
+    CHART_COLORS.BLUE,
+    CHART_COLORS.GREEN,
+    CHART_COLORS.WARNING,
+    CHART_COLORS.PURPLE,
+    CHART_COLORS.ORANGE,
+  ];
+}
 
-/** Verdict colours, shared by the charts, the listing chips and the detail card. */
+/**
+ * Verdict colours, shared by the charts, the listing chips and the detail card.
+ *
+ * Getters rather than values, for the reason given on {@link chartPalette}: every read has to see
+ * the theme that is on screen now. Call sites are unaffected - `VERDICT_COLORS.affordable` still
+ * reads as a plain property.
+ *
+ * @type {{affordable: string, stretch: string, unaffordable: string}}
+ */
 export const VERDICT_COLORS = {
-  affordable: '#4bab86',
-  stretch: '#d8a34a',
-  unaffordable: '#d4707c',
+  get affordable() {
+    return token('--f-success', '#4bab86');
+  },
+  get stretch() {
+    return token('--f-warning', '#d8a34a');
+  },
+  get unaffordable() {
+    return token('--f-error', '#d4707c');
+  },
 };
 
-export const CHART_COLORS = { ACCENT, GRID, GRID_BRIGHT, MUTED, TEXT, ELEVATED, FONT_UI, FONT_MONO };
+/**
+ * The chart surface - axes, gridlines, tooltip and label colours - plus the named hues a chart
+ * reaches for when it needs to tell several series apart, and the two font stacks.
+ *
+ * Getters, for the same reason as {@link VERDICT_COLORS}.
+ *
+ * @type {Record<'ACCENT'|'GRID'|'GRID_BRIGHT'|'MUTED'|'TEXT'|'ELEVATED'|'BLUE'|'GREEN'|'PURPLE'|'ORANGE'|'WARNING'|'SUCCESS'|'ERROR'|'FONT_UI'|'FONT_MONO', string>}
+ */
+export const CHART_COLORS = {
+  get ACCENT() {
+    return token('--f-accent', '#c0564a');
+  },
+  get GRID() {
+    return token('--f-border', '#2a2a2a');
+  },
+  get GRID_BRIGHT() {
+    return token('--f-border-bright', '#383838');
+  },
+  get MUTED() {
+    return token('--f-muted', '#909090');
+  },
+  get TEXT() {
+    return token('--f-text', '#efefef');
+  },
+  get ELEVATED() {
+    return token('--f-elevated', '#1e1e1e');
+  },
+  get BLUE() {
+    return token('--f-blue-text', '#7ba7d4');
+  },
+  get GREEN() {
+    return token('--f-green-text', '#6cb597');
+  },
+  get PURPLE() {
+    return token('--f-purple-text', '#9d8fc9');
+  },
+  get ORANGE() {
+    return token('--f-orange-text', '#d69460');
+  },
+  get WARNING() {
+    return token('--f-warning', '#d8a34a');
+  },
+  get SUCCESS() {
+    return token('--f-success', '#4bab86');
+  },
+  get ERROR() {
+    return token('--f-error', '#d4707c');
+  },
+  FONT_UI,
+  FONT_MONO,
+};
 
 let registered = false;
 
@@ -123,7 +208,7 @@ export function formatEuroCompact(value, locale = 'de-DE') {
 }
 
 /**
- * Shared chart.js options in the Fredy dark theme.
+ * Shared chart.js options, in whichever theme is on screen.
  *
  * @param {Object} [options]
  * @param {string} [options.locale='de-DE']
@@ -141,7 +226,7 @@ export function baseChartOptions({ locale = 'de-DE', legend = false } = {}) {
         position: 'top',
         align: 'end',
         labels: {
-          color: MUTED,
+          color: CHART_COLORS.MUTED,
           boxWidth: 10,
           boxHeight: 10,
           usePointStyle: true,
@@ -151,11 +236,11 @@ export function baseChartOptions({ locale = 'de-DE', legend = false } = {}) {
       },
       title: { display: false },
       tooltip: {
-        backgroundColor: ELEVATED,
-        borderColor: GRID_BRIGHT,
+        backgroundColor: CHART_COLORS.ELEVATED,
+        borderColor: CHART_COLORS.GRID_BRIGHT,
         borderWidth: 1,
-        titleColor: TEXT,
-        bodyColor: MUTED,
+        titleColor: CHART_COLORS.TEXT,
+        bodyColor: CHART_COLORS.MUTED,
         padding: 10,
         cornerRadius: 6,
         displayColors: true,
@@ -166,14 +251,14 @@ export function baseChartOptions({ locale = 'de-DE', legend = false } = {}) {
     scales: {
       x: {
         grid: { color: 'transparent', drawBorder: false },
-        border: { color: GRID },
-        ticks: { color: MUTED, font: { family: FONT_UI, size: 11 }, maxRotation: 0, autoSkipPadding: 16 },
+        border: { color: CHART_COLORS.GRID },
+        ticks: { color: CHART_COLORS.MUTED, font: { family: FONT_UI, size: 11 }, maxRotation: 0, autoSkipPadding: 16 },
       },
       y: {
-        grid: { color: GRID, drawBorder: false },
+        grid: { color: CHART_COLORS.GRID, drawBorder: false },
         border: { display: false },
         ticks: {
-          color: MUTED,
+          color: CHART_COLORS.MUTED,
           font: { family: FONT_MONO, size: 11 },
           callback: (value) => formatEuroCompact(value, locale),
         },
@@ -247,12 +332,12 @@ export const zinsbindungBandPlugin = {
     }
 
     ctx.save();
-    ctx.fillStyle = withAlpha(ACCENT, 0.06);
+    ctx.fillStyle = withAlpha(CHART_COLORS.ACCENT, 0.06);
     ctx.fillRect(chartArea.left, chartArea.top, endPixel - chartArea.left, chartArea.bottom - chartArea.top);
 
     ctx.beginPath();
     ctx.setLineDash([4, 4]);
-    ctx.strokeStyle = withAlpha(ACCENT, 0.55);
+    ctx.strokeStyle = withAlpha(CHART_COLORS.ACCENT, 0.55);
     ctx.lineWidth = 1;
     ctx.moveTo(endPixel, chartArea.top);
     ctx.lineTo(endPixel, chartArea.bottom);
@@ -260,7 +345,7 @@ export const zinsbindungBandPlugin = {
 
     if (options.label) {
       ctx.setLineDash([]);
-      ctx.fillStyle = MUTED;
+      ctx.fillStyle = CHART_COLORS.MUTED;
       ctx.font = `11px ${FONT_UI}`;
       ctx.textAlign = endPixel > chartArea.left + (chartArea.right - chartArea.left) / 2 ? 'right' : 'left';
       const offset = ctx.textAlign === 'right' ? -6 : 6;

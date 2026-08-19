@@ -1,58 +1,98 @@
+/*
+ * The names the rest of the app styles against.
+ *
+ * Every colour here is an alias onto a custom property, and the values behind those properties
+ * live in themes.less - one block per theme. Nothing in this file resolves to a hex, which is the
+ * point: a rule written against `@color-surface` follows whichever theme the body carries instead
+ * of freezing the dark one into the build.
+ *
+ * Two consequences worth knowing before adding to this file:
+ *
+ *  - Less colour functions (`fade`, `darken`, `lighten`) cannot operate on a custom property, so a
+ *    colour that needs an alpha variant needs its channels published too. Those are the `-rgb`
+ *    aliases; use them as `rgb(@color-accent-rgb / 20%)`.
+ *  - This file must stay free of rules. It is imported by roughly forty stylesheets, and anything
+ *    that emits CSS here is emitted forty times.
+ */
+
 // Backgrounds
-@color-base: #0d0d0d;
-@color-surface: #161616;
-@color-elevated: #1e1e1e;
-@color-border: #2a2a2a;
-@color-border-bright: #383838;
+@color-base: var(--f-base);
+@color-surface: var(--f-surface);
+@color-surface-rgb: var(--f-surface-rgb);
+@color-elevated: var(--f-elevated);
+// Hovered rows and list entries, and the flat fill behind chips, pills and code.
+@color-hover: var(--f-hover);
+@color-solid: var(--f-solid);
+@color-border: var(--f-border);
+@color-border-bright: var(--f-border-bright);
 
 // Accent
-// A brick red rather than the vermillion this used to be (#e04a38, hsl 6/73/55). Same hue, so the
-// product still reads as Fredy, but roughly twenty points less saturation - the old one drew the
-// eye harder than any single control on a page deserves, and put every primary button in the same
-// register as a delete confirmation.
-@color-accent: #c0564a;
-@color-accent-dim: #a1443a;
-@color-accent-glow: rgba(192, 86, 74, 0.1);
+@color-accent: var(--f-accent);
+@color-accent-rgb: var(--f-accent-rgb);
+@color-accent-dim: var(--f-accent-dim);
+@color-accent-glow: var(--f-accent-glow);
 
 // Text
-@color-text: #efefef;
-@color-muted: #909090;
-@color-faint: #505050;
+@color-text: var(--f-text);
+@color-muted: var(--f-muted);
+@color-faint: var(--f-faint);
 
 // Semantic
-// Toned down alongside the accent. These sat at full tailwind-400 saturation, which on a near-black
-// surface glows rather than informs.
-@color-success: #4bab86;
-@color-success-dim: #08533e;
-@color-success-active: #3f8f68;
-@color-error: #d4707c;
-@color-error-dim: #7a1730;
-@color-warning: #d8a34a;
-@color-info: #6b93c4;
+@color-success: var(--f-success);
+@color-success-rgb: var(--f-success-rgb);
+@color-success-dim: var(--f-success-dim);
+@color-success-active: var(--f-success-active);
+@color-error: var(--f-error);
+@color-error-rgb: var(--f-error-rgb);
+@color-error-dim: var(--f-error-dim);
+@color-warning: var(--f-warning);
+@color-info: var(--f-info);
+@color-info-rgb: var(--f-info-rgb);
 
 // Fill overlays
-@color-fill-subtle: rgba(255, 255, 255, 0.04);
-@color-fill-overlay: rgba(255, 255, 255, 0.08);
+@color-fill-subtle: var(--f-fill-subtle);
+@color-fill-1: var(--f-fill-1);
+@color-fill-2: var(--f-fill-2);
+@color-fill-overlay: var(--f-fill-2);
+@color-fill-strong: var(--f-fill-strong);
+@color-input-bg: var(--f-input-bg);
+@color-input-border: var(--f-input-border);
+
+// Scrims and shadows
+@color-scrim: var(--f-scrim);
+@shadow-sm: var(--f-shadow-sm);
+@shadow-md: var(--f-shadow-md);
+@shadow-lg: var(--f-shadow-lg);
 
 // KPI card accents
-// Muted by roughly a third, and their borders taken well down. At full strength four saturated
-// blocks side by side competed with each other and with the accent, so a card carrying a routine
-// count read as urgent. The hues still separate the categories, which is all they are for.
-@color-blue-text: #7ba7d4;
-@color-blue-border: #33526f;
-@color-blue-bg: rgba(123, 167, 212, 0.07);
-@color-orange-text: #d69460;
-@color-orange-border: #7d5333;
-@color-orange-bg: rgba(214, 148, 96, 0.07);
-@color-green-text: #6cb597;
-@color-green-border: #2f6350;
-@color-green-bg: rgba(108, 181, 151, 0.07);
-@color-purple-text: #9d8fc9;
-@color-purple-border: #4f4374;
-@color-purple-bg: rgba(157, 143, 201, 0.07);
-@color-gray-text: #94a3b8;
-@color-gray-border: #323a47;
-@color-gray-bg: rgba(148, 163, 184, 0.07);
+@color-blue-text: var(--f-blue-text);
+@color-blue-border: var(--f-blue-border);
+@color-blue-bg: var(--f-blue-bg);
+@color-orange-text: var(--f-orange-text);
+@color-orange-text-rgb: var(--f-orange-text-rgb);
+@color-orange-border: var(--f-orange-border);
+@color-orange-bg: var(--f-orange-bg);
+@color-green-text: var(--f-green-text);
+@color-green-border: var(--f-green-border);
+@color-green-bg: var(--f-green-bg);
+@color-purple-text: var(--f-purple-text);
+@color-purple-text-rgb: var(--f-purple-text-rgb);
+@color-purple-border: var(--f-purple-border);
+@color-purple-bg: var(--f-purple-bg);
+@color-gray-text: var(--f-gray-text);
+@color-gray-border: var(--f-gray-border);
+@color-gray-bg: var(--f-gray-bg);
+
+// Donate button aurora
+@color-aurora-1: var(--f-aurora-1);
+@color-aurora-2: var(--f-aurora-2);
+@color-aurora-3: var(--f-aurora-3);
+
+// Map overlay panels
+@color-map-panel: var(--f-map-panel);
+@color-map-panel-border: var(--f-map-panel-border);
+@color-map-panel-text: var(--f-map-panel-text);
+@color-map-panel-strong: var(--f-map-panel-strong);
 
 // Typography
 @font-ui: 'Outfit', system-ui, sans-serif;

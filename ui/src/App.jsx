@@ -43,6 +43,7 @@ import { I18nProvider, availableLanguages } from './services/i18n/i18n.jsx';
 import DebugLoggingBanner from './components/debug/DebugLoggingBanner.jsx';
 import DemoBanner from './components/demo/DemoBanner.jsx';
 import { LEGACY_REDIRECTS } from './services/routes/legacyRedirects.js';
+import { applyTheme, normalizeTheme } from './services/theme/theme.js';
 
 const semiLocaleModules = import.meta.glob('/node_modules/@douyinfe/semi-ui-19/lib/es/locale/source/*.js', {
   eager: true,
@@ -89,8 +90,18 @@ export default function FredyApp() {
   const versionUpdate = useSelector((state) => state.versionUpdate.versionUpdate);
   const settings = useSelector((state) => state.generalSettings.settings);
   const language = useSelector((state) => state.userSettings.settings.language);
+  /*
+   * Straight off the user's stored settings, with nothing cached in front of it. Until those have
+   * arrived - on the login screen, and for the moment a cold load spends fetching them - this is
+   * the default, which is also what index.html ships on the body, so nothing repaints.
+   */
+  const theme = normalizeTheme(useSelector((state) => state.userSettings.settings.theme));
 
   useBrowserNotifications();
+
+  useEffect(() => {
+    applyTheme(theme);
+  }, [theme]);
 
   useEffect(() => {
     // Already filled for this user: nothing to do. Checked against the ref, which is only set
@@ -182,7 +193,10 @@ export default function FredyApp() {
             <Route path="*" element={<Navigate state={{ from: location }} to="/login" replace />} />
           </Routes>
         ) : (
-          <Layout className="app">
+          // Keyed on the theme so everything below remounts when it changes. The stylesheets follow the
+          // body attribute on their own, but the charts paint onto a canvas from colours they read once
+          // per render, and a canvas keeps whatever it was last painted with until something redraws it.
+          <Layout className="app" key={theme}>
             <Sider>
               <Navigation isAdmin={isAdmin()} />
             </Sider>

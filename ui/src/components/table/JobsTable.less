@@ -17,7 +17,7 @@
     transition: background @transition-fast;
 
     &:hover {
-      background: #252525;
+      background: @color-solid;
     }
 
     &--inactive {
@@ -34,10 +34,10 @@
         height: 8px;
         border-radius: 50%;
         flex-shrink: 0;
-        background-color: rgba(251, 113, 133, 0.7);
+        background-color: rgb(@color-error-rgb / 70%);
 
         &--active {
-          background-color: rgba(52, 211, 153, 0.8);
+          background-color: rgb(@color-success-rgb / 80%);
         }
       }
     }

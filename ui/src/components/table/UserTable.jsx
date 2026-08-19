@@ -80,14 +80,14 @@ export default function UserTable({ user = [], onUserRemoval, onUserEdit } = {})
           dataIndex: 'username',
           render: (value, record) => (
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <span style={{ color: '#efefef', fontWeight: 500 }}>{value}</span>
+              <span style={{ color: 'var(--f-text)', fontWeight: 500 }}>{value}</span>
               {record.isAdmin && (
                 <Tag
                   size="small"
                   style={{
-                    background: 'rgba(224,74,56,0.12)',
-                    border: '1px solid rgba(224,74,56,0.35)',
-                    color: '#c0564a',
+                    background: 'rgb(var(--f-accent-rgb) / 12%)',
+                    border: '1px solid rgb(var(--f-accent-rgb) / 35%)',
+                    color: 'var(--f-accent)',
                     borderRadius: 9999,
                     fontSize: 10,
                     fontWeight: 600,
@@ -121,7 +121,7 @@ export default function UserTable({ user = [], onUserRemoval, onUserEdit } = {})
                     fontFamily: 'JetBrains Mono, monospace',
                     fontSize: '0.85em',
                     wordBreak: 'break-all',
-                    color: '#505050',
+                    color: 'var(--f-faint)',
                   }}
                 >
                   {revealedTokens[userId]}
@@ -149,8 +149,8 @@ export default function UserTable({ user = [], onUserRemoval, onUserEdit } = {})
               <Button
                 style={{
                   background: 'transparent',
-                  border: '1px solid rgba(251,113,133,0.2)',
-                  color: '#d4707c',
+                  border: '1px solid rgb(var(--f-error-rgb) / 20%)',
+                  color: 'var(--f-error)',
                 }}
                 icon={<IconDelete />}
                 onClick={() => onUserRemoval(record.id)}

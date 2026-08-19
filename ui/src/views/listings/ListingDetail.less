@@ -7,7 +7,7 @@
      positioning, and the map inside it goes fullscreen by becoming `position: fixed`. Over the flat
      app background the blur bought nothing anyway. */
   &__card {
-    background-color: rgba(36, 36, 36, 0.9);
+    background-color: @color-surface;
     border: 1px solid var(--semi-color-border);
     margin-bottom: 2rem;
     overflow: hidden;
@@ -116,7 +116,7 @@
   }
 
   &__notes-textarea {
-    background: #2a2a2a !important;
+    background: @color-input-bg !important;
     border: 1px solid @color-border-bright !important;
     border-radius: @radius-input !important;
     box-shadow: none !important;
@@ -141,7 +141,7 @@
       border-color: @color-accent !important;
       box-shadow: none !important;
       outline: none !important;
-      background: #2f2f2f !important;
+      background: @color-hover !important;
     }
   }
 
@@ -151,12 +151,12 @@
     border-radius: @radius-btn !important;
     &:hover {
       color: @color-text !important;
-      background: rgba(255, 255, 255, 0.06) !important;
+      background: @color-fill-1 !important;
     }
     &--active {
       color: @color-accent !important;
-      border-color: rgba(192, 86, 74, 0.4) !important;
-      background: rgba(192, 86, 74, 0.08) !important;
+      border-color: rgb(@color-accent-rgb / 40%) !important;
+      background: rgb(@color-accent-rgb / 8%) !important;
     }
   }
 
@@ -178,8 +178,8 @@
       background @transition-fast;
     &:hover {
       color: @color-text;
-      border-color: rgba(255, 255, 255, 0.25);
-      background: rgba(255, 255, 255, 0.06);
+      border-color: @color-border-bright;
+      background: @color-fill-1;
     }
   }
 
@@ -220,7 +220,7 @@
     padding: 10px 14px;
     border: 1px solid var(--semi-color-border);
     border-radius: var(--semi-border-radius-medium);
-    background: rgba(22, 25, 38, 0.95);
+    background: @color-elevated;
   }
 
   &__pin-bar-text {

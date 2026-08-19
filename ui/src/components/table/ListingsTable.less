@@ -37,7 +37,7 @@
     transition: background @transition-fast;
 
     &:hover {
-      background: #252525;
+      background: @color-solid;
     }
 
     &--inactive {
@@ -140,7 +140,7 @@
 
       &:focus-visible {
         outline: none;
-        box-shadow: 0 0 0 2px rgba(192, 86, 74, 0.35);
+        box-shadow: 0 0 0 2px rgb(@color-accent-rgb / 35%);
       }
 
       svg {

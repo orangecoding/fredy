@@ -50,7 +50,7 @@ export default function InterestPrincipalChart({ scenario, height = 280 }) {
         {
           label: t('finance.chart.principalShare'),
           data: years.map((year) => year.principal),
-          backgroundColor: withAlpha('#7ba7d4', 0.85),
+          backgroundColor: withAlpha(CHART_COLORS.BLUE, 0.85),
           borderRadius: 2,
           stack: 'payments',
         },

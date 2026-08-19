@@ -8,7 +8,7 @@ import { IconDelete, IconPlus } from '@douyinfe/semi-icons';
 
 import { SegmentPart } from '../../../components/segment/SegmentPart.jsx';
 import { NumberField } from './ProfileForm.jsx';
-import { CHART_PALETTE } from '../../../components/cards/chartTheme.js';
+import { chartPalette } from '../../../components/cards/chartTheme.js';
 import { DEFAULT_TILGUNG, DEFAULT_ZINSBINDUNG_YEARS } from '../../../services/finance/constants.js';
 import { useTranslation } from '../../../services/i18n/i18n.jsx';
 
@@ -72,6 +72,7 @@ export default function ScenarioForm({ scenarios, computed = [], onChange }) {
   };
 
   const remove = (index) => onChange(scenarios.filter((_, i) => i !== index));
+  const palette = chartPalette();
 
   return (
     <SegmentPart name={t('finance.form.scenariosTitle')} helpText={t('finance.form.scenariosHelp')}>
@@ -79,7 +80,7 @@ export default function ScenarioForm({ scenarios, computed = [], onChange }) {
         <div className="scenarioRow" key={scenario.id ?? index}>
           <span
             className="scenarioRow__swatch"
-            style={{ backgroundColor: CHART_PALETTE[index % CHART_PALETTE.length] }}
+            style={{ backgroundColor: palette[index % palette.length] }}
             aria-hidden="true"
           />
           <div className="financeForm__grid scenarioRow__fields">

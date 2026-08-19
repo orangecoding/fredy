@@ -68,7 +68,7 @@
   &__loginWrapper {
     position: relative;
     z-index: 1;
-    background: fade(@color-surface, 82%);
+    background: rgb(@color-surface-rgb / 82%);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid @color-border;
@@ -80,7 +80,7 @@
     flex-direction: column;
     align-items: center;
     overflow: hidden;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+    box-shadow: @shadow-lg;
     animation: login-card-in 0.45s ease-out both;
   }
 
@@ -176,7 +176,7 @@
   }
 
   .semi-input-wrapper-focus {
-    border-color: fade(@color-accent, 55%) !important;
+    border-color: rgb(@color-accent-rgb / 55%) !important;
     box-shadow: 0 0 0 3px @color-accent-glow !important;
   }
 
@@ -188,7 +188,7 @@
 
     &:hover:not(:disabled) {
       transform: translateY(-1px);
-      box-shadow: 0 6px 18px -6px fade(@color-accent, 65%);
+      box-shadow: 0 6px 18px -6px rgb(@color-accent-rgb / 65%);
     }
 
     &:active:not(:disabled) {
@@ -206,7 +206,7 @@
     &__loginWrapper {
       padding: @space-6 @space-5;
       width: 95%;
-      background: fade(@color-surface, 92%);
+      background: rgb(@color-surface-rgb / 92%);
     }
 
     &__logoWrapper {

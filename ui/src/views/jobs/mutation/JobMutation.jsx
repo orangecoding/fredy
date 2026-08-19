@@ -316,7 +316,7 @@ export default function JobMutator() {
       <Headline
         text={jobToBeEdit ? t('jobs.mutation.editTitle') : t('jobs.mutation.createTitle')}
         actions={
-          <Button icon={<IconArrowLeft />} onClick={leaveForm} theme="borderless" style={{ color: '#909090' }}>
+          <Button icon={<IconArrowLeft />} onClick={leaveForm} theme="borderless" style={{ color: 'var(--f-muted)' }}>
             {t('jobs.mutation.back')}
           </Button>
         }

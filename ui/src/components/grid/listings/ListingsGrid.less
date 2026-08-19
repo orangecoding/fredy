@@ -16,7 +16,7 @@
   flex-direction: column;
 
   &:hover {
-    box-shadow: 0 6px 24px -4px rgba(0, 0, 0, 0.6);
+    box-shadow: @shadow-lg;
   }
 
   &__image-wrapper {
@@ -44,11 +44,11 @@
     span {
       font-size: 18px;
       font-weight: 800;
-      color: rgba(251, 113, 133, 0.9);
+      color: rgb(@color-error-rgb / 90%);
       text-transform: uppercase;
       letter-spacing: 0.15em;
       transform: rotate(-30deg);
-      border: 2px solid rgba(251, 113, 133, 0.5);
+      border: 2px solid rgb(@color-error-rgb / 50%);
       padding: 4px 12px;
       border-radius: @radius-chip;
       backdrop-filter: blur(2px);
