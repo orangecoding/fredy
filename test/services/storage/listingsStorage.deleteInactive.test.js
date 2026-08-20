@@ -47,9 +47,12 @@ describe('listingsStorage.deleteInactiveListingsByJobId', () => {
       CREATE TABLE listings (
         id               TEXT PRIMARY KEY,
         job_id           TEXT,
+        provider         TEXT,
         title            TEXT,
         address          TEXT,
         price            REAL,
+        size             REAL,
+        rooms            REAL,
         is_active        INTEGER,
         manually_deleted INTEGER DEFAULT 0
       );

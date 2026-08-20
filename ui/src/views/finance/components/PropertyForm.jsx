@@ -115,7 +115,7 @@ export default function PropertyForm({ financing, costs, totalCost, loanAmount, 
             {t('finance.form.closingCostsTotal')}
           </Text>
           <span className="financeForm__readout-value">
-            {costs == null ? '—' : `${formatEuro(costs.total, locale)} · ${costs.totalPct.toFixed(2)} %`}
+            {costs == null ? '-' : `${formatEuro(costs.total, locale)} · ${costs.totalPct.toFixed(2)} %`}
           </span>
         </div>
         <div className="financeForm__readout-row">

@@ -62,13 +62,15 @@ describe('listingsStorage hard delete evicts the similarity cache', () => {
   describe('deleteListingsByJobId', () => {
     it('hard delete fetches affected rows, DELETEs them and evicts each from the cache', () => {
       sqliteMock.__queryHandler = () => [
-        { job_id: 'job-1', title: 'A', address: 'Main 1', price: 1000 },
-        { job_id: 'job-1', title: 'B', address: 'Zero St', price: 0 },
+        { job_id: 'job-1', provider: 'immoscout', title: 'A', address: 'Main 1', price: 1000, size: 60, rooms: 2 },
+        { job_id: 'job-1', provider: 'immowelt', title: 'B', address: 'Zero St', price: 0, size: 70, rooms: 3 },
       ];
 
       listingsStorage.deleteListingsByJobId('job-1', true);
 
-      expect(calls.query[0].sql).toMatch(/SELECT job_id, title, address, price, manually_deleted/);
+      expect(calls.query[0].sql).toMatch(
+        /SELECT job_id, provider, title, address, price, size, rooms, manually_deleted/,
+      );
       // A DELETE (not a soft-delete UPDATE) must run
       expect(calls.execute).toHaveLength(1);
       expect(calls.execute[0].sql).toMatch(/DELETE FROM listings/);
@@ -76,8 +78,24 @@ describe('listingsStorage hard delete evicts the similarity cache', () => {
 
       // Each removed row must be evicted from the similarity cache
       expect(removeEntry).toHaveBeenCalledTimes(2);
-      expect(removeEntry).toHaveBeenCalledWith({ jobId: 'job-1', title: 'A', address: 'Main 1', price: 1000 });
-      expect(removeEntry).toHaveBeenCalledWith({ jobId: 'job-1', title: 'B', address: 'Zero St', price: 0 });
+      expect(removeEntry).toHaveBeenCalledWith({
+        jobId: 'job-1',
+        provider: 'immoscout',
+        title: 'A',
+        address: 'Main 1',
+        price: 1000,
+        size: 60,
+        rooms: 2,
+      });
+      expect(removeEntry).toHaveBeenCalledWith({
+        jobId: 'job-1',
+        provider: 'immowelt',
+        title: 'B',
+        address: 'Zero St',
+        price: 0,
+        size: 70,
+        rooms: 3,
+      });
     });
 
     it('soft delete marks rows and does NOT touch the similarity cache', () => {
@@ -108,7 +126,9 @@ describe('listingsStorage hard delete evicts the similarity cache', () => {
 
   describe('deleteListingsById', () => {
     it('hard delete fetches affected rows, DELETEs them and evicts each from the cache', () => {
-      sqliteMock.__queryHandler = () => [{ job_id: 'job-1', title: 'C', address: 'Road 3', price: 300 }];
+      sqliteMock.__queryHandler = () => [
+        { job_id: 'job-1', provider: 'kleinanzeigen', title: 'C', address: 'Road 3', price: 300, size: 45, rooms: 1.5 },
+      ];
 
       listingsStorage.deleteListingsById(['id-1', 'id-2'], true);
 
@@ -117,7 +137,15 @@ describe('listingsStorage hard delete evicts the similarity cache', () => {
       expect(calls.execute[0].sql).not.toMatch(/manually_deleted/);
 
       expect(removeEntry).toHaveBeenCalledTimes(1);
-      expect(removeEntry).toHaveBeenCalledWith({ jobId: 'job-1', title: 'C', address: 'Road 3', price: 300 });
+      expect(removeEntry).toHaveBeenCalledWith({
+        jobId: 'job-1',
+        provider: 'kleinanzeigen',
+        title: 'C',
+        address: 'Road 3',
+        price: 300,
+        size: 45,
+        rooms: 1.5,
+      });
     });
 
     it('soft delete marks rows and does NOT touch the similarity cache', () => {

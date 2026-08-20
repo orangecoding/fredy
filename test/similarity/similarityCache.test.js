@@ -110,6 +110,116 @@ describe('similarityCache', () => {
     expect(checkAndAddEntry({ jobId: 'job-1', title: 'A', price: 1000, address: 'Main 1' })).toBe(true);
   });
 
+  describe('cross-provider fingerprint matching', () => {
+    const BROKER_COPY =
+      'Diese ansprechende Wohnung befindet sich im zweiten Obergeschoss eines gepflegten ' +
+      'Mehrfamilienhauses und ueberzeugt durch ihren durchdachten Grundriss. Der Balkon nach ' +
+      'Sueden laedt zum Verweilen ein. Die Kueche ist voll ausgestattet.';
+
+    const scout = {
+      jobId: 'job-1',
+      provider: 'immoscout',
+      title: 'Helle 3-Zimmer-Wohnung mit Balkon in Stadtamhof',
+      address: 'Stadtamhof, Regensburg',
+      price: 1450,
+      size: 78,
+      rooms: 3,
+      description: BROKER_COPY,
+    };
+
+    const welt = {
+      jobId: 'job-1',
+      provider: 'immowelt',
+      title: '3-Zimmer-Wohnung mit Balkon, Regensburg-Stadtamhof',
+      address: '93059 Stadtamhof, Regensburg',
+      price: 1180,
+      size: 78,
+      rooms: 3,
+      description: BROKER_COPY,
+    };
+
+    it('catches the same flat arriving from a second provider in the same run', async () => {
+      const { checkAndAddEntry } = await loadModuleWith();
+
+      expect(checkAndAddEntry(scout)).toBe(false);
+      expect(checkAndAddEntry(welt)).toBe(true);
+    });
+
+    it('catches it again after a restart, hydrating from stored rows', async () => {
+      const entries = [
+        {
+          job_id: 'job-1',
+          provider: 'immoscout',
+          title: scout.title,
+          address: scout.address,
+          price: scout.price,
+          size: scout.size,
+          rooms: scout.rooms,
+          description: scout.description,
+        },
+      ];
+      const { initSimilarityCache, checkAndAddEntry } = await loadModuleWith({ entries });
+      initSimilarityCache();
+
+      expect(checkAndAddEntry(welt)).toBe(true);
+    });
+
+    it('does not add the duplicate, so the first copy stays the known one', async () => {
+      const { checkAndAddEntry, removeEntry } = await loadModuleWith();
+
+      checkAndAddEntry(scout);
+      checkAndAddEntry(welt);
+
+      // The Immowelt copy was never cached, only recognised.
+      expect(removeEntry(welt)).toBe(false);
+      expect(removeEntry(scout)).toBe(true);
+      expect(checkAndAddEntry(welt)).toBe(false);
+    });
+
+    it('leaves listings from the same provider to the exact tier', async () => {
+      const { checkAndAddEntry } = await loadModuleWith();
+      const twin = { ...scout, title: `${scout.title} - Whg. 4` };
+
+      expect(checkAndAddEntry(scout)).toBe(false);
+      expect(checkAndAddEntry(twin)).toBe(false);
+    });
+
+    it('keeps a genuinely different flat in the same district', async () => {
+      const { checkAndAddEntry } = await loadModuleWith();
+      const other = {
+        ...welt,
+        title: 'Dachgeschoss-Maisonette mit Galerie',
+        price: 1700,
+        description: 'Ein voellig anderes Objekt mit Galerie und Dachterrasse ueber zwei Ebenen.',
+      };
+
+      expect(checkAndAddEntry(scout)).toBe(false);
+      expect(checkAndAddEntry(other)).toBe(false);
+    });
+
+    it('still isolates jobs', async () => {
+      const { checkAndAddEntry } = await loadModuleWith();
+
+      expect(checkAndAddEntry(scout)).toBe(false);
+      expect(checkAndAddEntry({ ...welt, jobId: 'job-2' })).toBe(false);
+    });
+
+    it('counts listings that share a content hash, so removing one keeps the other', async () => {
+      const { initSimilarityCache, checkAndAddEntry } = await loadModuleWith({
+        entries: [
+          { job_id: 'job-1', title: 'A', address: 'Main 1', price: 1000 },
+          { job_id: 'job-1', title: 'A', address: 'Main 1', price: 1000 },
+        ],
+      });
+      initSimilarityCache();
+
+      const { removeEntry } = await import('../../lib/services/similarity-check/similarityCache.js');
+      expect(removeEntry({ jobId: 'job-1', title: 'A', address: 'Main 1', price: 1000 })).toBe(true);
+      // One stored listing still carries that hash, so it must stay a duplicate.
+      expect(checkAndAddEntry({ jobId: 'job-1', title: 'A', address: 'Main 1', price: 1000 })).toBe(true);
+    });
+  });
+
   it('removes only the matching job entry', async () => {
     const { checkAndAddEntry, removeEntry } = await loadModuleWith();
     const listing = { title: 'A', price: 1000, address: 'Main 1' };

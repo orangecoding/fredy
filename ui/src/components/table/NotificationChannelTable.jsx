@@ -147,7 +147,7 @@ export default function NotificationChannelTable({
               {record.adapterName}
             </Tag>
           </div>
-          <div className="notificationChannelTable__destination">{record.destination ?? '—'}</div>
+          <div className="notificationChannelTable__destination">{record.destination ?? '-'}</div>
           {(showVisibility || showUsage) && (
             <div className="notificationChannelTable__stackMeta">
               {showVisibility && <span>{visibilityCell(record.visibility, record)}</span>}
@@ -170,7 +170,7 @@ export default function NotificationChannelTable({
     {
       title: t('notification.channels.columnDestination'),
       dataIndex: 'destination',
-      render: (destination) => <span className="notificationChannelTable__destination">{destination ?? '—'}</span>,
+      render: (destination) => <span className="notificationChannelTable__destination">{destination ?? '-'}</span>,
     },
   ];
 

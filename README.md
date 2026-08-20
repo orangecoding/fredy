@@ -65,7 +65,9 @@ On top of the listing itself, Fredy answers two questions:
     Discord, Mattermost, Pushover, Apprise and more
 -   🔎 Uses the **ImmoScout Mobile API** (reverse engineered)
 -   🖥️ **Web UI** to create and manage searches
--   🔄 Deduplication across platforms
+-   🔄 **Deduplication across platforms**: the same flat advertised on ImmoScout, Immowelt and
+    Kleinanzeigen reaches you once, matched on living space, rooms and location rather than on
+    the headline - no two portals write that the same way
 -   ⏱️ Configurable search intervals and working hours
 -   💶 **Financing calculator**: which listings you can afford, for renting and for buying
 -   🚆 **Real travel times** from your addresses by public transport, car, bike or on foot,

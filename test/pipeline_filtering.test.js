@@ -45,11 +45,17 @@ describe('Issue reproduction: listings filtered by similarity or area should be 
     }
 
     expect(mockStore.deletedIds).toContain('1');
+    // The provider id travels with the listing: the cache only ever treats two listings as the
+    // same flat when they came from different providers.
     expect(mockSimilarityCache.checkAndAddEntry).toHaveBeenCalledWith({
       jobId: 'test-job',
+      provider: 'test-provider',
       title: 'test',
       address: 'addr',
       price: '100',
+      size: undefined,
+      rooms: undefined,
+      description: undefined,
     });
   });
 

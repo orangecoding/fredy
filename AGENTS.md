@@ -60,7 +60,7 @@ scheduler (every N minutes) or manual trigger via POST /api/jobs/:id/run
       6. provider.fetchDetails()           # optional enrichment
       7. geocodeAddress()                  # optional lat/lng
       8. storeListings()
-      9. similarityCache.checkAndAddEntry() # cross-provider dedup
+      9. similarityCache.checkAndAddEntry() # cross-provider dedup (exact hash, then fingerprint)
       10. _filterBySpecs() + _filterByArea()
       11. notify.send()                    # fan-out to all adapters
 ```
@@ -98,7 +98,7 @@ An adapter *configuration* is separate from the adapter itself: it is a row in `
 |---|---|---|
 | Event bus | `lib/services/events/event-bus.js` | Plain `EventEmitter`; events: `jobs:runAll`, `jobs:runOne`, `jobs:status` |
 | SSE broker | `lib/services/sse/sse-broker.js` | Per-userId `Set<ServerResponse>`; heartbeat every 25s; pushes job status to UI |
-| Similarity cache | `lib/services/similarity-check/` | In-memory SHA-256 Set; refreshes hourly; per-job cross-provider dedup by title+price+address |
+| Similarity cache | `lib/services/similarity-check/` | Per-job dedup, refreshed hourly. Two tiers: an exact SHA-256 over `jobId\|title\|price\|address`, then `listingFingerprint.js`, which matches the same flat across *different* providers on living space, rooms and location. Portals never agree on the headline, the address format, or what "price" means, so the hash tier alone never fired across providers |
 | Notification channels | `lib/services/storage/configuredAdapterStorage.js` | Saved adapter configurations (`configured_adapter`). Jobs store `[{configuredAdapterId}]`; `jobStorage` hydrates those back into `{id, name, fields}` on every read, so the pipeline never sees the indirection. Who may use vs. edit a channel: `lib/services/security/channelAccess.js` |
 | SqliteConnection | `lib/services/storage/SqliteConnection.js` | Singleton, WAL mode; `execute()`, `query()`, `withTransaction()` |
 | Migrations | `lib/services/storage/migrations/` | Numbered JS files each exporting `up(db)`; checksum-tracked in `schema_migrations` |

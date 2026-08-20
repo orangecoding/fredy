@@ -26,9 +26,12 @@ describe('purgeExpiredInactiveListings', () => {
       CREATE TABLE listings (
         id TEXT PRIMARY KEY,
         job_id TEXT,
+        provider TEXT,
         title TEXT,
         address TEXT,
         price REAL,
+        size REAL,
+        rooms REAL,
         is_active INTEGER,
         manually_deleted INTEGER DEFAULT 0,
         inactive_since INTEGER,
@@ -144,9 +147,12 @@ describe('purgeExpiredInactiveListings', () => {
     purge(14);
     expect(removeEntry).toHaveBeenCalledWith({
       jobId: 'job-1',
+      provider: null,
       title: 'Nice flat',
       address: 'Main street 3',
       price: 1000,
+      size: null,
+      rooms: null,
     });
   });
 
