@@ -3,15 +3,15 @@ on:
   push:
     branches: [master]
   pull_request:
-    branches: [master]
+    branches: [master, develop]
 jobs:
   check_source_code:
     name: Check the source code
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: 'yarn'

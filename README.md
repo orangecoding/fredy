@@ -120,6 +120,12 @@ docker run -d --name fredy \
 `:master` follows the master branch. To pin a release instead, use its version tag, for example
 `ghcr.io/orangecoding/fredy:26.5.1`. Images are built for `linux/amd64` and `linux/arm64`.
 
+There is also a pre-release channel that follows the `develop` branch:
+`ghcr.io/orangecoding/fredy-pre-release:latest`. It is built from the same pipeline (lint, format
+check and the offline test suite all have to pass first), but the changes in it have not been
+through master yet. Use it to try upcoming features or to verify a fix, not for an instance you
+rely on.
+
 Logs:
 
 ``` bash

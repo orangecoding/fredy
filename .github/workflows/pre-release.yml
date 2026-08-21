@@ -1,0 +1,60 @@
+name: Pre-Release
+
+# Everything that guards master guards develop as well, and only then is an image built.
+# Result: ghcr.io/orangecoding/fredy-pre-release
+on:
+  push:
+    branches:
+      - 'develop'
+    tags:
+      - '*-pre.*'
+
+jobs:
+  check_source_code:
+    name: Check the source code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Check formatting
+        run: yarn format:check
+
+      - name: Lint
+        run: yarn lint
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: 'yarn'
+
+      - run: yarn install
+      - run: yarn test:offline
+
+  docker:
+    needs: [check_source_code, test]
+    permissions:
+      contents: read
+      packages: write
+    uses: ./.github/workflows/docker-build.yml
+    with:
+      image_name: ${{ github.repository }}-pre-release
+      # :latest always points at the newest green develop build. develop is not the default
+      # branch, so metadata-action would not add it on its own.
+      tags: |
+        type=raw,value=latest
+        type=ref,event=branch
+        type=ref,event=tag
+        type=sha,format=short

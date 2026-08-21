@@ -20,7 +20,8 @@
     "migratedb": "node lib/services/storage/migrations/migrate.js",
     "migratedb:overwrite": "x-var MIGRATION_ALLOW_CHECKSUM_UPDATE=true node lib/services/storage/migrations/migrate.js",
     "copyright": "node ./copyright.js",
-    "release": "node ./tools/release/release.js"
+    "release": "node ./tools/release/release.js",
+    "release:pre": "node ./tools/release/release.js --pre"
   },
   "type": "module",
   "lint-staged": {
