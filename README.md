@@ -22,7 +22,6 @@
 </p>
 
 
-
 # Fredy 🏡 - Your Self-Hosted Real Estate Finder for Germany
 
 **Fredy** scrapes **17 German real estate portals** (ImmoScout24, Immowelt, Kleinanzeigen,
