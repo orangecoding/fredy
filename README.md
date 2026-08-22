@@ -22,9 +22,9 @@
 </p>
 
 
-# Fredy 🏡 - Your Self-Hosted Real Estate Finder for Germany
+# Fredy 🏡 - Your Self-Hosted Real Estate Finder for Europe
 
-**Fredy** scrapes **17 German real estate portals** (ImmoScout24, Immowelt, Kleinanzeigen,
+**Fredy** scrapes **European real estate portals** (ImmoScout24, Immowelt, Kleinanzeigen,
 WG-Gesucht, Immobilien.de, McMakler and more, see [Provider](#provider-)), drops duplicates
 across platforms, and notifies you via **Slack, Telegram, Email, ntfy, Discord and more** as
 soon as a new listing appears. Searches are managed from a Web UI, and you never see the same
@@ -58,7 +58,7 @@ On top of the listing itself, Fredy answers two questions:
 
 ## ✨ Key Features
 
--   🏠 Scrapes **17 German portals**: ImmoScout24, Immowelt, Kleinanzeigen, WG-Gesucht and
+-   🏠 Scrapes **European portals**: ImmoScout24, Immowelt, Kleinanzeigen, WG-Gesucht and
     [13 more](#provider-)
 -   ⚡ Instant notifications: Slack, Telegram, Email (SMTP, SendGrid, Mailjet, Resend), ntfy,
     Discord, Mattermost, Pushover, Apprise and more
@@ -263,7 +263,7 @@ each month. The renting tab asks for nothing beyond that.
 
 ### Buying
 
-The buying tab models the purchase the way a German bank would, as an **Annuitätendarlehen**:
+The buying tab models the purchase the way a European bank would, as an **Annuitätendarlehen**:
 
 - the **monthly rate**, and how it splits into interest and repayment over the years
 - the **Kaufnebenkosten**: Grunderwerbsteuer for your Bundesland, Notar + Grundbuch, and the
