@@ -17,6 +17,37 @@ export const getGeocoordinatesByAddress = (any) => {
   return null;
 };
 
+/**
+ * Every address the pipeline asked the geocoder about, in order.
+ *
+ * A test that cares whether a geocode happened at all needs to see the absence of a call, which a
+ * plain stub cannot show.
+ * @type {string[]}
+ */
+export const geocodedAddresses = [];
+
+/** What the stand-in geocoder answers. Set by a test that needs coordinates back. */
+export let geocodeResult = null;
+
+/**
+ * @param {{lat: number, lng: number}|null} result
+ * @returns {void}
+ */
+export function setGeocodeResult(result) {
+  geocodeResult = result;
+}
+
+/**
+ * Stands in for `geoCodingService.geocodeAddress`, recording what it was asked.
+ *
+ * @param {string} address
+ * @returns {{lat: number, lng: number}|null}
+ */
+export const geocodeAddress = (address) => {
+  geocodedAddresses.push(address);
+  return geocodeResult;
+};
+
 let userSettings = null;
 export function setUserSettings(settings) {
   userSettings = settings;
