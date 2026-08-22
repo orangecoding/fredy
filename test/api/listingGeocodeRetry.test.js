@@ -27,6 +27,7 @@ let geocodeResult;
 let paused;
 let stored;
 let distanceUpdates;
+let geocodeCalls;
 
 /**
  * @param {{demoMode?: boolean, isAdmin?: boolean}} [options]
@@ -36,6 +37,7 @@ async function buildServer({ demoMode = false, isAdmin = false } = {}) {
   vi.resetModules();
   stored = [];
   distanceUpdates = [];
+  geocodeCalls = [];
 
   vi.doMock(listingStoragePath, () => ({
     userCanAccessListing: () => true,
@@ -43,8 +45,14 @@ async function buildServer({ demoMode = false, isAdmin = false } = {}) {
     updateListingGeocoordinates: (id, latitude, longitude) => stored.push({ id, latitude, longitude }),
   }));
   vi.doMock(geoCodingPath, () => ({
-    geocodeAddress: async () => geocodeResult,
+    geocodeAddress: async (...args) => {
+      geocodeCalls.push(args);
+      return geocodeResult;
+    },
     isGeocodingPaused: () => paused,
+  }));
+  vi.doMock(root + '/lib/services/providers/providerCountries.js', () => ({
+    getCountriesForProvider: async (providerId) => (providerId === 'swissportal' ? ['ch'] : ['de']),
   }));
   vi.doMock(distanceServicePath, () => ({
     updateDistancesForListing: (...args) => distanceUpdates.push(args),
@@ -70,7 +78,13 @@ async function buildServer({ demoMode = false, isAdmin = false } = {}) {
 const retry = (app) => app.inject({ method: 'POST', url: '/api/listings/listing-1/geocode', payload: {} });
 
 beforeEach(() => {
-  listing = { id: 'listing-1', address: 'Office Street 1, Berlin', job_id: 'job-1', address_is_manual: 0 };
+  listing = {
+    id: 'listing-1',
+    address: 'Office Street 1, Berlin',
+    job_id: 'job-1',
+    address_is_manual: 0,
+    provider: 'immowelt',
+  };
   geocodeResult = { lat: 52.52, lng: 13.4 };
   paused = false;
 });
@@ -85,6 +99,29 @@ describe('POST /api/listings/:listingId/geocode', () => {
     expect(stored).toEqual([{ id: 'listing-1', latitude: 52.52, longitude: 13.4 }]);
     // Distances belong to whoever owns the job, not to whoever is looking, because jobs are shared.
     expect(distanceUpdates[0]).toEqual(['listing-1', 52.52, 13.4, 'owner-1']);
+    await app.close();
+  });
+
+  /**
+   * The row is already loaded to check the address, so the provider that found it is sitting right
+   * there - and it is the only thing that says which country the address is in. Without it a retry
+   * on a listing from a non-German portal searches Germany and reports the address as unfindable,
+   * which is exactly the wrong half of the distinction this endpoint exists to make.
+   */
+  it('searches the countries of the provider that found the listing', async () => {
+    listing.provider = 'swissportal';
+    const app = await buildServer();
+    await retry(app);
+
+    expect(geocodeCalls).toEqual([['Office Street 1, Berlin', ['ch']]]);
+    await app.close();
+  });
+
+  it('searches Germany for a provider that declares nothing', async () => {
+    const app = await buildServer();
+    await retry(app);
+
+    expect(geocodeCalls).toEqual([['Office Street 1, Berlin', ['de']]]);
     await app.close();
   });
 

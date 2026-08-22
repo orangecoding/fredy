@@ -530,7 +530,11 @@ export default function JobMutator() {
                 <li>{t('jobs.mutation.areaStep3')}</li>
               </ol>
               <div className={`jobMutation__areaMap${areaExpanded ? ' jobMutation__areaMap--expanded' : ''}`}>
-                <AreaFilter spatialFilter={spatialFilter} onChange={handleSpatialFilterChange} />
+                <AreaFilter
+                  spatialFilter={spatialFilter}
+                  onChange={handleSpatialFilterChange}
+                  providerData={providerData}
+                />
               </div>
               <Button theme="borderless" size="small" onClick={() => setAreaExpanded((current) => !current)}>
                 {areaExpanded ? t('jobs.mutation.areaCollapse') : t('jobs.mutation.areaExpand')}

@@ -29,6 +29,7 @@ import { createListingPopupContent } from './listingPopupContent.jsx';
 // the global `Map` constructor for the whole file: `new Map()` then invokes a React function
 // component with no props, which fails somewhere inside it rather than where it was written.
 import MapCanvas, { HOME_MARKER_COLOR } from '../../components/map/Map.jsx';
+import { useProviderCountries } from '../../hooks/useProviderCountries.js';
 import Headline from '../../components/headline/Headline.jsx';
 import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
 import { keepPopupInView, mountPopupNode } from '../../components/map/popupContent.jsx';
@@ -90,6 +91,9 @@ export default function MapView() {
   const defaultDeleteType = listingDeletionPref?.hardDelete ? 'hard' : 'soft';
 
   const jobs = useSelector((state) => state.jobsData.jobs);
+  // No job is selected here by default and a listing carries no provider into this view, so the
+  // reach of the map is the union across everything the user searches.
+  const countries = useProviderCountries();
 
   // One grouped state rather than four independent setters: two of these can change in the same
   // tick, and separate setSearchParams calls overwrite each other.
@@ -468,6 +472,7 @@ export default function MapView() {
 
         <div className="map-view-container__map-wrapper">
           <MapCanvas
+            countries={countries}
             style={style}
             show3dBuildings={show3dBuildings}
             showTransit={showTransit}

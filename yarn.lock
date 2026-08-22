@@ -1298,10 +1298,10 @@
     quickselect "^3.0.0"
     tinyqueue "^3.0.0"
 
-"@maplibre/mlt@^1.1.12":
-  version "1.1.12"
-  resolved "https://registry.yarnpkg.com/@maplibre/mlt/-/mlt-1.1.12.tgz#32c5e41eeb765a107125ec92a8533cb27cddf253"
-  integrity sha512-ZeK5w2TTeHOajcLaEQs1KZXw2V9wIKo1PmThlxlsHoXsQsYlBqLJzPOd6tJHRtGTChUY3DPPmjXRArYVvAbmZw==
+"@maplibre/mlt@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@maplibre/mlt/-/mlt-1.2.0.tgz#fe13acd002b926c9eb683394be83c3fe5ef5c135"
+  integrity sha512-g45M8gEI4sMO3X9ib4K7n3ZKFf0qQOL+NMkHCnEK51lOrYFHiEssOuZncx1+miIgi1IEE2NcbRMcq8RBkL+QHA==
   dependencies:
     "@mapbox/point-geometry" "^1.1.0"
 
@@ -3136,10 +3136,10 @@ eslint-visitor-keys@^5.0.0, eslint-visitor-keys@^5.0.1:
   resolved "https://registry.yarnpkg.com/eslint-visitor-keys/-/eslint-visitor-keys-5.0.1.tgz#9e3c9489697824d2d4ce3a8ad12628f91e9f59be"
   integrity sha512-tD40eHxA35h0PEIZNeIjkHoDR4YjjJp34biM0mDvplBe//mB+IHCqHDGV7pxF+7MklTvighcCPPZC7ynWyjdTA==
 
-eslint@10.8.1:
-  version "10.8.1"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-10.8.1.tgz#fb37d514c19b6dd5b2d6b70169fd26fddfa97967"
-  integrity sha512-wqA7W2jbsC/BnV9Iv1UZpKVFkO1AdNoSmYW8NWG4HNOBbkAMvIqDZ27pI2f07dqn583NcIC44ckjAcOXDL1QbQ==
+eslint@10.9.0:
+  version "10.9.0"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-10.9.0.tgz#3d86068a06c6c78161a4062e69874d38f59d498b"
+  integrity sha512-5KeEOJZBfEVA47boFiBsf+6MmmJpffM7qEBg4pLla2e4nlKgdKlqCW0oSLOGsT8Wl5uCGJptLV1bkaiShj90Gw==
   dependencies:
     "@eslint-community/eslint-utils" "^4.8.0"
     "@eslint-community/regexpp" "^4.12.2"
@@ -4471,10 +4471,10 @@ make-dir@^5.1.0:
   resolved "https://registry.yarnpkg.com/make-dir/-/make-dir-5.1.0.tgz#59b2d9acf7ffa543d14238617a697458fa8dd5c9"
   integrity sha512-IfpFq6UM39dUNiphpA6uDezNx/AvWyhwfICWPR3t1VspkgkMZrL+Rk1RbN1bx+aeNYwOrqGJgEgV3yotk+ZUVw==
 
-maplibre-gl@6.4.1:
-  version "6.4.1"
-  resolved "https://registry.yarnpkg.com/maplibre-gl/-/maplibre-gl-6.4.1.tgz#34ae00dbbdef965f6519948ff131758f544d3696"
-  integrity sha512-KzxQKtfBu/pSz1C+yW1hNS9eyj2h2lC7ufdAi6/SEt177n3oAfDfmUmslRfJdXY7ReAFBcnvwsqmiyoDhtA9GQ==
+maplibre-gl@6.5.0:
+  version "6.5.0"
+  resolved "https://registry.yarnpkg.com/maplibre-gl/-/maplibre-gl-6.5.0.tgz#560544d69f8695a7cfdfb569b694f98d65557e64"
+  integrity sha512-kVStPz9Rw/ATjWV5tQ3iCR0tY+viz16Nh3E14iZNlBj0HloMAzFaDNtFYqPGkZSFRnv56txMh3ImjR0g6oClTw==
   dependencies:
     "@mapbox/point-geometry" "^1.1.0"
     "@mapbox/tiny-sdf" "^2.2.0"
@@ -4482,7 +4482,7 @@ maplibre-gl@6.4.1:
     "@mapbox/vector-tile" "^3.0.0"
     "@maplibre/geojson-vt" "^6.1.1"
     "@maplibre/maplibre-gl-style-spec" "^26.2.1"
-    "@maplibre/mlt" "^1.1.12"
+    "@maplibre/mlt" "^1.2.0"
     "@maplibre/vt-pbf" "^4.3.2"
     "@types/geojson" "^7946.0.16"
     earcut "^3.2.3"
@@ -6122,10 +6122,10 @@ require-from-string@^2.0.2:
   resolved "https://registry.yarnpkg.com/require-from-string/-/require-from-string-2.0.2.tgz#89a7fdd938261267318eafe14f9c32e598c36909"
   integrity sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==
 
-resend@^6.21.0:
-  version "6.21.0"
-  resolved "https://registry.yarnpkg.com/resend/-/resend-6.21.0.tgz#669bd38ec406096f441c8b773a42e96b311f7616"
-  integrity sha512-XT1eP2iA8rZ51NSO2CJlL1ZE2baBoPpOGMgz2p0o2uluz/YU3XfItpGymXDlL0Sp2Mc+y9+Xxsfdccfi4f2FzQ==
+resend@^6.22.0:
+  version "6.22.0"
+  resolved "https://registry.yarnpkg.com/resend/-/resend-6.22.0.tgz#5c1e8279d49c71195cc6d6ca142b30168f4e5d08"
+  integrity sha512-dP1jyl0n1Dx7GYDb0bcsbv9Yx0oBRLhUtSyNFRIOsSzV9MvCVbua/3WP6YUP2JptAU5BciEWGInV+hFjUuYLUw==
   dependencies:
     postal-mime "2.7.5"
     standardwebhooks "1.0.0"

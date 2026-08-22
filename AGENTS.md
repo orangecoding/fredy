@@ -68,7 +68,15 @@ scheduler (every N minutes) or manual trigger via POST /api/jobs/:id/run
 ### Plugin systems
 
 **Providers** (`lib/provider/*.js`) - each module exports:
-- `metaInformation` - `{ id, name, baseUrl }`
+- `metaInformation` - `{ id, name, baseUrl }`, plus an optional `countries` (ISO 3166-1 alpha-2,
+  lowercase). Absent means `['de']`, which is why no shipped provider declares it and why adding the
+  field changed no existing installation. Resolved in `lib/services/providers/`: `countries.js` is
+  the pure half (the default, normalisation, union) and is all the Nominatim client imports, since
+  `providerCountries.js` reaches for the job storage and would drag SQLite in behind it. The
+  geocoder searches within the resolved countries; the map's `maxBounds` is the union of their
+  boxes from `ui/src/components/map/countryBounds.js`. Where no provider exists to ask - home
+  addresses, the listings map, the listing detail - the answer is the union across the jobs the user
+  can see, and where the job form is open it is the providers ticked in it
 - `config` - the **static** `ProviderConfig` template: `requiredFieldNames`, `crawlContainer`, `crawlFields`, `sortByDateParam`, `normalize()`, optional `getListings()`, `fetchDetails()`, `activeTester()`. `url` is `null` here and there is no bound `filter`.
 - `createConfig(sourceConfig, blacklist)` - returns a **fresh** `ProviderConfig` per job run: the template plus this run's `url`, `enabled`, and a `filter` closed over this run's blacklist.
 

@@ -65,10 +65,28 @@ export const metaInformation = {
   name: 'your provider name',
   baseUrl: 'https://www.yourprovider.de/',
   id: 'yourprovider',
+  //optional. Which countries this provider covers, as ISO 3166-1 alpha-2, lowercase.
+  countries: ['de'],
 };
 
 export { config };
 ```
+
+**`countries` is optional and defaults to `['de']`.** Leave it out for a German portal; every
+provider shipped with Fredy does. Two things read it: the geocoder, which asks Nominatim to search
+within those countries, and the map, whose `maxBounds` is the union of their bounding boxes. Get it
+wrong and addresses silently fail to resolve, so a provider covering somewhere other than Germany
+must declare it. A provider spanning several countries lists them all: `countries: ['de', 'at', 'ch']`.
+
+A country new to Fredy also needs its bounding box in `ui/src/components/map/countryBounds.js`,
+otherwise the map ignores the code and stays where it was.
+
+The same shape is where anything else that varies by country belongs. `currency` is the obvious
+next one and is deliberately not implemented: `€` appears in around forty places, twelve of them in
+the finance module, which assumes considerably more than a symbol, and three locale files carry it
+inside translated strings. Whoever arrives with a provider quoting in kroner should add
+`currency: 'DKK'` here, default it to `EUR`, and resolve it exactly the way `countries` is
+resolved in `lib/services/providers/`.
 
 ### How to write new notification adapter?
 

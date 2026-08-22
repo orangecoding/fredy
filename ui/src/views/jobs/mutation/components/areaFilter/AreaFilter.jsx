@@ -11,6 +11,7 @@ import MapCanvas from '../../../../../components/map/Map.jsx';
 import { debounce } from '../../../../../utils.js';
 import { xhrGet } from '../../../../../services/xhr.js';
 import { useTranslation } from '../../../../../services/i18n/i18n.jsx';
+import { useCountriesForProviders } from '../../../../../hooks/useProviderCountries.js';
 import './AreaFilter.less';
 
 /** Close enough to see streets, far enough to still draw a neighbourhood polygon around them. */
@@ -19,16 +20,31 @@ const ADDRESS_ZOOM = 13;
 /**
  * The map used to draw the search areas of a job, with an address lookup above it.
  *
- * The map opens on the whole of Germany, so without this the user has to pan and zoom their way
- * to the town they have in mind before they can draw anything. Searching only moves the camera:
- * it never adds an area, because where you look and what you search are different decisions.
+ * The map opens on the countries the job's providers serve, so without this the user has to pan
+ * and zoom their way to the town they have in mind before they can draw anything. Searching only
+ * moves the camera: it never adds an area, because where you look and what you search are
+ * different decisions.
+ *
+ * This is the one map reading the providers ticked in the form rather than the account-wide union,
+ * so its reach - and the addresses the search box will find - follow the job being built as it is
+ * built.
  *
  * @param {Object} props
  * @param {Object|null} [props.spatialFilter] Existing GeoJSON areas of the job.
  * @param {(filter: Object) => void} [props.onChange] Called when the drawn areas change.
+ * @param {Array<{id: string}>} [props.providerData] The job's currently configured providers.
  */
-export default function AreaFilter({ spatialFilter = null, onChange = null }) {
+export default function AreaFilter({ spatialFilter = null, onChange = null, providerData = [] }) {
   const t = useTranslation();
+  const countries = useCountriesForProviders(providerData);
+  // Sent along with both lookups so the server searches the same countries the map is bounded by.
+  // Empty while no provider has been added yet, which leaves the server to fall back to the union
+  // across the user's other jobs.
+  const providerParam = (providerData ?? [])
+    .map((provider) => provider?.id)
+    .filter((id) => typeof id === 'string' && id.length > 0)
+    .join(',');
+  const providerQuery = providerParam.length > 0 ? `&providers=${encodeURIComponent(providerParam)}` : '';
   const mapRef = useRef(null);
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
@@ -39,11 +55,11 @@ export default function AreaFilter({ spatialFilter = null, onChange = null }) {
   const requestSuggestions = useMemo(
     () =>
       debounce((value) => {
-        xhrGet(`/api/user/settings/autocomplete?q=${encodeURIComponent(value)}`)
+        xhrGet(`/api/user/settings/autocomplete?q=${encodeURIComponent(value)}${providerQuery}`)
           .then((response) => setSuggestions(response.status === 200 ? response.json : []))
           .catch(() => setSuggestions([]));
       }, 300),
-    [],
+    [providerQuery],
   );
 
   const search = (value) => {
@@ -64,7 +80,7 @@ export default function AreaFilter({ spatialFilter = null, onChange = null }) {
       setQuery(target);
       setLocating(true);
       try {
-        const response = await xhrGet(`/api/user/settings/geocode?q=${encodeURIComponent(target)}`);
+        const response = await xhrGet(`/api/user/settings/geocode?q=${encodeURIComponent(target)}${providerQuery}`);
         const { lat, lng } = response.json;
         // The map may still be initialising on a freshly opened form; nothing to move yet.
         mapRef.current?.flyTo({ center: [lng, lat], zoom: ADDRESS_ZOOM });
@@ -74,7 +90,7 @@ export default function AreaFilter({ spatialFilter = null, onChange = null }) {
         setLocating(false);
       }
     },
-    [t],
+    [t, providerQuery],
   );
 
   return (
@@ -103,6 +119,7 @@ export default function AreaFilter({ spatialFilter = null, onChange = null }) {
           it now shows read-only. Drawing a neighbourhood outline in a panel this size is fiddly,
           which is what the expand button is for. */}
       <MapCanvas
+        countries={countries}
         enableDrawing={true}
         initialSpatialFilter={spatialFilter}
         onDrawingChange={onChange}

@@ -40,6 +40,7 @@ import {
 } from '@douyinfe/semi-icons';
 import maplibregl from '../../components/map/maplibre.js';
 import MapCanvas, { HOME_MARKER_COLOR } from '../../components/map/Map.jsx';
+import { useProviderCountries } from '../../hooks/useProviderCountries.js';
 import no_image from '../../assets/no_image.png';
 import * as timeService from '../../services/time/timeService.js';
 import { formatEuroPrice } from '../../services/price/priceService.js';
@@ -93,6 +94,9 @@ export default function ListingDetail() {
   const homeAddresses = useMemo(() => getAddresses(userSettings), [userSettings]);
   const listingDeletionPref = userSettings?.listing_deletion_preference;
   const defaultDeleteType = listingDeletionPref?.hardDelete ? 'hard' : 'soft';
+  // The listing does name a provider, but the pin can be dragged anywhere the user's own searches
+  // reach, so the map takes the same account-wide union the listings map does.
+  const countries = useProviderCountries();
   const map = useRef(null);
   const [mapReady, setMapReady] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -641,6 +645,7 @@ export default function ListingDetail() {
                   {/* Public transport on by default: the first question about any flat is how to
                       get out of it, and the answer should already be on screen. */}
                   <MapCanvas
+                    countries={countries}
                     initialCenter={mapCenter}
                     initialZoom={hasGeo ? 14 : 10}
                     defaultShowTransit
