@@ -17,7 +17,7 @@ export const sseEvents = [];
 vi.mock('../lib/services/storage/listingsStorage.js', () => mockStore);
 vi.mock('../lib/services/storage/settingsStorage.js', () => mockStore);
 vi.mock('../lib/services/geocoding/geoCodingService.js', () => ({
-  geocodeAddress: mockStore.getGeocoordinatesByAddress,
+  geocodeAddress: mockStore.geocodeAddress,
 }));
 vi.mock('../lib/services/storage/jobStorage.js', () => ({
   getJob: (jobKey) => ({ id: jobKey, userId: 'user1' }),
