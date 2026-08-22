@@ -2,6 +2,16 @@
   "schemaVersion": 1,
   "releases": [
     {
+      "version": "26.7.0",
+      "date": "2026-08-22",
+      "entries": [
+        {
+          "title": "Fredy can leave Germany",
+          "text": "For its whole life Fredy could only find an address in one country: <b>countrycodes=de</b> was baked into the geocoder, and the map was fenced to the German border. Anyone turning up with a Swiss or French portal hit a wall that had nothing to do with their provider. <br/><br/>A provider can now say where it works. One optional line - <b>countries: ['fr']</b> - and the geocoder searches there, the map opens there, and you can draw a search area there. Several countries at once are fine, and Fredy asks for them in a single request. <br/><br/>Nothing changes for the provider shipping today. Leave the line out and it means Germany, exactly as it always did. <br/><br/>So if you have been sitting on a provider for your country: now is the moment. <b>CONTRIBUTING.md</b> shows how."
+        }
+      ]
+    },
+    {
       "version": "26.3.0",
       "date": "2026-08-16",
       "entries": [

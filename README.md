@@ -184,6 +184,25 @@ Fredy ships with 17 providers:
 | InBerlinWohnen | Kleinanzeigen | Sparkasse Immobilien |
 | McMakler | Wg gesucht | |
 
+**A provider does not have to be German.** Every portal above is, which is why none of them says
+so: a provider that declares nothing is treated as German. One that covers somewhere else says it
+in a single line, and Fredy follows:
+
+```javascript
+export const metaInformation = {
+  name: 'your provider name',
+  baseUrl: 'https://www.yourprovider.fr/',
+  id: 'yourprovider',
+  countries: ['fr'],
+};
+```
+
+Addresses are then geocoded in those countries, and the map opens on them so you can draw a search
+area there. A provider spanning several is fine: `countries: ['de', 'at', 'ch']`.
+
+If you run a portal Fredy does not cover yet, contributions are very welcome, see
+[CONTRIBUTING.md](CONTRIBUTING.md).
+
 ### Notification adapter 📡
 
 An **adapter** is a *kind* of connection Fredy can send through (Slack,
