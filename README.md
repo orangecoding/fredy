@@ -58,8 +58,8 @@ On top of the listing itself, Fredy answers two questions:
 
 ## ✨ Key Features
 
--   🏠 Scrapes **European portals**: ImmoScout24, Immowelt, Kleinanzeigen, WG-Gesucht and
-    [13 more](#provider-)
+-   🏠 Scrapes **19 portals** across 🇩🇪 🇦🇹 🇨🇭: ImmoScout24, Immowelt, Kleinanzeigen, WG-Gesucht,
+    willhaben, Flatfox and [13 more](#provider-)
 -   ⚡ Instant notifications: Slack, Telegram, Email (SMTP, SendGrid, Mailjet, Resend), ntfy,
     Discord, Mattermost, Pushover, Apprise and more
 -   🔎 Uses the **ImmoScout Mobile API** (reverse engineered)
@@ -173,7 +173,9 @@ the platform into Fredy.\
 ⚠️ Always make sure the search results are sorted by **date**, so Fredy picks up the newest
 listings first.
 
-Fredy ships with 17 providers:
+Fredy ships with 19 providers:
+
+**🇩🇪 Germany**
 
 | | | |
 |---|---|---|
@@ -184,9 +186,12 @@ Fredy ships with 17 providers:
 | InBerlinWohnen | Kleinanzeigen | Sparkasse Immobilien |
 | McMakler | Wg gesucht | |
 
-**A provider does not have to be German.** Every portal above is, which is why none of them says
-so: a provider that declares nothing is treated as German. One that covers somewhere else says it
-in a single line, and Fredy follows:
+**🇦🇹 Austria** · willhaben  
+**🇨🇭 Switzerland** · Flatfox
+
+**Every provider declares the countries it covers**, and the job form puts the matching flag in
+front of its name so a mixed list can be read at a glance. The declaration is one line on the
+provider's `metaInformation`:
 
 ```javascript
 export const metaInformation = {

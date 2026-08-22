@@ -10,20 +10,12 @@ import { IconExternalOpen } from '@douyinfe/semi-icons';
 import { transform } from '../../../../../services/transformer/providerTransformer';
 import { useSelector } from '../../../../../services/state/store';
 import { validateProviderUrl } from '../../../../../services/jobs/providerUrl.js';
+import { labelWithFlags } from '../../../../../services/countryFlags.js';
+import { sortProviders } from '../../../../../services/providerOrder.js';
 
 import './ProviderMutator.less';
 import { useScreenWidth } from '../../../../../hooks/screenWidth.js';
 import { useTranslation } from '../../../../../services/i18n/i18n.jsx';
-
-const sortProvider = (a, b) => {
-  if (a.key < b.key) {
-    return -1;
-  }
-  if (a.key > b.key) {
-    return 1;
-  }
-  return 0;
-};
 
 const returnOriginalSelectedProvider = (providerToEdit, provider) => {
   return provider.find((pro) => pro.id === providerToEdit.id);
@@ -156,15 +148,19 @@ export default function ProviderMutator({
         placeholder={t('provider.selectPlaceholder')}
         className="providerMutator__fields"
         disabled={providerToEdit != null}
-        optionList={provider
-          .map((pro) => {
-            return {
-              otherKey: pro.id,
-              value: pro.id,
-              label: pro.name,
-            };
-          })
-          .sort(sortProvider)}
+        // Sorted by country and then by size, rather than by name: somebody searching in Vienna
+        // should not have to read past every German portal, and the one most people want should not
+        // sit halfway down the list because of its initial.
+        optionList={sortProviders(provider).map((pro) => {
+          return {
+            otherKey: pro.id,
+            value: pro.id,
+            // The flags come from what the provider declared it covers, so a portal serving two
+            // countries shows both. Only the label carries them - the name stored on the job stays
+            // the plain one.
+            label: labelWithFlags(pro),
+          };
+        })}
         style={{ width: '100%' }}
         value={selectedProvider == null ? '' : selectedProvider.id}
         onChange={(value) => {

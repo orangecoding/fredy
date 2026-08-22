@@ -10,11 +10,12 @@ import { normalizeCountries } from '../../lib/services/providers/countries.js';
 /**
  * The shape of what every provider exports as `metaInformation`.
  *
- * `countries` is the reason this file exists. It is optional, it is read leniently - a code that is
- * not two letters is dropped and the provider quietly falls back to Germany - and that leniency is
- * deliberate: a contributed provider module must not be able to stop Fredy from starting. The cost
- * is that a typo would otherwise never be noticed, because the symptom is addresses silently
- * failing to geocode in a country nobody on the project searches. This is where it gets noticed.
+ * `countries` is the reason this file exists. It is required, but it is read leniently - a missing
+ * field or a code that is not two letters is dropped and the provider quietly falls back to Germany
+ * - and that leniency is deliberate: a contributed provider module must not be able to stop Fredy
+ * from starting. The cost is that a mistake would otherwise never be noticed, because the symptom is
+ * addresses silently failing to geocode in a country nobody on the project searches, and a wrong
+ * flag in the job form. This is where it gets noticed.
  */
 describe('provider metaInformation', () => {
   /** @type {any[]} */
@@ -40,13 +41,12 @@ describe('provider metaInformation', () => {
     expect([...new Set(ids)]).toHaveLength(ids.length);
   });
 
-  it('declares countries as lowercase ISO 3166-1 alpha-2, when it declares them at all', () => {
+  it('declares the countries it serves', () => {
     for (const provider of providers) {
       const { id, countries } = provider.metaInformation;
-      if (countries === undefined) continue;
 
-      expect(Array.isArray(countries), `${id}.countries must be an array`).toBe(true);
-      expect(countries.length, `${id}.countries must not be empty - leave it out instead`).toBeGreaterThan(0);
+      expect(Array.isArray(countries), `${id}.countries is required and must be an array`).toBe(true);
+      expect(countries.length, `${id}.countries must name at least one country`).toBeGreaterThan(0);
       for (const code of countries) {
         expect(code, `${id}.countries contains a code that is not lowercase alpha-2`).toMatch(/^[a-z]{2}$/);
       }
@@ -58,7 +58,6 @@ describe('provider metaInformation', () => {
   it('declares nothing the resolver would have to discard', () => {
     for (const provider of providers) {
       const { id, countries } = provider.metaInformation;
-      if (countries === undefined) continue;
 
       expect(normalizeCountries(countries), `${id}.countries lost an entry when it was read`).toHaveLength(
         new Set(countries).size,

@@ -61,6 +61,104 @@ async function downloadDeutscheWohnenFixtures(apiUrl, refererUrl) {
   console.log('  Saved deutscheWohnen_detail.html');
 }
 
+/** A desktop browser, which is what both portals below answer fastest. */
+const BROWSER_USER_AGENT =
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36';
+
+/**
+ * willhaben's search page, cut down to the one script tag the provider reads.
+ *
+ * The live page is around 600 KB of Next.js bootstrap wrapped around a single `__NEXT_DATA__`
+ * payload. Keeping only that tag gives a fixture small enough to open in a diff and still exercises
+ * the real parsing path, because the provider looks the tag up by id rather than by position.
+ *
+ * @param {string} url the search url from testProvider.json
+ * @returns {Promise<void>}
+ */
+async function downloadWillhabenFixtures(url) {
+  console.log('\nDownloading willhaben...');
+
+  const response = await fetch(url, {
+    headers: { 'User-Agent': BROWSER_USER_AGENT, 'Accept-Language': 'de-AT,de;q=0.9' },
+  });
+
+  if (!response.ok) {
+    console.warn(`  Failed to download willhaben: ${response.statusText}`);
+    return;
+  }
+
+  const html = await response.text();
+  const match = html.match(/<script id="__NEXT_DATA__"[^>]*>[\s\S]*?<\/script>/);
+  if (!match) {
+    console.warn('  willhaben page carried no __NEXT_DATA__ - skipping fixture');
+    return;
+  }
+
+  const trimmed = [
+    '<!doctype html>',
+    '<html lang="de">',
+    `<head><title>willhaben fixture</title></head>`,
+    '<body>',
+    `<!-- Trimmed to the __NEXT_DATA__ payload, downloaded from ${url} -->`,
+    match[0],
+    '</body>',
+    '</html>',
+    '',
+  ].join('\n');
+
+  await writeFile(path.join(FIXTURES_DIR, 'willhaben.html'), trimmed, 'utf-8');
+  console.log('  Saved willhaben.html');
+}
+
+/**
+ * Flatfox answers a search in two requests, so it needs two fixtures.
+ *
+ * The pins carry the primary keys of everything matching the search; the second call hydrates those
+ * keys into listings. Recording both is what lets the offline suite exercise the same two-step the
+ * provider performs live.
+ *
+ * @param {string} url the search url from testProvider.json
+ * @returns {Promise<void>}
+ */
+async function downloadFlatfoxFixtures(url) {
+  console.log('\nDownloading flatfox...');
+
+  const headers = { 'User-Agent': BROWSER_USER_AGENT, Accept: 'application/json' };
+  const search = new URLSearchParams(new URL(url).search);
+  search.set('max_count', '100');
+
+  const pinResponse = await fetch(`https://flatfox.ch/api/v1/pin/?${search}`, { headers });
+  if (!pinResponse.ok) {
+    console.warn(`  Failed to download flatfox pins: ${pinResponse.statusText}`);
+    return;
+  }
+
+  const pins = await pinResponse.json();
+  await writeFile(path.join(FIXTURES_DIR, 'flatfox_pins.json'), JSON.stringify(pins, null, 2), 'utf-8');
+  console.log(`  Saved flatfox_pins.json (${Array.isArray(pins) ? pins.length : 0} pins)`);
+
+  const keys = (Array.isArray(pins) ? pins : (pins.results ?? [])).map((pin) => pin?.pk).filter((pk) => pk != null);
+  if (keys.length === 0) {
+    console.warn('  No pins returned - skipping listing fixture');
+    return;
+  }
+
+  const query = new URLSearchParams({ expand: 'cover_image', limit: '0' });
+  for (const key of keys) {
+    query.append('pk', String(key));
+  }
+
+  const listingResponse = await fetch(`https://flatfox.ch/api/v1/public-listing/?${query}`, { headers });
+  if (!listingResponse.ok) {
+    console.warn(`  Failed to download flatfox listings: ${listingResponse.statusText}`);
+    return;
+  }
+
+  const listings = await listingResponse.json();
+  await writeFile(path.join(FIXTURES_DIR, 'flatfox_listings.json'), JSON.stringify(listings, null, 2), 'utf-8');
+  console.log('  Saved flatfox_listings.json');
+}
+
 async function downloadImmoscoutFixtures(mobileApiUrl) {
   console.log('\nDownloading immoscout...');
 
@@ -356,6 +454,12 @@ async function main() {
         break;
       case 'immowelt':
         await downloadImmoweltFixtures(runConfig, launchBrowser, closeBrowser);
+        break;
+      case 'willhaben':
+        await downloadWillhabenFixtures(runConfig.url);
+        break;
+      case 'flatfox':
+        await downloadFlatfoxFixtures(runConfig.url);
         break;
       default:
         await downloadHtmlProvider(name, runConfig, launchBrowser, closeBrowser, puppeteerExtractor);

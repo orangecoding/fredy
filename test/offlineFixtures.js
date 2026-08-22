@@ -129,9 +129,39 @@ export function buildFetchMock() {
   let listData = null;
   let detailData = null;
   let deutscheWohnenListData = null;
+  let willhabenHtml = null;
+  let flatfoxPins = null;
+  let flatfoxListings = null;
 
   return async (url) => {
     const urlStr = String(url);
+
+    // willhaben reads its results out of the page's __NEXT_DATA__, so this is the one fixture
+    // served as text rather than json.
+    if (urlStr.includes('willhaben.at/iad/')) {
+      if (willhabenHtml == null) {
+        willhabenHtml = (await tryReadFile(path.join(FIXTURES_DIR, 'willhaben.html'))) ?? '';
+      }
+      return { ok: true, status: 200, text: () => Promise.resolve(willhabenHtml) };
+    }
+
+    // Flatfox answers a search in two calls - the pins, then the listings those keys belong to -
+    // and both have to be served for the provider to get through its own flow.
+    if (urlStr.includes('flatfox.ch/api/v1/pin/')) {
+      if (flatfoxPins == null) {
+        const raw = await tryReadFile(path.join(FIXTURES_DIR, 'flatfox_pins.json'));
+        flatfoxPins = raw ? JSON.parse(raw) : [];
+      }
+      return { ok: true, status: 200, json: () => Promise.resolve(flatfoxPins) };
+    }
+
+    if (urlStr.includes('flatfox.ch/api/v1/public-listing/')) {
+      if (flatfoxListings == null) {
+        const raw = await tryReadFile(path.join(FIXTURES_DIR, 'flatfox_listings.json'));
+        flatfoxListings = raw ? JSON.parse(raw) : { results: [] };
+      }
+      return { ok: true, status: 200, json: () => Promise.resolve(flatfoxListings) };
+    }
 
     if (urlStr.includes('api.mobile.immobilienscout24.de/search/list')) {
       if (!listData) {

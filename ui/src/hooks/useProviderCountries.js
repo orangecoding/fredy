@@ -28,8 +28,8 @@ function countriesOf(providers, providerIds) {
 
   for (const id of providerIds) {
     // An id matching no provider contributes nothing: it is a job pointing at a provider that has
-    // since been removed. One that matches but declares nothing means Germany, the same rule the
-    // server applies.
+    // since been removed. Every provider that does exist declares its countries; the fallback below
+    // only covers a malformed declaration, the same way the server's resolver does.
     if (!byId.has(id)) continue;
     const declared = byId.get(id)?.countries;
     for (const code of Array.isArray(declared) && declared.length > 0 ? declared : DEFAULT_COUNTRIES) {

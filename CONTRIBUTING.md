@@ -65,21 +65,32 @@ export const metaInformation = {
   name: 'your provider name',
   baseUrl: 'https://www.yourprovider.de/',
   id: 'yourprovider',
-  //optional. Which countries this provider covers, as ISO 3166-1 alpha-2, lowercase.
+  //required. Which countries this provider covers, as ISO 3166-1 alpha-2, lowercase.
   countries: ['de'],
 };
 
 export { config };
 ```
 
-**`countries` is optional and defaults to `['de']`.** Leave it out for a German portal; every
-provider shipped with Fredy does. Two things read it: the geocoder, which asks Nominatim to search
-within those countries, and the map, whose `maxBounds` is the union of their bounding boxes. Get it
-wrong and addresses silently fail to resolve, so a provider covering somewhere other than Germany
-must declare it. A provider spanning several countries lists them all: `countries: ['de', 'at', 'ch']`.
+**`countries` is required.** Every provider declares it, including the German ones. Three things
+read it: the geocoder, which asks Nominatim to search within those countries; the map, whose
+`maxBounds` is the union of their bounding boxes; and the job form, which puts the matching flag in
+front of the provider's name. Get it wrong and addresses silently fail to resolve, so this is worth
+a second look. A provider spanning several countries lists them all:
+`countries: ['de', 'at', 'ch']`.
 
-A country new to Fredy also needs its bounding box in `ui/src/components/map/countryBounds.js`,
-otherwise the map ignores the code and stays where it was.
+`test/provider/providerMetaInformation.test.js` fails the build when the field is missing or
+malformed, so a mistake here does not reach a release.
+
+A country new to Fredy needs one thing adding: its bounding box in
+`ui/src/components/map/countryBounds.js`. Without it the map ignores the code and stays where it
+was. The flag in the job form needs nothing - it is computed from the code itself, and a provider
+covering two countries shows both.
+
+The picker orders providers by country and then by size, from
+`ui/src/services/providerOrder.js`. A new provider needs no entry there: it sorts alphabetically
+behind the ranked ones of its own country. Add it to `PROVIDER_SIZE_ORDER` only if it belongs
+somewhere specific. A country new to `COUNTRY_ORDER` sorts behind the ones already listed.
 
 The same shape is where anything else that varies by country belongs. `currency` is the obvious
 next one and is deliberately not implemented: `€` appears in around forty places, twelve of them in
