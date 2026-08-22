@@ -6,6 +6,8 @@
 import { describe, expect, it } from 'vitest';
 import {
   convertSearchUrlToRequest,
+  encodePolyline,
+  isochroneToPolylines,
   DEFAULT_ORDER,
   DEFAULT_PAGE_SIZE,
 } from '../../../lib/services/immowelt/immowelt-search-model.js';
@@ -288,5 +290,132 @@ describe('#immowelt search model, map searches', () => {
     const empty = Buffer.from(JSON.stringify({ drawings: [] })).toString('base64url');
 
     expect(() => convertSearchUrlToRequest(`${BASE}?distributionTypes=Buy&locations=${empty}`)).toThrow(/nothing to/);
+  });
+});
+
+// Everything in here was read off immowelt's own "search by commute time", and the numbers were
+// confirmed against it: the url of #430 shows 17 flats in the browser, and the polylines this
+// produces answer with the same 17.
+describe('#immowelt search model, commute areas', () => {
+  /** `{"placeIds":["STRTDE197842"],"duration":"15","mode":"Walk"}` - 15 minutes' walk of a Munich street. */
+  const COMMUTE = 'eyJwbGFjZUlkcyI6WyJTVFJUREUxOTc4NDIiXSwiZHVyYXRpb24iOiIxNSIsIm1vZGUiOiJXYWxrIn0';
+
+  /**
+   * @param {Record<string, any>} area a decoded commute entry
+   * @returns {string} it as a `locations` entry
+   */
+  const encoded = (area) => Buffer.from(JSON.stringify(area)).toString('base64url');
+
+  // The url of #430, which stopped the job with `describes its search area with duration, mode`.
+  it('reads the place, the travel time and the mode out of a commute search', () => {
+    const { criteria, commutes } = convertSearchUrlToRequest(
+      `${BASE}?distributionTypes=Buy&estateTypes=Apartment&locations=${COMMUTE}&priceMax=500000`,
+    );
+
+    expect(commutes).toEqual([{ placeId: 'STRTDE197842', duration: 15, mode: 'Walk' }]);
+    expect(criteria.location).toEqual({});
+    expect(criteria.priceMax).toBe(500000);
+  });
+
+  // The boundary lands in `polylines` once it is drawn, and the BFF intersects those with
+  // `placeIds` - keeping the ids would cut the commute area down to the street it starts on.
+  it('lets a commute area replace the places named beside it', () => {
+    const { criteria, commutes } = convertSearchUrlToRequest(
+      `${BASE}?distributionTypes=Buy&locations=AD08DE9991,${COMMUTE}`,
+    );
+
+    expect(criteria.location).toEqual({});
+    expect(commutes).toHaveLength(1);
+  });
+
+  it('keeps a drawn area next to a commute area, because the BFF unions the two', () => {
+    const drawn = 'eyJkcmF3aW5ncyI6WyJhaHt2SG1geHJBP2l2SWpgQz8_aHZJa2BDPyJdfQ';
+
+    const { criteria, commutes } = convertSearchUrlToRequest(
+      `${BASE}?distributionTypes=Buy&locations=${drawn},${COMMUTE}`,
+    );
+
+    expect(criteria.location).toEqual({ polylines: ['ah{vHm`xrA?ivIj`C??hvIk`C?'] });
+    expect(commutes).toHaveLength(1);
+  });
+
+  it('reads a second commute area as a second area rather than overwriting the first', () => {
+    const other = encoded({ placeIds: ['AD08DE9991'], duration: '30', mode: 'Transit' });
+
+    const { commutes } = convertSearchUrlToRequest(`${BASE}?distributionTypes=Buy&locations=${COMMUTE},${other}`);
+
+    expect(commutes).toEqual([
+      { placeId: 'STRTDE197842', duration: 15, mode: 'Walk' },
+      { placeId: 'AD08DE9991', duration: 30, mode: 'Transit' },
+    ]);
+  });
+
+  it('leaves a url without a commute area with an empty list of them', () => {
+    const { commutes } = convertSearchUrlToRequest(`${BASE}?distributionTypes=Buy&locations=AD08DE9991`);
+
+    expect(commutes).toEqual([]);
+  });
+
+  // Immowelt's routing service answers 500 for anything outside these four, which would end the run
+  // with its error page rather than with something the user can act on.
+  it('refuses a travel mode immowelt cannot route', () => {
+    const flying = encoded({ placeIds: ['STRTDE197842'], duration: '15', mode: 'Helicopter' });
+
+    expect(() => convertSearchUrlToRequest(`${BASE}?distributionTypes=Buy&locations=${flying}`)).toThrow(/Helicopter/);
+  });
+
+  it('refuses a travel time that is not a number of minutes', () => {
+    const forever = encoded({ placeIds: ['STRTDE197842'], duration: 'soon', mode: 'Walk' });
+
+    expect(() => convertSearchUrlToRequest(`${BASE}?distributionTypes=Buy&locations=${forever}`)).toThrow(/soon/);
+  });
+
+  // Only the first id would reach the routing service, so the other places would silently vanish.
+  it('refuses a commute area drawn around more than one place', () => {
+    const two = encoded({ placeIds: ['STRTDE197842', 'AD08DE9991'], duration: '15', mode: 'Walk' });
+
+    expect(() => convertSearchUrlToRequest(`${BASE}?distributionTypes=Buy&locations=${two}`)).toThrow(/2 places/);
+  });
+
+  it('still refuses an area whose other half it would have to drop', () => {
+    const partly = encoded({ placeIds: ['STRTDE197842'], duration: '15', mode: 'Walk', travelTimeMinutes: 25 });
+
+    expect(() => convertSearchUrlToRequest(`${BASE}?distributionTypes=Buy&locations=${partly}`)).toThrow(
+      /travelTimeMinutes/,
+    );
+  });
+});
+
+// The ring below is what immowelt's routing service answered for the commute area of #430, and the
+// polyline is the string immowelt's own page sent to the BFF for it. Encoding the one has to
+// produce the other character for character, because the BFF reads nothing else.
+describe('#immowelt search model, polyline encoding', () => {
+  const RING = [
+    [11.60531158, 48.09858673],
+    [11.60553739, 48.09829432],
+    [11.60573394, 48.0978433],
+    [11.60581443, 48.09735794],
+    [11.605774, 48.09686761],
+    [11.60561509, 48.096402],
+  ];
+  // The trailing backslash is part of the encoding, not an escape gone missing.
+  const ENCODED = 'egqdHetyeAz@m@xAe@~AO`BF|A\\';
+
+  it('encodes a ring the way immowelt encodes its own', () => {
+    expect(encodePolyline(RING)).toBe(ENCODED);
+  });
+
+  it('encodes nothing as nothing', () => {
+    expect(encodePolyline([])).toBe('');
+  });
+
+  // A transit area comes back as dozens of disjoint islands, and the BFF searches the union of them
+  // - so every ring has to become an entry rather than only the biggest one.
+  it('turns every ring of an isochrone into its own polyline', () => {
+    expect(isochroneToPolylines([[RING], [RING.slice(0, 2)]])).toEqual([ENCODED, 'egqdHetyeAz@m@']);
+  });
+
+  it('turns an empty answer into no polylines at all', () => {
+    expect(isochroneToPolylines([])).toEqual([]);
   });
 });

@@ -5,7 +5,7 @@
 
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { convertSearchUrlToRequest } from '../../../lib/services/immowelt/immowelt-search-model.js';
-import { IMMOWELT_ORIGIN } from '../../../lib/services/immowelt/immoweltBff.js';
+import { IMMOWELT_ORIGIN, resolveSearchAreas } from '../../../lib/services/immowelt/immoweltBff.js';
 import { launchBrowser, closeBrowser } from '../../../lib/services/extractor/puppeteerExtractor.js';
 
 /**
@@ -96,6 +96,18 @@ const PROBES = [
     base: RENT_BASE,
     query: 'bbox=MTMuNzIxNDU3MDAwMDAwMDAxLDUxLjA3NjI4LDEzLjc4NzM3Mjk5OTk5OTk5OSw1MS4xMDExMTk5OTk5OTk5OTU',
   },
+  // 30 minutes' cycling of Dresden's centre, which is the city minus its outskirts - and the only
+  // probe whose boundary Fredy has to fetch rather than read out of the url. It proves the whole
+  // chain: the place's coordinates, immowelt's routing service, and the polyline encoding they get
+  // turned into. `{"placeIds":["AD08DE9991"],"duration":"30","mode":"Bike"}`, base64url as the url
+  // carries it.
+  {
+    what: 'a commute time',
+    base: RENT_BASE,
+    withIt:
+      'distributionTypes=Rent&estateTypes=Apartment&spaceMin=120' +
+      '&locations=eyJwbGFjZUlkcyI6WyJBRDA4REU5OTkxIl0sImR1cmF0aW9uIjoiMzAiLCJtb2RlIjoiQmlrZSJ9',
+  },
 ];
 
 const TEST_TIMEOUT = 180_000;
@@ -132,7 +144,9 @@ describe.skipIf(process.env.TEST_MODE === 'offline')('#immowelt criteria against
     if (totals.has(query)) return totals.get(query);
 
     const request = convertSearchUrlToRequest(`${IMMOWELT_ORIGIN}/classified-search?${query}`, { size: 1 });
-    const result = await searchTotal(request);
+    // A commute area is a place and a travel time until immowelt's routing service has drawn it,
+    // and only the drawn boundary is something the search BFF can be asked about.
+    const result = await searchTotal(await resolveSearchAreas(browser, request));
 
     // A DataDome challenge answers 403 with its own html and says nothing about whether the
     // criteria were right. Worth telling apart, because the fix is "run this from somewhere that
@@ -202,7 +216,10 @@ describe.skipIf(process.env.TEST_MODE === 'offline')('#immowelt criteria against
     'detects a field the BFF ignores, which is what every case above relies on',
     async () => {
       const request = convertSearchUrlToRequest(`${IMMOWELT_ORIGIN}/classified-search?${BUY_BASE}`, { size: 1 });
-      const ignored = await searchTotal({ ...request, criteria: { ...request.criteria, spaceMinimum: 100000 } });
+      const ignored = await searchTotal({
+        criteria: { ...request.criteria, spaceMinimum: 100000 },
+        paging: request.paging,
+      });
 
       expect(ignored.status).toBe(200);
       expect(ignored.total, 'the BFF started rejecting unknown criteria - the silent case is gone').toBe(

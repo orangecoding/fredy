@@ -216,3 +216,111 @@ describe('#immowelt bff transport', () => {
     expect(pages).toHaveLength(2);
   });
 });
+
+// The two calls immowelt's own page makes before every commute search, and the answers it gets:
+// the street's coordinates, then the area reachable from them. The ring and the polyline are the
+// real ones for #430's url ("15 minutes' walk of Schwanseestraße"), shortened to six points.
+describe('#immowelt bff transport, commute areas', () => {
+  const RING = [
+    [11.60531158, 48.09858673],
+    [11.60553739, 48.09829432],
+    [11.60573394, 48.0978433],
+    [11.60581443, 48.09735794],
+    [11.605774, 48.09686761],
+    [11.60561509, 48.096402],
+  ];
+  const POLYLINE = 'egqdHetyeAz@m@xAe@~AO`BF|A\\';
+
+  const COMMUTE_REQUEST = {
+    criteria: { distributionTypes: ['Buy'], location: {} },
+    paging: { page: 1, size: 100, order: 'DateDesc' },
+    commutes: [{ placeId: 'STRTDE197842', duration: 15, mode: 'Walk' }],
+  };
+
+  /** The body of every `/serp-bff/search` the page posted, parsed. */
+  let posted;
+
+  /**
+   * @param {object} [overrides] answers to replace, keyed by the path they belong to
+   * @returns {any} a browser answering the whole commute flow
+   */
+  function commuteBrowser(overrides = {}) {
+    return fakeBrowser((url, init) => {
+      if (url.startsWith('/search-mfe-bff/places/data')) {
+        return (
+          overrides.places ?? {
+            status: 200,
+            body: JSON.stringify({ places: [{ coordinates: { lat: 48.1, lng: 11.6 } }] }),
+          }
+        );
+      }
+      if (url.startsWith('/search-mfe-bff/routing/isochrone')) {
+        return overrides.routing ?? { status: 200, body: JSON.stringify({ isochrone: [[RING]] }) };
+      }
+      if (url.startsWith('/serp-bff/search')) {
+        posted.push(JSON.parse(init.body));
+        return { status: 200, body: searchResponse(1) };
+      }
+      return { status: 200, body: listResponse(url) };
+    });
+  }
+
+  beforeEach(() => {
+    requests = [];
+    posted = [];
+  });
+
+  it('draws the commute area before searching and sends it as the search boundary', async () => {
+    await searchClassifieds(commuteBrowser(), COMMUTE_REQUEST);
+
+    expect(requests[0]).toContain('/search-mfe-bff/places/data?placesIds%5B%5D=STRTDE197842');
+    expect(requests[1]).toContain('/search-mfe-bff/routing/isochrone');
+    expect(requests[1]).toContain('commuteMode=Walk');
+    expect(requests[1]).toContain('commuteDuration=15');
+    expect(requests[1]).toContain('lat=48.1');
+    expect(requests[1]).toContain('lng=11.6');
+    expect(posted[0].criteria.location).toEqual({ polylines: [POLYLINE] });
+    expect(posted[0].commutes).toBeUndefined();
+  });
+
+  // The BFF unions the polylines of a search, so a drawn area saved next to a commute time has to
+  // survive the resolution rather than be replaced by it.
+  it('adds the drawn boundary to the ones already in the criteria', async () => {
+    await searchClassifieds(commuteBrowser(), {
+      ...COMMUTE_REQUEST,
+      criteria: { ...COMMUTE_REQUEST.criteria, location: { polylines: ['ah{vHm`xrA?ivIj`C??hvIk`C?'] } },
+    });
+
+    expect(posted[0].criteria.location.polylines).toEqual(['ah{vHm`xrA?ivIj`C??hvIk`C?', POLYLINE]);
+  });
+
+  it('leaves a search without a commute area alone, and does not ask the routing service', async () => {
+    await searchClassifieds(commuteBrowser(), SEARCH_REQUEST);
+
+    expect(requests.some((url) => url.includes('/search-mfe-bff/'))).toBe(false);
+    expect(posted[0].criteria.location).toEqual({ placeIds: ['AD08DE8634'] });
+  });
+
+  // Searching without the boundary would search the street the commute starts on instead of
+  // everything within reach of it, and report a different set of flats than the job describes.
+  it('stops the run when the routing service will not draw the area', async () => {
+    const browser = commuteBrowser({ routing: { status: 500, body: '<html>Unbekannter Fehler</html>' } });
+
+    await expect(searchClassifieds(browser, COMMUTE_REQUEST)).rejects.toThrow(/commute time/);
+    expect(posted).toHaveLength(0);
+  });
+
+  it('stops the run when the place it should travel from has no coordinates', async () => {
+    const browser = commuteBrowser({ places: { status: 200, body: JSON.stringify({ places: [{}] }) } });
+
+    await expect(searchClassifieds(browser, COMMUTE_REQUEST)).rejects.toThrow(/commute time/);
+    expect(posted).toHaveLength(0);
+  });
+
+  it('stops the run when nothing is reachable in the time the job asks for', async () => {
+    const browser = commuteBrowser({ routing: { status: 200, body: JSON.stringify({ isochrone: [] }) } });
+
+    await expect(searchClassifieds(browser, COMMUTE_REQUEST)).rejects.toThrow(/no reachable area/);
+    expect(posted).toHaveLength(0);
+  });
+});
