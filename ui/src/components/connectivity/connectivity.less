@@ -1,0 +1,83 @@
+.connectivity {
+  font-size: 0.82rem;
+
+  &--state {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 0;
+  }
+
+  &__headline {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    margin-bottom: 8px;
+  }
+
+  &__speed {
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: var(--semi-color-text-0);
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__unit {
+    color: var(--semi-color-text-1);
+  }
+
+  /* The share is what keeps the headline honest: the registers describe a cell, not a building. */
+  &__share {
+    color: var(--semi-color-text-2);
+    font-size: 0.72rem;
+  }
+
+  &__row {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 4px 10px;
+    padding: 3px 0;
+  }
+
+  &__label {
+    color: var(--semi-color-text-1);
+    font-weight: 600;
+    min-width: 5.5rem;
+  }
+
+  &__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  &__chip {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
+    white-space: nowrap;
+    border: 1px solid var(--semi-color-border);
+    border-radius: 3px;
+    padding: 0 5px;
+    color: var(--semi-color-text-1);
+
+    &--on {
+      border-color: var(--semi-color-success);
+      color: var(--semi-color-success);
+    }
+
+    /* Coverage that only exists through somebody else's network. Real, but not the operator's own,
+       and the difference is one a contract can take away. */
+    &--roaming {
+      border-style: dashed;
+    }
+  }
+
+  &__attribution {
+    display: block;
+    margin-top: 8px;
+    font-size: 0.68rem;
+  }
+}

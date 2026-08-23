@@ -16,7 +16,7 @@ import Headline from '../../../components/headline/Headline';
 import { useActions, useSelector } from '../../../services/state/store';
 import { xhrPost, errorMessage } from '../../../services/xhr';
 import { useNavigate, useParams, useLocation } from 'react-router';
-import { Input, Switch, Button, TagInput, Toast, Select, Banner, Collapse, Tooltip } from '@douyinfe/semi-ui-19';
+import { Input, Switch, Button, TagInput, Toast, Select, Banner, Collapse } from '@douyinfe/semi-ui-19';
 import './JobMutation.less';
 import { SegmentPart } from '../../../components/segment/SegmentPart';
 import { loadDraft, saveDraft, clearDraft } from '../../../services/jobs/jobDraft.js';
@@ -588,30 +588,9 @@ export default function JobMutator() {
             <Button type="tertiary" onClick={leaveForm}>
               {t('jobs.mutation.cancel')}
             </Button>
-            {/* What is still missing is on the button itself rather than printed above it: a
-                disabled Save with no reason sends people hunting through the sections, but a
-                standing list of complaints makes an unfinished form look like a broken one. */}
-            <Tooltip
-              content={
-                missing.length === 0 ? null : (
-                  <ul className="jobMutation__missingTooltip">
-                    {missing.map((requirement) => (
-                      <li key={requirement.key}>{t(requirement.labelKey)}</li>
-                    ))}
-                  </ul>
-                )
-              }
-              position="top"
-              trigger={missing.length === 0 ? 'custom' : 'hover'}
-            >
-              {/* Semi does not fire hover events on a disabled button, so the tooltip needs a
-                  wrapper that is not disabled to hang from. */}
-              <span>
-                <Button type="primary" icon={<IconPlusCircle />} disabled={missing.length > 0} onClick={mutateJob}>
-                  {t('jobs.mutation.save')}
-                </Button>
-              </span>
-            </Tooltip>
+            <Button type="primary" icon={<IconPlusCircle />} disabled={missing.length > 0} onClick={mutateJob}>
+              {t('jobs.mutation.save')}
+            </Button>
           </div>
         </div>
       </form>

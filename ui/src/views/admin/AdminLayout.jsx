@@ -3,7 +3,7 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { IconSignal, IconRefresh, IconUserGroup, IconFolder, IconAlertTriangle } from '@douyinfe/semi-icons';
+import { IconSignal, IconRefresh, IconGlobe, IconUserGroup, IconFolder, IconAlertTriangle } from '@douyinfe/semi-icons';
 
 import SettingsShell from '../../components/settingsShell/SettingsShell.jsx';
 import ScopeBanner from './ScopeBanner.jsx';
@@ -14,12 +14,12 @@ import { useTranslation } from '../../services/i18n/i18n.jsx';
 /**
  * Administration: everything that applies to the instance rather than to the person looking at it.
  *
- * The tabs are the only place these pages are named. The sidebar used to list all five as well,
+ * The tabs are the only place these pages are named. The sidebar used to list them all as well,
  * directly above a strip repeating them, so it carries a single "Administration" entry now.
  *
- * The layout owns `useAdminSettings` so that System and Execution keep sharing one form across a
- * route change - switching tabs with unsaved edits must not silently discard them - while each page
- * still saves only its own fields.
+ * The layout owns `useAdminSettings` so that System, Execution and Connectivity keep sharing one
+ * form across a route change - switching tabs with unsaved edits must not silently discard them -
+ * while each page still saves only its own fields.
  *
  * @returns {React.ReactElement}
  */
@@ -31,6 +31,7 @@ export default function AdminLayout() {
   const tabs = [
     { path: '/admin/system', label: t('admin.tabSystem'), icon: <IconSignal size="small" /> },
     { path: '/admin/execution', label: t('admin.tabExecution'), icon: <IconRefresh size="small" /> },
+    { path: '/admin/connectivity', label: t('admin.tabConnectivity'), icon: <IconGlobe size="small" /> },
     { path: '/admin/users', label: t('admin.tabUsers'), icon: <IconUserGroup size="small" /> },
     { path: '/admin/backup', label: t('admin.tabBackup'), icon: <IconFolder size="small" /> },
     {

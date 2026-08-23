@@ -57,6 +57,7 @@ import StatusControl from '../../components/listings/StatusControl.jsx';
 import ListingFinanceCard from './components/ListingFinanceCard.jsx';
 import PriceHistoryChart from './components/PriceHistoryChart.jsx';
 import NearbyStops from '../../components/transit/NearbyStops.jsx';
+import ConnectivityCard from '../../components/connectivity/ConnectivityCard.jsx';
 import TravelTimes from '../../components/transit/TravelTimes.jsx';
 import AddressEditor from './components/AddressEditor.jsx';
 import './ListingDetail.less';
@@ -91,6 +92,7 @@ export default function ListingDetail() {
   const { isComplete: buyComplete, rentComplete, thresholds: financeThresholds } = useFinanceProfile();
   const listing = useSelector((state) => state.listingsData.currentListing);
   const userSettings = useSelector((state) => state.userSettings.settings);
+  const connectivityEnabled = useSelector((state) => state.generalSettings.settings?.connectivityEnabled === true);
   const homeAddresses = useMemo(() => getAddresses(userSettings), [userSettings]);
   const listingDeletionPref = userSettings?.listing_deletion_preference;
   const defaultDeleteType = listingDeletionPref?.hardDelete ? 'hard' : 'soft';
@@ -819,6 +821,21 @@ export default function ListingDetail() {
                       </Text>
                     )}
                   </div>
+                </>
+              )}
+
+              {/* Under the travel times because it belongs to the same half of the page: both are
+                  things Fredy worked out about the address rather than things the portal said about
+                  the flat, and somebody weighing up a place reads them together. Only shown once
+                  the operator has the enrichment on - with it off nothing is ever stored, and an
+                  empty card would read as a fault rather than a setting. */}
+              {hasGeo && connectivityEnabled && (
+                <>
+                  <Divider margin="1.5rem" />
+                  <Text strong style={{ display: 'block', marginBottom: '0.5rem' }}>
+                    {t('connectivity.title')}
+                  </Text>
+                  <ConnectivityCard connectivity={listing.connectivity} />
                 </>
               )}
             </div>

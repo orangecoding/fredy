@@ -9,6 +9,11 @@ import FilterSelect from './FilterSelect.jsx';
 import FilterDrawer, { FilterGroup, FilterHelp } from '../filters/FilterDrawer.jsx';
 import { COMMUTE_OPTIONS } from '../transit/travelTimeFormat.js';
 import {
+  DOWNSTREAM_FILTER_STEPS,
+  FILTERABLE_TECHNOLOGIES,
+  FILTERABLE_OPERATORS,
+} from '../connectivity/connectivityFormat.js';
+import {
   showValueOf,
   showPatch,
   clearAllFilters,
@@ -40,7 +45,9 @@ import { useTranslation } from '../../services/i18n/i18n.jsx';
  * @param {boolean} props.financeComplete
  * @param {string} props.affordabilityHelp
  * @param {boolean} props.hasAddresses
+ * @param {boolean} [props.connectivityEnabled]
  * @param {() => void} props.onAffordabilityUsed
+ * @param {(kind: 'downstream'|'fiber'|'mobile') => void} props.onConnectivityFilterUsed
  * @returns {React.ReactElement}
  */
 export default function ListingsFilterPanel({
@@ -54,18 +61,13 @@ export default function ListingsFilterPanel({
   financeComplete,
   affordabilityHelp,
   hasAddresses,
+  connectivityEnabled = false,
   onAffordabilityUsed,
+  onConnectivityFilterUsed,
 }) {
   const t = useTranslation();
   const activeCount = countActiveFilters(values);
-  const visibleProviders = filterConfiguredProviders(
-    providers,
-    jobs,
-    values.job,
-    values.provider,
-    availableProviders,
-  );
-
+  const visibleProviders = filterConfiguredProviders(providers, jobs, values.job, values.provider, availableProviders);
 
   return (
     <FilterDrawer
@@ -166,6 +168,98 @@ export default function ListingsFilterPanel({
               )}
             </FilterSelect>
           )}
+        </FilterGroup>
+      )}
+
+      {/* Only offered while the operator has the enrichment on. With it off nothing is ever
+          written to the columns these read, so every one of them would return an empty page. */}
+      {connectivityEnabled && (
+        <FilterGroup title={t('listings.filterGroupConnectivity')}>
+          <FilterSelect
+            help={t('listings.filterDownstreamHelp')}
+            placeholder={t('listings.filterDownstreamPlaceholder')}
+            showClear
+            onChange={(val) => {
+              onChange({ down: val ?? null, page: 1 });
+              if (val != null) {
+                onConnectivityFilterUsed('downstream');
+              }
+            }}
+            value={values.down}
+            style={{ width: '100%' }}
+          >
+            {DOWNSTREAM_FILTER_STEPS.map((mbit) => (
+              <Select.Option key={mbit} value={mbit}>
+                {t('listings.filterDownstreamOption', { mbit })}
+              </Select.Option>
+            ))}
+          </FilterSelect>
+
+          <FilterHelp>{t('listings.filterFiberHelp')}</FilterHelp>
+          {/*
+            Two states rather than three. "Only addresses without fibre" is a question nobody
+            asks, and offering it would put a filter in the drawer whose only use is to hide the
+            listings the user is looking for.
+          */}
+          <RadioGroup
+            type="button"
+            buttonSize="middle"
+            value={values.fiber === true ? 'fiber' : 'all'}
+            onChange={(e) => {
+              const wantsFiber = e.target.value === 'fiber';
+              onChange({ fiber: wantsFiber ? true : null, page: 1 });
+              if (wantsFiber) {
+                onConnectivityFilterUsed('fiber');
+              }
+            }}
+          >
+            <Radio value="all">{t('listings.filterAll')}</Radio>
+            <Radio value="fiber">{t('listings.filterFiberOnly')}</Radio>
+          </RadioGroup>
+
+          <FilterSelect
+            help={t('listings.filterMobileTechHelp')}
+            placeholder={t('listings.filterMobileTechPlaceholder')}
+            showClear
+            onChange={(val) => {
+              // The operator is cleared along with the technology: on its own it filters nothing,
+              // and leaving it set would make the next technology pick silently narrower than the
+              // drawer shows.
+              onChange({ mtech: val ?? null, mop: val == null ? null : values.mop, page: 1 });
+              if (val != null) {
+                onConnectivityFilterUsed('mobile');
+              }
+            }}
+            value={values.mtech}
+            style={{ width: '100%' }}
+          >
+            {FILTERABLE_TECHNOLOGIES.map((tech) => (
+              <Select.Option key={tech} value={tech}>
+                {t(`connectivity.tech.${tech}`)}
+              </Select.Option>
+            ))}
+          </FilterSelect>
+
+          {/*
+            Disabled rather than hidden while no technology is picked. "5G at Telekom" is one
+            question, and a lone operator dropdown suggests "listings where Telekom exists", which
+            is every listing in the country.
+          */}
+          <FilterSelect
+            help={t('listings.filterMobileOperatorHelp')}
+            placeholder={t('listings.filterMobileOperatorPlaceholder')}
+            showClear
+            disabled={values.mtech == null}
+            onChange={(val) => onChange({ mop: val ?? null, page: 1 })}
+            value={values.mop}
+            style={{ width: '100%' }}
+          >
+            {FILTERABLE_OPERATORS.map((code) => (
+              <Select.Option key={code} value={code}>
+                {t(`connectivity.operator.${code}`)}
+              </Select.Option>
+            ))}
+          </FilterSelect>
         </FilterGroup>
       )}
 

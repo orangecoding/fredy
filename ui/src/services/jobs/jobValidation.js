@@ -4,51 +4,41 @@
  */
 
 /**
- * What a job needs before it can be saved, and how to say what is still missing.
+ * What a job needs before it can be saved.
  *
- * The form used to compute this as one boolean and hang it on the Save button's `disabled`. A user
- * who had filled in everything but the deal type was left looking at a grey button with nothing
- * anywhere on the page explaining which of the eight sections was the problem - and the two most
- * commonly missing pieces, a provider and a channel, live in sections that look complete because
- * their "Add" button is right there.
- *
- * A list rather than a boolean, so the form can name the gaps.
+ * A list of named rules rather than one boolean expression: each rule stands on its own, is tested
+ * on its own, and reads in the order the sections appear in the form. The form itself only asks
+ * whether the list is empty - the Save button is disabled until it is, and says nothing about why.
  */
 
 /**
  * @typedef {Object} JobRequirement
- * @property {string} key Stable identifier, used in tests and as a React key.
- * @property {string} labelKey Translation key naming what is missing.
+ * @property {string} key Stable identifier, used in tests.
  * @property {(job: Object) => boolean} isMet
  */
 
 /**
- * Everything a job must have, in the order the sections appear in the form - so the list reads as
- * a route down the page rather than as an unordered set of complaints.
+ * Everything a job must have, in the order the sections appear in the form.
  *
  * @type {JobRequirement[]}
  */
 export const JOB_REQUIREMENTS = [
   {
     key: 'name',
-    labelKey: 'jobs.mutation.requirementName',
     // Trimmed: a name of three spaces used to satisfy this and be saved as a job with no visible
     // name at all.
     isMet: (job) => typeof job?.name === 'string' && job.name.trim().length > 0,
   },
   {
     key: 'dealType',
-    labelKey: 'jobs.mutation.requirementDealType',
     isMet: (job) => job?.dealType === 'rent' || job?.dealType === 'buy',
   },
   {
     key: 'provider',
-    labelKey: 'jobs.mutation.requirementProvider',
     isMet: (job) => (job?.providerData?.length ?? 0) > 0,
   },
   {
     key: 'channel',
-    labelKey: 'jobs.mutation.requirementChannel',
     isMet: (job) => (job?.selectedChannels?.length ?? 0) > 0,
   },
 ];

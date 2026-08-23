@@ -25,6 +25,7 @@ import { initMcpOAuthCleanupCron } from './lib/services/crons/mcp-oauth-cleanup-
 import { initListingRetentionCron } from './lib/services/crons/listing-retention-cron.js';
 import { initPriceTrackingCron } from './lib/services/crons/price-tracking-cron.js';
 import { initTravelTimeCron } from './lib/services/crons/travel-time-cron.js';
+import { initConnectivityCron } from './lib/services/crons/connectivity-cron.js';
 
 // Ensure the CloakBrowser stealth Chromium binary is present and complete before
 // jobs run.  ensureValidBinary() also detects and auto-heals partial extractions
@@ -123,6 +124,10 @@ initPriceTrackingCron();
 // Same reasoning: schedule only. The sweep talks to a community routing service, and hammering it
 // every time an instance restarts is exactly the behaviour their usage policy asks projects to avoid.
 initTravelTimeCron();
+// This one does run on start, unlike the two above: it costs two small JSON requests per address
+// and nothing at all for an address sharing a cell with one already looked up, so a restart is not
+// a moment it needs holding back from.
+initConnectivityCron();
 
 logger.info(`Started Fredy successfully. Ui can be accessed via http://localhost:${settings.port}`);
 

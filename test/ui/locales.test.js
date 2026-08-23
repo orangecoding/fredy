@@ -9,6 +9,13 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { TRACKING_POIS } from '../../lib/TRACKING_POIS.js';
 import { COMMUTE_ACTIONS } from '../../ui/src/services/jobs/commuteFilter.js';
+import {
+  CONNECTIVITY_SOURCES,
+  DISPLAY_TECHNOLOGIES,
+  DISPLAY_MOBILE_TECHNOLOGIES,
+  FILTERABLE_TECHNOLOGIES,
+  FILTERABLE_OPERATORS,
+} from '../../ui/src/components/connectivity/connectivityFormat.js';
 
 const localeDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '../../ui/src/locales');
 const donateComponent = fs.readFileSync(path.join(localeDir, '../components/donate/Donate.jsx'), 'utf-8');
@@ -88,6 +95,15 @@ const COMPUTED_KEYS = [
   // inside the dropdown that decides whether a listing is filtered out.
   ...COMMUTE_ACTIONS.map((action) => `jobs.mutation.commuteAction.${action}`),
   ...COMMUTE_ACTIONS.map((action) => `jobs.mutation.commuteActionHelp.${action}`),
+  // Same idea for the connectivity card and its filters: every one of these is built from a list,
+  // and a missing entry paints the raw key into a chip on the listing detail page.
+  ...new Set(
+    [...DISPLAY_MOBILE_TECHNOLOGIES, ...FILTERABLE_TECHNOLOGIES].map((technology) => `connectivity.tech.${technology}`),
+  ),
+  ...DISPLAY_TECHNOLOGIES.map((technology) => `connectivity.fixed.${technology}`),
+  ...FILTERABLE_OPERATORS.map((code) => `connectivity.operator.${code}`),
+  ...CONNECTIVITY_SOURCES.map((id) => `settings.connectivitySource.${id}`),
+  ...CONNECTIVITY_SOURCES.map((id) => `settings.connectivitySourceHelp.${id}`),
 ];
 
 /**

@@ -4,14 +4,8 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
 
-import { JOB_REQUIREMENTS, missingRequirements, canSaveJob } from '../../ui/src/services/jobs/jobValidation.js';
-
-const here = path.dirname(fileURLToPath(import.meta.url));
-const english = JSON.parse(fs.readFileSync(path.join(here, '../../ui/src/locales/en.json'), 'utf-8'));
+import { missingRequirements, canSaveJob } from '../../ui/src/services/jobs/jobValidation.js';
 
 /** A job with everything filled in. @returns {Object} */
 const completeJob = () => ({
@@ -58,11 +52,5 @@ describe('jobValidation', () => {
   it('survives being handed nothing', () => {
     expect(canSaveJob(null)).toBe(false);
     expect(canSaveJob(undefined)).toBe(false);
-  });
-
-  it('translates every requirement it can name', () => {
-    for (const requirement of JOB_REQUIREMENTS) {
-      expect(Object.keys(english)).toContain(requirement.labelKey);
-    }
   });
 });
