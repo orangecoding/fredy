@@ -76,6 +76,13 @@ export default function Login() {
     }
 
     await actions.user.getCurrentUser();
+    const returnTo = new URLSearchParams(location.search).get('returnTo');
+    // OAuth passes a server-relative authorization URL. Restrict this hand-off so the login
+    // screen cannot be used as an open redirect.
+    if (typeof returnTo === 'string' && returnTo.startsWith('/api/oauth/authorize?')) {
+      window.location.assign(returnTo);
+      return;
+    }
     navigate(location.state?.from?.pathname || '/dashboard');
   };
 
