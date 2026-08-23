@@ -142,4 +142,24 @@ describe('MCP OAuth route encapsulation', () => {
     expect(response.statusCode).toBe(415);
     await app.close();
   });
+
+  it('rate limits dynamic client registration per address', async () => {
+    createClient.mockReturnValue({ clientId: 'client-1', redirectUris: ['https://claude.ai/oauth/callback'] });
+    const app = await buildApp();
+    const register = (ip) =>
+      app.inject({
+        method: 'POST',
+        url: '/api/oauth/register',
+        remoteAddress: ip,
+        payload: { redirect_uris: ['https://claude.ai/oauth/callback'] },
+      });
+
+    const statuses = [];
+    for (let i = 0; i < 11; i++) statuses.push((await register('203.0.113.7')).statusCode);
+
+    expect(statuses.slice(0, 10).every((status) => status === 201)).toBe(true);
+    expect(statuses[10]).toBe(429);
+    expect((await register('203.0.113.8')).statusCode).toBe(201);
+    await app.close();
+  });
 });
