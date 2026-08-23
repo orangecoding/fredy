@@ -10,6 +10,18 @@ import { useOutletContext } from 'react-router';
 import { SegmentPart } from '../../../components/segment/SegmentPart';
 
 /**
+ * The reverse-proxy sign-in inputs, rendered from one template: they share label, help and
+ * placeholder keys by name, and differ only in whether they hold a secret.
+ * @type {{name: string, secret?: boolean}[]}
+ */
+const PROXY_AUTH_FIELDS = [
+  { name: 'proxyAuthTrustedProxies' },
+  { name: 'proxyAuthUserHeader' },
+  { name: 'proxyAuthSecretHeader' },
+  { name: 'proxyAuthSecret', secret: true },
+];
+
+/**
  * How the instance runs: the port it listens on, where it thinks it lives, how long a session
  * lasts, how long listings are kept, where the database file is.
  *
@@ -89,6 +101,42 @@ export default function SystemPage() {
         <Checkbox checked={form.demoMode} onChange={(e) => setField('demoMode', e.target.checked)}>
           {t('settings.demoModeEnable')}
         </Checkbox>
+      </SegmentPart>
+
+      <SegmentPart name={t('settings.proxyAuth')} helpText={t('settings.proxyAuthHelp')}>
+        <Banner
+          fullMode={false}
+          type="warning"
+          closeIcon={null}
+          style={{ marginBottom: '12px' }}
+          description={t('settings.proxyAuthWarning')}
+        />
+        <Checkbox checked={form.proxyAuthEnabled} onChange={(e) => setField('proxyAuthEnabled', e.target.checked)}>
+          {t('settings.proxyAuthEnable')}
+        </Checkbox>
+
+        <div
+          className={`settingsShell__subSettings${form.proxyAuthEnabled ? '' : ' settingsShell__subSettings--disabled'}`}
+        >
+          {PROXY_AUTH_FIELDS.map(({ name, secret }) => (
+            <div className="settingsShell__subSetting" key={name}>
+              <label className="settingsShell__subSetting__label" htmlFor={name}>
+                {t(`settings.${name}`)}
+              </label>
+              <p className="settingsShell__subSetting__help">{t(`settings.${name}Help`)}</p>
+              <Input
+                id={name}
+                type={secret ? 'password' : 'text'}
+                mode={secret ? 'password' : undefined}
+                autoComplete={secret ? 'new-password' : undefined}
+                disabled={!form.proxyAuthEnabled}
+                placeholder={t(`settings.${name}Placeholder`)}
+                value={form[name]}
+                onChange={(value) => setField(name, value)}
+              />
+            </div>
+          ))}
+        </div>
       </SegmentPart>
 
       <div className="settingsShell__saveRow">

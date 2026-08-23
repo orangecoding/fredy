@@ -24,6 +24,11 @@ export const SYSTEM_FIELDS = [
   'sqlitepath',
   'analyticsEnabled',
   'demoMode',
+  'proxyAuthEnabled',
+  'proxyAuthTrustedProxies',
+  'proxyAuthUserHeader',
+  'proxyAuthSecretHeader',
+  'proxyAuthSecret',
 ];
 
 /** The fields the Execution page owns. @type {string[]} */
@@ -57,6 +62,13 @@ function toForm(settings) {
     sqlitepath: settings?.sqlitepath ?? '',
     analyticsEnabled: settings?.analyticsEnabled === true,
     demoMode: settings?.demoMode === true,
+    proxyAuthEnabled: settings?.proxyAuthEnabled === true,
+    proxyAuthTrustedProxies: settings?.proxyAuthTrustedProxies ?? '',
+    proxyAuthUserHeader: settings?.proxyAuthUserHeader ?? 'Remote-User',
+    proxyAuthSecretHeader: settings?.proxyAuthSecretHeader ?? '',
+    // Write-only: the backend never sends it back, so the form always starts empty and an empty
+    // value on save means "keep the current secret".
+    proxyAuthSecret: '',
     interval: settings?.interval ?? '',
     workingHours: {
       from: settings?.workingHours?.from ?? null,
