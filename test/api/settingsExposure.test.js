@@ -21,6 +21,7 @@ const STORED_SETTINGS = {
   proxyUrl: 'http://user:hunter2@proxy.example:8080',
   workingHours: { from: '08:00', to: '20:00' },
   session_secret: 'super-secret-signing-key',
+  proxyAuthSecret: 'shared-with-the-proxy',
 };
 
 const settingsRows = Object.entries(STORED_SETTINGS).map(([name, value]) => ({
@@ -40,15 +41,16 @@ const { getSettings, getPublicSettings } = await import('../../lib/services/stor
 
 describe('settings exposure', () => {
   describe('getPublicSettings', () => {
-    it('drops the session secret', async () => {
+    it('drops the session secret and the proxy-auth shared secret', async () => {
       const published = await getPublicSettings();
       expect(published).not.toHaveProperty('session_secret');
+      expect(published).not.toHaveProperty('proxyAuthSecret');
     });
 
     it('keeps every non-secret setting', async () => {
       const published = await getPublicSettings();
       for (const name of Object.keys(STORED_SETTINGS)) {
-        if (name === 'session_secret') continue;
+        if (name === 'session_secret' || name === 'proxyAuthSecret') continue;
         expect(published[name]).toEqual(STORED_SETTINGS[name]);
       }
     });
@@ -89,9 +91,11 @@ describe('settings exposure', () => {
       return routes['GET /'];
     }
 
-    it('never returns the session secret, not even to an admin', async () => {
+    it('never returns the session secret or the proxy-auth secret, not even to an admin', async () => {
       const handler = await loadGetHandler(true);
-      expect(await handler({})).not.toHaveProperty('session_secret');
+      const payload = await handler({});
+      expect(payload).not.toHaveProperty('session_secret');
+      expect(payload).not.toHaveProperty('proxyAuthSecret');
     });
 
     it('gives an admin the operator configuration', async () => {
