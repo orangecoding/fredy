@@ -250,7 +250,7 @@ For more information on how to set it up and use it, please refer to the [MCP Re
 
 #### Connect Claude.ai or ChatGPT over OAuth
 
-Set Fredy's `baseUrl` to its public HTTPS URL, then add `<baseUrl>/api/mcp` as a custom MCP server in Claude.ai or ChatGPT. Fredy advertises OAuth discovery metadata, dynamically registers the client, and asks you to sign in and approve read access. OAuth access tokens expire after one hour and refresh automatically; existing MCP tokens continue to work for local clients.
+Set Fredy's `baseUrl` to its public HTTPS URL, then add `<baseUrl>/api/mcp` as a custom MCP server in Claude.ai or ChatGPT. Fredy advertises OAuth discovery metadata, dynamically registers the client, and asks you to sign in and approve read access. OAuth access tokens expire after one hour and refresh automatically; existing MCP tokens continue to work for local clients. Connected apps are listed under **Settings → Connections**, where access can be revoked at any time.
 
 ------------------------------------------------------------------------
 

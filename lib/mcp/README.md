@@ -15,6 +15,18 @@ MCP tokens are displayed in the **User Management** list (Admin → Users). Each
 
 > **Important:** MCP tokens never expire. They are permanent secrets tied to each user account. If a token is compromised, you must change the token! If you chose to use a token from an admin account, the LLM can query information from ALL jobs/listings. 
 
+### OAuth for remote clients (Claude.ai, ChatGPT)
+
+Remote connectors cannot be handed a static token, so the HTTP transport also speaks OAuth 2.1 with dynamic client registration (PKCE S256, `mcp:read` scope, tokens bound to `<baseUrl>/api/mcp` per RFC 8707). Requirements and behaviour:
+
+- `baseUrl` must be set to the public HTTPS URL of your Fredy instance. Tokens are bound to that URL, not to whatever `Host` header a request carries.
+- Add `<baseUrl>/api/mcp` as a remote MCP server in the client; it discovers `/.well-known/oauth-protected-resource/api/mcp`, registers itself at `/api/oauth/register`, and sends you to Fredy to sign in and approve access.
+- Access tokens live for one hour and are refreshed automatically; refresh tokens rotate on every use and a replayed refresh token revokes the whole grant.
+- Every user sees and revokes their connected apps under **Settings → Connections**. Revoking takes effect immediately.
+- Expired codes and tokens, and registrations that never completed an authorization, are swept hourly. Unauthenticated registration is rate-limited per address.
+
+Manually issued MCP tokens keep working alongside OAuth.
+
 ## Available Tools
 
 | Tool | Description                                                                    |
