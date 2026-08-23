@@ -124,3 +124,22 @@ describe('MCP OAuth discovery', () => {
     await app.close();
   });
 });
+
+describe('MCP OAuth route encapsulation', () => {
+  it('keeps the form-encoded parser away from the rest of the application', async () => {
+    const app = Fastify();
+    app.post('/api/elsewhere', async (request) => request.body);
+    await registerMcpOAuthRoutes(app);
+    await app.ready();
+
+    const response = await app.inject({
+      method: 'POST',
+      url: '/api/elsewhere',
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      payload: 'a=1',
+    });
+
+    expect(response.statusCode).toBe(415);
+    await app.close();
+  });
+});
