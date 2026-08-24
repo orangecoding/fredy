@@ -157,6 +157,13 @@ describe('kleinanzeigen rooms and size', () => {
     expect(enriched).toMatchObject({ size: 55, rooms: 1 });
   });
 
+  it('extracts the multi-line description with preserved newlines', async () => {
+    const enriched = await kleinanzeigenConfig.fetchDetails(listingWithoutFigures, null);
+
+    expect(enriched.description).toContain('\n');
+    expect(enriched.description).toMatch(/Flingern\.\nÜber das freundliche Treppenhaus/);
+  });
+
   it('leaves the figures alone when the detail page cannot be loaded', async () => {
     puppeteerExtractor.mockResolvedValue(null);
 
