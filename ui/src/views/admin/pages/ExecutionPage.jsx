@@ -17,7 +17,7 @@ import { timeZoneOptions } from '../../../services/time/timeService';
  */
 function formatFromTimestamp(ts) {
   const date = new Date(ts);
-  return `${date.getHours()}:${date.getMinutes() > 9 ? date.getMinutes() : '0' + date.getMinutes()}`;
+  return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
 }
 
 /**
