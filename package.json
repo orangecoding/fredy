@@ -1,6 +1,6 @@
 {
   "name": "fredy",
-  "version": "27.0.1",
+  "version": "27.1.0",
   "description": "Fredy - [F]ind [R]eal [E]state [D]amn Eas[y] - Fredy keeps searching for new apartments, houses, and flats in Europe on platforms like ImmoScout24, Immowelt, Immonet, eBay Kleinanzeigen, and WG-Gesucht and instantly delivers the results to you via Slack, Telegram, Email, Discord or ntfy, so you can focus on the more important things in life ;)",
   "scripts": {
     "prepare": "husky",
@@ -85,7 +85,7 @@
     "cloakbrowser": "^0.5.8",
     "fastify": "^5.12.1",
     "handlebars": "4.7.9",
-    "maplibre-gl": "6.5.0",
+    "maplibre-gl": "6.6.0",
     "nanoid": "6.0.1",
     "node-cron": "^4.6.0",
     "node-fetch": "3.3.2",
@@ -114,7 +114,7 @@
     "@babel/preset-react": "8.0.1",
     "@eslint/js": "^10.0.1",
     "chalk": "^6.0.0",
-    "eslint": "10.9.0",
+    "eslint": "10.9.1",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-react": "7.37.5",
     "globals": "^17.11.0",
