@@ -16,9 +16,27 @@ vi.mock('../../lib/mcp/mcpOAuthStorage.js', () => ({
 vi.mock('../../lib/services/storage/settingsStorage.js', () => ({
   getSettings: vi.fn(async () => ({ baseUrl: 'https://fredy.example' })),
 }));
+vi.mock('../../lib/api/security.js', () => ({
+  isUnauthorized: vi.fn(async () => true),
+}));
+vi.mock('../../lib/services/storage/userStorage.js', () => ({
+  getUser: vi.fn(() => ({ id: 'user-1' })),
+}));
 
 import { createClient, getClient } from '../../lib/mcp/mcpOAuthStorage.js';
+import { isUnauthorized } from '../../lib/api/security.js';
 import { registerMcpOAuthRoutes } from '../../lib/mcp/mcpOAuthRoute.js';
+
+const authorizeQuery = () =>
+  new URLSearchParams({
+    response_type: 'code',
+    client_id: 'client-1',
+    redirect_uri: 'https://claude.ai/oauth/callback',
+    code_challenge: 'a'.repeat(43),
+    code_challenge_method: 'S256',
+    resource: 'https://fredy.example/api/mcp',
+    scope: 'mcp:read',
+  });
 
 async function buildApp() {
   const app = Fastify();
@@ -121,6 +139,55 @@ describe('MCP OAuth discovery', () => {
 
     expect(response.statusCode).toBe(401);
     expect(response.body).toContain('/#/login?returnTo=%2Fapi%2Foauth%2Fauthorize%3F');
+    await app.close();
+  });
+
+  it('renders a consent form that carries response_type so the Allow POST validates', async () => {
+    getClient.mockReturnValue({
+      clientId: 'client-1',
+      name: 'Claude',
+      redirectUris: ['https://claude.ai/oauth/callback'],
+    });
+    vi.mocked(isUnauthorized).mockResolvedValue(false);
+    const app = await buildApp();
+
+    const response = await app.inject({ method: 'GET', url: `/api/oauth/authorize?${authorizeQuery()}` });
+
+    expect(response.statusCode).toBe(200);
+    // Regression: the consent form must submit response_type=code. The POST handler validates it
+    // from the body, so a form that omits it makes every "Allow" click fail with invalid_request.
+    expect(response.body).toContain('name="response_type" value="code"');
+    await app.close();
+  });
+
+  it('validates an Allow POST from the consent form body rather than the query string', async () => {
+    getClient.mockReturnValue({
+      clientId: 'client-1',
+      name: 'Claude',
+      redirectUris: ['https://claude.ai/oauth/callback'],
+    });
+    vi.mocked(isUnauthorized).mockResolvedValue(true);
+    const app = await buildApp();
+    const post = (payload) =>
+      app.inject({
+        method: 'POST',
+        url: '/api/oauth/authorize',
+        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        payload,
+      });
+
+    // Body carrying the full consent-form field set (incl. response_type) clears param validation
+    // and reaches the auth gate — it is not rejected as invalid_request.
+    const accepted = await post(authorizeQuery().toString());
+    expect(accepted.statusCode).toBe(401);
+    expect(accepted.json()).toEqual({ error: 'login_required' });
+
+    // Drop response_type — the exact defect this guards — and validation fails.
+    const withoutResponseType = new URLSearchParams(authorizeQuery());
+    withoutResponseType.delete('response_type');
+    const rejected = await post(withoutResponseType.toString());
+    expect(rejected.statusCode).toBe(400);
+    expect(rejected.json()).toEqual({ error: 'invalid_request' });
     await app.close();
   });
 });
