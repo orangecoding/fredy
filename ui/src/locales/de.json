@@ -428,7 +428,7 @@
   "admin.scopeText": "Diese Einstellungen gelten für alle Benutzer dieser Instanz.",
   "admin.tabSystem": "System",
   "admin.tabExecution": "Ausführung",
-  "admin.tabConnectivity": "Versorgung",
+  "admin.tabConnectivity": "Internet/Mobilfunk",
   "admin.tabUsers": "Benutzer",
   "admin.tabBackup": "Backup & Wiederherstellung",
   "admin.tabDebug": "Debug",

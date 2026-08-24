@@ -413,7 +413,7 @@
   "admin.scopeText": "Bu ayarlar bu örnekteki her kullanıcı için geçerlidir.",
   "admin.tabSystem": "Sistem",
   "admin.tabExecution": "Çalıştırma",
-  "admin.tabConnectivity": "Kapsama",
+  "admin.tabConnectivity": "İnternet/Mobil",
   "admin.tabUsers": "Kullanıcılar",
   "admin.tabBackup": "Yedekleme ve geri yükleme",
   "admin.tabDebug": "Hata Ayıklama",

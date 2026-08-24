@@ -428,7 +428,7 @@
   "admin.scopeText": "These settings apply to every user on this instance.",
   "admin.tabSystem": "System",
   "admin.tabExecution": "Execution",
-  "admin.tabConnectivity": "Coverage",
+  "admin.tabConnectivity": "Internet/Mobile",
   "admin.tabUsers": "Users",
   "admin.tabBackup": "Backup & restore",
   "admin.tabDebug": "Debug",
