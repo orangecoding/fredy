@@ -60,12 +60,19 @@ describe('#schwarzesbrett testsuite()', () => {
         expect(notify.id).toBeTypeOf('string');
         expect(notify.title).toBeTypeOf('string');
         expect(notify.link).toBeTypeOf('string');
-        expect(notify.address).toBeTypeOf('string');
         /** check the values if possible **/
         expect(notify.title).not.toBe('');
         expect(notify.link).toContain('https://schwarzesbrett.bremen.de/show/');
-        expect(notify.address).not.toBe('');
+        // The district pin is a Bremen district, so an ad for somewhere outside the city carries
+        // no pin at all and has no address until `fetchDetails` reads one off the ad itself.
+        if (notify.address != null) {
+          expect(notify.address).toBeTypeOf('string');
+          expect(notify.address).not.toBe('');
+        }
       });
+      // a whole page without a single district is the pin selector breaking rather than the board
+      // filling up with ads from outside Bremen
+      expect(notificationObj.payload.some((notify) => notify.address)).toBe(true);
     },
     TEST_TIMEOUT,
   );

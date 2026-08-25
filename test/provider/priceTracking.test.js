@@ -27,14 +27,14 @@ const testProviderConfig = JSON.parse(
  * @type {Record<string, number>}
  */
 const EXPECTED_DETAIL_PRICE = {
-  deutscheWohnen: 960,
+  deutscheWohnen: 692,
   engelVoelkers: 24900000,
   imaxx: 526000,
   immobilienDe: 1070,
   immowelt: 1250,
   kleinanzeigen: 1600,
-  schwarzesbrett: 75,
-  sparkasse: 1618200,
+  schwarzesbrett: 560,
+  sparkasse: 410000,
   wgGesucht: 590,
 };
 

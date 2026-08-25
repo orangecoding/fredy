@@ -15,26 +15,48 @@ const ROOT = path.join(__dirname, '../..');
 const FIXTURES_DIR = path.join(ROOT, 'test', 'testFixtures');
 const TEST_PROVIDER_PATH = path.join(ROOT, 'test', 'provider', 'testProvider.json');
 
+/**
+ * The list endpoint caps a page at 50 and the provider walks the rest with `offset`, so a fixture
+ * of the first page alone would be a truncated search - `paging.info.count` promising listings the
+ * offline suite can never reach. The pages are merged into one payload instead, keeping the first
+ * response's `paging` so the offline fetch mock can serve them back sliced, page by page.
+ */
 async function downloadDeutscheWohnenFixtures(apiUrl, refererUrl) {
   console.log('\nDownloading deutscheWohnen...');
 
-  const listResponse = await fetch(apiUrl, {
-    headers: {
-      'User-Agent':
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36',
-      Accept: 'application/json',
-      Referer: refererUrl,
-    },
-  });
+  const headers = {
+    'User-Agent':
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36',
+    Accept: 'application/json',
+    Referer: refererUrl,
+  };
 
-  if (!listResponse.ok) {
-    console.warn(`  Failed to download deutscheWohnen list: ${listResponse.statusText}`);
-    return;
+  const pageSize = Number.parseInt(new URL(apiUrl).searchParams.get('limit') ?? '', 10) || 50;
+  const listData = { paging: null, results: [] };
+
+  for (let page = 0; page < 10; page++) {
+    const pageUrl = new URL(apiUrl);
+    if (page > 0) {
+      pageUrl.searchParams.set('offset', String(page * pageSize));
+    }
+
+    const listResponse = await fetch(pageUrl, { headers });
+    if (!listResponse.ok) {
+      console.warn(`  Failed to download deutscheWohnen list: ${listResponse.statusText}`);
+      if (page === 0) return;
+      break;
+    }
+
+    const body = await listResponse.json();
+    listData.paging ??= body.paging ?? null;
+    listData.results.push(...(body.results ?? []));
+
+    const total = body?.paging?.info?.count;
+    if ((body.results ?? []).length === 0 || total == null || listData.results.length >= total) break;
   }
 
-  const listData = await listResponse.json();
   await writeFile(path.join(FIXTURES_DIR, 'deutscheWohnen_list.json'), JSON.stringify(listData, null, 2), 'utf-8');
-  console.log('  Saved deutscheWohnen_list.json');
+  console.log(`  Saved deutscheWohnen_list.json (${listData.results.length} listings)`);
 
   const firstListing = listData.results?.[0];
   if (!firstListing?.slug) {

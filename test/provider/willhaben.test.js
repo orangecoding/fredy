@@ -44,10 +44,30 @@ describe('#willhaben provider testsuite()', () => {
       expect(typeof listing.price, `price of ${listing.id}`).toBe('number');
       expect(listing.price).toBeGreaterThan(0);
       expect(listing.size).toBeGreaterThan(0);
-      expect(listing.rooms).toBeGreaterThan(0);
-      // A flat with more rooms than this is a decimal separator read the wrong way round, which is
-      // exactly how a "2.0" turns into twenty.
-      expect(listing.rooms, `rooms of ${listing.id}`).toBeLessThan(30);
+      // willhaben writes a room count of 0 for adverts whose advertiser left the field empty, and
+      // leaves the "Zimmer" teaser off its own cards for them. The provider reads that as unknown,
+      // so the assertion is on the figure being sane when there is one.
+      if (listing.rooms != null) {
+        expect(listing.rooms, `rooms of ${listing.id}`).toBeGreaterThan(0);
+        // A flat with more rooms than this is a decimal separator read the wrong way round, which
+        // is exactly how a "2.0" turns into twenty.
+        expect(listing.rooms, `rooms of ${listing.id}`).toBeLessThan(30);
+      }
+    }
+    // A run where nothing at all carries a room count is the parsing breaking, not the advertisers
+    // all going quiet on the same day.
+    expect(listings.some((listing) => listing.rooms != null)).toBe(true);
+  });
+
+  /**
+   * A Neubauprojekt is a development's landing page that willhaben mixes into the result list. It
+   * has no living area, no room count and a price that belongs to its cheapest unit, and each of
+   * those units is in the same list as an advert of its own - so the project is noise with a link
+   * that leads to nothing rentable.
+   */
+  it('leaves the Neubauprojekt landing pages out', () => {
+    for (const listing of listings) {
+      expect(listing.link, `link of ${listing.id}`).not.toContain('/neubauprojekt/');
     }
   });
 

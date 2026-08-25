@@ -58,8 +58,12 @@ describe('#sparkasse testsuite()', () => {
       notificationObj.payload.forEach((notify) => {
         /** check the actual structure **/
         expect(notify.id).toBeTypeOf('string');
-        expect(notify.price).toBeTypeOf('string');
-        expect(notify.price).toContain('€');
+        // A card marketed discreetly ("Preis auf Anfrage") leaves the price slot empty, so the
+        // portal itself shows no figure; when there is one it must be a formatted "… €" string.
+        if (notify.price != null) {
+          expect(notify.price).toBeTypeOf('string');
+          expect(notify.price).toContain('€');
+        }
         // Size can legitimately be absent for a card whose layout shifts the
         // value out of the expected slot; when present it must be a formatted
         // "… m²" string.
@@ -80,6 +84,9 @@ describe('#sparkasse testsuite()', () => {
       // the preview image lives outside of the card's link box, so it is the first
       // thing to break when the card markup is restructured
       expect(notificationObj.payload.some((notify) => notify.image)).toBe(true);
+      // a whole page of price-less cards is the price selector breaking, not ten sellers
+      // deciding to market discreetly at once
+      expect(notificationObj.payload.some((notify) => notify.price)).toBe(true);
     },
     TEST_TIMEOUT,
   );

@@ -187,7 +187,17 @@ export function buildFetchMock() {
         const raw = await tryReadFile(path.join(FIXTURES_DIR, 'deutscheWohnen_list.json'));
         deutscheWohnenListData = raw ? JSON.parse(raw) : { results: [] };
       }
-      return { ok: true, status: 200, json: () => Promise.resolve(deutscheWohnenListData) };
+      // The endpoint caps a page at 50 and the provider walks the rest with `offset`, so serving
+      // the whole fixture to every request would hand the same listings back on each page and
+      // never let the walk end. Slicing is what makes the fixture behave like the endpoint.
+      const params = new URL(urlStr).searchParams;
+      const offset = Number.parseInt(params.get('offset') ?? '0', 10) || 0;
+      const limit = Number.parseInt(params.get('limit') ?? '', 10) || (deutscheWohnenListData.results ?? []).length;
+      const page = {
+        ...deutscheWohnenListData,
+        results: (deutscheWohnenListData.results ?? []).slice(offset, offset + limit),
+      };
+      return { ok: true, status: 200, json: () => Promise.resolve(page) };
     }
 
     throw new Error(`Network request blocked in offline mode: ${urlStr}`);
