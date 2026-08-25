@@ -37,6 +37,25 @@ describe('#inberlinwohnen internals()', () => {
     vi.restoreAllMocks();
   });
 
+  describe('createConfig()', () => {
+    it.each([
+      ['/mein-bereich/wohnungsfinder', '/wohnungsfinder/'],
+      ['/mein-bereich/wohnungsfinder/', '/wohnungsfinder/'],
+    ])('should replace the saved private search path %s', (privatePath, publicPath) => {
+      const privateUrl = `https://www.inberlinwohnen.de${privatePath}?q=opaque-filter&district=mitte`;
+
+      const privateRunConfig = provider.createConfig({ url: privateUrl, enabled: true }, []);
+
+      expect(privateRunConfig.url).toBe(`https://www.inberlinwohnen.de${publicPath}?q=opaque-filter&district=mitte`);
+    });
+
+    it('should leave public search URLs unchanged', () => {
+      const publicUrl = 'https://www.inberlinwohnen.de/wohnungsfinder/?q=opaque-filter&district=mitte';
+
+      expect(provider.createConfig({ url: publicUrl, enabled: true }, []).url).toBe(publicUrl);
+    });
+  });
+
   describe('getListings()', () => {
     it('should fetch every server-rendered result page', async () => {
       const pagination = paginationElement([1, 2, 3, 4, 5], 2);
