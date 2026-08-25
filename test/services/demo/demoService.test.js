@@ -46,8 +46,17 @@ async function loadService() {
   vi.doMock(settingsStoragePath, () => ({
     getSettings: async () => state.settings,
     getUserSettings: (userId) => state.userSettings[userId] || {},
+    // Mirrors the real storage: a null value deletes the row rather than storing null.
     upsertSettings: (map, userId) => {
-      state.userSettings[userId] = { ...(state.userSettings[userId] || {}), ...map };
+      const next = { ...(state.userSettings[userId] || {}) };
+      for (const [name, value] of Object.entries(map)) {
+        if (value === null) {
+          delete next[name];
+        } else {
+          next[name] = value;
+        }
+      }
+      state.userSettings[userId] = next;
     },
   }));
   vi.doMock(listingsStoragePath, () => ({
@@ -243,8 +252,53 @@ describe('services/demo/demoService', () => {
     });
   });
 
+  describe('resetDemoUserPreferences', () => {
+    it('drops every preference a demo visitor could have changed', async () => {
+      state.userSettings['u-demo'] = {
+        theme: 'light',
+        language: 'de',
+        jobs_view_mode: 'table',
+        listings_view_mode: 'table',
+      };
+      const { resetDemoUserPreferences } = await loadService();
+
+      await resetDemoUserPreferences();
+
+      expect(state.userSettings['u-demo']).toEqual({});
+    });
+
+    it('leaves the seeded settings alone', async () => {
+      state.userSettings['u-demo'] = { theme: 'light', finance_profile: { seeded: true }, home_addresses: [] };
+      const { resetDemoUserPreferences } = await loadService();
+
+      await resetDemoUserPreferences();
+
+      expect(state.userSettings['u-demo']).toEqual({ finance_profile: { seeded: true }, home_addresses: [] });
+    });
+
+    it('does nothing when demo mode is off', async () => {
+      state.settings.demoMode = false;
+      state.userSettings['u-demo'] = { theme: 'light' };
+      const { resetDemoUserPreferences } = await loadService();
+
+      await resetDemoUserPreferences();
+
+      expect(state.userSettings['u-demo']).toEqual({ theme: 'light' });
+    });
+
+    it('does nothing when there is no demo user', async () => {
+      state.users = [];
+      const { resetDemoUserPreferences } = await loadService();
+
+      await resetDemoUserPreferences();
+
+      expect(state.userSettings['u-demo']).toBeUndefined();
+    });
+  });
+
   describe('seedDemo', () => {
-    it('runs all three seeders', async () => {
+    it('runs every seeder and resets the demo user preferences', async () => {
+      state.userSettings['u-demo'] = { theme: 'light', language: 'de' };
       const { seedDemo, DEMO_JOB_ID } = await loadService();
 
       await seedDemo([provider('immoscout', 'Immoscout')]);
@@ -252,6 +306,8 @@ describe('services/demo/demoService', () => {
       expect(state.jobs[DEMO_JOB_ID]).toBeDefined();
       expect(state.userSettings['u-demo'].finance_profile).toBeDefined();
       expect(state.userSettings['u-demo'].home_addresses).toBeDefined();
+      expect(state.userSettings['u-demo'].theme).toBeUndefined();
+      expect(state.userSettings['u-demo'].language).toBeUndefined();
     });
   });
 
@@ -322,14 +378,31 @@ describe('services/demo/demoService', () => {
       expect(state.inactiveDeletes).toEqual(['demo-job']);
     });
 
+    it('resets the preferences a visitor changed while keeping the seeded settings', async () => {
+      state.userSettings['u-demo'] = {
+        theme: 'light',
+        language: 'tr',
+        jobs_view_mode: 'table',
+        listings_view_mode: 'table',
+        finance_profile: { seeded: true },
+      };
+      const { cleanupDemoData } = await loadService();
+
+      await cleanupDemoData();
+
+      expect(state.userSettings['u-demo']).toEqual({ finance_profile: { seeded: true } });
+    });
+
     it('does nothing when demo mode is off', async () => {
       state.settings.demoMode = false;
+      state.userSettings['u-demo'] = { theme: 'light' };
       const { cleanupDemoData } = await loadService();
 
       const result = await cleanupDemoData();
 
       expect(Object.keys(state.jobs)).toHaveLength(3);
       expect(state.inactiveDeletes).toEqual([]);
+      expect(state.userSettings['u-demo']).toEqual({ theme: 'light' });
       expect(result.jobsRemoved).toBe(0);
     });
   });
