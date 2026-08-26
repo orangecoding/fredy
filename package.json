@@ -60,12 +60,6 @@
     "node": ">=22.22.0",
     "npm": ">=7.0.0"
   },
-  "browserslist": [
-    "> 0.5%",
-    "not dead",
-    "not ie 6-11",
-    "Firefox ESR"
-  ],
   "dependencies": {
     "@douyinfe/semi-icons": "^2.102.0",
     "@douyinfe/semi-ui-19": "^2.102.0",
@@ -108,10 +102,6 @@
     "zustand": "^5.0.15"
   },
   "devDependencies": {
-    "@babel/core": "8.0.1",
-    "@babel/eslint-parser": "8.0.1",
-    "@babel/preset-env": "8.0.2",
-    "@babel/preset-react": "8.0.1",
     "@eslint/js": "^10.0.1",
     "chalk": "^6.0.0",
     "eslint": "10.9.1",
