@@ -100,7 +100,7 @@
     "react-dom": "19.2.8",
     "react-range-slider-input": "^3.3.5",
     "react-router": "8.3.0",
-    "resend": "^6.22.0",
+    "resend": "^6.24.0",
     "semver": "^7.8.5",
     "slack": "11.0.2",
     "vite": "8.2.2",

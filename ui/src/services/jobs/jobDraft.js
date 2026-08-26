@@ -46,7 +46,7 @@ export const DRAFT_FIELDS = [
   'name',
   'dealType',
   'providerData',
-  'selectedChannels',
+  'selectedChannelIds',
   'blacklist',
   'shareWithUsers',
   'enabled',
@@ -84,7 +84,7 @@ export function hasContent(draft) {
   return (
     (typeof draft.name === 'string' && draft.name.trim().length > 0) ||
     (draft.providerData?.length ?? 0) > 0 ||
-    (draft.selectedChannels?.length ?? 0) > 0 ||
+    (draft.selectedChannelIds?.length ?? 0) > 0 ||
     (draft.blacklist?.length ?? 0) > 0 ||
     (draft.shareWithUsers?.length ?? 0) > 0 ||
     draft.dealType != null ||

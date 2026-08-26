@@ -49,7 +49,7 @@ const aDraft = () => ({
   name: 'Cologne 3-room',
   dealType: 'rent',
   providerData: [{ id: 'immoscout', url: 'https://www.immobilienscout24.de/Suche/de/koeln/wohnung-mieten' }],
-  selectedChannels: [],
+  selectedChannelIds: [],
   blacklist: ['Tausch'],
   shareWithUsers: [],
   enabled: true,
@@ -82,7 +82,7 @@ describe('jobDraft', () => {
     it.each([
       ['a name', { name: 'x' }],
       ['a provider', { providerData: [{ id: 'a' }] }],
-      ['a channel', { selectedChannels: [{ id: 'a' }] }],
+      ['a channel', { selectedChannelIds: ['a'] }],
       ['a blacklist word', { blacklist: ['x'] }],
       ['a deal type', { dealType: 'buy' }],
       ['a drawn area', { spatialFilter: { type: 'Polygon' } }],
@@ -97,7 +97,7 @@ describe('jobDraft', () => {
     it.each([
       ['nothing at all', {}],
       ['a blank name', { name: '   ' }],
-      ['empty lists', { providerData: [], selectedChannels: [], blacklist: [] }],
+      ['empty lists', { providerData: [], selectedChannelIds: [], blacklist: [] }],
       // `enabled` defaults to true on a fresh form, so on its own it is not evidence of any editing.
       ['only the activation default', { enabled: true }],
       ['null', null],

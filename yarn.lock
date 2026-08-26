@@ -6122,10 +6122,10 @@ require-from-string@^2.0.2:
   resolved "https://registry.yarnpkg.com/require-from-string/-/require-from-string-2.0.2.tgz#89a7fdd938261267318eafe14f9c32e598c36909"
   integrity sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==
 
-resend@^6.22.0:
-  version "6.22.0"
-  resolved "https://registry.yarnpkg.com/resend/-/resend-6.22.0.tgz#5c1e8279d49c71195cc6d6ca142b30168f4e5d08"
-  integrity sha512-dP1jyl0n1Dx7GYDb0bcsbv9Yx0oBRLhUtSyNFRIOsSzV9MvCVbua/3WP6YUP2JptAU5BciEWGInV+hFjUuYLUw==
+resend@^6.24.0:
+  version "6.24.0"
+  resolved "https://registry.yarnpkg.com/resend/-/resend-6.24.0.tgz#636191a019730e7a070b87ba6bb0ff285cd07df4"
+  integrity sha512-ZG+tRzTtg3usrzMMVK1THPILCDbxE0uefG3XEQro/+jb9hcRb8JiQeyzIo2BphMJk2OomBeciZU3rCgX3XWx5w==
   dependencies:
     postal-mime "2.7.5"
     standardwebhooks "1.0.0"
