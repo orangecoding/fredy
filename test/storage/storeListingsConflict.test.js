@@ -28,6 +28,8 @@ describe('storeListings id propagation', () => {
         price REAL,
         size REAL,
         rooms REAL,
+        build_year INTEGER,
+        energy_class TEXT,
         title TEXT,
         image_url TEXT,
         description TEXT,

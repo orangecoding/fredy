@@ -37,6 +37,8 @@ import {
   IconDelete,
   IconExpand,
   IconGridView,
+  IconCalendar,
+  IconBolt,
 } from '@douyinfe/semi-icons';
 import maplibregl from '../../components/map/maplibre.js';
 import MapCanvas, { HOME_MARKER_COLOR } from '../../components/map/Map.jsx';
@@ -465,6 +467,26 @@ export default function ListingDetail() {
       helpText: t('listing.detail.fieldAddedHelp'),
     },
   ];
+
+  // Only the detail page states these, and only for a part of the listings, so they are pushed
+  // rather than shown as another "N/A" next to the figures every listing carries.
+  if (listing.build_year) {
+    data.push({
+      key: t('listing.detail.fieldBuildYear'),
+      value: listing.build_year,
+      Icon: <IconCalendar />,
+      helpText: t('listing.detail.fieldBuildYearHelp'),
+    });
+  }
+
+  if (listing.energy_class) {
+    data.push({
+      key: t('listing.detail.fieldEnergyClass'),
+      value: listing.energy_class,
+      Icon: <IconBolt />,
+      helpText: t('listing.detail.fieldEnergyClassHelp'),
+    });
+  }
 
   // The verdict belongs next to the price, not only in the costing block further down. It comes
   // with the listing from the server, decided against the same profile and thresholds the
