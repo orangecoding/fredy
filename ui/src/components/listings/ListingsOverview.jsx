@@ -308,6 +308,17 @@ const ListingsOverview = () => {
     }
   };
 
+  const handleReactivate = async (id) => {
+    try {
+      await actions.listingsData.reactivateListings([id]);
+      Toast.success(t('listings.toastReactivated'));
+      loadData();
+    } catch (e) {
+      console.error(e);
+      Toast.error(t('listings.toastReactivateError'));
+    }
+  };
+
   const handleNavigate = (id) => {
     if (isHiddenView) return;
     navigate(`/listings/listing/${id}`);
@@ -511,6 +522,7 @@ const ListingsOverview = () => {
           onNavigate={handleNavigate}
           onDelete={handleDelete}
           onRestore={handleRestore}
+          onReactivate={handleReactivate}
           isHiddenView={isHiddenView}
           onStatusChange={handleStatusChange}
         />
@@ -521,6 +533,7 @@ const ListingsOverview = () => {
           onNavigate={handleNavigate}
           onDelete={handleDelete}
           onRestore={handleRestore}
+          onReactivate={handleReactivate}
           isHiddenView={isHiddenView}
           onStatusChange={handleStatusChange}
         />

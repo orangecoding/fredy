@@ -12,6 +12,7 @@ import {
   IconStar,
   IconStarStroked,
   IconEyeOpened,
+  IconRefresh,
 } from '@douyinfe/semi-icons';
 import no_image from '../../../assets/no_image.png';
 import { formatEuroPrice } from '../../../services/price/priceService.js';
@@ -26,9 +27,18 @@ import './ListingsGrid.less';
 import { useTranslation, useLocale } from '../../../services/i18n/i18n.jsx';
 
 /**
- * @param {{ listings: object[], onWatch: Function, onNavigate: Function, onDelete: Function, onRestore?: Function, isHiddenView?: boolean, onStatusChange: Function }} props
+ * @param {{ listings: object[], onWatch: Function, onNavigate: Function, onDelete: Function, onRestore?: Function, onReactivate?: Function, isHiddenView?: boolean, onStatusChange: Function }} props
  */
-const ListingsGrid = ({ listings, onWatch, onNavigate, onDelete, onRestore, isHiddenView = false, onStatusChange }) => {
+const ListingsGrid = ({
+  listings,
+  onWatch,
+  onNavigate,
+  onDelete,
+  onRestore,
+  onReactivate,
+  isHiddenView = false,
+  onStatusChange,
+}) => {
   const t = useTranslation();
   const locale = useLocale();
   return (
@@ -132,6 +142,24 @@ const ListingsGrid = ({ listings, onWatch, onNavigate, onDelete, onRestore, isHi
                 }}
               />
             </Tooltip>
+            {/* Only offered where it can do something: the alive-checker marked this one gone, and
+                the user is presumably looking at the ad that says otherwise. Not shown in the
+                hidden view, where the row is soft-deleted and undelete is the action that matters. */}
+            {!item.is_active && !isHiddenView && (
+              <Tooltip content={t('listings.tooltipReactivate')}>
+                <Button
+                  size="small"
+                  icon={<IconRefresh />}
+                  style={{ color: 'var(--f-success)' }}
+                  theme="borderless"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onReactivate?.(item.id);
+                  }}
+                  aria-label={t('listings.tooltipReactivate')}
+                />
+              </Tooltip>
+            )}
             {isHiddenView ? (
               <Tooltip content={t('listings.tooltipUndelete')}>
                 <Button

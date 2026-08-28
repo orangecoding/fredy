@@ -62,6 +62,21 @@ describe('#flatfox provider testsuite()', () => {
     }
   });
 
+  /**
+   * `price_display` and `rent_gross` are the Bruttomiete, Nebenkosten included, while the
+   * affordability check adds a Nebenkosten surcharge to whatever `price` holds - so quoting the
+   * gross figure counted them twice. Driven through `normalize` with a synthetic payload rather
+   * than asserted on `listings`, because the normalized listing no longer carries the raw rent
+   * fields the comparison needs, and because this has to hold against the live API too.
+   */
+  it('quotes the Nettomiete, and falls back to the gross figure when there is none', () => {
+    const { normalize } = provider.createConfig(providerConfig.flatfox, []);
+    const base = { pk: 1, title: 'Wohnung', url: '/de/flat/1', surface_living: 80, number_of_rooms: 3, city: 'Zürich' };
+
+    expect(normalize({ ...base, price_display: 2710, rent_gross: 2710, rent_net: 2550 }).price).toBe(2550);
+    expect(normalize({ ...base, price_display: 3020, rent_gross: 3020, rent_net: null }).price).toBe(3020);
+  });
+
   it('links to the German listing page', () => {
     for (const listing of listings) {
       expect(listing.link, `link of ${listing.id}`).toMatch(/^https:\/\/flatfox\.ch\/de\//);

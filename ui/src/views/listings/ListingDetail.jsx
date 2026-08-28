@@ -39,6 +39,7 @@ import {
   IconGridView,
   IconCalendar,
   IconBolt,
+  IconRefresh,
 } from '@douyinfe/semi-icons';
 import maplibregl from '../../components/map/maplibre.js';
 import MapCanvas, { HOME_MARKER_COLOR } from '../../components/map/Map.jsx';
@@ -301,6 +302,17 @@ export default function ListingDetail() {
     } catch (e) {
       console.error('Failed to operate Watchlist:', e);
       Toast.error(t('listing.detail.toastWatchlistError'));
+    }
+  };
+
+  const handleReactivate = async () => {
+    try {
+      await actions.listingsData.reactivateListings([listing.id]);
+      await actions.listingsData.getListing(listingId);
+      Toast.success(t('listings.toastReactivated'));
+    } catch (e) {
+      console.error('Failed to reactivate listing:', e);
+      Toast.error(t('listings.toastReactivateError'));
     }
   };
 
@@ -581,6 +593,13 @@ export default function ListingDetail() {
               <IconLink style={{ marginRight: 6 }} />
               {t('listing.detail.openListing')}
             </a>
+            {/* Sits next to "open listing" on purpose: the user clicks that first, sees the ad is
+                very much alive, and the correction is the next button along. */}
+            {listing.is_active === 0 && (
+              <Button icon={<IconRefresh />} onClick={handleReactivate} theme="light" type="secondary">
+                {t('listing.detail.reactivate')}
+              </Button>
+            )}
             <Button
               icon={<IconDelete />}
               onClick={() => {

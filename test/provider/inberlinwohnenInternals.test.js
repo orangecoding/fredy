@@ -160,6 +160,17 @@ describe('#inberlinwohnen internals()', () => {
       expect(netRentListing.id).toBe(objectListing.id);
     });
 
+    it('should quote the cold rent when the listing publishes both', () => {
+      // The affordability check adds the Nebenkosten surcharge to `price` itself, so a listing
+      // carrying both figures has to hand over the Kaltmiete - quoting the Gesamtmiete counted the
+      // Nebenkosten twice. The Gesamtmiete stays in the description, where it costs nothing.
+      const listing = normalize({ ...baseItem, rentNet: '800', extraCosts: '183', rentGross: '983,08' });
+
+      expect(listing.price).toBe(800);
+      expect(listing.description).toContain('Kaltmiete: 800 €');
+      expect(listing.description).toContain('Gesamtmiete: 983,08 €');
+    });
+
     it('should reject links that do not point at the portal or a known partner', () => {
       expect(normalize({ ...baseItem, deeplink: 'http://%' }).link).toBeNull();
       expect(normalize({ ...baseItem, deeplink: 'javascript:alert(1)' }).link).toBeNull();

@@ -487,6 +487,21 @@ export const useFredyState = create(
               throw Exception;
             }
           },
+          /**
+           * Mark listings the alive-checker wrongly gave up on as available again.
+           *
+           * Distinct from `restoreListings`, which undoes a deletion the user made themselves.
+           *
+           * @param {string[]} ids
+           */
+          async reactivateListings(ids) {
+            try {
+              await xhrPost('/api/listings/reactivate', { ids });
+            } catch (Exception) {
+              console.error('Error while trying to reactivate listings. Error:', Exception);
+              throw Exception;
+            }
+          },
         },
         userSettings: {
           async getUserSettings() {

@@ -31,7 +31,8 @@ describe('alive checker throttling', () => {
         manually_deleted INTEGER DEFAULT 0,
         last_checked_at INTEGER,
         inactive_since INTEGER,
-        active_check_failures INTEGER DEFAULT 0
+        active_check_failures INTEGER DEFAULT 0,
+        activity_is_manual INTEGER NOT NULL DEFAULT 0
       );
     `);
 
@@ -52,12 +53,12 @@ describe('alive checker throttling', () => {
     db.close();
   });
 
-  const addListing = (id, { isActive = 1, lastCheckedAt = null, deleted = 0, failures = 0 } = {}) =>
+  const addListing = (id, { isActive = 1, lastCheckedAt = null, deleted = 0, failures = 0, manual = 0 } = {}) =>
     db
       .prepare(
-        'INSERT INTO listings (id, link, provider, job_id, is_active, manually_deleted, last_checked_at, active_check_failures) VALUES (?,?,?,?,?,?,?,?)',
+        'INSERT INTO listings (id, link, provider, job_id, is_active, manually_deleted, last_checked_at, active_check_failures, activity_is_manual) VALUES (?,?,?,?,?,?,?,?,?)',
       )
-      .run(id, `https://example.com/${id}`, 'immowelt', 'job-1', isActive, deleted, lastCheckedAt, failures);
+      .run(id, `https://example.com/${id}`, 'immowelt', 'job-1', isActive, deleted, lastCheckedAt, failures, manual);
 
   const rowOf = (id) => db.prepare('SELECT * FROM listings WHERE id = ?').get(id);
 
@@ -104,6 +105,14 @@ describe('alive checker throttling', () => {
     addListing('hidden', { deleted: 1 });
     addListing('unknown', { isActive: null });
     expect(dueIds()).toEqual(['unknown']);
+  });
+
+  it('never hands over a listing a human marked as available', () => {
+    addListing('normal');
+    addListing('corrected', { manual: 1 });
+    // The probe is what got this row wrong. Running it again would just undo the correction on the
+    // next nightly sweep, which is the whole failure `activity_is_manual` exists to stop.
+    expect(dueIds()).toEqual(['normal']);
   });
 
   it('only selects the columns the checker needs', () => {
