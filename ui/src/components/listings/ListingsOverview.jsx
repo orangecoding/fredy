@@ -19,7 +19,7 @@ import { useNavigate, useSearchParams } from 'react-router';
 import ListingDeletionModal from '../ListingDeletionModal.jsx';
 import { xhrDelete, xhrPost, errorMessage } from '../../services/xhr.js';
 import { useActions, useSelector } from '../../services/state/store.js';
-import { debounce, getAddresses } from '../../utils';
+import { debounce, measuredPlaces } from '../../utils';
 import { parseCommuteFilter } from '../transit/travelTimeFormat.js';
 import FilterSelect from './FilterSelect.jsx';
 import ListingsFilterPanel from './ListingsFilterPanel.jsx';
@@ -142,7 +142,9 @@ const ListingsOverview = () => {
 
   // A commute filter without a reference address would return an empty page and look broken, so the
   // control is not offered at all until there is something to measure from.
-  const hasAddresses = getAddresses(userSettings).length > 0;
+  // Place types count: somebody whose only entry is "a supermarket" still has travel times to
+  // filter by, and hiding the control from them would be hiding their own data.
+  const hasAddresses = measuredPlaces(userSettings).length > 0;
 
   const activeFilterCount = countActiveFilters(values);
 

@@ -17,6 +17,7 @@ import AdminLayout from './views/admin/AdminLayout';
 import SystemPage from './views/admin/pages/SystemPage';
 import ExecutionPage from './views/admin/pages/ExecutionPage';
 import ConnectivityPage from './views/admin/pages/ConnectivityPage';
+import RoutingPage from './views/admin/pages/RoutingPage.jsx';
 import BackupPage from './views/admin/pages/BackupPage';
 import DebugPage from './views/admin/pages/DebugPage';
 import JobMutation from './views/jobs/mutation/JobMutation';
@@ -246,6 +247,7 @@ export default function FredyApp() {
                     <Route path="system" element={<SystemPage />} />
                     <Route path="execution" element={<ExecutionPage />} />
                     <Route path="connectivity" element={<ConnectivityPage />} />
+                    <Route path="routing" element={<RoutingPage />} />
                     <Route path="users" element={<Users />} />
                     <Route path="users/new" element={<UserMutator />} />
                     <Route path="users/edit/:userId" element={<UserMutator />} />

@@ -124,6 +124,15 @@ export default function TravelTimes({ listingId, travelTimes, compact = false, r
                 <span className="travel-times__estimate">{t('travelTime.estimate')}</span>
               </Popover>
             )}
+            {/* Which place a place type actually resolved to. A named address is its own answer -
+                the label says where it is - but "Groceries: 6 min" is a number with nothing behind
+                it until it can say which supermarket that was. The same instinct as the estimate
+                popover: show the working rather than ask to be trusted. */}
+            {entry.place != null && (
+              <span className="travel-times__place">
+                {t('travelTime.placeFrom', { name: entry.place.name || t('travelTime.placeUnnamed') })}
+              </span>
+            )}
             <span className="travel-times__modes">
               {availableModes(entry).map((mode) => {
                 const distance = mode.key === 'car' ? formatRoadDistance(entry.car.distanceMeters) : null;

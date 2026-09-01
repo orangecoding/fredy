@@ -40,6 +40,26 @@ export const CONNECTIVITY_FIELDS = [
   'connectivityMaxAgeDays',
 ];
 
+/**
+ * The fields the Routing page owns: how travel times and nearby places are worked out.
+ *
+ * Both halves in one place because they are one budget in practice - a sweep spends the street
+ * routings and the place lookups on the same listings, against the same two community services -
+ * and splitting them across pages would ask an operator to reason about half of it at a time.
+ * @type {string[]}
+ */
+export const ROUTING_FIELDS = [
+  'motisBaseUrl',
+  'travelTimeLimitPerRun',
+  'travelTimeMaxAgeDays',
+  'travelTimeMaxMinutes',
+  'travelTimeStreetLookupsPerRun',
+  'poiEnabled',
+  'overpassBaseUrl',
+  'poiLookupsPerRun',
+  'poiCacheMaxAgeDays',
+];
+
 /** The fields the Execution page owns. @type {string[]} */
 export const EXECUTION_FIELDS = [
   'interval',
@@ -100,6 +120,17 @@ function toForm(settings) {
     ),
     connectivityLimitPerRun: settings?.connectivityLimitPerRun ?? 200,
     connectivityMaxAgeDays: settings?.connectivityMaxAgeDays ?? 180,
+    // The fallbacks mirror what migrations 31 and 40 seed. They only show for an instance whose
+    // settings row is missing, and a blank number box would be worse than a wrong-but-editable one.
+    motisBaseUrl: settings?.motisBaseUrl ?? '',
+    travelTimeLimitPerRun: settings?.travelTimeLimitPerRun ?? 500,
+    travelTimeMaxAgeDays: settings?.travelTimeMaxAgeDays ?? 30,
+    travelTimeMaxMinutes: settings?.travelTimeMaxMinutes ?? 90,
+    travelTimeStreetLookupsPerRun: settings?.travelTimeStreetLookupsPerRun ?? 15,
+    poiEnabled: settings?.poiEnabled !== false,
+    overpassBaseUrl: settings?.overpassBaseUrl ?? '',
+    poiLookupsPerRun: settings?.poiLookupsPerRun ?? 40,
+    poiCacheMaxAgeDays: settings?.poiCacheMaxAgeDays ?? 30,
   };
 }
 
@@ -182,6 +213,20 @@ export function useAdminSettings(settings) {
       if (fields.includes('connectivityLimitPerRun')) {
         payload.connectivityLimitPerRun = Number(form.connectivityLimitPerRun);
         payload.connectivityMaxAgeDays = Number(form.connectivityMaxAgeDays);
+      }
+      if (fields.includes('travelTimeLimitPerRun')) {
+        for (const name of [
+          'travelTimeLimitPerRun',
+          'travelTimeMaxAgeDays',
+          'travelTimeMaxMinutes',
+          'travelTimeStreetLookupsPerRun',
+          'poiLookupsPerRun',
+          'poiCacheMaxAgeDays',
+        ]) {
+          payload[name] = Number(form[name]);
+        }
+        payload.motisBaseUrl = form.motisBaseUrl?.trim() ?? '';
+        payload.overpassBaseUrl = form.overpassBaseUrl?.trim() ?? '';
       }
       if (fields.includes('priceCheckIntervalDays')) {
         payload.priceCheckIntervalDays = Number(form.priceCheckIntervalDays);
@@ -267,6 +312,35 @@ export function useAdminSettings(settings) {
     [save, form, t],
   );
 
+  const saveRouting = useCallback(
+    () =>
+      save(
+        ROUTING_FIELDS,
+        () => {
+          // Every one of these decides how much traffic Fredy sends at a service run by volunteers,
+          // so a cleared box must not be coerced into a value the operator never chose. The two
+          // that accept zero are the ones where zero means "do not do this at all".
+          const bounds = {
+            travelTimeLimitPerRun: 1,
+            travelTimeMaxAgeDays: 1,
+            travelTimeMaxMinutes: 15,
+            travelTimeStreetLookupsPerRun: 0,
+            poiLookupsPerRun: 0,
+            poiCacheMaxAgeDays: 1,
+          };
+          for (const [name, min] of Object.entries(bounds)) {
+            const value = Number(form[name]);
+            if (!Number.isInteger(value) || value < min) {
+              return t('settings.toastRoutingInvalid');
+            }
+          }
+          return null;
+        },
+        false,
+      ),
+    [save, form, t],
+  );
+
   const saveExecution = useCallback(
     () =>
       save(
@@ -306,11 +380,14 @@ export function useAdminSettings(settings) {
     systemDirty: differs(form, baseline, SYSTEM_FIELDS),
     executionDirty: differs(form, baseline, EXECUTION_FIELDS),
     connectivityDirty: differs(form, baseline, CONNECTIVITY_FIELDS),
+    routingDirty: differs(form, baseline, ROUTING_FIELDS),
     savingSystem: saving === SYSTEM_FIELDS,
     savingExecution: saving === EXECUTION_FIELDS,
     savingConnectivity: saving === CONNECTIVITY_FIELDS,
+    savingRouting: saving === ROUTING_FIELDS,
     saveSystem,
     saveExecution,
     saveConnectivity,
+    saveRouting,
   };
 }

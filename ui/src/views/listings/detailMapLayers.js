@@ -134,6 +134,27 @@ function routeFor(listing, home, travelTime, routeMode) {
 }
 
 /**
+ * The places a listing's place types actually resolved to, in the shape an address has.
+ *
+ * A named address carries its own coordinates and is the same point for every listing. A place type
+ * has none: "a supermarket" is a question, and the supermarket it turns out to be is a property of
+ * this listing rather than of the setting. So the point to draw comes from the listing's own travel
+ * times, which is where the sweep recorded it.
+ *
+ * @param {Array<Object>|null|undefined} travelTimes
+ * @returns {Array<{label: string, address: string, coords: {lat: number, lng: number}}>}
+ */
+export function placeTargets(travelTimes) {
+  return (Array.isArray(travelTimes) ? travelTimes : [])
+    .filter((entry) => entry?.place != null && Number.isFinite(entry.place.lat))
+    .map((entry) => ({
+      label: entry.label,
+      address: entry.place.name || '',
+      coords: { lat: entry.place.lat, lng: entry.place.lng },
+    }));
+}
+
+/**
  * The route from a listing to each of the user's reference addresses, with the distance written
  * along it.
  *

@@ -177,6 +177,16 @@
     min-width: 3.5rem;
   }
 
+  /* Which place a place type resolved to. Quiet, and after the label rather than instead of it:
+     the label is what the user named this row, the place is what Fredy found for it. */
+  &__place {
+    color: var(--semi-color-text-2);
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   &__modes {
     display: flex;
     flex-wrap: wrap;

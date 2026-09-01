@@ -48,7 +48,7 @@ import no_image from '../../assets/no_image.png';
 import * as timeService from '../../services/time/timeService.js';
 import { formatEuroPrice } from '../../services/price/priceService.js';
 import { getBoundsFromCoords } from './mapUtils.js';
-import { applyRouteLayers, buildRouteData } from './detailMapLayers.js';
+import { applyRouteLayers, buildRouteData, placeTargets } from './detailMapLayers.js';
 import { TRAVEL_MODES } from '../../components/transit/travelTimeFormat.js';
 import { getAddresses } from '../../utils.js';
 import { xhrPost, xhrGet, xhrDelete, errorMessage } from '../../services/xhr.js';
@@ -96,7 +96,7 @@ export default function ListingDetail() {
   const listing = useSelector((state) => state.listingsData.currentListing);
   const userSettings = useSelector((state) => state.userSettings.settings);
   const connectivityEnabled = useSelector((state) => state.generalSettings.settings?.connectivityEnabled === true);
-  const homeAddresses = useMemo(() => getAddresses(userSettings), [userSettings]);
+  const savedAddresses = useMemo(() => getAddresses(userSettings), [userSettings]);
   const listingDeletionPref = userSettings?.listing_deletion_preference;
   const defaultDeleteType = listingDeletionPref?.hardDelete ? 'hard' : 'soft';
   // The listing does name a provider, but the pin can be dragged anywhere the user's own searches
@@ -124,6 +124,10 @@ export default function ListingDetail() {
   // Which route the map draws. Straight line to begin with, because that is the one that needs
   // nothing fetched and so is never missing.
   const [routeMode, setRouteMode] = useState('straight');
+  // Everything the map draws a pin and a line for. A saved address is a fixed point and the same one
+  // for every listing; a place type has no point of its own, so the supermarket it actually resolved
+  // to comes from this listing's own travel times, which is where the sweep recorded it.
+  const homeAddresses = useMemo(() => [...savedAddresses, ...placeTargets(routeTimes)], [savedAddresses, routeTimes]);
 
   useEffect(() => {
     setRouteTimes(listing?.travelTimes ?? []);

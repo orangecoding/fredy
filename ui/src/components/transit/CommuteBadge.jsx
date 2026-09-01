@@ -13,7 +13,7 @@ import {
   hasAnyTime,
   primaryMode,
 } from './travelTimeFormat.js';
-import { getAddresses } from '../../utils.js';
+import { measuredPlaces } from '../../utils.js';
 import { useSelector } from '../../services/state/store';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
 import './transit.less';
@@ -47,7 +47,7 @@ export default function CommuteBadge({ travelTimes, jobId }) {
 
   const budgeted = useMemo(() => {
     const job = (jobs ?? []).find((candidate) => candidate?.id === jobId);
-    return addressesWithBudget(getAddresses(userSettings), job?.commuteFilter);
+    return addressesWithBudget(measuredPlaces(userSettings), job?.commuteFilter);
   }, [jobs, jobId, userSettings]);
 
   const usable = Array.isArray(travelTimes) ? travelTimes.filter(hasAnyTime) : [];

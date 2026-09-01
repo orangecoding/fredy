@@ -1,0 +1,94 @@
+@import '../../../tokens.less';
+
+/* The places every listing is measured against.
+ *
+ * One list holding two kinds of row - a named address and a kind of place - which share an anatomy
+ * on purpose: icon, name, where, how. Only the "where" line differs between them, so the layout is
+ * one grid rather than two, and a reader learns it once.
+ *
+ * This file exists mostly to take the inline styles out of the page. They were tolerable while
+ * there was one kind of row; duplicating them into a second kind is how two rows that are supposed
+ * to look identical start drifting apart. */
+
+.travelTimePage__row {
+  display: grid;
+  /* Icon, then everything, then the delete. The icon column is fixed so every row's content starts
+     on the same line whatever the icon is. */
+  grid-template-columns: 1.5rem 1fr auto;
+  gap: @space-3;
+  align-items: start;
+  padding: @space-3 0;
+
+  /* A hairline between rows rather than around them. Each entry is one line of a list, not a card,
+     and boxing them would suggest they are independent of one another when they are read together. */
+  & + .travelTimePage__row {
+    border-top: 1px solid @color-border;
+  }
+}
+
+.travelTimePage__icon {
+  /* Nudged onto the first control's optical centre rather than its box top. */
+  line-height: 32px;
+  font-size: 1.05rem;
+  text-align: center;
+  user-select: none;
+}
+
+.travelTimePage__body {
+  display: flex;
+  flex-direction: column;
+  gap: @space-2;
+  min-width: 0;
+}
+
+/* The name is a short label, not a sentence, and a full-width box invites an essay. */
+.travelTimePage__body > .semi-input-wrapper:first-child {
+  max-width: 220px;
+}
+
+.travelTimePage__controls {
+  display: flex;
+  gap: @space-2;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.travelTimePage__optionIcon {
+  margin-right: @space-2;
+}
+
+/* What this row will actually measure, said in words.
+ *
+ * The one element on the page carrying any weight, and deliberately the only one. A category picker
+ * next to a mode picker does not say "a supermarket nearby, on foot" by itself, and that sentence
+ * is the whole reason a place-type row is comprehensible without help text. The rule on the left
+ * marks it as derived from the controls above rather than as another field. */
+.travelTimePage__summary {
+  border-left: 2px solid rgb(@color-accent-rgb / 45%);
+  padding-left: @space-3;
+  color: @color-text;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.travelTimePage__add {
+  display: flex;
+  gap: @space-2;
+  flex-wrap: wrap;
+  margin-top: @space-3;
+}
+
+/* How far the sweeper has got. Sits above the list because it answers the question somebody arrives
+   with after saving - whether anything is happening - rather than commenting on any one row. */
+.travelTimePage__progress {
+  display: flex;
+  flex-direction: column;
+  gap: @space-1;
+  margin-bottom: @space-4;
+}
+
+.travelTimePage__progressText {
+  color: @color-muted;
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+}

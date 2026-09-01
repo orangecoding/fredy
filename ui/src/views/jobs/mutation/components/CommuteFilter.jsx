@@ -16,6 +16,7 @@ import {
   savedAddresses,
   toCommuteLimit,
 } from '../../../../services/jobs/commuteFilter.js';
+import { placeCategoryIcon, isPlaceType } from '../../../../services/travelTime/placeCategories.js';
 import './commuteFilter.less';
 
 /**
@@ -125,8 +126,17 @@ export default function CommuteFilter({ value, onChange }) {
       {addresses.map((address) => (
         <div key={address.label} className="commuteFilter__row">
           <div className="commuteFilter__place">
-            <span className="commuteFilter__label">{address.label}</span>
+            <span className="commuteFilter__label">
+              {/* A limit on "Groceries" behaves differently from one on "Work": it is measured to
+                  whichever supermarket is nearest to each listing rather than to one fixed place.
+                  Saying so here, where the number is being decided, rather than only in settings. */}
+              <span aria-hidden="true" className="commuteFilter__icon">
+                {placeCategoryIcon(isPlaceType(address) ? address.category : null)}
+              </span>
+              {address.label}
+            </span>
             <span className="commuteFilter__mode">
+              {isPlaceType(address) ? `${t(`travelTime.placeCategory.${address.category}`)} · ` : ''}
               {t(`travelTime.mode.${address.mode ?? 'transit'}`)}
               {(address.mode ?? 'transit') === 'transit' ? ` · ${address.departure?.time ?? '08:00'}` : ''}
             </span>

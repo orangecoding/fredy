@@ -230,3 +230,35 @@ describe('detailMapLayers', () => {
     });
   });
 });
+
+describe('placeTargets', () => {
+  it('gives a place type the coordinates it does not have in the address list', async () => {
+    const { placeTargets } = await import('../../ui/src/views/listings/detailMapLayers.js');
+
+    const targets = placeTargets([
+      { label: 'Work', walk: { minutes: 9 } },
+      { label: 'Groceries', walk: { minutes: 6 }, place: { name: 'REWE', lat: 52.51, lng: 13.4 } },
+    ]);
+
+    // A named address is already on the map; a place type is only ever on it per listing, because
+    // the supermarket it resolved to is a property of this listing rather than of the setting.
+    expect(targets).toEqual([{ label: 'Groceries', address: 'REWE', coords: { lat: 52.51, lng: 13.4 } }]);
+  });
+
+  it('leaves out a place type nothing was found for', async () => {
+    const { placeTargets } = await import('../../ui/src/views/listings/detailMapLayers.js');
+
+    expect(placeTargets([{ label: 'Groceries', place: null }])).toEqual([]);
+    expect(placeTargets(undefined)).toEqual([]);
+  });
+
+  it('draws a line to the place it found', async () => {
+    const { buildRouteData, placeTargets } = await import('../../ui/src/views/listings/detailMapLayers.js');
+    const times = [{ label: 'Groceries', walk: { minutes: 6 }, place: { name: 'REWE', lat: 52.51, lng: 13.4 } }];
+
+    const features = buildRouteData(LISTING, placeTargets(times), times, 'straight').features;
+
+    expect(features.length).toBeGreaterThan(0);
+    expect(features.some((feature) => String(feature.properties?.distance ?? '').includes('Groceries'))).toBe(true);
+  });
+});
