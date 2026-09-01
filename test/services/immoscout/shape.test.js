@@ -50,9 +50,42 @@ describe('#immoscout shape parameter', () => {
     expect(toPolyline(shape)).toBe(shape);
   });
 
-  // The two alphabets overlap on letters alone, so the characters that appear in only one of them
-  // are what decides. A polyline containing any of `?@[\]^_{|}~` can never be read as base64.
+  // The two alphabets overlap on letters and on `_`, so the characters that appear in only one of
+  // them are what decides. A polyline containing any of `?@[\]^{|}~` can never be read as base64.
   it.each(['?@[\\]^_{|}~', 'ior~H_kxmAr`Pig`@fzH', 'a@b?c~d'])('should treat %s as a polyline', (shape) => {
     expect(toPolyline(shape)).toBe(shape);
+  });
+
+  // ImmoScout writes the payload URL-safe, mapping `+` to `_`. Reading that `_` as base64url's `/`
+  // instead lands one past the end of the polyline alphabet and the mobile API answers 500, which
+  // is what this shape - a drawn area in Hamburg Altona - used to do. The expectation is the
+  // polyline ImmoScout's own search page resolves it to, taken from its `lastSearchApiUrl`.
+  it('should decode a shape using ImmoScout url-safe alphabet', () => {
+    const shape =
+      'X3p7ZUl5aWF7QGp9QXtoRmtFeX5OcWZAfWJDdWpCfXtNZV9Cblxfd0BsaUN0S3R_SH5tQWpqSGNSdG1DeUJicURmQGVQdFRmc0RsfUBgakE.';
+
+    expect(toPolyline(shape)).toBe('_z{eIyia{@j}A{hFkEy~Nqf@}bCujB}{Me_Bn\\_w@liCtKt~H~mAjjHcRtmCyBbqDf@ePtTfsDl}@`jA');
+  });
+
+  // The `-` counterpart never turned up in a sample, so base64url is tried behind ImmoScout's own
+  // mapping rather than instead of it. Either way the decode has to be a polyline to be kept.
+  it('should decode a base64url shape', () => {
+    const polyline = 'ymrwHidih@`IkS_Aal@oTsVoViClw@g?~';
+    const encoded = Buffer.from(polyline, 'utf-8').toString('base64url');
+    expect(encoded).toContain('-');
+
+    expect(toPolyline(encoded)).toBe(polyline);
+  });
+
+  // Every byte a polyline can carry is a 5 bit chunk plus a continuation bit plus 63, so anything
+  // outside `?`..`~` means the wrong alphabet was read and the decode must not be handed on.
+  it.each([
+    'X3p7ZUl5aWF7QGp9QXtoRmtFeX5OcWZAfWJDdWpCfXtNZV9Cblxfd0BsaUN0S3R_SH5tQWpqSGNSdG1DeUJicURmQGVQdFRmc0RsfUBgakE.',
+    'aW9yfkhfa3htQXJgUGlnYEBmekhte3BAcXNAfWBsQGNyQ2lkUHVvbEB3eX5Ab25WYn5Fa2BLaGRQY29FaGtTfEhme3xBdHBEdHFMamlHbmdRfHhMcmxPeHlWYnpS',
+  ])('should never return a byte outside the polyline alphabet for %s', (shape) => {
+    for (const character of toPolyline(shape)) {
+      expect(character.charCodeAt(0)).toBeGreaterThanOrEqual(0x3f);
+      expect(character.charCodeAt(0)).toBeLessThanOrEqual(0x7e);
+    }
   });
 });
