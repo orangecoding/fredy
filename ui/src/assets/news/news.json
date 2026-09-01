@@ -2,6 +2,20 @@
   "schemaVersion": 1,
   "releases": [
     {
+      "version": "27.3.0",
+      "date": "2026-09-01",
+      "entries": [
+        {
+          "title": "Travel time to a kind of place, not just an address",
+          "text": "Travel time could answer \"how long to <b>my</b> office\". It could not answer \"how long to <b>a</b> supermarket\". <br/><br/>Now it can. In Settings, Travel time, add a place type: pick a category (supermarket, bakery, pharmacy, doctor, nursery, school, gym, park, restaurant, post office), say how you get there, and every listing is measured to the nearest one Fredy can find. The places come from OpenStreetMap. <br/><br/>From there it behaves like any saved address. The time shows on cards, in the table, on the map, in notifications and on the listing page, which also names the place it found. A job can put a limit on it in the same <b>Travel time limit</b> section as everything else. <br/><br/>Your existing addresses are untouched."
+        },
+        {
+          "title": "The routing dials moved into the interface",
+          "text": "How hard Fredy leans on Transitous and Overpass used to live in the database only. There is now an <b>Admin, Travel time</b> page for it: both endpoints, how many listings a sweep works through, how long answers are kept, and a switch for place lookups. <br/><br/>Saving an address now also says what it queued, and the Travel time page shows how far the sweep has got. Measuring is deliberately a trickle, so a few hundred listings take a few hours, and now you can watch it rather than wonder."
+        }
+      ]
+    },
+    {
       "version": "26.7.0",
       "date": "2026-08-22",
       "entries": [
