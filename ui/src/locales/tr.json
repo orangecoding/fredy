@@ -1078,6 +1078,8 @@
   "travelTime.placeCategory.park": "Park",
   "travelTime.placeCategory.restaurant": "Restoran",
   "travelTime.placeCategory.postOffice": "Postane",
+  "travelTime.placeCategory.busStop": "Otobüs durağı",
+  "travelTime.placeCategory.trainStation": "Tren istasyonu",
   "travelTime.byMode.transit": "toplu taşımayla",
   "travelTime.byMode.car": "arabayla",
   "travelTime.byMode.bike": "bisikletle",

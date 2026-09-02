@@ -16,6 +16,7 @@ import {
   FILTERABLE_TECHNOLOGIES,
   FILTERABLE_OPERATORS,
 } from '../../ui/src/components/connectivity/connectivityFormat.js';
+import { PLACE_CATEGORIES } from '../../ui/src/services/travelTime/placeCategories.js';
 
 const localeDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '../../ui/src/locales');
 const donateComponent = fs.readFileSync(path.join(localeDir, '../components/donate/Donate.jsx'), 'utf-8');
@@ -104,6 +105,10 @@ const COMPUTED_KEYS = [
   ...FILTERABLE_OPERATORS.map((code) => `connectivity.operator.${code}`),
   ...CONNECTIVITY_SOURCES.map((id) => `settings.connectivitySource.${id}`),
   ...CONNECTIVITY_SOURCES.map((id) => `settings.connectivitySourceHelp.${id}`),
+  // The place types a travel time can be measured to. Built from the list rather than written out,
+  // so adding a category is what adds the assertion - an unnamed one would otherwise reach the
+  // dropdown in the travel time settings as the raw key next to its icon.
+  ...PLACE_CATEGORIES.map((category) => `travelTime.placeCategory.${category.id}`),
 ];
 
 /**

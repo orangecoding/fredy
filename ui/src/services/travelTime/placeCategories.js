@@ -28,6 +28,8 @@ export const PLACE_CATEGORIES = Object.freeze([
   { id: 'park', icon: '🌳' },
   { id: 'restaurant', icon: '🍽️' },
   { id: 'postOffice', icon: '📮' },
+  { id: 'busStop', icon: '🚏' },
+  { id: 'trainStation', icon: '🚉' },
 ]);
 
 /**

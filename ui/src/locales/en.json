@@ -1093,6 +1093,8 @@
   "travelTime.placeCategory.park": "Park",
   "travelTime.placeCategory.restaurant": "Restaurant",
   "travelTime.placeCategory.postOffice": "Post office",
+  "travelTime.placeCategory.busStop": "Bus stop",
+  "travelTime.placeCategory.trainStation": "Train station",
   "travelTime.byMode.transit": "by public transport",
   "travelTime.byMode.car": "by car",
   "travelTime.byMode.bike": "by bike",
