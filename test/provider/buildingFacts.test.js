@@ -92,12 +92,21 @@ describe('engelVoelkers', () => {
 
 describe('kleinanzeigen', () => {
   it('reads the Baujahr off the attribute list when the ad states one', async () => {
+    puppeteerExtractor.mockResolvedValue(await readFixture('kleinanzeigen_detail.html'));
+
+    const enriched = await kleinanzeigenConfig.fetchDetails(
+      { id: 'a', link: '/s-anzeige/schoene-wohnung/1234-203-2462' },
+      null,
+    );
+
+    expect(enriched.buildYear).toBe(1968);
+  });
+
+  it('reports no Baujahr for an ad whose attribute list leaves it out', async () => {
+    // Half of Kleinanzeigen's private ads never fill the field in, and reading a year out of the
+    // next attribute along would be worse than saying nothing.
     puppeteerExtractor.mockResolvedValue(
-      (await readFixture('kleinanzeigen_detail.html')).replace(
-        '<ul class="addetailslist--split">',
-        '<ul class="addetailslist--split"><li class="addetailslist--detail">Baujahr' +
-          '<span class="addetailslist--detail--value">1998</span></li>',
-      ),
+      (await readFixture('kleinanzeigen_detail.html')).replaceAll('Baujahr', 'Bauart'),
     );
 
     const enriched = await kleinanzeigenConfig.fetchDetails(
@@ -105,7 +114,7 @@ describe('kleinanzeigen', () => {
       null,
     );
 
-    expect(enriched.buildYear).toBe(1998);
+    expect(enriched.buildYear).toBeNull();
   });
 
   it('falls back to the ad text for the class the attribute list never carries', async () => {
@@ -116,9 +125,9 @@ describe('kleinanzeigen', () => {
       null,
     );
 
-    // This ad states no Baujahr anywhere, but spells the class out in its energy block.
-    expect(enriched.buildYear).toBeNull();
-    expect(enriched.energyClass).toBe('C');
+    // No Kleinanzeigen ad states the energy class as an attribute; sellers who give one write it
+    // into the ad text, which is the only place this can come from.
+    expect(enriched.energyClass).toBe('E');
   });
 });
 

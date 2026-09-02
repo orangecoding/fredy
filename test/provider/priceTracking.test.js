@@ -32,7 +32,7 @@ const EXPECTED_DETAIL_PRICE = {
   imaxx: 526000,
   immobilienDe: 1070,
   immowelt: 1250,
-  kleinanzeigen: 1600,
+  kleinanzeigen: 195000,
   schwarzesbrett: 560,
   sparkasse: 410000,
   wgGesucht: 590,
