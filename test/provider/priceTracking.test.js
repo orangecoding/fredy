@@ -30,7 +30,7 @@ const EXPECTED_DETAIL_PRICE = {
   deutscheWohnen: 692,
   engelVoelkers: 24900000,
   imaxx: 526000,
-  immobilienDe: 1070,
+  immobilienDe: 395,
   immowelt: 1250,
   kleinanzeigen: 195000,
   schwarzesbrett: 560,
@@ -68,6 +68,11 @@ const CUSTOM_LIST_PRICES = {
   immowelt: () => {
     const classifieds = JSON.parse(fs.readFileSync(path.join(FIXTURES, 'immowelt_classifieds.json'), 'utf8'));
     return classifieds.map((entry) => providerModule('immowelt').config.normalize(entry)?.price).filter(Boolean);
+  },
+  immobilienDe: () => {
+    const provider = providerModule('immobilienDe');
+    const listings = provider.parseListings(fs.readFileSync(path.join(FIXTURES, 'immobilienDe.html'), 'utf8')) ?? [];
+    return listings.map((entry) => provider.config.normalize(entry)?.price).filter((price) => price != null);
   },
 };
 

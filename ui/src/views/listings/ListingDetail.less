@@ -261,6 +261,30 @@
     padding: 0 1.5rem 1.5rem;
   }
 
+  // Matches the reference note under the travel times, which is the same kind of line.
+  &__lagecheck-attribution {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.68rem;
+  }
+
+  /* Nothing in the app styles a bare anchor, so both of these were browser defaults: blue and
+     underlined, then purple once visited, which is how the two links ended up looking like
+     different kinds of thing. Same treatment as the address link above - the accent, no rule under
+     it, and the underline kept for the hover where it means something. */
+  &__lagecheck-link {
+    color: @color-accent;
+    text-decoration: none;
+    transition: color @transition-fast;
+    &:visited {
+      color: @color-accent;
+    }
+    &:hover {
+      color: @color-text;
+      text-decoration: underline;
+    }
+  }
+
   .info-tag {
     font-size: 0.9rem;
     padding: 0.2rem 0.6rem;

@@ -20,7 +20,7 @@
         ]
       },
       {
-        "matcher": "Bash|mcp__graft__",
+        "matcher": "Bash|mcp__graft__|Read|Grep|Glob",
         "hooks": [
           {
             "type": "command",

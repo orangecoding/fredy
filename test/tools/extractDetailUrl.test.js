@@ -21,15 +21,15 @@ const testProviderConfig = JSON.parse(readFileSync(TEST_PROVIDER_PATH, 'utf-8'))
 /**
  * Providers whose list page fixture is html based and whose detail page fixture is derived from it.
  * These are exactly the selector shapes that used to break the fixture downloader:
- *  - immobilienDe: attribute on the crawl container itself (`@href`)
  *  - kleinanzeigen: attribute containing a dash (`.aditem@data-href`)
  *  - wgGesucht: selector that only resolves correctly when scoped to the crawl container (`a@href`)
  *
- * Immowelt used to be here as a third selector shape. It reads its listings from immowelt's search
- * BFF now, so it has no crawl container to extract anything from and its fixtures are downloaded
- * by a dedicated path in `downloadFixtures.js`.
+ * Immowelt and immobilien.de used to be here too. Neither reads its listings out of the markup any
+ * more - immowelt asks its search BFF, immobilien.de reads the payload its Next.js pages ship - so
+ * neither has a crawl container to extract anything from, and the downloader reaches their detail
+ * pages through `detailUrlFromGetListings` instead.
  */
-const providersWithDetailPages = ['immobilienDe', 'kleinanzeigen', 'wgGesucht', 'sparkasse'];
+const providersWithDetailPages = ['kleinanzeigen', 'wgGesucht', 'sparkasse'];
 
 describe('extractFirstDetailUrl', () => {
   for (const providerName of providersWithDetailPages) {

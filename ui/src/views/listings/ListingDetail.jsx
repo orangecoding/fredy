@@ -51,6 +51,7 @@ import { getBoundsFromCoords } from './mapUtils.js';
 import { applyRouteLayers, buildRouteData, placeTargets } from './detailMapLayers.js';
 import { TRAVEL_MODES } from '../../components/transit/travelTimeFormat.js';
 import { getAddresses } from '../../utils.js';
+import { lagecheckUrl } from '../../services/listings/lagecheckUrl.js';
 import { xhrPost, xhrGet, xhrDelete, errorMessage } from '../../services/xhr.js';
 import ListingDeletionModal from '../../components/ListingDeletionModal.jsx';
 
@@ -96,6 +97,7 @@ export default function ListingDetail() {
   const listing = useSelector((state) => state.listingsData.currentListing);
   const userSettings = useSelector((state) => state.userSettings.settings);
   const connectivityEnabled = useSelector((state) => state.generalSettings.settings?.connectivityEnabled === true);
+  const pois = useSelector((state) => state.tracking.pois);
   const savedAddresses = useMemo(() => getAddresses(userSettings), [userSettings]);
   const listingDeletionPref = userSettings?.listing_deletion_preference;
   const defaultDeleteType = listingDeletionPref?.hardDelete ? 'hard' : 'soft';
@@ -193,6 +195,9 @@ export default function ListingDetail() {
    * fix itself, and the way out is the pin drop rather than another lookup.
    */
   const geoUnresolved = !hasGeo && listing?.latitude === -1;
+
+  // Null for a listing Fredy could not place, which is what hides the block on the page.
+  const lagecheckHref = lagecheckUrl(listing ?? {});
 
   // Where the map opens. Without coordinates - the case pin dropping exists for - the user's own
   // reference address is the best guess at the right part of the country; failing that, the map's
@@ -772,6 +777,38 @@ export default function ListingDetail() {
                     {t('listing.detail.priceHistory')}
                   </Title>
                   <PriceHistoryChart data={priceHistory} locale={locale} />
+                </>
+              )}
+
+              {lagecheckHref && (
+                <>
+                  <Divider margin="1.5rem" />
+                  <Text strong style={{ display: 'block', marginBottom: '0.5rem' }}>
+                    {t('lagecheck.title')}
+                  </Text>
+                  <Text size="small" type="tertiary" style={{ display: 'block', marginBottom: '0.5rem' }}>
+                    {t('lagecheck.description')}
+                  </Text>
+                  <a
+                    className="listing-detail__lagecheck-link"
+                    href={lagecheckHref}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    onClick={() => actions.tracking.trackPoi(pois.LAGECHECK_OPENED)}
+                  >
+                    {t('lagecheck.link')}
+                  </a>
+                  <Text size="small" type="tertiary" className="listing-detail__lagecheck-attribution">
+                    {t('travelTime.referenceNote')}{' '}
+                    <a
+                      className="listing-detail__lagecheck-link"
+                      href="https://geosci.de/"
+                      target="_blank"
+                      rel="noreferrer noopener"
+                    >
+                      geosci.de
+                    </a>
+                  </Text>
                 </>
               )}
 
