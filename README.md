@@ -40,6 +40,10 @@ On top of the listing itself, Fredy answers two questions:
   network, marks every stop and shows the next departures. See [Travel Time](#travel-time) and
   [Public Transport](#public-transport).
 
+<p align="center">
+  <a href="https://trendshift.io/repositories/43464?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-43464" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/43464/daily?language=JavaScript" alt="orangecoding%2Ffredy | Trendshift" width="250" height="55"/></a>
+</p>
+
 ------------------------------------------------------------------------
 
 ## 📖 Contents
