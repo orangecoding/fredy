@@ -1,0 +1,47 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../tokens.less';
+
+.pricePerSqmBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: @space-1;
+  font-size: @text-xs;
+  line-height: 1.5;
+  white-space: nowrap;
+  vertical-align: middle;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+
+  &__value {
+    color: @color-muted;
+  }
+
+  &__deviation {
+    padding: 1px @space-2;
+    border-radius: @radius-chip;
+
+    // Semi's own tokens rather than fixed hex values, so the badge follows the theme in both
+    // directions. Below the local median is the direction a searcher is hoping for, so it reads as
+    // the good one; above it reads as the expensive one.
+    &--below {
+      color: var(--semi-color-success);
+      background: var(--semi-color-success-light-default);
+    }
+
+    &--above {
+      color: var(--semi-color-danger);
+      background: var(--semi-color-danger-light-default);
+    }
+
+    // No colour for an ordinary asking price. Painting every second listing neutral-grey would make
+    // the two that are not ordinary harder to spot, which is the only thing the badge is for.
+    &--inline {
+      color: @color-muted;
+      background: @color-elevated;
+    }
+  }
+}

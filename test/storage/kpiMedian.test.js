@@ -18,14 +18,24 @@ describe('getListingsKpisForJobIds', () => {
   beforeEach(async () => {
     db = new Database(':memory:');
     db.exec(`
+      CREATE TABLE jobs (
+        id TEXT PRIMARY KEY,
+        deal_type TEXT
+      );
       CREATE TABLE listings (
         id TEXT PRIMARY KEY,
         job_id TEXT,
         price REAL,
         is_active INTEGER,
-        manually_deleted INTEGER DEFAULT 0
+        manually_deleted INTEGER DEFAULT 0,
+        price_per_sqm REAL
       );
     `);
+    // The median per square metre is taken per deal type, so it joins the jobs table. These rows
+    // exist for that join; the prices below never state a size, so the figure stays null and the
+    // assertions here stay about the median price alone.
+    db.prepare(`INSERT INTO jobs (id, deal_type) VALUES ('job-1', 'rent')`).run();
+    db.prepare(`INSERT INTO jobs (id, deal_type) VALUES ('job-2', 'rent')`).run();
 
     vi.resetModules();
     vi.doMock('../../lib/services/storage/SqliteConnection.js', () => ({
@@ -62,10 +72,11 @@ describe('getListingsKpisForJobIds', () => {
   }
 
   it('returns zeros without job ids', () => {
-    expect(kpis([])).toEqual({ numberOfActiveListings: 0, medianPriceOfListings: 0 });
+    expect(kpis([])).toEqual({ numberOfActiveListings: 0, medianPriceOfListings: 0, medianPricePerSqm: null });
     expect(listingsStorage.getListingsKpisForJobIds()).toEqual({
       numberOfActiveListings: 0,
       medianPriceOfListings: 0,
+      medianPricePerSqm: null,
     });
   });
 
@@ -110,7 +121,7 @@ describe('getListingsKpisForJobIds', () => {
   it('excludes hidden listings from both numbers', () => {
     add(1000);
     add(50_000, { deleted: 1 });
-    expect(kpis()).toEqual({ numberOfActiveListings: 1, medianPriceOfListings: 1000 });
+    expect(kpis()).toEqual({ numberOfActiveListings: 1, medianPriceOfListings: 1000, medianPricePerSqm: null });
   });
 
   it('spans several jobs', () => {
@@ -123,12 +134,13 @@ describe('getListingsKpisForJobIds', () => {
     expect(kpis(['job-1', 'job-2'])).toEqual({
       numberOfActiveListings: 5,
       medianPriceOfListings: referenceMedian(prices),
+      medianPricePerSqm: null,
     });
   });
 
   it('reports a zero median when no listing has a price', () => {
     add(null);
-    expect(kpis()).toEqual({ numberOfActiveListings: 1, medianPriceOfListings: 0 });
+    expect(kpis()).toEqual({ numberOfActiveListings: 1, medianPriceOfListings: 0, medianPricePerSqm: null });
   });
 
   it('agrees with the reference implementation over a larger random set', () => {

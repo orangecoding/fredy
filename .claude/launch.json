@@ -2,6 +2,12 @@
   "version": "0.0.1",
   "configurations": [
     {
+      "name": "fredy-backend",
+      "runtimeExecutable": "yarn",
+      "runtimeArgs": ["run", "start:backend:dev"],
+      "port": 9998
+    },
+    {
       "name": "fredy-frontend",
       "runtimeExecutable": "yarn",
       "runtimeArgs": ["run", "start:frontend:dev"],

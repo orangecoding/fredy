@@ -105,6 +105,11 @@ const COMPUTED_KEYS = [
   ...FILTERABLE_OPERATORS.map((code) => `connectivity.operator.${code}`),
   ...CONNECTIVITY_SOURCES.map((id) => `settings.connectivitySource.${id}`),
   ...CONNECTIVITY_SOURCES.map((id) => `settings.connectivitySourceHelp.${id}`),
+  // The price per square metre verdicts, built from what the deviation works out to, and the two
+  // dashboard descriptions, built from the deal type the median was taken over. A missing one
+  // paints the raw key into the badge on every listing card.
+  ...['below', 'inline', 'above'].map((verdict) => `listings.pricePerSqmVerdict.${verdict}`),
+  ...['rent', 'buy'].map((dealType) => `dashboard.kpiMedianSqmDesc.${dealType}`),
   // The place types a travel time can be measured to. Built from the list rather than written out,
   // so adding a category is what adds the assertion - an unnamed one would otherwise reach the
   // dropdown in the travel time settings as the raw key next to its icon.

@@ -43,6 +43,7 @@ describe('storeListings id propagation', () => {
         distances TEXT,
         notes TEXT,
         status TEXT,
+        price_per_sqm REAL,
         UNIQUE (job_id, hash)
       );
     `);

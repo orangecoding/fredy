@@ -105,6 +105,11 @@
     display: flex;
     align-items: center;
     gap: 4px;
+    // A card can carry the price, an affordability verdict, a price move and a price per square
+    // metre at once, and a narrow column has no room for all four on one line. Without this the
+    // row overflows its card instead of breaking.
+    flex-wrap: wrap;
+    row-gap: 2px;
   }
 
   &__meta {
