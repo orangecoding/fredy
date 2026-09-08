@@ -21,6 +21,7 @@ import StatusControl from '../../listings/StatusControl.jsx';
 import ExternalListingLink from '../../listings/ExternalListingLink.jsx';
 import AffordabilityChip from '../../listings/AffordabilityChip.jsx';
 import PriceChangeBadge from '../../listings/PriceChangeBadge.jsx';
+import PricePerSqmBadge from '../../listings/PricePerSqmBadge.jsx';
 import CommuteBadge from '../../transit/CommuteBadge.jsx';
 
 import './ListingsGrid.less';
@@ -100,6 +101,9 @@ const ListingsGrid = ({
                   previousPrice={item.previous_price}
                   changedAt={item.price_changed_at}
                 />
+                {/* Next to the price rather than on a line of its own: it is the same figure said
+                    a second way, and reading the two together is the whole point. */}
+                <PricePerSqmBadge listing={item} />
               </div>
             )}
             {item.address && (

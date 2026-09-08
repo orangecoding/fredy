@@ -58,6 +58,8 @@ import ListingDeletionModal from '../../components/ListingDeletionModal.jsx';
 import Headline from '../../components/headline/Headline.jsx';
 import IconEuro from '../../components/icons/IconEuro.jsx';
 import StatusControl from '../../components/listings/StatusControl.jsx';
+import PricePerSqmBadge, { describeBenchmark } from '../../components/listings/PricePerSqmBadge.jsx';
+import { readMarketBenchmark } from '../../services/listings/marketBenchmark.js';
 import ListingFinanceCard from './components/ListingFinanceCard.jsx';
 import PriceHistoryChart from './components/PriceHistoryChart.jsx';
 import NearbyStops from '../../components/transit/NearbyStops.jsx';
@@ -446,6 +448,10 @@ export default function ListingDetail() {
   };
   const statusLabel = listing.status?.status ? t(statusKeyMap[listing.status.status] ?? listing.status.status) : null;
 
+  // Read once: the row below and the help text behind it are two readings of the same four columns,
+  // and computing them separately is how they end up disagreeing.
+  const marketBenchmark = readMarketBenchmark(listing);
+
   const data = [
     {
       key: t('listing.detail.fieldPrice'),
@@ -462,6 +468,18 @@ export default function ListingDetail() {
       value: listing.size ? `${listing.size} m²` : t('common.na'),
       Icon: <IconExpand />,
       helpText: t('listing.detail.fieldSizeHelp'),
+    },
+    {
+      key: t('listing.detail.fieldPricePerSqm'),
+      value: marketBenchmark ? <PricePerSqmBadge listing={listing} withTooltip={false} /> : t('common.na'),
+      Icon: <IconEuro />,
+      // Two different explanations. With a benchmark the interesting part is the comparison and
+      // where it came from; without one it is why no comparison is shown, which is a question the
+      // page would otherwise leave the reader to guess at.
+      helpText:
+        marketBenchmark && marketBenchmark.verdict != null
+          ? describeBenchmark(marketBenchmark, t, locale)
+          : t('listing.detail.fieldPricePerSqmHelp'),
     },
     {
       key: t('listing.detail.fieldRooms'),

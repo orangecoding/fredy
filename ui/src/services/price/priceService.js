@@ -51,13 +51,18 @@ function euroFormatter(locale, fractionDigits) {
  *
  * @param {number|string} price
  * @param {string} [locale='de-DE'] BCP 47 locale, from `useLocale()` inside components.
+ * @param {number|null} [fractionDigits=null] Forces an exact number of decimals instead of the rule
+ *   above. Asking prices are read one at a time and are better off without a permanent `,00`, but a
+ *   price per square metre is read down a column against its neighbours, and `13 €` beside
+ *   `21,76 €` reads as a different kind of number rather than a rounder one.
  * @returns {string}
  */
-export const formatEuroPrice = (price, locale = DEFAULT_LOCALE) => {
+export const formatEuroPrice = (price, locale = DEFAULT_LOCALE, fractionDigits = null) => {
   const parsedPrice = Number(price);
   if (!Number.isFinite(parsedPrice)) {
     return `${price} €`;
   }
 
-  return euroFormatter(locale || DEFAULT_LOCALE, Number.isInteger(parsedPrice) ? 0 : 2).format(parsedPrice);
+  const digits = fractionDigits ?? (Number.isInteger(parsedPrice) ? 0 : 2);
+  return euroFormatter(locale || DEFAULT_LOCALE, digits).format(parsedPrice);
 };

@@ -20,6 +20,7 @@ import StatusControl from '../listings/StatusControl.jsx';
 import ExternalListingLink from '../listings/ExternalListingLink.jsx';
 import AffordabilityChip from '../listings/AffordabilityChip.jsx';
 import PriceChangeBadge from '../listings/PriceChangeBadge.jsx';
+import PricePerSqmBadge from '../listings/PricePerSqmBadge.jsx';
 import CommuteBadge from '../transit/CommuteBadge.jsx';
 
 import './ListingsTable.less';
@@ -77,6 +78,7 @@ const ListingsTable = ({
                   previousPrice={item.previous_price}
                   changedAt={item.price_changed_at}
                 />
+                <PricePerSqmBadge listing={item} />
               </>
             ) : (
               <span className="listingsTable__row__empty">---</span>

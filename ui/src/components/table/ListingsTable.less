@@ -79,6 +79,10 @@
       white-space: nowrap;
       text-align: right;
       font-variant-numeric: tabular-nums;
+      // The cell can carry four things at once now. It grows downwards rather than pushing the
+      // columns beside it out of the row.
+      flex-wrap: wrap;
+      row-gap: 2px;
     }
 
     &__address {
