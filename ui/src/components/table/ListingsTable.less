@@ -64,8 +64,19 @@
       font-size: @text-sm;
       color: @color-text;
       overflow: hidden;
-      text-overflow: ellipsis;
       white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: @space-2;
+
+      .scamBadge {
+        flex: 0 0 auto;
+      }
+    }
+
+    &__title-text {
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     &__price {

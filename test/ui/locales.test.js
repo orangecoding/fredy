@@ -17,6 +17,7 @@ import {
   FILTERABLE_OPERATORS,
 } from '../../ui/src/components/connectivity/connectivityFormat.js';
 import { PLACE_CATEGORIES } from '../../ui/src/services/travelTime/placeCategories.js';
+import { SCAM_SIGNALS } from '../../ui/src/services/listings/scamSignals.js';
 
 const localeDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '../../ui/src/locales');
 const donateComponent = fs.readFileSync(path.join(localeDir, '../components/donate/Donate.jsx'), 'utf-8');
@@ -110,6 +111,10 @@ const COMPUTED_KEYS = [
   // paints the raw key into the badge on every listing card.
   ...['below', 'inline', 'above'].map((verdict) => `listings.pricePerSqmVerdict.${verdict}`),
   ...['rent', 'buy'].map((dealType) => `dashboard.kpiMedianSqmDesc.${dealType}`),
+  // One explanation per scam signal, built from whatever the server stored on the listing. Adding a
+  // signal to the detector is what adds the assertion here, and a missing entry paints the raw key
+  // into the warning panel where the reason should be.
+  ...SCAM_SIGNALS.map((signal) => `listings.scamSignal.${signal}`),
   // The place types a travel time can be measured to. Built from the list rather than written out,
   // so adding a category is what adds the assertion - an unnamed one would otherwise reach the
   // dropdown in the travel time settings as the raw key next to its icon.

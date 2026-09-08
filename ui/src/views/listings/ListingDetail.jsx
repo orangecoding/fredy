@@ -60,6 +60,7 @@ import IconEuro from '../../components/icons/IconEuro.jsx';
 import StatusControl from '../../components/listings/StatusControl.jsx';
 import PricePerSqmBadge, { describeBenchmark } from '../../components/listings/PricePerSqmBadge.jsx';
 import { readMarketBenchmark } from '../../services/listings/marketBenchmark.js';
+import ScamPanel from './components/ScamPanel.jsx';
 import ListingFinanceCard from './components/ListingFinanceCard.jsx';
 import PriceHistoryChart from './components/PriceHistoryChart.jsx';
 import NearbyStops from '../../components/transit/NearbyStops.jsx';
@@ -772,6 +773,10 @@ export default function ListingDetail() {
               <Title heading={4} style={{ marginBottom: '1rem' }}>
                 {t('listing.detail.detailsTitle')}
               </Title>
+              {/* Before the figures, not after them. Somebody who is about to be defrauded should
+                  meet the warning before they start liking the flat. */}
+              <ScamPanel listing={listing} onChange={() => actions.listingsData.getListing(listingId)} />
+
               <Descriptions column={1}>
                 {data.map((item, index) => (
                   <Descriptions.Item key={index}>

@@ -21,6 +21,7 @@ import ExternalListingLink from '../listings/ExternalListingLink.jsx';
 import AffordabilityChip from '../listings/AffordabilityChip.jsx';
 import PriceChangeBadge from '../listings/PriceChangeBadge.jsx';
 import PricePerSqmBadge from '../listings/PricePerSqmBadge.jsx';
+import ScamBadge from '../listings/ScamBadge.jsx';
 import CommuteBadge from '../transit/CommuteBadge.jsx';
 
 import './ListingsTable.less';
@@ -65,7 +66,8 @@ const ListingsTable = ({
           </div>
 
           <div className="listingsTable__row__title" title={item.title}>
-            {item.title}
+            <ScamBadge listing={item} compact />
+            <span className="listingsTable__row__title-text">{item.title}</span>
           </div>
 
           <div className="listingsTable__row__price">

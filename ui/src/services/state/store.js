@@ -453,6 +453,21 @@ export const useFredyState = create(
               throw Exception;
             }
           },
+          /**
+           * Record what the user decided about a scam warning, or hand the listing back to the
+           * detector by passing `null`.
+           *
+           * @param {string} listingId
+           * @param {('scam'|'safe'|null)} override
+           */
+          async setListingScamOverride(listingId, override) {
+            try {
+              await xhrPost(`/api/listings/${listingId}/scam`, { override });
+            } catch (Exception) {
+              console.error(`Error while trying to set the scam verdict for listing ${listingId}. Error:`, Exception);
+              throw Exception;
+            }
+          },
           async setListingNotes(listingId, notes) {
             try {
               await xhrPost(`/api/listings/${listingId}/notes`, { notes });
