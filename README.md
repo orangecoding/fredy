@@ -247,14 +247,14 @@ where you can also restrict them to working hours.
 
 ### MCP Server 🤖
 
-Starting with **V20**, Fredy ships with a built-in **MCP Server**. This allows you to connect Fredy to LLMs (like Claude, ChatGPT, or local models via LM Studio) and query your real estate data using natural language.
+Starting with **V20**, Fredy ships with a built-in **MCP Server**. This allows you to connect Fredy to LLMs (like Claude, ChatGPT, or local models via LM Studio) and query your real estate data using natural language. It can also write: annotate and watch listings, and create a search job through a guided interview that asks one question at a time.
 The local LLM can even enrich existing listings by checking the listing online.   
 
 For more information on how to set it up and use it, please refer to the [MCP Readme](lib/mcp/README.md).
 
 #### Connect Claude.ai or ChatGPT over OAuth
 
-Set Fredy's `baseUrl` to its public HTTPS URL, then add `<baseUrl>/api/mcp` as a custom MCP server in Claude.ai or ChatGPT. Fredy advertises OAuth discovery metadata, dynamically registers the client, and asks you to sign in and approve read access. OAuth access tokens expire after one hour and refresh automatically; existing MCP tokens continue to work for local clients. Connected apps are listed under **Settings → Connections**, where access can be revoked at any time.
+Set Fredy's `baseUrl` to its public HTTPS URL, then add `<baseUrl>/api/mcp` as a custom MCP server in Claude.ai or ChatGPT. Fredy advertises OAuth discovery metadata, dynamically registers the client, and asks you to sign in and approve either read access or read-and-write access, whichever the client asked for. A connection approved before write access existed stays read-only until you reconnect it. OAuth access tokens expire after one hour and refresh automatically; existing MCP tokens continue to work for local clients. Connected apps are listed under **Settings → Connections**, where access can be revoked at any time.
 
 ------------------------------------------------------------------------
 

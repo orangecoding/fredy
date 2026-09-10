@@ -48,3 +48,47 @@ describe('MCP access token audience', () => {
     await app.close();
   });
 });
+
+/**
+ * The SDK copies `req.auth` into the `authInfo` every tool handler is handed. The scopes have to be
+ * on it: without them a token approved for reading only arrives at the write tools looking exactly
+ * like one approved for everything.
+ */
+describe('the token scopes reach the tool handlers', () => {
+  it('puts them on the raw request alongside the user id', async () => {
+    validateAccessToken.mockReturnValue({ userId: 'u1', scopes: ['mcp:read'] });
+
+    /** @type {any} */
+    let seen = null;
+    const app = Fastify();
+    // The route hijacks the reply and hands `request.raw` straight to the SDK transport, so there
+    // is no later hook to read the assignment back from. Watching the property itself is.
+    app.addHook('onRequest', (request, _reply, done) => {
+      Object.defineProperty(request.raw, 'auth', {
+        configurable: true,
+        get: () => seen,
+        set: (value) => {
+          seen = value;
+        },
+      });
+      done();
+    });
+    registerMcpRoutes(app);
+    await app.ready();
+
+    await app.inject({
+      method: 'POST',
+      url: '/api/mcp',
+      headers: { authorization: 'Bearer abc' },
+      payload: {
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'initialize',
+        params: { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 't', version: '0' } },
+      },
+    });
+
+    expect(seen).toEqual({ userId: 'u1', scopes: ['mcp:read'] });
+    await app.close();
+  });
+});

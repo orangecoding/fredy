@@ -34,13 +34,15 @@ beforeEach(() => vi.clearAllMocks());
  */
 describe('MCP OAuth grants', () => {
   it('lists the calling user’s grants', async () => {
-    listGrants.mockReturnValue([{ clientId: 'c1', clientName: 'Claude', grantedAt: 1 }]);
+    listGrants.mockReturnValue([{ clientId: 'c1', clientName: 'Claude', grantedAt: 1, scopes: ['mcp:read'] }]);
     const app = await buildApp('u1');
 
     const response = await app.inject({ method: 'GET', url: '/api/user/mcp-oauth-grants' });
 
     expect(response.statusCode).toBe(200);
-    expect(response.json()).toEqual([{ clientId: 'c1', clientName: 'Claude', grantedAt: 1 }]);
+    // The scopes travel through untouched: the settings page is the only place a user can see that
+    // a connection made before write access existed is still read-only.
+    expect(response.json()).toEqual([{ clientId: 'c1', clientName: 'Claude', grantedAt: 1, scopes: ['mcp:read'] }]);
     expect(listGrants).toHaveBeenCalledWith('u1');
     await app.close();
   });

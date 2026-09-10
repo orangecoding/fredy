@@ -52,7 +52,7 @@ describe('mcp oauth storage', () => {
   const verifier = 'v'.repeat(43);
   const challenge = crypto.createHash('sha256').update(verifier).digest('base64url');
 
-  const grant = ({ userId = 'u1', clientName = 'Claude' } = {}) => {
+  const grant = ({ userId = 'u1', clientName = 'Claude', scopes = ['mcp:read'] } = {}) => {
     const client = storage.createClient({ clientName, redirectUris: ['https://claude.ai/cb'] });
     const code = storage.createAuthorizationCode({
       clientId: client.clientId,
@@ -60,7 +60,7 @@ describe('mcp oauth storage', () => {
       redirectUri: 'https://claude.ai/cb',
       codeChallenge: challenge,
       resource: RESOURCE,
-      scopes: ['mcp:read'],
+      scopes,
     });
     const tokens = storage.redeemAuthorizationCode({
       code,
@@ -118,13 +118,67 @@ describe('mcp oauth storage', () => {
     storage.refreshAccessToken({ refreshToken: mine.tokens.refreshToken, clientId: mine.client.clientId });
 
     expect(storage.listGrants('u1')).toEqual([
-      { clientId: mine.client.clientId, clientName: 'Claude', grantedAt: NOW },
+      { clientId: mine.client.clientId, clientName: 'Claude', grantedAt: NOW, scopes: ['mcp:read'] },
     ]);
 
     expect(storage.revokeGrant('u1', mine.client.clientId)).toBe(true);
     expect(storage.listGrants('u1')).toEqual([]);
     expect(storage.validateAccessToken(mine.tokens.accessToken, RESOURCE)).toBeNull();
     expect(storage.listGrants('u2')).toHaveLength(1);
+  });
+
+  /**
+   * The settings page shows what each connection may do. A grant approved before the write tools
+   * existed carries only `mcp:read`, and reporting it as anything else would tell somebody their
+   * connection can write when every write tool will refuse it.
+   */
+  it('reports what each grant may actually do', () => {
+    grant({ clientName: 'Claude', scopes: ['mcp:read', 'mcp:write'] });
+    grant({ clientName: 'Old connector', scopes: ['mcp:read'] });
+
+    const byName = Object.fromEntries(storage.listGrants('u1').map((entry) => [entry.clientName, entry.scopes]));
+
+    expect(byName['Claude']).toEqual(['mcp:read', 'mcp:write']);
+    expect(byName['Old connector']).toEqual(['mcp:read']);
+  });
+
+  it('keeps the scopes across a refresh, so a read-only grant does not gain write access by aging', () => {
+    const readOnly = grant({ scopes: ['mcp:read'] });
+
+    const rotated = storage.refreshAccessToken({
+      refreshToken: readOnly.tokens.refreshToken,
+      clientId: readOnly.client.clientId,
+    });
+
+    expect(rotated.scopes).toEqual(['mcp:read']);
+    expect(storage.validateAccessToken(rotated.accessToken, RESOURCE)).toEqual({ userId: 'u1', scopes: ['mcp:read'] });
+    expect(storage.listGrants('u1')[0].scopes).toEqual(['mcp:read']);
+  });
+
+  it('answers with the union when one client holds tokens of differing scope', () => {
+    // What a reconnection looks like mid-flight: the old read-only family is still live while the
+    // new one has write. The client can obtain a token that writes, so the page must say so.
+    const client = storage.createClient({ clientName: 'Claude', redirectUris: ['https://claude.ai/cb'] });
+    for (const scopes of [['mcp:read'], ['mcp:read', 'mcp:write']]) {
+      const code = storage.createAuthorizationCode({
+        clientId: client.clientId,
+        userId: 'u1',
+        redirectUri: 'https://claude.ai/cb',
+        codeChallenge: challenge,
+        resource: RESOURCE,
+        scopes,
+      });
+      storage.redeemAuthorizationCode({
+        code,
+        clientId: client.clientId,
+        redirectUri: 'https://claude.ai/cb',
+        codeVerifier: verifier,
+      });
+    }
+
+    expect(storage.listGrants('u1')).toEqual([
+      { clientId: client.clientId, clientName: 'Claude', grantedAt: NOW, scopes: ['mcp:read', 'mcp:write'] },
+    ]);
   });
 
   it('does not let a user revoke another user’s grant', () => {

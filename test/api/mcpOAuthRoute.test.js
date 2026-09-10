@@ -23,7 +23,7 @@ vi.mock('../../lib/services/storage/userStorage.js', () => ({
   getUser: vi.fn(() => ({ id: 'user-1' })),
 }));
 
-import { createClient, getClient } from '../../lib/mcp/mcpOAuthStorage.js';
+import { createAuthorizationCode, createClient, getClient } from '../../lib/mcp/mcpOAuthStorage.js';
 import { isUnauthorized } from '../../lib/api/security.js';
 import { registerMcpOAuthRoutes } from '../../lib/mcp/mcpOAuthRoute.js';
 
@@ -59,7 +59,7 @@ describe('MCP OAuth discovery', () => {
     expect(response.json()).toEqual({
       resource: 'https://fredy.example/api/mcp',
       authorization_servers: ['https://fredy.example'],
-      scopes_supported: ['mcp:read'],
+      scopes_supported: ['mcp:read', 'mcp:write'],
     });
     await app.close();
   });
@@ -227,6 +227,113 @@ describe('MCP OAuth route encapsulation', () => {
     expect(statuses.slice(0, 10).every((status) => status === 201)).toBe(true);
     expect(statuses[10]).toBe(429);
     expect((await register('203.0.113.8')).statusCode).toBe(201);
+    await app.close();
+  });
+});
+
+/**
+ * Write access is a separate scope, so that a connection approved before the write tools existed
+ * stays read-only until its owner reconnects and sees the consent page say so.
+ */
+describe('MCP OAuth write scope', () => {
+  const query = (scope) => {
+    const params = authorizeQuery();
+    params.set('scope', scope);
+    return params;
+  };
+
+  /**
+   * An app that already has somebody signed in. The consent POST reads `request.session`, which the
+   * bare Fastify instance the other tests build has no plugin to provide.
+   */
+  const signedInApp = async () => {
+    const app = Fastify();
+    app.addHook('onRequest', (request, _reply, done) => {
+      request.session = { currentUser: 'user-1' };
+      done();
+    });
+    await registerMcpOAuthRoutes(app);
+    await app.ready();
+    return app;
+  };
+
+  const allow = (app, scope) =>
+    app.inject({
+      method: 'POST',
+      url: '/api/oauth/authorize',
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      payload: query(scope).toString(),
+    });
+
+  const consentFor = async (scope) => {
+    getClient.mockReturnValue({
+      clientId: 'client-1',
+      name: 'Claude',
+      redirectUris: ['https://claude.ai/oauth/callback'],
+    });
+    vi.mocked(isUnauthorized).mockResolvedValue(false);
+    const app = await buildApp();
+    const response = await app.inject({ method: 'GET', url: `/api/oauth/authorize?${query(scope)}` });
+    await app.close();
+    return response;
+  };
+
+  it('advertises both scopes on the authorization server too', async () => {
+    const app = await buildApp();
+
+    const response = await app.inject({ method: 'GET', url: '/.well-known/oauth-authorization-server' });
+
+    expect(response.json().scopes_supported).toEqual(['mcp:read', 'mcp:write']);
+    await app.close();
+  });
+
+  it('names the write access on the consent page when it is being asked for', async () => {
+    const response = await consentFor('mcp:read mcp:write');
+
+    expect(response.body).toContain('Create search jobs, add notes and manage your watchlist');
+    expect(response.body).toContain('name="scope" value="mcp:read mcp:write"');
+  });
+
+  it('promises nothing but reading when only reading is asked for', async () => {
+    const response = await consentFor('mcp:read');
+
+    expect(response.body).not.toContain('Create search jobs');
+    expect(response.body).toContain('name="scope" value="mcp:read"');
+  });
+
+  it('issues exactly the scopes that were requested', async () => {
+    getClient.mockReturnValue({ clientId: 'client-1', redirectUris: ['https://claude.ai/oauth/callback'] });
+    vi.mocked(isUnauthorized).mockResolvedValue(false);
+    const app = await signedInApp();
+
+    await allow(app, 'mcp:read mcp:write');
+    expect(createAuthorizationCode.mock.calls.at(-1)[0].scopes).toEqual(['mcp:read', 'mcp:write']);
+
+    await allow(app, 'mcp:read');
+    expect(createAuthorizationCode.mock.calls.at(-1)[0].scopes).toEqual(['mcp:read']);
+
+    await app.close();
+  });
+
+  it('grants nothing for a scope it does not know, rather than locking the client out', async () => {
+    getClient.mockReturnValue({ clientId: 'client-1', redirectUris: ['https://claude.ai/oauth/callback'] });
+    vi.mocked(isUnauthorized).mockResolvedValue(false);
+    const app = await signedInApp();
+
+    await allow(app, 'mcp:read offline_access');
+
+    expect(createAuthorizationCode.mock.calls.at(-1)[0].scopes).toEqual(['mcp:read']);
+    await app.close();
+  });
+
+  it('still refuses a request that does not ask to read - the token would be useless', async () => {
+    getClient.mockReturnValue({ clientId: 'client-1', redirectUris: ['https://claude.ai/oauth/callback'] });
+    const app = await buildApp();
+
+    const response = await app.inject({ method: 'GET', url: `/api/oauth/authorize?${query('mcp:write')}` });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.json()).toEqual({ error: 'invalid_request' });
     await app.close();
   });
 });

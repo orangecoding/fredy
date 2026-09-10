@@ -17,12 +17,12 @@ MCP tokens are displayed in the **User Management** list (Admin → Users). Each
 
 ### OAuth for remote clients (Claude.ai, ChatGPT)
 
-Remote connectors cannot be handed a static token, so the HTTP transport also speaks OAuth 2.1 with dynamic client registration (PKCE S256, `mcp:read` scope, tokens bound to `<baseUrl>/api/mcp` per RFC 8707). Requirements and behaviour:
+Remote connectors cannot be handed a static token, so the HTTP transport also speaks OAuth 2.1 with dynamic client registration (PKCE S256, tokens bound to `<baseUrl>/api/mcp` per RFC 8707). Requirements and behaviour:
 
 - `baseUrl` must be set to the public HTTPS URL of your Fredy instance. Tokens are bound to that URL, not to whatever `Host` header a request carries.
 - Add `<baseUrl>/api/mcp` as a remote MCP server in the client; it discovers `/.well-known/oauth-protected-resource/api/mcp`, registers itself at `/api/oauth/register`, and sends you to Fredy to sign in and approve access.
 - Access tokens live for one hour and are refreshed automatically; refresh tokens rotate on every use and a replayed refresh token revokes the whole grant.
-- Every user sees and revokes their connected apps under **Settings → Connections**. Revoking takes effect immediately.
+- Every user sees and revokes their connected apps under **Settings → Connections**, where each one shows whether it was approved for reading or for reading and writing. Revoking takes effect immediately.
 - Expired codes and tokens, and registrations that never completed an authorization, are swept hourly. Unauthenticated registration is rate-limited per address.
 
 Manually issued MCP tokens keep working alongside OAuth.
@@ -37,6 +37,54 @@ Manually issued MCP tokens keep working alongside OAuth.
 | `get_listing` | Get full details of a single listing                                           |
 | `calculate_financing` | Work out whether a property is affordable, using a German mortgage model       |
 | `get_current_date_time` | Gets the current date/time for the llm to be used                              |
+
+### Write tools
+
+These change something. Each is annotated so a client can warn before calling it, and each goes through the same ownership, sharing and channel-permission rules as the web UI.
+
+| Tool | Description | Destructive |
+|------|-------------|-------------|
+| `add_listing_note` | Append a note to a listing, keeping what is already there | no |
+| `set_listing_notes` | Replace a listing's notes outright; an empty string clears them | **yes** |
+| `watch_listing` | Put a listing on the watchlist. Repeating it is not an error | no |
+| `unwatch_listing` | Take it off again. Repeating it is not an error | no |
+| `start_job_draft` | Begin the interview that creates a search job | no |
+| `update_job_draft` | Record one answer and get the next question | no |
+| `create_job_from_draft` | Create the job, once the user has confirmed the summary | no |
+| `discard_job_draft` | Throw the interview away | no |
+
+Only `set_listing_notes` is marked destructive, and the rule is narrow on purpose: destructive means *this can overwrite or delete something the user wrote*. A watch flag and an in-memory draft are neither, and marking them destructive would train people to click straight through the prompt that guards the one that is.
+
+Two note tools rather than one with a `mode` parameter, because the annotations are per tool: a single tool would have to be marked destructive, and Claude.ai would then confirm every harmless append.
+
+Watching uses `ensureWatch` / `deleteWatch`, never a toggle - a client that retries a failed `watch_listing` must not silently unwatch the listing.
+
+### Creating a job by interview
+
+A search job needs four things a model cannot invent - a name, at least one search URL from a supported portal, a deal type, and a notification channel - plus a handful of optional filters. Rather than one `create_job` tool with a large payload, the server holds a draft and computes the next question:
+
+1. **name** - up to 40 characters, the same limit the web form enforces.
+2. **providerUrls** - the portal is worked out from the URL's host, so the user is never asked to name it. A URL that is only the portal's homepage is refused: it saves cleanly, runs on schedule and quietly finds nothing.
+3. **dealType** - renting or buying. The URLs usually give it away, and the draft offers that reading, but the question is still asked.
+4. **channelIds** - one or more of the user's own channels. A user with none is told where to create one; the draft waits.
+5. **refinements** - price, size, rooms, blacklist words, travel-time limits, sharing, and whether the job starts switched on. Asked once, and answerable with "skip".
+6. **ready** - the summary is read back to the user, and only then does `create_job_from_draft` with `confirmed=true` create anything.
+
+Why the server keeps the state: putting the interview inside the model works with Claude and does not work with the local models this server is mostly pointed at. They send one guessed payload, or forget an answer given two turns ago.
+
+Details worth knowing:
+
+- The draft lives in memory, keyed by user, for **30 minutes** after the last answer. A restart loses it, which costs one re-interview. A client that reconnects mid-interview picks up where it left off; `start_job_draft` resumes rather than restarts unless `replace: true` is passed.
+- Every list field is the **complete list**, replacing the previous one. An LLM asked to "add one more" reliably resends the whole list and much less reliably works out a delta.
+- An update that gets one field wrong applies **none** of it and reports every problem at once.
+- Everything is re-validated from scratch at creation time. A channel can be made private, an address renamed or a shared user deleted while the interview is running; the interview is not an authorization.
+- Out of scope, deliberately: **area filters** (a polygon is drawn, not described - the created-job response says where to add one), editing or deleting existing jobs, creating notification channels (their secrets must not travel through an LLM), and triggering a run.
+
+Example prompts:
+
+> "Create a new search for two-bedroom flats to rent in Cologne on ImmoScout, notify me on Telegram."
+
+> "Add a note to listing abc123: viewing on Tuesday at 6, agent said pets are fine."
 
 ### Tool Details
 
@@ -280,6 +328,9 @@ curl -X POST http://localhost:9998/api/mcp \
 - Tokens are deleted automatically when the owning user is removed
 - The `/api/mcp` endpoint uses Bearer token auth (independent of cookie-session)
 - Treat MCP tokens like passwords - do not share them publicly
+- Write tools enforce the same rules as the web UI: a listing must be one the user can already see, a notification channel must be one they are allowed to send through, and a job can only be shared with a non-admin other user
+- Channel credentials are never returned. The interview is handed a channel list stripped of its `fields` before it reaches the adapter, so a bot token cannot reach an LLM transcript even by accident
+- While **demo mode** is on, every write tool refuses non-admin users. The public demo is read-only over MCP
 
 ## Response Format
 

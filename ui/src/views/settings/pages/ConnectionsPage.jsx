@@ -4,7 +4,7 @@
  */
 
 import { useCallback, useEffect, useState } from 'react';
-import { Button, Empty, Popconfirm, Table, Toast } from '@douyinfe/semi-ui-19';
+import { Button, Empty, Popconfirm, Table, Tag, Toast } from '@douyinfe/semi-ui-19';
 import { IconDelete } from '@douyinfe/semi-icons';
 
 import { SegmentPart } from '../../../components/segment/SegmentPart';
@@ -19,6 +19,10 @@ import { format } from '../../../services/time/timeService';
  * Revoking is immediate and final for that client: its refresh tokens and any access token still
  * in flight stop working, and it has to ask for consent again to come back. There is no edit here
  * because there is nothing to edit - a grant is a yes or a no.
+ *
+ * What each one may do is shown rather than assumed. Write access is a separate scope, and a
+ * connection approved before the write tools existed carries only `mcp:read` - it stays read-only
+ * until its owner reconnects it, and this column is the only place that says so.
  *
  * @returns {React.ReactElement}
  */
@@ -59,6 +63,18 @@ export default function ConnectionsPage() {
       title: t('settings.connections.columnClient'),
       dataIndex: 'clientName',
       render: (name) => name || t('settings.connections.unnamedClient'),
+    },
+    {
+      title: t('settings.connections.columnAccess'),
+      dataIndex: 'scopes',
+      render: (scopes) => {
+        const writes = (scopes ?? []).includes('mcp:write');
+        return (
+          <Tag color={writes ? 'amber' : 'grey'}>
+            {t(writes ? 'settings.connections.accessWrite' : 'settings.connections.accessRead')}
+          </Tag>
+        );
+      },
     },
     {
       title: t('settings.connections.columnGrantedAt'),

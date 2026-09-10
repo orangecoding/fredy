@@ -10,9 +10,16 @@ import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 vi.mock('../../lib/services/storage/listingsStorage.js', () => ({
   queryListings: vi.fn(() => ({ totalNumber: 0, page: 1, result: [] })),
   getListingById: vi.fn(),
+  setListingNotes: vi.fn(() => 1),
 }));
+vi.mock('../../lib/services/storage/watchListStorage.js', () => ({
+  ensureWatch: vi.fn(() => ({ watched: true })),
+  deleteWatch: vi.fn(() => ({ deleted: true })),
+}));
+vi.mock('../../lib/services/tracking/Tracker.js', () => ({ trackPoi: vi.fn() }));
 vi.mock('../../lib/mcp/mcpAuthentication.js', () => ({
   authenticateToolCall: vi.fn(() => ({ user: { id: 'u1', isAdmin: false } })),
+  authenticateWriteToolCall: vi.fn(async () => ({ user: { id: 'u1', isAdmin: false } })),
   checkJobAccess: vi.fn(() => true),
 }));
 
