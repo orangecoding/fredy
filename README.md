@@ -194,6 +194,18 @@ Fredy ships with 20 providers:
 **🇨🇭 Switzerland** · Flatfox  
 **🇪🇸 Spain · 🇮🇹 Italy · 🇵🇹 Portugal** · idealista
 
+Idealista is one provider for three national sites - idealista.com, idealista.it and idealista.pt -
+and it works the same way on all three: the api its mobile app talks to serves one country per host,
+sorts by publication date and needs no scrape service. Paste any search url from any of the three,
+including a `/multi/` search over several areas; which country a job searches is read off the url's
+own domain, and a url on any other domain is refused rather than guessed at. A search the api has no
+terms for - a filter it cannot express, a category it does not serve, land - is read off the website
+instead. That fallback works without any configuration, through the browser Fredy already runs, but
+DataDome lets a datacenter address through only sometimes: point `FREDY_CHALLENGE_SOLVER_URL` at a
+challenge-solving scrape service such as [TRAWL](https://github.com/germondai/trawl) and those
+searches become plain requests. See
+[reverse-engineered-idealista.md](./reverse-engineered-idealista.md).
+
 **Every provider declares the countries it covers**, and the job form puts the matching flag in
 front of its name so a mixed list can be read at a glance. The declaration is one line on the
 provider's `metaInformation`:

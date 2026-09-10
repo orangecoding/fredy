@@ -59,10 +59,10 @@ vi.mock('../lib/services/immowelt/immoweltBff.js', async (importOriginal) => {
   };
 });
 
-// idealista sits behind the same wall, and its result pages are reached by waiting DataDome's
-// challenge out inside a real browser rather than by asking the extractor for the document. Its
-// transport is swapped out for the same reason immowelt's is; the fixture is still looked up by url,
-// so the offline run reads `idealista.html` exactly like the extractor-based providers do.
+// idealista reads a result page through the run's own browser whenever no challenge solver is
+// configured, and a fixture run has neither. The transport is swapped for the recording, the same
+// way immowelt's is - `readFixture` answers the Italian page for a .it url and the Spanish one for
+// a .com or .pt url.
 vi.mock('../lib/services/idealista/idealistaSearch.js', async (importOriginal) => {
   if (process.env.TEST_MODE !== 'offline') {
     return importOriginal();
