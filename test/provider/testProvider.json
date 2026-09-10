@@ -80,5 +80,10 @@
   "idealista": {
     "url": "https://www.idealista.com/alquiler-viviendas/madrid-madrid/",
     "enabled": true
+  },
+  "casa": {
+    "url": "https://www.casa.it/affitto/residenziale/roma/",
+    "enabled": true,
+    "mapSearchUrl": "https://www.casa.it/srp/map/?tr=affitto&propertyTypeGroup=case&geopolygon={%22polygon%22:[[41.93%2C12.44]%2C[41.93%2C12.55]%2C[41.87%2C12.55]%2C[41.87%2C12.44]%2C[41.93%2C12.44]]}"
   }
 }

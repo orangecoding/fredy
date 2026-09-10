@@ -55,6 +55,11 @@ const RECORDED_SEARCHES = [
     { min: 500, max: 1000 },
   ],
   [
+    'casa',
+    'https://www.casa.it/affitto/residenziale/milano/?priceMin=500&priceMax=1000&sortType=date_desc',
+    { min: 500, max: 1000 },
+  ],
+  [
     'immobilienDe',
     'https://www.immobilien.de/suche?kategorie=wohnen&typ=mieten&objektart=wohnung&ort=D%C3%BCsseldorf&umkreis=15&flaeche_von=50&preis_bis=1000&art=wohnung&preis_von=500',
     { min: 500, max: 1000 },

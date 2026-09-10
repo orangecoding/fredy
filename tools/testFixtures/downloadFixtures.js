@@ -133,6 +133,100 @@ async function downloadWillhabenFixtures(url) {
 }
 
 /**
+ * Casa.it is read through the api its android app talks to, so its fixtures are the answers that api
+ * gives: the place the search url names, and one page of the search itself.
+ *
+ * @param {string} url the search url
+ * @returns {Promise<void>}
+ */
+async function downloadCasaApiFixtures(url) {
+  console.log('\nDownloading casa.it api...');
+
+  const { toQuery } = await import('../../lib/services/casa/geography.js');
+  const { translateSearchUrl } = await import('../../lib/services/casa/web-translator.js');
+  const { search } = await import('../../lib/services/casa/search-api.js');
+
+  const slugs = new URL(url).pathname.split('/').filter((segment) => segment !== '');
+  const query = toQuery(slugs[slugs.length - 1] ?? '');
+  const answer = await fetch(
+    `https://smartsuggest.casa.it/smartsuggest/v1/suggest/?query=${encodeURIComponent(query)}&site=it_casa`,
+  );
+  if (!answer.ok) {
+    console.warn(`  Failed to download casa.it places: ${answer.status} ${answer.statusText}`);
+    return;
+  }
+  await writeFile(
+    path.join(FIXTURES_DIR, 'casa_places.json'),
+    JSON.stringify({ [query]: await answer.json() }, null, 2),
+    'utf-8',
+  );
+  console.log(`  Saved casa_places.json (for "${query}")`);
+
+  const translated = await translateSearchUrl(url);
+  if (translated == null) {
+    console.warn(`  Skipping: ${url} is not a search the api can be asked for`);
+    return;
+  }
+  const page = await search({ ...translated, sort: ['date-desc'], page: 1 });
+  // The photos and the descriptions in every other language are most of the payload and none of
+  // what the tests read.
+  for (const advert of page?.results ?? []) {
+    if (advert?.media?.items?.length > 1) advert.media.items = advert.media.items.slice(0, 1);
+    if (advert?.description) advert.description = { it: advert.description.it };
+    if (advert?.title) advert.title = { it: advert.title.it };
+  }
+  await writeFile(path.join(FIXTURES_DIR, 'casa_list.json'), JSON.stringify(page, null, 2), 'utf-8');
+  console.log(`  Saved casa_list.json (${page?.results?.length ?? 0} adverts)`);
+}
+
+/**
+ * Casa.it's map search, cut down to the one script tag the provider reads.
+ *
+ * The map search answers with a page of its own whose store keeps the results under `searchMap`
+ * rather than under `search`, which is why it needs a fixture the town search cannot stand in for.
+ * The live page is around 850 KB of React bootstrap around a single `__INITIAL_STATE__` assignment,
+ * and keeping only that assignment exercises the same parsing path, because the provider looks it
+ * up by name rather than by position.
+ *
+ * @param {string} mapSearchUrl the map search url from testProvider.json
+ * @param {Function} launchBrowser opens the shared browser
+ * @param {Function} closeBrowser closes it again
+ * @param {Function} puppeteerExtractor the extractor the providers themselves use
+ * @returns {Promise<void>}
+ */
+async function downloadCasaMapFixture(mapSearchUrl, launchBrowser, closeBrowser, puppeteerExtractor) {
+  console.log('  Downloading casa map search...');
+
+  const browser = await launchBrowser(mapSearchUrl, {});
+  let html;
+  try {
+    html = await puppeteerExtractor(mapSearchUrl, 'body', { browser, name: 'download_fixtures' });
+  } finally {
+    await closeBrowser(browser);
+  }
+  const match = html?.match(/<script[^>]*>\s*window\.__INITIAL_STATE__[\s\S]*?<\/script>/);
+  if (!match) {
+    console.warn('  casa map search carried no __INITIAL_STATE__ - skipping fixture');
+    return;
+  }
+
+  const trimmed = [
+    '<!doctype html>',
+    '<html lang="it">',
+    '<head><title>casa map fixture</title></head>',
+    '<body>',
+    `<!-- Trimmed to the __INITIAL_STATE__ payload, downloaded from ${mapSearchUrl} -->`,
+    match[0],
+    '</body>',
+    '</html>',
+    '',
+  ].join('\n');
+
+  await writeFile(path.join(FIXTURES_DIR, 'casa_map.html'), trimmed, 'utf-8');
+  console.log('  Saved casa_map.html');
+}
+
+/**
  * Flatfox answers a search in two requests, so it needs two fixtures.
  *
  * The pins carry the primary keys of everything matching the search; the second call hydrates those
@@ -516,6 +610,11 @@ async function main() {
         break;
       case 'idealista':
         await downloadIdealistaFixtures(runConfig, launchBrowser, closeBrowser);
+        break;
+      case 'casa':
+        await downloadHtmlProvider(name, runConfig, launchBrowser, closeBrowser, puppeteerExtractor);
+        await downloadCasaMapFixture(cfg.mapSearchUrl, launchBrowser, closeBrowser, puppeteerExtractor);
+        await downloadCasaApiFixtures(runConfig.url);
         break;
       default:
         await downloadHtmlProvider(name, runConfig, launchBrowser, closeBrowser, puppeteerExtractor);
