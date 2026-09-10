@@ -133,6 +133,50 @@ async function downloadWillhabenFixtures(url) {
 }
 
 /**
+ * A tecnocasa group search page and the first advert on it, both as served.
+ *
+ * Downloaded over `fetch` rather than through the browser every other html provider uses, because
+ * the platform hands its data to Vue as JSON attributes and hydration takes those attributes off
+ * the elements again. A rendered fixture therefore carries the cards but not one figure the
+ * provider reads, which is also why the provider itself makes a plain request.
+ *
+ * @param {string} name the provider, `tecnocasa` or `tecnorete`
+ * @param {import('../../lib/types/providerConfig.js').ProviderConfig} providerConfig the initialized provider config
+ * @returns {Promise<void>}
+ */
+async function downloadTecnocasaGroupFixtures(name, providerConfig) {
+  console.log(`\nDownloading ${name}...`);
+
+  const headers = { 'User-Agent': BROWSER_USER_AGENT, 'Accept-Language': 'it-IT,it;q=0.9' };
+
+  const response = await fetch(providerConfig.url, { headers });
+  if (!response.ok) {
+    console.warn(`  Failed to download ${name}: ${response.statusText}`);
+    return;
+  }
+
+  await writeFile(path.join(FIXTURES_DIR, `${name}.html`), await response.text(), 'utf-8');
+  console.log(`  Saved ${name}.html`);
+
+  const listings = await providerConfig.getListings(providerConfig.url);
+  const detailUrl = listings.map((listing) => providerConfig.normalize(listing)?.link).find(Boolean);
+  if (!detailUrl) {
+    console.warn('  No advert found - skipping detail fixture');
+    return;
+  }
+
+  console.log(`  Downloading ${name} detail...`);
+  const detailResponse = await fetch(detailUrl, { headers });
+  if (!detailResponse.ok) {
+    console.warn(`  Failed to download ${name} detail: ${detailResponse.statusText}`);
+    return;
+  }
+
+  await writeFile(path.join(FIXTURES_DIR, `${name}_detail.html`), await detailResponse.text(), 'utf-8');
+  console.log(`  Saved ${name}_detail.html`);
+}
+
+/**
  * Flatfox answers a search in two requests, so it needs two fixtures.
  *
  * The pins carry the primary keys of everything matching the search; the second call hydrates those
@@ -513,6 +557,10 @@ async function main() {
         break;
       case 'flatfox':
         await downloadFlatfoxFixtures(runConfig.url);
+        break;
+      case 'tecnocasa':
+      case 'tecnorete':
+        await downloadTecnocasaGroupFixtures(name, runConfig);
         break;
       case 'idealista':
         await downloadIdealistaFixtures(runConfig, launchBrowser, closeBrowser);

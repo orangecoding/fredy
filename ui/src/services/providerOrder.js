@@ -62,6 +62,9 @@ export const PROVIDER_SIZE_ORDER = [
   'flatfox',
   // Spain, Italy and Portugal
   'idealista',
+  // Italy
+  'tecnocasa',
+  'tecnorete',
 ];
 
 /** Sorts anything unranked or unknown behind everything ranked or known. */
