@@ -76,6 +76,7 @@ describe('queryListings affordability band against real SQLite', () => {
         status TEXT,
         distances TEXT,
         created_at INTEGER DEFAULT 0,
+        published_at INTEGER,
         is_active INTEGER DEFAULT 1,
         manually_deleted INTEGER DEFAULT 0
       );
