@@ -449,6 +449,16 @@ Residential proxies are a paid service (usually billed per GB, Fredy's traffic i
 
 This is not an endorsement, pick whatever fits your budget. For low-volume use like Fredy, a pay-as-you-go plan (e.g. IPRoyal) or a cheap entry tier (e.g. Webshare) is usually plenty. Make sure to select **Germany** as the proxy location and keep the search interval reasonable (the higher the interval, the less you look like a bot).
 
+### The other fix: a challenge-solving scrape service
+
+Some portals do not answer a plain request at all, and the provider then has to read a page that sits behind an anti-bot wall (DataDome and the like). Set **`FREDY_CHALLENGE_SOLVER_URL`** to the endpoint of a scrape service that renders such a page for you, and those reads become one POST: Fredy sends `{"cmd": "request.get", "url": ..., "maxTimeout": 90000}` and expects the page back, either as `html` at the top level or under `solution` (`html` or `response`), together with the cookies and the user agent the service earned them with. That is [FlareSolverr](https://github.com/FlareSolverr/FlareSolverr)'s request shape, so FlareSolverr, [TRAWL](https://github.com/germondai/trawl) and anything else speaking it will do. The variable is read at scrape time, so a container restart is all it takes to add or remove one.
+
+```
+FREDY_CHALLENGE_SOLVER_URL=http://flaresolverr:8191/v1
+```
+
+Leave it unset and nothing changes: only the providers that fall back to reading a bot-walled page ever ask, and without a solver they carry on the way they do today, through the headless browser. This is not a replacement for the residential proxy above, and the two are worth combining - a solver on a datacenter address still meets the captcha the wall escalates to.
+
 ## 🔐 Reverse Proxy Sign-in (forward auth)
 
 If Fredy already sits behind an identity-aware reverse proxy - Pangolin, Authelia, Authentik,
