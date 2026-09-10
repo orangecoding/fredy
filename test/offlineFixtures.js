@@ -120,6 +120,9 @@ export async function readImmoweltFixtures() {
   };
 }
 
+/** Hosts whose providers request their pages themselves instead of going through the extractor. */
+const FETCHED_PAGE_HOSTS = ['subito.it'];
+
 /**
  * Returns a fetch replacement that intercepts immoscout mobile API calls and
  * serves pre-downloaded JSON fixtures. Throws for any other URL to prevent
@@ -143,6 +146,14 @@ export function buildFetchMock() {
         willhabenHtml = (await tryReadFile(path.join(FIXTURES_DIR, 'willhaben.html'))) ?? '';
       }
       return { ok: true, status: 200, text: () => Promise.resolve(willhabenHtml) };
+    }
+
+    // The providers that read a page over plain `fetch` because their portal serves one without a
+    // fight. `readFixture` tells a search page from a detail page by its path, which is the same
+    // answer the extractor mock above gives the providers that go through a browser.
+    if (FETCHED_PAGE_HOSTS.some((host) => urlStr.includes(host))) {
+      const html = (await readFixture(urlStr)) ?? '';
+      return { ok: true, status: 200, text: () => Promise.resolve(html) };
     }
 
     // Flatfox answers a search in two calls - the pins, then the listings those keys belong to -
