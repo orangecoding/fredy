@@ -132,6 +132,8 @@ export function buildFetchMock() {
   let willhabenHtml = null;
   let flatfoxPins = null;
   let flatfoxListings = null;
+  let immobiliareGeography = null;
+  let immobiliareListData = null;
 
   return async (url) => {
     const urlStr = String(url);
@@ -143,6 +145,35 @@ export function buildFetchMock() {
         willhabenHtml = (await tryReadFile(path.join(FIXTURES_DIR, 'willhaben.html'))) ?? '';
       }
       return { ok: true, status: 200, text: () => Promise.resolve(willhabenHtml) };
+    }
+
+    // A town search on immobiliare.it names its town in words, and the endpoint wants the number
+    // the portal calls it by. That lookup is the android app's geography service, keyed by the
+    // words the url spells the place with.
+    if (urlStr.includes('ws-app.com/b2c/v1/geography/autocomplete')) {
+      if (immobiliareGeography == null) {
+        const raw = await tryReadFile(path.join(FIXTURES_DIR, 'immobiliare_geography.json'));
+        immobiliareGeography = raw ? JSON.parse(raw) : {};
+      }
+      const asked = new URL(urlStr).searchParams.get('query') ?? '';
+      return { ok: true, status: 200, json: () => Promise.resolve(immobiliareGeography[asked] ?? []) };
+    }
+
+    // Immobiliare reads its results out of the endpoint the search page calls, so the fixture is
+    // json rather than a page. The recording holds one page of a search the live portal counts in
+    // hundreds, so every page answers as the last one there is - and a page after the recorded one
+    // answers empty, which is what stops the walk instead of serving the same adverts again.
+    if (urlStr.includes('immobiliare.it/api-next/search-list/listings')) {
+      if (immobiliareListData == null) {
+        const raw = await tryReadFile(path.join(FIXTURES_DIR, 'immobiliare_list.json'));
+        immobiliareListData = raw ? JSON.parse(raw) : { results: [] };
+      }
+      const page = Number(new URL(urlStr).searchParams.get('pag')) || 1;
+      const data =
+        page === 1
+          ? { ...immobiliareListData, currentPage: 1, maxPages: 1 }
+          : { ...immobiliareListData, results: [], currentPage: page, maxPages: page };
+      return { ok: true, status: 200, json: () => Promise.resolve(data) };
     }
 
     // Flatfox answers a search in two calls - the pins, then the listings those keys belong to -

@@ -1,0 +1,449 @@
+{
+  "roma": [
+    {
+      "id": "6737",
+      "type": 2,
+      "label": "Roma",
+      "parents": [
+        {
+          "id": "RM",
+          "type": 1,
+          "label": "Roma"
+        },
+        {
+          "id": "laz",
+          "type": 0,
+          "label": "Lazio"
+        },
+        {
+          "id": "IT",
+          "type": -1,
+          "label": "Italia"
+        }
+      ]
+    },
+    {
+      "id": "10803",
+      "type": 2,
+      "label": "Romana",
+      "parents": [
+        {
+          "id": "SS",
+          "type": 1,
+          "label": "Sassari"
+        },
+        {
+          "id": "sar",
+          "type": 0,
+          "label": "Sardegna"
+        },
+        {
+          "id": "IT",
+          "type": -1,
+          "label": "Italia"
+        }
+      ]
+    },
+    {
+      "id": "7755",
+      "type": 2,
+      "label": "Romanengo",
+      "parents": [
+        {
+          "id": "CR",
+          "type": 1,
+          "label": "Cremona"
+        },
+        {
+          "id": "lom",
+          "type": 0,
+          "label": "Lombardia"
+        },
+        {
+          "id": "IT",
+          "type": -1,
+          "label": "Italia"
+        }
+      ]
+    },
+    {
+      "id": "8321",
+      "type": 2,
+      "label": "Romagnese",
+      "parents": [
+        {
+          "id": "PV",
+          "type": 1,
+          "label": "Pavia"
+        },
+        {
+          "id": "lom",
+          "type": 0,
+          "label": "Lombardia"
+        },
+        {
+          "id": "IT",
+          "type": -1,
+          "label": "Italia"
+        }
+      ]
+    },
+    {
+      "id": "11355",
+      "type": 3,
+      "label": "Via Romana",
+      "parents": [
+        {
+          "id": "6896",
+          "type": 2,
+          "label": "Bordighera"
+        },
+        {
+          "id": "IM",
+          "type": 1,
+          "label": "Imperia"
+        },
+        {
+          "id": "lig",
+          "type": 0,
+          "label": "Liguria"
+        },
+        {
+          "id": "IT",
+          "type": -1,
+          "label": "Italia"
+        }
+      ]
+    },
+    {
+      "id": "6797",
+      "type": 2,
+      "label": "Monte Romano",
+      "parents": [
+        {
+          "id": "VT",
+          "type": 1,
+          "label": "Viterbo"
+        },
+        {
+          "id": "laz",
+          "type": 0,
+          "label": "Lazio"
+        },
+        {
+          "id": "IT",
+          "type": -1,
+          "label": "Italia"
+        }
+      ]
+    },
+    {
+      "id": "6679",
+      "type": 2,
+      "label": "Fiano Romano",
+      "parents": [
+        {
+          "id": "RM",
+          "type": 1,
+          "label": "Roma"
+        },
+        {
+          "id": "laz",
+          "type": 0,
+          "label": "Lazio"
+        },
+        {
+          "id": "IT",
+          "type": -1,
+          "label": "Italia"
+        }
+      ]
+    },
+    {
+      "id": "6760",
+      "type": 2,
+      "label": "Vivaro Romano",
+      "parents": [
+        {
+          "id": "RM",
+          "type": 1,
+          "label": "Roma"
+        },
+        {
+          "id": "laz",
+          "type": 0,
+          "label": "Lazio"
+        },
+        {
+          "id": "IT",
+          "type": -1,
+          "label": "Italia"
+        }
+      ]
+    },
+    {
+      "id": "6802",
+      "type": 2,
+      "label": "Oriolo Romano",
+      "parents": [
+        {
+          "id": "VT",
+          "type": 1,
+          "label": "Viterbo"
+        },
+        {
+          "id": "laz",
+          "type": 0,
+          "label": "Lazio"
+        },
+        {
+          "id": "IT",
+          "type": -1,
+          "label": "Italia"
+        }
+      ]
+    },
+    {
+      "id": "6674",
+      "type": 2,
+      "label": "Cineto Romano",
+      "parents": [
+        {
+          "id": "RM",
+          "type": 1,
+          "label": "Roma"
+        },
+        {
+          "id": "laz",
+          "type": 0,
+          "label": "Lazio"
+        },
+        {
+          "id": "IT",
+          "type": -1,
+          "label": "Italia"
+        }
+      ]
+    },
+    {
+      "id": "10910",
+      "type": 3,
+      "label": "Roma Imperiale",
+      "parents": [
+        {
+          "id": "11699",
+          "type": 2,
+          "label": "Forte dei Marmi"
+        },
+        {
+          "id": "LU",
+          "type": 1,
+          "label": "Lucca"
+        },
+        {
+          "id": "tos",
+          "type": 0,
+          "label": "Toscana"
+        },
+        {
+          "id": "IT",
+          "type": -1,
+          "label": "Italia"
+        }
+      ]
+    },
+    {
+      "id": "6767",
+      "type": 2,
+      "label": "Bassano Romano",
+      "parents": [
+        {
+          "id": "VT",
+          "type": 1,
+          "label": "Viterbo"
+        },
+        {
+          "id": "laz",
+          "type": 0,
+          "label": "Lazio"
+        },
+        {
+          "id": "IT",
+          "type": -1,
+          "label": "Italia"
+        }
+      ]
+    },
+    {
+      "id": "6704",
+      "type": 2,
+      "label": "Mazzano Romano",
+      "parents": [
+        {
+          "id": "RM",
+          "type": 1,
+          "label": "Roma"
+        },
+        {
+          "id": "laz",
+          "type": 0,
+          "label": "Lazio"
+        },
+        {
+          "id": "IT",
+          "type": -1,
+          "label": "Italia"
+        }
+      ]
+    },
+    {
+      "id": "6719",
+      "type": 2,
+      "label": "Olevano Romano",
+      "parents": [
+        {
+          "id": "RM",
+          "type": 1,
+          "label": "Roma"
+        },
+        {
+          "id": "laz",
+          "type": 0,
+          "label": "Lazio"
+        },
+        {
+          "id": "IT",
+          "type": -1,
+          "label": "Italia"
+        }
+      ]
+    },
+    {
+      "id": "RM",
+      "type": 1,
+      "label": "Roma",
+      "parents": [
+        {
+          "id": "laz",
+          "type": 0,
+          "label": "Lazio"
+        },
+        {
+          "id": "IT",
+          "type": -1,
+          "label": "Italia"
+        }
+      ]
+    },
+    {
+      "id": "6726",
+      "type": 2,
+      "label": "Ponzano Romano",
+      "parents": [
+        {
+          "id": "RM",
+          "type": 1,
+          "label": "Roma"
+        },
+        {
+          "id": "laz",
+          "type": 0,
+          "label": "Lazio"
+        },
+        {
+          "id": "IT",
+          "type": -1,
+          "label": "Italia"
+        }
+      ]
+    },
+    {
+      "id": "2001239",
+      "type": 2,
+      "label": "Romainville (FR)",
+      "parents": [
+        {
+          "id": "FR_93",
+          "type": 1,
+          "label": "Senna-Saint-Denis"
+        },
+        {
+          "id": "FR_11",
+          "type": 0,
+          "label": "Île-de-France"
+        },
+        {
+          "id": "FR",
+          "type": -1,
+          "label": "Francia"
+        }
+      ]
+    },
+    {
+      "id": "6744",
+      "type": 2,
+      "label": "San Vito Romano",
+      "parents": [
+        {
+          "id": "RM",
+          "type": 1,
+          "label": "Roma"
+        },
+        {
+          "id": "laz",
+          "type": 0,
+          "label": "Lazio"
+        },
+        {
+          "id": "IT",
+          "type": -1,
+          "label": "Italia"
+        }
+      ]
+    },
+    {
+      "id": "9938",
+      "type": 2,
+      "label": "Romano Canavese",
+      "parents": [
+        {
+          "id": "TO",
+          "type": 1,
+          "label": "Torino"
+        },
+        {
+          "id": "pie",
+          "type": 0,
+          "label": "Piemonte"
+        },
+        {
+          "id": "IT",
+          "type": -1,
+          "label": "Italia"
+        }
+      ]
+    },
+    {
+      "id": "6240",
+      "type": 2,
+      "label": "Romans d'Isonzo",
+      "parents": [
+        {
+          "id": "GO",
+          "type": 1,
+          "label": "Gorizia"
+        },
+        {
+          "id": "fri",
+          "type": 0,
+          "label": "Friuli Venezia Giulia"
+        },
+        {
+          "id": "IT",
+          "type": -1,
+          "label": "Italia"
+        }
+      ]
+    }
+  ]
+}

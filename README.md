@@ -62,8 +62,8 @@ On top of the listing itself, Fredy answers two questions:
 
 ## ✨ Key Features
 
--   🏠 Scrapes **20 portals** across 🇩🇪 🇦🇹 🇨🇭 🇪🇸 🇮🇹 🇵🇹: ImmoScout24, Immowelt, Kleinanzeigen,
-    WG-Gesucht, willhaben, Flatfox, idealista and [13 more](#provider-)
+-   🏠 Scrapes **21 portals** across 🇩🇪 🇦🇹 🇨🇭 🇪🇸 🇮🇹 🇵🇹: ImmoScout24, Immowelt, Kleinanzeigen,
+    WG-Gesucht, willhaben, Flatfox, idealista, Immobiliare.it and [13 more](#provider-)
 -   ⚡ Instant notifications: Slack, Telegram, Email (SMTP, SendGrid, Mailjet, Resend), ntfy,
     Discord, Mattermost, Pushover, Apprise and more
 -   🔎 Uses the **ImmoScout Mobile API** (reverse engineered)
@@ -177,7 +177,7 @@ the platform into Fredy.\
 ⚠️ Always make sure the search results are sorted by **date**, so Fredy picks up the newest
 listings first.
 
-Fredy ships with 20 providers:
+Fredy ships with 21 providers:
 
 **🇩🇪 Germany**
 
@@ -192,7 +192,15 @@ Fredy ships with 20 providers:
 
 **🇦🇹 Austria** · willhaben  
 **🇨🇭 Switzerland** · Flatfox  
-**🇪🇸 Spain · 🇮🇹 Italy · 🇵🇹 Portugal** · idealista
+**🇮🇹 Italy** · Immobiliare.it · idealista  
+**🇪🇸 Spain · 🇵🇹 Portugal** · idealista
+
+Immobiliare.it reads a search through the endpoint its own pages call, which is not behind the
+portal's anti-bot wall. It needs no browser for a town, a province or a quarter either: the place
+is looked up through the geography service the portal's android app uses. A search it cannot read
+whole - a category outside [the confirmed table](./reverse-engineered-immobiliare.md), a place the
+lookup does not know - falls back to rendering the page, and only that case wants the scrape
+service. A search drawn on the map is read the same way, every result page of it, up to twenty.
 
 **Every provider declares the countries it covers**, and the job form puts the matching flag in
 front of its name so a mixed list can be read at a glance. The declaration is one line on the

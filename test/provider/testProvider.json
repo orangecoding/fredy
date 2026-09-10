@@ -77,6 +77,11 @@
     "url": "https://flatfox.ch/de/search/?east=8.62&north=47.43&south=47.32&west=8.44&object_category=APARTMENT&offer_type=RENT",
     "enabled": true
   },
+  "immobiliare": {
+    "url": "https://www.immobiliare.it/affitto-case/roma/",
+    "enabled": true,
+    "mapSearchUrl": "https://www.immobiliare.it/search-list/?idContratto=2&idCategoria=1&idNazione=IT&fkRegione=laz&idProvincia=RM&idComune=6737&__lang=it"
+  },
   "idealista": {
     "url": "https://www.idealista.com/alquiler-viviendas/madrid-madrid/",
     "enabled": true
