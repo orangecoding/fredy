@@ -76,5 +76,9 @@
   "flatfox": {
     "url": "https://flatfox.ch/de/search/?east=8.62&north=47.43&south=47.32&west=8.44&object_category=APARTMENT&offer_type=RENT",
     "enabled": true
+  },
+  "idealista": {
+    "url": "https://www.idealista.com/alquiler-viviendas/madrid-madrid/",
+    "enabled": true
   }
 }

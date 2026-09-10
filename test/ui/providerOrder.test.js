@@ -110,13 +110,14 @@ describe('the flag of a country', () => {
 });
 
 describe('the providers Fredy actually ships', () => {
-  it('come out German first, then Austrian, then Swiss', async () => {
+  it('come out German first, then Austrian, then Swiss, then Spanish', async () => {
     const metas = (await getProviders()).map((p) => p.metaInformation);
     const countries = sortProviders(metas).map(groupCountryOf);
     const ranks = countries.map((code) => COUNTRY_ORDER.indexOf(code));
 
+    expect(ranks, `every shipped country needs a rank in COUNTRY_ORDER: ${countries.join(', ')}`).not.toContain(-1);
     expect(ranks).toEqual([...ranks].sort((a, b) => a - b));
-    expect(new Set(countries)).toEqual(new Set(['de', 'at', 'ch']));
+    expect(new Set(countries)).toEqual(new Set(['de', 'at', 'ch', 'es']));
   });
 
   it('lead with ImmoScout24, Immowelt and Kleinanzeigen', async () => {

@@ -329,6 +329,37 @@ async function downloadImmoweltFixtures(runConfig, launchBrowser, closeBrowser) 
 }
 
 /**
+ * idealista's result page is markup, but it cannot be taken with the generic extractor: the origin
+ * is behind DataDome and answers the first request to any search with a 403 challenge that has to
+ * run in a real browser before the page appears. The provider's own transport is what knows how to
+ * wait that out, so it is what records the fixture.
+ *
+ * @param {import('../../lib/types/providerConfig.js').ProviderConfig} runConfig the initialized provider config
+ * @param {Function} launchBrowser
+ * @param {Function} closeBrowser
+ * @returns {Promise<void>}
+ */
+async function downloadIdealistaFixtures(runConfig, launchBrowser, closeBrowser) {
+  console.log('\nDownloading idealista...');
+
+  const { fetchSearchHtml } = await import('../../lib/services/idealista/idealistaSearch.js');
+  const browser = await launchBrowser(runConfig.url, {});
+
+  try {
+    const html = await fetchSearchHtml(runConfig.url, browser);
+    if (!html) {
+      console.warn('  Failed to download idealista');
+      return;
+    }
+
+    await writeFile(path.join(FIXTURES_DIR, 'idealista.html'), html, 'utf-8');
+    console.log('  Saved idealista.html');
+  } finally {
+    await closeBrowser(browser);
+  }
+}
+
+/**
  * Fallback for providers that do not expose their listings through the markup (e.g. because they
  * ship them inside an embedded json payload). Those have no crawl container the selector based
  * {@link extractFirstDetailUrl} could work with, so the provider's own `getListings` is asked.
@@ -482,6 +513,9 @@ async function main() {
         break;
       case 'flatfox':
         await downloadFlatfoxFixtures(runConfig.url);
+        break;
+      case 'idealista':
+        await downloadIdealistaFixtures(runConfig, launchBrowser, closeBrowser);
         break;
       default:
         await downloadHtmlProvider(name, runConfig, launchBrowser, closeBrowser, puppeteerExtractor);

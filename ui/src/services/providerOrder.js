@@ -23,7 +23,7 @@
  *
  * @type {string[]}
  */
-export const COUNTRY_ORDER = ['de', 'at', 'ch'];
+export const COUNTRY_ORDER = ['de', 'at', 'ch', 'es', 'it', 'pt'];
 
 /**
  * Providers by size within their market, largest first.
@@ -60,6 +60,8 @@ export const PROVIDER_SIZE_ORDER = [
   'willhaben',
   // Switzerland
   'flatfox',
+  // Spain, Italy and Portugal
+  'idealista',
 ];
 
 /** Sorts anything unranked or unknown behind everything ranked or known. */

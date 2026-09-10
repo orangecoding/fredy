@@ -59,6 +59,18 @@ vi.mock('../lib/services/immowelt/immoweltBff.js', async (importOriginal) => {
   };
 });
 
+// idealista sits behind the same wall, and its result pages are reached by waiting DataDome's
+// challenge out inside a real browser rather than by asking the extractor for the document. Its
+// transport is swapped out for the same reason immowelt's is; the fixture is still looked up by url,
+// so the offline run reads `idealista.html` exactly like the extractor-based providers do.
+vi.mock('../lib/services/idealista/idealistaSearch.js', async (importOriginal) => {
+  if (process.env.TEST_MODE !== 'offline') {
+    return importOriginal();
+  }
+  const { readFixture } = await import('./offlineFixtures.js');
+  return { fetchSearchHtml: async (url) => readFixture(url) };
+});
+
 if (process.env.TEST_MODE === 'offline') {
   const { buildFetchMock } = await import('./offlineFixtures.js');
   vi.stubGlobal('fetch', buildFetchMock());
