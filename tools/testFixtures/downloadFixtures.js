@@ -133,6 +133,75 @@ async function downloadWillhabenFixtures(url) {
 }
 
 /**
+ * A town search names its town in words and the endpoint wants the number the portal calls it by.
+ * The fixture is the answer of the geography service that translates the one into the other, keyed
+ * by the words the url spells the place with.
+ *
+ * @param {string} url the search url
+ * @returns {Promise<void>}
+ */
+async function downloadImmobiliareGeographyFixture(url) {
+  console.log('\nDownloading immobiliare.it geography...');
+
+  const { toQuery } = await import('../../lib/services/immobiliare/geography.js');
+  const slugs = new URL(url).pathname.split('/').filter((segment) => segment !== '');
+  if (slugs.length < 2) {
+    console.warn(`  Skipping: ${url} names no place to look up`);
+    return;
+  }
+
+  // The resolver asks for the place, qualified by the one above it where the url names two.
+  const place = slugs[slugs.length - 1].replace(/-provincia$/, '');
+  const query = slugs.length > 2 ? `${toQuery(place)} ${toQuery(slugs[slugs.length - 2])}` : toQuery(place);
+
+  const response = await fetch(
+    `https://android-imm-v4.ws-app.com/b2c/v1/geography/autocomplete?query=${encodeURIComponent(query)}`,
+    {
+      headers: {
+        'user-agent':
+          'WSCommand3<Furious>|REL|PRD|1080,2410,2.625|26.13.0|ANDROID|Google Pixel 10 Pro|17|PHO|2.0-01/09/2016-16:40|0|0',
+        'accept-language': 'it-IT',
+      },
+    },
+  );
+  if (!response.ok) {
+    console.warn(`  Failed to download immobiliare.it geography: ${response.status} ${response.statusText}`);
+    return;
+  }
+
+  const places = await response.json();
+  await writeFile(
+    path.join(FIXTURES_DIR, 'immobiliare_geography.json'),
+    JSON.stringify({ [query]: places }, null, 2),
+    'utf-8',
+  );
+  console.log(`  Saved immobiliare_geography.json (${places?.length ?? 0} places for "${query}")`);
+}
+
+/**
+ * A map search carries no results in its markup, so the fixture for that half of the provider is
+ * the answer of the endpoint the page calls instead.
+ *
+ * @param {string} mapSearchUrl the map search url from testProvider.json
+ * @returns {Promise<void>}
+ */
+async function downloadImmobiliareMapFixture(mapSearchUrl) {
+  const { convertMapSearchToApi } = await import('../../lib/provider/immobiliare.js');
+
+  const response = await fetch(convertMapSearchToApi(mapSearchUrl), {
+    headers: { 'User-Agent': BROWSER_USER_AGENT, Accept: 'application/json', 'Accept-Language': 'it-IT,it;q=0.9' },
+  });
+  if (!response.ok) {
+    console.warn(`  Failed to download immobiliare map search: ${response.status} ${response.statusText}`);
+    return;
+  }
+
+  const payload = await response.json();
+  await writeFile(path.join(FIXTURES_DIR, 'immobiliare_list.json'), JSON.stringify(payload, null, 2), 'utf-8');
+  console.log(`  Saved immobiliare_list.json (${payload?.results?.length ?? 0} listings)`);
+}
+
+/**
  * Flatfox answers a search in two requests, so it needs two fixtures.
  *
  * The pins carry the primary keys of everything matching the search; the second call hydrates those
@@ -516,6 +585,11 @@ async function main() {
         break;
       case 'idealista':
         await downloadIdealistaFixtures(runConfig, launchBrowser, closeBrowser);
+        break;
+      case 'immobiliare':
+        await downloadHtmlProvider(name, runConfig, launchBrowser, closeBrowser, puppeteerExtractor);
+        await downloadImmobiliareMapFixture(cfg.mapSearchUrl);
+        await downloadImmobiliareGeographyFixture(runConfig.url);
         break;
       default:
         await downloadHtmlProvider(name, runConfig, launchBrowser, closeBrowser, puppeteerExtractor);

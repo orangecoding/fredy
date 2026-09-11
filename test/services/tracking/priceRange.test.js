@@ -55,8 +55,8 @@ const RECORDED_SEARCHES = [
     { min: 500, max: 1000 },
   ],
   [
-    'subito',
-    'https://www.subito.it/annunci-lombardia/affitto/appartamenti/milano/?ps=500&pe=1000',
+    'immobiliare',
+    'https://www.immobiliare.it/affitto-case/milano/?prezzoMinimo=500&prezzoMassimo=1000&criterio=data&ordine=desc',
     { min: 500, max: 1000 },
   ],
   [
@@ -97,6 +97,11 @@ const RECORDED_SEARCHES = [
   [
     'schwarzesbrett',
     'https://schwarzesbrett.bremen.de/verkauf-und-angebote/mietobjekte?price_filters[min]=500&price_filters[max]=1000&sort=date_desc#results',
+    { min: 500, max: 1000 },
+  ],
+  [
+    'subito',
+    'https://www.subito.it/annunci-lombardia/affitto/appartamenti/milano/?ps=500&pe=1000',
     { min: 500, max: 1000 },
   ],
   [
