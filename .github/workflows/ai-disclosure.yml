@@ -1,0 +1,68 @@
+name: AI disclosure
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+    branches: [master, develop]
+
+permissions:
+  contents: read
+
+jobs:
+  ai_disclosure:
+    name: AI disclosure
+    runs-on: ubuntu-latest
+    if: ${{ !endsWith(github.event.pull_request.user.login, '[bot]') }}
+    steps:
+      - uses: actions/github-script@v9
+        with:
+          script: |
+            const raw = context.payload.pull_request.body || '';
+            // comments are the placeholder hints from the template, they are not answers
+            const body = raw.replace(/<!--[\s\S]*?-->/g, '');
+
+            const fail = (msg) =>
+              core.setFailed(
+                `${msg}\n\n` +
+                  'Edit the pull request description, fill in the "AI disclosure" section ' +
+                  'from .github/PULL_REQUEST_TEMPLATE.md, and this check runs again by itself.',
+              );
+
+            const isChecked = (marker) =>
+              new RegExp(`^\\s*-\\s*\\[[xX]\\].*\`?${marker}\`?`, 'm').test(body);
+
+            const ticked = ['ai:none', 'ai:assisted', 'ai:generated'].filter(isChecked);
+
+            if (ticked.length === 0) {
+              return fail('No AI disclosure. Tick exactly one of ai:none, ai:assisted or ai:generated.');
+            }
+            if (ticked.length > 1) {
+              return fail(`Ticked ${ticked.join(' and ')}. Exactly one of them applies.`);
+            }
+            if (ticked[0] === 'ai:none') {
+              return core.info('Declared as written without AI.');
+            }
+
+            const answer = (label) => {
+              const match = body.match(new RegExp(`\\*\\*${label}:?\\*\\*(.*)`, 'i'));
+              return (match?.[1] || '').replace(/[*_`\s]/g, ' ').trim();
+            };
+
+            const required = [
+              { label: 'Which AI', min: 3, hint: 'name the tool and the model' },
+              { label: 'How much', min: 10, hint: 'say which parts of the diff are AI output' },
+              { label: 'Why', min: 10, hint: 'say why you reached for it' },
+            ];
+
+            const missing = required
+              .filter(({ label, min }) => answer(label).length < min)
+              .map(({ label, hint }) => `  - "${label}": ${hint}`);
+
+            if (missing.length > 0) {
+              return fail(
+                `${ticked[0]} was declared, so these answers are mandatory and are missing or too short:\n` +
+                  missing.join('\n') +
+                  '\n\nEach answer belongs on the same line as its label.',
+              );
+            }
+
+            core.info(`Declared as ${ticked[0]}, all answers present.`);

@@ -124,7 +124,7 @@ export async function readImmoweltFixtures() {
 }
 
 /** Hosts whose providers request their pages themselves instead of going through the extractor. */
-const FETCHED_PAGE_HOSTS = ['tecnocasa.it', 'tecnorete.it'];
+const FETCHED_PAGE_HOSTS = ['subito.it', 'tecnocasa.it', 'tecnorete.it'];
 
 /**
  * Returns a fetch replacement that intercepts immoscout mobile API calls and

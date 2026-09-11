@@ -65,6 +65,7 @@ export const PROVIDER_SIZE_ORDER = [
   // Italy
   'tecnocasa',
   'tecnorete',
+  'subito',
 ];
 
 /** Sorts anything unranked or unknown behind everything ranked or known. */

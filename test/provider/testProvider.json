@@ -88,5 +88,9 @@
   "idealista": {
     "url": "https://www.idealista.com/alquiler-viviendas/madrid-madrid/",
     "enabled": true
+  },
+  "subito": {
+    "url": "https://www.subito.it/annunci-lazio/affitto/appartamenti/roma/",
+    "enabled": true
   }
 }
