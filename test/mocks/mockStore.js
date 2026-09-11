@@ -13,6 +13,17 @@ export const getKnownListingHashesForJobAndProvider = (jobKey, providerId) => {
   return db[providerId] || [];
 };
 
+/**
+ * Forget every stored listing.
+ *
+ * What the real store keeps is memory across runs, which a test running the same listings again is
+ * not asking to inherit from the case before it.
+ * @returns {void}
+ */
+export const resetListings = () => {
+  for (const key of Object.keys(db)) delete db[key];
+};
+
 export const getGeocoordinatesByAddress = (any) => {
   return null;
 };
