@@ -91,7 +91,10 @@ export async function readFixture(url, options) {
     return detailProvider == null ? null : tryReadFile(path.join(FIXTURES_DIR, `${detailProvider}_detail.html`));
   }
 
-  if (providerListPath[providerName] === pathname) {
+  // The tecnocasa group numbers its result pages in the path, so every page of a walk has to read
+  // as the search page it is - otherwise page two is served the detail fixture and the walk ends on
+  // the wrong reason.
+  if (providerListPath[providerName] === pathname.replace(/\/pag-\d+$/, '')) {
     return tryReadFile(path.join(FIXTURES_DIR, `${providerName}.html`));
   }
 
@@ -121,7 +124,7 @@ export async function readImmoweltFixtures() {
 }
 
 /** Hosts whose providers request their pages themselves instead of going through the extractor. */
-const FETCHED_PAGE_HOSTS = ['subito.it'];
+const FETCHED_PAGE_HOSTS = ['subito.it', 'tecnocasa.it', 'tecnorete.it'];
 
 /**
  * Returns a fetch replacement that intercepts immoscout mobile API calls and
