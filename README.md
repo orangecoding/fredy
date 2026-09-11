@@ -62,8 +62,8 @@ On top of the listing itself, Fredy answers two questions:
 
 ## ✨ Key Features
 
--   🏠 Scrapes **21 portals** across 🇩🇪 🇦🇹 🇨🇭 🇪🇸 🇮🇹 🇵🇹: ImmoScout24, Immowelt, Kleinanzeigen,
-    WG-Gesucht, willhaben, Flatfox, idealista, Casa.it and [13 more](#provider-)
+-   🏠 Scrapes **22 portals** across 🇩🇪 🇦🇹 🇨🇭 🇪🇸 🇮🇹 🇵🇹: ImmoScout24, Immowelt, Kleinanzeigen,
+    WG-Gesucht, willhaben, Flatfox, idealista, Casa.it and [14 more](#provider-)
 -   ⚡ Instant notifications: Slack, Telegram, Email (SMTP, SendGrid, Mailjet, Resend), ntfy,
     Discord, Mattermost, Pushover, Apprise and more
 -   🔎 Uses the **ImmoScout Mobile API** (reverse engineered)
@@ -177,7 +177,7 @@ the platform into Fredy.\
 ⚠️ Always make sure the search results are sorted by **date**, so Fredy picks up the newest
 listings first.
 
-Fredy ships with 21 providers:
+Fredy ships with 22 providers:
 
 **🇩🇪 Germany**
 
@@ -195,14 +195,12 @@ Fredy ships with 21 providers:
 **🇨🇭 Switzerland** · Flatfox  
 **🇪🇸 Spain · 🇮🇹 Italy · 🇵🇹 Portugal** · idealista
 
-Casa.it is read through the api its android app talks to, which sorts by publication date, asks for
-no credentials and is not behind the wall the website sits behind. The place a search url names - a
-town, a quarter, a province - is resolved through the portal's own suggest service, and the filters
-the url carries are translated into the terms that api takes. A url that cannot be read into one
-falls back to rendering the website instead: a filter with no counterpart, a category outside the
-confirmed table, a place the lookup does not know. Only that case wants the scrape service. A search
-read off the website is walked page by page, up to twenty of them. See
-[reverse-engineered-casa.md](./reverse-engineered-casa.md).
+Casa.it usa le API dell'app e il servizio geografico per tradurre gli URL delle ricerche.
+Le ricerche non traducibili usano il browser del job.
+Il fallback legge fino a venti pagine e si ferma quando una pagina non fornisce risultati validi.
+La [documentazione del provider](./reverse-engineered-casa.md) descrive gli endpoint e i filtri supportati.
+
+**Italy** - Subito
 
 **Every provider declares the countries it covers**, and the job form puts the matching flag in
 front of its name so a mixed list can be read at a glance. The declaration is one line on the
