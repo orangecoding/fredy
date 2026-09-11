@@ -137,7 +137,7 @@ export async function readImmoweltFixtures() {
 }
 
 /** Hosts whose providers request their pages themselves instead of going through the extractor. */
-const FETCHED_PAGE_HOSTS = ['www.idealista.it', 'www.idealista.com', 'www.idealista.pt'];
+const FETCHED_PAGE_HOSTS = ['subito.it', 'www.idealista.it', 'www.idealista.com', 'www.idealista.pt'];
 
 /** The app's api, on any of its three national hosts. `<cc>` follows the version in every path. */
 const IDEALISTA_API = /app\.idealista\.(it|com|pt)\/api/;

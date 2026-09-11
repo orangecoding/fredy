@@ -62,8 +62,8 @@ On top of the listing itself, Fredy answers two questions:
 
 ## ✨ Key Features
 
--   🏠 Scrapes **20 portals** across 🇩🇪 🇦🇹 🇨🇭 🇪🇸 🇮🇹 🇵🇹: ImmoScout24, Immowelt, Kleinanzeigen,
-    WG-Gesucht, willhaben, Flatfox, idealista and [13 more](#provider-)
+-   🏠 Scrapes **21 portals** across 🇩🇪 🇦🇹 🇨🇭 🇪🇸 🇮🇹 🇵🇹: ImmoScout24, Immowelt, Kleinanzeigen,
+    WG-Gesucht, willhaben, Flatfox, idealista, Subito and [13 more](#provider-)
 -   ⚡ Instant notifications: Slack, Telegram, Email (SMTP, SendGrid, Mailjet, Resend), ntfy,
     Discord, Mattermost, Pushover, Apprise and more
 -   🔎 Uses the **ImmoScout Mobile API** (reverse engineered)
@@ -177,7 +177,7 @@ the platform into Fredy.\
 ⚠️ Always make sure the search results are sorted by **date**, so Fredy picks up the newest
 listings first.
 
-Fredy ships with 20 providers:
+Fredy ships with 21 providers:
 
 **🇩🇪 Germany**
 
@@ -192,7 +192,8 @@ Fredy ships with 20 providers:
 
 **🇦🇹 Austria** · willhaben  
 **🇨🇭 Switzerland** · Flatfox  
-**🇪🇸 Spain · 🇮🇹 Italy · 🇵🇹 Portugal** · idealista
+**🇪🇸 Spain · 🇮🇹 Italy · 🇵🇹 Portugal** · idealista\
+**🇮🇹 Italy** · Subito
 
 Idealista usa le API delle app per idealista.com, idealista.it e idealista.pt.
 Il dominio dell'URL determina il paese della ricerca.

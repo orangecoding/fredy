@@ -55,6 +55,11 @@ const RECORDED_SEARCHES = [
     { min: 500, max: 1000 },
   ],
   [
+    'subito',
+    'https://www.subito.it/annunci-lombardia/affitto/appartamenti/milano/?ps=500&pe=1000',
+    { min: 500, max: 1000 },
+  ],
+  [
     'immobilienDe',
     'https://www.immobilien.de/suche?kategorie=wohnen&typ=mieten&objektart=wohnung&ort=D%C3%BCsseldorf&umkreis=15&flaeche_von=50&preis_bis=1000&art=wohnung&preis_von=500',
     { min: 500, max: 1000 },
