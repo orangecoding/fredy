@@ -195,10 +195,10 @@ Fredy ships with 22 providers:
 **🇨🇭 Switzerland** · Flatfox  
 **🇪🇸 Spain · 🇮🇹 Italy · 🇵🇹 Portugal** · idealista
 
-Casa.it usa le API dell'app e il servizio geografico per tradurre gli URL delle ricerche.
-Le ricerche non traducibili usano il browser del job.
-Il fallback legge fino a venti pagine e si ferma quando una pagina non fornisce risultati validi.
-La [documentazione del provider](./reverse-engineered-casa.md) descrive gli endpoint e i filtri supportati.
+Casa.it uses its mobile API and geography service to translate search URLs.
+Searches that cannot be translated into API requests use the job's browser.
+The fallback reads up to twenty pages and stops when a page provides no valid results.
+See the [provider documentation](./reverse-engineered-casa.md) for supported endpoints and filters.
 
 **Italy** - Subito
 
