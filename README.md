@@ -195,10 +195,10 @@ Fredy ships with 22 providers:
 **🇮🇹 Italy** · Immobiliare.it · idealista  
 **🇪🇸 Spain · 🇵🇹 Portugal** · idealista
 
-Immobiliare.it usa le API di ricerca e il servizio geografico per tradurre gli URL delle localita'.
-Le ricerche non traducibili usano il browser del job.
-Il provider legge fino a venti pagine.
-La [documentazione del provider](./reverse-engineered-immobiliare.md) descrive gli endpoint supportati.
+Immobiliare.it uses its search API and geography service to resolve location URLs.
+Searches that cannot be translated into API requests use the job's browser.
+The provider reads up to twenty pages.
+See the [provider documentation](./reverse-engineered-immobiliare.md) for supported endpoints.
 
 **Italy** - Subito
 
