@@ -195,12 +195,12 @@ Fredy ships with 21 providers:
 **🇪🇸 Spain · 🇮🇹 Italy · 🇵🇹 Portugal** · idealista\
 **🇮🇹 Italy** · Subito
 
-Idealista usa le API delle app per idealista.com, idealista.it e idealista.pt.
-Il dominio dell'URL determina il paese della ricerca.
-Il provider supporta gli URL `/multi/` e rifiuta i domini estranei.
-Le ricerche con filtri o categorie non supportati dalle API usano il browser di Fredy.
-Il fallback puo' incontrare blocchi DataDome.
-La [documentazione del provider](./reverse-engineered-idealista.md) descrive gli endpoint e i filtri supportati.
+Idealista uses the mobile APIs for idealista.com, idealista.it and idealista.pt.
+The search URL determines the country.
+The provider supports `/multi/` URLs and rejects unrelated domains.
+Searches with filters or categories unsupported by the APIs use Fredy's browser.
+DataDome can block the browser fallback.
+See the [provider documentation](./reverse-engineered-idealista.md) for supported endpoints and filters.
 
 **Every provider declares the countries it covers**, and the job form puts the matching flag in
 front of its name so a mixed list can be read at a glance. The declaration is one line on the
