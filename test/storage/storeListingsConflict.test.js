@@ -9,9 +9,9 @@ import Database from 'better-sqlite3';
 /**
  * `storeListings` writes the DB primary key back onto each listing so the rest of the pipeline can
  * address the stored row - distance updates, and the spec/area/similarity filters, which delete by
- * id. The insert carries `ON CONFLICT DO NOTHING`, so it does not always write a row; when it did
- * not, the generated id used to be assigned anyway and every later step silently addressed a row
- * that does not exist.
+ * id. The insert conflicts on `(job_id, hash)` whenever the job already holds the advert, so it
+ * does not always write a fresh row; when it did not, the generated id used to be assigned anyway
+ * and every later step silently addressed a row that does not exist.
  */
 describe('storeListings id propagation', () => {
   let db;
@@ -36,6 +36,7 @@ describe('storeListings id propagation', () => {
         address TEXT,
         link TEXT,
         created_at INTEGER,
+        published_at INTEGER,
         is_active INTEGER,
         manually_deleted INTEGER DEFAULT 0,
         latitude REAL,

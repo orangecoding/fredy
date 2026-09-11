@@ -84,6 +84,7 @@ describe('listingsStorage connectivity', () => {
         latitude              REAL,
         longitude             REAL,
         created_at            INTEGER,
+        published_at          INTEGER,
         is_active             INTEGER,
         manually_deleted      INTEGER DEFAULT 0,
         connectivity          JSON,
