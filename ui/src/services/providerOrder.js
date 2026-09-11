@@ -64,6 +64,7 @@ export const PROVIDER_SIZE_ORDER = [
   'idealista',
   // Italy
   'immobiliare',
+  'subito',
 ];
 
 /** Sorts anything unranked or unknown behind everything ranked or known. */
