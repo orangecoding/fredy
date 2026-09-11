@@ -18,6 +18,9 @@ const testProviderConfig = JSON.parse(
 const hostnameToProvider = {};
 // providerName → list page pathname (for distinguishing list vs detail URLs)
 const providerListPath = {};
+// map search pathname per provider, for the portals that answer a map search with a page of their
+// own. That page carries a different payload, so it needs a fixture of its own as well.
+const providerMapPath = {};
 
 for (const [name, cfg] of Object.entries(testProviderConfig)) {
   if (!cfg.url) continue;
@@ -25,6 +28,12 @@ for (const [name, cfg] of Object.entries(testProviderConfig)) {
     const parsed = new URL(cfg.url);
     hostnameToProvider[parsed.hostname] = name;
     providerListPath[name] = parsed.pathname;
+  } catch {
+    // skip malformed URLs
+  }
+  if (!cfg.mapSearchUrl) continue;
+  try {
+    providerMapPath[name] = new URL(cfg.mapSearchUrl).pathname;
   } catch {
     // skip malformed URLs
   }
@@ -95,6 +104,10 @@ export async function readFixture(url, options) {
     return tryReadFile(path.join(FIXTURES_DIR, `${providerName}.html`));
   }
 
+  if (providerMapPath[providerName] === pathname) {
+    return tryReadFile(path.join(FIXTURES_DIR, `${providerName}_map.html`));
+  }
+
   // Detail page: prefer dedicated detail fixture, fall back to list fixture
   const detailHtml = await tryReadFile(path.join(FIXTURES_DIR, `${providerName}_detail.html`));
   if (detailHtml) return detailHtml;
@@ -129,6 +142,8 @@ const FETCHED_PAGE_HOSTS = ['subito.it'];
  * accidental live network traffic in offline mode.
  */
 export function buildFetchMock() {
+  let casaPlaces = null;
+  let casaListData = null;
   let listData = null;
   let detailData = null;
   let deutscheWohnenListData = null;
@@ -136,7 +151,7 @@ export function buildFetchMock() {
   let flatfoxPins = null;
   let flatfoxListings = null;
 
-  return async (url) => {
+  return async (url, init) => {
     const urlStr = String(url);
 
     // willhaben reads its results out of the page's __NEXT_DATA__, so this is the one fixture
@@ -146,6 +161,34 @@ export function buildFetchMock() {
         willhabenHtml = (await tryReadFile(path.join(FIXTURES_DIR, 'willhaben.html'))) ?? '';
       }
       return { ok: true, status: 200, text: () => Promise.resolve(willhabenHtml) };
+    }
+
+    // Casa.it is read through the api its android app talks to, on hosts of its own. The place
+    // lookup turns the words a url spells a town with into the key that api searches by.
+    if (urlStr.includes('smartsuggest.casa.it')) {
+      if (casaPlaces == null) {
+        const raw = await tryReadFile(path.join(FIXTURES_DIR, 'casa_places.json'));
+        casaPlaces = raw ? JSON.parse(raw) : {};
+      }
+      const asked = new URL(urlStr).searchParams.get('query') ?? '';
+      const found = casaPlaces[asked] ?? { data: { results: [] } };
+      return { ok: true, status: 200, json: () => Promise.resolve(found) };
+    }
+
+    // One recorded page stands for the whole search, so it answers as the only page there is and
+    // every page after it comes back empty, which is what stops the walk.
+    if (urlStr.includes('esapi.casa.it/listings/v2/search')) {
+      if (casaListData == null) {
+        const raw = await tryReadFile(path.join(FIXTURES_DIR, 'casa_list.json'));
+        casaListData = raw ? JSON.parse(raw) : { total: 0, results: [] };
+      }
+      const page = Number(JSON.parse(init?.body ?? '{}')?.page) || 1;
+      const results = page === 1 ? casaListData.results : [];
+      return {
+        ok: true,
+        status: 200,
+        json: () => Promise.resolve({ data: { total: results.length, tiers: [{ tier: 'listings', results }] } }),
+      };
     }
 
     // The providers that read a page over plain `fetch` because their portal serves one without a

@@ -62,8 +62,8 @@ On top of the listing itself, Fredy answers two questions:
 
 ## ✨ Key Features
 
--   🏠 Scrapes **21 portals** across 🇩🇪 🇦🇹 🇨🇭 🇪🇸 🇮🇹 🇵🇹: ImmoScout24, Immowelt, Kleinanzeigen,
-    WG-Gesucht, willhaben, Flatfox, idealista, Subito and [13 more](#provider-)
+-   🏠 Scrapes **22 portals** across 🇩🇪 🇦🇹 🇨🇭 🇪🇸 🇮🇹 🇵🇹: ImmoScout24, Immowelt, Kleinanzeigen,
+    WG-Gesucht, willhaben, Flatfox, idealista, Casa.it and [14 more](#provider-)
 -   ⚡ Instant notifications: Slack, Telegram, Email (SMTP, SendGrid, Mailjet, Resend), ntfy,
     Discord, Mattermost, Pushover, Apprise and more
 -   🔎 Uses the **ImmoScout Mobile API** (reverse engineered)
@@ -177,7 +177,7 @@ the platform into Fredy.\
 ⚠️ Always make sure the search results are sorted by **date**, so Fredy picks up the newest
 listings first.
 
-Fredy ships with 21 providers:
+Fredy ships with 22 providers:
 
 **🇩🇪 Germany**
 
@@ -190,10 +190,17 @@ Fredy ships with 21 providers:
 | InBerlinWohnen | Kleinanzeigen | Sparkasse Immobilien |
 | McMakler | Wg gesucht | |
 
+**🇮🇹 Italy** · Casa.it  
 **🇦🇹 Austria** · willhaben  
 **🇨🇭 Switzerland** · Flatfox  
-**🇪🇸 Spain · 🇮🇹 Italy · 🇵🇹 Portugal** · idealista  
-**🇮🇹 Italy** · Subito
+**🇪🇸 Spain · 🇮🇹 Italy · 🇵🇹 Portugal** · idealista
+
+Casa.it uses its mobile API and geography service to translate search URLs.
+Searches that cannot be translated into API requests use the job's browser.
+The fallback reads up to twenty pages and stops when a page provides no valid results.
+See the [provider documentation](./reverse-engineered-casa.md) for supported endpoints and filters.
+
+**Italy** - Subito
 
 **Every provider declares the countries it covers**, and the job form puts the matching flag in
 front of its name so a mixed list can be read at a glance. The declaration is one line on the
