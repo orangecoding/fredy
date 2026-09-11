@@ -59,10 +59,7 @@ vi.mock('../lib/services/immowelt/immoweltBff.js', async (importOriginal) => {
   };
 });
 
-// idealista reads a result page through the run's own browser whenever no challenge solver is
-// configured, and a fixture run has neither. The transport is swapped for the recording, the same
-// way immowelt's is - `readFixture` answers the Italian page for a .it url and the Spanish one for
-// a .com or .pt url.
+// Offline runs replace browser navigation with the recorded result page.
 vi.mock('../lib/services/idealista/idealistaSearch.js', async (importOriginal) => {
   if (process.env.TEST_MODE !== 'offline') {
     return importOriginal();

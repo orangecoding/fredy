@@ -10,18 +10,6 @@ import { readSearch } from '../../lib/services/idealista/website.js';
 // reaches for the job storage. Nothing here is a job.
 vi.mock('../../lib/services/tracking/Tracker.js', () => ({ trackPoi: async () => {} }));
 
-/**
- * The other way through the wall in front of idealista's website.
- *
- * With `FREDY_CHALLENGE_SOLVER_URL` set, a result page is a plain request carrying the session
- * cookie the solver earned - which `idealista.test.js` walks. With none set there is still the
- * browser the job run already holds: DataDome's interstitial is a JavaScript challenge that solves
- * itself in a browser and then reloads the page that was asked for, and this is what waits it out.
- *
- * These tests drive the real transport against a page object rather than a mocked module, because
- * what is worth pinning is exactly what it does with the browser it is handed: one page, one
- * navigation, the wait, the document that replaced the challenge, and the page closed either way.
- */
 const SEARCH = 'https://www.idealista.it/vendita-terreni/roma-roma/';
 
 /**
@@ -72,16 +60,11 @@ function stubBrowser({ html = null, cleared = true, status = 403 } = {}) {
 }
 
 describe('the website read through the run own browser', () => {
-  const solver = process.env.FREDY_CHALLENGE_SOLVER_URL;
-
   afterEach(() => {
     vi.useRealTimers();
-    if (solver === undefined) delete process.env.FREDY_CHALLENGE_SOLVER_URL;
-    else process.env.FREDY_CHALLENGE_SOLVER_URL = solver;
   });
 
   it('navigates once per result page and reads the document the challenge left behind', async () => {
-    delete process.env.FREDY_CHALLENGE_SOLVER_URL;
     const { browser, pages, visited } = stubBrowser({
       html: `<html><body><main id="main-content">${card('42')}</main></body></html>`,
     });
@@ -105,34 +88,52 @@ describe('the website read through the run own browser', () => {
    * rather than a broken one.
    */
   it('gives up on the page whose challenge never cleared', async () => {
-    delete process.env.FREDY_CHALLENGE_SOLVER_URL;
     const { browser, pages } = stubBrowser({ cleared: false });
 
     expect(await readSearch(SEARCH, browser)).toEqual([]);
     expect(pages.every((page) => page.closed)).toBe(true);
   });
 
-  /**
-   * With a solver configured the browser is not touched at all: the plain request carrying the
-   * session is cheaper than a navigation, and it is what the walk over the further pages uses.
-   */
-  it('leaves the browser alone when a solver is configured', async () => {
-    process.env.FREDY_CHALLENGE_SOLVER_URL = 'http://solver.test/scrape';
-    const { browser, visited } = stubBrowser({ html: '<html></html>' });
+  it('stops immediately on a rate limit and closes the page', async () => {
+    const { browser, pages, visited } = stubBrowser({ status: 429, html: card('7') });
+    expect(await readSearch(SEARCH, browser)).toEqual([]);
+    expect(visited).toHaveLength(1);
+    expect(pages.every((page) => page.closed)).toBe(true);
+  });
 
-    const originalFetch = globalThis.fetch;
-    globalThis.fetch = async () => ({
-      status: 200,
-      headers: undefined,
-      text: async () => `<html><body><main id="main-content">${card('7')}</main></body></html>`,
-    });
+  it('walks full pages and retains results when a later page is rate limited', async () => {
+    const visited = [];
+    const closed = [];
+    const browser = {
+      newPage: async () => {
+        let pageNumber;
+        return {
+          goto: async (url) => {
+            visited.push(url);
+            pageNumber = visited.length;
+            return { status: () => (pageNumber === 3 ? 429 : 200) };
+          },
+          waitForFunction: async () => true,
+          content: async () => Array.from({ length: 30 }, (_, i) => card(String(pageNumber * 100 + i))).join(''),
+          close: async () => closed.push(pageNumber),
+        };
+      },
+    };
+    vi.useFakeTimers();
+    const walk = readSearch(SEARCH, browser);
+    await vi.runAllTimersAsync();
+    expect(await walk).toHaveLength(60);
+    expect(visited).toHaveLength(3);
+    expect(visited[2]).toContain('/lista-3.htm');
+    expect(closed).toEqual([1, 2, 3]);
+  });
 
-    try {
-      const adverts = await readSearch(SEARCH, browser);
-      expect(adverts.map((advert) => advert.id)).toEqual(['7']);
-      expect(visited).toEqual([]);
-    } finally {
-      globalThis.fetch = originalFetch;
-    }
+  it('stops when a full page repeats the previous listings', async () => {
+    const { browser, visited } = stubBrowser({ html: Array.from({ length: 30 }, (_, i) => card(String(i))).join('') });
+    vi.useFakeTimers();
+    const walk = readSearch(SEARCH, browser);
+    await vi.runAllTimersAsync();
+    expect(await walk).toHaveLength(30);
+    expect(visited).toHaveLength(2);
   });
 });

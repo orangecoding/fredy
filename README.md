@@ -194,17 +194,12 @@ Fredy ships with 20 providers:
 **🇨🇭 Switzerland** · Flatfox  
 **🇪🇸 Spain · 🇮🇹 Italy · 🇵🇹 Portugal** · idealista
 
-Idealista is one provider for three national sites - idealista.com, idealista.it and idealista.pt -
-and it works the same way on all three: the api its mobile app talks to serves one country per host,
-sorts by publication date and needs no scrape service. Paste any search url from any of the three,
-including a `/multi/` search over several areas; which country a job searches is read off the url's
-own domain, and a url on any other domain is refused rather than guessed at. A search the api has no
-terms for - a filter it cannot express, a category it does not serve, land - is read off the website
-instead. That fallback works without any configuration, through the browser Fredy already runs, but
-DataDome lets a datacenter address through only sometimes: point `FREDY_CHALLENGE_SOLVER_URL` at a
-challenge-solving scrape service such as [TRAWL](https://github.com/germondai/trawl) and those
-searches become plain requests. See
-[reverse-engineered-idealista.md](./reverse-engineered-idealista.md).
+Idealista usa le API delle app per idealista.com, idealista.it e idealista.pt.
+Il dominio dell'URL determina il paese della ricerca.
+Il provider supporta gli URL `/multi/` e rifiuta i domini estranei.
+Le ricerche con filtri o categorie non supportati dalle API usano il browser di Fredy.
+Il fallback puo' incontrare blocchi DataDome.
+La [documentazione del provider](./reverse-engineered-idealista.md) descrive gli endpoint e i filtri supportati.
 
 **Every provider declares the countries it covers**, and the job form puts the matching flag in
 front of its name so a mixed list can be read at a glance. The declaration is one line on the
@@ -460,16 +455,6 @@ Residential proxies are a paid service (usually billed per GB, Fredy's traffic i
 | [Oxylabs](https://oxylabs.io) | Enterprise-grade, larger plans |
 
 This is not an endorsement, pick whatever fits your budget. For low-volume use like Fredy, a pay-as-you-go plan (e.g. IPRoyal) or a cheap entry tier (e.g. Webshare) is usually plenty. Make sure to select **Germany** as the proxy location and keep the search interval reasonable (the higher the interval, the less you look like a bot).
-
-### The other fix: a challenge-solving scrape service
-
-Some portals do not answer a plain request at all, and the provider then has to read a page that sits behind an anti-bot wall (DataDome and the like). Set **`FREDY_CHALLENGE_SOLVER_URL`** to the endpoint of a scrape service that renders such a page for you, and those reads become one POST: Fredy sends `{"cmd": "request.get", "url": ..., "maxTimeout": 90000}` and expects the page back, either as `html` at the top level or under `solution` (`html` or `response`), together with the cookies and the user agent the service earned them with. That is [FlareSolverr](https://github.com/FlareSolverr/FlareSolverr)'s request shape, so FlareSolverr, [TRAWL](https://github.com/germondai/trawl) and anything else speaking it will do. The variable is read at scrape time, so a container restart is all it takes to add or remove one.
-
-```
-FREDY_CHALLENGE_SOLVER_URL=http://flaresolverr:8191/v1
-```
-
-Leave it unset and nothing changes: only the providers that fall back to reading a bot-walled page ever ask, and without a solver they carry on the way they do today, through the headless browser. This is not a replacement for the residential proxy above, and the two are worth combining - a solver on a datacenter address still meets the captcha the wall escalates to.
 
 ## 🔐 Reverse Proxy Sign-in (forward auth)
 

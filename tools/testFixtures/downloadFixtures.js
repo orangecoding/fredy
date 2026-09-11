@@ -329,16 +329,7 @@ async function downloadImmoweltFixtures(runConfig, launchBrowser, closeBrowser) 
 }
 
 /**
- * Idealista's search page, read the two ways the provider itself reads one: through the solver
- * named in `FREDY_CHALLENGE_SOLVER_URL` where there is one, and otherwise through a browser waiting
- * out DataDome's interstitial - the very transport `lib/services/idealista/idealistaSearch.js` uses.
- *
- * What the wall hands back is what gets written. A second plain request would arrive without the
- * session the first one earned and save a block page instead.
- *
- * The three national sites are recorded separately, because what a fixture pins is the language
- * inside the card: the Italian page under the provider's plain name, the others as
- * `idealista_<country>.html`, which is where `test/offlineFixtures.js` looks for them.
+ * Record each national website through the provider's browser transport.
  *
  * @param {string} url the search url, on any of the three sites
  * @param {Function} launchBrowser
@@ -356,28 +347,14 @@ async function downloadIdealistaFixtures(url, launchBrowser, closeBrowser) {
   const fixture = portal.country === 'it' ? 'idealista.html' : `idealista_${portal.country}.html`;
   console.log(`\nDownloading idealista (${portal.host})...`);
 
-  const html = (await renderThroughSolver(url)) ?? (await renderThroughBrowser(url, launchBrowser, closeBrowser));
+  const html = await renderThroughBrowser(url, launchBrowser, closeBrowser);
   if (html == null) {
-    console.warn(`  Neither the solver nor a browser got past the wall - skipping ${fixture}`);
+    console.warn(`  The browser did not get past the wall - skipping ${fixture}`);
     return;
   }
 
   await writeFile(path.join(FIXTURES_DIR, fixture), html, 'utf-8');
   console.log(`  Saved ${fixture}`);
-}
-
-/**
- * @param {string} url
- * @returns {Promise<string|null>} the page the configured solver rendered, or null when none is
- *   configured or it did not get through
- */
-async function renderThroughSolver(url) {
-  const { challengeSolverUrl, solveChallenge } = await import('../../lib/services/extractor/challengeSolver.js');
-  if (challengeSolverUrl() == null) {
-    console.log('  No FREDY_CHALLENGE_SOLVER_URL set - falling back to a browser');
-    return null;
-  }
-  return (await solveChallenge(url, 'idealista'))?.html ?? null;
 }
 
 /**

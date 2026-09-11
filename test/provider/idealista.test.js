@@ -3,7 +3,7 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { describe, it, expect, beforeAll, vi } from 'vitest';
+import { describe, it, expect, beforeAll } from 'vitest';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -38,25 +38,6 @@ const LAND_SEARCH = 'https://www.idealista.it/vendita-terreni/roma-roma/';
 /** Somewhere to resolve a card's relative link against, per site. */
 const IT_SEARCH = 'https://www.idealista.it/affitto-case/roma-roma/';
 const ES_SEARCH = 'https://www.idealista.com/alquiler-viviendas/madrid-madrid/';
-
-/**
- * Run a block with a challenge solver configured, which is what puts the website reader on its
- * plain-request transport instead of reaching for the run's browser.
- *
- * @template T
- * @param {() => Promise<T>} body
- * @returns {Promise<T>}
- */
-async function withSolver(body) {
-  const previous = process.env.FREDY_CHALLENGE_SOLVER_URL;
-  process.env.FREDY_CHALLENGE_SOLVER_URL = 'http://solver.test/scrape';
-  try {
-    return await body();
-  } finally {
-    if (previous === undefined) delete process.env.FREDY_CHALLENGE_SOLVER_URL;
-    else process.env.FREDY_CHALLENGE_SOLVER_URL = previous;
-  }
-}
 
 /**
  * @param {string} html
@@ -584,115 +565,13 @@ describe('the result pages idealista falls back to reading', () => {
     );
   });
 
-  /**
-   * Fredy's own browser is headless, which DataDome rarely lets through, so the wall is cleared by
-   * a separate service where one is configured. With neither a solver nor a browser the provider
-   * has to give up rather than pretend it read the search.
-   */
-  it('finds nothing when there is neither a solver nor a browser', async () => {
-    const previous = process.env.FREDY_CHALLENGE_SOLVER_URL;
-    delete process.env.FREDY_CHALLENGE_SOLVER_URL;
+  it('requires a browser for website-only searches', async () => {
     const originalFetch = globalThis.fetch;
-    // A wall on every request, which is what idealista serves a client with no session.
-    globalThis.fetch = async () => ({
-      status: 403,
-      headers: undefined,
-      text: async () => '<html><body>geo.captcha-delivery.com/interstitial/</body></html>',
-    });
-
+    globalThis.fetch = async () => ({ status: 500, ok: false, json: async () => ({}) });
     try {
       const runConfig = provider.createConfig({ url: LAND_SEARCH }, []);
-      expect(await runConfig.getListings(runConfig.url, undefined)).toEqual([]);
+      expect(await runConfig.getListings(runConfig.url)).toEqual([]);
     } finally {
-      globalThis.fetch = originalFetch;
-      if (previous !== undefined) process.env.FREDY_CHALLENGE_SOLVER_URL = previous;
-    }
-  });
-
-  /**
-   * The portal serves no ordering Fredy may ask for, so a new advert lands wherever the ranking
-   * puts it and the whole result set has to be read. A page past the last one comes back as the
-   * first one again, which is what ends the walk when the last page is a full one.
-   */
-  it('walks the result pages until one runs short', async () => {
-    const card = (id) =>
-      `<article class="item" data-element-id="${id}"><a class="item-link" href="/immobile/${id}/" title="Villa in Via Giulia, Roma"></a></article>`;
-    const cards = (from, count) => Array.from({ length: count }, (__, index) => card(from + index)).join('');
-
-    const asked = [];
-    const originalFetch = globalThis.fetch;
-    globalThis.fetch = async (url) => {
-      const address = String(url);
-      // The api's token and parser answer nothing a website walk can use, so the run falls back -
-      // and only the website's own pages are counted.
-      if (!address.startsWith('https://www.idealista.it')) {
-        return { status: 500, ok: false, headers: undefined, text: async () => '', json: async () => ({}) };
-      }
-      asked.push(address);
-      const page = Number(address.match(/lista-(\d+)\.htm/)?.[1] ?? 1);
-      // Two full pages and then a short one, which is where the results end.
-      const body = page <= 2 ? cards(page * 100, 30) : cards(300, 4);
-      return { status: 200, headers: undefined, text: async () => body };
-    };
-
-    // The walk waits between pages, which a real run wants and a test does not.
-    vi.useFakeTimers();
-    try {
-      await withSolver(async () => {
-        const runConfig = provider.createConfig({ url: LAND_SEARCH }, []);
-        const walk = runConfig.getListings(runConfig.url);
-        await vi.runAllTimersAsync();
-        const adverts = await walk;
-
-        expect(adverts).toHaveLength(64);
-        expect(asked).toHaveLength(3);
-        expect(asked[2]).toContain('/lista-3.htm');
-      });
-    } finally {
-      vi.useRealTimers();
-      globalThis.fetch = originalFetch;
-    }
-  });
-
-  /**
-   * A 429 is not a wall: no session clears it and the solver has nothing to solve. The run stops
-   * where it is rather than asking for the pages that would deepen the rate limit.
-   */
-  it('stops the walk when the portal asks for fewer requests', async () => {
-    const card = (id) =>
-      `<article class="item" data-element-id="${id}"><a class="item-link" href="/immobile/${id}/" title="Villa in Via Giulia, Roma"></a></article>`;
-
-    const asked = [];
-    const originalFetch = globalThis.fetch;
-    globalThis.fetch = async (url) => {
-      const address = String(url);
-      // The api's token and parser answer nothing a website walk can use, so the run falls back -
-      // and only the website's own pages are counted.
-      if (!address.startsWith('https://www.idealista.it')) {
-        return { status: 500, ok: false, headers: undefined, text: async () => '', json: async () => ({}) };
-      }
-      asked.push(address);
-      const page = Number(address.match(/lista-(\d+)\.htm/)?.[1] ?? 1);
-      if (page > 1) return { status: 429, headers: undefined, text: async () => 'Too Many Requests' };
-      return {
-        status: 200,
-        headers: undefined,
-        text: async () => Array.from({ length: 30 }, (__, index) => card(index)).join(''),
-      };
-    };
-
-    vi.useFakeTimers();
-    try {
-      await withSolver(async () => {
-        const runConfig = provider.createConfig({ url: LAND_SEARCH }, []);
-        const walk = runConfig.getListings(runConfig.url);
-        await vi.runAllTimersAsync();
-
-        expect(await walk).toHaveLength(30);
-        expect(asked).toHaveLength(2);
-      });
-    } finally {
-      vi.useRealTimers();
       globalThis.fetch = originalFetch;
     }
   });
