@@ -709,7 +709,3 @@ Because of these conditions Fredy is **source-available, not OSI open source**. 
     <img alt="Fredy star history" src="doc/star-history/star-history-light.svg">
   </picture>
 </a>
-
-## Date degli annunci
-
-Le [fonti delle date](doc/listing-dates.md) descrivono i campi usati dai provider e il comportamento dei valori mancanti.
