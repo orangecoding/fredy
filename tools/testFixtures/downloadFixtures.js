@@ -329,34 +329,118 @@ async function downloadImmoweltFixtures(runConfig, launchBrowser, closeBrowser) 
 }
 
 /**
- * idealista's result page is markup, but it cannot be taken with the generic extractor: the origin
- * is behind DataDome and answers the first request to any search with a 403 challenge that has to
- * run in a real browser before the page appears. The provider's own transport is what knows how to
- * wait that out, so it is what records the fixture.
+ * Record each national website through the provider's browser transport.
  *
- * @param {import('../../lib/types/providerConfig.js').ProviderConfig} runConfig the initialized provider config
+ * @param {string} url the search url, on any of the three sites
  * @param {Function} launchBrowser
  * @param {Function} closeBrowser
  * @returns {Promise<void>}
  */
-async function downloadIdealistaFixtures(runConfig, launchBrowser, closeBrowser) {
-  console.log('\nDownloading idealista...');
+async function downloadIdealistaFixtures(url, launchBrowser, closeBrowser) {
+  const { portalOf } = await import('../../lib/services/idealista/portal.js');
+  const portal = portalOf(url);
+  if (portal == null) {
+    console.warn(`  Skipping ${url}: idealista serves .com, .it and .pt and nothing else`);
+    return;
+  }
 
+  const fixture = portal.country === 'it' ? 'idealista.html' : `idealista_${portal.country}.html`;
+  console.log(`\nDownloading idealista (${portal.host})...`);
+
+  const html = await renderThroughBrowser(url, launchBrowser, closeBrowser);
+  if (html == null) {
+    console.warn(`  The browser did not get past the wall - skipping ${fixture}`);
+    return;
+  }
+
+  await writeFile(path.join(FIXTURES_DIR, fixture), html, 'utf-8');
+  console.log(`  Saved ${fixture}`);
+}
+
+/**
+ * @param {string} url
+ * @param {Function} launchBrowser
+ * @param {Function} closeBrowser
+ * @returns {Promise<string|null>} the page a browser waited the challenge out for
+ */
+async function renderThroughBrowser(url, launchBrowser, closeBrowser) {
   const { fetchSearchHtml } = await import('../../lib/services/idealista/idealistaSearch.js');
-  const browser = await launchBrowser(runConfig.url, {});
-
+  // Headful, because that is the only way the interstitial is likely to clear from a desktop.
+  const browser = await launchBrowser(url, { puppeteerHeadless: false });
   try {
-    const html = await fetchSearchHtml(runConfig.url, browser);
-    if (!html) {
-      console.warn('  Failed to download idealista');
-      return;
-    }
-
-    await writeFile(path.join(FIXTURES_DIR, 'idealista.html'), html, 'utf-8');
-    console.log('  Saved idealista.html');
+    return await fetchSearchHtml(url, browser);
   } finally {
     await closeBrowser(browser);
   }
+}
+
+/**
+ * Idealista is read through the mobile api, so the fixtures for that half of the provider are the
+ * answers it gives: the catalogue of locations the search url is looked up in, and one page of the
+ * search itself. The page fixture stands for the whole result set, so the offline mock answers
+ * every page after the first one empty.
+ *
+ * @param {string} url the search url
+ * @returns {Promise<void>}
+ */
+async function downloadIdealistaApiFixtures(url) {
+  console.log('\nDownloading idealista mobile api...');
+
+  const { call, locationsPath, searchPath } = await import('../../lib/services/idealista/mobile-api.js');
+  const { translateSearchUrl } = await import('../../lib/services/idealista/web-translator.js');
+  const { resolveLocationId } = await import('../../lib/services/idealista/locations.js');
+  const { portalOf } = await import('../../lib/services/idealista/portal.js');
+
+  const portal = portalOf(url);
+  if (portal == null) {
+    console.warn(`  Skipping ${url}: idealista serves .com, .it and .pt and nothing else`);
+    return;
+  }
+
+  const search = translateSearchUrl(portal, url);
+  if (search == null) {
+    console.warn(`  Skipping: ${url} is not a search the api can be asked for`);
+    return;
+  }
+
+  const locationId = await resolveLocationId(portal, search.locationSlugs, search);
+  if (locationId == null) {
+    console.warn(`  Skipping: the api catalogue has no "${search.locationSlugs.join('/')}"`);
+    return;
+  }
+
+  const criteria = [
+    ['operation', search.operation],
+    ['propertyType', search.propertyType],
+    ['locale', portal.country],
+  ];
+  const catalogue = {};
+  // The catalogue only serves the list of provinces alongside the children of some location, so the
+  // resolver always opens the country's anchor first. See `lib/services/idealista/locations.js`.
+  for (const level of [portal.provinceAnchor, locationId.split('-').slice(0, 4).join('-')]) {
+    catalogue[level] = await call(portal, locationsPath(portal), { body: [...criteria, ['locationIds', level]] });
+  }
+  await writeFile(path.join(FIXTURES_DIR, 'idealista_locations.json'), JSON.stringify(catalogue, null, 2), 'utf-8');
+  console.log(`  Saved idealista_locations.json (${Object.keys(catalogue).length} levels)`);
+
+  const listing = await call(portal, searchPath(portal), {
+    query: [
+      ['adIds', ''],
+      ['searchType', 'locationIds'],
+    ],
+    body: [
+      ...criteria,
+      ['locationIds', `[${locationId}]`],
+      ['order', 'publicationDate'],
+      ['sort', 'desc'],
+      ['numPage', '1'],
+      ['maxItems', '50'],
+      ['quality', 'high'],
+      ['gallery', 'true'],
+    ],
+  });
+  await writeFile(path.join(FIXTURES_DIR, 'idealista_list.json'), JSON.stringify(listing, null, 2), 'utf-8');
+  console.log(`  Saved idealista_list.json (${listing?.elementList?.length ?? 0} adverts)`);
 }
 
 /**
@@ -515,7 +599,13 @@ async function main() {
         await downloadFlatfoxFixtures(runConfig.url);
         break;
       case 'idealista':
-        await downloadIdealistaFixtures(runConfig, launchBrowser, closeBrowser);
+        // One recording per national site, so a change to the card markup is caught in the language
+        // it was written in. The api fixtures are the Italian search's, which is the one the
+        // offline suite runs end to end.
+        for (const site of [runConfig.url, ...(cfg.otherSiteUrls ?? [])]) {
+          await downloadIdealistaFixtures(site, launchBrowser, closeBrowser);
+        }
+        await downloadIdealistaApiFixtures(runConfig.url);
         break;
       default:
         await downloadHtmlProvider(name, runConfig, launchBrowser, closeBrowser, puppeteerExtractor);

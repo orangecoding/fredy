@@ -192,8 +192,15 @@ Fredy ships with 21 providers:
 
 **🇦🇹 Austria** · willhaben  
 **🇨🇭 Switzerland** · Flatfox  
-**🇪🇸 Spain · 🇮🇹 Italy · 🇵🇹 Portugal** · idealista  
+**🇪🇸 Spain · 🇮🇹 Italy · 🇵🇹 Portugal** · idealista\
 **🇮🇹 Italy** · Subito
+
+Idealista uses the mobile APIs for idealista.com, idealista.it and idealista.pt.
+The search URL determines the country.
+The provider supports `/multi/` URLs and rejects unrelated domains.
+Searches with filters or categories unsupported by the APIs use Fredy's browser.
+DataDome can block the browser fallback.
+See the [provider documentation](./reverse-engineered-idealista.md) for supported endpoints and filters.
 
 **Every provider declares the countries it covers**, and the job form puts the matching flag in
 front of its name so a mixed list can be read at a glance. The declaration is one line on the

@@ -79,6 +79,7 @@ describe('listingsStorage connectivity', () => {
         price                 REAL,
         size                  REAL,
         rooms                 REAL,
+        link                  TEXT,
         status                JSON,
         distances             JSONB,
         latitude              REAL,

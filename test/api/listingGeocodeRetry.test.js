@@ -52,7 +52,7 @@ async function buildServer({ demoMode = false, isAdmin = false } = {}) {
     isGeocodingPaused: () => paused,
   }));
   vi.doMock(root + '/lib/services/providers/providerCountries.js', () => ({
-    getCountriesForProvider: async (providerId) => (providerId === 'swissportal' ? ['ch'] : ['de']),
+    getCountriesForListing: async (providerId) => (providerId === 'swissportal' ? ['ch'] : ['de']),
   }));
   vi.doMock(distanceServicePath, () => ({
     updateDistancesForListing: (...args) => distanceUpdates.push(args),

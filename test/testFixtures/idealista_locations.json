@@ -1,0 +1,2456 @@
+{
+  "0-EU-IT-MI": {
+    "provinces": [
+      {
+        "locationId": "0-EU-IT-AG",
+        "locationName": "Agrigento",
+        "divisible": true,
+        "total": 350
+      },
+      {
+        "locationId": "0-EU-IT-AL",
+        "locationName": "Alessandria",
+        "divisible": true,
+        "total": 349
+      },
+      {
+        "locationId": "0-EU-IT-AZ",
+        "locationName": "Alpi Marittime - Costa Azzurra",
+        "divisible": true,
+        "total": 20
+      },
+      {
+        "locationId": "0-EU-IT-AN",
+        "locationName": "Ancona",
+        "divisible": true,
+        "total": 247
+      },
+      {
+        "locationId": "0-EU-IT-AO",
+        "locationName": "Aosta",
+        "divisible": true,
+        "total": 209
+      },
+      {
+        "locationId": "0-EU-IT-AR",
+        "locationName": "Arezzo",
+        "divisible": true,
+        "total": 170
+      },
+      {
+        "locationId": "0-EU-IT-AP",
+        "locationName": "Ascoli Piceno",
+        "divisible": true,
+        "total": 221
+      },
+      {
+        "locationId": "0-EU-IT-AT",
+        "locationName": "Asti",
+        "divisible": true,
+        "total": 122
+      },
+      {
+        "locationId": "0-EU-IT-AV",
+        "locationName": "Avellino",
+        "divisible": true,
+        "total": 161
+      },
+      {
+        "locationId": "0-EU-IT-BA",
+        "locationName": "Bari",
+        "divisible": true,
+        "total": 749
+      },
+      {
+        "locationId": "0-EU-IT-BT",
+        "locationName": "Barletta-Andria-Trani",
+        "divisible": true,
+        "total": 242
+      },
+      {
+        "locationId": "0-EU-IT-BL",
+        "locationName": "Belluno",
+        "divisible": true,
+        "total": 172
+      },
+      {
+        "locationId": "0-EU-IT-BN",
+        "locationName": "Benevento",
+        "divisible": true,
+        "total": 93
+      },
+      {
+        "locationId": "0-EU-IT-BG",
+        "locationName": "Bergamo",
+        "divisible": true,
+        "total": 687
+      },
+      {
+        "locationId": "0-EU-IT-BI",
+        "locationName": "Biella",
+        "divisible": true,
+        "total": 124
+      },
+      {
+        "locationId": "0-EU-IT-BO",
+        "locationName": "Bologna",
+        "divisible": true,
+        "total": 1789
+      },
+      {
+        "locationId": "0-EU-IT-BZ",
+        "locationName": "Bolzano-Bozen",
+        "divisible": true,
+        "total": 107
+      },
+      {
+        "locationId": "0-EU-IT-BS",
+        "locationName": "Brescia",
+        "divisible": true,
+        "total": 747
+      },
+      {
+        "locationId": "0-EU-IT-BR",
+        "locationName": "Brindisi",
+        "divisible": true,
+        "total": 344
+      },
+      {
+        "locationId": "0-EU-IT-CA",
+        "locationName": "Cagliari",
+        "divisible": true,
+        "total": 424
+      },
+      {
+        "locationId": "0-EU-IT-CL",
+        "locationName": "Caltanissetta",
+        "divisible": true,
+        "total": 156
+      },
+      {
+        "locationId": "0-EU-IT-CB",
+        "locationName": "Campobasso",
+        "divisible": true,
+        "total": 181
+      },
+      {
+        "locationId": "0-EU-IT-TI",
+        "locationName": "Canton Ticino",
+        "divisible": true,
+        "total": 46
+      },
+      {
+        "locationId": "0-EU-IT-CE",
+        "locationName": "Caserta",
+        "divisible": true,
+        "total": 461
+      },
+      {
+        "locationId": "0-EU-IT-CT",
+        "locationName": "Catania",
+        "divisible": true,
+        "total": 1124
+      },
+      {
+        "locationId": "0-EU-IT-CZ",
+        "locationName": "Catanzaro",
+        "divisible": true,
+        "total": 697
+      },
+      {
+        "locationId": "0-EU-IT-CH",
+        "locationName": "Chieti",
+        "divisible": true,
+        "total": 441
+      },
+      {
+        "locationId": "0-EU-IT-CO",
+        "locationName": "Como",
+        "divisible": true,
+        "total": 786
+      },
+      {
+        "locationId": "0-EU-IT-CS",
+        "locationName": "Cosenza",
+        "divisible": true,
+        "total": 603
+      },
+      {
+        "locationId": "0-EU-IT-CR",
+        "locationName": "Cremona",
+        "divisible": true,
+        "total": 109
+      },
+      {
+        "locationId": "0-EU-IT-KR",
+        "locationName": "Crotone",
+        "divisible": true,
+        "total": 152
+      },
+      {
+        "locationId": "0-EU-IT-CN",
+        "locationName": "Cuneo",
+        "divisible": true,
+        "total": 421
+      },
+      {
+        "locationId": "0-EU-IT-EN",
+        "locationName": "Enna",
+        "divisible": true,
+        "total": 69
+      },
+      {
+        "locationId": "0-EU-IT-FM",
+        "locationName": "Fermo",
+        "divisible": true,
+        "total": 121
+      },
+      {
+        "locationId": "0-EU-IT-FE",
+        "locationName": "Ferrara",
+        "divisible": true,
+        "total": 487
+      },
+      {
+        "locationId": "0-EU-IT-FI",
+        "locationName": "Firenze",
+        "divisible": true,
+        "total": 3287
+      },
+      {
+        "locationId": "0-EU-IT-FG",
+        "locationName": "Foggia",
+        "divisible": true,
+        "total": 322
+      },
+      {
+        "locationId": "0-EU-IT-FC",
+        "locationName": "Forlì-Cesena",
+        "divisible": true,
+        "total": 387
+      },
+      {
+        "locationId": "0-EU-IT-FR",
+        "locationName": "Frosinone",
+        "divisible": true,
+        "total": 383
+      },
+      {
+        "locationId": "0-EU-IT-GE",
+        "locationName": "Genova",
+        "divisible": true,
+        "total": 1555
+      },
+      {
+        "locationId": "0-EU-IT-GO",
+        "locationName": "Gorizia",
+        "divisible": true,
+        "total": 61
+      },
+      {
+        "locationId": "0-EU-IT-GR",
+        "locationName": "Grosseto",
+        "divisible": true,
+        "total": 772
+      },
+      {
+        "locationId": "0-EU-IT-IM",
+        "locationName": "Imperia",
+        "divisible": true,
+        "total": 588
+      },
+      {
+        "locationId": "0-EU-IT-IS",
+        "locationName": "Isernia",
+        "divisible": true,
+        "total": 38
+      },
+      {
+        "locationId": "0-EU-IT-AQ",
+        "locationName": "L'Aquila",
+        "divisible": true,
+        "total": 433
+      },
+      {
+        "locationId": "0-EU-IT-SP",
+        "locationName": "La Spezia",
+        "divisible": true,
+        "total": 529
+      },
+      {
+        "locationId": "0-EU-IT-LT",
+        "locationName": "Latina",
+        "divisible": true,
+        "total": 819
+      },
+      {
+        "locationId": "0-EU-IT-LE",
+        "locationName": "Lecce",
+        "divisible": true,
+        "total": 785
+      },
+      {
+        "locationId": "0-EU-IT-LC",
+        "locationName": "Lecco",
+        "divisible": true,
+        "total": 230
+      },
+      {
+        "locationId": "0-EU-IT-LI",
+        "locationName": "Livorno",
+        "divisible": true,
+        "total": 509
+      },
+      {
+        "locationId": "0-EU-IT-LO",
+        "locationName": "Lodi",
+        "divisible": true,
+        "total": 45
+      },
+      {
+        "locationId": "0-EU-IT-LU",
+        "locationName": "Lucca",
+        "divisible": true,
+        "total": 1349
+      },
+      {
+        "locationId": "0-EU-IT-MC",
+        "locationName": "Macerata",
+        "divisible": true,
+        "total": 336
+      },
+      {
+        "locationId": "0-EU-IT-MN",
+        "locationName": "Mantova",
+        "divisible": true,
+        "total": 237
+      },
+      {
+        "locationId": "0-EU-IT-MS",
+        "locationName": "Massa-Carrara",
+        "divisible": true,
+        "total": 375
+      },
+      {
+        "locationId": "0-EU-IT-MT",
+        "locationName": "Matera",
+        "divisible": true,
+        "total": 116
+      },
+      {
+        "locationId": "0-EU-IT-ME",
+        "locationName": "Messina",
+        "divisible": true,
+        "total": 896
+      },
+      {
+        "locationId": "0-EU-IT-MI",
+        "locationName": "Milano",
+        "divisible": true,
+        "total": 16971
+      },
+      {
+        "locationId": "0-EU-IT-MO",
+        "locationName": "Modena",
+        "divisible": true,
+        "total": 814
+      },
+      {
+        "locationId": "0-EU-IT-MB",
+        "locationName": "Monza-Brianza",
+        "divisible": true,
+        "total": 572
+      },
+      {
+        "locationId": "0-EU-IT-NA",
+        "locationName": "Napoli",
+        "divisible": true,
+        "total": 2075
+      },
+      {
+        "locationId": "0-EU-IT-NO",
+        "locationName": "Novara",
+        "divisible": true,
+        "total": 378
+      },
+      {
+        "locationId": "0-EU-IT-NU",
+        "locationName": "Nuoro",
+        "divisible": true,
+        "total": 117
+      },
+      {
+        "locationId": "0-EU-IT-OR",
+        "locationName": "Oristano",
+        "divisible": true,
+        "total": 53
+      },
+      {
+        "locationId": "0-EU-IT-PD",
+        "locationName": "Padova",
+        "divisible": true,
+        "total": 680
+      },
+      {
+        "locationId": "0-EU-IT-PA",
+        "locationName": "Palermo",
+        "divisible": true,
+        "total": 1832
+      },
+      {
+        "locationId": "0-EU-IT-PR",
+        "locationName": "Parma",
+        "divisible": true,
+        "total": 639
+      },
+      {
+        "locationId": "0-EU-IT-PV",
+        "locationName": "Pavia",
+        "divisible": true,
+        "total": 323
+      },
+      {
+        "locationId": "0-EU-IT-PG",
+        "locationName": "Perugia",
+        "divisible": true,
+        "total": 727
+      },
+      {
+        "locationId": "0-EU-IT-PU",
+        "locationName": "Pesaro Urbino",
+        "divisible": true,
+        "total": 204
+      },
+      {
+        "locationId": "0-EU-IT-PE",
+        "locationName": "Pescara",
+        "divisible": true,
+        "total": 276
+      },
+      {
+        "locationId": "0-EU-IT-PC",
+        "locationName": "Piacenza",
+        "divisible": true,
+        "total": 226
+      },
+      {
+        "locationId": "0-EU-IT-PI",
+        "locationName": "Pisa",
+        "divisible": true,
+        "total": 654
+      },
+      {
+        "locationId": "0-EU-IT-PT",
+        "locationName": "Pistoia",
+        "divisible": true,
+        "total": 101
+      },
+      {
+        "locationId": "0-EU-IT-PN",
+        "locationName": "Pordenone",
+        "divisible": true,
+        "total": 50
+      },
+      {
+        "locationId": "0-EU-IT-PZ",
+        "locationName": "Potenza",
+        "divisible": true,
+        "total": 185
+      },
+      {
+        "locationId": "0-EU-IT-PO",
+        "locationName": "Prato",
+        "divisible": true,
+        "total": 60
+      },
+      {
+        "locationId": "0-EU-IT-RG",
+        "locationName": "Ragusa",
+        "divisible": true,
+        "total": 393
+      },
+      {
+        "locationId": "0-EU-IT-RA",
+        "locationName": "Ravenna",
+        "divisible": true,
+        "total": 530
+      },
+      {
+        "locationId": "0-EU-IT-RC",
+        "locationName": "Reggio Calabria",
+        "divisible": true,
+        "total": 461
+      },
+      {
+        "locationId": "0-EU-IT-RE",
+        "locationName": "Reggio Emilia",
+        "divisible": true,
+        "total": 350
+      },
+      {
+        "locationId": "0-EU-IT-RI",
+        "locationName": "Rieti",
+        "divisible": true,
+        "total": 101
+      },
+      {
+        "locationId": "0-EU-IT-RN",
+        "locationName": "Rimini",
+        "divisible": true,
+        "total": 352
+      },
+      {
+        "locationId": "0-EU-IT-RM",
+        "locationName": "Roma",
+        "divisible": true,
+        "total": 5619
+      },
+      {
+        "locationId": "0-EU-IT-RO",
+        "locationName": "Rovigo",
+        "divisible": true,
+        "total": 153
+      },
+      {
+        "locationId": "0-EU-IT-SA",
+        "locationName": "Salerno",
+        "divisible": true,
+        "total": 585
+      },
+      {
+        "locationId": "0-EU-IT-SM",
+        "locationName": "San Marino",
+        "divisible": true,
+        "total": 21
+      },
+      {
+        "locationId": "0-EU-IT-SS",
+        "locationName": "Sassari",
+        "divisible": true,
+        "total": 926
+      },
+      {
+        "locationId": "0-EU-IT-SV",
+        "locationName": "Savona",
+        "divisible": true,
+        "total": 1361
+      },
+      {
+        "locationId": "0-EU-IT-SI",
+        "locationName": "Siena",
+        "divisible": true,
+        "total": 205
+      },
+      {
+        "locationId": "0-EU-IT-SR",
+        "locationName": "Siracusa",
+        "divisible": true,
+        "total": 669
+      },
+      {
+        "locationId": "0-EU-IT-SO",
+        "locationName": "Sondrio",
+        "divisible": true,
+        "total": 237
+      },
+      {
+        "locationId": "0-EU-IT-SU",
+        "locationName": "Sud Sardegna",
+        "divisible": true,
+        "total": 174
+      },
+      {
+        "locationId": "0-EU-IT-TA",
+        "locationName": "Taranto",
+        "divisible": true,
+        "total": 539
+      },
+      {
+        "locationId": "0-EU-IT-TE",
+        "locationName": "Teramo",
+        "divisible": true,
+        "total": 223
+      },
+      {
+        "locationId": "0-EU-IT-TR",
+        "locationName": "Terni",
+        "divisible": true,
+        "total": 154
+      },
+      {
+        "locationId": "0-EU-IT-TO",
+        "locationName": "Torino",
+        "divisible": true,
+        "total": 2836
+      },
+      {
+        "locationId": "0-EU-IT-TP",
+        "locationName": "Trapani",
+        "divisible": true,
+        "total": 791
+      },
+      {
+        "locationId": "0-EU-IT-TN",
+        "locationName": "Trento",
+        "divisible": true,
+        "total": 274
+      },
+      {
+        "locationId": "0-EU-IT-TV",
+        "locationName": "Treviso",
+        "divisible": true,
+        "total": 470
+      },
+      {
+        "locationId": "0-EU-IT-TS",
+        "locationName": "Trieste",
+        "divisible": true,
+        "total": 255
+      },
+      {
+        "locationId": "0-EU-IT-UD",
+        "locationName": "Udine",
+        "divisible": true,
+        "total": 178
+      },
+      {
+        "locationId": "0-EU-IT-VA",
+        "locationName": "Varese",
+        "divisible": true,
+        "total": 844
+      },
+      {
+        "locationId": "0-EU-IT-VE",
+        "locationName": "Venezia",
+        "divisible": true,
+        "total": 1018
+      },
+      {
+        "locationId": "0-EU-IT-VB",
+        "locationName": "Verbano-Cusio-Ossola",
+        "divisible": true,
+        "total": 157
+      },
+      {
+        "locationId": "0-EU-IT-VC",
+        "locationName": "Vercelli",
+        "divisible": true,
+        "total": 72
+      },
+      {
+        "locationId": "0-EU-IT-VR",
+        "locationName": "Verona",
+        "divisible": true,
+        "total": 710
+      },
+      {
+        "locationId": "0-EU-IT-VV",
+        "locationName": "Vibo Valentia",
+        "divisible": true,
+        "total": 124
+      },
+      {
+        "locationId": "0-EU-IT-VI",
+        "locationName": "Vicenza",
+        "divisible": true,
+        "total": 675
+      },
+      {
+        "locationId": "0-EU-IT-VT",
+        "locationName": "Viterbo",
+        "divisible": true,
+        "total": 309
+      }
+    ],
+    "municipalities": [
+      {
+        "locationId": "0-EU-IT-MI-06-007-001",
+        "locationName": "Abbiategrasso, Milano",
+        "divisible": true,
+        "total": 26
+      },
+      {
+        "locationId": "0-EU-IT-MI-06-008-005",
+        "locationName": "Albairate, Milano",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-MI-12-004-008",
+        "locationName": "Arconate, Milano",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-MI-03-007-010",
+        "locationName": "Arese, Milano",
+        "divisible": false,
+        "total": 19
+      },
+      {
+        "locationId": "0-EU-IT-MI-07-005-011",
+        "locationName": "Arluno, Milano",
+        "divisible": false,
+        "total": 3
+      },
+      {
+        "locationId": "0-EU-IT-MI-10-005-012",
+        "locationName": "Assago, Milano",
+        "divisible": false,
+        "total": 19
+      },
+      {
+        "locationId": "0-EU-IT-MI-03-004-014",
+        "locationName": "Baranzate, Milano",
+        "divisible": false,
+        "total": 4
+      },
+      {
+        "locationId": "0-EU-IT-MI-07-019-016",
+        "locationName": "Bareggio, Milano",
+        "divisible": false,
+        "total": 7
+      },
+      {
+        "locationId": "0-EU-IT-MI-08-001-019",
+        "locationName": "Basiano, Milano",
+        "divisible": false,
+        "total": 2
+      },
+      {
+        "locationId": "0-EU-IT-MI-05-008-020",
+        "locationName": "Basiglio, Milano",
+        "divisible": false,
+        "total": 52
+      },
+      {
+        "locationId": "0-EU-IT-MI-04-011-021",
+        "locationName": "Bellinzago Lombardo, Milano",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-MI-12-005-024",
+        "locationName": "Bernate Ticino, Milano",
+        "divisible": false,
+        "total": 2
+      },
+      {
+        "locationId": "0-EU-IT-MI-05-012-029",
+        "locationName": "Binasco, Milano",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-MI-03-003-032",
+        "locationName": "Bollate, Milano",
+        "divisible": true,
+        "total": 33
+      },
+      {
+        "locationId": "0-EU-IT-MI-02-001-036",
+        "locationName": "Bresso, Milano",
+        "divisible": false,
+        "total": 6
+      },
+      {
+        "locationId": "0-EU-IT-MI-06-010-040",
+        "locationName": "Bubbiano, Milano",
+        "divisible": false,
+        "total": 2
+      },
+      {
+        "locationId": "0-EU-IT-MI-10-001-041",
+        "locationName": "Buccinasco, Milano",
+        "divisible": false,
+        "total": 20
+      },
+      {
+        "locationId": "0-EU-IT-MI-12-004-043",
+        "locationName": "Buscate, Milano",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-MI-04-024-045",
+        "locationName": "Bussero, Milano",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-MI-04-011-048",
+        "locationName": "Cambiago, Milano",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-MI-11-002-051",
+        "locationName": "Canegrate, Milano",
+        "divisible": false,
+        "total": 4
+      },
+      {
+        "locationId": "0-EU-IT-MI-09-003-057",
+        "locationName": "Carpiano, Milano",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-MI-04-005-058",
+        "locationName": "Carugate, Milano",
+        "divisible": false,
+        "total": 4
+      },
+      {
+        "locationId": "0-EU-IT-MI-05-012-059",
+        "locationName": "Casarile, Milano",
+        "divisible": false,
+        "total": 3
+      },
+      {
+        "locationId": "0-EU-IT-MI-08-002-062",
+        "locationName": "Cassano d'Adda, Milano",
+        "divisible": false,
+        "total": 8
+      },
+      {
+        "locationId": "0-EU-IT-MI-04-006-063",
+        "locationName": "Cassina de' Pecchi, Milano",
+        "divisible": false,
+        "total": 13
+      },
+      {
+        "locationId": "0-EU-IT-MI-12-003-067",
+        "locationName": "Castano Primo, Milano",
+        "divisible": false,
+        "total": 3
+      },
+      {
+        "locationId": "0-EU-IT-MI-04-001-071",
+        "locationName": "Cernusco sul Naviglio, Milano",
+        "divisible": false,
+        "total": 37
+      },
+      {
+        "locationId": "0-EU-IT-MI-11-004-073",
+        "locationName": "Cerro Maggiore, Milano",
+        "divisible": false,
+        "total": 2
+      },
+      {
+        "locationId": "0-EU-IT-MI-10-002-074",
+        "locationName": "Cesano Boscone, Milano",
+        "divisible": false,
+        "total": 13
+      },
+      {
+        "locationId": "0-EU-IT-MI-03-001-076",
+        "locationName": "Cesate, Milano",
+        "divisible": false,
+        "total": 3
+      },
+      {
+        "locationId": "0-EU-IT-MI-02-007-077",
+        "locationName": "Cinisello Balsamo, Milano",
+        "divisible": true,
+        "total": 36
+      },
+      {
+        "locationId": "0-EU-IT-MI-06-008-078",
+        "locationName": "Cisliano, Milano",
+        "divisible": false,
+        "total": 3
+      },
+      {
+        "locationId": "0-EU-IT-MI-02-009-081",
+        "locationName": "Cologno Monzese, Milano",
+        "divisible": true,
+        "total": 33
+      },
+      {
+        "locationId": "0-EU-IT-MI-07-006-085",
+        "locationName": "Corbetta, Milano",
+        "divisible": false,
+        "total": 14
+      },
+      {
+        "locationId": "0-EU-IT-MI-02-006-086",
+        "locationName": "Cormano, Milano",
+        "divisible": false,
+        "total": 10
+      },
+      {
+        "locationId": "0-EU-IT-MI-03-011-087",
+        "locationName": "Cornaredo, Milano",
+        "divisible": false,
+        "total": 12
+      },
+      {
+        "locationId": "0-EU-IT-MI-10-003-090",
+        "locationName": "Corsico, Milano",
+        "divisible": false,
+        "total": 33
+      },
+      {
+        "locationId": "0-EU-IT-MI-12-005-091",
+        "locationName": "Cuggiono, Milano",
+        "divisible": false,
+        "total": 2
+      },
+      {
+        "locationId": "0-EU-IT-MI-10-006-092",
+        "locationName": "Cusago, Milano",
+        "divisible": false,
+        "total": 8
+      },
+      {
+        "locationId": "0-EU-IT-MI-02-002-093",
+        "locationName": "Cusano Milanino, Milano",
+        "divisible": false,
+        "total": 6
+      },
+      {
+        "locationId": "0-EU-IT-MI-03-012-098",
+        "locationName": "Garbagnate Milanese, Milano",
+        "divisible": true,
+        "total": 16
+      },
+      {
+        "locationId": "0-EU-IT-MI-04-011-099",
+        "locationName": "Gessate, Milano",
+        "divisible": false,
+        "total": 11
+      },
+      {
+        "locationId": "0-EU-IT-MI-04-017-101",
+        "locationName": "Gorgonzola, Milano",
+        "divisible": false,
+        "total": 12
+      },
+      {
+        "locationId": "0-EU-IT-MI-12-005-105",
+        "locationName": "Inveruno, Milano",
+        "divisible": false,
+        "total": 2
+      },
+      {
+        "locationId": "0-EU-IT-MI-08-006-106",
+        "locationName": "Inzago, Milano",
+        "divisible": false,
+        "total": 7
+      },
+      {
+        "locationId": "0-EU-IT-MI-05-010-107",
+        "locationName": "Lacchiarella, Milano",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-MI-03-005-108",
+        "locationName": "Lainate, Milano",
+        "divisible": true,
+        "total": 22
+      },
+      {
+        "locationId": "0-EU-IT-MI-11-001-110",
+        "locationName": "Legnano, Milano",
+        "divisible": true,
+        "total": 43
+      },
+      {
+        "locationId": "0-EU-IT-MI-04-021-117",
+        "locationName": "Liscate, Milano",
+        "divisible": false,
+        "total": 3
+      },
+      {
+        "locationId": "0-EU-IT-MI-05-009-119",
+        "locationName": "Locate Triulzi, Milano",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-MI-07-015-122",
+        "locationName": "Magenta, Milano",
+        "divisible": true,
+        "total": 24
+      },
+      {
+        "locationId": "0-EU-IT-MI-12-001-123",
+        "locationName": "Magnago, Milano",
+        "divisible": false,
+        "total": 4
+      },
+      {
+        "locationId": "0-EU-IT-MI-08-001-125",
+        "locationName": "Masate, Milano",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-MI-09-006-128",
+        "locationName": "Mediglia, Milano",
+        "divisible": false,
+        "total": 2
+      },
+      {
+        "locationId": "0-EU-IT-MI-09-003-129",
+        "locationName": "Melegnano, Milano",
+        "divisible": false,
+        "total": 13
+      },
+      {
+        "locationId": "0-EU-IT-MI-04-012-130",
+        "locationName": "Melzo, Milano",
+        "divisible": false,
+        "total": 11
+      },
+      {
+        "locationId": "0-EU-IT-MI-01-001-135",
+        "locationName": "Milano, Milano",
+        "divisible": true,
+        "total": 15654
+      },
+      {
+        "locationId": "0-EU-IT-MI-06-011-141",
+        "locationName": "Motta Visconti, Milano",
+        "divisible": false,
+        "total": 2
+      },
+      {
+        "locationId": "0-EU-IT-MI-11-003-143",
+        "locationName": "Nerviano, Milano",
+        "divisible": false,
+        "total": 4
+      },
+      {
+        "locationId": "0-EU-IT-MI-03-013-146",
+        "locationName": "Novate Milanese, Milano",
+        "divisible": false,
+        "total": 13
+      },
+      {
+        "locationId": "0-EU-IT-MI-05-011-147",
+        "locationName": "Noviglio, Milano",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-MI-05-003-149",
+        "locationName": "Opera, Milano",
+        "divisible": false,
+        "total": 22
+      },
+      {
+        "locationId": "0-EU-IT-MI-02-005-155",
+        "locationName": "Paderno Dugnano, Milano",
+        "divisible": true,
+        "total": 11
+      },
+      {
+        "locationId": "0-EU-IT-MI-09-006-158",
+        "locationName": "Pantigliate, Milano",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-MI-11-009-159",
+        "locationName": "Parabiago, Milano",
+        "divisible": true,
+        "total": 10
+      },
+      {
+        "locationId": "0-EU-IT-MI-09-005-160",
+        "locationName": "Paullo, Milano",
+        "divisible": false,
+        "total": 2
+      },
+      {
+        "locationId": "0-EU-IT-MI-03-008-162",
+        "locationName": "Pero, Milano",
+        "divisible": false,
+        "total": 17
+      },
+      {
+        "locationId": "0-EU-IT-MI-09-004-163",
+        "locationName": "Peschiera Borromeo, Milano",
+        "divisible": false,
+        "total": 26
+      },
+      {
+        "locationId": "0-EU-IT-MI-05-007-165",
+        "locationName": "Pieve Emanuele, Milano",
+        "divisible": false,
+        "total": 11
+      },
+      {
+        "locationId": "0-EU-IT-MI-04-010-166",
+        "locationName": "Pioltello, Milano",
+        "divisible": true,
+        "total": 24
+      },
+      {
+        "locationId": "0-EU-IT-MI-03-010-171",
+        "locationName": "Pregnana Milanese, Milano",
+        "divisible": false,
+        "total": 7
+      },
+      {
+        "locationId": "0-EU-IT-MI-11-010-175",
+        "locationName": "Rescaldina, Milano",
+        "divisible": false,
+        "total": 5
+      },
+      {
+        "locationId": "0-EU-IT-MI-03-006-176",
+        "locationName": "Rho, Milano",
+        "divisible": true,
+        "total": 75
+      },
+      {
+        "locationId": "0-EU-IT-MI-12-002-177",
+        "locationName": "Robecchetto con Induno, Milano",
+        "divisible": false,
+        "total": 6
+      },
+      {
+        "locationId": "0-EU-IT-MI-07-016-178",
+        "locationName": "Robecco sul Naviglio, Milano",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-MI-04-019-179",
+        "locationName": "Rodano, Milano",
+        "divisible": false,
+        "total": 4
+      },
+      {
+        "locationId": "0-EU-IT-MI-06-010-182",
+        "locationName": "Rosate, Milano",
+        "divisible": false,
+        "total": 4
+      },
+      {
+        "locationId": "0-EU-IT-MI-05-002-183",
+        "locationName": "Rozzano, Milano",
+        "divisible": false,
+        "total": 50
+      },
+      {
+        "locationId": "0-EU-IT-MI-09-007-184",
+        "locationName": "San Colombano al Lambro, Milano",
+        "divisible": false,
+        "total": 3
+      },
+      {
+        "locationId": "0-EU-IT-MI-09-001-186",
+        "locationName": "San Donato Milanese, Milano",
+        "divisible": true,
+        "total": 84
+      },
+      {
+        "locationId": "0-EU-IT-MI-11-005-189",
+        "locationName": "San Giorgio Su Legnano, Milano",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-MI-09-002-190",
+        "locationName": "San Giuliano Milanese, Milano",
+        "divisible": true,
+        "total": 31
+      },
+      {
+        "locationId": "0-EU-IT-MI-11-011-193",
+        "locationName": "San Vittore Olona, Milano",
+        "divisible": false,
+        "total": 2
+      },
+      {
+        "locationId": "0-EU-IT-MI-09-003-194",
+        "locationName": "San Zenone al Lambro, Milano",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-MI-07-001-197",
+        "locationName": "Sedriano, Milano",
+        "divisible": false,
+        "total": 2
+      },
+      {
+        "locationId": "0-EU-IT-MI-04-002-199",
+        "locationName": "Segrate, Milano",
+        "divisible": true,
+        "total": 74
+      },
+      {
+        "locationId": "0-EU-IT-MI-03-002-200",
+        "locationName": "Senago, Milano",
+        "divisible": false,
+        "total": 5
+      },
+      {
+        "locationId": "0-EU-IT-MI-02-008-202",
+        "locationName": "Sesto San Giovanni, Milano",
+        "divisible": true,
+        "total": 124
+      },
+      {
+        "locationId": "0-EU-IT-MI-03-009-205",
+        "locationName": "Settimo Milanese, Milano",
+        "divisible": true,
+        "total": 6
+      },
+      {
+        "locationId": "0-EU-IT-MI-03-014-207",
+        "locationName": "Solaro, Milano",
+        "divisible": false,
+        "total": 3
+      },
+      {
+        "locationId": "0-EU-IT-MI-10-004-214",
+        "locationName": "Trezzano sul Naviglio, Milano",
+        "divisible": false,
+        "total": 19
+      },
+      {
+        "locationId": "0-EU-IT-MI-08-007-215",
+        "locationName": "Trezzo sull'Adda, Milano",
+        "divisible": false,
+        "total": 7
+      },
+      {
+        "locationId": "0-EU-IT-MI-09-005-216",
+        "locationName": "Tribiano, Milano",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-MI-04-022-218",
+        "locationName": "Truccazzano, Milano",
+        "divisible": false,
+        "total": 3
+      },
+      {
+        "locationId": "0-EU-IT-MI-12-002-219",
+        "locationName": "Turbigo, Milano",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-MI-03-010-223",
+        "locationName": "Vanzago, Milano",
+        "divisible": false,
+        "total": 4
+      },
+      {
+        "locationId": "0-EU-IT-MI-08-004-224",
+        "locationName": "Vaprio d'Adda, Milano",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-MI-06-004-230",
+        "locationName": "Vermezzo con Zelo, Milano",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-MI-05-012-231",
+        "locationName": "Vernate, Milano",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-MI-04-007-232",
+        "locationName": "Vignate, Milano",
+        "divisible": false,
+        "total": 2
+      },
+      {
+        "locationId": "0-EU-IT-MI-04-016-243",
+        "locationName": "Vimodrone, Milano",
+        "divisible": false,
+        "total": 18
+      },
+      {
+        "locationId": "0-EU-IT-MI-05-011-247",
+        "locationName": "Zibido San Giacomo, Milano",
+        "divisible": false,
+        "total": 4
+      }
+    ]
+  },
+  "0-EU-IT-RM": {
+    "provinces": [
+      {
+        "locationId": "0-EU-IT-AG",
+        "locationName": "Agrigento",
+        "divisible": true,
+        "total": 350
+      },
+      {
+        "locationId": "0-EU-IT-AL",
+        "locationName": "Alessandria",
+        "divisible": true,
+        "total": 349
+      },
+      {
+        "locationId": "0-EU-IT-AZ",
+        "locationName": "Alpi Marittime - Costa Azzurra",
+        "divisible": true,
+        "total": 20
+      },
+      {
+        "locationId": "0-EU-IT-AN",
+        "locationName": "Ancona",
+        "divisible": true,
+        "total": 247
+      },
+      {
+        "locationId": "0-EU-IT-AO",
+        "locationName": "Aosta",
+        "divisible": true,
+        "total": 209
+      },
+      {
+        "locationId": "0-EU-IT-AR",
+        "locationName": "Arezzo",
+        "divisible": true,
+        "total": 170
+      },
+      {
+        "locationId": "0-EU-IT-AP",
+        "locationName": "Ascoli Piceno",
+        "divisible": true,
+        "total": 221
+      },
+      {
+        "locationId": "0-EU-IT-AT",
+        "locationName": "Asti",
+        "divisible": true,
+        "total": 122
+      },
+      {
+        "locationId": "0-EU-IT-AV",
+        "locationName": "Avellino",
+        "divisible": true,
+        "total": 161
+      },
+      {
+        "locationId": "0-EU-IT-BA",
+        "locationName": "Bari",
+        "divisible": true,
+        "total": 749
+      },
+      {
+        "locationId": "0-EU-IT-BT",
+        "locationName": "Barletta-Andria-Trani",
+        "divisible": true,
+        "total": 242
+      },
+      {
+        "locationId": "0-EU-IT-BL",
+        "locationName": "Belluno",
+        "divisible": true,
+        "total": 172
+      },
+      {
+        "locationId": "0-EU-IT-BN",
+        "locationName": "Benevento",
+        "divisible": true,
+        "total": 93
+      },
+      {
+        "locationId": "0-EU-IT-BG",
+        "locationName": "Bergamo",
+        "divisible": true,
+        "total": 687
+      },
+      {
+        "locationId": "0-EU-IT-BI",
+        "locationName": "Biella",
+        "divisible": true,
+        "total": 124
+      },
+      {
+        "locationId": "0-EU-IT-BO",
+        "locationName": "Bologna",
+        "divisible": true,
+        "total": 1789
+      },
+      {
+        "locationId": "0-EU-IT-BZ",
+        "locationName": "Bolzano-Bozen",
+        "divisible": true,
+        "total": 107
+      },
+      {
+        "locationId": "0-EU-IT-BS",
+        "locationName": "Brescia",
+        "divisible": true,
+        "total": 747
+      },
+      {
+        "locationId": "0-EU-IT-BR",
+        "locationName": "Brindisi",
+        "divisible": true,
+        "total": 344
+      },
+      {
+        "locationId": "0-EU-IT-CA",
+        "locationName": "Cagliari",
+        "divisible": true,
+        "total": 424
+      },
+      {
+        "locationId": "0-EU-IT-CL",
+        "locationName": "Caltanissetta",
+        "divisible": true,
+        "total": 156
+      },
+      {
+        "locationId": "0-EU-IT-CB",
+        "locationName": "Campobasso",
+        "divisible": true,
+        "total": 181
+      },
+      {
+        "locationId": "0-EU-IT-TI",
+        "locationName": "Canton Ticino",
+        "divisible": true,
+        "total": 46
+      },
+      {
+        "locationId": "0-EU-IT-CE",
+        "locationName": "Caserta",
+        "divisible": true,
+        "total": 461
+      },
+      {
+        "locationId": "0-EU-IT-CT",
+        "locationName": "Catania",
+        "divisible": true,
+        "total": 1124
+      },
+      {
+        "locationId": "0-EU-IT-CZ",
+        "locationName": "Catanzaro",
+        "divisible": true,
+        "total": 697
+      },
+      {
+        "locationId": "0-EU-IT-CH",
+        "locationName": "Chieti",
+        "divisible": true,
+        "total": 441
+      },
+      {
+        "locationId": "0-EU-IT-CO",
+        "locationName": "Como",
+        "divisible": true,
+        "total": 786
+      },
+      {
+        "locationId": "0-EU-IT-CS",
+        "locationName": "Cosenza",
+        "divisible": true,
+        "total": 603
+      },
+      {
+        "locationId": "0-EU-IT-CR",
+        "locationName": "Cremona",
+        "divisible": true,
+        "total": 109
+      },
+      {
+        "locationId": "0-EU-IT-KR",
+        "locationName": "Crotone",
+        "divisible": true,
+        "total": 152
+      },
+      {
+        "locationId": "0-EU-IT-CN",
+        "locationName": "Cuneo",
+        "divisible": true,
+        "total": 421
+      },
+      {
+        "locationId": "0-EU-IT-EN",
+        "locationName": "Enna",
+        "divisible": true,
+        "total": 69
+      },
+      {
+        "locationId": "0-EU-IT-FM",
+        "locationName": "Fermo",
+        "divisible": true,
+        "total": 121
+      },
+      {
+        "locationId": "0-EU-IT-FE",
+        "locationName": "Ferrara",
+        "divisible": true,
+        "total": 487
+      },
+      {
+        "locationId": "0-EU-IT-FI",
+        "locationName": "Firenze",
+        "divisible": true,
+        "total": 3287
+      },
+      {
+        "locationId": "0-EU-IT-FG",
+        "locationName": "Foggia",
+        "divisible": true,
+        "total": 322
+      },
+      {
+        "locationId": "0-EU-IT-FC",
+        "locationName": "Forlì-Cesena",
+        "divisible": true,
+        "total": 387
+      },
+      {
+        "locationId": "0-EU-IT-FR",
+        "locationName": "Frosinone",
+        "divisible": true,
+        "total": 383
+      },
+      {
+        "locationId": "0-EU-IT-GE",
+        "locationName": "Genova",
+        "divisible": true,
+        "total": 1555
+      },
+      {
+        "locationId": "0-EU-IT-GO",
+        "locationName": "Gorizia",
+        "divisible": true,
+        "total": 61
+      },
+      {
+        "locationId": "0-EU-IT-GR",
+        "locationName": "Grosseto",
+        "divisible": true,
+        "total": 772
+      },
+      {
+        "locationId": "0-EU-IT-IM",
+        "locationName": "Imperia",
+        "divisible": true,
+        "total": 588
+      },
+      {
+        "locationId": "0-EU-IT-IS",
+        "locationName": "Isernia",
+        "divisible": true,
+        "total": 38
+      },
+      {
+        "locationId": "0-EU-IT-AQ",
+        "locationName": "L'Aquila",
+        "divisible": true,
+        "total": 433
+      },
+      {
+        "locationId": "0-EU-IT-SP",
+        "locationName": "La Spezia",
+        "divisible": true,
+        "total": 529
+      },
+      {
+        "locationId": "0-EU-IT-LT",
+        "locationName": "Latina",
+        "divisible": true,
+        "total": 819
+      },
+      {
+        "locationId": "0-EU-IT-LE",
+        "locationName": "Lecce",
+        "divisible": true,
+        "total": 785
+      },
+      {
+        "locationId": "0-EU-IT-LC",
+        "locationName": "Lecco",
+        "divisible": true,
+        "total": 230
+      },
+      {
+        "locationId": "0-EU-IT-LI",
+        "locationName": "Livorno",
+        "divisible": true,
+        "total": 509
+      },
+      {
+        "locationId": "0-EU-IT-LO",
+        "locationName": "Lodi",
+        "divisible": true,
+        "total": 45
+      },
+      {
+        "locationId": "0-EU-IT-LU",
+        "locationName": "Lucca",
+        "divisible": true,
+        "total": 1349
+      },
+      {
+        "locationId": "0-EU-IT-MC",
+        "locationName": "Macerata",
+        "divisible": true,
+        "total": 336
+      },
+      {
+        "locationId": "0-EU-IT-MN",
+        "locationName": "Mantova",
+        "divisible": true,
+        "total": 237
+      },
+      {
+        "locationId": "0-EU-IT-MS",
+        "locationName": "Massa-Carrara",
+        "divisible": true,
+        "total": 375
+      },
+      {
+        "locationId": "0-EU-IT-MT",
+        "locationName": "Matera",
+        "divisible": true,
+        "total": 116
+      },
+      {
+        "locationId": "0-EU-IT-ME",
+        "locationName": "Messina",
+        "divisible": true,
+        "total": 896
+      },
+      {
+        "locationId": "0-EU-IT-MI",
+        "locationName": "Milano",
+        "divisible": true,
+        "total": 16971
+      },
+      {
+        "locationId": "0-EU-IT-MO",
+        "locationName": "Modena",
+        "divisible": true,
+        "total": 814
+      },
+      {
+        "locationId": "0-EU-IT-MB",
+        "locationName": "Monza-Brianza",
+        "divisible": true,
+        "total": 572
+      },
+      {
+        "locationId": "0-EU-IT-NA",
+        "locationName": "Napoli",
+        "divisible": true,
+        "total": 2075
+      },
+      {
+        "locationId": "0-EU-IT-NO",
+        "locationName": "Novara",
+        "divisible": true,
+        "total": 378
+      },
+      {
+        "locationId": "0-EU-IT-NU",
+        "locationName": "Nuoro",
+        "divisible": true,
+        "total": 117
+      },
+      {
+        "locationId": "0-EU-IT-OR",
+        "locationName": "Oristano",
+        "divisible": true,
+        "total": 53
+      },
+      {
+        "locationId": "0-EU-IT-PD",
+        "locationName": "Padova",
+        "divisible": true,
+        "total": 680
+      },
+      {
+        "locationId": "0-EU-IT-PA",
+        "locationName": "Palermo",
+        "divisible": true,
+        "total": 1832
+      },
+      {
+        "locationId": "0-EU-IT-PR",
+        "locationName": "Parma",
+        "divisible": true,
+        "total": 639
+      },
+      {
+        "locationId": "0-EU-IT-PV",
+        "locationName": "Pavia",
+        "divisible": true,
+        "total": 323
+      },
+      {
+        "locationId": "0-EU-IT-PG",
+        "locationName": "Perugia",
+        "divisible": true,
+        "total": 727
+      },
+      {
+        "locationId": "0-EU-IT-PU",
+        "locationName": "Pesaro Urbino",
+        "divisible": true,
+        "total": 204
+      },
+      {
+        "locationId": "0-EU-IT-PE",
+        "locationName": "Pescara",
+        "divisible": true,
+        "total": 276
+      },
+      {
+        "locationId": "0-EU-IT-PC",
+        "locationName": "Piacenza",
+        "divisible": true,
+        "total": 226
+      },
+      {
+        "locationId": "0-EU-IT-PI",
+        "locationName": "Pisa",
+        "divisible": true,
+        "total": 654
+      },
+      {
+        "locationId": "0-EU-IT-PT",
+        "locationName": "Pistoia",
+        "divisible": true,
+        "total": 101
+      },
+      {
+        "locationId": "0-EU-IT-PN",
+        "locationName": "Pordenone",
+        "divisible": true,
+        "total": 50
+      },
+      {
+        "locationId": "0-EU-IT-PZ",
+        "locationName": "Potenza",
+        "divisible": true,
+        "total": 185
+      },
+      {
+        "locationId": "0-EU-IT-PO",
+        "locationName": "Prato",
+        "divisible": true,
+        "total": 60
+      },
+      {
+        "locationId": "0-EU-IT-RG",
+        "locationName": "Ragusa",
+        "divisible": true,
+        "total": 393
+      },
+      {
+        "locationId": "0-EU-IT-RA",
+        "locationName": "Ravenna",
+        "divisible": true,
+        "total": 530
+      },
+      {
+        "locationId": "0-EU-IT-RC",
+        "locationName": "Reggio Calabria",
+        "divisible": true,
+        "total": 461
+      },
+      {
+        "locationId": "0-EU-IT-RE",
+        "locationName": "Reggio Emilia",
+        "divisible": true,
+        "total": 350
+      },
+      {
+        "locationId": "0-EU-IT-RI",
+        "locationName": "Rieti",
+        "divisible": true,
+        "total": 101
+      },
+      {
+        "locationId": "0-EU-IT-RN",
+        "locationName": "Rimini",
+        "divisible": true,
+        "total": 352
+      },
+      {
+        "locationId": "0-EU-IT-RM",
+        "locationName": "Roma",
+        "divisible": true,
+        "total": 5619
+      },
+      {
+        "locationId": "0-EU-IT-RO",
+        "locationName": "Rovigo",
+        "divisible": true,
+        "total": 153
+      },
+      {
+        "locationId": "0-EU-IT-SA",
+        "locationName": "Salerno",
+        "divisible": true,
+        "total": 585
+      },
+      {
+        "locationId": "0-EU-IT-SM",
+        "locationName": "San Marino",
+        "divisible": true,
+        "total": 21
+      },
+      {
+        "locationId": "0-EU-IT-SS",
+        "locationName": "Sassari",
+        "divisible": true,
+        "total": 926
+      },
+      {
+        "locationId": "0-EU-IT-SV",
+        "locationName": "Savona",
+        "divisible": true,
+        "total": 1361
+      },
+      {
+        "locationId": "0-EU-IT-SI",
+        "locationName": "Siena",
+        "divisible": true,
+        "total": 205
+      },
+      {
+        "locationId": "0-EU-IT-SR",
+        "locationName": "Siracusa",
+        "divisible": true,
+        "total": 669
+      },
+      {
+        "locationId": "0-EU-IT-SO",
+        "locationName": "Sondrio",
+        "divisible": true,
+        "total": 237
+      },
+      {
+        "locationId": "0-EU-IT-SU",
+        "locationName": "Sud Sardegna",
+        "divisible": true,
+        "total": 174
+      },
+      {
+        "locationId": "0-EU-IT-TA",
+        "locationName": "Taranto",
+        "divisible": true,
+        "total": 539
+      },
+      {
+        "locationId": "0-EU-IT-TE",
+        "locationName": "Teramo",
+        "divisible": true,
+        "total": 223
+      },
+      {
+        "locationId": "0-EU-IT-TR",
+        "locationName": "Terni",
+        "divisible": true,
+        "total": 154
+      },
+      {
+        "locationId": "0-EU-IT-TO",
+        "locationName": "Torino",
+        "divisible": true,
+        "total": 2836
+      },
+      {
+        "locationId": "0-EU-IT-TP",
+        "locationName": "Trapani",
+        "divisible": true,
+        "total": 791
+      },
+      {
+        "locationId": "0-EU-IT-TN",
+        "locationName": "Trento",
+        "divisible": true,
+        "total": 274
+      },
+      {
+        "locationId": "0-EU-IT-TV",
+        "locationName": "Treviso",
+        "divisible": true,
+        "total": 470
+      },
+      {
+        "locationId": "0-EU-IT-TS",
+        "locationName": "Trieste",
+        "divisible": true,
+        "total": 255
+      },
+      {
+        "locationId": "0-EU-IT-UD",
+        "locationName": "Udine",
+        "divisible": true,
+        "total": 178
+      },
+      {
+        "locationId": "0-EU-IT-VA",
+        "locationName": "Varese",
+        "divisible": true,
+        "total": 844
+      },
+      {
+        "locationId": "0-EU-IT-VE",
+        "locationName": "Venezia",
+        "divisible": true,
+        "total": 1018
+      },
+      {
+        "locationId": "0-EU-IT-VB",
+        "locationName": "Verbano-Cusio-Ossola",
+        "divisible": true,
+        "total": 157
+      },
+      {
+        "locationId": "0-EU-IT-VC",
+        "locationName": "Vercelli",
+        "divisible": true,
+        "total": 72
+      },
+      {
+        "locationId": "0-EU-IT-VR",
+        "locationName": "Verona",
+        "divisible": true,
+        "total": 710
+      },
+      {
+        "locationId": "0-EU-IT-VV",
+        "locationName": "Vibo Valentia",
+        "divisible": true,
+        "total": 124
+      },
+      {
+        "locationId": "0-EU-IT-VI",
+        "locationName": "Vicenza",
+        "divisible": true,
+        "total": 675
+      },
+      {
+        "locationId": "0-EU-IT-VT",
+        "locationName": "Viterbo",
+        "divisible": true,
+        "total": 309
+      }
+    ],
+    "municipalities": [
+      {
+        "locationId": "0-EU-IT-RM-08-001-002",
+        "locationName": "Agosta, Roma",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-RM-06-006-003",
+        "locationName": "Albano Laziale, Roma",
+        "divisible": true,
+        "total": 16
+      },
+      {
+        "locationId": "0-EU-IT-RM-02-007-004",
+        "locationName": "Allumiere, Roma",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-RM-02-005-005",
+        "locationName": "Anguillara Sabazia, Roma",
+        "divisible": false,
+        "total": 16
+      },
+      {
+        "locationId": "0-EU-IT-RM-08-001-006",
+        "locationName": "Anticoli Corrado, Roma",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-RM-07-001-007",
+        "locationName": "Anzio, Roma",
+        "divisible": true,
+        "total": 177
+      },
+      {
+        "locationId": "0-EU-IT-RM-08-001-008",
+        "locationName": "Arcinazzo Romano, Roma",
+        "divisible": false,
+        "total": 9
+      },
+      {
+        "locationId": "0-EU-IT-RM-07-002-009",
+        "locationName": "Ardea, Roma",
+        "divisible": true,
+        "total": 57
+      },
+      {
+        "locationId": "0-EU-IT-RM-06-012-010",
+        "locationName": "Ariccia, Roma",
+        "divisible": false,
+        "total": 3
+      },
+      {
+        "locationId": "0-EU-IT-RM-05-008-012",
+        "locationName": "Artena, Roma",
+        "divisible": false,
+        "total": 9
+      },
+      {
+        "locationId": "0-EU-IT-RM-08-001-013",
+        "locationName": "Bellegra, Roma",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-RM-02-004-014",
+        "locationName": "Bracciano, Roma",
+        "divisible": false,
+        "total": 14
+      },
+      {
+        "locationId": "0-EU-IT-RM-03-004-016",
+        "locationName": "Campagnano di Roma, Roma",
+        "divisible": false,
+        "total": 8
+      },
+      {
+        "locationId": "0-EU-IT-RM-02-009-017",
+        "locationName": "Canale Monterano, Roma",
+        "divisible": false,
+        "total": 4
+      },
+      {
+        "locationId": "0-EU-IT-RM-03-007-019",
+        "locationName": "Capena, Roma",
+        "divisible": false,
+        "total": 8
+      },
+      {
+        "locationId": "0-EU-IT-RM-05-003-021",
+        "locationName": "Carpineto Romano, Roma",
+        "divisible": false,
+        "total": 3
+      },
+      {
+        "locationId": "0-EU-IT-RM-06-013-023",
+        "locationName": "Castel Gandolfo, Roma",
+        "divisible": false,
+        "total": 7
+      },
+      {
+        "locationId": "0-EU-IT-RM-03-012-026",
+        "locationName": "Castelnuovo di Porto, Roma",
+        "divisible": false,
+        "total": 6
+      },
+      {
+        "locationId": "0-EU-IT-RM-05-006-027",
+        "locationName": "Cave, Roma",
+        "divisible": false,
+        "total": 4
+      },
+      {
+        "locationId": "0-EU-IT-RM-02-002-030",
+        "locationName": "Cerveteri, Roma",
+        "divisible": true,
+        "total": 28
+      },
+      {
+        "locationId": "0-EU-IT-RM-06-001-031",
+        "locationName": "Ciampino, Roma",
+        "divisible": false,
+        "total": 27
+      },
+      {
+        "locationId": "0-EU-IT-RM-04-003-032",
+        "locationName": "Ciciliano, Roma",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-RM-02-003-034",
+        "locationName": "Civitavecchia, Roma",
+        "divisible": true,
+        "total": 29
+      },
+      {
+        "locationId": "0-EU-IT-RM-03-008-035",
+        "locationName": "Civitella San Paolo, Roma",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-RM-05-007-036",
+        "locationName": "Colleferro, Roma",
+        "divisible": false,
+        "total": 15
+      },
+      {
+        "locationId": "0-EU-IT-RM-03-002-038",
+        "locationName": "Fiano Romano, Roma",
+        "divisible": false,
+        "total": 11
+      },
+      {
+        "locationId": "0-EU-IT-RM-02-001-040",
+        "locationName": "Fiumicino, Roma",
+        "divisible": true,
+        "total": 215
+      },
+      {
+        "locationId": "0-EU-IT-RM-03-011-041",
+        "locationName": "Fonte Nuova, Roma",
+        "divisible": true,
+        "total": 2
+      },
+      {
+        "locationId": "0-EU-IT-RM-03-001-042",
+        "locationName": "Formello, Roma",
+        "divisible": true,
+        "total": 12
+      },
+      {
+        "locationId": "0-EU-IT-RM-06-002-043",
+        "locationName": "Frascati, Roma",
+        "divisible": false,
+        "total": 32
+      },
+      {
+        "locationId": "0-EU-IT-RM-05-001-044",
+        "locationName": "Gallicano nel Lazio, Roma",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-RM-05-006-046",
+        "locationName": "Genazzano, Roma",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-RM-06-007-047",
+        "locationName": "Genzano di Roma, Roma",
+        "divisible": false,
+        "total": 5
+      },
+      {
+        "locationId": "0-EU-IT-RM-08-001-048",
+        "locationName": "Gerano, Roma",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-RM-06-004-050",
+        "locationName": "Grottaferrata, Roma",
+        "divisible": true,
+        "total": 41
+      },
+      {
+        "locationId": "0-EU-IT-RM-04-001-051",
+        "locationName": "Guidonia Montecelio, Roma",
+        "divisible": true,
+        "total": 24
+      },
+      {
+        "locationId": "0-EU-IT-RM-08-001-052",
+        "locationName": "Jenne, Roma",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-RM-05-005-053",
+        "locationName": "Labico, Roma",
+        "divisible": false,
+        "total": 2
+      },
+      {
+        "locationId": "0-EU-IT-RM-02-006-054",
+        "locationName": "Ladispoli, Roma",
+        "divisible": true,
+        "total": 84
+      },
+      {
+        "locationId": "0-EU-IT-RM-06-003-056",
+        "locationName": "Lariano, Roma",
+        "divisible": false,
+        "total": 6
+      },
+      {
+        "locationId": "0-EU-IT-RM-02-009-060",
+        "locationName": "Manziana, Roma",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-RM-04-009-062",
+        "locationName": "Marcellina, Roma",
+        "divisible": false,
+        "total": 4
+      },
+      {
+        "locationId": "0-EU-IT-RM-06-005-063",
+        "locationName": "Marino, Roma",
+        "divisible": true,
+        "total": 14
+      },
+      {
+        "locationId": "0-EU-IT-RM-03-010-065",
+        "locationName": "Mentana, Roma",
+        "divisible": true,
+        "total": 2
+      },
+      {
+        "locationId": "0-EU-IT-RM-06-009-066",
+        "locationName": "Monte Compatri, Roma",
+        "divisible": false,
+        "total": 5
+      },
+      {
+        "locationId": "0-EU-IT-RM-03-009-070",
+        "locationName": "Montelibretti, Roma",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-RM-06-010-067",
+        "locationName": "Monte Porzio Catone, Roma",
+        "divisible": false,
+        "total": 4
+      },
+      {
+        "locationId": "0-EU-IT-RM-03-003-071",
+        "locationName": "Monterotondo, Roma",
+        "divisible": true,
+        "total": 6
+      },
+      {
+        "locationId": "0-EU-IT-RM-04-007-072",
+        "locationName": "Montorio Romano, Roma",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-RM-03-009-073",
+        "locationName": "Moricone, Roma",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-RM-03-006-074",
+        "locationName": "Morlupo, Roma",
+        "divisible": false,
+        "total": 5
+      },
+      {
+        "locationId": "0-EU-IT-RM-06-015-076",
+        "locationName": "Nemi, Roma",
+        "divisible": false,
+        "total": 3
+      },
+      {
+        "locationId": "0-EU-IT-RM-07-003-078",
+        "locationName": "Nettuno, Roma",
+        "divisible": true,
+        "total": 111
+      },
+      {
+        "locationId": "0-EU-IT-RM-08-001-079",
+        "locationName": "Olevano Romano, Roma",
+        "divisible": false,
+        "total": 2
+      },
+      {
+        "locationId": "0-EU-IT-RM-05-002-080",
+        "locationName": "Palestrina, Roma",
+        "divisible": false,
+        "total": 9
+      },
+      {
+        "locationId": "0-EU-IT-RM-04-005-081",
+        "locationName": "Palombara Sabina, Roma",
+        "divisible": false,
+        "total": 3
+      },
+      {
+        "locationId": "0-EU-IT-RM-04-003-083",
+        "locationName": "Pisoniano, Roma",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-RM-07-004-085",
+        "locationName": "Pomezia, Roma",
+        "divisible": true,
+        "total": 72
+      },
+      {
+        "locationId": "0-EU-IT-RM-03-013-087",
+        "locationName": "Riano, Roma",
+        "divisible": false,
+        "total": 3
+      },
+      {
+        "locationId": "0-EU-IT-RM-03-008-088",
+        "locationName": "Rignano Flaminio, Roma",
+        "divisible": false,
+        "total": 5
+      },
+      {
+        "locationId": "0-EU-IT-RM-06-008-092",
+        "locationName": "Rocca di Papa, Roma",
+        "divisible": false,
+        "total": 8
+      },
+      {
+        "locationId": "0-EU-IT-RM-08-001-095",
+        "locationName": "Roccagiovine, Roma",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-RM-06-016-093",
+        "locationName": "Rocca Priora, Roma",
+        "divisible": false,
+        "total": 4
+      },
+      {
+        "locationId": "0-EU-IT-RM-08-001-094",
+        "locationName": "Rocca Santo Stefano, Roma",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-RM-08-001-096",
+        "locationName": "Roiate, Roma",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-RM-01-001-097",
+        "locationName": "Roma, Roma",
+        "divisible": true,
+        "total": 4176
+      },
+      {
+        "locationId": "0-EU-IT-RM-03-005-099",
+        "locationName": "Sacrofano, Roma",
+        "divisible": false,
+        "total": 12
+      },
+      {
+        "locationId": "0-EU-IT-RM-05-004-101",
+        "locationName": "San Cesareo, Roma",
+        "divisible": false,
+        "total": 6
+      },
+      {
+        "locationId": "0-EU-IT-RM-04-008-103",
+        "locationName": "San Polo dei Cavalieri, Roma",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-RM-04-006-106",
+        "locationName": "Sant'Angelo Romano, Roma",
+        "divisible": false,
+        "total": 4
+      },
+      {
+        "locationId": "0-EU-IT-RM-03-008-107",
+        "locationName": "Sant'Oreste, Roma",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-RM-02-008-105",
+        "locationName": "Santa Marinella, Roma",
+        "divisible": true,
+        "total": 102
+      },
+      {
+        "locationId": "0-EU-IT-RM-04-003-104",
+        "locationName": "San Vito Romano, Roma",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-RM-08-001-108",
+        "locationName": "Saracinesco, Roma",
+        "divisible": false,
+        "total": 3
+      },
+      {
+        "locationId": "0-EU-IT-RM-05-003-109",
+        "locationName": "Segni, Roma",
+        "divisible": false,
+        "total": 9
+      },
+      {
+        "locationId": "0-EU-IT-RM-08-001-110",
+        "locationName": "Subiaco, Roma",
+        "divisible": false,
+        "total": 9
+      },
+      {
+        "locationId": "0-EU-IT-RM-04-002-111",
+        "locationName": "Tivoli, Roma",
+        "divisible": true,
+        "total": 28
+      },
+      {
+        "locationId": "0-EU-IT-RM-02-007-112",
+        "locationName": "Tolfa, Roma",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-RM-03-008-113",
+        "locationName": "Torrita Tiberina, Roma",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-RM-02-010-114",
+        "locationName": "Trevignano Romano, Roma",
+        "divisible": false,
+        "total": 63
+      },
+      {
+        "locationId": "0-EU-IT-RM-08-001-116",
+        "locationName": "Vallinfreda, Roma",
+        "divisible": false,
+        "total": 1
+      },
+      {
+        "locationId": "0-EU-IT-RM-05-005-117",
+        "locationName": "Valmontone, Roma",
+        "divisible": false,
+        "total": 4
+      },
+      {
+        "locationId": "0-EU-IT-RM-06-011-118",
+        "locationName": "Velletri, Roma",
+        "divisible": true,
+        "total": 37
+      },
+      {
+        "locationId": "0-EU-IT-RM-05-001-121",
+        "locationName": "Zagarolo, Roma",
+        "divisible": false,
+        "total": 8
+      }
+    ]
+  }
+}
