@@ -107,7 +107,10 @@ export async function readFixture(url, options) {
     return detailProvider == null ? null : tryReadFile(path.join(FIXTURES_DIR, `${detailProvider}_detail.html`));
   }
 
-  if (providerListPath[providerName] === pathname) {
+  // The tecnocasa group numbers its result pages in the path, so every page of a walk has to read
+  // as the search page it is - otherwise page two is served the detail fixture and the walk ends on
+  // the wrong reason.
+  if (providerListPath[providerName] === pathname.replace(/\/pag-\d+$/, '')) {
     return tryReadFile(path.join(FIXTURES_DIR, `${providerName}.html`));
   }
 
@@ -137,7 +140,14 @@ export async function readImmoweltFixtures() {
 }
 
 /** Hosts whose providers request their pages themselves instead of going through the extractor. */
-const FETCHED_PAGE_HOSTS = ['subito.it', 'www.idealista.it', 'www.idealista.com', 'www.idealista.pt'];
+const FETCHED_PAGE_HOSTS = [
+  'subito.it',
+  'www.idealista.it',
+  'www.idealista.com',
+  'www.idealista.pt',
+  'tecnocasa.it',
+  'tecnorete.it',
+];
 
 /** The app's api, on any of its three national hosts. `<cc>` follows the version in every path. */
 const IDEALISTA_API = /app\.idealista\.(it|com|pt)\/api/;
