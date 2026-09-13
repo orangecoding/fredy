@@ -13,5 +13,6 @@ export default defineConfig({
     globalSetup: ['./test/globalSetup.js'],
     testTimeout: 60000,
     reporters: ['verbose'],
+    pool: 'threads',
   },
 });

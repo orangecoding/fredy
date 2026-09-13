@@ -7,6 +7,9 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 // Mock external deps BEFORE importing the module under test.
 vi.mock('node-fetch', () => ({ default: vi.fn() }));
+// The adapter lets one call a second through per chat, which Telegram wants and no case here
+// asserts. Left in, it costs this file a second per message sent.
+vi.mock('p-throttle', () => ({ default: () => (fn) => fn }));
 vi.mock('../../lib/services/storage/jobStorage.js', () => ({
   getJob: (jobKey) => ({ id: jobKey, name: jobKey }),
 }));

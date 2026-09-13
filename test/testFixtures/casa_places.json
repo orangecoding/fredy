@@ -1,0 +1,220 @@
+{
+  "roma": {
+    "code": 200,
+    "data": {
+      "info": {
+        "page": 0,
+        "size": 20,
+        "total": 43
+      },
+      "meta": {
+        "took": "0.008"
+      },
+      "results": [
+        {
+          "children_uri": "smartsuggest/v1/province/rm",
+          "displayValue": "RM, Lazio",
+          "has_children": true,
+          "hkey": "ed427fcb",
+          "id": "IT-LAZ-RM",
+          "level": 6,
+          "name": "Roma",
+          "slugs": "roma",
+          "type": "province"
+        },
+        {
+          "children_uri": "smartsuggest/v1/town/roma",
+          "displayValue": "Roma, RM, Lazio",
+          "has_children": true,
+          "hkey": "a0d22860",
+          "id": "IT-LAZ-058091",
+          "level": 9,
+          "name": "Roma",
+          "slugs": "roma",
+          "type": "main_town"
+        },
+        {
+          "displayValue": "Romanengo, CR, Lombardia",
+          "has_children": false,
+          "hkey": "d74f2b00",
+          "id": "IT-LOM-019086",
+          "level": 9,
+          "name": "Romanengo",
+          "slugs": "romanengo",
+          "type": "town"
+        },
+        {
+          "displayValue": "Romagnese, PV, Lombardia",
+          "has_children": false,
+          "hkey": "e7d28c55",
+          "id": "IT-LOM-018128",
+          "level": 9,
+          "name": "Romagnese",
+          "slugs": "romagnese",
+          "type": "town"
+        },
+        {
+          "displayValue": "Romana, SS, Sardegna",
+          "has_children": false,
+          "hkey": "ba8dad8e",
+          "id": "IT-SAR-090061",
+          "level": 9,
+          "name": "Romana",
+          "slugs": "romana",
+          "type": "town"
+        },
+        {
+          "displayValue": "Romagnano Sesia, NO, Piemonte",
+          "has_children": false,
+          "hkey": "7f518b6b",
+          "id": "IT-PIE-003130",
+          "level": 9,
+          "name": "Romagnano Sesia",
+          "slugs": "romagnano-sesia",
+          "type": "town"
+        },
+        {
+          "displayValue": "Romans d'Isonzo, GO, Friuli-Venezia Giulia",
+          "has_children": false,
+          "hkey": "8a99c48d",
+          "id": "IT-FRI-031015",
+          "level": 9,
+          "name": "Romans d'Isonzo",
+          "slugs": "romans-d-isonzo",
+          "type": "town"
+        },
+        {
+          "displayValue": "Fiano Romano, RM, Lazio",
+          "has_children": false,
+          "hkey": "540481ca",
+          "id": "IT-LAZ-058036",
+          "level": 9,
+          "name": "Fiano Romano",
+          "slugs": "fiano-romano",
+          "type": "town"
+        },
+        {
+          "displayValue": "Trevignano Romano, RM, Lazio",
+          "has_children": false,
+          "hkey": "a63543d5",
+          "id": "IT-LAZ-058107",
+          "level": 9,
+          "name": "Trevignano Romano",
+          "slugs": "trevignano-romano",
+          "type": "town"
+        },
+        {
+          "displayValue": "Bassano Romano, VT, Lazio",
+          "has_children": false,
+          "hkey": "2e95db90",
+          "id": "IT-LAZ-056005",
+          "level": 9,
+          "name": "Bassano Romano",
+          "slugs": "bassano-romano",
+          "type": "town"
+        },
+        {
+          "displayValue": "Oriolo Romano, VT, Lazio",
+          "has_children": false,
+          "hkey": "c6703ac9",
+          "id": "IT-LAZ-056041",
+          "level": 9,
+          "name": "Oriolo Romano",
+          "slugs": "oriolo-romano",
+          "type": "town"
+        },
+        {
+          "displayValue": "Arcinazzo Romano, RM, Lazio",
+          "has_children": false,
+          "hkey": "35cb2f49",
+          "id": "IT-LAZ-058008",
+          "level": 9,
+          "name": "Arcinazzo Romano",
+          "slugs": "arcinazzo-romano",
+          "type": "town"
+        },
+        {
+          "displayValue": "Mazzano Romano, RM, Lazio",
+          "has_children": false,
+          "hkey": "3512bd0c",
+          "id": "IT-LAZ-058058",
+          "level": 9,
+          "name": "Mazzano Romano",
+          "slugs": "mazzano-romano",
+          "type": "town"
+        },
+        {
+          "displayValue": "Cineto Romano, RM, Lazio",
+          "has_children": false,
+          "hkey": "11fdb079",
+          "id": "IT-LAZ-058031",
+          "level": 9,
+          "name": "Cineto Romano",
+          "slugs": "cineto-romano",
+          "type": "town"
+        },
+        {
+          "displayValue": "Magliano Romano, RM, Lazio",
+          "has_children": false,
+          "hkey": "814d8f9b",
+          "id": "IT-LAZ-058052",
+          "level": 9,
+          "name": "Magliano Romano",
+          "slugs": "magliano-romano",
+          "type": "town"
+        },
+        {
+          "displayValue": "Montorio Romano, RM, Lazio",
+          "has_children": false,
+          "hkey": "ab968f79",
+          "id": "IT-LAZ-058066",
+          "level": 9,
+          "name": "Montorio Romano",
+          "slugs": "montorio-romano",
+          "type": "town"
+        },
+        {
+          "displayValue": "Olevano Romano, RM, Lazio",
+          "has_children": false,
+          "hkey": "2b6ef4d1",
+          "id": "IT-LAZ-058073",
+          "level": 9,
+          "name": "Olevano Romano",
+          "slugs": "olevano-romano",
+          "type": "town"
+        },
+        {
+          "displayValue": "Ponzano Romano, RM, Lazio",
+          "has_children": false,
+          "hkey": "c7e24e02",
+          "id": "IT-LAZ-058080",
+          "level": 9,
+          "name": "Ponzano Romano",
+          "slugs": "ponzano-romano",
+          "type": "town"
+        },
+        {
+          "displayValue": "Barbarano Romano, VT, Lazio",
+          "has_children": false,
+          "hkey": "ac478033",
+          "id": "IT-LAZ-056004",
+          "level": 9,
+          "name": "Barbarano Romano",
+          "slugs": "barbarano-romano",
+          "type": "town"
+        },
+        {
+          "displayValue": "Monte Romano, VT, Lazio",
+          "has_children": false,
+          "hkey": "0ce2af88",
+          "id": "IT-LAZ-056037",
+          "level": 9,
+          "name": "Monte Romano",
+          "slugs": "monte-romano",
+          "type": "town"
+        }
+      ]
+    },
+    "message": "Success"
+  }
+}

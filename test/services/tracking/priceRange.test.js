@@ -55,8 +55,8 @@ const RECORDED_SEARCHES = [
     { min: 500, max: 1000 },
   ],
   [
-    'subito',
-    'https://www.subito.it/annunci-lombardia/affitto/appartamenti/milano/?ps=500&pe=1000',
+    'casa',
+    'https://www.casa.it/affitto/residenziale/milano/?priceMin=500&priceMax=1000&sortType=date_desc',
     { min: 500, max: 1000 },
   ],
   [
@@ -100,9 +100,24 @@ const RECORDED_SEARCHES = [
     { min: 500, max: 1000 },
   ],
   [
+    'subito',
+    'https://www.subito.it/annunci-lombardia/affitto/appartamenti/milano/?ps=500&pe=1000',
+    { min: 500, max: 1000 },
+  ],
+  [
     'sparkasse',
     'https://immobilien.sparkasse.de/immobilien/treffer?estateTypeGroupingId=403&marketingType=buy&maxPrice=500000&minPrice=100000&perimeter=10&usageType=residential&zipCityEstateId=51.22422%2F6.78006%2F0__D%C3%BCsseldorf',
     { min: 100000, max: 500000 },
+  ],
+  [
+    'tecnocasa',
+    'https://www.tecnocasa.it/affitto/immobili/lombardia/milano/milano.html?min_price=500&max_price=1000',
+    { min: 500, max: 1000 },
+  ],
+  [
+    'tecnorete',
+    'https://www.tecnorete.it/affitto/immobili/lombardia/brescia/brescia.html?min_price=500&max_price=1000',
+    { min: 500, max: 1000 },
   ],
 ];
 

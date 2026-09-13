@@ -92,4 +92,12 @@ export const deleteListingsById = (ids) => {
 export const deleteListingsByHash = (hashes) => {
   deletedIds.push(...hashes);
 };
+/**
+ * The real one reads every stored listing around each new one to work out what a square metre costs
+ * there. There is no table behind these mocks to read, and no assertion in the pipeline tests looks
+ * at the figures, so here it only has to exist - the pipeline calls it on every run.
+ */
+export const applyMarketBenchmark = (jobId, listings) => {
+  // noop
+};
 /* eslint-enable no-unused-vars */
