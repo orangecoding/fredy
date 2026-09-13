@@ -14,6 +14,7 @@ const planPath = root + '/lib/services/transit/travelTimeService.js';
 const loggerPath = root + '/lib/services/logger.js';
 const poiPath = root + '/lib/services/poi/poiService.js';
 const overpassPath = root + '/lib/services/poi/overpassClient.js';
+const utilsPath = root + '/lib/utils.js';
 
 /** Berlin, Unter den Linden - where every listing in these cases sits. */
 const LAT = 52.517;
@@ -31,6 +32,13 @@ let state;
  */
 async function loadSweeper() {
   vi.resetModules();
+
+  // The sweeper leaves half a second between driving lookups so it does not hammer the routers.
+  // Nothing here asserts that spacing, and waiting it out for real costs this file ten seconds.
+  vi.doMock(utilsPath, async () => ({
+    ...(await vi.importActual(utilsPath)),
+    sleep: () => Promise.resolve(),
+  }));
 
   vi.doMock(storagePath, () => ({
     getListingsDueForTravelTimes: ({ limit }) => state.due.slice(0, limit),
