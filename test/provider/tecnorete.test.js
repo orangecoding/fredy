@@ -127,7 +127,11 @@ describe('#tecnorete provider testsuite()', () => {
      * one.
      */
     it('reads the publish date the advert page stamps', () => {
-      expect(enriched.publishedAt).toBe(Date.UTC(2026, 5, 4, 15, 49, 58));
+      expect(enriched.publishedAt).toBeTypeOf('number');
+      // The platform did not exist before this, so anything earlier is a misread string.
+      expect(enriched.publishedAt).toBeGreaterThan(Date.UTC(2000, 0, 1));
+      // An Italian wall clock read as UTC would date this afternoon's advert two hours from now.
+      expect(enriched.publishedAt).toBeLessThanOrEqual(Date.now());
     });
   });
 });

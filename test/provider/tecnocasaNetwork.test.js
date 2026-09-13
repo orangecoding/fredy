@@ -320,6 +320,8 @@ describe('enriching an advert off its own page', () => {
   const ADVERT_PAGE = 'https://www.tecnocasa.it/vendita/appartamenti/brescia/erbusco/1.html';
   const listing = () => ({ id: 'a', link: ADVERT_PAGE, title: 'Trilocale in vendita' });
 
+  // The page stamps a bare wall clock, and both networks are Italian: an April stamp is CEST, so it
+  // is two hours ahead of the UTC instant it names.
   it('reads the date the advert was published or last edited on', async () => {
     globalThis.fetch = vi.fn(async () => ({
       ok: true,
@@ -328,7 +330,7 @@ describe('enriching an advert off its own page', () => {
         detailPage({ last_published_at: '2026-04-14 10:50:40', description: '<p>Cucina abitabile.</p>' }),
     }));
 
-    expect((await tecnocasa.fetchDetails(listing())).publishedAt).toBe(Date.UTC(2026, 3, 14, 10, 50, 40));
+    expect((await tecnocasa.fetchDetails(listing())).publishedAt).toBe(Date.UTC(2026, 3, 14, 8, 50, 40));
   });
 
   // A date the page does not stamp is not a date to invent: the listing keeps the order it had.

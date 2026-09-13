@@ -127,9 +127,17 @@ describe('#tecnocasa provider testsuite()', () => {
       expect(enriched.address).toContain(',');
     });
 
-    /** The search pages carry no date anywhere; only the advert page stamps one. */
+    /**
+     * The search pages carry no date anywhere; only the advert page stamps one. Which advert that
+     * is differs on every live run, so the date is checked for being a real past one rather than
+     * against the value the fixture happens to carry.
+     */
     it('reads the publish date the advert page stamps', () => {
-      expect(enriched.publishedAt).toBe(Date.UTC(2026, 6, 23, 17, 57, 55));
+      expect(enriched.publishedAt).toBeTypeOf('number');
+      // The platform did not exist before this, so anything earlier is a misread string.
+      expect(enriched.publishedAt).toBeGreaterThan(Date.UTC(2000, 0, 1));
+      // An Italian wall clock read as UTC would date this afternoon's advert two hours from now.
+      expect(enriched.publishedAt).toBeLessThanOrEqual(Date.now());
     });
   });
 });
