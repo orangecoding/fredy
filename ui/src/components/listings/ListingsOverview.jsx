@@ -55,7 +55,7 @@ const LISTINGS_PAGE_SIZE = 40;
  */
 const LISTINGS_URL_STATE = {
   page: { defaultValue: 1, codec: parseNumber },
-  sort: { defaultValue: 'created_at', codec: parseString },
+  sort: { defaultValue: 'published_at', codec: parseString },
   dir: { defaultValue: 'desc', codec: parseString },
   q: { defaultValue: null, codec: parseString },
   watch: { defaultValue: null, codec: parseNullableBoolean },
@@ -400,7 +400,11 @@ const ListingsOverview = () => {
           onChange={(val) => setSortField(val)}
         >
           <Select.Option value="job_name">{t('listings.sortByJobName')}</Select.Option>
-          <Select.Option value="created_at">{t('listings.sortByDate')}</Select.Option>
+          {/* The date the portal states, falling back to the day Fredy found the listing - the
+              order the list reads in by default. "created_at" alone is the other thing entirely:
+              the moment Fredy first saw the advert, whatever the portal says. */}
+          <Select.Option value="published_at">{t('listings.sortByListingDate')}</Select.Option>
+          <Select.Option value="created_at">{t('listings.sortByDateAdded')}</Select.Option>
           <Select.Option value="price">{t('listings.sortByPrice')}</Select.Option>
           <Select.Option value="provider">{t('listings.sortByProvider')}</Select.Option>
         </FilterSelect>

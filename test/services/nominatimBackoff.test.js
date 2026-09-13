@@ -34,6 +34,10 @@ beforeEach(async () => {
   vi.resetModules();
   responses = [];
   requests = 0;
+  // The client lets one request a second through. Nothing here asserts that pace - the curve is
+  // read off backoffFor() and the stand-off off the request count - and honouring it for real costs
+  // this file a second per call.
+  vi.doMock('p-throttle', () => ({ default: () => (fn) => fn }));
   vi.doMock('node-fetch', () => ({
     default: async () => {
       requests += 1;

@@ -36,6 +36,29 @@ const RECORDED_SEARCHES = [
     'https://flatfox.ch/de/search/?east=8.620000&max_price=1000&min_price=500&north=47.451922&object_category=APARTMENT&offer_type=RENT&south=47.298023&take=48&west=8.440000',
     { min: 500, max: 1000 },
   ],
+  // idealista is three national sites in one provider, and each of them spells its bounds
+  // differently - Italy's upper bound is the bare `prezzo`, one dash away from its own lower one.
+  // All three are listed because a URL is understood by its path, not by the domain it came from.
+  [
+    'idealista',
+    'https://www.idealista.com/alquiler-viviendas/madrid-madrid/con-precio-desde_500,precio-hasta_1000/',
+    { min: 500, max: 1000 },
+  ],
+  [
+    'idealista',
+    'https://www.idealista.it/affitto-case/milano-milano/con-prezzo_1000,prezzo-min_500/',
+    { min: 500, max: 1000 },
+  ],
+  [
+    'idealista',
+    'https://www.idealista.pt/arrendar-casas/lisboa/com-preco-min_500,preco-max_1000/',
+    { min: 500, max: 1000 },
+  ],
+  [
+    'casa',
+    'https://www.casa.it/affitto/residenziale/milano/?priceMin=500&priceMax=1000&sortType=date_desc',
+    { min: 500, max: 1000 },
+  ],
   [
     'immobilienDe',
     'https://www.immobilien.de/suche?kategorie=wohnen&typ=mieten&objektart=wohnung&ort=D%C3%BCsseldorf&umkreis=15&flaeche_von=50&preis_bis=1000&art=wohnung&preis_von=500',
@@ -77,9 +100,24 @@ const RECORDED_SEARCHES = [
     { min: 500, max: 1000 },
   ],
   [
+    'subito',
+    'https://www.subito.it/annunci-lombardia/affitto/appartamenti/milano/?ps=500&pe=1000',
+    { min: 500, max: 1000 },
+  ],
+  [
     'sparkasse',
     'https://immobilien.sparkasse.de/immobilien/treffer?estateTypeGroupingId=403&marketingType=buy&maxPrice=500000&minPrice=100000&perimeter=10&usageType=residential&zipCityEstateId=51.22422%2F6.78006%2F0__D%C3%BCsseldorf',
     { min: 100000, max: 500000 },
+  ],
+  [
+    'tecnocasa',
+    'https://www.tecnocasa.it/affitto/immobili/lombardia/milano/milano.html?min_price=500&max_price=1000',
+    { min: 500, max: 1000 },
+  ],
+  [
+    'tecnorete',
+    'https://www.tecnorete.it/affitto/immobili/lombardia/brescia/brescia.html?min_price=500&max_price=1000',
+    { min: 500, max: 1000 },
   ],
 ];
 

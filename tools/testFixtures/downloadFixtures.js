@@ -133,6 +133,144 @@ async function downloadWillhabenFixtures(url) {
 }
 
 /**
+ * A tecnocasa group search page and the first advert on it, both as served.
+ *
+ * Downloaded over `fetch` rather than through the browser every other html provider uses, because
+ * the platform hands its data to Vue as JSON attributes and hydration takes those attributes off
+ * the elements again. A rendered fixture therefore carries the cards but not one figure the
+ * provider reads, which is also why the provider itself makes a plain request.
+ *
+ * @param {string} name the provider, `tecnocasa` or `tecnorete`
+ * @param {import('../../lib/types/providerConfig.js').ProviderConfig} providerConfig the initialized provider config
+ * @returns {Promise<void>}
+ */
+async function downloadTecnocasaGroupFixtures(name, providerConfig) {
+  console.log(`\nDownloading ${name}...`);
+
+  const headers = { 'User-Agent': BROWSER_USER_AGENT, 'Accept-Language': 'it-IT,it;q=0.9' };
+
+  const response = await fetch(providerConfig.url, { headers });
+  if (!response.ok) {
+    console.warn(`  Failed to download ${name}: ${response.statusText}`);
+    return;
+  }
+
+  await writeFile(path.join(FIXTURES_DIR, `${name}.html`), await response.text(), 'utf-8');
+  console.log(`  Saved ${name}.html`);
+
+  const listings = await providerConfig.getListings(providerConfig.url);
+  const detailUrl = listings.map((listing) => providerConfig.normalize(listing)?.link).find(Boolean);
+  if (!detailUrl) {
+    console.warn('  No advert found - skipping detail fixture');
+    return;
+  }
+
+  console.log(`  Downloading ${name} detail...`);
+  const detailResponse = await fetch(detailUrl, { headers });
+  if (!detailResponse.ok) {
+    console.warn(`  Failed to download ${name} detail: ${detailResponse.statusText}`);
+    return;
+  }
+
+  await writeFile(path.join(FIXTURES_DIR, `${name}_detail.html`), await detailResponse.text(), 'utf-8');
+  console.log(`  Saved ${name}_detail.html`);
+}
+
+/**
+ * Casa.it is read through the api its android app talks to, so its fixtures are the answers that api
+ * gives: the place the search url names, and one page of the search itself.
+ *
+ * @param {string} url the search url
+ * @returns {Promise<void>}
+ */
+async function downloadCasaApiFixtures(url) {
+  console.log('\nDownloading casa.it api...');
+
+  const { toQuery } = await import('../../lib/services/casa/geography.js');
+  const { translateSearchUrl } = await import('../../lib/services/casa/web-translator.js');
+  const { search } = await import('../../lib/services/casa/search-api.js');
+
+  const slugs = new URL(url).pathname.split('/').filter((segment) => segment !== '');
+  const query = toQuery(slugs[slugs.length - 1] ?? '');
+  const answer = await fetch(
+    `https://smartsuggest.casa.it/smartsuggest/v1/suggest/?query=${encodeURIComponent(query)}&site=it_casa`,
+  );
+  if (!answer.ok) {
+    console.warn(`  Failed to download casa.it places: ${answer.status} ${answer.statusText}`);
+    return;
+  }
+  await writeFile(
+    path.join(FIXTURES_DIR, 'casa_places.json'),
+    JSON.stringify({ [query]: await answer.json() }, null, 2),
+    'utf-8',
+  );
+  console.log(`  Saved casa_places.json (for "${query}")`);
+
+  const translated = await translateSearchUrl(url);
+  if (translated == null) {
+    console.warn(`  Skipping: ${url} is not a search the api can be asked for`);
+    return;
+  }
+  const page = await search({ ...translated, sort: ['date-desc'], page: 1 });
+  // The photos and the descriptions in every other language are most of the payload and none of
+  // what the tests read.
+  for (const advert of page?.results ?? []) {
+    if (advert?.media?.items?.length > 1) advert.media.items = advert.media.items.slice(0, 1);
+    if (advert?.description) advert.description = { it: advert.description.it };
+    if (advert?.title) advert.title = { it: advert.title.it };
+  }
+  await writeFile(path.join(FIXTURES_DIR, 'casa_list.json'), JSON.stringify(page, null, 2), 'utf-8');
+  console.log(`  Saved casa_list.json (${page?.results?.length ?? 0} adverts)`);
+}
+
+/**
+ * Casa.it's map search, cut down to the one script tag the provider reads.
+ *
+ * The map search answers with a page of its own whose store keeps the results under `searchMap`
+ * rather than under `search`, which is why it needs a fixture the town search cannot stand in for.
+ * The live page is around 850 KB of React bootstrap around a single `__INITIAL_STATE__` assignment,
+ * and keeping only that assignment exercises the same parsing path, because the provider looks it
+ * up by name rather than by position.
+ *
+ * @param {string} mapSearchUrl the map search url from testProvider.json
+ * @param {Function} launchBrowser opens the shared browser
+ * @param {Function} closeBrowser closes it again
+ * @param {Function} puppeteerExtractor the extractor the providers themselves use
+ * @returns {Promise<void>}
+ */
+async function downloadCasaMapFixture(mapSearchUrl, launchBrowser, closeBrowser, puppeteerExtractor) {
+  console.log('  Downloading casa map search...');
+
+  const browser = await launchBrowser(mapSearchUrl, {});
+  let html;
+  try {
+    html = await puppeteerExtractor(mapSearchUrl, 'body', { browser, name: 'download_fixtures' });
+  } finally {
+    await closeBrowser(browser);
+  }
+  const match = html?.match(/<script[^>]*>\s*window\.__INITIAL_STATE__[\s\S]*?<\/script>/);
+  if (!match) {
+    console.warn('  casa map search carried no __INITIAL_STATE__ - skipping fixture');
+    return;
+  }
+
+  const trimmed = [
+    '<!doctype html>',
+    '<html lang="it">',
+    '<head><title>casa map fixture</title></head>',
+    '<body>',
+    `<!-- Trimmed to the __INITIAL_STATE__ payload, downloaded from ${mapSearchUrl} -->`,
+    match[0],
+    '</body>',
+    '</html>',
+    '',
+  ].join('\n');
+
+  await writeFile(path.join(FIXTURES_DIR, 'casa_map.html'), trimmed, 'utf-8');
+  console.log('  Saved casa_map.html');
+}
+
+/**
  * Flatfox answers a search in two requests, so it needs two fixtures.
  *
  * The pins carry the primary keys of everything matching the search; the second call hydrates those
@@ -329,6 +467,121 @@ async function downloadImmoweltFixtures(runConfig, launchBrowser, closeBrowser) 
 }
 
 /**
+ * Record each national website through the provider's browser transport.
+ *
+ * @param {string} url the search url, on any of the three sites
+ * @param {Function} launchBrowser
+ * @param {Function} closeBrowser
+ * @returns {Promise<void>}
+ */
+async function downloadIdealistaFixtures(url, launchBrowser, closeBrowser) {
+  const { portalOf } = await import('../../lib/services/idealista/portal.js');
+  const portal = portalOf(url);
+  if (portal == null) {
+    console.warn(`  Skipping ${url}: idealista serves .com, .it and .pt and nothing else`);
+    return;
+  }
+
+  const fixture = portal.country === 'it' ? 'idealista.html' : `idealista_${portal.country}.html`;
+  console.log(`\nDownloading idealista (${portal.host})...`);
+
+  const html = await renderThroughBrowser(url, launchBrowser, closeBrowser);
+  if (html == null) {
+    console.warn(`  The browser did not get past the wall - skipping ${fixture}`);
+    return;
+  }
+
+  await writeFile(path.join(FIXTURES_DIR, fixture), html, 'utf-8');
+  console.log(`  Saved ${fixture}`);
+}
+
+/**
+ * @param {string} url
+ * @param {Function} launchBrowser
+ * @param {Function} closeBrowser
+ * @returns {Promise<string|null>} the page a browser waited the challenge out for
+ */
+async function renderThroughBrowser(url, launchBrowser, closeBrowser) {
+  const { fetchSearchHtml } = await import('../../lib/services/idealista/idealistaSearch.js');
+  // Headful, because that is the only way the interstitial is likely to clear from a desktop.
+  const browser = await launchBrowser(url, { puppeteerHeadless: false });
+  try {
+    return await fetchSearchHtml(url, browser);
+  } finally {
+    await closeBrowser(browser);
+  }
+}
+
+/**
+ * Idealista is read through the mobile api, so the fixtures for that half of the provider are the
+ * answers it gives: the catalogue of locations the search url is looked up in, and one page of the
+ * search itself. The page fixture stands for the whole result set, so the offline mock answers
+ * every page after the first one empty.
+ *
+ * @param {string} url the search url
+ * @returns {Promise<void>}
+ */
+async function downloadIdealistaApiFixtures(url) {
+  console.log('\nDownloading idealista mobile api...');
+
+  const { call, locationsPath, searchPath } = await import('../../lib/services/idealista/mobile-api.js');
+  const { translateSearchUrl } = await import('../../lib/services/idealista/web-translator.js');
+  const { resolveLocationId } = await import('../../lib/services/idealista/locations.js');
+  const { portalOf } = await import('../../lib/services/idealista/portal.js');
+
+  const portal = portalOf(url);
+  if (portal == null) {
+    console.warn(`  Skipping ${url}: idealista serves .com, .it and .pt and nothing else`);
+    return;
+  }
+
+  const search = translateSearchUrl(portal, url);
+  if (search == null) {
+    console.warn(`  Skipping: ${url} is not a search the api can be asked for`);
+    return;
+  }
+
+  const locationId = await resolveLocationId(portal, search.locationSlugs, search);
+  if (locationId == null) {
+    console.warn(`  Skipping: the api catalogue has no "${search.locationSlugs.join('/')}"`);
+    return;
+  }
+
+  const criteria = [
+    ['operation', search.operation],
+    ['propertyType', search.propertyType],
+    ['locale', portal.country],
+  ];
+  const catalogue = {};
+  // The catalogue only serves the list of provinces alongside the children of some location, so the
+  // resolver always opens the country's anchor first. See `lib/services/idealista/locations.js`.
+  for (const level of [portal.provinceAnchor, locationId.split('-').slice(0, 4).join('-')]) {
+    catalogue[level] = await call(portal, locationsPath(portal), { body: [...criteria, ['locationIds', level]] });
+  }
+  await writeFile(path.join(FIXTURES_DIR, 'idealista_locations.json'), JSON.stringify(catalogue, null, 2), 'utf-8');
+  console.log(`  Saved idealista_locations.json (${Object.keys(catalogue).length} levels)`);
+
+  const listing = await call(portal, searchPath(portal), {
+    query: [
+      ['adIds', ''],
+      ['searchType', 'locationIds'],
+    ],
+    body: [
+      ...criteria,
+      ['locationIds', `[${locationId}]`],
+      ['order', 'publicationDate'],
+      ['sort', 'desc'],
+      ['numPage', '1'],
+      ['maxItems', '50'],
+      ['quality', 'high'],
+      ['gallery', 'true'],
+    ],
+  });
+  await writeFile(path.join(FIXTURES_DIR, 'idealista_list.json'), JSON.stringify(listing, null, 2), 'utf-8');
+  console.log(`  Saved idealista_list.json (${listing?.elementList?.length ?? 0} adverts)`);
+}
+
+/**
  * Fallback for providers that do not expose their listings through the markup (e.g. because they
  * ship them inside an embedded json payload). Those have no crawl container the selector based
  * {@link extractFirstDetailUrl} could work with, so the provider's own `getListings` is asked.
@@ -482,6 +735,24 @@ async function main() {
         break;
       case 'flatfox':
         await downloadFlatfoxFixtures(runConfig.url);
+        break;
+      case 'tecnocasa':
+      case 'tecnorete':
+        await downloadTecnocasaGroupFixtures(name, runConfig);
+        break;
+      case 'idealista':
+        // One recording per national site, so a change to the card markup is caught in the language
+        // it was written in. The api fixtures are the Italian search's, which is the one the
+        // offline suite runs end to end.
+        for (const site of [runConfig.url, ...(cfg.otherSiteUrls ?? [])]) {
+          await downloadIdealistaFixtures(site, launchBrowser, closeBrowser);
+        }
+        await downloadIdealistaApiFixtures(runConfig.url);
+        break;
+      case 'casa':
+        await downloadHtmlProvider(name, runConfig, launchBrowser, closeBrowser, puppeteerExtractor);
+        await downloadCasaMapFixture(cfg.mapSearchUrl, launchBrowser, closeBrowser, puppeteerExtractor);
+        await downloadCasaApiFixtures(runConfig.url);
         break;
       default:
         await downloadHtmlProvider(name, runConfig, launchBrowser, closeBrowser, puppeteerExtractor);

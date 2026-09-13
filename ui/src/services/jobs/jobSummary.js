@@ -4,13 +4,16 @@
  */
 
 /**
- * What a job's optional settings add up to, in a line.
+ * What a job's filters add up to, in a line.
  *
- * The six of them - blacklist, price and size criteria, drawn area, commute limits, sharing,
- * activation - are
- * folded into a collapsed section, and a collapsed section has to answer "is there anything in
- * here" without being opened. Otherwise the fold does not save the user anything: they open it
- * every time to check.
+ * The five of them - price and size criteria, blacklist, drawn area, commute limits - are folded
+ * into a collapsed section, and a collapsed section has to answer "is there anything in here"
+ * without being opened. Otherwise the fold does not save the user anything: they open it every
+ * time to check.
+ *
+ * Sharing and activation used to be counted here too, back when they sat inside the same fold.
+ * They are sections of their own now, in plain sight below it, so a line describing what is behind
+ * the fold no longer has anything to say about them.
  */
 
 import { countCommuteLimits } from './commuteFilter.js';
@@ -23,8 +26,6 @@ import { countCommuteLimits } from './commuteFilter.js';
  * @param {{maxPrice?: number, minSize?: number, minRooms?: number}|null} [job.specFilter]
  * @param {Object|null} [job.spatialFilter]
  * @param {{action?: string, limits?: Record<string, number>}|null} [job.commuteFilter]
- * @param {string[]} [job.shareWithUsers]
- * @param {boolean} [job.enabled]
  * @param {Object} context
  * @param {(key: string, vars?: Object) => string} context.t
  * @param {(value: number) => string} context.formatPrice
@@ -34,8 +35,8 @@ export function describeJobRefinements(job, { t, formatPrice }) {
   const parts = [];
   const spec = job?.specFilter ?? {};
 
-  // Ordered as the controls are: what it must cost and be, what to leave out, where, who else sees
-  // it, and whether it runs at all.
+  // Ordered as the controls are: what it must cost and be, what to leave out, where, and how far
+  // it may be from the addresses that matter.
   if (spec.maxPrice != null) {
     parts.push(t('jobs.mutation.summaryMaxPrice', { value: formatPrice(spec.maxPrice) }));
   }
@@ -56,14 +57,6 @@ export function describeJobRefinements(job, { t, formatPrice }) {
   const commuteLimits = countCommuteLimits(job?.commuteFilter);
   if (commuteLimits > 0) {
     parts.push(t('jobs.mutation.summaryCommute', { count: commuteLimits }));
-  }
-  if ((job?.shareWithUsers?.length ?? 0) > 0) {
-    parts.push(t('jobs.mutation.summaryShared', { count: job.shareWithUsers.length }));
-  }
-  // Only worth saying when it is off. A job that runs is the normal case and does not need
-  // announcing; a job that never will is the thing someone would otherwise not notice.
-  if (job?.enabled === false) {
-    parts.push(t('jobs.mutation.summaryPaused'));
   }
   return parts;
 }

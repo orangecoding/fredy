@@ -104,14 +104,12 @@ const JobsTable = ({ jobs, onRun, onEdit, onClone, onDeleteListings, onDeleteJob
                 onClick={() => onClone(job.id)}
               />
             </Tooltip>
+            {/* Not disabled for a shared job, unlike its neighbours: the listings of a shared job
+                are the shared part, and the API has always let anyone the job was shared with
+                delete them one by one from the overview. Greying this out only hid the faster
+                route to the same thing. Deleting the job itself stays with its owner. */}
             <Tooltip content={t('jobs.tableDeleteListings')}>
-              <Button
-                type="danger"
-                size="small"
-                icon={<IconDescend2 />}
-                disabled={job.isOnlyShared}
-                onClick={() => onDeleteListings(job.id)}
-              />
+              <Button type="danger" size="small" icon={<IconDescend2 />} onClick={() => onDeleteListings(job.id)} />
             </Tooltip>
             <Tooltip content={t('jobs.tableDeleteJob')}>
               <Button

@@ -4,6 +4,7 @@
  */
 
 import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { metaInformation as idealista } from '../../../lib/provider/idealista.js';
 
 const root = (await import('node:path')).resolve('.');
 const listingsStoragePath = root + '/lib/services/storage/listingsStorage.js';
@@ -11,12 +12,28 @@ const jobStoragePath = root + '/lib/services/storage/jobStorage.js';
 const geoCodingPath = root + '/lib/services/geocoding/geoCodingService.js';
 const distanceServicePath = root + '/lib/services/geocoding/distanceService.js';
 const providerCountriesPath = root + '/lib/services/providers/providerCountries.js';
+const utilsPath = root + '/lib/utils.js';
 const loggerPath = root + '/lib/services/logger.js';
 
 let state;
 
-async function loadCron() {
+/**
+ * The cron with everything under it replaced.
+ *
+ * @param {boolean} [realCountries] Leave the country resolver in place and mock the provider list
+ *   underneath it instead, which is what the narrowing test needs: the point of that one is the
+ *   resolution itself, and a mocked resolver would only be testing the mock.
+ * @returns {Promise<any>}
+ */
+async function loadCron(realCountries = false) {
   vi.resetModules();
+  // `doMock` registrations outlive `resetModules`, so each mode has to undo the other's.
+  if (realCountries) {
+    vi.doUnmock(providerCountriesPath);
+    vi.doMock(utilsPath, () => ({ getProviders: async () => [{ metaInformation: idealista }] }));
+  } else {
+    vi.doUnmock(utilsPath);
+  }
   vi.doMock(listingsStoragePath, () => ({
     getListingsToGeocode: () => state.pending,
     updateListingGeocoordinates: (id, lat, lng) => state.stored.push({ id, lat, lng }),
@@ -28,9 +45,11 @@ async function loadCron() {
     },
     isGeocodingPaused: () => state.paused,
   }));
-  vi.doMock(providerCountriesPath, () => ({
-    getCountriesForProvider: async (providerId) => (providerId === 'swissportal' ? ['ch'] : ['de']),
-  }));
+  if (!realCountries) {
+    vi.doMock(providerCountriesPath, () => ({
+      getCountriesForListing: async (providerId) => (providerId === 'swissportal' ? ['ch'] : ['de']),
+    }));
+  }
   vi.doMock(jobStoragePath, () => ({ getJobs: () => [] }));
   vi.doMock(distanceServicePath, () => ({ calculateDistanceForJob: () => {} }));
   vi.doMock(loggerPath, () => ({ default: { debug: () => {}, info: () => {}, warn: () => {}, error: () => {} } }));
@@ -77,6 +96,41 @@ describe('services/crons/geocoding-cron', () => {
     await runGeoCordTask();
 
     expect(state.stored).toEqual([{ id: 'l1', lat: 47.37, lng: 8.54 }]);
+  });
+
+  /**
+   * A provider covering several countries has to be asked about the row, not about itself.
+   * idealista serves Spain, Italy and Portugal, and `countrycodes=es,it,pt` lets Nominatim answer
+   * an Italian street with its Spanish namesake - which, since the area filter deletes a listing
+   * that falls outside the drawn area, loses the listing rather than merely misplacing its pin.
+   * The row's own link is what says which of the three it came from.
+   */
+  it('narrows a multi-country provider to the country the listing links to', async () => {
+    state.pending = [
+      {
+        id: 'l1',
+        address: 'Calle de Alcalá 1, Madrid',
+        provider: 'idealista',
+        link: 'https://www.idealista.com/inmueble/1/',
+      },
+      {
+        id: 'l2',
+        address: 'Via Tito Vignoli 1, Milano',
+        provider: 'idealista',
+        link: 'https://www.idealista.it/immobile/2/',
+      },
+      // A row whose link says nothing keeps all three, which is what the provider declares.
+      { id: 'l3', address: 'Rua Augusta 1', provider: 'idealista', link: null },
+    ];
+
+    const { runGeoCordTask } = await loadCron(true);
+    await runGeoCordTask();
+
+    expect(state.geocodeCalls).toEqual([
+      ['Calle de Alcalá 1, Madrid', ['es']],
+      ['Via Tito Vignoli 1, Milano', ['it']],
+      ['Rua Augusta 1', ['es', 'it', 'pt']],
+    ]);
   });
 
   // Queueing more requests at a geocoder that has already refused only extends the stand-off.

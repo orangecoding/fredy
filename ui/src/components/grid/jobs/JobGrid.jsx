@@ -469,13 +469,15 @@ const JobGrid = () => {
                         />
                       </div>
                     </Popover>
+                    {/* The one action a shared job leaves open, see JobsTable for why: its listings
+                        are what was shared, and every one of them already carries a delete button
+                        of its own in the overview. The job itself remains the owner's. */}
                     <Popover content={getPopoverContent(t('jobs.popoverDeleteListings'))}>
                       <div>
                         <Button
                           type="danger"
                           size="small"
                           icon={<IconDescend2 />}
-                          disabled={job.isOnlyShared}
                           onClick={() => onListingRemoval(job.id)}
                         />
                       </div>

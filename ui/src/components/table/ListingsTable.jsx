@@ -104,7 +104,12 @@ const ListingsTable = ({
             {item.provider}
           </div>
 
-          <div className="listingsTable__row__date">{timeService.format(item.created_at, false, locale)}</div>
+          {/* The portal's own publication date, falling back to the day Fredy first saw the
+              advert - the same expression the grid renders and the same one the default sort
+              orders by, so the column cannot disagree with the order it is sorted in. */}
+          <div className="listingsTable__row__date">
+            {timeService.format(item.published_at ?? item.created_at, false, locale)}
+          </div>
 
           <div
             className="listingsTable__row__actions"

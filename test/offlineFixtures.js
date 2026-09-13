@@ -18,6 +18,9 @@ const testProviderConfig = JSON.parse(
 const hostnameToProvider = {};
 // providerName → list page pathname (for distinguishing list vs detail URLs)
 const providerListPath = {};
+// map search pathname per provider, for the portals that answer a map search with a page of their
+// own. That page carries a different payload, so it needs a fixture of its own as well.
+const providerMapPath = {};
 
 for (const [name, cfg] of Object.entries(testProviderConfig)) {
   if (!cfg.url) continue;
@@ -28,7 +31,25 @@ for (const [name, cfg] of Object.entries(testProviderConfig)) {
   } catch {
     // skip malformed URLs
   }
+  if (!cfg.mapSearchUrl) continue;
+  try {
+    providerMapPath[name] = new URL(cfg.mapSearchUrl).pathname;
+  } catch {
+    // skip malformed URLs
+  }
 }
+
+/**
+ * idealista is three national sites in one provider, and each of them is a recording of its own:
+ * the Italian search page under the provider's plain name, the Spanish one beside it. Portugal has
+ * no recording and reads the Spanish page - the markup of a card is identical on all three, and
+ * what a fixture pins is the markup.
+ */
+const IDEALISTA_PAGES = {
+  'www.idealista.it': 'idealista.html',
+  'www.idealista.com': 'idealista_es.html',
+  'www.idealista.pt': 'idealista_es.html',
+};
 
 async function tryReadFile(filepath) {
   try {
@@ -84,6 +105,10 @@ export async function readFixture(url, options) {
     return null;
   }
 
+  if (IDEALISTA_PAGES[hostname] != null) {
+    return tryReadFile(path.join(FIXTURES_DIR, IDEALISTA_PAGES[hostname]));
+  }
+
   const providerName = hostnameToProvider[hostname];
   if (!providerName) {
     // aggregators link to partner portals, so their detail fixture sits under an unknown hostname
@@ -91,8 +116,15 @@ export async function readFixture(url, options) {
     return detailProvider == null ? null : tryReadFile(path.join(FIXTURES_DIR, `${detailProvider}_detail.html`));
   }
 
-  if (providerListPath[providerName] === pathname) {
+  // The tecnocasa group numbers its result pages in the path, so every page of a walk has to read
+  // as the search page it is - otherwise page two is served the detail fixture and the walk ends on
+  // the wrong reason.
+  if (providerListPath[providerName] === pathname.replace(/\/pag-\d+$/, '')) {
     return tryReadFile(path.join(FIXTURES_DIR, `${providerName}.html`));
+  }
+
+  if (providerMapPath[providerName] === pathname) {
+    return tryReadFile(path.join(FIXTURES_DIR, `${providerName}_map.html`));
   }
 
   // Detail page: prefer dedicated detail fixture, fall back to list fixture
@@ -120,12 +152,32 @@ export async function readImmoweltFixtures() {
   };
 }
 
+/** Hosts whose providers request their pages themselves instead of going through the extractor. */
+const FETCHED_PAGE_HOSTS = [
+  'subito.it',
+  'www.idealista.it',
+  'www.idealista.com',
+  'www.idealista.pt',
+  'tecnocasa.it',
+  'tecnorete.it',
+];
+
+/** The app's api, on any of its three national hosts. `<cc>` follows the version in every path. */
+const IDEALISTA_API = /app\.idealista\.(it|com|pt)\/api/;
+const IDEALISTA_TOKEN = /app\.idealista\.(it|com|pt)\/api\/oauth\/token/;
+const IDEALISTA_LOCATIONS = /app\.idealista\.(it|com|pt)\/api\/3\.5\/(it|es|pt)\/search\/locations/;
+const IDEALISTA_SEARCH = /app\.idealista\.(it|com|pt)\/api\/3\.5\/(it|es|pt)\/search/;
+
 /**
  * Returns a fetch replacement that intercepts immoscout mobile API calls and
  * serves pre-downloaded JSON fixtures. Throws for any other URL to prevent
  * accidental live network traffic in offline mode.
  */
 export function buildFetchMock() {
+  let idealistaCatalogue = null;
+  let idealistaListData = null;
+  let casaPlaces = null;
+  let casaListData = null;
   let listData = null;
   let detailData = null;
   let deutscheWohnenListData = null;
@@ -133,8 +185,9 @@ export function buildFetchMock() {
   let flatfoxPins = null;
   let flatfoxListings = null;
 
-  return async (url) => {
+  return async (url, init) => {
     const urlStr = String(url);
+    const requestBody = new URLSearchParams(typeof init?.body === 'string' ? init.body : '');
 
     // willhaben reads its results out of the page's __NEXT_DATA__, so this is the one fixture
     // served as text rather than json.
@@ -143,6 +196,88 @@ export function buildFetchMock() {
         willhabenHtml = (await tryReadFile(path.join(FIXTURES_DIR, 'willhaben.html'))) ?? '';
       }
       return { ok: true, status: 200, text: () => Promise.resolve(willhabenHtml) };
+    }
+
+    // Idealista is read through the api the android app talks to - one host per country, the same
+    // answers - so its fixtures are what that api gives. The token is not one of them: it is minted
+    // per install and says nothing about the search, so offline mode hands out one of its own. The
+    // recorded catalogue is Italian, so a search on another country's api finds no location and the
+    // run falls back to the recorded page, which is the flow that fixture is there to exercise.
+    if (IDEALISTA_TOKEN.test(urlStr)) {
+      return { ok: true, status: 200, json: () => Promise.resolve({ access_token: 'offline', expires_in: 3600 }) };
+    }
+
+    // The catalogue is read one location at a time, and which one is asked for is in the body.
+    if (IDEALISTA_LOCATIONS.test(urlStr)) {
+      if (idealistaCatalogue == null) {
+        const raw = await tryReadFile(path.join(FIXTURES_DIR, 'idealista_locations.json'));
+        idealistaCatalogue = raw ? JSON.parse(raw) : {};
+      }
+      const asked = requestBody.get('locationIds') ?? '';
+      return { ok: true, status: 200, json: () => Promise.resolve(idealistaCatalogue[asked] ?? { provinces: [] }) };
+    }
+
+    // One recorded page stands for the whole search, so it answers as the only page there is and
+    // every page after it comes back empty, which is what stops the walk.
+    if (IDEALISTA_SEARCH.test(urlStr)) {
+      if (idealistaListData == null) {
+        const raw = await tryReadFile(path.join(FIXTURES_DIR, 'idealista_list.json'));
+        idealistaListData = raw ? JSON.parse(raw) : { elementList: [] };
+      }
+      const page = Number(requestBody.get('numPage')) || 1;
+      const data =
+        page === 1
+          ? { ...idealistaListData, actualPage: 1, totalPages: 1 }
+          : { ...idealistaListData, elementList: [], actualPage: page, totalPages: page };
+      return { ok: true, status: 200, json: () => Promise.resolve(data) };
+    }
+
+    // The outline of one of the areas a `/multi/` search names. A triangle is enough: what the
+    // tests read is that the parser turns the encoding into a ring, not where the ring is.
+    if (/mt1\.idealista\.(it|com|pt)/.test(urlStr)) {
+      return { ok: true, status: 200, text: () => Promise.resolve('((_p~iF~ps|U_ulLnnqC_mqNvxq`@))') };
+    }
+
+    // Anything else the app's api is asked for - an advert's own detail, which is where the dates
+    // live - is answered with nothing rather than blocked: the fixture run is about the search.
+    if (IDEALISTA_API.test(urlStr)) {
+      return { ok: true, status: 200, json: () => Promise.resolve({}) };
+    }
+
+    // Casa.it is read through the api its android app talks to, on hosts of its own. The place
+    // lookup turns the words a url spells a town with into the key that api searches by.
+    if (urlStr.includes('smartsuggest.casa.it')) {
+      if (casaPlaces == null) {
+        const raw = await tryReadFile(path.join(FIXTURES_DIR, 'casa_places.json'));
+        casaPlaces = raw ? JSON.parse(raw) : {};
+      }
+      const asked = new URL(urlStr).searchParams.get('query') ?? '';
+      const found = casaPlaces[asked] ?? { data: { results: [] } };
+      return { ok: true, status: 200, json: () => Promise.resolve(found) };
+    }
+
+    // One recorded page stands for the whole search, so it answers as the only page there is and
+    // every page after it comes back empty, which is what stops the walk.
+    if (urlStr.includes('esapi.casa.it/listings/v2/search')) {
+      if (casaListData == null) {
+        const raw = await tryReadFile(path.join(FIXTURES_DIR, 'casa_list.json'));
+        casaListData = raw ? JSON.parse(raw) : { total: 0, results: [] };
+      }
+      const page = Number(JSON.parse(init?.body ?? '{}')?.page) || 1;
+      const results = page === 1 ? casaListData.results : [];
+      return {
+        ok: true,
+        status: 200,
+        json: () => Promise.resolve({ data: { total: results.length, tiers: [{ tier: 'listings', results }] } }),
+      };
+    }
+
+    // The providers that read a page over plain `fetch` because their portal serves one without a
+    // fight. `readFixture` tells a search page from a detail page by its path, which is the same
+    // answer the extractor mock above gives the providers that go through a browser.
+    if (FETCHED_PAGE_HOSTS.some((host) => urlStr.includes(host))) {
+      const html = (await readFixture(urlStr)) ?? '';
+      return { ok: true, status: 200, text: () => Promise.resolve(html) };
     }
 
     // Flatfox answers a search in two calls - the pins, then the listings those keys belong to -

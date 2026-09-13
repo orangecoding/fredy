@@ -35,14 +35,14 @@ describe('jobSummary', () => {
     ['a room count', { specFilter: { minRooms: 3 } }, 'jobs.mutation.summaryMinRooms'],
     ['blocked words', { blacklist: ['Tausch'] }, 'jobs.mutation.summaryBlacklist'],
     ['a drawn area', { spatialFilter: { type: 'Polygon' } }, 'jobs.mutation.summaryArea'],
-    ['sharing', { shareWithUsers: ['user-1'] }, 'jobs.mutation.summaryShared'],
-    ['being switched off', { enabled: false }, 'jobs.mutation.summaryPaused'],
   ])('mentions %s', (_what, job, expected) => {
     expect(describeJobRefinements(job, context)).toContain(expected);
   });
 
-  it('does not announce a job that simply runs', () => {
-    expect(describeJobRefinements({ enabled: true }, context)).not.toContain('jobs.mutation.summaryPaused');
+  // Both moved out of the fold and into sections of their own, so a line about what is behind the
+  // fold must not claim them.
+  it('says nothing about sharing or activation, which are not filters', () => {
+    expect(describeJobRefinements({ shareWithUsers: ['user-1'], enabled: false }, context)).toEqual([]);
   });
 
   it('ignores a spec filter whose values were cleared back to null', () => {
@@ -61,8 +61,7 @@ describe('jobSummary', () => {
       specFilter: { maxPrice: 1200, minSize: 60, minRooms: 3 },
       blacklist: ['Tausch', 'WG'],
       spatialFilter: { type: 'Polygon' },
-      shareWithUsers: ['user-1'],
-      enabled: false,
+      commuteFilter: { action: 'mark', limits: { 'home-1': 30 } },
     };
     expect(describeJobRefinements(job, context)).toEqual([
       'jobs.mutation.summaryMaxPrice',
@@ -70,8 +69,7 @@ describe('jobSummary', () => {
       'jobs.mutation.summaryMinRooms',
       'jobs.mutation.summaryBlacklist',
       'jobs.mutation.summaryArea',
-      'jobs.mutation.summaryShared',
-      'jobs.mutation.summaryPaused',
+      'jobs.mutation.summaryCommute',
     ]);
   });
 
@@ -97,10 +95,12 @@ describe('jobSummary', () => {
       'jobs.mutation.summaryMinRooms',
       'jobs.mutation.summaryBlacklist',
       'jobs.mutation.summaryArea',
-      'jobs.mutation.summaryShared',
-      'jobs.mutation.summaryPaused',
+      'jobs.mutation.summaryCommute',
     ]) {
       expect(Object.keys(english)).toContain(key);
     }
+
+    // The header now says what the fold is for, not only what is in it.
+    expect(Object.keys(english)).toContain('jobs.mutation.refineHint');
   });
 });
