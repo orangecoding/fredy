@@ -3,7 +3,8 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 const root = (await import('node:path')).resolve('.');
 const storagePath = root + '/lib/services/storage/listingsStorage.js';
@@ -14,6 +15,8 @@ const utilsPath = root + '/lib/utils.js';
 const loggerPath = root + '/lib/services/logger.js';
 
 let state;
+
+afterEach(() => vi.unstubAllGlobals());
 
 /**
  * Load the price tracker with everything that leaves the process replaced.
@@ -214,6 +217,27 @@ describe('services/listings/priceTrackingService', () => {
     expect(state.launches).toBe(0);
     expect(state.rendered).toHaveLength(0);
     expect(state.recorded).toEqual([['a', 1100]]);
+  });
+
+  it.each([
+    ['tecnocasa', 170000],
+    ['tecnorete', 499000],
+  ])('records the real %s provider price without rendering a page', async (brand, expected) => {
+    const run = await loadService();
+    state.providers = [await import(`${root}/lib/provider/${brand}.js`)];
+    state.due = [listing('a', brand)];
+    const html = readFileSync(`${root}/test/testFixtures/${brand}_detail.html`, 'utf8');
+    const fetch = vi.fn().mockResolvedValue({ ok: true, text: async () => html });
+    vi.stubGlobal('fetch', fetch);
+
+    await run();
+
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(state.recorded).toEqual([['a', expected]]);
+    expect(state.marked).toEqual(['a']);
+    expect(state.launches).toBe(0);
+    expect(state.rendered).toHaveLength(0);
+    expect(state.closes).toBe(0);
   });
 
   it('skips listings whose provider has no price extractor', async () => {
