@@ -4,7 +4,12 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { normalizeCountries, unionCountries, DEFAULT_COUNTRIES } from '../../lib/services/providers/countries.js';
+import {
+  countriesForListing,
+  normalizeCountries,
+  unionCountries,
+  DEFAULT_COUNTRIES,
+} from '../../lib/services/providers/countries.js';
 
 /**
  * Resolving which countries a geocode is about.
@@ -19,9 +24,29 @@ const modulePath = root + '/lib/services/providers/providerCountries.js';
 /**
  * @param {string} id
  * @param {string[]} [countries]
+ * @param {(listing: any) => any} [countryOf] How the provider narrows those countries to one listing.
  * @returns {Object}
  */
-const provider = (id, countries) => ({ metaInformation: countries == null ? { id } : { id, countries } });
+const provider = (id, countries, countryOf) => ({
+  metaInformation: {
+    id,
+    ...(countries == null ? {} : { countries }),
+    ...(countryOf == null ? {} : { countryOf }),
+  },
+});
+
+/** Which market each of the fake three-country provider's adverts is on, by the host it links to. */
+const BY_HOST = { 'flats.es': 'es', 'flats.it': 'it', 'flats.pt': 'pt' };
+
+/**
+ * A provider covering three markets that can tell them apart, which is idealista's shape.
+ *
+ * @param {(listing: any) => any} [countryOf] Overridden by the tests that ask what happens when a
+ *   provider answers something it should not.
+ * @returns {Object}
+ */
+const iberian = (countryOf = (listing) => BY_HOST[new URL(listing.link).hostname] ?? null) =>
+  provider('threemarkets', ['es', 'it', 'pt'], countryOf);
 
 /** @type {any} */
 let providers;
@@ -32,7 +57,12 @@ let module_;
 
 beforeEach(async () => {
   vi.resetModules();
-  providers = [provider('immowelt'), provider('swissportal', ['ch']), provider('benelux', ['nl', 'be', 'lu'])];
+  providers = [
+    provider('immowelt'),
+    provider('swissportal', ['ch']),
+    provider('benelux', ['nl', 'be', 'lu']),
+    iberian(),
+  ];
   jobs = [];
 
   vi.doMock(root + '/lib/utils.js', () => ({ getProviders: async () => providers }));
@@ -165,5 +195,96 @@ describe('the providers of a set of countries', () => {
 
   it('answers with nothing when no provider serves the country', async () => {
     await expect(module_.getProviderIdsForCountries(['pl'])).resolves.toEqual([]);
+  });
+});
+
+/**
+ * Narrowing the answer to one listing.
+ *
+ * A provider covering several markets answers for all of them at once, and that is the right answer
+ * to "where does this provider search" and the wrong one to "where is this flat": the geocoder can
+ * hand back a Spanish street for an Italian address, and the connectivity sweep sends the listing
+ * to whichever of the provider's countries happens to have a register, which spends a throttled
+ * request on it and stamps the row empty until the answer goes stale. So a provider may narrow it
+ * per listing, and everything that cannot be narrowed is left exactly as wide as it was.
+ */
+describe('the countries of one listing', () => {
+  const meta = (countryOf) => iberian(countryOf).metaInformation;
+
+  it('is the one country the provider names for it', () => {
+    expect(countriesForListing(meta(), { link: 'https://flats.it/a/1' })).toEqual(['it']);
+    expect(countriesForListing(meta(), { link: 'https://flats.es/a/1' })).toEqual(['es']);
+  });
+
+  // Everything with nothing to narrow by keeps the declaration, which is the behaviour every
+  // provider had before one of them could narrow at all.
+  it('is the whole declaration when nobody narrowed it', () => {
+    expect(countriesForListing(meta(), { link: 'https://example.org/a/1' })).toEqual(['es', 'it', 'pt']);
+    expect(countriesForListing(meta(), null)).toEqual(['es', 'it', 'pt']);
+    expect(countriesForListing(provider('swissportal', ['ch']).metaInformation, { link: 'x' })).toEqual(['ch']);
+    expect(countriesForListing(undefined, { link: 'x' })).toEqual(['de']);
+  });
+
+  /**
+   * A narrowing may not widen. `countries` is what the job form flags a provider with, what the
+   * map takes its bounds from and what "which providers cover this country" is answered from, and
+   * one call site must not be able to search somewhere all of those say the provider never goes.
+   */
+  it('discards a country the provider never declared', () => {
+    expect(
+      countriesForListing(
+        meta(() => 'fr'),
+        { link: 'x' },
+      ),
+    ).toEqual(['es', 'it', 'pt']);
+  });
+
+  it('reads a code the way the declaration is read', () => {
+    expect(
+      countriesForListing(
+        meta(() => ' IT '),
+        { link: 'x' },
+      ),
+    ).toEqual(['it']);
+    expect(
+      countriesForListing(
+        meta(() => 'italy'),
+        { link: 'x' },
+      ),
+    ).toEqual(['es', 'it', 'pt']);
+    expect(
+      countriesForListing(
+        meta(() => 42),
+        { link: 'x' },
+      ),
+    ).toEqual(['es', 'it', 'pt']);
+  });
+
+  /**
+   * This runs inside a sweep over the whole database, once per row, on a function that lives in a
+   * provider module. A throwing one must cost its own narrowing and nothing else.
+   */
+  it('survives a provider that throws instead of answering', () => {
+    const throwing = meta(() => {
+      throw new Error('the link is unreadable');
+    });
+
+    expect(countriesForListing(throwing, { link: 'x' })).toEqual(['es', 'it', 'pt']);
+  });
+
+  it('resolves through the provider the listing names', async () => {
+    await expect(module_.getCountriesForListing('threemarkets', { link: 'https://flats.pt/a/1' })).resolves.toEqual([
+      'pt',
+    ]);
+    await expect(module_.getCountriesForListing('threemarkets', { link: 'https://flats.it/a/1' })).resolves.toEqual([
+      'it',
+    ]);
+  });
+
+  it('answers like the provider itself where there is nothing to narrow', async () => {
+    await expect(module_.getCountriesForListing('swissportal', { link: 'https://flats.it/a/1' })).resolves.toEqual([
+      'ch',
+    ]);
+    await expect(module_.getCountriesForListing('deleted-last-year', { link: 'x' })).resolves.toEqual(['de']);
   });
 });

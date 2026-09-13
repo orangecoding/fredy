@@ -40,6 +40,10 @@ On top of the listing itself, Fredy answers two questions:
   network, marks every stop and shows the next departures. See [Travel Time](#travel-time) and
   [Public Transport](#public-transport).
 
+<p align="center">
+  <a href="https://trendshift.io/repositories/43464?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-43464" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/43464/daily?language=JavaScript" alt="orangecoding%2Ffredy | Trendshift" width="250" height="55"/></a>
+</p>
+
 ------------------------------------------------------------------------
 
 ## 📖 Contents
@@ -58,8 +62,8 @@ On top of the listing itself, Fredy answers two questions:
 
 ## ✨ Key Features
 
--   🏠 Scrapes **19 portals** across 🇩🇪 🇦🇹 🇨🇭: ImmoScout24, Immowelt, Kleinanzeigen, WG-Gesucht,
-    willhaben, Flatfox and [13 more](#provider-)
+-   🏠 Scrapes **21 portals** across 🇩🇪 🇦🇹 🇨🇭 🇪🇸 🇮🇹 🇵🇹: ImmoScout24, Immowelt, Kleinanzeigen,
+    WG-Gesucht, willhaben, Flatfox, idealista, Subito and [13 more](#provider-)
 -   ⚡ Instant notifications: Slack, Telegram, Email (SMTP, SendGrid, Mailjet, Resend), ntfy,
     Discord, Mattermost, Pushover, Apprise and more
 -   🔎 Uses the **ImmoScout Mobile API** (reverse engineered)
@@ -173,7 +177,7 @@ the platform into Fredy.\
 ⚠️ Always make sure the search results are sorted by **date**, so Fredy picks up the newest
 listings first.
 
-Fredy ships with 19 providers:
+Fredy ships with 21 providers:
 
 **🇩🇪 Germany**
 
@@ -187,7 +191,16 @@ Fredy ships with 19 providers:
 | McMakler | Wg gesucht | |
 
 **🇦🇹 Austria** · willhaben  
-**🇨🇭 Switzerland** · Flatfox
+**🇨🇭 Switzerland** · Flatfox  
+**🇪🇸 Spain · 🇮🇹 Italy · 🇵🇹 Portugal** · idealista\
+**🇮🇹 Italy** · Subito
+
+Idealista uses the mobile APIs for idealista.com, idealista.it and idealista.pt.
+The search URL determines the country.
+The provider supports `/multi/` URLs and rejects unrelated domains.
+Searches with filters or categories unsupported by the APIs use Fredy's browser.
+DataDome can block the browser fallback.
+See the [provider documentation](./reverse-engineered-idealista.md) for supported endpoints and filters.
 
 **Every provider declares the countries it covers**, and the job form puts the matching flag in
 front of its name so a mixed list can be read at a glance. The declaration is one line on the

@@ -70,11 +70,22 @@
 .jobMutation__refine {
   margin-bottom: @space-4;
 
+  /* Reads as a control rather than a caption: the pointer, the accent border and the lift on hover
+     are the whole of what tells someone the filters are one click away. */
   .semi-collapse-header {
     padding: @space-3 @space-4;
-    border: 1px solid @color-border;
+    border: 1px solid @color-accent-dim;
     border-radius: @radius-card;
     background: @color-fill-subtle;
+    cursor: pointer;
+    transition:
+      background 0.15s ease,
+      border-color 0.15s ease;
+
+    &:hover {
+      border-color: @color-accent;
+      background: @color-fill-1;
+    }
   }
 
   /* Semi indents panel content by default, which stepped the refinement cards in from the ones
@@ -104,6 +115,30 @@
 .jobMutation__refineSummary {
   color: @color-muted;
   font-size: @text-sm;
+}
+
+/* The invitation, in the accent and pushed to the far end of the row so it sits beside the chevron
+   and reads with it. It says which way the next click goes, which a chevron on its own does not. */
+.jobMutation__refineToggle {
+  margin-left: auto;
+  padding: @space-1 @space-2;
+  border: 1px solid @color-accent-dim;
+  border-radius: @radius-pill;
+  color: @color-accent;
+  font-size: @text-xs;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+/* Its own line under the title: the summary says what is set, this says what could be, and the two
+   read as one sentence if they share a row. */
+.jobMutation__refineHint {
+  flex-basis: 100%;
+  color: @color-muted;
+  font-size: @text-sm;
+  line-height: 1.5;
 }
 
 /* Numbered, because drawing a polygon is a sequence of clicks and the order is the whole of it. */

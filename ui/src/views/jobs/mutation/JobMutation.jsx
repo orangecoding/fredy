@@ -114,6 +114,9 @@ export default function JobMutator() {
   /** Whether the drawing map has been given the full height it used to always occupy. */
   const [areaExpanded, setAreaExpanded] = useState(false);
 
+  /** Whether the filter section is folded open. Drives the "click to set filters" line in its header. */
+  const [refineOpen, setRefineOpen] = useState(false);
+
   const draftId = params.jobId ?? null;
   const [draftRestored, setDraftRestored] = useState(false);
   /** Whether the restore attempt has run. Until it has, nothing may be written back over it. */
@@ -234,7 +237,7 @@ export default function JobMutator() {
 
   // What the collapsed section holds, so it does not have to be opened to find out.
   const refinementSummary = summariseJobRefinements(
-    { blacklist, specFilter, spatialFilter, commuteFilter, shareWithUsers, enabled },
+    { blacklist, specFilter, spatialFilter, commuteFilter },
     { t, formatPrice: (value) => formatEuro(value, locale) },
   );
 
@@ -455,15 +458,29 @@ export default function JobMutator() {
 
         {/* keepDOM={false} is the point of the fold, not a detail of it: the area filter mounts an
             800px MapLibre canvas, and it used to do so on every visit to this form - including the
-            edits that never touch it. The header line says what is inside, so the section does not
-            have to be opened to find out. */}
-        <Collapse accordion={false} keepDOM={false} className="jobMutation__refine">
+            edits that never touch it. What is behind the fold is the whole of what this job will
+            and will not report, so the header names those filters rather than promising "more
+            options", and the line under it says which of them are set. */}
+        <Collapse
+          accordion={false}
+          keepDOM={false}
+          className="jobMutation__refine"
+          // Controlled only so the header can say which way the click goes. A chevron alone was
+          // read as decoration, and the section that holds every filter is the last one a user
+          // should have to discover by clicking around.
+          activeKey={refineOpen ? ['refine'] : []}
+          onChange={(keys) => setRefineOpen([].concat(keys ?? []).includes('refine'))}
+        >
           <Collapse.Panel
             itemKey="refine"
             header={
               <span className="jobMutation__refineHeader">
                 <span className="jobMutation__refineTitle">{t('jobs.mutation.sectionRefine')}</span>
                 <span className="jobMutation__refineSummary">{refinementSummary}</span>
+                <span className="jobMutation__refineToggle">
+                  {refineOpen ? t('jobs.mutation.refineClose') : t('jobs.mutation.refineOpen')}
+                </span>
+                <span className="jobMutation__refineHint">{t('jobs.mutation.refineHint')}</span>
               </span>
             }
           >
@@ -538,44 +555,47 @@ export default function JobMutator() {
                 {areaExpanded ? t('jobs.mutation.areaCollapse') : t('jobs.mutation.areaExpand')}
               </Button>
             </SegmentPart>
-
-            <SegmentPart
-              Icon={IconUser}
-              name={t('jobs.mutation.sectionSharing')}
-              helpText={t('jobs.mutation.sharingHelp')}
-              helpMode="popover"
-            >
-              {shareableUserList.length === 0 ? (
-                <div>{t('jobs.mutation.sharingNoUsers')}</div>
-              ) : (
-                <Select
-                  filter
-                  multiple
-                  placeholder={t('jobs.mutation.sharingSearchPlaceholder')}
-                  autoClearSearchValue={false}
-                  defaultValue={shareWithUsers}
-                  onChange={(value) => setShareWithUsers(value)}
-                  style={{ width: '100%' }}
-                >
-                  {shareableUserList.map((user) => (
-                    <Select.Option value={user.id} key={user.id}>
-                      {user.name}
-                    </Select.Option>
-                  ))}
-                </Select>
-              )}
-            </SegmentPart>
-
-            <SegmentPart
-              Icon={IconPlayCircle}
-              name={t('jobs.mutation.sectionActivation')}
-              helpText={t('jobs.mutation.activationHelp')}
-              helpMode="popover"
-            >
-              <Switch className="jobMutation__spaceTop" onChange={(checked) => setEnabled(checked)} checked={enabled} />
-            </SegmentPart>
           </Collapse.Panel>
         </Collapse>
+
+        {/* Outside the fold, and after it: neither is a filter. Who else sees this job and whether
+            it runs at all are decisions about the job itself, and burying them under a heading that
+            says "filters" is how people missed the switch that turns the job on. */}
+        <SegmentPart
+          Icon={IconUser}
+          name={t('jobs.mutation.sectionSharing')}
+          helpText={t('jobs.mutation.sharingHelp')}
+          helpMode="popover"
+        >
+          {shareableUserList.length === 0 ? (
+            <div>{t('jobs.mutation.sharingNoUsers')}</div>
+          ) : (
+            <Select
+              filter
+              multiple
+              placeholder={t('jobs.mutation.sharingSearchPlaceholder')}
+              autoClearSearchValue={false}
+              defaultValue={shareWithUsers}
+              onChange={(value) => setShareWithUsers(value)}
+              style={{ width: '100%' }}
+            >
+              {shareableUserList.map((user) => (
+                <Select.Option value={user.id} key={user.id}>
+                  {user.name}
+                </Select.Option>
+              ))}
+            </Select>
+          )}
+        </SegmentPart>
+
+        <SegmentPart
+          Icon={IconPlayCircle}
+          name={t('jobs.mutation.sectionActivation')}
+          helpText={t('jobs.mutation.activationHelp')}
+          helpMode="popover"
+        >
+          <Switch className="jobMutation__spaceTop" onChange={(checked) => setEnabled(checked)} checked={enabled} />
+        </SegmentPart>
 
         {/* Sticky, because on a phone the form is still taller than the screen and Save used to be
             several screens below the fold. */}

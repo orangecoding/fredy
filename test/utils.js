@@ -59,6 +59,15 @@ vi.mock('../lib/services/immowelt/immoweltBff.js', async (importOriginal) => {
   };
 });
 
+// Offline runs replace browser navigation with the recorded result page.
+vi.mock('../lib/services/idealista/idealistaSearch.js', async (importOriginal) => {
+  if (process.env.TEST_MODE !== 'offline') {
+    return importOriginal();
+  }
+  const { readFixture } = await import('./offlineFixtures.js');
+  return { fetchSearchHtml: async (url) => readFixture(url) };
+});
+
 if (process.env.TEST_MODE === 'offline') {
   const { buildFetchMock } = await import('./offlineFixtures.js');
   vi.stubGlobal('fetch', buildFetchMock());
