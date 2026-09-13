@@ -63,6 +63,7 @@ export const PROVIDER_SIZE_ORDER = [
   // Spain, Italy and Portugal
   'idealista',
   // Italy
+  'immobiliare',
   'subito',
 ];
 
