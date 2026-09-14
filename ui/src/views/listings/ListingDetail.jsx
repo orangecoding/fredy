@@ -67,6 +67,7 @@ import NearbyStops from '../../components/transit/NearbyStops.jsx';
 import ConnectivityCard from '../../components/connectivity/ConnectivityCard.jsx';
 import TravelTimes from '../../components/transit/TravelTimes.jsx';
 import AddressEditor from './components/AddressEditor.jsx';
+import AttachmentsCard from './components/AttachmentsCard.jsx';
 import './ListingDetail.less';
 import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
 import { useFinanceProfile } from '../../hooks/useFinanceProfile.js';
@@ -695,6 +696,10 @@ export default function ListingDetail() {
                 </Button>
               </Space>
             </div>
+
+            {/* Directly under the notes: both are things the reader adds to a listing rather than
+                things a portal reported, and they are used in the same sitting. */}
+            <AttachmentsCard listingId={listingId} />
 
             {/* The map used to run the full width under the card, which pushed it a screen
                 below the figures. In this column it sits beside the details and the costing,

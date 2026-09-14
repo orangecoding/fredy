@@ -89,6 +89,15 @@ describe('listings published_at', () => {
         UNIQUE (job_id, hash)
       );
       CREATE TABLE watch_list (id TEXT PRIMARY KEY, listing_id TEXT, user_id TEXT);
+      CREATE TABLE listing_attachments (
+        id TEXT PRIMARY KEY,
+        listing_id TEXT NOT NULL,
+        filename TEXT,
+        mime_type TEXT,
+        size INTEGER,
+        content BLOB,
+        created_at INTEGER
+      );
       -- Empty, but every listing page reads the travel times of the rows it returned, so the
       -- query fails before it can be asserted on if the table is missing.
       CREATE TABLE listing_travel_times (

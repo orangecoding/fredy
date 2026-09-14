@@ -81,6 +81,15 @@ describe('queryListings affordability band against real SQLite', () => {
         manually_deleted INTEGER DEFAULT 0
       );
       CREATE TABLE watch_list (id TEXT PRIMARY KEY, listing_id TEXT, user_id TEXT);
+      CREATE TABLE listing_attachments (
+        id TEXT PRIMARY KEY,
+        listing_id TEXT NOT NULL,
+        filename TEXT,
+        mime_type TEXT,
+        size INTEGER,
+        content BLOB,
+        created_at INTEGER
+      );
       -- Empty, but it has to exist: every listing page reads the travel times of the rows it
       -- returned, so a query against a schema without this table fails before it can be asserted on.
       CREATE TABLE listing_travel_times (

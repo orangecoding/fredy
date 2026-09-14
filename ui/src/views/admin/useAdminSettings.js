@@ -22,6 +22,8 @@ export const SYSTEM_FIELDS = [
   'baseUrl',
   'sessionTTL',
   'listingRetentionDays',
+  'listingAttachmentMaxMb',
+  'listingAttachmentMaxPerListing',
   'sqlitepath',
   'analyticsEnabled',
   'demoMode',
@@ -88,6 +90,8 @@ function toForm(settings) {
     baseUrl: settings?.baseUrl ?? '',
     sessionTTL: settings?.sessionTTL ?? '',
     listingRetentionDays: settings?.listingRetentionDays ?? 14,
+    listingAttachmentMaxMb: settings?.listingAttachmentMaxMb ?? 10,
+    listingAttachmentMaxPerListing: settings?.listingAttachmentMaxPerListing ?? 20,
     sqlitepath: settings?.sqlitepath ?? '',
     analyticsEnabled: settings?.analyticsEnabled === true,
     demoMode: settings?.demoMode === true,
@@ -209,6 +213,8 @@ export function useAdminSettings(settings) {
       // string behind, and the backend's bounds checks are stricter than its coercion.
       if (fields.includes('listingRetentionDays')) {
         payload.listingRetentionDays = Number(form.listingRetentionDays);
+        payload.listingAttachmentMaxMb = Number(form.listingAttachmentMaxMb);
+        payload.listingAttachmentMaxPerListing = Number(form.listingAttachmentMaxPerListing);
       }
       if (fields.includes('connectivityLimitPerRun')) {
         payload.connectivityLimitPerRun = Number(form.connectivityLimitPerRun);
@@ -279,6 +285,12 @@ export function useAdminSettings(settings) {
             !Number.isInteger(Number(form.listingRetentionDays))
           ) {
             return t('settings.toastListingRetentionInvalid');
+          }
+          if (
+            !Number.isInteger(Number(form.listingAttachmentMaxMb)) ||
+            !Number.isInteger(Number(form.listingAttachmentMaxPerListing))
+          ) {
+            return t('settings.toastListingAttachmentInvalid');
           }
           return null;
         },
