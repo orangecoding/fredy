@@ -47,6 +47,29 @@ describe('text normalisation', () => {
     expect(normalizeText('ohne\n  Besichtigung')).toBe('ohne besichtigung');
   });
 
+  it('strips the accents Italian, Spanish and Portuguese are written with', () => {
+    expect(normalizeText('è')).toBe('e');
+    expect(normalizeText('señal')).toBe('senal');
+    expect(normalizeText('caução')).toBe('caucao');
+    expect(normalizeText('possível')).toBe('possivel');
+  });
+
+  it('spells out an umlaut that arrived decomposed, rather than flattening it', () => {
+    // The same word in the two forms Unicode allows, the second built from a bare 'u' plus a
+    // combining diaeresis so no editor can quietly normalise the distinction away. Without the NFC
+    // pass that one slips past the umlaut replacements and comes out as 'schlussel', which matches
+    // nothing in the lists and fails silently.
+    expect(normalizeText('Schl\u00fcssel')).toBe('schluessel');
+    expect(normalizeText('Schlu\u0308ssel')).toBe('schluessel');
+  });
+
+  it('breaks an elision into the two words it stands for', () => {
+    // Italian writes "all'estero", never "al estero", so a list without this would have to carry a
+    // separate entry for every contraction a landlord might reach for.
+    expect(normalizeText("Mi trovo all'estero")).toBe('mi trovo all estero');
+    expect(normalizeText('Mi trovo all’estero')).toBe('mi trovo all estero');
+  });
+
   it('has nothing to say about what is not text', () => {
     expect(normalizeText(null)).toBe('');
     expect(normalizeText(undefined)).toBe('');
@@ -132,6 +155,62 @@ describe('detecting signals', () => {
     // fraud warning on half the database.
     expect(detectScamSignals(listing('Die Kaution beträgt zwei Nettokaltmieten.'))).toEqual([]);
     expect(detectScamSignals(listing('Besichtigung erst nach Terminvereinbarung möglich.'))).toEqual([]);
+  });
+
+  it('reads the same fraud in Italian, Spanish and Portuguese', () => {
+    // The portals behind these are casa, subito, tecnocasa, tecnorete and the three idealista
+    // sites. The same four stories, told in the language the advert is written in.
+    expect(detectScamSignals(listing("Mi trovo all'estero. Caparra prima della visita, chiavi per posta."))).toEqual([
+      'advancePayment',
+      'keysByPost',
+      'landlordAbroad',
+    ]);
+    expect(
+      detectScamSignals(listing('Estoy en el extranjero. Fianza antes de la visita y llaves por correo.')),
+    ).toEqual(['advancePayment', 'keysByPost', 'landlordAbroad']);
+    expect(detectScamSignals(listing('Estou no estrangeiro. Sinal antes da visita, chaves pelo correio.'))).toEqual([
+      'advancePayment',
+      'keysByPost',
+      'landlordAbroad',
+    ]);
+  });
+
+  it('reads an accent and an elision the way the portal wrote them', () => {
+    // Accents get typed, dropped and mangled in turn, and Italian elides by default. A list written
+    // without either has to match all of those spellings, or it matches the tidy half of the web.
+    expect(detectScamSignals(listing('La visita non è possibile.'))).toEqual(['noViewing']);
+    expect(detectScamSignals(listing('La visita non e possibile.'))).toEqual(['noViewing']);
+    expect(detectScamSignals(listing("Mi trovo all'estero."))).toEqual(['landlordAbroad']);
+    expect(detectScamSignals(listing('Mi trovo all estero.'))).toEqual(['landlordAbroad']);
+    expect(detectScamSignals(listing('Se requiere señal antes de la visita.'))).toEqual(['advancePayment']);
+    expect(detectScamSignals(listing('Exige-se caução antes da visita.'))).toEqual(['advancePayment']);
+  });
+
+  it('leaves the standard clause about paying rent in advance alone', () => {
+    // The trap this list fell into once. Rent is payable before the month it covers in every one of
+    // these countries - German law writes it down in section 556b BGB - so an advert quoting the
+    // clause is quoting the law, not confessing. Only money wanted before a viewing is a signal,
+    // and the difference matters because this signal is heavy enough to warn on its own.
+    expect(detectScamSignals(listing('Die Miete ist monatlich im Voraus zu zahlen.'))).toEqual([]);
+    expect(detectScamSignals(listing('Rent is payable monthly in advance.'))).toEqual([]);
+    expect(detectScamSignals(listing('Monthly payment in advance, as per the tenancy agreement.'))).toEqual([]);
+    expect(detectScamSignals(listing('Pagamento anticipato del canone mensile.'))).toEqual([]);
+    expect(detectScamSignals(listing('El alquiler se paga por adelantado cada mes.'))).toEqual([]);
+    expect(detectScamSignals(listing('Pagamento antecipado da renda mensal.'))).toEqual([]);
+
+    // The same money, asked for at the one moment no tenancy asks for it.
+    expect(detectScamSignals(listing('Pagamento prima della visita.'))).toEqual(['advancePayment']);
+    expect(detectScamSignals(listing('Se requiere pago antes de la visita.'))).toEqual(['advancePayment']);
+    expect(detectScamSignals(listing('Pagamento antes da visita.'))).toEqual(['advancePayment']);
+  });
+
+  it('does not read a walk-in welcome as a viewing being refused', () => {
+    // "sin visita previa" and "sem visita previa" say you need no appointment, which is the
+    // opposite of the signal and common in honest Spanish and Portuguese adverts.
+    expect(detectScamSignals(listing('Se puede ver sin visita previa concertada.'))).toEqual([]);
+    expect(detectScamSignals(listing('Visitas sem visita previa marcada.'))).toEqual([]);
+    expect(detectScamSignals(listing('Spese di agenzia a carico del conduttore.'))).toEqual([]);
+    expect(detectScamSignals(listing('Gastos de agencia no incluidos. Fianza de dos meses.'))).toEqual([]);
   });
 });
 

@@ -2,6 +2,16 @@
   "schemaVersion": 1,
   "releases": [
     {
+      "version": "28.0.0",
+      "date": "2026-09-14",
+      "entries": [
+        {
+          "title": "A warning on listings that read like a rental scam",
+          "text": "Rental fraud follows a script. The price sits far under what the street costs, the landlord cannot make a viewing because they are abroad, the keys are promised by post, and money is wanted before anyone has seen the flat. <br/><br/>Fredy now reads every listing for those marks and warns you when enough of them line up. The signals are weighted, because they are not equally telling: nobody legitimate asks to be paid through <b>Western Union</b> or in gift cards, while plenty of honest adverts are simply cheap. A bargain on its own is never flagged. Finding cheap flats is what Fredy is for. <br/><br/>A flagged listing carries a badge in the overview and in the table, and the listing page names every signal that fired. You can check each one against the advert yourself instead of trusting a label. <br/><br/>Your judgement wins, in both directions. Mark a listing as a scam Fredy did not catch, or dismiss a warning you have looked into, and that decision survives every later run of the search. Press the same button again to hand the listing back to the detector. <br/><br/>Nothing is filtered, hidden or deleted. Fredy reads the text that is already in the database, so this costs no requests and no API keys, and nothing leaves your machine. <br/><br/>It reads German, English, Italian, Spanish and Portuguese, which covers every portal Fredy ships with."
+        }
+      ]
+    },
+    {
       "version": "27.5.0",
       "date": "2026-09-08",
       "entries": [
