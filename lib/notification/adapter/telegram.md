@@ -54,6 +54,12 @@ Example (truncated):
 ```
 Use `chat.id` as `chatId` and `message_thread_id` as `threadId` in your configuration.
 
+#### Custom API url (optional)
+
+If you run a Telegram API relay or a local Bot API server, put its base url into the **API Url** field, e.g. `https://telegram.example.com`. Fredy then calls `<your url>/bot<token>/<method>` instead of the official endpoint. A path prefix is allowed, trailing slashes are ignored.
+
+Leave the field empty to use `https://api.telegram.org`. If the value is not a valid `http`/`https` url, Fredy logs a warning and falls back to the official endpoint, so notifications keep working.
+
 More details about bots and BotFather: https://core.telegram.org/bots#botfather
 
 ### Price changes
