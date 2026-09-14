@@ -177,3 +177,17 @@ I'm using ESLint to maintain quote style and quality. Do not skip it...
 - Are you sure the changes are useful for everybody? Or is it maybe a custom modification just for your case?
 
 _Thanks!_ :heart:
+
+## 🤖 Using AI such as Claude Code
+
+When I started building Fredy, LLMs were still basically the wet dream of a few nerdy scientists.
+
+Nowadays, it’s easier than ever to throw a prompt into the LLM of your choice and let 'the AI' build your stuff. I’m not against that. I use Claude Code myself for smaller tasks, and I do think these tools can be really useful.
+
+That said, I still believe humans should stay in charge. AI is great-ish at writing code, but it still lacks creativity, context, and the ability to see the full picture.
+
+So, if you want to contribute to Fredy, using AI tools to get things done is totally fine. Just please don’t stop thinking.
+
+I’ve had one too many PRs full of hallucinated bullshit.
+
+**Thanks ;)**
