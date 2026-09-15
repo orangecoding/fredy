@@ -47,6 +47,7 @@ import { useProviderCountries } from '../../hooks/useProviderCountries.js';
 import no_image from '../../assets/no_image.png';
 import * as timeService from '../../services/time/timeService.js';
 import { formatEuroPrice } from '../../services/price/priceService.js';
+import { formatDecimal } from '../../services/number/numberService.js';
 import { getBoundsFromCoords } from './mapUtils.js';
 import { applyRouteLayers, buildRouteData, placeTargets } from './detailMapLayers.js';
 import { TRAVEL_MODES } from '../../components/transit/travelTimeFormat.js';
@@ -467,7 +468,7 @@ export default function ListingDetail() {
     },
     {
       key: t('listing.detail.fieldSize'),
-      value: listing.size ? `${listing.size} m²` : t('common.na'),
+      value: listing.size ? `${formatDecimal(listing.size, locale)} m²` : t('common.na'),
       Icon: <IconExpand />,
       helpText: t('listing.detail.fieldSizeHelp'),
     },
@@ -485,7 +486,9 @@ export default function ListingDetail() {
     },
     {
       key: t('listing.detail.fieldRooms'),
-      value: listing.rooms ? t('listing.detail.fieldRoomsValue', { count: listing.rooms }) : t('common.na'),
+      value: listing.rooms
+        ? t('listing.detail.fieldRoomsValue', { count: formatDecimal(listing.rooms, locale) })
+        : t('common.na'),
       Icon: <IconGridView />,
       helpText: t('listing.detail.fieldRoomsHelp'),
     },
