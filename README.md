@@ -66,7 +66,8 @@ docker run -d --name fredy \
 > [!NOTE]
 > No configuration file is needed to start. Fredy creates `/conf/config.json` on first run if it is
 > missing. That file only holds the database path, everything else is configured in the Web UI and
-> stored in the database.
+> stored in the database. Documents you upload live in the database too, so the `/db` volume above
+> is all you need to keep them, and every backup already contains them.
 
 `:master` follows the master branch; pin a release with its version tag instead, e.g.
 `ghcr.io/orangecoding/fredy:28.0.0`. Images are built for `linux/amd64` and `linux/arm64`. Logs:
@@ -110,6 +111,8 @@ Fredy is in the [Unraid](https://unraid.net/) community store.
     or on foot, plus a filter to match, and the transport network with live departures on the map
 -   📊 **Market benchmark**: the price per m² of every listing against the local median, so cheap and
     expensive are facts rather than a feeling
+-   📎 **Document uploads**: attach the exposé, floor plans and photos to a listing, so they survive
+    the portal taking the ad down. A listing with documents is never cleaned up automatically
 -   🖥️ **Web UI** in several languages, with configurable search intervals and working hours
 -   🤖 **[MCP server](lib/mcp/README.md)**: query your listings from Claude, ChatGPT or a local LLM
 -   🌍 Runs anywhere: Docker, Node.js, self-hosted, and uses the reverse engineered

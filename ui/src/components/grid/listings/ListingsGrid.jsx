@@ -9,6 +9,7 @@ import {
   IconCart,
   IconDelete,
   IconMapPin,
+  IconPaperclip,
   IconStar,
   IconStarStroked,
   IconEyeOpened,
@@ -124,6 +125,17 @@ const ListingsGrid = ({
             {/* Compact on purpose: on a card the commute is a number you scan past twenty others,
                 not something you read. The detail page shows the full picture. */}
             <CommuteBadge travelTimes={item.travelTimes} jobId={item.job_id} />
+            {/* Only when there is something to say. A count of nothing on every card would be
+                twenty lines of noise to surface the handful that carry documents - and those are
+                also the listings that survive the retention purge, which is worth spotting. */}
+            {item.attachmentCount > 0 && (
+              <div className="listingsGrid__card__meta">
+                <IconPaperclip />
+                {item.attachmentCount === 1
+                  ? t('listings.cardDocumentsOne')
+                  : t('listings.cardDocuments', { count: item.attachmentCount })}
+              </div>
+            )}
             {/* The date the list is ordered by: the portal's own, where it states one, and the
                 moment Fredy found the listing where it does not. The detail page tells the two
                 apart. */}

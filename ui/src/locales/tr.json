@@ -454,7 +454,7 @@
   "settings.sessionTTLHelp": "Bir oturumun etkinlik olmadan geçerli kaldığı saat sayısı. Her istek oturumu uzatır, bu nedenle bir kullanıcı ancak bu süre kadar etkin olmadığında oturumu kapatılır. Not: Yüksek bir TTL, çalınan bir oturum çerezinin sizin adınıza giriş yapmak için kullanılabilmesi nedeniyle güvenlik sorunu olabilir. Bunu değiştirdikten sonra lütfen tüm çerezleri kaldırıp Fredy'yi yeniden başlatın.",
   "settings.sessionTTLPlaceholder": "Girişe kadar geçecek saat sayısı",
   "settings.listingRetention": "Çevrimdışı İlanları Sil",
-  "settings.listingRetentionHelp": "Bir ilanın çevrimdışı olduktan sonra kaç gün saklanacağı. 14 ile, bugün çevrimdışı olan bir ilan 15. günde kalıcı olarak silinir. Kullanılabilirlik kontrolü sürekli başarısız olan ilanlar (örn. sağlayıcı Fredy'yi engellediği için) art arda 10 başarısız denemeden sonra çevrimdışı sayılır. Takip listesindeki ilanlar asla silinmez. Çevrimdışı ilanları sonsuza kadar saklamak için 0 olarak ayarlayın. Silme işlemi geri alınamaz.",
+  "settings.listingRetentionHelp": "Bir ilanın çevrimdışı olduktan sonra kaç gün saklanacağı. 14 ile, bugün çevrimdışı olan bir ilan 15. günde kalıcı olarak silinir. Kullanılabilirlik kontrolü sürekli başarısız olan ilanlar (örn. sağlayıcı Fredy'yi engellediği için) art arda 10 başarısız denemeden sonra çevrimdışı sayılır. Takip listesindeki ilanlar asla silinmez. Çevrimdışı ilanları sonsuza kadar saklamak için 0 olarak ayarlayın. Silme işlemi geri alınamaz. Yüklenmiş belgeleri olan ilanlar da asla silinmez.",
   "settings.listingRetentionPlaceholder": "Silmeye kadar geçecek gün sayısı",
   "settings.listingRetentionSuffix": "gün",
   "settings.priceTracking": "Fiyat takibi",
