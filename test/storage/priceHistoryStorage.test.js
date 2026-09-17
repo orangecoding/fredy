@@ -7,6 +7,8 @@ import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import Database from 'better-sqlite3';
 
 import { up } from '../../lib/services/storage/migrations/sql/28.price-history.js';
+import { formatPriceChange } from '../../lib/utils/formatListing.js';
+import { toPriceChangeListing } from '../../lib/notification/priceChangeMessage.js';
 
 /**
  * The price tracking storage functions, run against a real SQLite built by the real migration.
@@ -34,6 +36,9 @@ describe('price history storage', () => {
         address TEXT,
         link TEXT,
         price INTEGER,
+        size INTEGER,
+        rooms INTEGER,
+        image_url TEXT,
         created_at INTEGER,
         is_active INTEGER DEFAULT 1,
         manually_deleted INTEGER DEFAULT 0
@@ -69,9 +74,25 @@ describe('price history storage', () => {
     { price = 1000, isActive = 1, deleted = 0, link = `https://x.de/${id}`, checked = null } = {},
   ) => {
     db.prepare(
-      `INSERT INTO listings (id, job_id, provider, title, link, price, created_at, is_active, manually_deleted, last_price_check_at)
-       VALUES (?,?,?,?,?,?,?,?,?,?)`,
-    ).run(id, 'job-1', 'immowelt', 'flat', link, price, NOW - 30 * DAY, isActive, deleted, checked);
+      `INSERT INTO listings (id, job_id, provider, title, address, link, price, size, rooms, image_url, created_at,
+                             is_active, manually_deleted, last_price_check_at)
+       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+    ).run(
+      id,
+      'job-1',
+      'immowelt',
+      'flat',
+      'Hauptstraße 1',
+      link,
+      price,
+      60,
+      2,
+      `https://x.de/${id}.jpg`,
+      NOW - 30 * DAY,
+      isActive,
+      deleted,
+      checked,
+    );
   };
   const dueIds = (opts = {}) => storage.getListingsDueForPriceCheck({ now: NOW, ...opts }).map((row) => row.id);
 
@@ -86,6 +107,27 @@ describe('price history storage', () => {
         price: 1000,
         job_id: 'job-1',
       });
+    });
+
+    // A price change notification renders the listing from this row.
+    it('returns the listing fields a price change notification shows', () => {
+      addListing('a');
+      const [row] = storage.getListingsDueForPriceCheck({ now: NOW });
+      const change = formatPriceChange({
+        listing: { ...row, price: 1100 },
+        oldPrice: 1000,
+        newPrice: 1100,
+        changePercent: 10,
+        direction: 'up',
+      });
+      expect(toPriceChangeListing(change)).toMatchObject({
+        title: 'Price increased: flat',
+        address: 'Hauptstraße 1',
+        size: '60 m²',
+        rooms: '2 rooms',
+      });
+      // Price change notifications carry no photo.
+      expect(row).not.toHaveProperty('image');
     });
 
     it('leaves out inactive and manually deleted listings', () => {
