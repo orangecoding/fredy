@@ -87,9 +87,12 @@ describe('MCP listing write tools respect access control', () => {
     },
   );
 
-  it('scopes the listing lookup to the calling user', async () => {
+  it('scopes the listing lookup to the calling user, and asks for no route geometry', async () => {
+    // The write tools read the row to decide whether the user may touch the listing, and to name it
+    // back to them. They draw no map, so decoding the stored driving route per address is work
+    // thrown away on every note and every watch.
     await callTool('add_listing_note', { listingId: 'l1', note: 'hi' });
-    expect(getListingById).toHaveBeenCalledWith('l1', 'u1', false);
+    expect(getListingById).toHaveBeenCalledWith('l1', 'u1', false, { includeGeometry: false });
   });
 });
 
@@ -128,6 +131,28 @@ describe('add_listing_note', () => {
   it('counts the write', async () => {
     await callTool('add_listing_note', { listingId: 'l1', note: 'hi' });
     expect(trackPoi).toHaveBeenCalledWith(TRACKING_POIS.MCP_LISTING_NOTE_WRITTEN);
+  });
+
+  it('refuses an append that would take the notes past what set_listing_notes would allow', async () => {
+    // Appending had no total limit while replacing was capped at 20000, so enough appends stored
+    // more in the same column than the other tool would ever have accepted.
+    getListingById.mockReturnValue(listing({ notes: 'x'.repeat(19_996) }));
+
+    const result = await callTool('add_listing_note', { listingId: 'l1', note: 'y'.repeat(10) });
+
+    expect(result.isError).toBe(true);
+    expect(textOf(result)).toContain('20000');
+    expect(setListingNotes).not.toHaveBeenCalled();
+    expect(trackPoi).not.toHaveBeenCalled();
+  });
+
+  it('still appends when the result fits exactly', async () => {
+    getListingById.mockReturnValue(listing({ notes: 'x'.repeat(19_989) }));
+
+    const result = await callTool('add_listing_note', { listingId: 'l1', note: 'y'.repeat(10) });
+
+    expect(result.isError).toBeUndefined();
+    expect(setListingNotes.mock.calls[0][1]).toHaveLength(20_000);
   });
 });
 

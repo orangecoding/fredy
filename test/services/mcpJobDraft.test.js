@@ -8,6 +8,7 @@ import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest';
 import {
   DRAFT_TTL_MS,
   applyDraftUpdate,
+  describeDraft,
   discardDraft,
   emptyDraft,
   getDraft,
@@ -189,7 +190,28 @@ describe('optional refinements', () => {
 
   it('is answered by giving any one of them', () => {
     expect(apply({ blacklist: ['Tausch'] }).draft.refinementsAnswered).toBe(true);
-    expect(apply({ enabled: false }).draft.refinementsAnswered).toBe(true);
+    expect(apply({ specFilter: { maxPrice: 1200 } }).draft.refinementsAnswered).toBe(true);
+  });
+
+  it('is answered by saying whether the job starts switched on, once that has been asked', () => {
+    const ready = { ...completedDraft(), refinementsAnswered: false };
+    expect(apply({ enabled: false }, ready).draft.refinementsAnswered).toBe(true);
+  });
+
+  it('is not answered by an enabled flag the interview has not got round to asking for', () => {
+    // `enabled` defaults to true, so a model volunteers it with the very first answer. Counting that
+    // as "no thanks, no filters" skipped price, size, rooms, blacklist, commute and sharing in one
+    // go, and the job was created wide open without anybody being asked.
+    const early = apply({ name: 'Köln', enabled: true }).draft;
+
+    expect(early.enabled).toBe(true);
+    expect(early.refinementsAnswered).toBe(false);
+
+    let draft = early;
+    for (const patch of [{ providerUrls: [RENT_URL] }, { dealType: 'rent' }, { channelIds: ['c1'] }]) {
+      draft = applyDraftUpdate(draft, patch, CTX).draft;
+    }
+    expect(nextStep(draft, CTX).key).toBe('refinements');
   });
 
   it('drops a spec bound that is explicitly null and keeps the rest', () => {
@@ -357,13 +379,48 @@ describe('a draft nobody comes back to expires', () => {
   });
 });
 
+describe('the summary read back to the user', () => {
+  it("does not put words in the user's mouth about a deal type nobody has given", () => {
+    // The model reads this out and asks the user to confirm it. Printing the eventual fallback made
+    // the summary claim "renting" while the draft held nothing, and the next question was still
+    // "renting or buying?".
+    expect(describeDraft(emptyDraft(), CTX)).toContain('**Deal type:** –');
+  });
+
+  it('names the deal type once there is one', () => {
+    expect(describeDraft(apply({ dealType: 'buy' }).draft, CTX)).toContain('**Deal type:** buying');
+    expect(describeDraft(apply({ dealType: 'rent' }).draft, CTX)).toContain('**Deal type:** renting');
+  });
+});
+
 describe('portal hosts are unambiguous', () => {
   it('no two providers claim the same host, or resolution would be a coin toss', async () => {
     const { getProviders } = await import('../../lib/utils.js');
+    const { hostsOf } = await import('../../lib/services/jobs/providerUrl.js');
     const metas = (await getProviders()).map((provider) => provider.metaInformation);
-    const hosts = metas.map((meta) => new URL(meta.baseUrl).hostname.replace(/^www\./i, ''));
+    // Every declared host, not just `baseUrl`'s: that is what `resolveProviderForUrl` matches on, so
+    // a provider adding a domain another already serves is the collision that would matter, and
+    // checking `baseUrl` alone would not see it.
+    const hosts = metas.flatMap(hostsOf);
 
     expect(metas.length).toBeGreaterThan(10);
+    expect(hosts.length).toBeGreaterThan(metas.length);
     expect(new Set(hosts).size).toBe(hosts.length);
+  });
+
+  it('resolves a URL on a provider that serves several countries under several domains', async () => {
+    const { getProviders } = await import('../../lib/utils.js');
+    const metas = (await getProviders()).map((provider) => provider.metaInformation);
+    const multiHost = metas.filter((meta) => Array.isArray(meta.hosts) && meta.hosts.length > 1);
+
+    // Immowelt (.de/.at) and idealista (.com/.it/.pt). If this ever drops to nothing the case below
+    // stops being tested, and the check is worth more than the assertion it guards.
+    expect(multiHost.length).toBeGreaterThan(0);
+
+    for (const meta of multiHost) {
+      for (const host of meta.hosts) {
+        expect(resolveProviderForUrl(`https://${host}/suche/irgendwas`, metas)?.id).toBe(meta.id);
+      }
+    }
   });
 });
