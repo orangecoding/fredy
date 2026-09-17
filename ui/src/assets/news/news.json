@@ -2,6 +2,20 @@
   "schemaVersion": 1,
   "releases": [
     {
+      "version": "28.3.0",
+      "date": "2026-09-17",
+      "entries": [
+        {
+          "title": "Set up a search by asking for it",
+          "text": "Fredy's MCP server could answer questions about your searches. It could not do anything about them. <br/><br/>Now it can. Ask your assistant to put a note on a listing, add one to the watch list, take it off again, or set up an entirely new search, and it does. <br/><br/>Creating a search is a conversation rather than one instruction, and deliberately so. Fredy asks <b>one question at a time</b>, in your language, and checks every answer as it arrives: a name, the search URLs you copied out of the portals, renting or buying, and which notification channel the results should go to. Then the optional part, price, size, rooms, words that should exclude a listing, travel time limits. <br/><br/>The questions come from Fredy, not from the assistant. The assistant only passes them on, which is why this works with a small model on your own machine as well as with a large one: nothing has to remember what has already been answered, because Fredy does. <br/><br/>Paste a portal's homepage instead of a search and it says so, because that would save cleanly, run on schedule and quietly find nothing. Name a channel you do not have and it lists the ones you do. Nothing is created until the whole thing has been read back to you and you have agreed to it. <br/><br/>Two things it will not do. It cannot draw an <b>area filter</b>, because a shape on a map is drawn rather than described, and it cannot create a <b>notification channel</b>, because the token would have to travel through the assistant to get there. Both stay in the web interface, and a freshly created job tells you where."
+        },
+        {
+          "title": "A connection you already approved stays read-only",
+          "text": "Writing is a separate permission, not an extension of the old one. <br/><br/>Any LLM client you connected before this release was approved on a page that only mentioned reading your jobs and listings. It keeps exactly that, and nothing more, until you <b>disconnect and reconnect it</b> and see the new page. A consent screen that has since changed cannot grant what it never showed you. <br/><br/><b>Settings &rarr; Connections</b> now carries an <b>Access</b> column saying which of the two each client holds, so there is nothing to guess at. <br/><br/>Nothing changes for an MCP token you pasted into a client yourself. That has always been full access, because you handed it over directly and there was no consent page in between. <br/><br/>On an instance running in demo mode, every write is refused for anyone but an admin."
+        }
+      ]
+    },
+    {
       "version": "28.1.0",
       "date": "2026-09-14",
       "entries": [
