@@ -1,0 +1,12 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "singleQuote": true,
+  "printWidth": 120,
+  "sortPackageJson": false,
+  "ignorePatterns": [
+    "/ui/public",
+    "/db/",
+    "/conf/",
+    "/lib/notification/emailTemplate/template.hbs"
+  ]
+}

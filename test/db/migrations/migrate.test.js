@@ -156,7 +156,7 @@ describe('db/migrations/migrate.js - runMigrations', () => {
     // The migration module: exports up(db)
     const migrationModule = {
       up: (db) => {
-        db.exec && db.exec('CREATE TABLE schema_migrations(name TEXT)');
+        db.exec?.('CREATE TABLE schema_migrations(name TEXT)');
       },
     };
 

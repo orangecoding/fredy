@@ -30,7 +30,7 @@ yarn test:download-fixtures   # Re-download fresh provider HTML fixtures
 # Single test file
 TEST_MODE=offline npx vitest run test/provider/immoscout.test.js
 
-# Lint / Format
+# Lint / Format (oxlint + oxfmt, from the oxc toolchain)
 yarn lint && yarn lint:fix
 yarn format && yarn format:check
 
@@ -238,6 +238,7 @@ Job creation is a draft-based interview, not a single call: `lib/mcp/jobDraftSto
 
 - **ESM only** - `import`/`export` everywhere, no CommonJS
 - **JSDoc typedefs** (no TypeScript) in `lib/types/` - `listing.js`, `job.js`, `filter.js`, `providerConfig.js`
+- **Lint / format** - oxlint (`.oxlintrc.json`) and oxfmt (`.oxfmtrc.json`), both from the oxc toolchain. There is no ESLint and no Prettier; `eslint-disable` comments still work because oxlint reads them
 - **Copyright header** required on all `.js` files - enforced by `lint-staged` pre-commit hook via `copyright.js`
 - **`NoNewListingsWarning`** (`lib/errors.js`) is used as control flow to short-circuit the pipeline (not an error)
 - **Test fixtures** in `test/testFixtures/` - HTML/JSON snapshots per provider; `TEST_MODE=offline` mocks `puppeteerExtractor` and global `fetch` via `test/offlineFixtures.js`

@@ -190,7 +190,7 @@ const JobGrid = () => {
 
   useEffect(() => {
     return () => {
-      handleFilterChange.cancel && handleFilterChange.cancel();
+      handleFilterChange.cancel?.();
     };
   }, [handleFilterChange]);
 

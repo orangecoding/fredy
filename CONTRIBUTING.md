@@ -185,7 +185,7 @@ If you've written a new provider you are an awesome person. If you now write tes
 
 #### Codestyle
 
-I'm using ESLint to maintain quote style and quality. Do not skip it...
+I'm using oxlint and oxfmt (the oxc toolchain) to maintain quote style and quality. Run `yarn lint` and `yarn format` before opening a PR. Do not skip it...
 
 ##### To-do before merging:
 

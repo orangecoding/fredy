@@ -231,7 +231,7 @@ const ListingsOverview = () => {
 
   useEffect(() => {
     return () => {
-      handleFilterChange.cancel && handleFilterChange.cancel();
+      handleFilterChange.cancel?.();
     };
   }, [handleFilterChange]);
 
