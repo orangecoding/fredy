@@ -42,6 +42,24 @@ describe('GET /api/version', () => {
     expect(result).toMatchObject({ newVersion: true, version: '24.0.0', localFredyVersion: '23.2.3' });
   });
 
+  // #465: the frontend used to compile the release body as MDX, where GitHub's unclosed <img>
+  // is an unterminated JSX element - the compile threw and the changelog modal stayed empty.
+  it('ships the release notes as rendered html, images included', async () => {
+    githubReturns({
+      tag_name: '24.0.0',
+      html_url: 'https://example/rel',
+      body: '# Notes\r\n\r\n<img alt="shot" src="https://github.com/user-attachments/assets/x">',
+    });
+    const result = await handler();
+    expect(result.bodyHtml).toContain('<h1>Notes</h1>');
+    expect(result.bodyHtml).toContain('src="https://github.com/user-attachments/assets/x"');
+  });
+
+  it('does not choke on a release published without a body', async () => {
+    githubReturns({ tag_name: '24.0.0', html_url: 'https://example/rel', body: null });
+    expect((await handler()).bodyHtml).toBe('');
+  });
+
   it('reports no update when the local version is current', async () => {
     githubReturns({ tag_name: '23.2.3' });
     expect(await handler()).toEqual({ newVersion: false, localFredyVersion: '23.2.3' });

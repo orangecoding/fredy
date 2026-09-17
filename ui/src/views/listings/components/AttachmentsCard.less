@@ -1,0 +1,99 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../../tokens.less';
+
+.attachmentsCard {
+  // Same gutter as the notes block above and the map below, which carry the column's rhythm:
+  // `padding: 1.5rem` and `padding: 0 1.5rem 1.5rem`. The notes block's own bottom padding is the
+  // gap above this one, so there is no top padding here either.
+  padding: 0 1.5rem 1.5rem;
+
+  &__title {
+    margin: 0 0 @space-1 0;
+  }
+
+  &__hint {
+    display: block;
+    // 1rem under the heading block, matching `__notes-title` and `__map-title`.
+    margin-bottom: 1rem;
+  }
+
+  &__list {
+    list-style: none;
+    margin: 0 0 @space-3 0;
+    padding: 0;
+  }
+
+  &__empty {
+    padding: @space-3 0;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: @space-2;
+    padding: @space-2;
+    border-radius: @radius-card;
+    border: 1px solid var(--semi-color-border);
+
+    & + & {
+      margin-top: @space-2;
+    }
+  }
+
+  // The whole row is the target, so a long filename does not turn into a narrow click area.
+  &__link {
+    display: flex;
+    align-items: center;
+    gap: @space-3;
+    flex: 1;
+    min-width: 0;
+    color: inherit;
+    text-decoration: none;
+
+    &:hover .attachmentsCard__name {
+      text-decoration: underline;
+    }
+  }
+
+  &__thumb {
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+    border-radius: @radius-input;
+    object-fit: cover;
+    background: var(--semi-color-fill-0);
+    // A file the browser cannot decode falls back to its alt text, which is the filename and is
+    // routinely longer than the box. Without this it spills across the row.
+    overflow: hidden;
+  }
+
+  &__thumb--icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--semi-color-text-2);
+    font-size: 20px;
+  }
+
+  &__meta {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  // A scanned exposé is routinely called something nobody wants wrapped over three lines.
+  &__name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__capacity {
+    display: block;
+    margin-top: @space-2;
+  }
+}

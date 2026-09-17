@@ -416,3 +416,45 @@ describe('telegram send() - config validation', () => {
     ).toThrow(/token.*chatId/);
   });
 });
+
+describe('telegram send() - custom API url', () => {
+  const listing = {
+    id: '1',
+    title: 'Flat',
+    link: 'https://ex.com',
+    address: 'Berlin',
+    price: '800',
+    size: '50',
+    image: null,
+  };
+
+  async function sendWith(apiUrl) {
+    mockNodeFetch.mockResolvedValue(jsonOk());
+    await send({
+      serviceName: 'immoscout',
+      newListings: [listing],
+      notificationConfig: [{ id: 'telegram', fields: { token: 'TKN', chatId: '999', apiUrl } }],
+      jobKey: 'Berlin',
+    });
+    return mockNodeFetch.mock.calls[0][0];
+  }
+
+  it('uses a configured relay url', async () => {
+    expect(await sendWith('https://relay.example.com')).toBe('https://relay.example.com/botTKN/sendMessage');
+  });
+
+  it('strips trailing slashes from the relay url', async () => {
+    expect(await sendWith('https://relay.example.com//')).toBe('https://relay.example.com/botTKN/sendMessage');
+  });
+
+  it('accepts a relay url with a path prefix', async () => {
+    expect(await sendWith('https://relay.example.com/tg')).toBe('https://relay.example.com/tg/botTKN/sendMessage');
+  });
+
+  it.each([undefined, null, '', '   ', 'not a url', 'ftp://relay.example.com', 42])(
+    'falls back to the official API for %p',
+    async (apiUrl) => {
+      expect(await sendWith(apiUrl)).toBe('https://api.telegram.org/botTKN/sendMessage');
+    },
+  );
+});

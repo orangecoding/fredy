@@ -8,6 +8,7 @@ import { IconChevronLeft, IconChevronRight, IconDelete, IconEyeOpened, IconLink 
 import no_image from '../../assets/no_image.png';
 import { availableModes, formatMinutes, hasAnyTime } from '../../components/transit/travelTimeFormat.js';
 import { formatEuroPrice } from '../../services/price/priceService.js';
+import { formatDecimal } from '../../services/number/numberService.js';
 
 /**
  * Builds the DOM for a listing popup on the map.
@@ -141,7 +142,7 @@ function renderListingBody(listing, index, total, t, locale) {
       <span><strong>${t('map.popupAddress')}</strong> ${listing.address || t('common.na')}</span>
       <span><strong>${t('map.popupJob')}</strong> ${listing.job_name || t('common.na')}</span>
       <span><strong>${t('map.popupProvider')}</strong> ${capitalizedProvider}</span>
-      <span><strong>${t('map.popupSize')}</strong> ${listing.size != null ? `${listing.size} m²` : t('common.na')}</span>
+      <span><strong>${t('map.popupSize')}</strong> ${listing.size != null ? `${formatDecimal(listing.size, locale)} m²` : t('common.na')}</span>
       ${renderTravelTimes(listing, t)}
       <div style="display: flex; gap: 8px; margin-top: 8px; justify-content: space-between;">
         <div class="map-popup-content__linkButton">

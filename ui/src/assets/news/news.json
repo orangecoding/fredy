@@ -2,6 +2,26 @@
   "schemaVersion": 1,
   "releases": [
     {
+      "version": "28.1.0",
+      "date": "2026-09-14",
+      "entries": [
+        {
+          "title": "Keep the exposé, long after the advert is gone",
+          "text": "A portal deletes an advert the day the flat is taken, and with it the floor plan, the specifications and the photos. That is usually the week you want to look at them again. <br/><br/>Every listing now has a <b>Documents</b> section. Put the exposé, the floor plans and whatever the agent mailed over in it, and they stay whether or not the advert does. PDF, JPG and PNG. Images show a thumbnail; the rest download under the name you gave them. <br/><br/>A listing carrying documents is <b>never deleted automatically</b>. The retention period skips it the same way it already skips anything on a watch list, because preserving a record of an advert that has been taken down is the entire point of keeping one. Delete the last document and it rejoins the normal cleanup. <br/><br/>The files live in Fredy's database, not in a folder beside it. If you run the Docker image, the <b>/db</b> volume you already mount is all you need: nothing new to set up, and every backup you take from now on carries your documents with it. <br/><br/>The overview says which listings have something, so you can spot them without opening each one. How large a file may be and how many a listing may carry are in <b>Admin, System</b>, next to the retention period, since the three decide together how much history you keep."
+        }
+      ]
+    },
+    {
+      "version": "28.0.0",
+      "date": "2026-09-14",
+      "entries": [
+        {
+          "title": "A warning on listings that read like a rental scam",
+          "text": "Rental fraud follows a script. The price sits far under what the street costs, the landlord cannot make a viewing because they are abroad, the keys are promised by post, and money is wanted before anyone has seen the flat. <br/><br/>Fredy now reads every listing for those marks and warns you when enough of them line up. The signals are weighted, because they are not equally telling: nobody legitimate asks to be paid through <b>Western Union</b> or in gift cards, while plenty of honest adverts are simply cheap. A bargain on its own is never flagged. Finding cheap flats is what Fredy is for. <br/><br/>A flagged listing carries a badge in the overview and in the table, and the listing page names every signal that fired. You can check each one against the advert yourself instead of trusting a label. <br/><br/>Your judgement wins, in both directions. Mark a listing as a scam Fredy did not catch, or dismiss a warning you have looked into, and that decision survives every later run of the search. Press the same button again to hand the listing back to the detector. <br/><br/>Nothing is filtered, hidden or deleted. Fredy reads the text that is already in the database, so this costs no requests and no API keys, and nothing leaves your machine. <br/><br/>It reads German, English, Italian, Spanish and Portuguese, which covers every portal Fredy ships with."
+        }
+      ]
+    },
+    {
       "version": "27.5.0",
       "date": "2026-09-08",
       "entries": [

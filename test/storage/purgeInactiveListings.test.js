@@ -9,8 +9,8 @@ import Database from 'better-sqlite3';
 /**
  * The retention purge is the only place in Fredy that deletes listings without a human asking for it,
  * and the delete is irreversible. These tests pin what it is allowed to touch: only listings the
- * alive-checker confirmed as gone, only after the grace period, and never one that somebody has on
- * their watch list.
+ * alive-checker confirmed as gone, only after the grace period, and never one that somebody has
+ * shown they care about - by watching it, or by attaching documents to it.
  */
 describe('purgeExpiredInactiveListings', () => {
   let db;
@@ -38,6 +38,15 @@ describe('purgeExpiredInactiveListings', () => {
         active_check_failures INTEGER DEFAULT 0
       );
       CREATE TABLE watch_list (id TEXT PRIMARY KEY, listing_id TEXT, user_id TEXT);
+      CREATE TABLE listing_attachments (
+        id TEXT PRIMARY KEY,
+        listing_id TEXT,
+        filename TEXT,
+        mime_type TEXT,
+        size INTEGER,
+        content BLOB,
+        created_at INTEGER
+      );
     `);
 
     removeEntry = vi.fn();
@@ -71,6 +80,14 @@ describe('purgeExpiredInactiveListings', () => {
     db
       .prepare(`INSERT INTO watch_list (id, listing_id, user_id) VALUES (?,?,?)`)
       .run(`w-${listingId}`, listingId, 'u1');
+
+  const attach = (listingId) =>
+    db
+      .prepare(
+        `INSERT INTO listing_attachments (id, listing_id, filename, mime_type, size, content, created_at)
+         VALUES (?,?,?,?,?,?,?)`,
+      )
+      .run(`a-${listingId}`, listingId, 'expose.pdf', 'application/pdf', 8, Buffer.from('%PDF-1.7'), NOW);
 
   const purge = (retentionDays = 14) => listingsStorage.purgeExpiredInactiveListings({ retentionDays, now: NOW });
   const remainingIds = () =>
@@ -125,6 +142,25 @@ describe('purgeExpiredInactiveListings', () => {
     watch('favourite');
     expect(purge(14).changes).toBe(0);
     expect(remainingIds()).toEqual(['favourite']);
+  });
+
+  it('never deletes a listing somebody attached documents to', () => {
+    // Uploading the exposé is the point of keeping a listing whose ad is gone. Deleting it on a
+    // timer would delete exactly the records the upload feature exists to preserve.
+    addListing('documented', { inactiveSince: NOW - 400 * DAY });
+    attach('documented');
+    expect(purge(14).changes).toBe(0);
+    expect(remainingIds()).toEqual(['documented']);
+  });
+
+  it('deletes an expired listing again once its last document is gone', () => {
+    addListing('was-documented', { inactiveSince: NOW - 400 * DAY });
+    attach('was-documented');
+    expect(purge(14).changes).toBe(0);
+
+    db.prepare(`DELETE FROM listing_attachments WHERE listing_id = 'was-documented'`).run();
+    expect(purge(14).changes).toBe(1);
+    expect(remainingIds()).toEqual([]);
   });
 
   it('deletes an expired listing the user had already hidden', () => {

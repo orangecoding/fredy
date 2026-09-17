@@ -4,7 +4,7 @@
  */
 
 import { useState } from 'react';
-import { Banner, Button, Modal, Tag, Space, Typography, Descriptions, MarkdownRender } from '@douyinfe/semi-ui-19';
+import { Banner, Button, Modal, Tag, Space, Typography, Descriptions } from '@douyinfe/semi-ui-19';
 import { IconAlertCircle, IconArrowRight } from '@douyinfe/semi-icons';
 import { useSelector } from '../../services/state/store.js';
 
@@ -81,9 +81,7 @@ export default function VersionBanner() {
           <Descriptions.Item itemKey={t('version.yourVersion')}>{versionUpdate.localFredyVersion}</Descriptions.Item>
           <Descriptions.Item itemKey={t('version.latestVersion')}>{versionUpdate.version}</Descriptions.Item>
         </Descriptions>
-        <div className="versionBanner__notes">
-          <MarkdownRender raw={versionUpdate.body} />
-        </div>
+        <div className="versionBanner__notes" dangerouslySetInnerHTML={{ __html: versionUpdate.bodyHtml || '' }} />
       </Modal>
     </>
   );

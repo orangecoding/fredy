@@ -9,6 +9,7 @@ import {
   IconCart,
   IconDelete,
   IconMapPin,
+  IconPaperclip,
   IconStar,
   IconStarStroked,
   IconEyeOpened,
@@ -22,6 +23,7 @@ import ExternalListingLink from '../../listings/ExternalListingLink.jsx';
 import AffordabilityChip from '../../listings/AffordabilityChip.jsx';
 import PriceChangeBadge from '../../listings/PriceChangeBadge.jsx';
 import PricePerSqmBadge from '../../listings/PricePerSqmBadge.jsx';
+import ScamBadge from '../../listings/ScamBadge.jsx';
 import CommuteBadge from '../../transit/CommuteBadge.jsx';
 
 import './ListingsGrid.less';
@@ -91,6 +93,10 @@ const ListingsGrid = ({
             <div className="listingsGrid__card__title" title={item.title}>
               {item.title}
             </div>
+            {/* Above the price rather than beside it. A fraud warning is not another attribute of
+                the flat to be weighed against the rent, it is a reason to read the rest
+                differently, so it comes first. */}
+            <ScamBadge listing={item} />
             {item.price && (
               <div className="listingsGrid__card__price">
                 <IconCart size="small" />
@@ -119,6 +125,17 @@ const ListingsGrid = ({
             {/* Compact on purpose: on a card the commute is a number you scan past twenty others,
                 not something you read. The detail page shows the full picture. */}
             <CommuteBadge travelTimes={item.travelTimes} jobId={item.job_id} />
+            {/* Only when there is something to say. A count of nothing on every card would be
+                twenty lines of noise to surface the handful that carry documents - and those are
+                also the listings that survive the retention purge, which is worth spotting. */}
+            {item.attachmentCount > 0 && (
+              <div className="listingsGrid__card__meta">
+                <IconPaperclip />
+                {item.attachmentCount === 1
+                  ? t('listings.cardDocumentsOne')
+                  : t('listings.cardDocuments', { count: item.attachmentCount })}
+              </div>
+            )}
             {/* The date the list is ordered by: the portal's own, where it states one, and the
                 moment Fredy found the listing where it does not. The detail page tells the two
                 apart. */}

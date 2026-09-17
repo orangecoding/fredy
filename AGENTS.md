@@ -68,7 +68,9 @@ scheduler (every N minutes) or manual trigger via POST /api/jobs/:id/run
 ### Plugin systems
 
 **Providers** (`lib/provider/*.js`) - each module exports:
-- `metaInformation` - `{ id, name, baseUrl }`, plus an optional `countries` (ISO 3166-1 alpha-2,
+- `metaInformation` - `{ id, name, baseUrl }`, plus an optional `hosts` (every domain the portal
+  serves the same application under, defaulting to `baseUrl`'s host; read by the job form's url
+  check in `ui/src/services/jobs/providerUrl.js`) and an optional `countries` (ISO 3166-1 alpha-2,
   lowercase). Absent means `['de']`, which is why no shipped provider declares it and why adding the
   field changed no existing installation. Resolved in `lib/services/providers/`: `countries.js` is
   the pure half (the default, normalisation, union) and is all the Nominatim client imports, since
@@ -111,6 +113,33 @@ An adapter *configuration* is separate from the adapter itself: it is a row in `
 | SqliteConnection | `lib/services/storage/SqliteConnection.js` | Singleton, WAL mode; `execute()`, `query()`, `withTransaction()` |
 | Migrations | `lib/services/storage/migrations/` | Numbered JS files each exporting `up(db)`; checksum-tracked in `schema_migrations` |
 | Extractor | `lib/services/extractor/` | Orchestrates Puppeteer + Cheerio; shared browser instance per job |
+| Listing documents | `lib/services/storage/listingAttachmentsStorage.js` | Uploaded exposés (`listing_attachments`), bytes and all. Type and filename guards in `lib/services/listings/attachmentTypes.js`; routes in `lib/api/routes/listingAttachmentsRouter.js` |
+
+### Uploaded documents live in the database
+
+The exposé a user attaches to a listing is a BLOB in `listing_attachments`, not a file next to
+`listings.db`. Fredy usually runs in a container whose filesystem is discarded, and the only thing
+users are told to persist is the `/db` volume, so the database is the one place uploaded bytes are
+already safe. Three things follow from that for free, and all three would otherwise be code:
+
+- Backups already carry them, because `backupRestoreService` copies the whole database.
+- `foreign_keys = ON` plus `ON DELETE CASCADE` disposes of them exactly when the listing goes -
+  retention purge, deleted job, manual hard delete, all of them, none of which know this table
+  exists. Files would need an unlink in each of those paths plus a sweeper for the ones missed.
+- There is no filename that can escape anywhere, because no filename ever reaches a filesystem.
+
+The one thing that is *not* free is the size, hence the two admin settings
+(`listingAttachmentMaxMb`, `listingAttachmentMaxPerListing`) and the rule that nothing reading
+attachment metadata may `SELECT *`.
+
+Uploading also exempts a listing from `purgeExpiredInactiveListings`, alongside the watch list.
+Preserving a record of an ad that has been taken down is the point of the feature, so deleting it on
+a timer would delete exactly what the upload was for.
+
+The type stored on a row comes from the file's magic bytes, never from the `Content-Type` the
+browser sent, because these files are served back from Fredy's own origin: a renamed `.html`
+getting through would be stored cross-site scripting. Responses carry `nosniff`, and only images
+go out `inline`.
 
 ### Frontend
 

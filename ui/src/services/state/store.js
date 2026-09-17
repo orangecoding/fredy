@@ -453,6 +453,21 @@ export const useFredyState = create(
               throw Exception;
             }
           },
+          /**
+           * Record what the user decided about a scam warning, or hand the listing back to the
+           * detector by passing `null`.
+           *
+           * @param {string} listingId
+           * @param {('scam'|'safe'|null)} override
+           */
+          async setListingScamOverride(listingId, override) {
+            try {
+              await xhrPost(`/api/listings/${listingId}/scam`, { override });
+            } catch (Exception) {
+              console.error(`Error while trying to set the scam verdict for listing ${listingId}. Error:`, Exception);
+              throw Exception;
+            }
+          },
           async setListingNotes(listingId, notes) {
             try {
               await xhrPost(`/api/listings/${listingId}/notes`, { notes });
@@ -484,6 +499,32 @@ export const useFredyState = create(
               await xhrPost('/api/listings/restore', { ids });
             } catch (Exception) {
               console.error('Error while trying to restore listings. Error:', Exception);
+              throw Exception;
+            }
+          },
+          /**
+           * Delete every listing the given filter matches, however many pages that spans.
+           *
+           * Takes the same payload `getListingsData` sends, because the point of the button behind
+           * this is that it removes what the page is showing. Paging the ids out and sending them
+           * back would race anything the scheduler stored in between.
+           *
+           * @param {Object} params
+           * @param {string|null} [params.freeTextFilter]
+           * @param {Object} [params.filter] - As built by `toListingsQuery`.
+           * @param {boolean} [params.hardDelete=false]
+           * @returns {Promise<number>} How many listings the server removed.
+           */
+          async deleteFilteredListings({ freeTextFilter = null, filter = {}, hardDelete = false }) {
+            try {
+              const response = await xhrDelete('/api/listings/filtered', {
+                freeTextFilter,
+                ...filter,
+                hardDelete,
+              });
+              return response.json?.deleted ?? 0;
+            } catch (Exception) {
+              console.error('Error while trying to delete the filtered listings. Error:', Exception);
               throw Exception;
             }
           },

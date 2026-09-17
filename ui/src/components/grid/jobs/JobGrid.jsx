@@ -39,7 +39,7 @@ import {
   IconGridView,
   IconList,
 } from '@douyinfe/semi-icons';
-import { useNavigate } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 import ListingDeletionModal from '../../ListingDeletionModal.jsx';
 import FilterButton from '../../filters/FilterButton.jsx';
 import ActiveFilterChips from '../../filters/ActiveFilterChips.jsx';
@@ -50,6 +50,7 @@ import {
   clearFilter,
   clearAllFilters,
 } from '../../../services/jobs/jobFilters.js';
+import { useUrlState, parseNumber, parseString, parseNullableBoolean } from '../../../hooks/useSearchParamState.js';
 import { useActions, useSelector } from '../../../services/state/store.js';
 import { xhrDelete, xhrPut, xhrPost, errorMessage } from '../../../services/xhr.js';
 import { debounce } from '../../../utils';
@@ -61,6 +62,25 @@ import { useTranslation } from '../../../services/i18n/i18n.jsx';
 
 const { Text, Title } = Typography;
 
+/**
+ * The page's filters, sort and pagination live in the URL rather than in component state.
+ *
+ * Opening a job and coming back used to land on page one with every filter cleared, because the
+ * state died with the component. In the URL it survives the round trip, the back button, a reload
+ * and a shared link - the same deal the listings page already makes, so the two pages behave alike.
+ *
+ * Module scope because `useUrlState` needs a schema that is stable across renders.
+ *
+ * @type {Record<string, {defaultValue: *, codec: {parse: Function, stringify: Function}}>}
+ */
+const JOBS_URL_STATE = {
+  page: { defaultValue: 1, codec: parseNumber },
+  sort: { defaultValue: 'name', codec: parseString },
+  dir: { defaultValue: 'asc', codec: parseString },
+  q: { defaultValue: null, codec: parseString },
+  active: { defaultValue: null, codec: parseNullableBoolean },
+};
+
 const getPopoverContent = (text) => <article className="jobPopoverContent">{text}</article>;
 
 const JobGrid = () => {
@@ -68,41 +88,28 @@ const JobGrid = () => {
   const jobsData = useSelector((state) => state.jobsData);
   const actions = useActions();
   const navigate = useNavigate();
+  const sp = useSearchParams();
 
   const userSettings = useSelector((state) => state.userSettings.settings);
   const viewMode = userSettings?.jobs_view_mode ?? 'grid';
   const listingDeletionPref = userSettings?.listing_deletion_preference;
   const defaultDeleteType = listingDeletionPref?.hardDelete ? 'hard' : 'soft';
 
-  const [page, setPage] = useState(1);
   const pageSize = 12;
 
-  const [sortField, setSortField] = useState('name');
-  const [sortDir, setSortDir] = useState('asc');
-  const [freeTextFilter, setFreeTextFilter] = useState(null);
-  const [activityFilter, setActivityFilter] = useState(null);
+  // One piece of state for the whole group: every control here writes its own param plus the page
+  // reset, and separate per-key setters would race each other into the URL.
+  const { values: filterValues, setValue, setValues } = useUrlState(sp, JOBS_URL_STATE);
+  const { page, sort: sortField, dir: sortDir, q: freeTextFilter, active: activityFilter } = filterValues;
+
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [pendingDeletion, setPendingDeletion] = useState(null); // { type: 'job'|'listings', jobId }
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   // The same filter model the listings page uses, so the two pages behave identically rather than
-  // one hiding its filters behind a button while the other spreads them across the top.
-  const filterValues = { active: activityFilter };
+  // one hiding its filters behind a button while the other spreads them across the top. The patches
+  // the shared helpers return are keyed the same way as the URL state, so they apply as they are.
   const activeFilterCount = countActiveFilters(filterValues);
-
-  /**
-   * Apply a patch from the shared filter helpers to this page's local state.
-   * @param {Object} patch
-   * @returns {void}
-   */
-  const applyFilterPatch = (patch) => {
-    if ('active' in patch) {
-      setActivityFilter(patch.active);
-    }
-    if (patch.page != null) {
-      setPage(patch.page);
-    }
-  };
 
   const pendingJobIdRef = useRef(null);
   const evtSourceRef = useRef(null);
@@ -173,7 +180,13 @@ const JobGrid = () => {
     };
   }, [actions.jobsData]);
 
-  const handleFilterChange = useMemo(() => debounce((value) => setFreeTextFilter(value), 500), []);
+  const handleFilterChange = useMemo(
+    () =>
+      debounce((value) => {
+        setValues({ q: value || null, page: 1 });
+      }, 500),
+    [],
+  );
 
   useEffect(() => {
     return () => {
@@ -268,7 +281,7 @@ const JobGrid = () => {
   };
 
   const handlePageChange = (_page) => {
-    setPage(_page);
+    setValue('page', _page);
   };
 
   return (
@@ -279,6 +292,7 @@ const JobGrid = () => {
           prefix={<IconSearch />}
           showClear
           placeholder={t('jobs.searchPlaceholder')}
+          defaultValue={freeTextFilter ?? ''}
           onChange={handleFilterChange}
         />
 
@@ -286,7 +300,7 @@ const JobGrid = () => {
           prefix={t('jobs.sortPrefix')}
           style={{ width: 200 }}
           value={sortField}
-          onChange={(val) => setSortField(val)}
+          onChange={(val) => setValue('sort', val)}
         >
           <Select.Option value="name">{t('jobs.sortByName')}</Select.Option>
           <Select.Option value="numberOfFoundListings">{t('jobs.sortByListings')}</Select.Option>
@@ -295,7 +309,7 @@ const JobGrid = () => {
 
         <Button
           icon={sortDir === 'asc' ? <IconArrowUp /> : <IconArrowDown />}
-          onClick={() => setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))}
+          onClick={() => setValue('dir', sortDir === 'asc' ? 'desc' : 'asc')}
           title={sortDir === 'asc' ? t('jobs.sortAscending') : t('jobs.sortDescending')}
         />
 
@@ -325,15 +339,15 @@ const JobGrid = () => {
 
       <ActiveFilterChips
         chips={describeActiveFilters(filterValues, { t })}
-        onRemove={(key) => applyFilterPatch(clearFilter(key))}
-        onClearAll={() => applyFilterPatch(clearAllFilters())}
+        onRemove={(key) => setValues(clearFilter(key))}
+        onClearAll={() => setValues(clearAllFilters())}
       />
 
       <FilterDrawer
         visible={filtersOpen}
         onClose={() => setFiltersOpen(false)}
         activeCount={activeFilterCount}
-        onClearAll={() => applyFilterPatch(clearAllFilters())}
+        onClearAll={() => setValues(clearAllFilters())}
       >
         <FilterGroup title={t('listings.filterGroupShow')}>
           <FilterHelp>{t('jobs.filterActivityHelp')}</FilterHelp>
@@ -343,7 +357,7 @@ const JobGrid = () => {
             value={activityFilter === null ? 'all' : String(activityFilter)}
             onChange={(e) => {
               const value = e.target.value;
-              applyFilterPatch({ active: value === 'all' ? null : value === 'true', page: 1 });
+              setValues({ active: value === 'all' ? null : value === 'true', page: 1 });
             }}
           >
             <Radio value="all">{t('jobs.filterAll')}</Radio>

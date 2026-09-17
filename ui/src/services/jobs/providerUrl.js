@@ -64,14 +64,34 @@ function carriesASearch(url) {
 }
 
 /**
+ * Every host a provider's searches may be on.
+ *
+ * Most portals have one, and `baseUrl` is it. A portal serving several countries as several domains
+ * declares them all - immowelt as `.de` and `.at`, idealista as `.com`, `.it` and `.pt` - and
+ * comparing against `baseUrl` alone is what used to refuse a perfectly good Austrian or Italian
+ * search with "that address is not on immowelt.de".
+ *
+ * @param {{baseUrl?: string, hosts?: string[]}|null|undefined} provider
+ * @returns {string[]} bare hosts, possibly empty when the provider declares nothing usable.
+ */
+function hostsOf(provider) {
+  const declared = Array.isArray(provider?.hosts) && provider.hosts.length > 0 ? provider.hosts : [provider?.baseUrl];
+  return [...new Set(declared.map(normalizeHost).filter((host) => host != null))];
+}
+
+/**
  * Check a pasted provider URL.
  *
  * @param {string|null|undefined} url
- * @param {{id: string, name: string, baseUrl: string}|null|undefined} provider
- * @returns {{ok: boolean, problem: ProviderUrlProblem, expectedHost: string|null}}
+ * @param {{id: string, name: string, baseUrl: string, hosts?: string[]}|null|undefined} provider
+ * @returns {{ok: boolean, problem: ProviderUrlProblem, expectedHost: string|null}} `expectedHost`
+ *   names every accepted host, comma separated, because it is what the error message shows the
+ *   user. Joined with a comma rather than an "or" so that no English word leaks into de.json and
+ *   tr.json, which interpolate it as `{{host}}`.
  */
 export function validateProviderUrl(url, provider) {
-  const expectedHost = normalizeHost(provider?.baseUrl);
+  const expectedHosts = hostsOf(provider);
+  const expectedHost = expectedHosts.length > 0 ? expectedHosts.join(', ') : null;
 
   if (provider == null) {
     return { ok: false, problem: 'noProvider', expectedHost: null };
@@ -84,7 +104,7 @@ export function validateProviderUrl(url, provider) {
   if (inputHost == null) {
     return { ok: false, problem: 'unparsable', expectedHost };
   }
-  if (expectedHost == null || inputHost !== expectedHost) {
+  if (!expectedHosts.includes(inputHost)) {
     return { ok: false, problem: 'wrongHost', expectedHost };
   }
   if (!carriesASearch(url)) {

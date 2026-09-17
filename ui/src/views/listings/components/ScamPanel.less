@@ -1,0 +1,72 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../../tokens.less';
+
+.scamPanel {
+  // Sits between the "Details" heading and the figures, so the gap it needs is below it. The
+  // heading brings its own margin above.
+  margin-bottom: 1.25rem;
+  padding: @space-3;
+  border-radius: @radius-card;
+  border: 1px solid var(--semi-color-danger-light-active);
+  background: var(--semi-color-danger-light-default);
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: @space-2;
+    margin-bottom: @space-2;
+  }
+
+  &__icon {
+    color: var(--semi-color-danger);
+    font-size: 16px;
+  }
+
+  &__title {
+    margin: 0;
+    color: var(--semi-color-danger);
+  }
+
+  &__lead {
+    display: block;
+  }
+
+  &__reasons {
+    margin: @space-2 0;
+    padding-left: 1.1rem;
+  }
+
+  &__reason {
+    font-size: @text-sm;
+    color: @color-text;
+    margin-bottom: 2px;
+  }
+
+  &__disclaimer {
+    display: block;
+    margin-top: @space-2;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: @space-2;
+    margin-top: @space-3;
+  }
+
+  // Once the user has said a listing is fine the panel stays as a record of what was found, but it
+  // stops shouting. Same content, no alarm colours: it is history at that point, not a warning.
+  &--dismissed {
+    border-color: @color-border;
+    background: @color-elevated;
+
+    .scamPanel__icon,
+    .scamPanel__title {
+      color: @color-muted;
+    }
+  }
+}

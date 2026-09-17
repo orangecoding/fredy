@@ -16,6 +16,7 @@ import {
   clearAllFilters,
   describeActiveFilters,
   filterConfiguredProviders,
+  toListingsQuery,
   MOBILE_OPERATOR_KEY,
 } from '../../ui/src/services/listings/listingFilters.js';
 
@@ -239,6 +240,81 @@ describe('listingFilters', () => {
     it('produces one chip per counted filter', () => {
       const values = { ...defaults(), provider: 'is24', status: 'applied', watch: true };
       expect(describeActiveFilters(values, { t })).toHaveLength(countActiveFilters(values));
+    });
+  });
+
+  describe('the query it sends', () => {
+    it('sends the default view as active listings only', () => {
+      const { freeTextFilter, filter } = toListingsQuery(defaults());
+
+      expect(freeTextFilter).toBeNull();
+      expect(filter.activityFilter).toBe(true);
+      expect(filter.hiddenOnly).toBeUndefined();
+    });
+
+    it('drops the activity filter in the hidden view, where it would match nothing', () => {
+      const { filter } = toListingsQuery({ ...defaults(), hidden: true });
+
+      expect(filter.hiddenOnly).toBe(true);
+      expect(filter.activityFilter).toBeNull();
+    });
+
+    it('splits the commute value into a mode and a ceiling', () => {
+      const { filter } = toListingsQuery({ ...defaults(), commute: 'transit:30' });
+
+      expect(filter.travelTimeMode).toBe('transit');
+      expect(filter.travelTimeMaxMinutes).toBe(30);
+    });
+
+    it('sends no travel time at all without a commute filter', () => {
+      const { filter } = toListingsQuery(defaults());
+
+      expect(filter).not.toHaveProperty('travelTimeMode');
+      expect(filter).not.toHaveProperty('travelTimeMaxMinutes');
+    });
+
+    it('leaves the mobile operator out unless a technology asks for it', () => {
+      const withoutTech = toListingsQuery({ ...defaults(), [MOBILE_OPERATOR_KEY]: 'dt' });
+      expect(withoutTech.filter.connectivityMobileOperator).toBeNull();
+
+      const withTech = toListingsQuery({ ...defaults(), mtech: '5g', [MOBILE_OPERATOR_KEY]: 'dt' });
+      expect(withTech.filter.connectivityMobileOperator).toBe('dt');
+    });
+
+    it('carries every filter the chips can name', () => {
+      const values = {
+        ...defaults(),
+        q: 'Altbau',
+        watch: true,
+        job: 'job-1',
+        provider: 'immoscout',
+        status: 'applied',
+        afford: 'affordable',
+        down: 1000,
+        fiber: true,
+      };
+
+      const { freeTextFilter, filter } = toListingsQuery(values);
+
+      expect(freeTextFilter).toBe('Altbau');
+      expect(filter).toMatchObject({
+        watchListFilter: true,
+        jobNameFilter: 'job-1',
+        providerFilter: 'immoscout',
+        statusFilter: 'applied',
+        affordabilityFilter: 'affordable',
+        connectivityMinDown: 1000,
+        connectivityFiber: true,
+      });
+    });
+
+    it('asks for everything once the filters are cleared', () => {
+      const cleared = { ...defaults(), q: 'Altbau', provider: 'immoscout', ...clearAllFilters() };
+      const { filter } = toListingsQuery(cleared);
+
+      expect(filter.providerFilter).toBeNull();
+      expect(filter.activityFilter).toBeNull();
+      expect(filter.hiddenOnly).toBeUndefined();
     });
   });
 
