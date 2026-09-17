@@ -6,6 +6,7 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { convertSearchUrlToRequest } from '../../../lib/services/immowelt/immowelt-search-model.js';
 import { IMMOWELT_ORIGIN, resolveSearchAreas } from '../../../lib/services/immowelt/immoweltBff.js';
+import { SITES } from '../../../lib/services/immowelt/site.js';
 import { launchBrowser, closeBrowser } from '../../../lib/services/extractor/puppeteerExtractor.js';
 
 /**
@@ -146,7 +147,7 @@ describe.skipIf(process.env.TEST_MODE === 'offline')('#immowelt criteria against
     const request = convertSearchUrlToRequest(`${IMMOWELT_ORIGIN}/classified-search?${query}`, { size: 1 });
     // A commute area is a place and a travel time until immowelt's routing service has drawn it,
     // and only the drawn boundary is something the search BFF can be asked about.
-    const result = await searchTotal(await resolveSearchAreas(browser, request));
+    const result = await searchTotal(await resolveSearchAreas(browser, request, SITES['immowelt.de']));
 
     // A DataDome challenge answers 403 with its own html and says nothing about whether the
     // criteria were right. Worth telling apart, because the fix is "run this from somewhere that

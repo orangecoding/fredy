@@ -67,6 +67,8 @@ export const metaInformation = {
   id: 'yourprovider',
   //required. Which countries this provider covers, as ISO 3166-1 alpha-2, lowercase.
   countries: ['de'],
+  //optional. Only for a portal served under several domains - see below.
+  hosts: ['yourprovider.de'],
 };
 
 export { config };
@@ -81,6 +83,20 @@ a second look. A provider spanning several countries lists them all:
 
 `test/provider/providerMetaInformation.test.js` fails the build when the field is missing or
 malformed, so a mistake here does not reach a release.
+
+**`hosts` is optional and defaults to the host of `baseUrl`.** Declare it only for a portal that
+serves the same application under several domains - immowelt as `immowelt.de` and `immowelt.at`,
+idealista as `idealista.com`, `idealista.it` and `idealista.pt`. The job form checks a pasted search
+url against it, so leaving it out on such a provider refuses every url outside `baseUrl` with "that
+address is not on ...", which reads like the user's mistake rather than the provider's. `baseUrl`'s
+own host has to be one of them, and the same test above enforces that.
+
+A provider whose sites differ in more than the domain wants a small table of its own rather than a
+list of hostnames - `lib/services/immowelt/site.js` and `lib/services/idealista/portal.js` are both
+that: the origin every request goes to, the country the site serves, and whatever else is per site.
+Pair it with `metaInformation.countryOf`, which narrows the declared `countries` to the one country
+a single listing's link names, so its address is geocoded in one country rather than in all of
+them.
 
 A country new to Fredy needs one thing adding: its bounding box in
 `ui/src/components/map/countryBounds.js`. Without it the map ignores the code and stays where it

@@ -68,7 +68,9 @@ scheduler (every N minutes) or manual trigger via POST /api/jobs/:id/run
 ### Plugin systems
 
 **Providers** (`lib/provider/*.js`) - each module exports:
-- `metaInformation` - `{ id, name, baseUrl }`, plus an optional `countries` (ISO 3166-1 alpha-2,
+- `metaInformation` - `{ id, name, baseUrl }`, plus an optional `hosts` (every domain the portal
+  serves the same application under, defaulting to `baseUrl`'s host; read by the job form's url
+  check in `ui/src/services/jobs/providerUrl.js`) and an optional `countries` (ISO 3166-1 alpha-2,
   lowercase). Absent means `['de']`, which is why no shipped provider declares it and why adding the
   field changed no existing installation. Resolved in `lib/services/providers/`: `countries.js` is
   the pure half (the default, normalisation, union) and is all the Nominatim client imports, since

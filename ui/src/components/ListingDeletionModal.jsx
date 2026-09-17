@@ -15,6 +15,10 @@ const ListingDeletionModal = ({
   onCancel,
   title,
   showOptions = true,
+  // Whether to offer "remember my choice". The bulk delete turns it off: that preference is what
+  // suppresses the per-row prompt, and a dialog that keeps asking no matter what the box says is
+  // worse than not offering the box.
+  showRemember = true,
   message,
   defaultDeleteType = 'soft',
 }) => {
@@ -74,9 +78,11 @@ const ListingDeletionModal = ({
               </div>
             </Radio>
           </RadioGroup>
-          <Checkbox checked={remember} onChange={(e) => setRemember(e.target.checked)} style={{ marginTop: 16 }}>
-            {t('listing.deletion.rememberChoice')}
-          </Checkbox>
+          {showRemember && (
+            <Checkbox checked={remember} onChange={(e) => setRemember(e.target.checked)} style={{ marginTop: 16 }}>
+              {t('listing.deletion.rememberChoice')}
+            </Checkbox>
+          )}
         </>
       )}
     </Modal>

@@ -56,6 +56,7 @@ vi.mock('../lib/services/immowelt/immoweltBff.js', async (importOriginal) => {
     searchClassifieds: async () => (await readImmoweltFixtures()).classifieds,
     fetchExposeHtml: async () => (await readImmoweltFixtures()).detailHtml,
     releaseSession: async () => {},
+    resolveSearchAreas: async (_browser, request) => request,
   };
 });
 

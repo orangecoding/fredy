@@ -160,6 +160,57 @@ export function clearAllFilters() {
 }
 
 /**
+ * Turns the combined commute value into the two query parameters the API takes.
+ *
+ * @param {string|null} value - e.g. `transit:30`.
+ * @returns {{travelTimeMode: string, travelTimeMaxMinutes: number}|null}
+ */
+export function toTravelTimeQuery(value) {
+  const parsed = parseCommuteFilter(value);
+  return parsed == null ? null : { travelTimeMode: parsed.mode, travelTimeMaxMinutes: parsed.maxMinutes };
+}
+
+/**
+ * The URL state as the API wants to hear it.
+ *
+ * Lives here rather than inside the overview because two callers need the identical object: the
+ * query that fills the page, and the bulk delete that removes what the page is showing. The whole
+ * promise of that button is that it deletes what the user can see, and a second hand-built payload
+ * is the one way that promise quietly breaks.
+ *
+ * @param {Object} values The full URL state, as {@link LISTINGS_URL_STATE} defines it.
+ * @returns {{freeTextFilter: string|null, filter: Object}}
+ */
+export function toListingsQuery(values) {
+  // The hidden view and the activity filter are one control wearing two keys - see NEUTRAL above.
+  // Sending both would ask for listings that are deleted *and* active, which matches nothing.
+  const isHiddenView = values.hidden === true;
+  return {
+    freeTextFilter: values.q,
+    filter: {
+      watchListFilter: values.watch,
+      jobNameFilter: values.job,
+      activityFilter: isHiddenView ? null : values.active,
+      providerFilter: values.provider,
+      statusFilter: values.status,
+      // The server turns this into a price range from the saved profile; it ignores the
+      // filter entirely when there is no profile to derive one from.
+      affordabilityFilter: values.afford,
+      // Only listings that have actually been routed can satisfy this, which is why the control
+      // is offered as an extra filter rather than as the default way to sort the page.
+      ...(toTravelTimeQuery(values.commute) ?? {}),
+      connectivityMinDown: values.down,
+      connectivityFiber: values.fiber,
+      connectivityMobileTech: values.mtech,
+      // Sent only alongside a technology. On its own the server ignores it anyway, but leaving
+      // it out of the request keeps the query string honest about what is being asked.
+      connectivityMobileOperator: values.mtech == null ? null : values[MOBILE_OPERATOR_KEY],
+      hiddenOnly: isHiddenView ? true : undefined,
+    },
+  };
+}
+
+/**
  * A named list of the filters currently on, ready to render as chips.
  *
  * @param {Object} values The full URL state.

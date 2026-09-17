@@ -18,6 +18,7 @@ vi.mock('../../lib/services/immowelt/immoweltBff.js', () => ({
   searchClassifieds: async () => [],
   fetchExposeHtml: async () => transport.html,
   releaseSession: async () => {},
+  resolveSearchAreas: async (_browser, request) => request,
 }));
 
 const provider = await import('../../lib/provider/immowelt.js');
@@ -228,4 +229,31 @@ describe('#immowelt extractExposeDescription', () => {
     const payload = JSON.stringify({ app_cldp: { data: { classified: { sections } } } });
     return `<html><head><script id="__UFRN_LIFECYCLE_SERVERREQUEST__">window["__UFRN_LIFECYCLE_SERVERREQUEST__"]=JSON.parse(${JSON.stringify(payload)});</script></head><body></body></html>`;
   }
+});
+
+// A stored listing carries its link and nothing else that says which country it is in, and the
+// geocoder has to be told one rather than both: searching `de,at` answers a Tyrolean street with
+// its Bavarian namesake, and the connectivity sweep would read an Austrian address against the
+// German register.
+describe('#immowelt countryOf', () => {
+  const countryOf = provider.metaInformation.countryOf;
+
+  it('reads the country off the listing link', () => {
+    expect(countryOf({ link: 'https://www.immowelt.de/expose/2abcde' })).toBe('de');
+    expect(countryOf({ link: 'https://www.immowelt.at/expose/2abcde' })).toBe('at');
+    expect(countryOf({ link: 'https://immowelt.at/expose/2abcde' })).toBe('at');
+  });
+
+  it('keeps both countries when the link says nothing', () => {
+    expect(countryOf({ link: 'https://www.example.org/expose/2abcde' })).toBeNull();
+    expect(countryOf({ link: 'not a url' })).toBeNull();
+    expect(countryOf({ link: null })).toBeNull();
+    expect(countryOf({})).toBeNull();
+    expect(countryOf(null)).toBeNull();
+  });
+
+  it('declares both sites as the hosts a job url may name', () => {
+    expect(provider.metaInformation.hosts).toEqual(['immowelt.de', 'immowelt.at']);
+    expect(provider.metaInformation.countries).toEqual(['de', 'at']);
+  });
 });

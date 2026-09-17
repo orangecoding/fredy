@@ -87,3 +87,43 @@ describe('validateProviderUrl', () => {
     });
   });
 });
+
+// A portal serving several countries as several domains - immowelt as .de and .at, idealista as
+// .com, .it and .pt - used to have every search outside its `baseUrl` refused by this form, even
+// though the provider searches all of them perfectly well.
+describe('validateProviderUrl, providers on several hosts', () => {
+  const immowelt = {
+    id: 'immowelt',
+    name: 'Immowelt',
+    baseUrl: 'https://www.immowelt.de/',
+    hosts: ['immowelt.de', 'immowelt.at'],
+  };
+
+  it.each([
+    ['https://www.immowelt.de/classified-search?distributionTypes=Rent'],
+    ['https://www.immowelt.at/classified-search?distributionTypes=Rent'],
+    ['immowelt.at/classified-search?distributionTypes=Rent'],
+  ])('accepts a search on any of its hosts: %s', (url) => {
+    expect(validateProviderUrl(url, immowelt).ok).toBe(true);
+  });
+
+  it('still refuses a host it does not serve', () => {
+    const result = validateProviderUrl('https://www.immowelt.ch/classified-search?x=1', immowelt);
+    expect(result).toMatchObject({ ok: false, problem: 'wrongHost' });
+  });
+
+  it('still refuses the bare homepage of one of its hosts', () => {
+    expect(validateProviderUrl('https://www.immowelt.at/', immowelt).problem).toBe('bareHost');
+  });
+
+  // The message interpolates this as `{{host}}` in three locale files, so it is joined with a comma
+  // rather than an English "or".
+  it('names every accepted host in the message, comma separated', () => {
+    expect(validateProviderUrl('https://www.example.org/x', immowelt).expectedHost).toBe('immowelt.de, immowelt.at');
+  });
+
+  it('falls back to the base url for the providers that declare no hosts', () => {
+    expect(validateProviderUrl('https://www.immobilienscout24.de/Suche/x', immoscout).ok).toBe(true);
+    expect(validateProviderUrl('https://www.immobilienscout24.de/Suche/x', { ...immoscout, hosts: [] }).ok).toBe(true);
+  });
+});

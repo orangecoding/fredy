@@ -53,6 +53,28 @@ describe('provider metaInformation', () => {
     }
   });
 
+  // `hosts` is how a portal on several domains says so - immowelt on .de and .at, idealista on
+  // .com, .it and .pt - and the job form checks a pasted url against it. A typo here refuses a
+  // perfectly good search with "that address is not on ...", which reads like the user's mistake.
+  it("declares hosts that are bare hostnames, including the base url's own", () => {
+    for (const provider of providers) {
+      const { id, baseUrl, hosts } = provider.metaInformation;
+      if (hosts == null) continue;
+
+      expect(Array.isArray(hosts), `${id}.hosts must be an array when it is declared`).toBe(true);
+      expect(hosts.length, `${id}.hosts must name at least one host`).toBeGreaterThan(0);
+      for (const host of hosts) {
+        expect(host, `${id}.hosts contains '${host}', which is not a bare lowercase hostname`).toMatch(
+          /^[a-z\d]([a-z\d-]*[a-z\d])?(\.[a-z\d]([a-z\d-]*[a-z\d])?)+$/,
+        );
+      }
+
+      // Otherwise the form would refuse the very url the "open the portal" link sends people to.
+      const base = new URL(baseUrl).hostname.replace(/^www\./, '');
+      expect(hosts, `${id}.baseUrl is on '${base}', which ${id}.hosts does not list`).toContain(base);
+    }
+  });
+
   // The check above states the rule; this one states it as "nothing gets thrown away", which is the
   // failure that actually matters. A discarded code is a country the geocoder will not search.
   it('declares nothing the resolver would have to discard', () => {

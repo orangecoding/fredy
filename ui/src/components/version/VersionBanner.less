@@ -1,3 +1,5 @@
+@import '../../tokens.less';
+
 .versionBanner {
   margin-bottom: 16px;
 
@@ -16,9 +18,114 @@
     margin-bottom: 16px;
   }
 
+  /* The changelog is server-rendered HTML, so these are plain element selectors rather than a
+     component library's classes. Only what a GitHub release body actually contains is styled. */
   &__notes {
     max-height: 400px;
     overflow-y: auto;
-    padding-right: 4px;
+    padding-right: @space-1;
+    font-size: @text-base;
+    line-height: 1.65;
+    color: @color-muted;
+
+    > :first-child {
+      margin-top: 0;
+    }
+
+    > :last-child {
+      margin-bottom: 0;
+    }
+
+    /* Release notes open with an `# Fredy <version>` heading that repeats the modal title, and at
+       document scale it would shout over it. Two sizes, both close to body copy. */
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      margin: @space-4 0 @space-2;
+      font-weight: 600;
+      color: @color-text;
+    }
+
+    h1,
+    h2 {
+      font-size: @text-md;
+    }
+
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-size: @text-base;
+    }
+
+    p {
+      margin: 0 0 @space-3;
+    }
+
+    ul,
+    ol {
+      margin: 0 0 @space-3;
+      padding-left: @space-5;
+    }
+
+    li {
+      margin-bottom: @space-1;
+    }
+
+    a {
+      color: @color-accent;
+    }
+
+    /* Screenshots are pasted at their native width, which is routinely wider than the modal. */
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: @radius-chip;
+      vertical-align: middle;
+    }
+
+    /* A screenshot on a line of its own is a block in the flow and needs the gap a paragraph gets.
+       Badge rows sit inside a paragraph and keep flowing inline, which is why this is a child
+       selector rather than a rule on every image. */
+    > img {
+      display: block;
+      margin: 0 0 @space-3;
+    }
+
+    code,
+    pre {
+      font-family: @font-mono;
+      font-size: @text-xs;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    pre {
+      padding: @space-3;
+      border-radius: @radius-chip;
+      background: @color-base;
+    }
+
+    hr {
+      margin: @space-4 0;
+      border: 0;
+      border-top: 1px solid @color-border;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: @space-3;
+    }
+
+    th,
+    td {
+      padding: @space-2;
+      border: 1px solid @color-border;
+      text-align: left;
+    }
   }
 }

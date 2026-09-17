@@ -12,6 +12,10 @@ vi.mock('../../../lib/services/logger.js', () => ({
 
 const { searchClassifieds, fetchExposeHtml, releaseSession } =
   await import('../../../lib/services/immowelt/immoweltBff.js');
+const { SITES } = await import('../../../lib/services/immowelt/site.js');
+
+const DE = SITES['immowelt.de'];
+const AT = SITES['immowelt.at'];
 
 const SEARCH_REQUEST = {
   criteria: { distributionTypes: ['Rent'], location: { placeIds: ['AD08DE8634'] } },
@@ -20,6 +24,9 @@ const SEARCH_REQUEST = {
 
 /** Every request the page issued, in order. */
 let requests;
+
+/** Every url a page was warmed on, in order. */
+let gotos;
 
 /**
  * A browser whose page runs the evaluated function in-process against a stubbed `fetch`.
@@ -34,7 +41,9 @@ let requests;
 function fakeBrowser(handler) {
   const page = {
     isClosed: () => false,
-    goto: async () => {},
+    goto: async (url) => {
+      gotos.push(String(url));
+    },
     waitForFunction: async () => {},
     close: async () => {},
     evaluate: async (fn, ...args) => {
@@ -77,6 +86,7 @@ function listResponse(url) {
 describe('#immowelt bff transport', () => {
   beforeEach(() => {
     requests = [];
+    gotos = [];
   });
 
   // The bug this pins: immowelt's edge answers 403 once the /classifiedList path grows past about
@@ -89,7 +99,7 @@ describe('#immowelt bff transport', () => {
         : { status: 200, body: listResponse(url) },
     );
 
-    const classifieds = await searchClassifieds(browser, SEARCH_REQUEST);
+    const classifieds = await searchClassifieds(browser, SEARCH_REQUEST, DE);
 
     expect(classifieds).toHaveLength(100);
 
@@ -108,7 +118,7 @@ describe('#immowelt bff transport', () => {
         : { status: 200, body: listResponse(url) },
     );
 
-    const classifieds = await searchClassifieds(browser, SEARCH_REQUEST);
+    const classifieds = await searchClassifieds(browser, SEARCH_REQUEST, DE);
     const ids = classifieds.map((entry) => entry.id);
 
     expect(ids).toHaveLength(65);
@@ -125,20 +135,20 @@ describe('#immowelt bff transport', () => {
       return batch > 2 ? { status: 403, body: 'blocked' } : { status: 200, body: listResponse(url) };
     });
 
-    expect(await searchClassifieds(browser, SEARCH_REQUEST)).toHaveLength(60);
+    expect(await searchClassifieds(browser, SEARCH_REQUEST, DE)).toHaveLength(60);
   });
 
   it('gives up when the search itself is refused', async () => {
     const browser = fakeBrowser(() => ({ status: 403, body: 'blocked' }));
 
-    expect(await searchClassifieds(browser, SEARCH_REQUEST)).toEqual([]);
+    expect(await searchClassifieds(browser, SEARCH_REQUEST, DE)).toEqual([]);
     expect(requests.filter((url) => url.startsWith('/classifiedList/'))).toHaveLength(0);
   });
 
   it('does not ask for card payloads when the search found nothing', async () => {
     const browser = fakeBrowser(() => ({ status: 200, body: searchResponse(0) }));
 
-    expect(await searchClassifieds(browser, SEARCH_REQUEST)).toEqual([]);
+    expect(await searchClassifieds(browser, SEARCH_REQUEST, DE)).toEqual([]);
     expect(requests).toHaveLength(1);
   });
 
@@ -157,7 +167,7 @@ describe('#immowelt bff transport', () => {
       },
     };
 
-    await searchClassifieds(browser, SEARCH_REQUEST);
+    await searchClassifieds(browser, SEARCH_REQUEST, DE);
     await fetchExposeHtml(browser, 'https://www.immowelt.de/expose/abc');
 
     expect(created).toBe(1);
@@ -210,10 +220,95 @@ describe('#immowelt bff transport', () => {
 
     const first = build();
     const second = build();
-    await searchClassifieds(first, SEARCH_REQUEST);
-    await searchClassifieds(second, SEARCH_REQUEST);
+    await searchClassifieds(first, SEARCH_REQUEST, DE);
+    await searchClassifieds(second, SEARCH_REQUEST, DE);
 
     expect(pages).toHaveLength(2);
+  });
+});
+
+// immowelt.at is the same application under a second domain, and every call here is a same-origin
+// fetch issued by the warmed page - so which page a request runs on *is* which country it searches.
+describe('#immowelt bff transport, per site', () => {
+  beforeEach(() => {
+    requests = [];
+    gotos = [];
+  });
+
+  /** @returns {any} a browser answering a search and an exposé, whatever origin it is warmed on */
+  function anySite() {
+    return fakeBrowser((url) =>
+      url.startsWith('/serp-bff/search')
+        ? { status: 200, body: searchResponse(1) }
+        : { status: 200, body: url.startsWith('/classifiedList/') ? listResponse(url) : '<html>expose</html>' },
+    );
+  }
+
+  it('warms the page on the site the search names', async () => {
+    await searchClassifieds(anySite(), SEARCH_REQUEST, AT);
+
+    expect(gotos).toEqual(['https://www.immowelt.at/']);
+  });
+
+  it('asks for the card payload in the language the site is served in', async () => {
+    let language = null;
+    const browser = fakeBrowser((url, init) => {
+      if (url.startsWith('/classifiedList/')) {
+        language = init?.headers?.['x-language'] ?? null;
+        return { status: 200, body: listResponse(url) };
+      }
+      return { status: 200, body: searchResponse(1) };
+    });
+
+    await searchClassifieds(browser, SEARCH_REQUEST, AT);
+
+    expect(language).toBe('de');
+  });
+
+  // The exposé link is absolute, so fetching an Austrian one from a German page is a cross-origin
+  // request the browser refuses outright. The site is therefore read off the link itself.
+  it('fetches an exposé on its own site, warming a second page for it', async () => {
+    const browser = anySite();
+
+    await searchClassifieds(browser, SEARCH_REQUEST, DE);
+    expect(await fetchExposeHtml(browser, 'https://www.immowelt.at/expose/abc')).toBe('<html>expose</html>');
+
+    expect(gotos).toEqual(['https://www.immowelt.de/', 'https://www.immowelt.at/']);
+    await releaseSession(browser);
+  });
+
+  it('reuses the page of a site it has already warmed', async () => {
+    const browser = anySite();
+
+    await fetchExposeHtml(browser, 'https://www.immowelt.at/expose/abc');
+    await fetchExposeHtml(browser, 'https://www.immowelt.at/expose/def');
+
+    expect(gotos).toEqual(['https://www.immowelt.at/']);
+    await releaseSession(browser);
+  });
+
+  // Being turned away by one site says nothing about the other, and giving up on both would cost a
+  // two-country install every exposé of the run over a refusal on one of them.
+  it('keeps fetching exposés on the site that has not refused them', async () => {
+    const browser = fakeBrowser((url) =>
+      url.includes('immowelt.at') ? { status: 403, body: 'blocked' } : { status: 200, body: '<html>expose</html>' },
+    );
+
+    expect(await fetchExposeHtml(browser, 'https://www.immowelt.at/expose/abc')).toBeNull();
+    expect(await fetchExposeHtml(browser, 'https://www.immowelt.at/expose/def')).toBeNull();
+    expect(await fetchExposeHtml(browser, 'https://www.immowelt.de/expose/ghi')).toBe('<html>expose</html>');
+
+    expect(requests).toEqual(['https://www.immowelt.at/expose/abc', 'https://www.immowelt.de/expose/ghi']);
+    await releaseSession(browser);
+  });
+
+  it('does not fetch a link that is on no immowelt site', async () => {
+    const browser = anySite();
+
+    expect(await fetchExposeHtml(browser, 'https://www.example.org/expose/abc')).toBeNull();
+
+    expect(requests).toEqual([]);
+    expect(gotos).toEqual([]);
   });
 });
 
@@ -267,11 +362,12 @@ describe('#immowelt bff transport, commute areas', () => {
 
   beforeEach(() => {
     requests = [];
+    gotos = [];
     posted = [];
   });
 
   it('draws the commute area before searching and sends it as the search boundary', async () => {
-    await searchClassifieds(commuteBrowser(), COMMUTE_REQUEST);
+    await searchClassifieds(commuteBrowser(), COMMUTE_REQUEST, DE);
 
     expect(requests[0]).toContain('/search-mfe-bff/places/data?placesIds%5B%5D=STRTDE197842');
     expect(requests[1]).toContain('/search-mfe-bff/routing/isochrone');
@@ -286,16 +382,20 @@ describe('#immowelt bff transport, commute areas', () => {
   // The BFF unions the polylines of a search, so a drawn area saved next to a commute time has to
   // survive the resolution rather than be replaced by it.
   it('adds the drawn boundary to the ones already in the criteria', async () => {
-    await searchClassifieds(commuteBrowser(), {
-      ...COMMUTE_REQUEST,
-      criteria: { ...COMMUTE_REQUEST.criteria, location: { polylines: ['ah{vHm`xrA?ivIj`C??hvIk`C?'] } },
-    });
+    await searchClassifieds(
+      commuteBrowser(),
+      {
+        ...COMMUTE_REQUEST,
+        criteria: { ...COMMUTE_REQUEST.criteria, location: { polylines: ['ah{vHm`xrA?ivIj`C??hvIk`C?'] } },
+      },
+      DE,
+    );
 
     expect(posted[0].criteria.location.polylines).toEqual(['ah{vHm`xrA?ivIj`C??hvIk`C?', POLYLINE]);
   });
 
   it('leaves a search without a commute area alone, and does not ask the routing service', async () => {
-    await searchClassifieds(commuteBrowser(), SEARCH_REQUEST);
+    await searchClassifieds(commuteBrowser(), SEARCH_REQUEST, DE);
 
     expect(requests.some((url) => url.includes('/search-mfe-bff/'))).toBe(false);
     expect(posted[0].criteria.location).toEqual({ placeIds: ['AD08DE8634'] });
@@ -306,21 +406,21 @@ describe('#immowelt bff transport, commute areas', () => {
   it('stops the run when the routing service will not draw the area', async () => {
     const browser = commuteBrowser({ routing: { status: 500, body: '<html>Unbekannter Fehler</html>' } });
 
-    await expect(searchClassifieds(browser, COMMUTE_REQUEST)).rejects.toThrow(/commute time/);
+    await expect(searchClassifieds(browser, COMMUTE_REQUEST, DE)).rejects.toThrow(/commute time/);
     expect(posted).toHaveLength(0);
   });
 
   it('stops the run when the place it should travel from has no coordinates', async () => {
     const browser = commuteBrowser({ places: { status: 200, body: JSON.stringify({ places: [{}] }) } });
 
-    await expect(searchClassifieds(browser, COMMUTE_REQUEST)).rejects.toThrow(/commute time/);
+    await expect(searchClassifieds(browser, COMMUTE_REQUEST, DE)).rejects.toThrow(/commute time/);
     expect(posted).toHaveLength(0);
   });
 
   it('stops the run when nothing is reachable in the time the job asks for', async () => {
     const browser = commuteBrowser({ routing: { status: 200, body: JSON.stringify({ isochrone: [] }) } });
 
-    await expect(searchClassifieds(browser, COMMUTE_REQUEST)).rejects.toThrow(/no reachable area/);
+    await expect(searchClassifieds(browser, COMMUTE_REQUEST, DE)).rejects.toThrow(/no reachable area/);
     expect(posted).toHaveLength(0);
   });
 });
