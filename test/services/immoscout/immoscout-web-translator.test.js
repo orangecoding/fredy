@@ -149,6 +149,50 @@ describe('#immoscout-mobile URL conversion', () => {
     });
   });
 
+  // "Alle Immobilien" searches two real estate types at once; the mobile API takes them as a comma
+  // separated list. Unmapped, such a URL dies on "Real estate type not found" (#469).
+  describe('searches of several types', () => {
+    beforeEach(() => vi.spyOn(logger, 'warn').mockImplementation(() => {}));
+    afterEach(() => vi.restoreAllMocks());
+
+    it.each([
+      ['immobilie-kaufen', 'apartmentbuy,housebuy'],
+      ['immobilie-mieten', 'apartmentrent,houserent'],
+    ])('should turn %s into realestatetype=%s', (slug, realEstateType) => {
+      const queryParams = paramsOf(`${DUESSELDORF}/${slug}?enteredFrom=result_list`);
+
+      expect(queryParams.get('realestatetype')).toBe(realEstateType);
+      expect(queryParams.get('searchType')).toBe('region');
+      expect(queryParams.get('geocodes')).toBe('/de/nordrhein-westfalen/duesseldorf');
+    });
+
+    // A parameter one of the two types accepts narrows that type and leaves the other alone, which
+    // is what the API does with it - so it is forwarded rather than dropped.
+    it('should keep a filter only one of the two types accepts', () => {
+      const queryParams = paramsOf(`${DUESSELDORF}/immobilie-kaufen?apartmenttypes=penthouse&price=-600000.0`);
+
+      expect(queryParams.get('apartmenttypes')).toBe('penthouse');
+      expect(queryParams.get('price')).toBe('-600000.0');
+      expect(logger.warn).not.toHaveBeenCalled();
+    });
+
+    // A value only one of them accepts is a different matter: houserent has no "Warmmiete" and the
+    // whole search answers 412 for it.
+    it('should drop a value one of the two types rejects', () => {
+      const queryParams = paramsOf(`${DUESSELDORF}/immobilie-mieten?pricetype=calculatedtotalrent&price=-1500.0`);
+
+      expect(queryParams.get('pricetype')).toBeNull();
+      expect(queryParams.get('price')).toBe('-1500.0');
+      expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining('not supported for apartmentrent,houserent'));
+    });
+
+    // The website sends no exclusioncriteria for the combined rent search, where it hides exchange
+    // flats for wohnung-mieten - so the default does not travel along either.
+    it('should not apply the apartment rent default to a combined rent search', () => {
+      expect(paramsOf(`${DUESSELDORF}/immobilie-mieten`).get('exclusioncriteria')).toBeNull();
+    });
+  });
+
   describe('precedence', () => {
     // Query parameters replace what the path implied, exactly as on the website:
     // "haus-mit-garage-kaufen?equipment=cellar" searches for a cellar, not for both.

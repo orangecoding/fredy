@@ -5,6 +5,7 @@
 
 import {
   DEFAULT_PARAMS_BY_TYPE,
+  defaultParamsFor,
   listKnownWebPaths,
   resolveWebPath,
 } from '../../../lib/services/immoscout/web-paths.js';
@@ -28,6 +29,20 @@ describe('#immoscout web path resolution', () => {
       ['zwangsversteigerung', 'compulsoryauction'],
     ])('should resolve %s to %s without any filter', (slug, realType) => {
       expect(resolveWebPath(slug)).toEqual({ realType, params: {} });
+    });
+
+    // "Alle Immobilien" searches two types at once - the mobile API takes them as a list. Without
+    // them a job on such a URL dies on "Real estate type not found" (#469).
+    it.each([
+      ['immobilie-kaufen', ['apartmentbuy', 'housebuy']],
+      ['immobilie-mieten', ['apartmentrent', 'houserent']],
+    ])('should resolve %s to both of %s', (slug, realType) => {
+      expect(resolveWebPath(slug)).toEqual({ realType, params: {} });
+    });
+
+    // Neither the plural nor a leasing variant is a page ImmoScout serves.
+    it.each(['immobilien-kaufen', 'immobilie-pachten', 'immobilie-tauschen'])('should not resolve %s', (slug) => {
+      expect(resolveWebPath(slug)).toBeNull();
     });
   });
 
@@ -184,6 +199,23 @@ describe('#immoscout web path resolution', () => {
         expect(DEFAULT_PARAMS_BY_TYPE[realType]).toBeUndefined();
       },
     );
+
+    it('should hand out the type default for a single type', () => {
+      expect(defaultParamsFor('apartmentrent')).toEqual({
+        exclusioncriteria: ['swapflat'],
+      });
+      expect(defaultParamsFor(['apartmentrent'])).toEqual({
+        exclusioncriteria: ['swapflat'],
+      });
+      expect(defaultParamsFor('housebuy')).toEqual({});
+    });
+
+    // The website itself drops the default once a search names several types: `immobilie-mieten`
+    // resolves to apartmentrent,houserent with no exclusioncriteria, so exchange flats come along.
+    it('should hand out no default for a search of several types', () => {
+      expect(defaultParamsFor(['apartmentrent', 'houserent'])).toEqual({});
+      expect(defaultParamsFor(['apartmentbuy', 'housebuy'])).toEqual({});
+    });
   });
 
   describe('listKnownWebPaths', () => {

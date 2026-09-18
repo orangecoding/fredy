@@ -79,6 +79,24 @@ describe('#immoscout parameter support', () => {
       expect(isSupported('pricetype', value, realType)).toBe(expected);
     });
 
+    // A search may name several types. The API accepts a parameter name one of them takes - it then
+    // narrows that type and leaves the other alone - while a value has to hold for every type that
+    // takes the parameter, or the whole search answers 412.
+    it.each([
+      ['apartmenttypes', 'penthouse', ['apartmentbuy', 'housebuy'], true],
+      ['buildingtypes', 'villa', ['apartmentbuy', 'housebuy'], true],
+      ['floor', '2-5', ['apartmentbuy', 'housebuy'], true],
+      ['newhomebuilder', 'true', ['apartmentbuy', 'housebuy'], true],
+      ['haspromotion', 'true', ['apartmentrent', 'houserent'], true],
+      ['ground', '200.0-', ['apartmentrent', 'houserent'], true],
+      ['haspromotion', 'true', ['apartmentbuy', 'housebuy'], false],
+      ['petsallowedtypes', 'yes', ['apartmentbuy', 'housebuy'], false],
+      ['pricetype', 'rentpermonth', ['apartmentrent', 'houserent'], true],
+      ['pricetype', 'calculatedtotalrent', ['apartmentrent', 'houserent'], false],
+    ])('should treat %s=%s on %s as %s', (param, value, realTypes, expected) => {
+      expect(isSupported(param, value, realTypes)).toBe(expected);
+    });
+
     // Parameters accepted everywhere have to hold for every type, not just the popular ones.
     it.each([
       'exclusioncriteria',
@@ -153,6 +171,14 @@ describe('#immoscout parameter support', () => {
 
       expect(kept).toEqual({});
       expect(logger.warn).not.toHaveBeenCalled();
+    });
+
+    // The log line has to name the search that dropped the filter, not just one half of it.
+    it('should name every type of a combined search when it drops a filter', () => {
+      const kept = keepSupported({ price: '-500000', haspromotion: 'true' }, ['apartmentbuy', 'housebuy'], 'test');
+
+      expect(kept).toEqual({ price: '-500000' });
+      expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining('not supported for apartmentbuy,housebuy'));
     });
 
     it('should return an empty object for empty input', () => {

@@ -132,6 +132,15 @@ The last path segment of a web URL names the type. These are the ones Fredy supp
 | `seniorenwohnen` | `assistedliving` |
 | `zwangsversteigerung` | `compulsoryauction` |
 
+Two paths name **several types at once** - the "Alle Immobilien" searches - and the mobile API takes them as a comma separated list:
+
+| Web path | `realestatetype` |
+|---|---|
+| `immobilie-kaufen` | `apartmentbuy,housebuy` |
+| `immobilie-mieten` | `apartmentrent,houserent` |
+
+For such a search the API judges the two halves of a parameter differently. The **name** only has to be accepted by one of the types - `immobilie-kaufen?apartmenttypes=penthouse` answers 200 and narrows the apartments while leaving the houses alone - but the **value** has to hold for every type that takes the parameter: `immobilie-mieten?pricetype=calculatedtotalrent` answers 412, because `houserent` has no "Warmmiete". Neither does the combined rent search carry the `swapflat` default that `wohnung-mieten` has; the website sends none either.
+
 The commercial types (`office`, `store`, `gastronomy`, `tradesite`, `specialpurpose`, reachable via `buero-mieten`, `gastronomie-mieten`, `bauernhof-kaufen`, ...) are **deliberately not supported**: their `search/list` answers contain no `EXPOSE_RESULT` items, so there is nothing for the provider to read.
 
 ### Filters hidden in the path (SEO slugs)
@@ -220,7 +229,7 @@ Values matter as well as names. `pricetype=rentpermonth` works for both rent typ
 
 ### Defaults and precedence
 
-Rent apartment searches hide exchange flats (`exclusioncriteria=swapflat`) unless the URL says otherwise; no other type carries a default. Where several sources set the same parameter, the later one wins - **query parameter beats path filter beats default** - which is what the website itself does:
+Rent apartment searches hide exchange flats (`exclusioncriteria=swapflat`) unless the URL says otherwise; no other type, and no search naming several types, carries a default. Where several sources set the same parameter, the later one wins - **query parameter beats path filter beats default** - which is what the website itself does:
 
 ```
 wohnung-mieten?exclusioncriteria=projectlisting  -> projectlisting alone, exchange flats come back
