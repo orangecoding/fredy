@@ -137,31 +137,95 @@ credentials. A channel still used by a job cannot be deleted.
 
 ``` mermaid
 flowchart TD
- subgraph Jobs["Jobs"]
-        A1["Job 1"]
-        A2["Job 2"]
-        A3["Job 3"]
-  end
- subgraph Providers["Providers"]
-        C1["Provider 1"]
-        C2["Provider 2"]
-        C3["Provider 3"]
-  end
- subgraph NotificationChannels["Notification Channels"]
-        F1["Channel 1"]
-        F2["Channel 2"]
-  end
 
-    A1 --> B["FredyPipelineExecutioner"]
-    A2 --> B
-    A3 --> B
-    B --> C1 & C2 & C3
-    C1 --> D["Similarity Check"]
-    C2 --> D
-    C3 --> D
-    D --> E{"Duplicate?"}
-    E -- No --> G["Enrich: market price, scam signals, travel time"]
-    G --> F1 & F2
+subgraph group_backend["Backend runtime"]
+  node_entry["Server entry<br/>bootstrap<br/>[index.js]"]
+  node_pipeline["Job pipeline<br/>orchestrator"]
+  node_providers["Providers<br/>source integrations"]
+  node_extractor["Extraction stack<br/>scraping services"]
+  node_immoscout["ImmoScout path<br/>mobile-api translator"]
+  node_notifications["Notifications<br/>delivery adapters"]
+  node_storage[("SQLite storage<br/>persistence layer")]
+  node_api["API routes<br/>http contract"]
+  node_security["Security<br/>authz/authn<br/>[security.js]"]
+  node_sse["SSE broker<br/>push channel<br/>[sse-broker.js]"]
+  node_crons["Cron services<br/>background tasks"]
+  node_geocoding["Geocoding<br/>location service"]
+  node_listingqc["Listing QC<br/>dedupe/quality"]
+end
+
+subgraph group_frontend["Frontend app"]
+  node_uientry["UI entry<br/>app bootstrap<br/>[Index.jsx]"]
+  node_dashboard["Dashboard<br/>admin view<br/>[Dashboard.jsx]"]
+  node_jobsui["Jobs UI<br/>admin view"]
+  node_listingsui["Listings UI<br/>admin view"]
+  node_adminui["Admin config<br/>admin view"]
+end
+
+subgraph group_ops["Operational surface"]
+  node_debug["Debugging<br/>observability"]
+  node_mcp["MCP server<br/>llm integration"]
+end
+
+node_entry -->|"serves"| node_api
+node_entry -->|"starts"| node_pipeline
+node_pipeline -->|"pulls listings"| node_providers
+node_pipeline -->|"scrapes"| node_extractor
+node_pipeline -->|"special case"| node_immoscout
+node_pipeline -->|"dedupes"| node_listingqc
+node_pipeline -->|"persists"| node_storage
+node_pipeline -->|"fans out"| node_notifications
+node_providers -->|"uses"| node_extractor
+node_providers -->|"reads config"| node_storage
+node_notifications -->|"reads state"| node_storage
+node_api -->|"protects"| node_security
+node_api -->|"reads/writes"| node_storage
+node_api -->|"publishes"| node_sse
+node_crons -->|"enriches"| node_geocoding
+node_crons -->|"checks"| node_listingqc
+node_crons -->|"updates"| node_storage
+node_geocoding -->|"stores coords"| node_storage
+node_debug -->|"captures logs"| node_storage
+node_mcp -->|"queries"| node_storage
+node_uientry -->|"consumes"| node_api
+node_uientry -->|"subscribes"| node_sse
+node_dashboard -->|"loads"| node_api
+node_jobsui -->|"manages"| node_api
+node_listingsui -->|"queries"| node_api
+node_adminui -->|"configures"| node_api
+node_adminui -->|"shows"| node_debug
+
+click node_entry "https://github.com/orangecoding/fredy/blob/master/index.js"
+click node_pipeline "https://github.com/orangecoding/fredy/blob/master/lib/FredyPipelineExecutioner.js"
+click node_providers "https://github.com/orangecoding/fredy/tree/master/lib/provider"
+click node_extractor "https://github.com/orangecoding/fredy/tree/master/lib/services/extractor"
+click node_immoscout "https://github.com/orangecoding/fredy/tree/master/lib/services/immoscout"
+click node_notifications "https://github.com/orangecoding/fredy/tree/master/lib/notification/adapter"
+click node_storage "https://github.com/orangecoding/fredy/tree/master/lib/services/storage"
+click node_api "https://github.com/orangecoding/fredy/tree/master/lib/api/routes"
+click node_security "https://github.com/orangecoding/fredy/blob/master/lib/api/security.js"
+click node_sse "https://github.com/orangecoding/fredy/blob/master/lib/services/sse/sse-broker.js"
+click node_crons "https://github.com/orangecoding/fredy/tree/master/lib/services/crons"
+click node_geocoding "https://github.com/orangecoding/fredy/tree/master/lib/services/geocoding"
+click node_listingqc "https://github.com/orangecoding/fredy/tree/master/lib/services/listings"
+click node_debug "https://github.com/orangecoding/fredy/tree/master/lib/services/debug"
+click node_mcp "https://github.com/orangecoding/fredy/tree/master/lib/mcp"
+click node_uientry "https://github.com/orangecoding/fredy/blob/master/ui/src/Index.jsx"
+click node_dashboard "https://github.com/orangecoding/fredy/blob/master/ui/src/views/dashboard/Dashboard.jsx"
+click node_jobsui "https://github.com/orangecoding/fredy/tree/master/ui/src/views/jobs"
+click node_listingsui "https://github.com/orangecoding/fredy/tree/master/ui/src/views/listings"
+click node_adminui "https://github.com/orangecoding/fredy/tree/master/ui/src/views"
+
+classDef toneNeutral fill:#f8fafc,stroke:#334155,stroke-width:1.5px,color:#0f172a
+classDef toneBlue fill:#dbeafe,stroke:#2563eb,stroke-width:1.5px,color:#172554
+classDef toneAmber fill:#fef3c7,stroke:#d97706,stroke-width:1.5px,color:#78350f
+classDef toneMint fill:#dcfce7,stroke:#16a34a,stroke-width:1.5px,color:#14532d
+classDef toneRose fill:#ffe4e6,stroke:#e11d48,stroke-width:1.5px,color:#881337
+classDef toneIndigo fill:#e0e7ff,stroke:#4f46e5,stroke-width:1.5px,color:#312e81
+classDef toneTeal fill:#ccfbf1,stroke:#0f766e,stroke-width:1.5px,color:#134e4a
+class node_entry,node_pipeline,node_providers,node_extractor,node_immoscout,node_notifications,node_storage,node_api,node_security,node_sse,node_crons,node_geocoding,node_listingqc toneBlue
+class node_uientry,node_dashboard,node_jobsui,node_listingsui,node_adminui toneAmber
+class node_debug,node_mcp toneMint
 ```
 
 ------------------------------------------------------------------------
