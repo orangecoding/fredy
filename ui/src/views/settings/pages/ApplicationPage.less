@@ -1,0 +1,70 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../../tokens.less';
+
+.applicationPage {
+  &__grid {
+    display: grid;
+    // Two columns where there is room, one on a phone. The fields are short and pairing them keeps
+    // the profile from reading as an endless form.
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: @space-3;
+  }
+
+  &__flag {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: @space-2;
+    margin-top: @space-3;
+  }
+
+  &__templateControls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: @space-3;
+    margin-bottom: @space-3;
+  }
+
+  &__placeholders {
+    display: flex;
+    flex-direction: column;
+    gap: @space-3;
+    margin-top: @space-4;
+  }
+
+  &__placeholderGroup {
+    display: flex;
+    flex-direction: column;
+    gap: @space-1;
+  }
+
+  &__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: @space-1;
+  }
+
+  &__warning {
+    margin-top: @space-3;
+  }
+
+  &__preview {
+    margin: 0;
+    padding: @space-4;
+    border: 1px solid @color-border;
+    border-radius: @radius-card;
+    background: @color-surface;
+    // The preview is the letter, so it wraps like prose rather than scrolling sideways like code.
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+}

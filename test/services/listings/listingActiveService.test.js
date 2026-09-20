@@ -138,4 +138,61 @@ describe('services/listings/listingActiveService', () => {
     expect(state.marked).toEqual([]);
     expect(state.failuresRecorded).toEqual([]);
   });
+
+  /**
+   * `concurrency` bounds the run as a whole, not any single portal. Listings arrive ordered by age
+   * rather than by provider, so in practice all four parallel probes were regularly aimed at the
+   * same host - which is what produced a burst of requests and a page of HTTP 429s back.
+   */
+  describe('per-host pacing', () => {
+    const listingAt = (id, host) => ({ id, link: `https://${host}/expose/${id}`, provider: 'immowelt' });
+
+    /** A probe that records how many of its own calls were ever in flight at once. */
+    const trackingProbe = (durationMs = 5) => {
+      const tracker = { inFlight: 0, peak: 0 };
+      const probe = async () => {
+        tracker.inFlight++;
+        tracker.peak = Math.max(tracker.peak, tracker.inFlight);
+        await new Promise((resolve) => setTimeout(resolve, durationMs));
+        tracker.inFlight--;
+        return 1;
+      };
+      return { tracker, probe };
+    };
+
+    it('never has two probes at one host in flight at the same time', async () => {
+      state.due = [1, 2, 3, 4, 5, 6].map((n) => listingAt(`is24-${n}`, 'www.immobilienscout24.de'));
+      const { tracker, probe } = trackingProbe();
+      const runActiveChecker = await loadService(probe);
+
+      await runActiveChecker({ hostGapMs: 0 });
+
+      expect(tracker.peak).toBe(1);
+      expect(state.marked).toHaveLength(6);
+    });
+
+    it('still probes different hosts in parallel', async () => {
+      state.due = [1, 2, 3, 4].map((n) => listingAt(`listing-${n}`, `portal-${n}.example.com`));
+      const { tracker, probe } = trackingProbe(20);
+      const runActiveChecker = await loadService(probe);
+
+      await runActiveChecker({ hostGapMs: 0 });
+
+      // Serialising everything would make a 500-listing run needlessly long; only the per-host
+      // burst was ever the problem.
+      expect(tracker.peak).toBeGreaterThan(1);
+    });
+
+    it('leaves a gap between two probes at the same host', async () => {
+      state.due = [1, 2, 3].map((n) => listingAt(`is24-${n}`, 'www.immobilienscout24.de'));
+      const runActiveChecker = await loadService(() => 1);
+
+      const startedAt = Date.now();
+      await runActiveChecker({ hostGapMs: 100 });
+
+      // Three probes means two gaps. Compared against a margin, not the exact figure, because the
+      // assertion is "the run is paced", not "timers are precise".
+      expect(Date.now() - startedAt).toBeGreaterThanOrEqual(150);
+    });
+  });
 });

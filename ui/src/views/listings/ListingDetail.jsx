@@ -34,6 +34,7 @@ import {
   IconLink,
   IconStar,
   IconStarStroked,
+  IconCopy,
   IconDelete,
   IconExpand,
   IconGridView,
@@ -55,6 +56,7 @@ import { getAddresses } from '../../utils.js';
 import { lagecheckUrl } from '../../services/listings/lagecheckUrl.js';
 import { xhrPost, xhrGet, xhrDelete, errorMessage } from '../../services/xhr.js';
 import ListingDeletionModal from '../../components/ListingDeletionModal.jsx';
+import ApplicationModal from './components/ApplicationModal.jsx';
 
 import Headline from '../../components/headline/Headline.jsx';
 import IconEuro from '../../components/icons/IconEuro.jsx';
@@ -113,6 +115,7 @@ export default function ListingDetail() {
   const [mapReady, setMapReady] = useState(false);
   const [loading, setLoading] = useState(true);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [applicationVisible, setApplicationVisible] = useState(false);
   const [notesDraft, setNotesDraft] = useState('');
   const [notesSaving, setNotesSaving] = useState(false);
   const [priceHistory, setPriceHistory] = useState([]);
@@ -633,6 +636,11 @@ export default function ListingDetail() {
               {listing.isWatched === 1 ? t('listing.detail.watched') : t('listing.detail.watch')}
             </Button>
             <StatusControl status={listing.status?.status ?? null} onChange={handleStatusChange} />
+            {/* Ahead of "open listing" because it is the thing the user came to do: reading the ad
+                is how you decide, writing the letter is how you act on the decision. */}
+            <Button icon={<IconCopy />} onClick={() => setApplicationVisible(true)} theme="light" type="primary">
+              {t('listing.application.action')}
+            </Button>
             <a href={listing.link} target="_blank" rel="noopener noreferrer" className="listing-detail__open-btn">
               <IconLink style={{ marginRight: 6 }} />
               {t('listing.detail.openListing')}
@@ -973,6 +981,12 @@ export default function ListingDetail() {
         defaultDeleteType={defaultDeleteType}
         onConfirm={confirmDeletion}
         onCancel={() => setDeleteModalVisible(false)}
+      />
+
+      <ApplicationModal
+        visible={applicationVisible}
+        listingId={listing.id}
+        onCancel={() => setApplicationVisible(false)}
       />
     </div>
   );

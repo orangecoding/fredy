@@ -11,6 +11,7 @@ import SettingsLayout from './views/settings/SettingsLayout';
 import PreferencesPage from './views/settings/pages/PreferencesPage';
 import TravelTimePage from './views/settings/pages/TravelTimePage';
 import ListingDetailsPage from './views/settings/pages/ListingDetailsPage';
+import ApplicationPage from './views/settings/pages/ApplicationPage';
 import NotificationsPage from './views/settings/pages/NotificationsPage';
 import ConnectionsPage from './views/settings/pages/ConnectionsPage';
 import AdminLayout from './views/admin/AdminLayout';
@@ -223,12 +224,13 @@ export default function FredyApp() {
 
                   {/* Settings that belong to whoever is signed in. No guard: they are theirs.
                       One entry in the sidebar, and the tabs below the heading are the only place
-                      these five pages are named. */}
+                      these pages are named. */}
                   <Route path="/settings" element={<SettingsLayout />}>
                     <Route index element={<Navigate to="/settings/preferences" replace />} />
                     <Route path="preferences" element={<PreferencesPage />} />
                     <Route path="travel-time" element={<TravelTimePage />} />
                     <Route path="listings" element={<ListingDetailsPage />} />
+                    <Route path="application" element={<ApplicationPage />} />
                     <Route path="notifications" element={<NotificationsPage />} />
                     <Route path="connections" element={<ConnectionsPage />} />
                   </Route>

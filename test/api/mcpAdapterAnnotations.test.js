@@ -27,6 +27,7 @@ const READ_TOOLS = [
   'get_photo_for_listing',
   'calculate_financing',
   'get_current_date_time',
+  'get_application_letter',
 ];
 
 /**
