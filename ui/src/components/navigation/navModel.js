@@ -16,6 +16,14 @@
  */
 
 /**
+ * Which half of the sidebar an entry belongs to. The daily work is one thing, configuring the
+ * instance is another, and the rule between them is a consequence of that rather than a position
+ * someone hardcoded into the markup.
+ *
+ * @typedef {'work'|'config'} NavSection
+ */
+
+/**
  * One entry in the sidebar.
  *
  * A `key` beginning with `/` is a destination and navigates. Anything else is a group heading that
@@ -24,6 +32,7 @@
  * @typedef {Object} NavNode
  * @property {string} key Route path, or a bare name for a group.
  * @property {string} labelKey Translation key for the visible label.
+ * @property {NavSection} [section] Top-level entries only; children inherit their parent's.
  * @property {NavNode[]} [children]
  * @property {boolean} [adminOnly] Hidden from users without the admin bit.
  */
@@ -38,11 +47,12 @@
  * @type {NavNode[]}
  */
 export const NAV_TREE = [
-  { key: '/dashboard', labelKey: 'nav.dashboard' },
-  { key: '/jobs', labelKey: 'nav.jobs' },
+  { key: '/dashboard', labelKey: 'nav.dashboard', section: 'work' },
+  { key: '/jobs', labelKey: 'nav.jobs', section: 'work' },
   {
     key: 'listings',
     labelKey: 'nav.listings',
+    section: 'work',
     children: [
       { key: '/listings', labelKey: 'nav.listingsOverview' },
       { key: '/map', labelKey: 'nav.mapView' },
@@ -51,8 +61,8 @@ export const NAV_TREE = [
       { key: '/finance', labelKey: 'nav.finance' },
     ],
   },
-  { key: '/settings', labelKey: 'nav.settings' },
-  { key: '/admin', labelKey: 'nav.administration', adminOnly: true },
+  { key: '/settings', labelKey: 'nav.settings', section: 'config' },
+  { key: '/admin', labelKey: 'nav.administration', section: 'config', adminOnly: true },
 ];
 
 /**
@@ -63,6 +73,18 @@ export const NAV_TREE = [
  */
 export function navTreeFor(isAdmin) {
   return NAV_TREE.filter((node) => !node.adminOnly || isAdmin);
+}
+
+/**
+ * True when a rule belongs above this entry, because it starts a different section than the one
+ * before it. The first entry never gets one.
+ *
+ * @param {NavNode[]} tree
+ * @param {number} index
+ * @returns {boolean}
+ */
+export function startsSection(tree, index) {
+  return index > 0 && tree[index].section !== tree[index - 1].section;
 }
 
 /**

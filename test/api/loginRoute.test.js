@@ -42,7 +42,7 @@ async function buildApp() {
 beforeEach(() => {
   vi.clearAllMocks();
   testSession = undefined;
-  getUser.mockReturnValue({ id: 'user-1', isAdmin: true });
+  getUser.mockReturnValue({ id: 'user-1', username: 'admin', isAdmin: true });
 });
 
 describe('GET /user', () => {
@@ -53,7 +53,29 @@ describe('GET /user', () => {
     const res = await app.inject({ method: 'GET', url: '/user' });
 
     expect(res.statusCode).toBe(200);
-    expect(res.json()).toEqual({ userId: 'user-1', isAdmin: true });
+    expect(res.json()).toEqual({ userId: 'user-1', username: 'admin', isAdmin: true });
+
+    await app.close();
+  });
+
+  // The sidebar names whose session it is, and this is where it learns that. The exact-match
+  // assertion above is what keeps the rest of the row out: `getUser` also returns the last login
+  // and a job count, and neither belongs in an answer this endpoint hands out before the session
+  // has been checked for anything but its own validity.
+  it('hands out the name without anything else the user record carries', async () => {
+    getUser.mockReturnValue({
+      id: 'user-1',
+      username: 'admin',
+      isAdmin: false,
+      lastLogin: 1700000000000,
+      numberOfJobs: 7,
+    });
+    testSession = freshSession();
+    const app = await buildApp();
+
+    const res = await app.inject({ method: 'GET', url: '/user' });
+
+    expect(res.json()).toEqual({ userId: 'user-1', username: 'admin', isAdmin: false });
 
     await app.close();
   });

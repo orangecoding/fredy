@@ -4,8 +4,8 @@
  */
 
 import { useState } from 'react';
-import { Modal } from '@douyinfe/semi-ui-19';
-import { IconHeartStroked, IconGithubLogo, IconCoinMoneyStroked, IconCreditCardStroked } from '@douyinfe/semi-icons';
+import { Modal, Tooltip } from '@douyinfe/semi-ui-19';
+import { IconGithubLogo, IconCoinMoneyStroked, IconCreditCardStroked } from '@douyinfe/semi-icons';
 import { useActions, useSelector } from '../../services/state/store';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
 import heart from '../../assets/heart.png';
@@ -60,18 +60,31 @@ export default function Donate({ collapsed }) {
     actions.tracking.trackPoi(pois.DONATION_MODAL_OPENED);
   };
 
+  const trigger = (
+    <button
+      className={`donate__btn${collapsed ? ' donate__btn--icon-only' : ''}`}
+      onClick={open}
+      title={t('donate.button')}
+      aria-label={t('donate.button')}
+    >
+      {/* The heart out of the logo rather than a drawn outline, so the one red thing in the
+          sidebar is the same heart the brand is. */}
+      <img className="donate__btn-heart" src={heart} alt="" />
+      {!collapsed && <span className="donate__btn-label">{t('donate.button')}</span>}
+    </button>
+  );
+
   return (
     <div className="donate">
-      <button
-        className={`donate__btn${collapsed ? ' donate__btn--icon-only' : ''}`}
-        onClick={open}
-        title={t('donate.button')}
-        aria-label={t('donate.button')}
-      >
-        {/* The one red thing in the sidebar footer, which is the whole of how it asks. */}
-        <IconHeartStroked size="default" className="donate__btn-heart" />
-        {!collapsed && <span className="donate__btn-label">{t('donate.button')}</span>}
-      </button>
+      {/* In the rail the label is gone and a bare heart could mean anything, so it says what it is
+          on hover, like every other icon there. */}
+      {collapsed ? (
+        <Tooltip content={t('donate.button')} position="right">
+          {trigger}
+        </Tooltip>
+      ) : (
+        trigger
+      )}
 
       <Modal visible={visible} onCancel={() => setVisible(false)} footer={null} centered width={460}>
         <div className="donate__content">

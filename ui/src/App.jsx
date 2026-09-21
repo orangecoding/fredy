@@ -33,7 +33,6 @@ import Jobs from './views/jobs/Jobs';
 import './App.less';
 import TrackingModal from './components/tracking/TrackingModal.jsx';
 import { LocaleProvider } from '@douyinfe/semi-ui-19';
-import VersionBanner from './components/version/VersionBanner.jsx';
 import Listings from './views/listings/Listings.jsx';
 import MapView from './views/listings/Map.jsx';
 import Navigation from './components/navigation/Navigation.jsx';
@@ -91,7 +90,6 @@ export default function FredyApp() {
    */
   const initInFlight = React.useRef(false);
   const currentUser = useSelector((state) => state.user.currentUser);
-  const versionUpdate = useSelector((state) => state.versionUpdate.versionUpdate);
   const settings = useSelector((state) => state.generalSettings.settings);
   const language = useSelector((state) => state.userSettings.settings.language);
   /*
@@ -152,8 +150,8 @@ export default function FredyApp() {
           // Marked done only now: a route that seeds its state from the store on mount must not
           // be rendered before the store actually holds it.
           initializedFor.current = userId;
-          // Nothing in the first render depends on these two - the version banner and the
-          // tracking modal appear when they arrive - so they must not hold up the app.
+          // Nothing in the first render depends on these two - the version line in the footer
+          // and the tracking modal appear when they arrive - so they must not hold up the app.
           // getVersionUpdate in particular reaches out to api.github.com.
           actions.versionUpdate.getVersionUpdate();
           actions.tracking.getTrackingPois();
@@ -206,7 +204,6 @@ export default function FredyApp() {
             </Sider>
             <Layout className="app__main">
               <Content className="app__content">
-                {versionUpdate?.newVersion && <VersionBanner />}
                 <DebugLoggingBanner />
                 {settings.demoMode && <DemoBanner />}
                 {settings.analyticsEnabled === null && !settings.demoMode && <TrackingModal />}

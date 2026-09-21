@@ -1,119 +1,78 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
 @import '../../tokens.less';
+
+/* Constants that are only true for the sidebar. tokens.less carries the app-wide names and has to
+   stay free of rules, so a width that means something here and nowhere else lives here. */
+@nav-wide: 248px;
+@nav-narrow: 64px;
+@nav-header: 64px;
+@nav-item: 40px;
+@nav-child: 34px;
+@nav-icon-cell: 44px;
+@nav-rail-inset: 10px;
 
 .navigate {
   display: flex;
   flex-direction: column;
   height: 100%;
-  width: 100%;
+  width: @nav-wide;
+  flex: none;
   background: @color-surface;
   border-right: 1px solid @color-border;
   transition: @transition-sidebar;
   overflow: hidden;
 
+  /* The wordmark used to be a 160px image in a block the first entry only cleared a third of the
+     way down. The mark and the word say the same thing in the height of one row. */
   &__header {
     display: flex;
     align-items: center;
-    justify-content: center;
-    padding: 20px 16px 16px;
-    min-height: 64px;
-    flex-shrink: 0;
-
-    img {
-      transition:
-        width @transition-fast,
-        opacity @transition-fast;
-    }
-  }
-
-  // The footer is two stacked blocks now: the support button sits above the rule, the session
-  // controls below it. The rule therefore belongs to the lower block, not to the footer itself.
-  &__footer {
-    display: flex;
-    flex-direction: column;
-    margin-top: auto;
-    flex-shrink: 0;
-    padding: 0 !important;
-  }
-
-  &__footer-news {
-    padding: 0 8px 8px;
-  }
-
-  &__footer-donate {
-    padding: 0 8px 10px;
-  }
-
-  &__footer-actions {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 1rem 8px 10px;
-    border-top: 1px solid @color-border;
-
-    &--collapsed {
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-    }
-  }
-
-  &__logout-btn {
+    gap: 10px;
     flex: none;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    height: 32px;
-    padding: 0 10px;
-    border: 1px solid rgb(@color-error-rgb / 25%);
-    background: rgb(@color-error-rgb / 6%);
-    color: @color-error;
-    border-radius: @radius-btn;
-    cursor: pointer;
-    font-size: @text-sm;
-    font-weight: 500;
-    font-family: @font-ui;
-    transition:
-      background @transition-fast,
-      border-color @transition-fast;
-    white-space: nowrap;
-    overflow: hidden;
-
-    &:hover {
-      background: rgb(@color-error-rgb / 12%);
-      border-color: rgb(@color-error-rgb / 40%);
-    }
-
-    &--icon-only {
-      flex: none;
-      width: 32px;
-      height: 32px;
-      justify-content: center;
-      padding: 0;
-      border: none;
-      background: transparent;
-      border-radius: @radius-btn;
-
-      &:hover {
-        background: rgb(@color-error-rgb / 8%);
-      }
-    }
+    height: @nav-header;
+    padding: 0 @space-2 0 14px;
+    border-bottom: 1px solid @color-border;
   }
 
-  &__toggle-btn {
+  /* The logo the project is known by, which is a bitmap with a cut per theme rather than anything a
+     custom property could recolour. Bound by height, because it is two and a half times as wide as
+     it is tall: a width chosen to look right resolves to a height taller than the header, which is
+     what used to push the first entry a third of the way down the sidebar. */
+  &__logo {
+    flex: none;
+    width: auto;
+    height: 36px;
+  }
+
+  /* In the rail there is no room for the word, so the heart carries the brand on its own. */
+  &__logoMark {
+    flex: none;
+    width: 30px;
+    height: 30px;
+  }
+
+  &__spacer {
+    flex: 1 1 auto;
+  }
+
+  /* At the edge of the header, where every application puts it, rather than in the footer next to
+     signing out. */
+  &__toggle {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 32px;
-    width: 32px;
-    flex-shrink: 0;
+    flex: none;
+    width: 36px;
+    height: 36px;
     border: none;
+    border-radius: @radius-btn;
     background: transparent;
     color: @color-faint;
     cursor: pointer;
-    border-radius: @radius-btn;
     transition:
       background @transition-fast,
       color @transition-fast;
@@ -123,120 +82,421 @@
       color: @color-muted;
     }
   }
-}
 
-// Semi Nav overrides
-.semi-navigation {
-  background: @color-surface !important;
-  border-right: none !important;
-}
-
-.semi-navigation-item {
-  border-radius: @radius-btn !important;
-  border: 1px solid transparent !important;
-  color: @color-muted !important;
-  transition:
-    background @transition-fast,
-    color @transition-fast,
-    border-color @transition-fast !important;
-
-  &:hover {
-    color: @color-text !important;
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: @space-3 @space-2 0;
   }
 
-  &.semi-navigation-item-selected,
-  &[aria-selected='true'] {
-    background: rgb(@color-accent-rgb / 12%) !important;
-    border-color: rgb(@color-accent-rgb / 25%) !important;
-    color: @color-text !important;
-
-    .semi-navigation-item-icon {
-      color: @color-accent !important;
-    }
-  }
-}
-
-.semi-navigation-sub-title {
-  color: @color-muted !important;
-}
-
-// Collapsed state - icons perfectly centered
-.semi-navigation-collapsed {
-  // Text span is display:block and takes up flex space - must be removed so justify-content:center works
-  .semi-navigation-item-text {
-    display: none !important;
+  &__separator {
+    height: 1px;
+    margin: @space-3 @space-1;
+    background: @color-border;
   }
 
-  .semi-navigation-item,
-  .semi-navigation-sub-title {
-    margin: 2px 0 !important;
-    padding: 0 !important;
-    width: 100% !important;
-    height: 36px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
-
-  .semi-navigation-item-inner,
-  .semi-navigation-sub-title-inner {
-    padding: 0 !important;
-    margin: 0 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: 100% !important;
-    min-width: 0 !important;
-  }
-
-  // Semi adds margin-right to icons for text spacing - remove it when collapsed
-  .semi-navigation-item-icon,
-  .semi-navigation-sub-title-icon {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    margin: 0 !important;
-    margin-right: 0 !important;
-    padding: 0 !important;
-    width: auto !important;
-    min-width: 0 !important;
-  }
-}
-
-// Semi Nav.Footer - full width, no extra padding (our BEM class controls it)
-.semi-navigation-footer {
-  width: 100% !important;
-  box-sizing: border-box !important;
-}
-
-// Collapsed submenu popup - actual class used by Semi UI is .semi-navigation-popover
-.semi-navigation-popover {
-  background: @color-elevated !important;
-  border: 1px solid @color-border !important;
-  border-radius: @radius-card !important;
-  box-shadow: @shadow-md !important;
-  overflow: hidden !important;
-
-  .semi-navigation-item {
-    margin: 2px 6px !important;
-    color: @color-muted !important;
-    border: none !important;
-    border-radius: @radius-btn !important;
+  /* A real button, so it is reachable by keyboard and announced as something that does anything.
+     Quiet by default: the loudest thing in a sidebar should not be the page you are already on. */
+  &__item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: @space-3;
+    width: 100%;
+    height: @nav-item;
+    padding: 0 @space-3;
+    border: none;
+    border-radius: @radius-btn;
+    background: transparent;
+    font-family: @font-ui;
+    text-align: left;
+    cursor: pointer;
+    transition:
+      background @transition-fast,
+      color @transition-fast;
 
     &:hover {
-      background: @color-fill-1 !important;
-      color: @color-text !important;
+      background: @color-hover;
+
+      .navigate__itemLabel {
+        color: @color-text;
+      }
+
+      .navigate__itemIcon {
+        color: @color-muted;
+      }
     }
 
-    &.semi-navigation-item-selected,
-    &.semi-dropdown-item-active {
-      background: rgb(@color-accent-rgb / 10%) !important;
-      border: none !important;
-      color: @color-text !important;
+    /* One signal, not three. The old selected state carried an accent fill, an accent border and
+       an accent icon at once, which made the current page shout louder than any real action on
+       it. */
+    &--active {
+      background: @color-elevated;
 
-      .semi-navigation-item-icon {
-        color: @color-accent !important;
+      .navigate__itemLabel {
+        color: @color-text;
+        font-weight: 600;
       }
+
+      .navigate__itemIcon {
+        color: @color-accent;
+      }
+    }
+  }
+
+  &__marker {
+    position: absolute;
+    left: 0;
+    top: 10px;
+    width: 2px;
+    height: 20px;
+    border-radius: 1px;
+    background: @color-accent;
+  }
+
+  &__itemIcon {
+    display: flex;
+    flex: none;
+    width: 18px;
+    height: 18px;
+    color: @color-faint;
+  }
+
+  &__itemLabel {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: @text-base;
+    font-weight: 500;
+    color: @color-muted;
+  }
+
+  /* Never allowed to shorten the label: it is the side note, the name is the entry. */
+  &__itemCount {
+    flex: none;
+    font-family: @font-mono;
+    font-size: @text-sm;
+    color: @color-faint;
+  }
+
+  &__itemChevron {
+    flex: none;
+    color: @color-faint;
+  }
+
+  /* The children used to float under their parent with nothing tying them to it. The rail is that
+     tie, and it lines up under the centre of the parent's icon. */
+  &__children {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: @space-1;
+    margin-top: -2px;
+    padding-left: 21px;
+  }
+
+  &__rail {
+    position: absolute;
+    left: 20px;
+    top: @space-1;
+    bottom: @space-1;
+    width: 1px;
+    background: @color-border;
+  }
+
+  &__child {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: @nav-child;
+    padding: 0 @space-3 0 19px;
+    border: none;
+    border-radius: @radius-btn;
+    background: transparent;
+    font-family: @font-ui;
+    text-align: left;
+    cursor: pointer;
+    transition: background @transition-fast;
+
+    &:hover {
+      background: @color-hover;
+
+      .navigate__childLabel {
+        color: @color-text;
+      }
+    }
+
+    /* The rail segment carries the selection. No second marker, because one choice is one signal. */
+    &--active {
+      background: @color-elevated;
+
+      .navigate__childLabel {
+        color: @color-text;
+        font-weight: 600;
+      }
+
+      .navigate__childRail {
+        background: @color-accent;
+      }
+    }
+  }
+
+  &__childRail {
+    position: absolute;
+    left: 20px;
+    width: 1px;
+    height: @nav-child;
+    background: transparent;
+  }
+
+  &__childLabel {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: @text-sm;
+    color: @color-muted;
+  }
+
+  /* Whether Fredy is still running, readable from any page. Only rendered when the dashboard has
+     already been loaded: the sidebar makes no request of its own. */
+  &__status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: none;
+    height: 44px;
+    padding: 0 @space-4;
+    border-top: 1px solid @color-border;
+    font-size: @text-sm;
+    color: @color-muted;
+  }
+
+  &__statusDot {
+    flex: none;
+    width: 7px;
+    height: 7px;
+    border-radius: @radius-pill;
+    background: @color-success;
+
+    &--stale {
+      background: @color-warning;
+    }
+  }
+
+  &__donate {
+    flex: none;
+    padding: 14px @space-3 @space-4;
+  }
+
+  /* One row instead of four controls in four different idioms. Signing out lived here as a
+     permanently red button, and red in this application means an affordability verdict. */
+  &__account {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: none;
+    height: 60px;
+    padding: 0 @space-2 0 @space-3;
+    border-top: 1px solid @color-border;
+  }
+
+  &__avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: 30px;
+    height: 30px;
+    /* Two shapes wear this: a span beside the name, and the account menu's trigger in the narrow
+       rail. The button carries the browser's own outset border until something says otherwise,
+       which paints a raised grey ring around the initials. */
+    border: none;
+    border-radius: @radius-pill;
+    background: @color-solid;
+    color: @color-accent;
+    font-size: @text-sm;
+    font-weight: 700;
+  }
+
+  &__accountText {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  &__accountName {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: @text-sm;
+    font-weight: 500;
+    color: @color-text;
+  }
+
+  &__accountRole {
+    display: block;
+    margin-top: 1px;
+    font-size: @text-xs;
+    color: @color-faint;
+  }
+
+  &__accountAction {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: @radius-btn;
+    background: transparent;
+    color: @color-muted;
+    cursor: pointer;
+    transition:
+      background @transition-fast,
+      color @transition-fast;
+
+    &:hover {
+      background: @color-fill-1;
+      color: @color-text;
+    }
+  }
+
+  &__badge {
+    position: absolute;
+    top: 5px;
+    right: 6px;
+    width: 6px;
+    height: 6px;
+    border-radius: @radius-pill;
+    background: @color-accent;
+  }
+
+  /* Icons only. Everything that carried text either loses it or moves into a tooltip. */
+  &--collapsed {
+    width: @nav-narrow;
+
+    .navigate__header {
+      justify-content: center;
+      padding: 0;
+    }
+
+    .navigate__list {
+      align-items: center;
+      padding: @space-2 @nav-rail-inset 0;
+    }
+
+    .navigate__item {
+      justify-content: center;
+      width: @nav-icon-cell;
+      height: @nav-icon-cell;
+      padding: 0;
+    }
+
+    /* The marker belongs to the edge of the sidebar; the cell is inset by the list's padding, so
+       it reaches back out by exactly that much. */
+    .navigate__marker {
+      left: -@nav-rail-inset;
+      top: 12px;
+    }
+
+    /* Outside the list now, sitting over the heart. `.navigate` stretches its children, so the
+       cell centres itself rather than inheriting a row's alignment. */
+    .navigate__toggle {
+      width: @nav-icon-cell;
+      height: @nav-icon-cell;
+      margin: @space-2 auto 0;
+    }
+
+    .navigate__separator {
+      width: 40px;
+      margin: @space-2 0;
+    }
+
+    .navigate__donate {
+      padding: 14px 15px @space-4;
+    }
+
+    .navigate__account,
+    .navigate__status {
+      justify-content: center;
+      padding: 0;
+    }
+
+    /* Here the circle is what opens the account menu, because 64 pixels hold one control and
+       signing out has to stay reachable. Expanded it is a span beside the name and points at
+       nothing. */
+    .navigate__avatar {
+      cursor: pointer;
+    }
+  }
+
+  &__cellBadge {
+    position: absolute;
+    top: 6px;
+    right: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    min-width: 15px;
+    height: 15px;
+    padding: 0 3px;
+    border-radius: @radius-pill;
+    background: @color-solid;
+    color: @color-muted;
+    font-family: @font-mono;
+    font-size: 9.5px;
+    font-weight: 700;
+  }
+}
+
+/* The group menu beside the collapsed rail. Semi's Popover, which seven other components in this
+   project already use, rather than the navigation component's own popover and the pile of
+   overrides that came with it. */
+.navigate-flyout {
+  min-width: 200px;
+  padding: @space-1;
+
+  &__title {
+    padding: @space-1 10px @space-2;
+    font-size: @text-xs;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: @color-faint;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: @nav-child;
+    padding: 0 10px;
+    border: none;
+    border-radius: @radius-btn;
+    background: transparent;
+    font-family: @font-ui;
+    font-size: @text-sm;
+    color: @color-muted;
+    text-align: left;
+    cursor: pointer;
+
+    &:hover {
+      background: @color-hover;
+      color: @color-text;
+    }
+
+    &--active {
+      background: @color-elevated;
+      color: @color-text;
+      font-weight: 600;
     }
   }
 }
