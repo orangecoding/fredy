@@ -26,6 +26,14 @@ describe('api/routes/dashboardRouter.js', () => {
       getListingsKpisForJobIds: () => ({ numberOfActiveListings: 0, medianPriceOfListings: 0 }),
       getProviderDistributionForJobIds: () => [],
       getListingsPerDayForJobIds: () => [],
+      getLatestListingsForJobIds: (jobIds, limit) => {
+        state.latestCall = { jobIds, limit };
+        return state.latest;
+      },
+      getListingActivityPerJob: (jobIds, days) => {
+        state.activityCall = { jobIds, days };
+        return state.jobActivity;
+      },
     }));
     vi.doMock(settingsStoragePath, () => ({
       getSettings: async () => ({ interval: 30 }),
@@ -53,6 +61,8 @@ describe('api/routes/dashboardRouter.js', () => {
       currentUser: 'u1',
       admin: false,
       jobs: [],
+      latest: [],
+      jobActivity: {},
     };
   });
 
@@ -110,5 +120,24 @@ describe('api/routes/dashboardRouter.js', () => {
     const body = res.json();
     expect(body.general.lastRun).toBeNull();
     expect(body.general.nextRun).toBe(0);
+  });
+
+  it('serves the newest listings and the per-job activity for the accessible jobs only', async () => {
+    state.jobs = [
+      { id: 'a', userId: 'u1', shared_with_user: [], lastRunAt: 1000 },
+      { id: 'b', userId: 'someone-else', shared_with_user: [], lastRunAt: 2000 },
+    ];
+    state.latest = [{ id: 'l1', title: 'Altbau mit Balkon' }];
+    state.jobActivity = { a: { perDay: [0, 0, 0, 0, 0, 0, 1], total: 1 } };
+    app = await buildApp();
+
+    const body = (await app.inject({ method: 'GET', url: '/api/dashboard/' })).json();
+
+    expect(body.latest).toEqual(state.latest);
+    expect(body.jobActivity).toEqual(state.jobActivity);
+    // Both panels read through the same job scope as every other figure on the page, which is the
+    // only thing keeping another user's findings off this one's dashboard.
+    expect(state.latestCall).toEqual({ jobIds: ['a'], limit: 8 });
+    expect(state.activityCall).toEqual({ jobIds: ['a'], days: 7 });
   });
 });

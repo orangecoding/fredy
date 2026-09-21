@@ -53,6 +53,11 @@
   --f-accent-dim: #a63b2b;
   --f-accent-glow: rgb(198 74 55 / 10%);
 
+  // Der Akzent als Textfarbe. #c64a37 liegt als Text bei 3,97:1 auf --f-base und reisst damit AA;
+  // als Fläche mit weisser Schrift ist er mit 4,73:1 in Ordnung und bleibt unveraendert. Dieser
+  // Schritt ist derselbe Farbton, zwei Stufen heller: 5,40:1 auf --f-base, 5,14:1 auf --f-surface.
+  --f-accent-text: #d9664f;
+
   // Text. Warm off-white rather than grey-white: pure neutral text on a warm ground reads blue.
   --f-text: #f2ede8;
   --f-muted: #9c918a;
@@ -152,6 +157,9 @@ body[theme-mode='light'] {
   --f-accent-rgb: 176 68 47;
   --f-accent-dim: #953a28;
   --f-accent-glow: rgb(176 68 47 / 8%);
+
+  // Auf Papier traegt der Akzent selbst als Text: 4,93:1 auf --f-base, 5,38:1 auf --f-surface.
+  --f-accent-text: #b0442f;
 
   --f-text: #1d1916;
   --f-muted: #645d56;

@@ -21,8 +21,8 @@ import './DashboardCard.less';
  * @param {string} props.title
  * @param {React.ReactNode} [props.icon]
  * @param {React.ReactNode} props.value
- * @param {string} [props.description]
- * @param {string} [props.color]
+ * @param {React.ReactNode} [props.description]
+ * @param {'blue'|'orange'|'green'|'purple'|'gray'|'plain'} [props.color]
  * @param {() => void} [props.onClick] Makes the card a link to what it counts.
  * @param {React.ReactNode} [props.children]
  * @returns {React.ReactElement}

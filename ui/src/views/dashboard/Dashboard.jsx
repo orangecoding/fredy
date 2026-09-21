@@ -4,16 +4,18 @@
  */
 
 import React from 'react';
-import { Button, Col, Row, Toast, Tooltip, Typography } from '@douyinfe/semi-ui-19';
+import { Button, Toast, Tooltip, Typography } from '@douyinfe/semi-ui-19';
 import { useNavigate } from 'react-router';
 import {
-  IconTerminal,
   IconClock,
   IconStarStroked,
   IconPlayCircle,
   IconPlusCircle,
   IconAlertTriangle,
   IconExpand,
+  IconArrowUp,
+  IconArrowDown,
+  IconArrowUpRight,
 } from '@douyinfe/semi-icons';
 
 import { useSelector, useActions } from '../../services/state/store';
@@ -22,7 +24,9 @@ import { findJobsNeedingAttention, countJobsNeedingAttention } from '../../servi
 import IconEuro from '../../components/icons/IconEuro.jsx';
 import KpiCard from '../../components/cards/KpiCard.jsx';
 import ProviderShareChart from '../../components/cards/ProviderShareChart.jsx';
-import TrendSparkline from '../../components/cards/TrendSparkline.jsx';
+import TrendBars from './components/TrendBars.jsx';
+import LatestListings from './components/LatestListings.jsx';
+import JobsPanel from './components/JobsPanel.jsx';
 import Headline from '../../components/headline/Headline.jsx';
 
 import './Dashboard.less';
@@ -31,39 +35,9 @@ import { formatEuroPrice } from '../../services/price/priceService.js';
 import { formatPricePerSqm } from '../../services/listings/marketBenchmark.js';
 import { format } from '../../services/time/timeService.js';
 import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
+import { relativeTime } from './dashboardTime.js';
 
 const { Text, Title } = Typography;
-
-/**
- * Turn a timestamp into how far away it is, e.g. "in 56 min" or "4 min ago".
- *
- * A job that runs on an interval makes an absolute timestamp work the reader has to do: they
- * have to subtract the current time to learn the only thing they wanted, which is whether it
- * just ran or is about to. The exact stamp stays available in the tooltip.
- *
- * @param {number|null|undefined} timestamp Epoch ms.
- * @param {(key: string, params?: Object) => string} t
- * @param {number} [now]
- * @returns {string|null} `null` when there is nothing to describe.
- */
-function relativeTime(timestamp, t, now = Date.now()) {
-  if (timestamp == null || timestamp === 0) {
-    return null;
-  }
-  const deltaMinutes = Math.round((timestamp - now) / 60000);
-  const magnitude = Math.abs(deltaMinutes);
-  if (magnitude < 1) {
-    return t('dashboard.timeNow');
-  }
-  const unit =
-    magnitude < 60
-      ? { key: 'Minutes', value: magnitude }
-      : magnitude < 60 * 24
-        ? { key: 'Hours', value: Math.round(magnitude / 60) }
-        : { key: 'Days', value: Math.round(magnitude / (60 * 24)) };
-  const direction = deltaMinutes > 0 ? 'in' : 'ago';
-  return t(`dashboard.time${direction === 'in' ? 'In' : 'Ago'}${unit.key}`, { count: String(unit.value) });
-}
 
 export default function Dashboard() {
   const t = useTranslation();
@@ -89,6 +63,8 @@ export default function Dashboard() {
   const kpis = dashboard?.kpis || { totalJobs: 0, totalListings: 0, providersUsed: 0 };
   const trend = dashboard?.trend;
   const providerShare = dashboard?.pie || [];
+  const latest = dashboard?.latest || [];
+  const jobActivity = dashboard?.jobActivity || {};
   const lastRun = dashboard?.general?.lastRun;
   const nextRun = dashboard?.general?.nextRun;
 
@@ -164,7 +140,10 @@ export default function Dashboard() {
         text={t('dashboard.title')}
         actions={
           <div className="dashboard__actions">
-            <Button icon={<IconPlayCircle />} loading={searching} onClick={runNow} theme="borderless">
+            {/* The one thing on this page that does something rather than reports something, so it
+                is the one thing drawn as a button. Solid primary puts it in the same family as the
+                empty state's "create your first job", which is the same kind of act. */}
+            <Button icon={<IconPlayCircle />} loading={searching} onClick={runNow} theme="solid" type="primary">
               {t('dashboard.searchNowButton')}
             </Button>
             {canRunPriceTracker && (
@@ -202,129 +181,152 @@ export default function Dashboard() {
       </div>
 
       {/* Every card here is a way into the thing it counts. They reported numbers and went
-          nowhere, which made the dashboard somewhere you pass through rather than start from. */}
-      <Row gutter={[16, 16]} className="dashboard__row">
-        <Col xs={24} sm={12} md={12} lg={6} xl={6}>
-          <KpiCard
-            title={t('dashboard.kpiJobs')}
-            color="blue"
-            value={!kpis.totalJobs ? '---' : kpis.totalJobs}
-            icon={<IconTerminal />}
-            description={t('dashboard.kpiJobsDesc')}
-            onClick={() => navigate('/jobs')}
-          />
-        </Col>
-        <Col xs={24} sm={12} md={12} lg={6} xl={6}>
-          {/* One card, not two: the old pair reported the same number twice whenever nothing had
-              gone inactive yet, which is the normal case. */}
-          <KpiCard
-            title={t('dashboard.kpiListings')}
-            color="orange"
-            value={!kpis.totalListings ? '---' : kpis.totalListings}
-            icon={<IconStarStroked />}
-            description={t('dashboard.kpiListingsActiveDesc', {
-              active: String(kpis.numberOfActiveListings ?? 0),
-            })}
-            onClick={() => navigate('/listings')}
-          />
-        </Col>
-        <Col xs={24} sm={12} md={12} lg={6} xl={6}>
-          <KpiCard
-            title={t('dashboard.kpiMedianPrice')}
-            color="purple"
-            value={
-              !kpis.medianPriceOfListings
-                ? '---'
-                : // Rounded before formatting: an even number of listings averages the two middle
-                  // prices, and half a cent of that arithmetic is not a fact about the market.
-                  formatEuroPrice(Math.round(kpis.medianPriceOfListings), locale)
-            }
-            icon={<IconEuro />}
-            description={t('dashboard.kpiMedianPriceDesc')}
-            onClick={() => navigate('/listings?sort=price&dir=asc')}
-          />
-        </Col>
-        <Col xs={24} sm={12} md={12} lg={6} xl={6}>
-          {/* The median price next door answers "what do flats cost here", which is a different
-              question from "what does a square metre cost here" - the first moves with how big
-              the flats a search happens to turn up are, the second does not.
-              One deal type only, named in the description: a median taken over rents and purchase
-              prices at once would describe neither. */}
-          <KpiCard
-            title={t('dashboard.kpiMedianSqm')}
-            color="green"
-            value={kpis.medianPricePerSqm == null ? '---' : formatPricePerSqm(kpis.medianPricePerSqm.value, locale)}
-            icon={<IconExpand />}
-            description={
-              kpis.medianPricePerSqm == null
-                ? t('dashboard.kpiMedianSqmPending')
-                : t(`dashboard.kpiMedianSqmDesc.${kpis.medianPricePerSqm.dealType}`, {
-                    count: String(kpis.medianPricePerSqm.sampleSize),
-                  })
-            }
-            onClick={() => navigate('/listings')}
-          />
-        </Col>
-      </Row>
+          nowhere, which made the dashboard somewhere you pass through rather than start from.
+          All four are plain: four colours across the most important row of the page suggested
+          four categories, and there are none. */}
+      <div className="dashboard__kpis">
+        {/* One card, not two: the old pair reported the same number twice whenever nothing had
+            gone inactive yet, which is the normal case. */}
+        <KpiCard
+          title={t('dashboard.kpiListings')}
+          color="plain"
+          value={!kpis.numberOfActiveListings ? '---' : kpis.numberOfActiveListings}
+          icon={<IconStarStroked />}
+          description={t('dashboard.kpiListingsActiveDesc', {
+            total: String(kpis.totalListings ?? 0),
+          })}
+          onClick={() => navigate('/listings')}
+        />
+        {/* This replaced a card reading "Jobs 2". A standing count of searches is the one thing
+            the reader already knows; what came in this week is not. */}
+        <KpiCard
+          title={t('dashboard.kpiNew7')}
+          color="plain"
+          // Not the `!value` guard the other cards use: a week that found nothing is a fact about
+          // the search, and hiding it behind a dash is the failure this card exists to show.
+          value={trend?.thisWeek ?? '---'}
+          icon={<IconArrowUpRight />}
+          description={
+            trend?.changePct == null ? (
+              t('dashboard.kpiNew7NoCompare')
+            ) : (
+              <span className={`dashboard__delta dashboard__delta--${trend.changePct < 0 ? 'down' : 'up'}`}>
+                {trend.changePct < 0 ? <IconArrowDown /> : <IconArrowUp />}
+                {t('dashboard.deltaVsPreviousWeek', { percent: String(Math.abs(trend.changePct)) })}
+              </span>
+            )
+          }
+          onClick={() => navigate('/listings')}
+        />
+        <KpiCard
+          title={t('dashboard.kpiMedianPrice')}
+          color="plain"
+          value={
+            !kpis.medianPriceOfListings
+              ? '---'
+              : // Rounded before formatting: an even number of listings averages the two middle
+                // prices, and half a cent of that arithmetic is not a fact about the market.
+                formatEuroPrice(Math.round(kpis.medianPriceOfListings), locale)
+          }
+          icon={<IconEuro />}
+          // Both medians are taken over every listing that was ever found, active or not, while
+          // the first card counts only the active ones. Without the population named, two numbers
+          // that cannot be reconciled sit next to each other.
+          description={
+            kpis.medianPricePerSqm == null
+              ? t('dashboard.kpiMedianSqmPending')
+              : t('dashboard.kpiMedianPriceDesc', { count: String(kpis.medianPricePerSqm.sampleSize) })
+          }
+          onClick={() => navigate('/listings?sort=price&dir=asc')}
+        />
+        {/* The median price next door answers "what do flats cost here", which is a different
+            question from "what does a square metre cost here" - the first moves with how big
+            the flats a search happens to turn up are, the second does not.
+            One deal type only, named in the description: a median taken over rents and purchase
+            prices at once would describe neither. */}
+        <KpiCard
+          title={t('dashboard.kpiMedianSqm')}
+          color="plain"
+          value={kpis.medianPricePerSqm == null ? '---' : formatPricePerSqm(kpis.medianPricePerSqm.value, locale)}
+          icon={<IconExpand />}
+          description={
+            kpis.medianPricePerSqm == null
+              ? t('dashboard.kpiMedianSqmPending')
+              : t(`dashboard.kpiMedianSqmDesc.${kpis.medianPricePerSqm.dealType}`, {
+                  count: String(kpis.medianPricePerSqm.sampleSize),
+                })
+          }
+          onClick={() => navigate('/listings')}
+        />
+      </div>
 
       {/* Only when there is something to say. A permanent panel reading "all good" is a panel
           people stop looking at, which defeats the point of having one. */}
       {attention.length > 0 && (
-        <>
-          <div className="dashboard__section-label">{t('dashboard.sectionAttention')}</div>
-          <div className="dashboard__panel dashboard__attention">
-            <ul className="dashboard__attention-list">
-              {attention.map((entry) => (
-                <li key={entry.id} className="dashboard__attention-item">
-                  <IconAlertTriangle className="dashboard__attention-icon" />
-                  <span className="dashboard__attention-text">
-                    {t(`dashboard.attention.${entry.reason}`, { name: entry.name })}
-                  </span>
-                  <Button size="small" theme="borderless" onClick={() => navigate(`/jobs/edit/${entry.id}`)}>
-                    {t('dashboard.attentionFix')}
-                  </Button>
-                </li>
-              ))}
-            </ul>
-            {attentionTotal > attention.length && (
-              <Text type="tertiary" size="small">
-                {t('dashboard.attentionMore', { count: String(attentionTotal - attention.length) })}
-              </Text>
-            )}
-          </div>
-        </>
-      )}
-
-      {trend?.perDay?.length > 0 && (
-        <>
-          <div className="dashboard__section-label">{t('dashboard.sectionTrend')}</div>
-          <div className="dashboard__panel">
-            <div className="dashboard__trend-header">
-              <div>
-                <span className="dashboard__trend-value">{trend.thisWeek}</span>
-                <Text type="tertiary" size="small">
-                  {t('dashboard.trendThisWeek')}
-                </Text>
-              </div>
-              {/* Only stated when there is a previous week to compare against. A jump from zero
-                  is not a percentage, and pretending otherwise would read as real growth. */}
-              {trend.changePct != null && (
-                <span
-                  className={`dashboard__trend-change dashboard__trend-change--${trend.changePct < 0 ? 'down' : 'up'}`}
-                >
-                  {trend.changePct > 0 ? '+' : ''}
-                  {trend.changePct} % {t('dashboard.trendVsPreviousWeek')}
+        <div className="dashboard__card dashboard__attention">
+          <ul className="dashboard__attention-list">
+            {attention.map((entry) => (
+              <li key={entry.id} className="dashboard__attention-item">
+                <IconAlertTriangle className="dashboard__attention-icon" />
+                <span className="dashboard__attention-text">
+                  {t(`dashboard.attention.${entry.reason}`, { name: entry.name })}
                 </span>
-              )}
-            </div>
-            <TrendSparkline data={trend.perDay} locale={locale} />
-          </div>
-        </>
+                <Button size="small" theme="borderless" onClick={() => navigate(`/jobs/edit/${entry.id}`)}>
+                  {t('dashboard.attentionFix')}
+                </Button>
+              </li>
+            ))}
+          </ul>
+          {attentionTotal > attention.length && (
+            <Text type="tertiary" size="small">
+              {t('dashboard.attentionMore', { count: String(attentionTotal - attention.length) })}
+            </Text>
+          )}
+        </div>
       )}
 
-      <div className="dashboard__section-label">{t('dashboard.sectionProviderInsights')}</div>
-      <div className="dashboard__panel">
-        <ProviderShareChart data={providerShare} totalListings={kpis.totalListings} />
+      {/* What came in on the left, the three things that describe the searches on the right. The
+          bottom half of this page used to be empty. */}
+      <div className="dashboard__grid">
+        <div className="dashboard__main">
+          <LatestListings
+            listings={latest}
+            locale={locale}
+            t={t}
+            total={kpis.numberOfActiveListings ?? 0}
+            onOpen={(id) => navigate(`/listings/listing/${id}`)}
+            onOpenAll={() => navigate('/listings')}
+          />
+        </div>
+        <div className="dashboard__rail">
+          {trend?.perDay?.length > 0 && (
+            <div className="dashboard__card">
+              <div className="dashboard__cardHead">
+                <h2 className="dashboard__cardLabel">{t('dashboard.sectionTrend')}</h2>
+              </div>
+              <TrendBars
+                data={trend.perDay}
+                previousWeek={trend.previousWeek}
+                thisWeek={trend.thisWeek}
+                locale={locale}
+              />
+            </div>
+          )}
+          <JobsPanel
+            jobs={jobs}
+            jobActivity={jobActivity}
+            attention={attention}
+            t={t}
+            onManage={() => navigate('/jobs')}
+            onOpenJob={(id) => navigate(`/jobs/edit/${id}`)}
+          />
+          <div className="dashboard__card">
+            <div className="dashboard__cardHead">
+              <h2 className="dashboard__cardLabel">{t('dashboard.sectionProviderInsights')}</h2>
+            </div>
+            <ProviderShareChart data={providerShare} totalListings={kpis.totalListings} />
+          </div>
+        </div>
       </div>
     </div>
   );
