@@ -6,6 +6,7 @@
 import React from 'react';
 import { Toast, Button } from '@douyinfe/semi-ui-19';
 import { IconPlus } from '@douyinfe/semi-icons';
+import { SegmentPart } from '../../components/segment/SegmentPart.jsx';
 import UserTable from '../../components/table/UserTable';
 import { useActions, useSelector } from '../../services/state/store';
 import UserRemovalModal from './UserRemovalModal';
@@ -46,23 +47,26 @@ const Users = function Users() {
   };
 
   return (
-    <div className="users">
-      {/* No heading of its own: this renders inside the Administration layout, which already names
-          the page. A second h1 underneath the first one is noise. */}
-      <div className="settingsShell__saveRow">
-        <Button type="primary" theme="solid" icon={<IconPlus />} onClick={() => navigate('/admin/users/new')}>
-          {t('users.newUser')}
-        </Button>
-      </div>
-      {!loading && (
-        <React.Fragment>
-          {userIdToBeRemoved && <UserRemovalModal onCancel={() => setUserIdToBeRemoved(null)} onOk={onUserRemoval} />}
+    <div className="settingsShell__page users">
+      {/* Still no h1 of its own - the Administration layout already names the page - but a card
+          title is not an h1, and without one this was the only admin page that never said what
+          its table was or what removing a row does. */}
+      <SegmentPart name={t('users.sectionName')} helpText={t('users.sectionHelp')}>
+        <div className="settingsShell__saveRow">
+          <Button type="primary" theme="solid" icon={<IconPlus />} onClick={() => navigate('/admin/users/new')}>
+            {t('users.newUser')}
+          </Button>
+        </div>
+        {!loading && (
           <UserTable
             user={users}
             onUserEdit={(userId) => navigate(`/admin/users/edit/${userId}`)}
             onUserRemoval={(userId) => setUserIdToBeRemoved(userId)}
           />
-        </React.Fragment>
+        )}
+      </SegmentPart>
+      {!loading && userIdToBeRemoved && (
+        <UserRemovalModal onCancel={() => setUserIdToBeRemoved(null)} onOk={onUserRemoval} />
       )}
     </div>
   );

@@ -136,3 +136,13 @@
   margin-top: 4px;
   line-height: 1.4;
 }
+
+/* One line of orientation at the top of a long settings page, in the same quiet treatment as an
+   inline hint. Only the two pages deep enough to need it carry one: where a page is a single card,
+   that card's own help text already is the introduction. */
+.settingsShell__pageIntro {
+  margin: 0 0 @space-4;
+  color: @color-muted;
+  font-size: @text-sm;
+  line-height: 1.5;
+}

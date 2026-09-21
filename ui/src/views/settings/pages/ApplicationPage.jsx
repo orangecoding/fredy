@@ -253,6 +253,8 @@ export default function ApplicationPage() {
 
   return (
     <div className="settingsShell__page applicationPage">
+      {/* The only place in the interface that connects this page to the button it feeds. */}
+      <p className="settingsShell__pageIntro">{t('settings.application.pageIntro')}</p>
       <SegmentPart name={t('settings.application.contact')} helpText={t('settings.application.contactHelp')}>
         <div className="applicationPage__grid">
           <Input

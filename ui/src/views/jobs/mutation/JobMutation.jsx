@@ -344,7 +344,12 @@ export default function JobMutator() {
         {/* The three things a job cannot exist without, and nothing else. Everything optional is
             folded away below, so the shortest path to a working job is a straight read down this
             column rather than a scroll past nine open cards. */}
-        <SegmentPart name={t('jobs.mutation.sectionName')} Icon={IconPaperclip}>
+        <SegmentPart
+          name={t('jobs.mutation.sectionName')}
+          Icon={IconPaperclip}
+          helpText={t('jobs.mutation.nameHelp')}
+          helpMode="popover"
+        >
           <Input
             autoFocus
             type="text"

@@ -36,7 +36,7 @@ export default function SettingsLayout() {
     { path: '/settings/connections', label: t('settings.tabConnections'), icon: <IconKey size="small" /> },
   ];
 
-  return <SettingsShell title={t('settings.title')} tabs={tabs} />;
+  return <SettingsShell title={t('settings.title')} subtitle={t('settings.subtitle')} tabs={tabs} />;
 }
 
 SettingsLayout.displayName = 'SettingsLayout';
