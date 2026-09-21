@@ -1,0 +1,157 @@
+@import '../../../tokens.less';
+
+/* The page's one row of controls.
+
+   No `backdrop-filter` here, and none anywhere above the map: a filtered ancestor becomes the
+   containing block for `position: fixed`, and the map on this page goes fullscreen by becoming
+   exactly that. The bar is opaque instead, which over a flat app background looks the same. */
+.listing-actionbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: @space-2;
+  height: 76px;
+  padding: 0 @space-8;
+  background: @color-base;
+  border-bottom: 1px solid @color-border;
+
+  &__spacer {
+    flex: 1 1 auto;
+  }
+
+  // 40px rather than Semi's 32, and the same for every control in the row including the anchor, so
+  // the bar reads as one row of equals rather than as a button next to a link.
+  .semi-button,
+  &__open {
+    height: 40px;
+    border-radius: @radius-btn !important;
+  }
+
+  &__back {
+    color: @color-muted !important;
+    padding-left: 0 !important;
+
+    &:hover {
+      color: @color-text !important;
+      background: transparent !important;
+    }
+  }
+
+  // The two icon-only controls: square, hairline, quiet. They are the tertiary tier - reachable,
+  // but never competing with the one thing the page wants you to do.
+  &__watch,
+  &__more {
+    width: 40px;
+    color: @color-muted !important;
+    border: 1px solid @color-border !important;
+    background: @color-surface !important;
+
+    &:hover {
+      color: @color-text !important;
+      background: @color-fill-1 !important;
+      border-color: @color-border-bright !important;
+    }
+  }
+
+  &__watch--active {
+    color: @color-accent !important;
+    border-color: rgb(@color-accent-rgb / 40%) !important;
+    background: rgb(@color-accent-rgb / 10%) !important;
+  }
+
+  /* Still an anchor rather than a button, because it leaves the app and the browser's own
+     middle-click and "open in new tab" have to keep working. */
+  &__open {
+    display: inline-flex;
+    align-items: center;
+    gap: @space-2;
+    padding: 0 @space-4;
+    max-width: 22rem;
+    border: 1px solid @color-border;
+    background: @color-surface;
+    color: @color-muted;
+    font-size: @text-base;
+    font-family: @font-ui;
+    font-weight: 500;
+    text-decoration: none;
+    transition:
+      color @transition-fast,
+      border-color @transition-fast,
+      background @transition-fast;
+
+    &:visited {
+      color: @color-muted;
+    }
+
+    &:hover {
+      color: @color-text;
+      background: @color-fill-1;
+      border-color: @color-border-bright;
+    }
+  }
+
+  &__open-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  // Says that what follows is of a different order, which a gap alone does not.
+  &__divider {
+    width: 1px;
+    height: 24px;
+    margin: 0 @space-2;
+    background: @color-border;
+  }
+
+  &__primary {
+    padding: 0 @space-5 !important;
+    font-weight: 600 !important;
+  }
+
+  @media (max-width: 1180px) {
+    padding: 0 @space-4;
+
+    &__open {
+      max-width: 14rem;
+    }
+  }
+
+  /* On a phone the bar leaves the top of the document and pins itself to the bottom edge. The
+     primary action takes the width; "open listing" keeps its icon and drops its label, and the
+     back button goes entirely - the browser and the app both have one already. */
+  @media (max-width: 768px) {
+    position: fixed;
+    inset: auto 0 0 0;
+    top: auto;
+    height: auto;
+    padding: @space-3 @space-4 calc(@space-3 + env(safe-area-inset-bottom));
+    border-top: 1px solid @color-border;
+    border-bottom: 0;
+    box-shadow: @shadow-lg;
+
+    &__back,
+    &__spacer,
+    &__divider,
+    &__open-label {
+      display: none;
+    }
+
+    &__open {
+      width: 44px;
+      justify-content: center;
+      padding: 0;
+    }
+
+    .semi-button,
+    &__open {
+      height: 44px;
+    }
+
+    &__primary {
+      flex: 1 1 auto;
+    }
+  }
+}

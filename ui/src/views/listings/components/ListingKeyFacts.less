@@ -1,0 +1,154 @@
+@import '../../../tokens.less';
+
+.listing-keyfacts {
+  &__price {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: @space-1 @space-2;
+  }
+
+  /* The one figure on the page that is allowed to shout. The weight and the tabular figures carry
+     it - there is no second typeface here, and it does not need one. */
+  &__amount {
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    font-variant-numeric: tabular-nums;
+    color: @color-text;
+  }
+
+  // Reading size, not headline size. Every listing carries the same symbol, so setting it as large
+  // as the sum would spend the page's loudest type on its least informative character.
+  &__currency {
+    font-size: @text-lg;
+    font-weight: 600;
+    color: @color-text;
+  }
+
+  &__reference {
+    font-size: @text-base;
+    color: @color-muted;
+  }
+
+  /* The market verdict. Green is this page's word for "an advantage", never for "a status", which
+     is why nothing neutral on the page borrows it. */
+  &__market {
+    display: inline-flex;
+    align-items: center;
+    gap: @space-1;
+    margin-top: @space-3;
+    padding: @space-1 @space-3;
+    border: 1px solid;
+    border-radius: @radius-chip;
+    font-size: @text-base;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    cursor: help;
+
+    &--below {
+      background: @color-success-dim;
+      border-color: rgb(@color-success-rgb / 45%);
+      color: @color-success;
+    }
+
+    &--above {
+      background: @color-error-dim;
+      border-color: rgb(@color-error-rgb / 45%);
+      color: @color-error;
+    }
+
+    // No colour for an ordinary asking price. Painting every second listing would make the two that
+    // are not ordinary harder to spot, which is the only thing this pill is for.
+    &--inline {
+      background: @color-hover;
+      border-color: @color-border-bright;
+      color: @color-muted;
+    }
+  }
+
+  &__affordability {
+    display: inline-block;
+    margin-top: @space-2;
+    padding: @space-1 @space-3;
+    border: 1px solid;
+    border-radius: @radius-chip;
+    font-size: @text-sm;
+    white-space: nowrap;
+  }
+
+  &__tiles {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: @space-2;
+    margin-top: @space-5;
+    padding-top: @space-5;
+    border-top: 1px solid @color-border;
+  }
+
+  // The recess inside a card: the same step the app uses for a hovered row, which is why it reads
+  // as "set into this card" rather than as a card of its own.
+  &__tile {
+    display: flex;
+    flex-direction: column;
+    gap: @space-1;
+    min-width: 0;
+    padding: @space-3 @space-3 @space-4;
+    border-radius: @radius-chip;
+    background: @color-hover;
+  }
+
+  &__tile-icon {
+    color: @color-faint;
+    font-size: @text-base;
+    line-height: 1;
+    margin-bottom: @space-1;
+  }
+
+  &__tile-value {
+    font-size: @text-lg;
+    font-weight: 600;
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+    color: @color-text;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__tile-label {
+    display: flex;
+    align-items: center;
+    gap: @space-1;
+    font-size: @text-sm;
+    color: @color-muted;
+    min-width: 0;
+  }
+
+  /* The anchor the old `cursor: help` never was. It is visible, it is the same size as the label it
+     sits next to, and the tooltip carries an aria-label so the sentence exists without a pointer. */
+  &__help {
+    flex: 0 0 auto;
+    font-size: @text-sm;
+    color: @color-faint;
+    cursor: help;
+
+    &:hover {
+      color: @color-muted;
+    }
+  }
+
+  &__history {
+    margin-top: @space-5;
+    padding-top: @space-5;
+    border-top: 1px solid @color-border;
+  }
+
+  &__history-title {
+    margin: 0 0 @space-3;
+    font-size: @text-base;
+    font-weight: 600;
+    color: @color-text;
+  }
+}

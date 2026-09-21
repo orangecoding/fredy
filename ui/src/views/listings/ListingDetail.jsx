@@ -6,97 +6,88 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useSelector, useActions } from '../../services/state/store.js';
-import {
-  Typography,
-  Button,
-  Space,
-  Card,
-  Row,
-  Col,
-  Image,
-  Tag,
-  Divider,
-  Descriptions,
-  Banner,
-  Spin,
-  Toast,
-  TextArea,
-  Tooltip,
-  Select,
-} from '@douyinfe/semi-ui-19';
-import {
-  IconArrowLeft,
-  IconMapPin,
-  IconCart,
-  IconClock,
-  IconBriefcase,
-  IconActivity,
-  IconLink,
-  IconStar,
-  IconStarStroked,
-  IconCopy,
-  IconDelete,
-  IconExpand,
-  IconGridView,
-  IconCalendar,
-  IconBolt,
-  IconRefresh,
-} from '@douyinfe/semi-icons';
+import { Banner, Button, Image, Space, Spin, Toast, Typography } from '@douyinfe/semi-ui-19';
+import { IconMaximize } from '@douyinfe/semi-icons';
+
 import maplibregl from '../../components/map/maplibre.js';
-import MapCanvas, { HOME_MARKER_COLOR } from '../../components/map/Map.jsx';
+import { HOME_MARKER_COLOR } from '../../components/map/Map.jsx';
 import { useProviderCountries } from '../../hooks/useProviderCountries.js';
+import { useScreenWidth } from '../../hooks/screenWidth.js';
 import no_image from '../../assets/no_image.png';
-import * as timeService from '../../services/time/timeService.js';
-import { formatEuroPrice } from '../../services/price/priceService.js';
-import { formatDecimal } from '../../services/number/numberService.js';
 import { getBoundsFromCoords } from './mapUtils.js';
 import { applyRouteLayers, buildRouteData, placeTargets } from './detailMapLayers.js';
-import { TRAVEL_MODES } from '../../components/transit/travelTimeFormat.js';
 import { getAddresses } from '../../utils.js';
 import { lagecheckUrl } from '../../services/listings/lagecheckUrl.js';
 import { xhrPost, xhrGet, xhrDelete, errorMessage } from '../../services/xhr.js';
 import ListingDeletionModal from '../../components/ListingDeletionModal.jsx';
 import ApplicationModal from './components/ApplicationModal.jsx';
 
-import Headline from '../../components/headline/Headline.jsx';
 import IconEuro from '../../components/icons/IconEuro.jsx';
-import StatusControl from '../../components/listings/StatusControl.jsx';
-import PricePerSqmBadge, { describeBenchmark } from '../../components/listings/PricePerSqmBadge.jsx';
-import { readMarketBenchmark } from '../../services/listings/marketBenchmark.js';
 import ScamPanel from './components/ScamPanel.jsx';
 import ListingFinanceCard from './components/ListingFinanceCard.jsx';
-import PriceHistoryChart from './components/PriceHistoryChart.jsx';
 import NearbyStops from '../../components/transit/NearbyStops.jsx';
 import ConnectivityCard from '../../components/connectivity/ConnectivityCard.jsx';
-import TravelTimes from '../../components/transit/TravelTimes.jsx';
-import AddressEditor from './components/AddressEditor.jsx';
-import AttachmentsCard from './components/AttachmentsCard.jsx';
+import ListingActionBar from './components/ListingActionBar.jsx';
+import ListingTitleBlock from './components/ListingTitleBlock.jsx';
+import ListingKeyFacts from './components/ListingKeyFacts.jsx';
+import ListingOrigin from './components/ListingOrigin.jsx';
+import ListingLocationCard from './components/ListingLocationCard.jsx';
+import ListingWorkspace from './components/ListingWorkspace.jsx';
+import ListingDescriptionCard from './components/ListingDescriptionCard.jsx';
 import './ListingDetail.less';
-import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
+import { useTranslation } from '../../services/i18n/i18n.jsx';
 import { useFinanceProfile } from '../../hooks/useFinanceProfile.js';
-import { VERDICT_COLORS, formatEuro, withAlpha } from '../../components/cards/chartTheme.js';
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
+
+/** Above this the page is two columns; below it everything stacks into one. */
+const RAIL_BREAKPOINT = 1180;
+/** Below this the action bar moves to the bottom edge and the secondary cards fold shut. */
+const PHONE_BREAKPOINT = 768;
 
 /**
- * Whether any address has a drawable route in this mode.
+ * A card that folds itself shut on a phone and stays open everywhere else.
  *
- * Drives the note next to the picker: falling back to the straight line without saying so would
- * look like the route simply is a straight line.
+ * One column of six open cards is a very long page, and the ones worth folding are the ones read
+ * second: the ad's own prose, the workspace, and the two enrichment cards. The `<details>` element
+ * does the whole job - it is keyboard operable and announced as a disclosure without a line of
+ * JavaScript - and the card inside gives up its own heading to the summary, which is why the
+ * stylesheet hides it.
  *
- * @param {Array<Object>} travelTimes
- * @param {string} mode
- * @returns {boolean}
+ * @param {Object} props
+ * @param {boolean} props.enabled - Whether to fold at all. False renders the children bare.
+ * @param {string} props.title
+ * @param {string} [props.hint] - The one-line gist shown while shut.
+ * @param {React.ReactNode} props.children
+ * @returns {React.ReactNode}
  */
-function hasRouteFor(travelTimes, mode) {
-  return (Array.isArray(travelTimes) ? travelTimes : []).some((entry) =>
-    mode === 'transit' ? (entry.transit?.legs?.length ?? 0) > 0 : Boolean(entry[mode]?.geometry),
+function PhoneCollapse({ enabled, title, hint, children }) {
+  if (!enabled) return children;
+
+  return (
+    <details className="listing-collapse">
+      <summary className="listing-collapse__summary">
+        <span className="listing-collapse__title">{title}</span>
+        {hint && <span className="listing-collapse__hint">{hint}</span>}
+      </summary>
+      {children}
+    </details>
   );
 }
 
+/**
+ * The listing detail page.
+ *
+ * A layout container and nothing else: it owns the data, the map instance and the handlers, and
+ * hands each section the slice it needs. The rule the arrangement follows is that the left column
+ * is the flat - pictures, the ad's words, where it is - and the rail on the right is the case for
+ * or against it: what it costs, where the row came from, what it would cost to finance, and how
+ * well connected the address is. Nothing moves between the two.
+ *
+ * @returns {React.ReactElement|null}
+ */
 export default function ListingDetail() {
   const t = useTranslation();
-  const locale = useLocale();
   const { listingId } = useParams();
   const navigate = useNavigate();
   const actions = useActions();
@@ -111,11 +102,15 @@ export default function ListingDetail() {
   // The listing does name a provider, but the pin can be dragged anywhere the user's own searches
   // reach, so the map takes the same account-wide union the listings map does.
   const countries = useProviderCountries();
+  const screenWidth = useScreenWidth();
+  const wide = screenWidth >= RAIL_BREAKPOINT;
+  const phone = screenWidth < PHONE_BREAKPOINT;
   const map = useRef(null);
   const [mapReady, setMapReady] = useState(false);
   const [loading, setLoading] = useState(true);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [applicationVisible, setApplicationVisible] = useState(false);
+  const [imagePreview, setImagePreview] = useState(false);
   const [notesDraft, setNotesDraft] = useState('');
   const [notesSaving, setNotesSaving] = useState(false);
   const [priceHistory, setPriceHistory] = useState([]);
@@ -124,6 +119,9 @@ export default function ListingDetail() {
   const [pinDrop, setPinDrop] = useState(null);
   /** Whether a manual "try again" lookup is in flight, so the button can say so. */
   const [geocodeRetrying, setGeocodeRetrying] = useState(false);
+  const [detailsFetching, setDetailsFetching] = useState(false);
+  /** The last answer the detail fetch gave, kept so the card can still show it later. */
+  const [detailsOutcome, setDetailsOutcome] = useState(null);
   const [pickedCoords, setPickedCoords] = useState(null);
   const [pinSaving, setPinSaving] = useState(false);
   const [mapExpanded, setMapExpanded] = useState(false);
@@ -166,6 +164,11 @@ export default function ListingDetail() {
   useEffect(() => {
     setNotesDraft(listing?.notes ?? '');
   }, [listing?.id, listing?.notes]);
+
+  // The verdict belongs to the listing that was on screen when it was fetched, not to the page.
+  useEffect(() => {
+    setDetailsOutcome(null);
+  }, [listingId]);
 
   // Fetched separately from the listing rather than joined onto it: most views never draw the
   // chart, and a series has no size bound, so it must not ride along on every listing read.
@@ -309,6 +312,14 @@ export default function ListingDetail() {
     }
   };
 
+  const requestDeletion = () => {
+    if (listingDeletionPref?.skipPrompt) {
+      confirmDeletion(listingDeletionPref.hardDelete);
+      return;
+    }
+    setDeleteModalVisible(true);
+  };
+
   const handleWatch = async () => {
     try {
       await xhrPost('/api/listings/watch', { listingId: listing.id });
@@ -407,6 +418,33 @@ export default function ListingDetail() {
   };
 
   /**
+   * Read this one listing's detail page now.
+   *
+   * Deliberately not gated on the user's `provider_details` setting: that one governs the sweep
+   * that visits every newly found listing, and this is somebody asking for one exposé by hand.
+   *
+   * Every answer is kept on the card rather than only announced, because "this portal has no detail
+   * page" is a lasting fact about the listing and a toast that has faded takes it away.
+   */
+  const fetchDetails = async () => {
+    setDetailsFetching(true);
+    try {
+      const response = await xhrPost(`/api/listings/${listingId}/details`, {});
+      const status = response?.json?.status ?? null;
+      setDetailsOutcome(status);
+      if (status === 'updated') {
+        await actions.listingsData.getListing(listingId);
+        Toast.success(t('listing.detail.refetchUpdated'));
+      }
+    } catch (error) {
+      setDetailsOutcome('failed');
+      Toast.error(errorMessage(error, t('listing.detail.refetchFailed')));
+    } finally {
+      setDetailsFetching(false);
+    }
+  };
+
+  /**
    * Hand over from "no such address" to putting the listing on the map by hand. The map is expanded
    * for it: picking a building out of a 400px panel is not a fair ask.
    *
@@ -439,7 +477,7 @@ export default function ListingDetail() {
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+      <div className="listing-detail__loading">
         <Spin size="large" />
       </div>
     );
@@ -447,534 +485,199 @@ export default function ListingDetail() {
 
   if (!listing) return null;
 
-  const statusKeyMap = {
-    applied: 'listing.detail.statusApplied',
-    accepted: 'listing.detail.statusAccepted',
-    rejected: 'listing.detail.statusRejected',
-  };
-  const statusLabel = listing.status?.status ? t(statusKeyMap[listing.status.status] ?? listing.status.status) : null;
-
-  // Read once: the row below and the help text behind it are two readings of the same four columns,
-  // and computing them separately is how they end up disagreeing.
-  const marketBenchmark = readMarketBenchmark(listing);
-
-  const data = [
-    {
-      key: t('listing.detail.fieldPrice'),
-      value: listing.price ? (
-        <span className="listing-detail__price">{formatEuroPrice(listing.price, locale)}</span>
-      ) : (
-        t('common.na')
-      ),
-      Icon: <IconCart />,
-      helpText: t('listing.detail.fieldPriceHelp'),
-    },
-    {
-      key: t('listing.detail.fieldSize'),
-      value: listing.size ? `${formatDecimal(listing.size, locale)} m²` : t('common.na'),
-      Icon: <IconExpand />,
-      helpText: t('listing.detail.fieldSizeHelp'),
-    },
-    {
-      key: t('listing.detail.fieldPricePerSqm'),
-      value: marketBenchmark ? <PricePerSqmBadge listing={listing} withTooltip={false} /> : t('common.na'),
-      Icon: <IconEuro />,
-      // Two different explanations. With a benchmark the interesting part is the comparison and
-      // where it came from; without one it is why no comparison is shown, which is a question the
-      // page would otherwise leave the reader to guess at.
-      helpText:
-        marketBenchmark && marketBenchmark.verdict != null
-          ? describeBenchmark(marketBenchmark, t, locale)
-          : t('listing.detail.fieldPricePerSqmHelp'),
-    },
-    {
-      key: t('listing.detail.fieldRooms'),
-      value: listing.rooms
-        ? t('listing.detail.fieldRoomsValue', { count: formatDecimal(listing.rooms, locale) })
-        : t('common.na'),
-      Icon: <IconGridView />,
-      helpText: t('listing.detail.fieldRoomsHelp'),
-    },
-    {
-      key: t('listing.detail.fieldJob'),
-      value: listing.job_name,
-      Icon: <IconBriefcase />,
-      helpText: t('listing.detail.fieldJobHelp'),
-    },
-    {
-      key: t('listing.detail.fieldProvider'),
-      value: listing.provider ? listing.provider.charAt(0).toUpperCase() + listing.provider.slice(1) : 'Unknown',
-      Icon: <IconBriefcase />,
-      helpText: t('listing.detail.fieldProviderHelp'),
-    },
-    {
-      key: t('listing.detail.fieldAdded'),
-      value: timeService.format(listing.created_at, true, locale),
-      Icon: <IconClock />,
-      helpText: t('listing.detail.fieldAddedHelp'),
-    },
-  ];
-
-  // The date the portal itself states, when it states one at all, which is what tells this row
-  // apart from "Added" above it. Not every portal does, so it is pushed rather than shown as
-  // another "N/A" next to the figures every listing carries.
-  if (listing.published_at) {
-    data.push({
-      key: t('listing.detail.fieldPublished'),
-      value: timeService.format(listing.published_at, true, locale),
-      Icon: <IconCalendar />,
-      helpText: t('listing.detail.fieldPublishedHelp'),
-    });
-  }
-
-  // Only the detail page states these, and only for a part of the listings, so they are pushed
-  // rather than shown as another "N/A" next to the figures every listing carries.
-  if (listing.build_year) {
-    data.push({
-      key: t('listing.detail.fieldBuildYear'),
-      value: listing.build_year,
-      Icon: <IconCalendar />,
-      helpText: t('listing.detail.fieldBuildYearHelp'),
-    });
-  }
-
-  if (listing.energy_class) {
-    data.push({
-      key: t('listing.detail.fieldEnergyClass'),
-      value: listing.energy_class,
-      Icon: <IconBolt />,
-      helpText: t('listing.detail.fieldEnergyClassHelp'),
-    });
-  }
-
-  // The verdict belongs next to the price, not only in the costing block further down. It comes
-  // with the listing from the server, decided against the same profile and thresholds the
-  // affordability filter uses, so this page can never disagree with the row the user clicked.
-  const affordabilityVerdict = listing.affordabilityVerdict ?? null;
   const isRental = listing.dealType === 'rent';
-
-  if (affordabilityVerdict) {
-    data.push({
-      key: t('listing.detail.fieldAffordability'),
-      value: (
-        <span
-          className="listing-detail__affordability"
-          style={{
-            color: VERDICT_COLORS[affordabilityVerdict],
-            backgroundColor: withAlpha(VERDICT_COLORS[affordabilityVerdict], 0.12),
-            borderColor: withAlpha(VERDICT_COLORS[affordabilityVerdict], 0.4),
-          }}
-        >
-          {t(`finance.verdict.${affordabilityVerdict}`)}
-        </span>
-      ),
-      Icon: <IconEuro />,
-      helpText: t(
-        `listings.${isRental ? 'rentAffordabilityTooltip' : 'affordabilityTooltip'}.${affordabilityVerdict}`,
-        {
-          price: formatEuro(
-            isRental ? financeThresholds.rent.affordableMaxRent : financeThresholds.buy.affordableMaxPrice,
-            locale,
-          ),
-        },
-      ),
-    });
-  }
-
-  if (statusLabel) {
-    data.push({
-      key: t('listing.detail.fieldStatus'),
-      value: listing.status?.setAt
-        ? `${statusLabel} ${t('listing.detail.statusSetAt', { date: timeService.format(listing.status.setAt, true, locale) })}`
-        : statusLabel,
-      Icon: <IconActivity />,
-      helpText: t('listing.detail.fieldStatusHelp'),
-    });
-  }
+  const financeIncomplete = !(isRental ? rentComplete : buyComplete) && listing.price != null;
 
   return (
-    <div className="listing-detail">
-      <Headline
-        text={listing?.title || t('listing.detail.defaultTitle')}
-        actions={
-          <Button
-            icon={<IconArrowLeft />}
-            onClick={() => navigate(-1)}
-            theme="borderless"
-            style={{ color: 'var(--f-muted)' }}
-          >
-            {t('listing.detail.back')}
-          </Button>
-        }
+    <div className={`listing-detail${phone ? ' listing-detail--phone' : ''}`}>
+      {/* Before everything, full width. Somebody who is about to be defrauded should meet the
+          warning before they start liking the flat, and a warning that sits below the fold in one
+          of two columns is not a warning. */}
+      <div className="listing-detail__scam">
+        <ScamPanel listing={listing} onChange={() => actions.listingsData.getListing(listingId)} />
+      </div>
+
+      <ListingActionBar
+        listing={listing}
+        onBack={() => navigate(-1)}
+        onWatch={handleWatch}
+        onApply={() => setApplicationVisible(true)}
+        onDelete={requestDeletion}
+        onReactivate={handleReactivate}
       />
 
-      <Card className="listing-detail__card">
-        <div className="listing-detail__header">
-          <Space align="center">
-            <IconMapPin style={{ fontSize: '18px', color: 'var(--semi-color-primary)' }} />
-            {listing.address ? (
-              <a
-                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(listing.address)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="listing-detail__address-link"
-              >
-                {listing.address}
-              </a>
-            ) : (
-              <Text type="secondary">{t('listing.detail.noAddress')}</Text>
-            )}
-            <AddressEditor isManual={listing.address_is_manual === 1} onSave={saveAddress} onPickOnMap={startPinDrop} />
-          </Space>
-          <Space wrap className="listing-detail__header-actions">
-            <Button
-              icon={listing.isWatched === 1 ? <IconStar /> : <IconStarStroked />}
-              onClick={handleWatch}
-              theme="borderless"
-              className={`listing-detail__watch-btn${listing.isWatched === 1 ? ' listing-detail__watch-btn--active' : ''}`}
-            >
-              {listing.isWatched === 1 ? t('listing.detail.watched') : t('listing.detail.watch')}
-            </Button>
-            <StatusControl status={listing.status?.status ?? null} onChange={handleStatusChange} />
-            {/* Ahead of "open listing" because it is the thing the user came to do: reading the ad
-                is how you decide, writing the letter is how you act on the decision. */}
-            <Button icon={<IconCopy />} onClick={() => setApplicationVisible(true)} theme="light" type="primary">
-              {t('listing.application.action')}
-            </Button>
-            <a href={listing.link} target="_blank" rel="noopener noreferrer" className="listing-detail__open-btn">
-              <IconLink style={{ marginRight: 6 }} />
-              {t('listing.detail.openListing')}
-            </a>
-            {/* Sits next to "open listing" on purpose: the user clicks that first, sees the ad is
-                very much alive, and the correction is the next button along. */}
-            {listing.is_active === 0 && (
-              <Button icon={<IconRefresh />} onClick={handleReactivate} theme="light" type="secondary">
-                {t('listing.detail.reactivate')}
-              </Button>
-            )}
-            <Button
-              icon={<IconDelete />}
-              onClick={() => {
-                if (listingDeletionPref?.skipPrompt) {
-                  confirmDeletion(listingDeletionPref.hardDelete);
-                  return;
-                }
-                setDeleteModalVisible(true);
-              }}
-              theme="light"
-              type="danger"
-            >
-              {t('listing.detail.delete')}
-            </Button>
-          </Space>
+      {/* The ad is gone from the portal. Said once here rather than only implied by a menu entry
+          the reader has to open to find. */}
+      {listing.is_active === 0 && (
+        <div className="listing-detail__inactive">
+          <Banner type="info" bordered closeIcon={null} description={t('listing.detail.inactiveHint')} />
         </div>
+      )}
 
-        <Row>
-          <Col span={24} lg={12}>
-            <div
-              className={`listing-detail__image-container${!listing.image_url ? ' listing-detail__image-container--placeholder' : ''}`}
-            >
+      <ListingTitleBlock
+        listing={listing}
+        wide={wide}
+        onSaveAddress={saveAddress}
+        onPickOnMap={startPinDrop}
+        onStatusChange={handleStatusChange}
+      />
+
+      <div className="listing-detail__grid">
+        <div className="listing-detail__main">
+          <section className="listing-detail__media listing-detail__sec--media">
+            <div className={`listing-detail__image${!listing.image_url ? ' listing-detail__image--placeholder' : ''}`}>
               <Image
                 src={listing.image_url ?? no_image}
                 fallback={<img src={no_image} alt={t('listing.detail.noImageAlt')} />}
+                alt={listing.title || t('listing.detail.defaultTitle')}
                 style={{ width: '100%', height: '100%' }}
-                preview={!!listing.image_url}
+                preview={listing.image_url ? { visible: imagePreview, onVisibleChange: setImagePreview } : false}
               />
-            </div>
-
-            <div className="listing-detail__notes">
-              <Title heading={4} className="listing-detail__notes-title">
-                {t('listing.detail.notesTitle')}
-              </Title>
-              <TextArea
-                value={notesDraft}
-                onChange={(val) => setNotesDraft(val)}
-                placeholder={t('listing.detail.notesPlaceholder')}
-                rows={5}
-                autosize={{ minRows: 4, maxRows: 12 }}
-                className="listing-detail__notes-textarea"
-                showClear
-              />
-              <Space className="listing-detail__notes-actions">
-                <Button
-                  theme="solid"
-                  type="primary"
-                  loading={notesSaving}
-                  disabled={notesSaving || (notesDraft ?? '') === (listing.notes ?? '')}
-                  onClick={handleSaveNotes}
+              {/* A plain button rather than a Semi one: it sits on a photograph, so its colours
+                  are the scrim's and not the theme's, and fighting a component's own palette with
+                  `!important` to get there is the worse trade. */}
+              {listing.image_url && (
+                <button
+                  type="button"
+                  className="listing-detail__image-expand"
+                  aria-label={t('listing.detail.expandImage')}
+                  onClick={() => setImagePreview(true)}
                 >
-                  {t('listing.detail.storeNotes')}
-                </Button>
-              </Space>
-            </div>
-
-            {/* Directly under the notes: both are things the reader adds to a listing rather than
-                things a portal reported, and they are used in the same sitting. */}
-            <AttachmentsCard listingId={listingId} />
-
-            {/* The map used to run the full width under the card, which pushed it a screen
-                below the figures. In this column it sits beside the details and the costing,
-                so the whole listing fits on one screen. */}
-            <div className="listing-detail__map-wrapper">
-              <Title heading={4} className="listing-detail__map-title">
-                {t('listing.detail.locationTitle')}
-              </Title>
-              {/* A listing with no coordinates normally gets a warning instead of a map - but those
-                  are exactly the ones somebody wants to place by hand, so pin dropping brings the
-                  map out anyway. */}
-              {!hasGeo && !pinDrop ? (
-                <Banner
-                  type="warning"
-                  bordered
-                  description={
-                    <div className="listing-detail__noGeo">
-                      <span>{geoUnresolved ? t('listing.detail.noGeoWarning') : t('listing.detail.noGeoPending')}</span>
-                      {/* Only for the temporary case. Offering "try again" for an address the
-                          geocoder has already rejected would be offering the same answer twice. */}
-                      {!geoUnresolved && (
-                        <Button size="small" loading={geocodeRetrying} onClick={retryGeocoding}>
-                          {t('listing.detail.geoRetry')}
-                        </Button>
-                      )}
-                    </div>
-                  }
-                />
-              ) : (
-                <div className="listing-detail__map-container">
-                  {/* Public transport on by default: the first question about any flat is how to
-                      get out of it, and the answer should already be on screen. */}
-                  <MapCanvas
-                    countries={countries}
-                    initialCenter={mapCenter}
-                    initialZoom={hasGeo ? 14 : 10}
-                    defaultShowTransit
-                    cooperativeGestures
-                    expanded={mapExpanded}
-                    onExpandedChange={setMapExpanded}
-                    pickMode={pinDrop != null}
-                    onPick={setPickedCoords}
-                    onMapReady={handleMapReady}
-                  >
-                    {pinDrop != null && (
-                      <div className="listing-detail__pin-bar">
-                        <div className="listing-detail__pin-bar-text">
-                          <Text>
-                            {pickedCoords ? t('listing.detail.pinDropPicked') : t('listing.detail.pinDropHint')}
-                          </Text>
-                          <Text type="tertiary" size="small">
-                            {pinDrop.address}
-                          </Text>
-                        </div>
-                        <Button
-                          theme="solid"
-                          type="primary"
-                          size="small"
-                          disabled={!pickedCoords}
-                          loading={pinSaving}
-                          onClick={savePinnedAddress}
-                        >
-                          {t('listing.detail.pinDropSave')}
-                        </Button>
-                        <Button size="small" theme="borderless" onClick={cancelPinDrop}>
-                          {t('common.cancel')}
-                        </Button>
-                      </div>
-                    )}
-                  </MapCanvas>
-                </div>
+                  <IconMaximize aria-hidden="true" />
+                </button>
               )}
             </div>
-
-            {/* "How do I get out of here?" belongs right next to the map, and only makes sense
-                once the listing has coordinates to look up. */}
-            {hasGeo && (
-              <div className="listing-detail__transit">
-                <Title heading={4} className="listing-detail__map-title">
-                  {t('transit.nearbyTitle')}
-                </Title>
-                <NearbyStops lat={listing.latitude} lng={listing.longitude} limit={3} expandFirst />
-              </div>
-            )}
-          </Col>
-          <Col span={24} lg={12}>
-            <div className="listing-detail__info-section">
-              <Title heading={4} style={{ marginBottom: '1rem' }}>
-                {t('listing.detail.detailsTitle')}
-              </Title>
-              {/* Before the figures, not after them. Somebody who is about to be defrauded should
-                  meet the warning before they start liking the flat. */}
-              <ScamPanel listing={listing} onChange={() => actions.listingsData.getListing(listingId)} />
-
-              <Descriptions column={1}>
-                {data.map((item, index) => (
-                  <Descriptions.Item key={index}>
-                    <Tooltip content={item.helpText} position="left">
-                      <span className="listing-detail__details-item">
-                        {item.Icon}
-                        {item.value}
-                      </span>
-                    </Tooltip>
-                  </Descriptions.Item>
-                ))}
-              </Descriptions>
-
-              {/* Directly under the figures it explains. The chart hides itself below two
-                  readings, so a listing whose price has never moved shows nothing at all rather
-                  than an empty frame. */}
-              {priceHistory.length >= 2 && (
-                <>
-                  <Divider margin="1.5rem" />
-                  <Title heading={6} style={{ marginBottom: '0.75rem' }}>
-                    {t('listing.detail.priceHistory')}
-                  </Title>
-                  <PriceHistoryChart data={priceHistory} locale={locale} />
-                </>
-              )}
-
-              {lagecheckHref && (
-                <>
-                  <Divider margin="1.5rem" />
-                  <Text strong style={{ display: 'block', marginBottom: '0.5rem' }}>
-                    {t('lagecheck.title')}
-                  </Text>
-                  <Text size="small" type="tertiary" style={{ display: 'block', marginBottom: '0.5rem' }}>
-                    {t('lagecheck.description')}
-                  </Text>
-                  <a
-                    className="listing-detail__lagecheck-link"
-                    href={lagecheckHref}
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    onClick={() => actions.tracking.trackPoi(pois.LAGECHECK_OPENED)}
-                  >
-                    {t('lagecheck.link')}
-                  </a>
-                  <Text size="small" type="tertiary" className="listing-detail__lagecheck-attribution">
-                    {t('travelTime.referenceNote')}{' '}
-                    <a
-                      className="listing-detail__lagecheck-link"
-                      href="https://geosci.de/"
-                      target="_blank"
-                      rel="noreferrer noopener"
-                    >
-                      geosci.de
-                    </a>
-                  </Text>
-                </>
-              )}
-
-              {/* The costing answers "can I have this?", which is the question asked right
-                  after the price - so it comes before the sales copy, not after it. */}
-              <ListingFinanceCard listing={listing} />
-
-              {/* Without the matching half of the profile there is nothing to compute, so offer
-                  the way to create it instead of hiding the feature completely. */}
-              {!(isRental ? rentComplete : buyComplete) && listing.price != null && (
-                <>
-                  <Divider margin="1.5rem" />
-                  <Space align="center" wrap>
-                    <IconEuro style={{ fontSize: '18px', color: 'var(--semi-color-primary)' }} />
-                    <Text type="secondary">
-                      {t(isRental ? 'listing.detail.rentSetupHint' : 'listing.detail.financeSetupHint')}
-                    </Text>
-                    <Button
-                      theme="borderless"
-                      size="small"
-                      onClick={() =>
-                        navigate(
-                          isRental
-                            ? '/finance'
-                            : `/finance?dealType=buy&price=${listing.price}&listingId=${listing.id}`,
-                        )
-                      }
-                    >
-                      {t(isRental ? 'listing.detail.rentSetup' : 'listing.detail.financeCalculate')}
-                    </Button>
-                  </Space>
-                </>
-              )}
-
-              <Divider margin="1.5rem" />
-              <Title heading={4} style={{ marginBottom: '1rem' }}>
-                {t('listing.detail.descriptionTitle')}
-              </Title>
-              <Text type="secondary" style={{ whiteSpace: 'pre-wrap' }}>
-                {listing.description || t('listing.detail.noDescription')}
+            {!listing.image_url && (
+              <Text type="tertiary" size="small" className="listing-detail__image-note">
+                {t('listing.detail.noImageAlt')}
               </Text>
+            )}
+          </section>
 
-              {Array.isArray(listing.distances) && listing.distances.length > 0 && (
-                <>
-                  <Divider margin="1.5rem" />
-                  <Space align="center" wrap>
-                    <IconActivity style={{ fontSize: '18px', color: 'var(--semi-color-primary)' }} />
-                    <Text strong>{t('listing.detail.distanceToHome')}</Text>
-                    {listing.distances.map((d) => (
-                      <Tag color="blue" key={d.label}>
-                        {d.label}: {d.meters} m
-                      </Tag>
-                    ))}
-                  </Space>
-                </>
-              )}
+          <div className="listing-detail__sec--description">
+            <PhoneCollapse
+              enabled={phone}
+              title={t('listing.detail.descriptionTitle')}
+              hint={listing.description ? undefined : t('listing.detail.noDescription')}
+            >
+              <ListingDescriptionCard
+                listing={listing}
+                onRefetch={fetchDetails}
+                refetching={detailsFetching}
+                outcome={detailsOutcome}
+              />
+            </PhoneCollapse>
+          </div>
 
-              {/* Right below the straight-line distances, because the two answer the same question
-                  and the second one is the honest answer. It loads on its own: a listing found
-                  minutes ago has not been routed yet, and this is where somebody would look. */}
-              {listing.latitude != null && listing.longitude != null && (
-                <>
-                  <Divider margin="1.5rem" />
-                  <Text strong style={{ display: 'block', marginBottom: '0.5rem' }}>
-                    {t('travelTime.title')}
+          <div className="listing-detail__sec--location">
+            <ListingLocationCard
+              listing={listing}
+              hasGeo={hasGeo}
+              geoUnresolved={geoUnresolved}
+              countries={countries}
+              mapCenter={mapCenter}
+              mapExpanded={mapExpanded}
+              onExpandedChange={setMapExpanded}
+              pinDrop={pinDrop}
+              pickedCoords={pickedCoords}
+              onPick={setPickedCoords}
+              pinSaving={pinSaving}
+              onSavePin={savePinnedAddress}
+              onCancelPin={cancelPinDrop}
+              onMapReady={handleMapReady}
+              geocodeRetrying={geocodeRetrying}
+              onRetryGeocode={retryGeocoding}
+              routeMode={routeMode}
+              onRouteModeChange={setRouteMode}
+              routeTimes={routeTimes}
+              onTravelTimesLoaded={setRouteTimes}
+              lagecheckHref={lagecheckHref}
+              onLagecheckOpen={() => actions.tracking.trackPoi(pois.LAGECHECK_OPENED)}
+            />
+          </div>
+
+          <div className="listing-detail__sec--workspace">
+            <PhoneCollapse
+              enabled={phone}
+              title={t('listing.detail.workspaceTitle')}
+              hint={notesDraft ? t('listing.detail.notesTitle') : undefined}
+            >
+              <ListingWorkspace
+                listingId={listingId}
+                notesDraft={notesDraft}
+                onNotesChange={setNotesDraft}
+                onSaveNotes={handleSaveNotes}
+                notesSaving={notesSaving}
+                notesDirty={(notesDraft ?? '') !== (listing.notes ?? '')}
+              />
+            </PhoneCollapse>
+          </div>
+        </div>
+
+        <aside className="listing-detail__rail">
+          <div className="listing-detail__sec--keyfacts">
+            <ListingKeyFacts listing={listing} priceHistory={priceHistory} financeThresholds={financeThresholds} />
+          </div>
+
+          <div className="listing-detail__sec--origin">
+            <ListingOrigin listing={listing} />
+          </div>
+
+          <div className="listing-detail__sec--finance">
+            <ListingFinanceCard listing={listing} />
+
+            {/* Without the matching half of the profile there is nothing to compute, so offer the
+                way to create it instead of hiding the feature completely. */}
+            {financeIncomplete && (
+              <section className="listing-card listing-detail__finance-hint">
+                <Space align="center" wrap>
+                  <IconEuro className="listing-detail__finance-hint-icon" />
+                  <Text type="secondary">
+                    {t(isRental ? 'listing.detail.rentSetupHint' : 'listing.detail.financeSetupHint')}
                   </Text>
-                  <TravelTimes
-                    listingId={listing.id}
-                    travelTimes={listing.travelTimes}
-                    refine
-                    onLoaded={setRouteTimes}
-                  />
+                  <Button
+                    theme="borderless"
+                    size="small"
+                    onClick={() =>
+                      navigate(
+                        isRental ? '/finance' : `/finance?dealType=buy&price=${listing.price}&listingId=${listing.id}`,
+                      )
+                    }
+                  >
+                    {t(isRental ? 'listing.detail.rentSetup' : 'listing.detail.financeCalculate')}
+                  </Button>
+                </Space>
+              </section>
+            )}
+          </div>
 
-                  {/* Sits under the times rather than on the map: it is the same question the
-                      numbers above answer, only drawn. A mode with no route stored falls back to
-                      the straight line, and says so. */}
-                  <div className="listingDetail__routePicker">
-                    <Text size="small" type="tertiary">
-                      {t('listing.detail.routeLabel')}
-                    </Text>
-                    <Select size="small" style={{ width: 170 }} value={routeMode} onChange={setRouteMode}>
-                      <Select.Option value="straight">{t('listing.detail.routeStraight')}</Select.Option>
-                      {TRAVEL_MODES.map((mode) => (
-                        <Select.Option key={mode.key} value={mode.key}>
-                          {mode.icon} {t(mode.labelKey)}
-                        </Select.Option>
-                      ))}
-                    </Select>
-                    {routeMode !== 'straight' && !hasRouteFor(routeTimes, routeMode) && (
-                      <Text size="small" type="tertiary">
-                        {t('listing.detail.routeMissing')}
-                      </Text>
-                    )}
-                  </div>
-                </>
-              )}
-
-              {/* Under the travel times because it belongs to the same half of the page: both are
-                  things Fredy worked out about the address rather than things the portal said about
-                  the flat, and somebody weighing up a place reads them together. Only shown once
-                  the operator has the enrichment on - with it off nothing is ever stored, and an
-                  empty card would read as a fault rather than a setting. */}
-              {hasGeo && connectivityEnabled && (
-                <>
-                  <Divider margin="1.5rem" />
-                  <Text strong style={{ display: 'block', marginBottom: '0.5rem' }}>
-                    {t('connectivity.title')}
-                  </Text>
-                  <ConnectivityCard connectivity={listing.connectivity} />
-                </>
-              )}
+          {/* A narrow list of departures, which is why it belongs beside the map rather than under
+              it: given the main column's width it would squeeze the map into half of it. */}
+          {hasGeo && (
+            <div className="listing-detail__sec--transit">
+              <PhoneCollapse enabled={phone} title={t('transit.nearbyTitle')}>
+                <section className="listing-card">
+                  <h2 className="listing-card__label">{t('transit.nearbyTitle')}</h2>
+                  <NearbyStops lat={listing.latitude} lng={listing.longitude} limit={3} expandFirst />
+                </section>
+              </PhoneCollapse>
             </div>
-          </Col>
-        </Row>
-      </Card>
+          )}
+
+          {/* Only shown once the operator has the enrichment on - with it off nothing is ever
+              stored, and an empty card would read as a fault rather than a setting. */}
+          {hasGeo && connectivityEnabled && (
+            <div className="listing-detail__sec--connectivity">
+              <PhoneCollapse enabled={phone} title={t('connectivity.title')}>
+                <section className="listing-card">
+                  <h2 className="listing-card__label">{t('connectivity.title')}</h2>
+                  <ConnectivityCard connectivity={listing.connectivity} />
+                </section>
+              </PhoneCollapse>
+            </div>
+          )}
+        </aside>
+      </div>
 
       <ListingDeletionModal
         visible={deleteModalVisible}
@@ -987,6 +690,8 @@ export default function ListingDetail() {
         visible={applicationVisible}
         listingId={listing.id}
         onCancel={() => setApplicationVisible(false)}
+        // Copying the letter sets the status, so the segment in the title block has to follow it.
+        onApplied={() => actions.listingsData.getListing(listingId)}
       />
     </div>
   );

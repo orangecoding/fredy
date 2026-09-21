@@ -116,13 +116,15 @@
 @space-12: 48px;
 
 // Radius
-// Tightened from 10px. Generously rounded corners are most of what made this read as playful; at
-// 6px the same layout reads as a tool without becoming a spreadsheet.
-@radius-input: 6px;
-@radius-card: 8px;
-@radius-btn: 4px;
+// Softer than the 8/4/3 this used to be. The tight corners were chosen to stop the app reading as
+// playful, but the warm palette does that job better and at these radii nothing looks like a
+// spreadsheet either. Buttons and cards differ by design: a card is a surface and can afford the
+// rounding, a control is a target and stays crisper than the thing it sits on.
+@radius-input: 8px;
+@radius-card: 12px;
+@radius-btn: 8px;
 @radius-pill: 9999px;
-@radius-chip: 3px;
+@radius-chip: 6px;
 
 // Transitions
 @transition-fast: 0.15s ease-in-out;

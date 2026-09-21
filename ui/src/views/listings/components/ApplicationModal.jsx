@@ -5,13 +5,18 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { Modal, Button, Space, Spin, Tag, TextArea, Toast, Typography } from '@douyinfe/semi-ui-19';
+import { Modal, Button, Select, Space, Spin, Tag, TextArea, Toast, Typography } from '@douyinfe/semi-ui-19';
 import { IconCopy } from '@douyinfe/semi-icons';
 import { useTranslation } from '../../../services/i18n/i18n.jsx';
+import { useActions } from '../../../services/state/store.js';
 import { errorMessage } from '../../../services/xhr.js';
 import { fetchApplicationLetter } from '../../../services/applicationClient.js';
 import { copyToClipboard } from '../../../services/clipboard.js';
-import { LETTER_LANGUAGE_FLAG, PLACEHOLDER_CATALOG } from '../../../services/application/placeholderCatalog.js';
+import {
+  LETTER_LANGUAGE_FLAG,
+  LETTER_LANGUAGES,
+  PLACEHOLDER_CATALOG,
+} from '../../../services/application/placeholderCatalog.js';
 import './ApplicationModal.less';
 
 const { Text, Paragraph } = Typography;
@@ -31,16 +36,28 @@ const { Text, Paragraph } = Typography;
  * @param {boolean} props.visible
  * @param {string|null} props.listingId
  * @param {() => void} props.onCancel
+ * @param {() => void} [props.onApplied] - Called once the listing has been marked as applied, so
+ *   the view behind the dialog can re-read whatever it shows.
  * @returns {React.ReactElement}
  */
-export default function ApplicationModal({ visible, listingId, onCancel }) {
+export default function ApplicationModal({ visible, listingId, onCancel, onApplied }) {
   const t = useTranslation();
   const navigate = useNavigate();
+  const actions = useActions();
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [letter, setLetter] = useState(null);
   const [text, setText] = useState('');
+  const [copying, setCopying] = useState(false);
+  /**
+   * The language the user picked, or null while the portal's country still decides.
+   *
+   * Kept apart from `letter.language` so the two questions stay separate: what the letter is
+   * written in, and whether somebody overruled the default. Reset on every listing, because a
+   * choice made for a flat in Milan is not a choice about the next one in Düsseldorf.
+   */
+  const [language, setLanguage] = useState(null);
   /**
    * Which request the state on screen belongs to.
    *
@@ -64,7 +81,7 @@ export default function ApplicationModal({ visible, listingId, onCancel }) {
     setText('');
 
     try {
-      const result = await fetchApplicationLetter(listingId);
+      const result = await fetchApplicationLetter(listingId, language);
       if (token !== request.current) return;
       setLetter(result);
       setText(result.text);
@@ -77,28 +94,57 @@ export default function ApplicationModal({ visible, listingId, onCancel }) {
     } finally {
       if (token === request.current) setLoading(false);
     }
-  }, [listingId, t]);
+  }, [listingId, language, t]);
 
   useEffect(() => {
     if (visible) load();
   }, [visible, load]);
 
+  // A language picked for one listing is not a statement about the next one, so the override goes
+  // back to "whatever the portal's country says" whenever the dialog moves to another listing.
+  useEffect(() => {
+    setLanguage(null);
+  }, [listingId]);
+
+  /**
+   * Copy the letter, then record that this listing has been applied for.
+   *
+   * The two belong together: copying the letter is the moment the decision is made, and a status
+   * the user has to remember to set afterwards is a status that stays empty. The clipboard write
+   * comes first and its own failure aborts the whole thing - marking a listing as applied for when
+   * nothing reached the clipboard would be recording something that did not happen.
+   *
+   * The status failing on its own is not worth undoing the copy over: the letter is in the
+   * clipboard either way, so the toast says what went wrong and the dialog stays open so the user
+   * can see it.
+   */
   const handleCopy = async () => {
-    const copied = await copyToClipboard(text);
-    if (!copied) {
-      Toast.error(t('listing.application.copyError'));
-      return;
+    setCopying(true);
+    try {
+      const copied = await copyToClipboard(text);
+      if (!copied) {
+        Toast.error(t('listing.application.copyError'));
+        return;
+      }
+
+      try {
+        await actions.listingsData.setListingStatus(listingId, 'applied');
+        onApplied?.();
+        Toast.success(t('listing.application.copiedAndMarked'));
+      } catch (exception) {
+        console.error('Copied the letter but could not mark the listing as applied.', exception);
+        Toast.warning(t('listing.application.markFailed'));
+      }
+      onCancel();
+    } finally {
+      setCopying(false);
     }
-    Toast.success(t('listing.application.copied'));
-    onCancel();
   };
 
   const openSettings = () => {
     onCancel();
     navigate('/settings/application');
   };
-
-  const languageLabel = letter == null ? '' : t(`application.language.${letter.language}`);
 
   const footer = (
     <div className="applicationModal__footer">
@@ -107,10 +153,11 @@ export default function ApplicationModal({ visible, listingId, onCancel }) {
         theme="solid"
         type="primary"
         icon={<IconCopy />}
-        disabled={loading || text.length === 0}
+        loading={copying}
+        disabled={loading || copying || text.length === 0}
         onClick={handleCopy}
       >
-        {t('listing.application.copy')}
+        {t('listing.application.copyAndMark')}
       </Button>
     </div>
   );
@@ -140,10 +187,29 @@ export default function ApplicationModal({ visible, listingId, onCancel }) {
       {!loading && error == null && letter != null && (
         <>
           <Space wrap className="applicationModal__meta">
-            <Tag size="large" color="blue">
-              {LETTER_LANGUAGE_FLAG[letter.language] ?? ''} {languageLabel}
-            </Tag>
-            <Text type="tertiary">{t('listing.application.languageReason', { provider: letter.providerName })}</Text>
+            {/* The portal's country picks the language, and the picker starts on that answer - but
+                the portal is not always right about who reads the letter, and an Italian listing
+                handled by a German agency is a letter somebody wants to switch. */}
+            <Select
+              className="applicationModal__language"
+              value={letter.language}
+              onChange={setLanguage}
+              disabled={loading}
+              aria-label={t('listing.application.languageLabel')}
+            >
+              {LETTER_LANGUAGES.map((code) => (
+                <Select.Option key={code} value={code}>
+                  {LETTER_LANGUAGE_FLAG[code] ?? ''} {t(`application.language.${code}`)}
+                </Select.Option>
+              ))}
+            </Select>
+            {/* Only while nobody has overruled it. Once they have, saying the portal chose would be
+                describing a decision that is no longer the one on screen. */}
+            <Text type="tertiary">
+              {language == null
+                ? t('listing.application.languageReason', { provider: letter.providerName })
+                : t('listing.application.languageOverridden')}
+            </Text>
           </Space>
 
           {/* Semi puts className on the wrapper, not on the textarea, so the letter's own type

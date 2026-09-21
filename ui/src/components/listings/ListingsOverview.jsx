@@ -603,6 +603,8 @@ const ListingsOverview = () => {
         visible={applicationListingId != null}
         listingId={applicationListingId}
         onCancel={() => setApplicationListingId(null)}
+        // Copying the letter sets the status, so the row's status control has to follow it.
+        onApplied={loadData}
       />
     </div>
   );

@@ -21,6 +21,12 @@
     margin-bottom: @space-3;
   }
 
+  /* Narrow on purpose: it holds a flag and one word, and a full-width select would read as the
+     dialog's main field rather than as the setting it is. */
+  &__language {
+    width: 172px;
+  }
+
   &__hint {
     margin-top: @space-2;
   }

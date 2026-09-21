@@ -1,0 +1,101 @@
+@import '../../../tokens.less';
+
+.listing-workspace {
+  &__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: @space-4;
+    flex-wrap: wrap;
+    margin-bottom: @space-4;
+
+    .listing-card__label {
+      margin-bottom: 0;
+    }
+  }
+
+  &__hint {
+    font-size: @text-sm;
+    color: @color-faint;
+    text-align: right;
+  }
+
+  &__columns {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: @space-6;
+  }
+
+  &__notes,
+  &__attachments {
+    min-width: 0;
+  }
+
+  &__subtitle {
+    margin: 0 0 @space-2;
+    font-size: @text-base;
+    font-weight: 500;
+    color: @color-muted;
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: @space-3;
+    margin-top: @space-4;
+  }
+
+  // Outlined rather than borderless-flat: it is a real action and needs an edge to be aimed at,
+  // but it is not the page's primary and must not look like one.
+  &__save {
+    height: 36px !important;
+    padding: 0 @space-4 !important;
+    border: 1px solid @color-border-bright !important;
+    border-radius: @radius-btn !important;
+    color: @color-text !important;
+
+    &:hover:not(.semi-button-disabled) {
+      background: @color-fill-1 !important;
+      border-color: @color-muted !important;
+    }
+  }
+
+  /* The attachments card brings its own heading and its own copy of the retention note. Inside this
+     card the heading is one level down so it matches the notes heading beside it, and the note is
+     already on the label row above - printing it twice is how a standing fact turns into noise. */
+  .attachmentsCard__title {
+    font-size: @text-base !important;
+    font-weight: 500 !important;
+    color: @color-muted !important;
+    margin-bottom: @space-2 !important;
+  }
+
+  .attachmentsCard__hint {
+    display: none;
+  }
+
+  /* An empty document list is drawn as the slot it is. Dashed rather than solid because the panel
+     is a placeholder, and deliberately NOT captioned as a drop target: the card takes files through
+     its picker only, and a box that says "drop here" when nothing listens for a drop is a lie. */
+  .attachmentsCard__empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 116px;
+    padding: @space-4;
+    border: 1px dashed @color-border-bright;
+    border-radius: @radius-chip;
+    text-align: center;
+  }
+
+  @media (max-width: 1180px) {
+    &__columns {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    &__hint {
+      text-align: left;
+    }
+  }
+}

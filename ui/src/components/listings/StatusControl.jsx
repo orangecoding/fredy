@@ -8,10 +8,11 @@ import { Dropdown, Button, Tooltip } from '@douyinfe/semi-ui-19';
 import { IconChevronDown } from '@douyinfe/semi-icons';
 
 import './StatusControl.less';
+import { statusOptions } from './statusOptions.js';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
 
 /**
- * @typedef {('applied'|'rejected'|'accepted'|null)} ListingStatus
+ * @typedef {import('./statusOptions.js').ListingStatus} ListingStatus
  */
 
 /**
@@ -33,12 +34,7 @@ export default function StatusControl({ status = null, onChange, compact = false
   const [open, setOpen] = useState(false);
   const [tooltipOpen, setTooltipOpen] = useState(false);
 
-  const STATUS_OPTIONS = [
-    { value: null, label: t('listings.status.none') },
-    { value: 'applied', label: t('listings.status.applied') },
-    { value: 'rejected', label: t('listings.status.rejected') },
-    { value: 'accepted', label: t('listings.status.accepted') },
-  ];
+  const STATUS_OPTIONS = statusOptions(t);
 
   const STATUS_TOOLTIP = t('listings.status.tooltip');
 

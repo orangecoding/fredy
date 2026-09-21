@@ -1,62 +1,85 @@
 @import '../../tokens.less';
 
+/* The page's own measurements. They live here rather than in tokens.less for two reasons: they are
+   this page's and nobody else's, and tokens.less has to stay free of rules because forty
+   stylesheets import it. */
+@listing-detail-max: 1440px;
+@listing-detail-rail: 400px;
+@listing-detail-gap: @space-6;
+@listing-detail-pad: @space-8;
+@listing-detail-pad-narrow: @space-4;
+
+/* No `backdrop-filter`, `transform` or `filter` anywhere on this element or between it and the
+   map: any of the three turns the ancestor into the containing block for `position: fixed`, and
+   the map goes fullscreen by becoming exactly that. */
 .listing-detail {
-  padding-bottom: 2rem;
+  max-width: @listing-detail-max;
+  margin: 0 auto;
+  padding-bottom: @space-12;
 
-  /* No backdrop-filter here on purpose: it would make the card a containing block for fixed
-     positioning, and the map inside it goes fullscreen by becoming `position: fixed`. Over the flat
-     app background the blur bought nothing anyway. */
-  &__card {
-    background-color: @color-surface;
-    border: 1px solid var(--semi-color-border);
-    margin-bottom: 2rem;
-    overflow: hidden;
-
-    .semi-card-body {
-      padding: 0;
-    }
-  }
-
-  &__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding: 1.5rem;
-    gap: 1rem;
-    border-bottom: 1px solid var(--semi-color-border);
-
-    @media (max-width: 768px) {
-      flex-direction: column;
-      align-items: stretch;
-
-      & > .semi-space {
-        width: 100%;
-      }
-
-      &-actions {
-        width: 100%;
-        justify-content: flex-start;
-        margin-top: 0.5rem;
-
-        .semi-button {
-          flex: 1;
-        }
-      }
-    }
-  }
-
-  &__image-container {
-    width: 100%;
-    height: 400px;
-    background-color: var(--semi-color-fill-0);
+  &__loading {
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
+    height: 100%;
+  }
 
-    @media (max-width: 768px) {
-      height: 250px;
+  &__scam:not(:empty) {
+    padding: 0 @listing-detail-pad @space-4;
+  }
+
+  &__inactive {
+    padding: @space-4 @listing-detail-pad 0;
+  }
+
+  /* Left the flat, right the case for it. Nothing moves between the two columns, which is the
+     whole point: the control that redraws the map is in the map's card, and the figures a decision
+     rests on are all in the rail. */
+  &__grid {
+    display: flex;
+    align-items: flex-start;
+    gap: @listing-detail-gap;
+    padding: @listing-detail-gap @listing-detail-pad 0;
+  }
+
+  &__main,
+  &__rail {
+    display: flex;
+    flex-direction: column;
+    gap: @listing-detail-gap;
+    min-width: 0;
+
+    /* A section whose card decided it had nothing to say leaves its wrapper behind. Without this
+       the column keeps the gap either side of it, which reads as a card that failed to load. */
+    > div:empty {
+      display: none;
     }
+  }
+
+  &__main {
+    flex: 1 1 872px;
+  }
+
+  &__rail {
+    flex: 0 0 @listing-detail-rail;
+    width: @listing-detail-rail;
+  }
+
+  &__media {
+    padding: 0;
+  }
+
+  &__image {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+    border: 1px solid @color-border;
+    border-radius: @radius-card;
+    background: @color-fill-subtle;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     img {
       width: 100%;
@@ -78,43 +101,54 @@
         object-fit: contain !important;
       }
     }
-  }
 
-  &__address-link {
-    color: @color-muted;
-    text-decoration: none;
-    font-size: @text-base;
-    transition: color @transition-fast;
-    &:hover {
-      color: @color-text;
-      text-decoration: underline;
+    @media (max-width: 768px) {
+      height: 250px;
     }
   }
 
-  &__notes {
-    padding: 1.5rem;
-    border-top: 1px solid var(--semi-color-border);
+  /* Sits on a photograph, which is a photograph in both themes, so the scrim behind it is one of
+     the literals the palette does not own. */
+  &__image-expand {
+    position: absolute;
+    top: @space-3;
+    right: @space-3;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    border-radius: @radius-btn;
+    cursor: pointer;
+    font-size: @text-md;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.6);
+    transition: background @transition-fast;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.78);
+    }
   }
 
-  &__affordability {
-    display: inline-block;
-    padding: 1px @space-2;
-    border: 1px solid;
-    border-radius: @radius-chip;
-    font-size: @text-xs;
-    white-space: nowrap;
+  &__image-note {
+    display: block;
+    margin-top: @space-2;
   }
 
-  &__notes-title {
-    margin-bottom: 1rem !important;
+  &__finance-hint {
+    margin-top: @listing-detail-gap;
   }
 
-  &__notes-actions {
-    margin-top: 0.75rem;
-    width: 100%;
-    justify-content: flex-end;
+  &__finance-hint-icon {
+    font-size: @text-md;
+    color: @color-accent;
   }
 
+  /* Preserved verbatim from the single-column page. The overrides are what stop Semi's own input
+     chrome drawing a second border inside the one the card already has. */
   &__notes-textarea {
     background: @color-input-bg !important;
     border: 1px solid @color-border-bright !important;
@@ -145,153 +179,198 @@
     }
   }
 
-  &__watch-btn {
-    color: @color-muted !important;
-    border: 1px solid @color-border-bright !important;
-    border-radius: @radius-btn !important;
-    &:hover {
-      color: @color-text !important;
-      background: @color-fill-1 !important;
+  /* One column. The figures come before the pictures here, because on a single column the price is
+     the first question and a 400px photograph in front of it is a wall. */
+  @media (max-width: 1180px) {
+    &__scam:not(:empty),
+    &__inactive {
+      padding-left: @listing-detail-pad-narrow;
+      padding-right: @listing-detail-pad-narrow;
     }
-    &--active {
-      color: @color-accent !important;
-      border-color: rgb(@color-accent-rgb / 40%) !important;
-      background: rgb(@color-accent-rgb / 8%) !important;
+
+    &__grid {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      padding: @space-5 @listing-detail-pad-narrow 0;
+    }
+
+    /* Both wrappers step out of the box tree so their cards become children of the one column and
+       can be ordered against each other. */
+    &__main,
+    &__rail {
+      display: contents;
+    }
+
+    &__sec--keyfacts {
+      order: 1;
+    }
+    &__sec--media {
+      order: 2;
+    }
+    &__sec--description {
+      order: 3;
+    }
+    &__sec--location {
+      order: 4;
+    }
+    &__sec--origin {
+      order: 5;
+    }
+    &__sec--finance {
+      order: 6;
+    }
+    &__sec--transit {
+      order: 7;
+    }
+    &__sec--connectivity {
+      order: 8;
+    }
+    &__sec--workspace {
+      order: 9;
     }
   }
 
-  &__open-btn {
-    display: inline-flex;
-    align-items: center;
-    height: 32px;
-    padding: 0 12px;
-    border: 1px solid @color-border-bright;
-    border-radius: @radius-btn;
-    color: @color-muted;
-    font-size: @text-base;
+  /* Room for the action bar, which is fixed to the bottom edge at this width. */
+  &--phone {
+    padding-bottom: calc(@space-12 + 44px);
+  }
+}
+
+/* The card every section on this page is drawn as. Shared here rather than repeated per component
+   so a change to the chrome is one edit. */
+.listing-card {
+  padding: @space-5;
+  border: 1px solid @color-border;
+  border-radius: @radius-card;
+  background: @color-surface;
+
+  /* The section label. An h2 by element, a small caps label by appearance - the page's one h1 is
+     the listing's title, and every card sits directly under it. */
+  &__label {
+    margin: 0 0 @space-4;
     font-family: @font-ui;
-    font-weight: 500;
-    text-decoration: none;
-    transition:
-      color @transition-fast,
-      border-color @transition-fast,
-      background @transition-fast;
+    font-size: @text-sm;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: @color-muted;
+  }
+}
+
+/* The departures list, given room. The component renders inside map popups too, where it has to
+   stay tight, so the breathing space is scoped to this page rather than added to its own
+   stylesheet. Nothing here changes what it says - only how far apart it says it. */
+.listing-detail__sec--transit {
+  .transit-stops__item {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .transit-stops__header {
+    min-height: 32px;
+    font-size: @text-base;
+    font-weight: 600;
+  }
+
+  .transit-stops__distance {
+    // Green because a stop within walking distance is an advantage, which is the only thing green
+    // means on this page.
+    color: @color-success;
+    font-size: @text-sm;
+    font-weight: 600;
+  }
+
+  .transit-board {
+    font-size: @text-base;
+    padding: @space-1 0 0;
+  }
+
+  .transit-board__list {
+    gap: @space-1;
+  }
+
+  .transit-board__row {
+    min-height: 30px;
+    padding: 0 @space-1;
+    border-radius: @radius-chip;
+
     &:hover {
-      color: @color-text;
-      border-color: @color-border-bright;
-      background: @color-fill-1;
+      background: @color-hover;
     }
   }
 
-  &__info-section {
-    padding: 1.5rem;
+  .transit-board__line {
+    min-width: 34px;
+    padding: 2px 6px;
+    border-radius: @radius-chip;
+    font-size: @text-sm;
   }
 
-  &__details-item {
-    cursor: help;
-    display: inline-flex;
+  .transit-board__time {
+    font-weight: 600;
+  }
+
+  .transit-board__countdown {
+    font-weight: 400;
+    font-size: @text-sm;
+    color: @color-muted;
+  }
+}
+
+/* A section folded shut on a phone. The card inside gives up its own heading to the summary,
+   otherwise the title is drawn twice. */
+.listing-collapse {
+  border: 1px solid @color-border;
+  border-radius: @radius-card;
+  background: @color-surface;
+  overflow: hidden;
+
+  &__summary {
+    display: flex;
     align-items: center;
-    gap: 8px;
-  }
+    gap: @space-2;
+    min-height: 44px;
+    padding: @space-3 @space-5;
+    cursor: pointer;
+    font-size: @text-sm;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: @color-muted;
+    list-style: none;
 
-  // Only sizes the map now. The border and the rounding belong to the shared `.map-container`
-  // inside it; having both would draw two.
-  &__map-container {
-    height: 400px;
-    width: 100%;
-
-    @media (max-width: 768px) {
-      height: 300px;
+    &::-webkit-details-marker {
+      display: none;
     }
   }
 
-  // The instructions and the save button while the listing is being placed by hand. Inside the map
-  // shell, so it comes along when the map goes fullscreen.
-  &__pin-bar {
-    position: absolute;
-    top: 12px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    max-width: calc(100% - 24px);
-    padding: 10px 14px;
-    border: 1px solid var(--semi-color-border);
-    border-radius: var(--semi-border-radius-medium);
-    background: @color-elevated;
-  }
-
-  &__pin-bar-text {
-    display: flex;
-    flex-direction: column;
+  &__title {
+    flex: 1 1 auto;
     min-width: 0;
-
-    // The address can be long; it must not push the buttons off the bar.
-    > * {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
   }
 
-  // Shares the notes' gutter, since it now sits in the same column right below them.
-  &__map-wrapper {
-    padding: 0 1.5rem 1.5rem;
+  // The gist while shut: lower case, no tracking, so it reads as a sentence next to a label.
+  &__hint {
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+    color: @color-faint;
   }
 
-  &__map-title {
-    margin-bottom: 1rem !important;
+  .listing-card {
+    border: 0;
+    border-radius: 0;
+    padding-top: 0;
   }
 
-  /* The "not looked up yet" banner carries a retry next to its sentence. Wrapping rather than
-     shrinking the text, so the button keeps its label on a narrow screen instead of the two of
-     them squeezing each other. */
-  &__noGeo {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-
-  // Same gutter as the map above it, which it belongs to.
-  &__transit {
-    padding: 0 1.5rem 1.5rem;
-  }
-
-  // Matches the reference note under the travel times, which is the same kind of line.
-  &__lagecheck-attribution {
-    display: block;
-    margin-top: 6px;
-    font-size: 0.68rem;
-  }
-
-  /* Nothing in the app styles a bare anchor, so both of these were browser defaults: blue and
-     underlined, then purple once visited, which is how the two links ended up looking like
-     different kinds of thing. Same treatment as the address link above - the accent, no rule under
-     it, and the underline kept for the hover where it means something. */
-  &__lagecheck-link {
-    color: @color-accent;
-    text-decoration: none;
-    transition: color @transition-fast;
-    &:visited {
-      color: @color-accent;
-    }
-    &:hover {
-      color: @color-text;
-      text-decoration: underline;
-    }
-  }
-
-  .info-tag {
-    font-size: 0.9rem;
-    padding: 0.2rem 0.6rem;
-  }
-
-  &__price {
-    font-variant-numeric: tabular-nums;
+  .listing-card__label {
+    display: none;
   }
 }
 
@@ -302,14 +381,4 @@
       margin: 5px 0;
     }
   }
-}
-
-/* The route picker under the travel times. One row, wrapping on a phone, and the hint reads as a
-   continuation of the control rather than as a new field. */
-.listingDetail__routePicker {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 12px;
 }

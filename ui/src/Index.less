@@ -1,6 +1,9 @@
 @import './themes.less';
 @import './tokens.less';
 
+/* A flat background, deliberately. There used to be a radial accent glow bleeding down from the
+   top here; against the warm near-black it read as a smudge rather than as light, and it put a
+   colour behind every page that only one of them had asked for. */
 body,
 html {
   margin: 0;
@@ -8,20 +11,11 @@ html {
   width: 100%;
   font-family: @font-ui;
   background-color: @color-base;
-  background-image: radial-gradient(ellipse at 60% 0%, @color-accent-glow 0%, transparent 55%);
-  background-attachment: fixed;
   color-scheme: dark;
 }
 
 body[theme-mode='light'] {
   color-scheme: light;
-}
-
-@media (max-width: 768px) {
-  body,
-  html {
-    background-attachment: scroll;
-  }
 }
 
 // Semi UI theme overrides

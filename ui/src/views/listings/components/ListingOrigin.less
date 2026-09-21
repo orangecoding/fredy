@@ -1,0 +1,86 @@
+@import '../../../tokens.less';
+
+.listing-origin {
+  &__list {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: @space-2;
+  }
+
+  &__row {
+    display: flex;
+    align-items: baseline;
+    gap: @space-3;
+    min-width: 0;
+  }
+
+  // Fixed so the values line up into a column; the labels are short and the alignment is what makes
+  // this readable as a table without being one.
+  &__label {
+    display: flex;
+    align-items: center;
+    gap: @space-1;
+    flex: 0 0 108px;
+    font-size: @text-base;
+    color: @color-muted;
+  }
+
+  &__help {
+    font-size: @text-sm;
+    color: @color-faint;
+    cursor: help;
+
+    &:hover {
+      color: @color-muted;
+    }
+  }
+
+  &__value {
+    margin: 0;
+    min-width: 0;
+    flex: 1 1 auto;
+    font-size: @text-base;
+    color: @color-text;
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+  }
+
+  &__link {
+    color: @color-accent;
+    text-decoration: none;
+    transition: color @transition-fast;
+
+    &:visited {
+      color: @color-accent;
+    }
+
+    &:hover {
+      color: @color-text;
+      text-decoration: underline;
+    }
+  }
+
+  // Neutral information, per the page's chip scale: a filled recess with a bright hairline, which
+  // is not the green that means "an advantage" anywhere else on this page.
+  &__chip {
+    display: inline-block;
+    padding: 1px @space-2;
+    border: 1px solid @color-border-bright;
+    border-radius: @radius-chip;
+    background: @color-hover;
+    color: @color-text;
+    font-size: @text-sm;
+  }
+
+  @media (max-width: 480px) {
+    &__row {
+      flex-direction: column;
+      gap: 0;
+    }
+
+    &__label {
+      flex: 0 0 auto;
+    }
+  }
+}
