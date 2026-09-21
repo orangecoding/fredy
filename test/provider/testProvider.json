@@ -98,5 +98,9 @@
   "subito": {
     "url": "https://www.subito.it/annunci-lazio/affitto/appartamenti/roma/",
     "enabled": true
+  },
+  "betterhomes": {
+    "url": "https://www.betterhomes.de/de/immobilie-suchen/kaufen?searchType=buy&objectType=all&zipCity=Bundesland+Berlin&territoryId=3&cityType=3&radius=0&sortOrder=newestDesc",
+    "enabled": true
   }
 }

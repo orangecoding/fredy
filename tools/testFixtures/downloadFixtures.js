@@ -271,6 +271,64 @@ async function downloadCasaMapFixture(mapSearchUrl, launchBrowser, closeBrowser,
 }
 
 /**
+ * BETTERHOMES answers both a search and one advert's detail from the same endpoint, so both
+ * fixtures are recorded through the provider's own payload builder rather than a URL written out
+ * here - the payload is the whole translation, and a copy of it would drift.
+ *
+ * @param {string} url the search url from testProvider.json
+ * @returns {Promise<void>}
+ */
+async function downloadBetterhomesFixtures(url) {
+  console.log('\nDownloading betterhomes...');
+
+  const { buildSearchPayload } = await import('../../lib/provider/betterhomes.js');
+  const origin = new URL(url).origin;
+  const payload = buildSearchPayload(url);
+
+  const call = (action, data) =>
+    fetch(`${origin}/apirequest`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'User-Agent': BROWSER_USER_AGENT,
+        Referer: url,
+      },
+      body: JSON.stringify({ action, method: 'POST', data }),
+    });
+
+  const listResponse = await call('Object/search', payload);
+  if (!listResponse.ok) {
+    console.warn(`  Failed to download betterhomes list: ${listResponse.statusText}`);
+    return;
+  }
+
+  const rows = await listResponse.json();
+  await writeFile(path.join(FIXTURES_DIR, 'betterhomes_list.json'), JSON.stringify(rows, null, 2), 'utf-8');
+  console.log(`  Saved betterhomes_list.json (${Array.isArray(rows) ? rows.length : 0} listings)`);
+
+  const first = (Array.isArray(rows) ? rows : [])[0];
+  if (first?.uniqueKey == null) {
+    console.warn('  No advert in the search response - skipping detail fixture');
+    return;
+  }
+
+  const detailResponse = await call('Object/detail', {
+    id: first.uniqueKey,
+    countryCode: payload.countryCode,
+    languageCode: payload.languageCode,
+  });
+  if (!detailResponse.ok) {
+    console.warn(`  Failed to download betterhomes detail: ${detailResponse.statusText}`);
+    return;
+  }
+
+  const detail = await detailResponse.json();
+  await writeFile(path.join(FIXTURES_DIR, 'betterhomes_detail.json'), JSON.stringify(detail, null, 2), 'utf-8');
+  console.log(`  Saved betterhomes_detail.json (${first.uniqueKey})`);
+}
+
+/**
  * Flatfox answers a search in two requests, so it needs two fixtures.
  *
  * The pins carry the primary keys of everything matching the search; the second call hydrates those
@@ -735,6 +793,9 @@ async function main() {
         break;
       case 'flatfox':
         await downloadFlatfoxFixtures(runConfig.url);
+        break;
+      case 'betterhomes':
+        await downloadBetterhomesFixtures(runConfig.url);
         break;
       case 'tecnocasa':
       case 'tecnorete':

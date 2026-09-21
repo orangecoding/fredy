@@ -7,7 +7,7 @@ platform into Fredy.
 > Always make sure the search results are sorted by **date**, so Fredy picks up the newest listings
 > first.
 
-## The 24 built-in providers
+## The 25 built-in providers
 
 **🇩🇪 Germany**
 
@@ -20,6 +20,7 @@ platform into Fredy.
 | InBerlinWohnen | Kleinanzeigen | Sparkasse Immobilien |
 | McMakler | Wg gesucht | |
 
+**🇩🇪 Germany · 🇦🇹 Austria · 🇨🇭 Switzerland** · BETTERHOMES
 **🇦🇹 Austria** · willhaben
 **🇨🇭 Switzerland** · Flatfox
 **🇪🇸 Spain · 🇮🇹 Italy · 🇵🇹 Portugal** · idealista
@@ -69,6 +70,17 @@ Uses its mobile API and geography service to translate search URLs. Searches tha
 translated into API requests use the job's browser; the fallback reads up to twenty pages and stops
 when a page provides no valid results. See the
 [provider documentation](../reverse-engineered-casa.md) for supported endpoints and filters.
+
+## BETTERHOMES
+
+One brokerage on three domains - `betterhomes.de`, `betterhomes.at` and `betterhomes.ch` - and a
+search url from any of them works. Its results page fills itself from a JSON endpoint, which is
+what Fredy asks as well, so this provider needs no browser and costs one request per run.
+
+Paste the search url as usual: every filter it carries is passed on untouched, so anything the
+portal offers works whether or not Fredy has heard of it. The exact street is never published on a
+BETTERHOMES advert, so a listing is located to its town and the map pin sits where the portal's own
+does.
 
 ## Countries and the map
 

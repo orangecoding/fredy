@@ -109,6 +109,13 @@ const RECORDED_SEARCHES = [
     'https://immobilien.sparkasse.de/immobilien/treffer?estateTypeGroupingId=403&marketingType=buy&maxPrice=500000&minPrice=100000&perimeter=10&usageType=residential&zipCityEstateId=51.22422%2F6.78006%2F0__D%C3%BCsseldorf',
     { min: 100000, max: 500000 },
   ],
+  // BETTERHOMES sells as well as lets, so this band is a purchase one, recorded off its own
+  // "Weitere Filter" panel.
+  [
+    'betterhomes',
+    'https://www.betterhomes.de/de/immobilie-suchen/kaufen?searchType=buy&objectType=all&zipCity=Deutschland&territoryId=1&sortOrder=newestDesc&radius=0&cityType=4&priceMin=500000&priceMax=1000000',
+    { min: 500000, max: 1000000 },
+  ],
   [
     'tecnocasa',
     'https://www.tecnocasa.it/affitto/immobili/lombardia/milano/milano.html?min_price=500&max_price=1000',

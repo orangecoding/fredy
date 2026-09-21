@@ -96,8 +96,8 @@ Fredy is in the [Unraid](https://unraid.net/) community store.
 
 ## ✨ What you get
 
--   🏠 **24 portals** across 🇩🇪 🇦🇹 🇨🇭 🇪🇸 🇮🇹 🇵🇹: ImmoScout24, Immowelt, Kleinanzeigen, WG-Gesucht,
-    willhaben, Flatfox, idealista, Subito and [16 more](doc/providers.md)
+-   🏠 **25 portals** across 🇩🇪 🇦🇹 🇨🇭 🇪🇸 🇮🇹 🇵🇹: ImmoScout24, Immowelt, Kleinanzeigen, WG-Gesucht,
+    willhaben, Flatfox, idealista, Subito and [17 more](doc/providers.md)
 -   ⚡ **Instant notifications**: Slack, Telegram, Email (SMTP, SendGrid, Mailjet, Resend), ntfy,
     Discord, Mattermost, Pushover, Apprise and more
 -   🔄 **Deduplication across platforms**: the same flat advertised on ImmoScout, Immowelt and
@@ -234,7 +234,7 @@ class node_debug,node_mcp toneMint
 
 | Topic | What is in there |
 |---|---|
-| [Providers & scraping](doc/providers.md) | All 24 providers, the Immoscout / idealista / Casa.it specifics, and residential proxies for when a VPS gets blocked |
+| [Providers & scraping](doc/providers.md) | All 25 providers, the Immoscout / idealista / Casa.it specifics, and residential proxies for when a VPS gets blocked |
 | [Scam detection](doc/scam-detection.md) | The signals, their weights, the languages, and how to overrule Fredy |
 | [Financing calculator](doc/financing.md) | Rent and Annuitätendarlehen, Kaufnebenkosten, Restschuld, the 35 % rule |
 | [Travel time & public transport](doc/travel-time.md) | Addresses and place types, estimated vs exact, route drawing, departure boards, operator settings |

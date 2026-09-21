@@ -184,6 +184,8 @@ export function buildFetchMock() {
   let willhabenHtml = null;
   let flatfoxPins = null;
   let flatfoxListings = null;
+  let betterhomesList = null;
+  let betterhomesDetail = null;
 
   return async (url, init) => {
     const urlStr = String(url);
@@ -296,6 +298,32 @@ export function buildFetchMock() {
         flatfoxListings = raw ? JSON.parse(raw) : { results: [] };
       }
       return { ok: true, status: 200, json: () => Promise.resolve(flatfoxListings) };
+    }
+
+    // BETTERHOMES answers everything from one endpoint, so the action in the body is what says
+    // which fixture is being asked for. The detail is served for the advert it was recorded from
+    // and refused for any other id, exactly as the portal refuses one that has been taken down -
+    // which is what makes the activity probe's "gone" answer reachable offline.
+    if (/betterhomes\.(de|at|ch)\/apirequest/.test(urlStr)) {
+      if (betterhomesList == null) {
+        const raw = await tryReadFile(path.join(FIXTURES_DIR, 'betterhomes_list.json'));
+        betterhomesList = raw ? JSON.parse(raw) : [];
+      }
+      if (betterhomesDetail == null) {
+        const raw = await tryReadFile(path.join(FIXTURES_DIR, 'betterhomes_detail.json'));
+        betterhomesDetail = raw ? JSON.parse(raw) : { responseCode: 1000, responseData: null };
+      }
+
+      const request = JSON.parse(typeof init?.body === 'string' ? init.body : '{}');
+      if (request.action === 'Object/search') {
+        return { ok: true, status: 200, json: () => Promise.resolve(betterhomesList) };
+      }
+      const known = betterhomesDetail?.responseData?.id;
+      const body =
+        request.data?.id === known
+          ? betterhomesDetail
+          : { responseMessage: '', responseCode: 1000, responseData: null };
+      return { ok: true, status: 200, json: () => Promise.resolve(body) };
     }
 
     if (urlStr.includes('api.mobile.immobilienscout24.de/search/list')) {
