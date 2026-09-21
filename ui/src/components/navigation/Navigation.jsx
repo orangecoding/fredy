@@ -31,7 +31,7 @@ import { useSelector } from '../../services/state/store.js';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
 // A pure function that already answers exactly this question for the dashboard's own rows. A copy
 // here would be a second set of rounding rules for the same clock.
-import { relativeTime } from '../../views/dashboard/dashboardTime.js';
+import { relativeTime } from '../../services/time/relativeTime.js';
 import { navTreeFor, resolveActiveKey, startsSection } from './navModel.js';
 
 /**

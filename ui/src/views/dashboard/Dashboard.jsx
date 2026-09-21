@@ -35,7 +35,7 @@ import { formatEuroPrice } from '../../services/price/priceService.js';
 import { formatPricePerSqm } from '../../services/listings/marketBenchmark.js';
 import { format } from '../../services/time/timeService.js';
 import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
-import { relativeTime } from './dashboardTime.js';
+import { relativeTime } from '../../services/time/relativeTime.js';
 
 const { Text, Title } = Typography;
 

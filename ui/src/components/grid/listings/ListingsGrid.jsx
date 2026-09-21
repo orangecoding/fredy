@@ -95,9 +95,6 @@ const ListingsGrid = ({
             <div className="listingsGrid__card__title" title={item.title}>
               {item.title}
             </div>
-            {/* Above the price rather than beside it. A fraud warning is not another attribute of
-                the flat to be weighed against the rent, it is a reason to read the rest
-                differently, so it comes first. */}
             <ScamBadge listing={item} />
             {item.price && (
               <div className="listingsGrid__card__price">

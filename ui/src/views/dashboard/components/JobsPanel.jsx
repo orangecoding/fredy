@@ -5,7 +5,7 @@
 
 import { IconAlertTriangle } from '@douyinfe/semi-icons';
 
-import { relativeTime } from '../dashboardTime.js';
+import { relativeTime } from '../../../services/time/relativeTime.js';
 
 /** Seven bars of six, with three between them, is exactly the sixty the stylesheet reserves. */
 const SPARK_BAR_W = 6;

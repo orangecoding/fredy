@@ -10,8 +10,11 @@
  * have to subtract the current time to learn the only thing they wanted, which is whether it
  * just ran or is about to. The exact stamp stays available in the tooltip.
  *
- * It lives here rather than in `Dashboard.jsx` because the panels on the page now ask the same
- * question about their own rows, and a second copy would be a second set of rounding rules.
+ * It sits in `services/time` rather than under one of the pages because two of them ask the same
+ * question now - the dashboard about its panels' rows, the jobs page about a job's last run - and
+ * a second copy would be a second set of rounding rules. The `dashboard.time*` keys it reads kept
+ * their names through the move; renaming them would have touched five locale files to say the
+ * same thing.
  *
  * @param {number|null|undefined} timestamp Epoch ms.
  * @param {(key: string, params?: Object) => string} t

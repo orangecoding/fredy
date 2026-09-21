@@ -6,7 +6,7 @@
 import { formatEuroPrice } from '../../../services/price/priceService.js';
 import { formatPricePerSqm } from '../../../services/listings/marketBenchmark.js';
 import { formatDecimal } from '../../../services/number/numberService.js';
-import { relativeTime } from '../dashboardTime.js';
+import { relativeTime } from '../../../services/time/relativeTime.js';
 
 /** The thumbnail a listing without a usable photo falls back to. Drawn, not imported: one icon
  *  does not earn an asset, and an inline path follows the theme through currentColor. */
