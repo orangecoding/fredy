@@ -18,6 +18,8 @@ import {
 } from '../../ui/src/components/connectivity/connectivityFormat.js';
 import { PLACE_CATEGORIES } from '../../ui/src/services/travelTime/placeCategories.js';
 import { SCAM_SIGNALS } from '../../ui/src/services/listings/scamSignals.js';
+import { PLACEHOLDERS, FLAG_PLACEHOLDERS } from '../../lib/services/application/placeholders.js';
+import { TEMPLATE_LANGUAGES } from '../../lib/services/application/templates/index.js';
 
 const localeDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '../../ui/src/locales');
 const donateComponent = fs.readFileSync(path.join(localeDir, '../components/donate/Donate.jsx'), 'utf-8');
@@ -143,6 +145,17 @@ const COMPUTED_KEYS = [
   // so adding a category is what adds the assertion - an unnamed one would otherwise reach the
   // dropdown in the travel time settings as the raw key next to its icon.
   ...PLACE_CATEGORIES.map((category) => `travelTime.placeCategory.${category.id}`),
+  // The application letter catalogue. Every placeholder is offered as a clickable chip in the
+  // template editor and as a "still missing" chip in the copy dialog, both built from the catalogue
+  // itself - so adding a placeholder is what adds the assertion, and a forgotten label would reach
+  // the user as `application.placeholder.applicant.wbs` printed inside a tag.
+  ...Object.values(PLACEHOLDERS).map((definition) => definition.labelKey),
+  ...TEMPLATE_LANGUAGES.map((language) => `application.language.${language}`),
+  ...['listing', 'applicant', 'contact', 'env'].map((group) => `settings.application.group.${group}`),
+  ...Object.values(FLAG_PLACEHOLDERS).map((flag) => `settings.application.flag.${flag}`),
+  ...['permanent', 'temporary', 'selfEmployed', 'civilServant', 'student', 'retired'].map(
+    (type) => `settings.application.employmentType.${type}`,
+  ),
 ];
 
 /**
@@ -192,6 +205,23 @@ describe('locales', () => {
    * would need two new keys in three files. Naming the two families here is what turns that into a
    * failing test rather than a raw key sitting in a select.
    */
+  /**
+   * The placeholder catalogue drives both the editor's chips and the dialog's missing-field list,
+   * so a placeholder without a label is a raw key painted into a tag in two places at once.
+   */
+  it('has a label for every application placeholder there is', () => {
+    for (const [key, definition] of Object.entries(PLACEHOLDERS)) {
+      expect(definition.labelKey, key).toBeTypeOf('string');
+      expect(english, key).toHaveProperty([definition.labelKey]);
+    }
+  });
+
+  it('names every language an application letter can be written in', () => {
+    for (const language of TEMPLATE_LANGUAGES) {
+      expect(english).toHaveProperty([`application.language.${language}`]);
+    }
+  });
+
   it('has a label and an explanation for every commute action there is', () => {
     for (const action of COMMUTE_ACTIONS) {
       expect(COMPUTED_KEYS).toContain(`jobs.mutation.commuteAction.${action}`);

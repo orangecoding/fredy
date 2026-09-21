@@ -1,3 +1,5 @@
+@import '../../tokens.less';
+
 .connectivity {
   font-size: 0.82rem;
 
@@ -13,24 +15,44 @@
     align-items: baseline;
     flex-wrap: wrap;
     gap: 4px 8px;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
   }
 
   &__speed {
-    font-size: 1.35rem;
-    font-weight: 600;
-    color: var(--semi-color-text-0);
+    font-size: 2rem;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+    color: @color-text;
     font-variant-numeric: tabular-nums;
+    line-height: 1.1;
   }
 
   &__unit {
-    color: var(--semi-color-text-1);
+    color: @color-muted;
+  }
+
+  /* The share as a bar, directly under the figure it qualifies. A number that big wants something
+     to be measured against, and "100 %" in words is easy to read past. */
+  &__meter {
+    height: 4px;
+    margin: 2px 0 10px;
+    border-radius: @radius-pill;
+    background: @color-hover;
+    overflow: hidden;
+  }
+
+  &__meter-fill {
+    display: block;
+    height: 100%;
+    border-radius: @radius-pill;
+    background: @color-success;
   }
 
   /* The share is what keeps the headline honest: the registers describe a cell, not a building. */
   &__share {
-    color: var(--semi-color-text-2);
-    font-size: 0.72rem;
+    margin-left: auto;
+    color: @color-muted;
+    font-size: @text-sm;
   }
 
   &__row {
@@ -53,19 +75,34 @@
     gap: 4px;
   }
 
+  /* Three states, told apart at a glance rather than by reading.
+
+     Green on this page means one thing only: available, or better than the market. It never means
+     "status", which is why nothing here borrows it for a neutral fact. */
   &__chip {
     display: inline-flex;
     align-items: baseline;
     gap: 4px;
     white-space: nowrap;
-    border: 1px solid var(--semi-color-border);
-    border-radius: 3px;
+    border: 1px solid @color-border-bright;
+    border-radius: @radius-chip;
     padding: 0 5px;
-    color: var(--semi-color-text-1);
+    background: @color-hover;
+    color: @color-text;
 
+    // Available.
     &--on {
-      border-color: var(--semi-color-success);
-      color: var(--semi-color-success);
+      background: @color-success-dim;
+      border-color: @color-success;
+      color: @color-success;
+    }
+
+    // Not available. Hollow and dashed, so absence looks like absence.
+    &--off {
+      background: transparent;
+      border-style: dashed;
+      border-color: @color-border-bright;
+      color: @color-muted;
     }
 
     /* Coverage that only exists through somebody else's network. Real, but not the operator's own,

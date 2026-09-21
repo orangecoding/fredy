@@ -125,9 +125,12 @@ export function readMarketBenchmark(listing) {
  *
  * @param {number} value
  * @param {string} locale BCP 47 locale, from `useLocale()`.
+ * @param {boolean} [withUnit=true] Whether to append `/m²`. A figure sitting under a label that
+ *   already reads "price per m²" does not need it, and carrying it there costs the four characters
+ *   that push the number out of a narrow tile.
  * @returns {string} e.g. `12,40 €/m²`.
  */
-export function formatPricePerSqm(value, locale) {
+export function formatPricePerSqm(value, locale, withUnit = true) {
   const parsed = toNumber(value);
   if (parsed == null) {
     return '';
@@ -137,7 +140,8 @@ export function formatPricePerSqm(value, locale) {
   // square metre to the cent.
   const whole = parsed >= WHOLE_EURO_ABOVE;
   const rounded = whole ? Math.round(parsed) : Math.round(parsed * 100) / 100;
-  return `${formatEuroPrice(rounded, locale, whole ? 0 : 2)}/m²`;
+  const amount = formatEuroPrice(rounded, locale, whole ? 0 : 2);
+  return withUnit ? `${amount}/m²` : amount;
 }
 
 /**

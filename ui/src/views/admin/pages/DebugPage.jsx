@@ -183,16 +183,11 @@ export default function DebugPage() {
   return (
     <>
       <div className="settingsShell__page">
-        <SegmentPart name={t('settings.debugSectionName')}>
-          <Banner
-            type="info"
-            fullMode={false}
-            closeIcon={null}
-            style={{ marginBottom: 12 }}
-            title={<div style={{ fontWeight: 600, fontSize: '14px' }}>{t('settings.debugInfoTitle')}</div>}
-            description={t('settings.debugInfoDescription')}
-          />
-
+        {/* The explanation used to sit under this card's title as an info Banner - a coloured
+            strip saying something that is true on every visit, directly above the danger Banner
+            that really is a live state. As the card's own help text it says the same thing
+            without competing with it. */}
+        <SegmentPart name={t('settings.debugSectionName')} helpText={t('settings.debugSectionHelp')}>
           {debugStatus?.enabled ? (
             <Banner
               type="danger"

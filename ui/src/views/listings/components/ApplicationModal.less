@@ -1,0 +1,59 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../../tokens.less';
+
+.applicationModal {
+  &__loading,
+  &__error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: @space-4;
+    // Tall enough that the dialog does not jump when the letter arrives and replaces the spinner.
+    min-height: 320px;
+  }
+
+  &__meta {
+    margin-bottom: @space-3;
+  }
+
+  /* Narrow on purpose: it holds a flag and one word, and a full-width select would read as the
+     dialog's main field rather than as the setting it is. */
+  &__language {
+    width: 172px;
+  }
+
+  &__hint {
+    margin-top: @space-2;
+  }
+
+  &__callout {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: @space-2;
+    margin-top: @space-4;
+    padding: @space-3 @space-4;
+    border: 1px solid @color-border;
+    border-radius: @radius-card;
+    background: @color-surface;
+  }
+
+  &__missing {
+    display: flex;
+    flex-direction: column;
+    gap: @space-2;
+    margin-top: @space-4;
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: @space-2;
+  }
+}

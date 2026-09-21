@@ -12,6 +12,7 @@ import {
   IconPaperclip,
   IconStar,
   IconStarStroked,
+  IconCopy,
   IconEyeOpened,
   IconRefresh,
 } from '@douyinfe/semi-icons';
@@ -30,7 +31,7 @@ import './ListingsGrid.less';
 import { useTranslation, useLocale } from '../../../services/i18n/i18n.jsx';
 
 /**
- * @param {{ listings: object[], onWatch: Function, onNavigate: Function, onDelete: Function, onRestore?: Function, onReactivate?: Function, isHiddenView?: boolean, onStatusChange: Function }} props
+ * @param {{ listings: object[], onWatch: Function, onNavigate: Function, onDelete: Function, onRestore?: Function, onReactivate?: Function, isHiddenView?: boolean, onStatusChange: Function, onApplication?: Function }} props
  */
 const ListingsGrid = ({
   listings,
@@ -41,6 +42,7 @@ const ListingsGrid = ({
   onReactivate,
   isHiddenView = false,
   onStatusChange,
+  onApplication,
 }) => {
   const t = useTranslation();
   const locale = useLocale();
@@ -168,6 +170,22 @@ const ListingsGrid = ({
                 }}
               />
             </Tooltip>
+            {/* Not in the hidden view: the row is soft-deleted there, and writing to an agent
+                about a listing you have just thrown away is noise. */}
+            {!isHiddenView && (
+              <Tooltip content={t('listings.tooltipApplication')}>
+                <Button
+                  size="small"
+                  icon={<IconCopy />}
+                  theme="borderless"
+                  aria-label={t('listings.tooltipApplication')}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onApplication?.(item);
+                  }}
+                />
+              </Tooltip>
+            )}
             {/* Only offered where it can do something: the alive-checker marked this one gone, and
                 the user is presumably looking at the ad that says otherwise. Not shown in the
                 hidden view, where the row is soft-deleted and undelete is the action that matters. */}

@@ -8,6 +8,7 @@ import { Banner, Button, Modal, Select, Toast } from '@douyinfe/semi-ui-19';
 import { IconPlusCircle, IconArrowLeft } from '@douyinfe/semi-icons';
 import { useNavigate, useSearchParams } from 'react-router';
 
+import { SegmentPart } from '../../../components/segment/SegmentPart.jsx';
 import NotificationChannelTable from '../../../components/table/NotificationChannelTable';
 import NotificationChannelEditor from '../../jobs/mutation/components/notificationAdapter/NotificationChannelEditor';
 import { useActions, useSelector } from '../../../services/state/store';
@@ -89,7 +90,7 @@ export default function NotificationsPage() {
     .sort((a, b) => a.label.localeCompare(b.label));
 
   return (
-    <div>
+    <div className="settingsShell__page">
       {returnTo != null && (
         <Button
           icon={<IconArrowLeft />}
@@ -111,25 +112,32 @@ export default function NotificationsPage() {
         />
       )}
 
-      <Button
-        type="primary"
-        icon={<IconPlusCircle />}
-        style={{ marginBottom: '1rem' }}
-        onClick={() => setPickingType(true)}
-      >
-        {t('notification.channels.new')}
-      </Button>
+      {/* The only page in Einstellungen that had no section at all, so it was also the only one
+          that never said what its table was for - and the only one whose content ran the full
+          width of a wide monitor while every neighbouring page stayed in one column. The back
+          button and the admin scope notice stay outside it: one is navigation, the other is
+          something that is true right now rather than standing help. */}
+      <SegmentPart name={t('settings.tabNotifications')} helpText={t('notification.channels.sectionHelp')}>
+        <Button
+          type="primary"
+          icon={<IconPlusCircle />}
+          style={{ marginBottom: '1rem' }}
+          onClick={() => setPickingType(true)}
+        >
+          {t('notification.channels.new')}
+        </Button>
 
-      <NotificationChannelTable
-        channels={channels}
-        actions={['test', 'edit', 'clone', 'delete']}
-        onTest={test}
-        onEdit={(channel) => setEditor({ mode: 'edit', channelId: channel.id })}
-        onClone={(channel) => setEditor({ mode: 'clone', channelId: channel.id })}
-        onDelete={remove}
-        canManageVisibility={currentUser?.isAdmin === true}
-        onVisibilityChange={changeVisibility}
-      />
+        <NotificationChannelTable
+          channels={channels}
+          actions={['test', 'edit', 'clone', 'delete']}
+          onTest={test}
+          onEdit={(channel) => setEditor({ mode: 'edit', channelId: channel.id })}
+          onClone={(channel) => setEditor({ mode: 'clone', channelId: channel.id })}
+          onDelete={remove}
+          canManageVisibility={currentUser?.isAdmin === true}
+          onVisibilityChange={changeVisibility}
+        />
+      </SegmentPart>
 
       {/* Choosing the type is its own step because it is the one decision that cannot be changed
           afterwards - the stored fields only make sense for one adapter. */}

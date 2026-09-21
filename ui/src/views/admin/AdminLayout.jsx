@@ -14,7 +14,6 @@ import {
 } from '@douyinfe/semi-icons';
 
 import SettingsShell from '../../components/settingsShell/SettingsShell.jsx';
-import ScopeBanner from './ScopeBanner.jsx';
 import { useAdminSettings } from './useAdminSettings.js';
 import { useSelector } from '../../services/state/store';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
@@ -57,7 +56,10 @@ export default function AdminLayout() {
     },
   ];
 
-  return <SettingsShell title={t('admin.title')} tabs={tabs} banner={<ScopeBanner />} context={admin} />;
+  // No standing line under the heading. The scope band that used to sit here said the same thing
+  // on all seven tabs, every visit, and moving it into the subtitle only made it quieter noise -
+  // "Administration" already says whose settings these are.
+  return <SettingsShell title={t('admin.title')} tabs={tabs} context={admin} />;
 }
 
 AdminLayout.displayName = 'AdminLayout';

@@ -18,6 +18,7 @@ import {
 } from '@douyinfe/semi-icons';
 import { useNavigate, useSearchParams } from 'react-router';
 import ListingDeletionModal from '../ListingDeletionModal.jsx';
+import ApplicationModal from '../../views/listings/components/ApplicationModal.jsx';
 import { xhrDelete, xhrPost, errorMessage } from '../../services/xhr.js';
 import { useActions, useSelector } from '../../services/state/store.js';
 import { debounce, measuredPlaces } from '../../utils';
@@ -120,6 +121,9 @@ const ListingsOverview = () => {
   const setSortField = (value) => setValue('sort', value);
   const setSortDir = (value) => setValue('dir', value);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  // The id of the listing whose application letter is open. One dialog for the whole page rather
+  // than one per row: only ever one is open, and a modal per card would mount hundreds of them.
+  const [applicationListingId, setApplicationListingId] = useState(null);
   const [listingToDelete, setListingToDelete] = useState(null);
   const [bulkDeleteVisible, setBulkDeleteVisible] = useState(false);
   const [newAvailableCount, setNewAvailableCount] = useState(0);
@@ -539,6 +543,7 @@ const ListingsOverview = () => {
           onReactivate={handleReactivate}
           isHiddenView={isHiddenView}
           onStatusChange={handleStatusChange}
+          onApplication={(item) => setApplicationListingId(item.id)}
         />
       ) : (
         <ListingsTable
@@ -550,6 +555,7 @@ const ListingsOverview = () => {
           onReactivate={handleReactivate}
           isHiddenView={isHiddenView}
           onStatusChange={handleStatusChange}
+          onApplication={(item) => setApplicationListingId(item.id)}
         />
       )}
 
@@ -591,6 +597,14 @@ const ListingsOverview = () => {
           setDeleteModalVisible(false);
           setListingToDelete(null);
         }}
+      />
+
+      <ApplicationModal
+        visible={applicationListingId != null}
+        listingId={applicationListingId}
+        onCancel={() => setApplicationListingId(null)}
+        // Copying the letter sets the status, so the row's status control has to follow it.
+        onApplied={loadData}
       />
     </div>
   );

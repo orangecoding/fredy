@@ -20,13 +20,17 @@ import './SettingsShell.less';
  *
  * @param {Object} props
  * @param {string} props.title Page heading.
+ * @param {React.ReactNode} [props.subtitle] Who the area's settings apply to, and what it leaves
+ *   out. Administration used to state this as a full-width coloured band on all seven of its tabs,
+ *   which is what `Headline`'s own documentation argues against: a band reads as "something just
+ *   happened", and this is true on every visit.
  * @param {{path: string, label: string, icon?: React.ReactNode}[]} props.tabs Sub-pages, in order.
- * @param {React.ReactNode} [props.banner] Rendered between the heading and the strip. Administration
- *   uses it for the scope band; the personal pages deliberately have none.
+ * @param {React.ReactNode} [props.banner] Rendered between the heading and the strip, for something
+ *   that really did just happen. Standing facts belong in `subtitle`.
  * @param {any} [props.context] Passed to the sub-route through `useOutletContext()`.
  * @returns {React.ReactElement}
  */
-export default function SettingsShell({ title, tabs, banner = null, context = undefined }) {
+export default function SettingsShell({ title, subtitle = null, tabs, banner = null, context = undefined }) {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -40,7 +44,7 @@ export default function SettingsShell({ title, tabs, banner = null, context = un
 
   return (
     <div className="settingsShell">
-      <Headline text={title} />
+      <Headline text={title} subtitle={subtitle} />
       {banner}
       <Tabs
         type="line"

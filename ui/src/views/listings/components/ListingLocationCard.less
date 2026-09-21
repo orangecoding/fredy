@@ -1,0 +1,229 @@
+@import '../../../tokens.less';
+
+/* Nothing here may carry `transform`, `filter` or `backdrop-filter`: the map inside goes fullscreen
+   by becoming `position: fixed`, and any of those three on an ancestor turns that ancestor into the
+   containing block, which pins the "fullscreen" map inside this card instead. */
+.listing-location {
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: @space-3;
+    flex-wrap: wrap;
+    margin-bottom: @space-4;
+
+    .listing-card__label {
+      margin-bottom: 0;
+    }
+  }
+
+  &__picker {
+    display: flex;
+    align-items: center;
+    gap: @space-2;
+    flex-wrap: wrap;
+  }
+
+  // Only sizes the map. The border and the rounding belong to the shared `.map-container` inside
+  // it; having both would draw two.
+  &__map {
+    height: 340px;
+    width: 100%;
+    border-radius: @radius-card;
+    overflow: hidden;
+
+    @media (max-width: 768px) {
+      height: 260px;
+    }
+  }
+
+  /* The instructions and the save button while the listing is being placed by hand. Inside the map
+     shell, so it comes along when the map goes fullscreen. */
+  &__pin-bar {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: @space-3;
+    max-width: calc(100% - @space-6);
+    padding: 10px 14px;
+    border: 1px solid @color-border;
+    border-radius: @radius-input;
+    background: @color-elevated;
+  }
+
+  &__pin-bar-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+
+    // The address can be long; it must not push the buttons off the bar.
+    > * {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  /* The "not looked up yet" banner carries a retry next to its sentence. Wrapping rather than
+     shrinking the text, so the button keeps its label on a narrow screen. */
+  &__nogeo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: @space-3;
+    flex-wrap: wrap;
+  }
+
+  /* A recessed panel rather than a hairline-separated row. A rule says "something ends here"; a
+     filled step says "this is one thing", which is what these rows are - a glyph, a claim, and the
+     figure or link that answers it. */
+  &__row {
+    display: flex;
+    align-items: center;
+    gap: @space-3;
+    margin-top: @space-3;
+    padding: @space-3 @space-4;
+    border-radius: @radius-chip;
+    background: @color-hover;
+
+    &--stacked {
+      align-items: stretch;
+    }
+  }
+
+  &__row-icon {
+    flex: 0 0 auto;
+    color: @color-info;
+    font-size: @text-md;
+  }
+
+  &__row-body {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: @space-1;
+
+    // Title and payload side by side, for a row whose answer is one link or one figure.
+    &--inline {
+      flex-direction: row;
+      align-items: baseline;
+      gap: @space-3;
+
+      // Whatever follows the title takes the rest of the line, so its own right-aligned figures
+      // land on the card's edge rather than halfway across it.
+      > *:last-child {
+        flex: 1 1 auto;
+        min-width: 0;
+      }
+    }
+  }
+
+  &__row-detail {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__row-title {
+    font-size: @text-base;
+    font-weight: 600;
+    color: @color-text;
+  }
+
+  // The figure the row exists to deliver: bold, hard right, with its qualifier under it in the
+  // muted tone so the eye lands on the number first.
+  &__row-figure {
+    font-size: @text-md;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: @color-text;
+  }
+
+  &__row-aside {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: @space-1;
+    text-align: right;
+  }
+
+  /* One credit line for the whole card. The travel times component ships its own, which would
+     otherwise sit inside a recessed row halfway up and read as a caption for whatever came next -
+     so it is hidden here and folded into the line below. Hidden, not removed: the component also
+     renders in map popups, where it is the only credit there is. */
+  .travel-times__attribution {
+    display: none;
+  }
+
+  &__sources {
+    display: block;
+    margin-top: @space-4;
+    font-size: @text-xs;
+  }
+
+  &__distances {
+    display: flex;
+    flex-wrap: wrap;
+    gap: @space-1 @space-2;
+  }
+
+  &__distance {
+    display: inline-block;
+    padding: 1px @space-2;
+    border: 1px solid @color-border-bright;
+    border-radius: @radius-chip;
+    background: @color-hover;
+    color: @color-text;
+    font-size: @text-sm;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Nothing in the app styles a bare anchor, so these were browser defaults: blue, underlined, and
+     purple once visited. Same treatment as every other link on the page. */
+  &__link {
+    color: @color-accent;
+    text-decoration: none;
+    transition: color @transition-fast;
+
+    &:visited {
+      color: @color-accent;
+    }
+
+    &:hover {
+      color: @color-text;
+      text-decoration: underline;
+    }
+  }
+
+  /* One line per destination, label left and the figures hard right, which is what makes several
+     addresses readable as a column of durations rather than as four sentences. */
+  .travel-times__entry {
+    padding: 2px 0;
+  }
+
+  .travel-times__modes {
+    margin-left: auto;
+  }
+
+  @media (max-width: 768px) {
+    &__row {
+      flex-wrap: wrap;
+    }
+
+    &__row-aside {
+      align-items: flex-start;
+      text-align: left;
+    }
+
+    .travel-times__modes {
+      margin-left: 0;
+    }
+  }
+}

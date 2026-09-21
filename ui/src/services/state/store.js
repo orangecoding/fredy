@@ -756,6 +756,58 @@ export const useFredyState = create(
               throw Exception;
             }
           },
+
+          /**
+           * Save or clear the applicant profile every application letter is written from.
+           *
+           * Passing null clears it, which is also what empties the letters back down to the
+           * listing's own details.
+           *
+           * @param {Object|null} applicantProfile
+           * @returns {Promise<void>}
+           */
+          async setApplicantProfile(applicantProfile) {
+            try {
+              await xhrPost('/api/user/settings/applicant-profile', { applicant_profile: applicantProfile });
+              set((state) => ({
+                userSettings: {
+                  ...state.userSettings,
+                  settings: { ...state.userSettings.settings, applicant_profile: applicantProfile },
+                },
+              }));
+            } catch (Exception) {
+              console.error('Error while trying to update the applicant profile. Error:', Exception);
+              throw Exception;
+            }
+          },
+
+          /**
+           * Save the user's own application letter templates.
+           *
+           * The whole bundle is written at once rather than one language at a time: the editor
+           * holds all of them anyway, and a per-entry route would need the same server-side merge
+           * the finance profile needed for exactly one form.
+           *
+           * @param {Object|null} applicationTemplates Shape `{ de: { rent, buy }, … }`, or null to
+           *   fall back to the shipped letters everywhere.
+           * @returns {Promise<void>}
+           */
+          async setApplicationTemplates(applicationTemplates) {
+            try {
+              await xhrPost('/api/user/settings/application-templates', {
+                application_templates: applicationTemplates,
+              });
+              set((state) => ({
+                userSettings: {
+                  ...state.userSettings,
+                  settings: { ...state.userSettings.settings, application_templates: applicationTemplates },
+                },
+              }));
+            } catch (Exception) {
+              console.error('Error while trying to update the application templates. Error:', Exception);
+              throw Exception;
+            }
+          },
         },
       };
 

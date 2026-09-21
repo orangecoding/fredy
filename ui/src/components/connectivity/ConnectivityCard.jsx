@@ -52,11 +52,23 @@ export default function ConnectivityCard({ connectivity }) {
           {t('connectivity.noFixedLine')}
         </Text>
       ) : (
-        <div className="connectivity__headline">
-          <span className="connectivity__speed">{speed}</span>
-          <span className="connectivity__unit">{t('connectivity.mbitPerSecond')}</span>
-          {share != null && <span className="connectivity__share">{t('connectivity.householdShare', { share })}</span>}
-        </div>
+        <>
+          <div className="connectivity__headline">
+            <span className="connectivity__speed">{speed}</span>
+            <span className="connectivity__unit">{t('connectivity.mbitPerSecond')}</span>
+            {share != null && (
+              <span className="connectivity__share">{t('connectivity.householdShare', { share })}</span>
+            )}
+          </div>
+          {/* The bar is the household share and nothing else - the figure above it is a ceiling one
+              address might reach, and the registers describe a square rather than a building. Drawn
+              only when that share is known, because a bar with no denominator is decoration. */}
+          {share != null && (
+            <div className="connectivity__meter" role="img" aria-label={t('connectivity.householdShare', { share })}>
+              <span className="connectivity__meter-fill" style={{ width: `${Math.min(100, Math.max(0, share))}%` }} />
+            </div>
+          )}
+        </>
       )}
 
       <div className="connectivity__row">
@@ -67,17 +79,20 @@ export default function ConnectivityCard({ connectivity }) {
             // Fibre is the exception: the Swiss register says a square is served by fibre without
             // saying how fast, so a present share and an absent speed still means "yes".
             const available = coverage != null && (coverage.maxDownMbit != null || coverage.sharePercent != null);
+            const label = t(`connectivity.fixed.${technology}`);
             return (
               <span
                 key={technology}
-                className={`connectivity__chip${available ? ' connectivity__chip--on' : ''}`}
+                className={`connectivity__chip connectivity__chip--${available ? 'on' : 'off'}`}
                 title={
                   available && coverage.maxDownMbit != null
                     ? t('connectivity.technologyUpTo', { mbit: coverage.maxDownMbit })
                     : undefined
                 }
               >
-                {t(`connectivity.fixed.${technology}`)}
+                {/* An absent connection is said out loud. Unstyled, the word "fibre" next to two
+                    outlined chips read as a heading rather than as a missing service. */}
+                {available ? label : t('connectivity.notAvailable', { tech: label })}
               </span>
             );
           })}
@@ -98,7 +113,7 @@ export default function ConnectivityCard({ connectivity }) {
               )}
               {/* Nothing at all is a statement worth making out loud rather than an empty row. */}
               {DISPLAY_MOBILE_TECHNOLOGIES.every((technology) => mobile.neutral?.[technology] !== true) && (
-                <span className="connectivity__chip">{t('connectivity.noMobile')}</span>
+                <span className="connectivity__chip connectivity__chip--off">{t('connectivity.noMobile')}</span>
               )}
             </span>
           </div>

@@ -10,6 +10,7 @@ import { Table, Button, Empty, Tag, Toast } from '@douyinfe/semi-ui-19';
 import { IconDelete, IconEdit, IconCopy } from '@douyinfe/semi-icons';
 import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
 import { xhrGet } from '../../services/xhr.js';
+import { copyToClipboard } from '../../services/clipboard.js';
 
 export default function UserTable({ user = [], onUserRemoval, onUserEdit } = {}) {
   const t = useTranslation();
@@ -34,31 +35,14 @@ export default function UserTable({ user = [], onUserRemoval, onUserEdit } = {})
   /**
    * Put a revealed token on the clipboard.
    *
-   * Falls back to a hidden textarea and `execCommand`, because the Clipboard API is only available
-   * on secure origins - and a self-hosted Fredy reached over plain http on the LAN is exactly the
-   * setup where somebody is copying a token to paste into their MCP client.
-   *
    * @param {string} token
    * @returns {Promise<void>}
    */
   const copyToken = async (token) => {
-    try {
-      if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(token);
-      } else {
-        const scratch = document.createElement('textarea');
-        scratch.value = token;
-        scratch.setAttribute('readonly', '');
-        scratch.style.position = 'fixed';
-        scratch.style.opacity = '0';
-        document.body.appendChild(scratch);
-        scratch.select();
-        document.execCommand('copy');
-        document.body.removeChild(scratch);
-      }
+    const copied = await copyToClipboard(token);
+    if (copied) {
       Toast.success(t('users.mcpTokenCopied'));
-    } catch (error) {
-      console.error('Error while trying to copy the MCP token.', error);
+    } else {
       Toast.error(t('users.mcpTokenCopyError'));
     }
   };

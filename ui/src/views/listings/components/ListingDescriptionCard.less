@@ -1,0 +1,129 @@
+@import '../../../tokens.less';
+
+.listing-description {
+  &__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: @space-3;
+
+    .listing-card__label {
+      margin-bottom: @space-4;
+    }
+  }
+
+  &__refetch {
+    border: 1px solid @color-border-bright !important;
+    border-radius: @radius-btn !important;
+    color: @color-muted !important;
+
+    &:hover:not(.semi-button-disabled) {
+      color: @color-text !important;
+      background: @color-fill-1 !important;
+    }
+  }
+
+  /* The verb in the sentence, which is also the control. Styled as the accent link it reads as,
+     but it is a real button so the keyboard and a screen reader get an action rather than a
+     destination - it goes nowhere. */
+  &__action {
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: @color-accent;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+
+    &:hover:not(:disabled) {
+      color: @color-text;
+    }
+
+    &:disabled {
+      color: @color-faint;
+      cursor: default;
+      text-decoration: none;
+    }
+  }
+
+  &__spinner {
+    margin-left: @space-2;
+    vertical-align: middle;
+  }
+
+  /* The result of the last fetch, kept on the card. A portal having no detail page is a standing
+     fact about this listing, not an event, and a toast that has faded takes the answer with it. */
+  &__outcome {
+    margin: @space-3 0 0;
+    font-size: @text-sm;
+
+    &--muted {
+      color: @color-muted;
+    }
+
+    &--error {
+      color: @color-error;
+    }
+  }
+
+  &__body {
+    margin: 0;
+    max-width: 78ch;
+    white-space: pre-wrap;
+    font-size: @text-base;
+    line-height: 1.6;
+    // Body copy, so @color-muted rather than @color-faint - the faint token is for hairlines and
+    // disabled states and does not carry a paragraph.
+    color: @color-muted;
+  }
+
+  /* The glyph beside the sentence rather than above it. An empty description is the normal case on
+     some portals, so this panel is shown often - and a three-line stack for "there is nothing here,
+     try the original ad" takes more of the page than the fact deserves. */
+  &__empty {
+    display: flex;
+    align-items: flex-start;
+    gap: @space-3;
+    padding: @space-4;
+    border-radius: @radius-chip;
+    background: @color-hover;
+  }
+
+  &__empty-icon {
+    flex: 0 0 auto;
+    margin-top: 2px;
+    font-size: @text-md;
+    color: @color-faint;
+  }
+
+  &__empty-body {
+    display: flex;
+    flex-direction: column;
+    gap: @space-1;
+    min-width: 0;
+  }
+
+  &__empty-lead {
+    font-size: @text-base;
+    color: @color-text;
+  }
+
+  &__link {
+    align-self: flex-start;
+    margin-top: @space-1;
+    color: @color-accent;
+    text-decoration: none;
+    font-size: @text-base;
+    transition: color @transition-fast;
+
+    &:visited {
+      color: @color-accent;
+    }
+
+    &:hover {
+      color: @color-text;
+      text-decoration: underline;
+    }
+  }
+}

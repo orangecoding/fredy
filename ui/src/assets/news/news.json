@@ -2,6 +2,20 @@
   "schemaVersion": 1,
   "releases": [
     {
+      "version": "28.5.0",
+      "date": "2026-09-21",
+      "entries": [
+        {
+          "title": "Fredy writes the application now",
+          "text": "Fredy found the flat and then left you with an empty text box. Not any more.<br/><br/>Every listing has <b>Copy application</b>. Fredy drafts the letter from your profile and the advert, you edit it, you paste it into the portal's form. Nothing is sent automatically.<br/><br/>The language follows the country of the portal. The flag beside the letter is a dropdown, so you can overrule it. German, English and Italian.<br/><br/>Copying also sets the listing to <b>Applied</b>. If the copy fails, nothing is marked.<br/><br/>Edits belong to that one letter, never to your template. The template is in <b>Settings &rarr; Application</b>."
+        },
+        {
+          "title": "Fetch a description for one listing",
+          "text": "Most portals put a headline and nothing else on the page Fredy scrapes. The description sits one click further in.<br/><br/>Fredy could read that page, but only during a sweep, only for the portals you ticked, and only when a listing was first found. Now there is a link in the <b>Description</b> section that fetches that one advert on the spot, whatever the bulk setting says.<br/><br/>Address, year of construction and energy class come with it where the advert states them. An address you corrected by hand is never overwritten. <b>14 of the 24 portals</b> can do this, and the rest say so instead of offering the button again.<br/><br/>When it comes back empty, Fredy says <i>either there was nothing more, or the portal turned the request away</i>. It cannot tell those two apart, so it does not pretend to."
+        }
+      ]
+    },
+    {
       "version": "28.3.0",
       "date": "2026-09-17",
       "entries": [
