@@ -13,6 +13,7 @@ import {
   IconUserGroup,
 } from '@douyinfe/semi-icons';
 
+import ScopeBadge from '../../components/scopeBadge/ScopeBadge.jsx';
 import SettingsShell from '../../components/settingsShell/SettingsShell.jsx';
 import { useAdminSettings } from './useAdminSettings.js';
 import { useSelector } from '../../services/state/store';
@@ -50,7 +51,7 @@ export default function AdminLayout() {
       icon: (
         <IconAlertTriangle
           size="small"
-          style={{ color: settings?.debug_logging_enabled ? 'var(--semi-color-danger)' : undefined }}
+          className={settings?.debug_logging_enabled ? 'settingsShell__tabIcon--alert' : undefined}
         />
       ),
     },
@@ -58,8 +59,10 @@ export default function AdminLayout() {
 
   // No standing line under the heading. The scope band that used to sit here said the same thing
   // on all seven tabs, every visit, and moving it into the subtitle only made it quieter noise -
-  // "Administration" already says whose settings these are.
-  return <SettingsShell title={t('admin.title')} tabs={tabs} context={admin} />;
+  // "Administration" already says whose settings these are. The chip that replaces it is four words
+  // beside the title, not a strip across the page, and it is there because each tab is a route of
+  // its own.
+  return <SettingsShell title={t('admin.title')} badge={<ScopeBadge scope="instance" />} tabs={tabs} context={admin} />;
 }
 
 AdminLayout.displayName = 'AdminLayout';

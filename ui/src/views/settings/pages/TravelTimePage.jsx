@@ -4,15 +4,17 @@
  */
 
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Input, AutoComplete, Banner, Progress, Select, Toast } from '@douyinfe/semi-ui-19';
-import { IconSave, IconPlus, IconDelete } from '@douyinfe/semi-icons';
+import { Progress, Toast } from '@douyinfe/semi-ui-19';
+import { IconPlus } from '@douyinfe/semi-icons';
 
 import { SegmentPart } from '../../../components/segment/SegmentPart';
+import SettingsSaveBar from '../../../components/settingsShell/SettingsSaveBar.jsx';
+import { useUnsavedWarning } from '../../../hooks/useUnsavedWarning.js';
 import { xhrGet, errorMessage } from '../../../services/xhr';
 import { debounce } from '../../../utils';
 import { useActions, useSelector, useIsLoading } from '../../../services/state/store';
 import { useTranslation } from '../../../services/i18n/i18n.jsx';
-import { PLACE_CATEGORIES, ADDRESS_ICON, placeCategoryIcon } from '../../../services/travelTime/placeCategories.js';
+import TravelTimeEntry from './components/TravelTimeEntry.jsx';
 import './travelTimePage.less';
 
 /**
@@ -22,12 +24,6 @@ import './travelTimePage.less';
  * because choosing between Tuesday and Wednesday is a question with no useful answer.
  */
 const DEFAULT_DEPARTURE = { time: '08:00' };
-
-/** The times of day worth offering. A commute is asked about the morning or the evening. */
-const DEPARTURE_TIMES = ['06:00', '07:00', '07:30', '08:00', '08:30', '09:00', '12:00', '17:00', '17:30', '18:00'];
-
-/** How an entry can be measured. Public transport first, because it is the default. */
-const MODES = ['transit', 'car', 'bike', 'walk'];
 
 /**
  * One entry, normalised out of whatever the server sent.
@@ -45,144 +41,6 @@ function toRow(entry) {
     departure: entry.departure || DEFAULT_DEPARTURE,
     mode: entry.mode || 'transit',
   };
-}
-
-/**
- * The controls every entry has, whatever kind it is: how you get there, and when.
- *
- * Shared rather than duplicated because it is genuinely the same question. What differs between an
- * address and a place type is *where* you are going, which is the line above this one.
- *
- * @param {Object} props
- * @returns {React.ReactElement}
- */
-function ModeControls({ row, onChange }) {
-  const t = useTranslation();
-  const mode = row.mode ?? 'transit';
-
-  return (
-    <div className="travelTimePage__controls">
-      <span className="settingsShell__inlineLabel">{t('settings.addressModeLabel')}</span>
-      <Select size="small" style={{ width: 150 }} value={mode} onChange={(v) => onChange({ mode: v })}>
-        {MODES.map((option) => (
-          <Select.Option key={option} value={option}>
-            {t(`travelTime.mode.${option}`)}
-          </Select.Option>
-        ))}
-      </Select>
-
-      {/* Only public transport depends on a time of day. A drive is a drive whenever you make it,
-          so asking for one would be asking a question with no effect. */}
-      {mode === 'transit' && (
-        <>
-          <span className="settingsShell__inlineLabel">{t('settings.addressDepartureLabel')}</span>
-          <Select
-            size="small"
-            style={{ width: 100 }}
-            value={row.departure?.time ?? DEFAULT_DEPARTURE.time}
-            onChange={(v) => onChange({ departure: { ...(row.departure ?? DEFAULT_DEPARTURE), time: v } })}
-          >
-            {DEPARTURE_TIMES.map((time) => (
-              <Select.Option key={time} value={time}>
-                {time}
-              </Select.Option>
-            ))}
-          </Select>
-        </>
-      )}
-    </div>
-  );
-}
-
-/**
- * A place you have named: your office, your parents.
- *
- * @param {Object} props
- * @returns {React.ReactElement}
- */
-function AddressRow({ row, suggestions, onSearch, onChange }) {
-  const t = useTranslation();
-
-  return (
-    <>
-      <Input
-        value={row.label}
-        placeholder={t('settings.homeAddressLabelPlaceholder')}
-        onChange={(v) => onChange({ label: v })}
-      />
-      <AutoComplete
-        data={suggestions}
-        value={row.address}
-        showClear
-        onChange={(v) => onChange({ address: v })}
-        onSearch={onSearch}
-        placeholder={t('settings.homeAddressPlaceholder')}
-        style={{ width: '100%' }}
-      />
-      {row.coords && row.coords.lat === -1 && (
-        <Banner type="danger" description={t('settings.homeAddressGeoError')} closeIcon={null} />
-      )}
-      <ModeControls row={row} onChange={onChange} />
-      <div className="settingsShell__inlineHint">
-        {(row.mode ?? 'transit') === 'transit'
-          ? t('settings.addressDepartureHelp')
-          : t('settings.addressStreetModeHelp')}
-      </div>
-    </>
-  );
-}
-
-/**
- * A kind of place rather than a particular one: a supermarket, a gym.
- *
- * The row is deliberately the same shape as an address row - name, then where, then how - because
- * from the user's side these are one list of places they need to be near, and every other surface
- * in the app already shows them side by side.
- *
- * What it adds is the last line: a plain restatement of what this row will actually measure. A
- * category picker and a mode picker sitting next to each other do not say "the nearest supermarket
- * on foot" on their own, and that sentence is the whole point of the row.
- *
- * @param {Object} props
- * @returns {React.ReactElement}
- */
-function PlaceTypeRow({ row, onChange }) {
-  const t = useTranslation();
-
-  const summary = row.category
-    ? t('settings.placeTypeSummary', {
-        category: t(`travelTime.placeCategory.${row.category}`),
-        mode: t(`travelTime.byMode.${row.mode ?? 'transit'}`),
-      })
-    : t('settings.placeTypeSummaryIncomplete');
-
-  return (
-    <>
-      <Input
-        value={row.label}
-        placeholder={t('settings.placeTypeLabelPlaceholder')}
-        onChange={(v) => onChange({ label: v })}
-      />
-      <Select
-        value={row.category || undefined}
-        placeholder={t('settings.placeTypeCategoryPlaceholder')}
-        onChange={(v) => onChange({ category: v })}
-        style={{ width: '100%' }}
-      >
-        {PLACE_CATEGORIES.map((category) => (
-          <Select.Option key={category.id} value={category.id}>
-            <span aria-hidden="true" className="travelTimePage__optionIcon">
-              {category.icon}
-            </span>
-            {t(`travelTime.placeCategory.${category.id}`)}
-          </Select.Option>
-        ))}
-      </Select>
-      <ModeControls row={row} onChange={onChange} />
-      <div className="travelTimePage__summary">{summary}</div>
-      <div className="settingsShell__inlineHint">{t('settings.placeTypeHelp')}</div>
-    </>
-  );
 }
 
 /**
@@ -211,6 +69,10 @@ export default function TravelTimePage() {
   const [dataSource, setDataSource] = useState([]);
   const [activeSearchIdx, setActiveSearchIdx] = useState(null);
   const [progress, setProgress] = useState(null);
+  // Welche Zeile gerade neu angelegt wurde, damit sie ihre Regler offen zeigt. Ein Index, kein
+  // Flag an der Zeile: die Zeilen werden aus der Antwort des Servers neu gebaut und ein Flag daran
+  // ueberlebte das Speichern nicht.
+  const [openIndex, setOpenIndex] = useState(null);
 
   /**
    * How far through the backlog the sweeper is.
@@ -236,6 +98,23 @@ export default function TravelTimePage() {
   useEffect(() => {
     setRows((Array.isArray(homeAddresses) ? homeAddresses : []).map(toRow));
   }, [homeAddresses]);
+
+  // Die einzige Seite, die das bisher nicht gerechnet hat: ihr Speichern-Knopf war immer aktiv,
+  // auch wenn nichts geaendert war. Verglichen wird gegen dieselbe Normalisierung, aus der die
+  // Zeilen gebaut werden, sonst meldete jede frisch geladene Seite eine Aenderung.
+  const dirty = useMemo(
+    () => JSON.stringify(rows) !== JSON.stringify((Array.isArray(homeAddresses) ? homeAddresses : []).map(toRow)),
+    [rows, homeAddresses],
+  );
+
+  useUnsavedWarning(dirty);
+
+  /**
+   * Put the list back on what is stored.
+   *
+   * @returns {void}
+   */
+  const discard = () => setRows((Array.isArray(homeAddresses) ? homeAddresses : []).map(toRow));
 
   const debouncedSearch = useMemo(
     () =>
@@ -266,6 +145,20 @@ export default function TravelTimePage() {
    * @returns {void}
    */
   const update = (idx, patch) => setRows((prev) => prev.map((row, i) => (i === idx ? { ...row, ...patch } : row)));
+
+  /**
+   * Add an entry of the given kind, with its controls already open.
+   *
+   * @param {'address'|'category'} kind
+   * @param {string} mode
+   * @returns {void}
+   */
+  const addRow = (kind, mode) => {
+    setRows((prev) => {
+      setOpenIndex(prev.length);
+      return [...prev, toRow({ kind, mode })];
+    });
+  };
 
   const handleSave = async () => {
     try {
@@ -298,7 +191,10 @@ export default function TravelTimePage() {
 
   return (
     <div className="settingsShell__page">
-      <SegmentPart name={t('settings.travelTimeSection')} helpText={t('settings.travelTimeSectionHelp')}>
+      <SegmentPart
+        name={t('settings.travelTimeSection')}
+        helpText={`${t('settings.travelTimeSectionHelp')} ${t('settings.addressDepartureHelp')} ${t('settings.addressStreetModeHelp')}`}
+      >
         <>
           {/* What the sweeper has got through. Only shown once there is something to measure, and
               only with a bar while it is still working: a full bar sitting there permanently would
@@ -310,6 +206,7 @@ export default function TravelTimePage() {
                   percent={Math.round((progress.measured / progress.total) * 100)}
                   aria-label={t('settings.travelTimeProgress', progress)}
                   size="small"
+                  className="travelTimePage__progressBar"
                 />
               )}
               <span className="travelTimePage__progressText">
@@ -317,63 +214,58 @@ export default function TravelTimePage() {
                   ? t('settings.travelTimeProgress', progress)
                   : t('settings.travelTimeProgressAll', progress)}
               </span>
-              {progress.measured < progress.total && (
-                <span className="settingsShell__inlineHint">{t('settings.travelTimeProgressHelp')}</span>
-              )}
             </div>
           )}
 
           {rows.map((row, idx) => (
-            <div key={idx} className="travelTimePage__row">
-              {/* The one thing that tells the two kinds apart at a glance: a pin for a fixed
-                  point, the category's own icon for a kind of place. */}
-              <span className="travelTimePage__icon" aria-hidden="true">
-                {row.kind === 'category' ? placeCategoryIcon(row.category) : ADDRESS_ICON}
-              </span>
-              <div className="travelTimePage__body">
-                {row.kind === 'category' ? (
-                  <PlaceTypeRow row={row} onChange={(patch) => update(idx, patch)} />
-                ) : (
-                  <AddressRow
-                    row={row}
-                    suggestions={activeSearchIdx === idx ? dataSource : []}
-                    onSearch={(value) => searchAddress(value, idx)}
-                    onChange={(patch) => update(idx, patch)}
-                  />
-                )}
-              </div>
-              <Button
-                type="danger"
-                theme="borderless"
-                icon={<IconDelete />}
-                aria-label={row.kind === 'category' ? t('settings.removePlaceType') : t('settings.removeAddress')}
-                onClick={() => setRows((prev) => prev.filter((_, i) => i !== idx))}
-              />
-            </div>
+            <TravelTimeEntry
+              key={idx}
+              row={row}
+              startOpen={idx === openIndex}
+              suggestions={activeSearchIdx === idx ? dataSource : []}
+              onSearch={(value) => searchAddress(value, idx)}
+              onChange={(patch) => update(idx, patch)}
+              onRemove={() => setRows((prev) => prev.filter((_, i) => i !== idx))}
+            />
           ))}
 
+          {/* Die Seite, auf die Karte und Inserate verweisen und ohne die dort Filter gesperrt
+              sind, empfing einen neuen Benutzer mit zwei nackten Knoepfen. */}
+          {rows.length === 0 && <p className="travelTimePage__empty">{t('settings.travelTimeEmpty')}</p>}
+
           <div className="travelTimePage__add">
-            <Button
-              icon={<IconPlus />}
-              onClick={() => setRows((prev) => [...prev, toRow({ kind: 'address', mode: 'transit' })])}
-            >
-              {t('settings.addAddressEntry')}
-            </Button>
-            <Button
-              icon={<IconPlus />}
-              onClick={() => setRows((prev) => [...prev, toRow({ kind: 'category', mode: 'walk' })])}
-            >
-              {t('settings.addPlaceType')}
-            </Button>
+            {[
+              {
+                kind: 'address',
+                mode: 'transit',
+                labelKey: 'settings.addAddressEntry',
+                helpKey: 'settings.addAddressHelp',
+              },
+              {
+                kind: 'category',
+                mode: 'walk',
+                labelKey: 'settings.addPlaceType',
+                helpKey: 'settings.addPlaceTypeHelp',
+              },
+            ].map((option) => (
+              <button
+                key={option.kind}
+                type="button"
+                className="travelTimePage__addOption"
+                onClick={() => addRow(option.kind, option.mode)}
+              >
+                <span className="travelTimePage__addName">
+                  <IconPlus size="small" />
+                  {t(option.labelKey)}
+                </span>
+                <span className="travelTimePage__addHelp">{t(option.helpKey)}</span>
+              </button>
+            ))}
           </div>
         </>
       </SegmentPart>
 
-      <div className="settingsShell__saveRow">
-        <Button icon={<IconSave />} theme="solid" type="primary" onClick={handleSave} loading={saving}>
-          {t('settings.save')}
-        </Button>
-      </div>
+      <SettingsSaveBar dirty={dirty} saving={saving} onSave={handleSave} onDiscard={discard} />
     </div>
   );
 }

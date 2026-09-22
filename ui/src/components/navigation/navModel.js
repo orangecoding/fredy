@@ -16,11 +16,13 @@
  */
 
 /**
- * Which half of the sidebar an entry belongs to. The daily work is one thing, configuring the
- * instance is another, and the rule between them is a consequence of that rather than a position
- * someone hardcoded into the markup.
+ * Which part of the sidebar an entry belongs to.
  *
- * @typedef {'work'|'config'} NavSection
+ * Three rather than two. `config` used to hold both Settings and Administration, which is exactly
+ * the distinction a reader needs and the one the sidebar never made: one of them is theirs alone
+ * and the other one is everybody's.
+ *
+ * @typedef {'work'|'personal'|'instance'} NavSection
  */
 
 /**
@@ -61,8 +63,8 @@ export const NAV_TREE = [
       { key: '/finance', labelKey: 'nav.finance' },
     ],
   },
-  { key: '/settings', labelKey: 'nav.settings', section: 'config' },
-  { key: '/admin', labelKey: 'nav.administration', section: 'config', adminOnly: true },
+  { key: '/settings', labelKey: 'nav.settings', section: 'personal' },
+  { key: '/admin', labelKey: 'nav.administration', section: 'instance', adminOnly: true },
 ];
 
 /**
@@ -85,6 +87,43 @@ export function navTreeFor(isAdmin) {
  */
 export function startsSection(tree, index) {
   return index > 0 && tree[index].section !== tree[index - 1].section;
+}
+
+/**
+ * Which scope a section belongs to, if it is one worth naming.
+ *
+ * `work` has none: it is the top of the list, and announcing a scope over the first three entries
+ * would be naming the obvious. The other two exist precisely to be named - the rule between them
+ * says that something changes, but not what.
+ *
+ * The value is the scope a `ScopeBadge` takes rather than a translation key of its own, so the
+ * sidebar says whose settings these are with the same chip the two pages carry beside their
+ * heading. Two spellings of one statement is how the sidebar and the page start disagreeing.
+ *
+ * @type {Readonly<Record<NavSection, 'user'|'instance'|null>>}
+ */
+const SECTION_SCOPES = Object.freeze({
+  work: null,
+  personal: 'user',
+  instance: 'instance',
+});
+
+/**
+ * The scope this entry announces, or null.
+ *
+ * Gated on `startsSection` because the entry that opens a section is the one the answer is about:
+ * it is the first thing a reader meets after the rule, and it is where they are deciding whether
+ * this is the half of the sidebar they want.
+ *
+ * @param {NavNode[]} tree
+ * @param {number} index
+ * @returns {'user'|'instance'|null}
+ */
+export function sectionScope(tree, index) {
+  if (!startsSection(tree, index)) {
+    return null;
+  }
+  return SECTION_SCOPES[tree[index].section] ?? null;
 }
 
 /**

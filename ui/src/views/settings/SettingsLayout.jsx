@@ -5,6 +5,7 @@
 
 import { IconHome, IconMapPin, IconListView, IconBell, IconKey, IconMail } from '@douyinfe/semi-icons';
 
+import ScopeBadge from '../../components/scopeBadge/ScopeBadge.jsx';
 import SettingsShell from '../../components/settingsShell/SettingsShell.jsx';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
 
@@ -18,9 +19,9 @@ import { useTranslation } from '../../services/i18n/i18n.jsx';
  * Each tab is still its own route, which is what keeps a settings page something you can link to,
  * bookmark and reload onto rather than a tab index that resets on every visit.
  *
- * Nothing here affects anyone else, which is why there is no scope band: on a personal page the
- * absence of one is the statement. Instance configuration lives under Administration and is not
- * reachable from here at all.
+ * Whose settings these are is said by a chip next to the heading rather than by a band above the
+ * content. The absence of a band was the statement while this was one page; it stopped being one
+ * when every tab became a route somebody can arrive on directly.
  *
  * @returns {React.ReactElement}
  */
@@ -36,7 +37,14 @@ export default function SettingsLayout() {
     { path: '/settings/connections', label: t('settings.tabConnections'), icon: <IconKey size="small" /> },
   ];
 
-  return <SettingsShell title={t('settings.title')} subtitle={t('settings.subtitle')} tabs={tabs} />;
+  return (
+    <SettingsShell
+      title={t('settings.title')}
+      subtitle={t('settings.subtitle')}
+      badge={<ScopeBadge scope="user" />}
+      tabs={tabs}
+    />
+  );
 }
 
 SettingsLayout.displayName = 'SettingsLayout';

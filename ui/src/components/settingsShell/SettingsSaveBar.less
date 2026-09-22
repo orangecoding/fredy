@@ -1,0 +1,57 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../tokens.less';
+
+.settingsSaveBar {
+  position: sticky;
+  // Nicht auf 0: die Leiste soll ueber dem Inhalt schweben, nicht an der Fensterkante kleben.
+  bottom: @space-4;
+  // Unter jedem Semi-Portal (Modal 1000, Toast 1010, Dropdown 1050), ueber dem Seiteninhalt.
+  z-index: 5;
+  box-sizing: border-box;
+  height: 56px;
+  padding: 0 @space-4;
+  margin-top: @space-4;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: @space-3;
+  background: @color-surface;
+  border: 1px solid @color-border;
+  border-radius: @radius-card;
+  box-shadow: @shadow-lg;
+
+  &__label {
+    display: inline-flex;
+    align-items: center;
+    gap: @space-2;
+    font-size: @text-sm;
+    color: @color-text;
+  }
+
+  // Bernstein traegt nur der Punkt, die Schrift bleibt Textfarbe - dieselbe Regel wie beim
+  // Versionshinweis im Footer, wo das Amber selbst im hellen Theme nur auf 4,24 zu 1 kaeme.
+  &__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: @radius-pill;
+    background: @color-warning;
+    flex: none;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: @space-2;
+    flex: none;
+  }
+
+  &__discard,
+  &__save {
+    height: 30px !important;
+    border-radius: @radius-chip !important;
+  }
+}

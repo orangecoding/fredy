@@ -1,0 +1,191 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../../tokens.less';
+
+.preferencesPage {
+  &__themes {
+    display: flex;
+    gap: @space-3;
+  }
+
+  // Zeigt, was sie anbietet. Ein Themenwaehler, der sein Thema nicht zeigt, laesst einen raten.
+  &__theme {
+    flex: 1;
+    box-sizing: border-box;
+    padding: @space-2;
+    border: 1px solid @color-border;
+    border-radius: @radius-card;
+    background: transparent;
+    cursor: pointer;
+    text-align: left;
+    transition:
+      border-color @transition-fast,
+      background @transition-fast;
+
+    &:hover {
+      border-color: @color-border-bright;
+    }
+
+    &:focus-visible {
+      outline: 2px solid @color-accent;
+      outline-offset: 2px;
+    }
+
+    &--on {
+      border-color: @color-accent;
+      background: rgb(@color-accent-rgb / 7%);
+    }
+
+    &[disabled] {
+      cursor: default;
+      opacity: 0.6;
+    }
+  }
+
+  &__swatch {
+    position: relative;
+    display: block;
+    height: 52px;
+    border-radius: @radius-chip;
+    overflow: hidden;
+
+    &--dark {
+      background: @color-preview-dark-bg;
+      border: 1px solid @color-preview-dark-line;
+
+      .preferencesPage__swatchSide {
+        background: @color-preview-dark-line;
+      }
+
+      .preferencesPage__swatchLine {
+        background: @color-preview-dark-line;
+      }
+    }
+
+    &--light {
+      background: @color-preview-light-bg;
+      border: 1px solid @color-preview-light-line;
+
+      .preferencesPage__swatchSide {
+        background: @color-preview-light-line;
+      }
+
+      .preferencesPage__swatchLine {
+        background: @color-preview-light-line;
+      }
+    }
+  }
+
+  &__swatchSide {
+    position: absolute;
+    left: 6px;
+    top: 6px;
+    bottom: 6px;
+    width: 16px;
+    border-radius: 2px;
+  }
+
+  &__swatchLine {
+    position: absolute;
+    left: 28px;
+    right: 8px;
+    top: 12px;
+    height: 5px;
+    border-radius: 2px;
+
+    &--short {
+      top: 24px;
+      right: 24px;
+    }
+  }
+
+  &__themeName {
+    display: flex;
+    align-items: center;
+    gap: @space-2;
+    margin-top: @space-2;
+    font-size: @text-sm;
+    color: @color-text;
+  }
+
+  &__language {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: @space-3;
+    margin-top: @space-4;
+  }
+
+  &__languageLabel {
+    color: @color-muted !important;
+    font-size: @text-sm !important;
+  }
+
+  &__modes {
+    display: flex;
+    flex-direction: column;
+    gap: @space-2;
+    width: 100%;
+  }
+
+  // Das Radio selbst wird zum waehlbaren Feld, statt einen handgebauten Zweizeiler zu umschliessen.
+  &__mode {
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0 !important;
+    padding: @space-3;
+    border: 1px solid @color-border;
+    border-radius: @radius-card;
+    align-items: flex-start !important;
+
+    &.semi-radio-checked {
+      border-color: @color-accent;
+      background: rgb(@color-accent-rgb / 7%);
+    }
+
+    .semi-radio-addon {
+      display: flex;
+      flex-direction: column;
+      gap: @space-1;
+      padding-right: 0;
+    }
+  }
+
+  &__modeName {
+    font-size: @text-base;
+    font-weight: 600;
+    color: @color-text;
+  }
+
+  &__modeDesc {
+    font-size: @text-sm;
+    line-height: 1.5;
+    color: @color-muted;
+  }
+
+  // Die wichtigste Zeile der Seite, auf derselben Ebene wie die Beschreibung statt eine darunter.
+  // Bernstein traegt nur das Zeichen, die Schrift bleibt gedaempfte Textfarbe.
+  &__modeWarning {
+    display: flex;
+    align-items: flex-start;
+    gap: @space-2;
+    font-size: @text-sm;
+    line-height: 1.5;
+    color: @color-muted;
+
+    .semi-icon {
+      color: @color-warning;
+      flex: none;
+      margin-top: 2px;
+    }
+  }
+
+  &__skipPrompt {
+    margin-top: @space-3;
+    padding-top: @space-3;
+    border-top: 1px solid @color-border;
+  }
+}

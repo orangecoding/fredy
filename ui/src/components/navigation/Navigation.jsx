@@ -21,6 +21,7 @@ import logoWhite from '../../assets/logo_white.png';
 import heart from '../../assets/heart.png';
 import logout from '../logout/Logout.jsx';
 import Donate from '../donate/Donate.jsx';
+import ScopeBadge from '../scopeBadge/ScopeBadge.jsx';
 import NewsHistory from '../news/NewsHistory.jsx';
 import { useLocation, useNavigate } from 'react-router';
 import { currentTheme } from '../../services/theme/theme.js';
@@ -32,7 +33,7 @@ import { useTranslation } from '../../services/i18n/i18n.jsx';
 // A pure function that already answers exactly this question for the dashboard's own rows. A copy
 // here would be a second set of rounding rules for the same clock.
 import { relativeTime } from '../../services/time/relativeTime.js';
-import { navTreeFor, resolveActiveKey, startsSection } from './navModel.js';
+import { navTreeFor, resolveActiveKey, sectionScope, startsSection } from './navModel.js';
 
 /**
  * The icon each top-level entry carries. Keyed by nav key so the tree itself stays free of JSX.
@@ -189,6 +190,9 @@ export default function Navigation({ isAdmin }) {
           const open = isGroup && isOpen(node);
           const isActive = node.key === activeKey;
           const childrenId = `navigate-children-${node.key}`;
+          // Null for everything under "the daily work": naming that section would be naming the
+          // obvious, and an entry that announces nothing simply carries no popover.
+          const scope = sectionScope(tree, index);
 
           const item = (
             <button
@@ -229,8 +233,21 @@ export default function Navigation({ isAdmin }) {
 
               {/* A rail of unlabelled icons is unusable without something that names them. A group
                   needs no tooltip of its own: its menu is headed by the same name, and two hover
-                  layers on one target would fight each other. */}
-              {!collapsed && item}
+                  layers on one target would fight each other.
+
+                  Whose settings an entry leads to is said on hover rather than printed above it.
+                  Standing in the list it was a second label competing with the entry it belonged
+                  to, every visit, for an answer that is only wanted once - which is the same thing
+                  that was wrong with the band this replaced. Collapsed the label tooltip already
+                  owns the hover, and a second layer on one target would fight it. */}
+              {!collapsed &&
+                (scope == null ? (
+                  item
+                ) : (
+                  <Popover content={<ScopeBadge scope={scope} />} position="right">
+                    {item}
+                  </Popover>
+                ))}
               {collapsed &&
                 (isGroup ? (
                   <Popover content={flyout(node)} position="right">
