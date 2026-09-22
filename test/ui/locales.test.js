@@ -117,6 +117,9 @@ function sourceFiles(dir) {
 const COMPUTED_KEYS = [
   ...['transit', 'car', 'bike', 'walk'].map((mode) => `travelTime.mode.${mode}`),
   ...['good', 'acceptable', 'poor'].map((band) => `map.commuteBand.${band}`),
+  // The map's colour key, built from the entry it is explaining. Same failure mode one line up: a
+  // missing one paints `map.legend.stack` next to the dot instead of naming what the dot means.
+  ...['listing', 'stack', 'inRing', 'home'].map((entry) => `map.legend.${entry}`),
   // Both families are built from COMMUTE_ACTIONS, so the list below is the one place that has to be
   // kept in step with it - and the assertion below does exactly that rather than repeating the
   // three names a fourth time. A missing entry here would print `jobs.mutation.commuteAction.mark`

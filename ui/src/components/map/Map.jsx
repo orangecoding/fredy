@@ -15,15 +15,19 @@ import {
   applyBuildingsLayer,
   applyTransitLayers,
   OPENFREEMAP_GLYPHS_URL,
+  OPENFREEMAP_SOURCE_ID,
   TRANSIT_STOPS_LAYER_ID,
 } from './overlayLayers.js';
+import { applyDarkBasemapPaint } from './darkBasemapPaint.js';
 import { ensureTransitIcons } from './transitIcons.js';
 import { boundsForCountries, DEFAULT_COUNTRIES } from './countryBounds.js';
+import { MARKER_COLORS } from './markerColors.js';
 import { keepPopupInView, mountPopupNode } from './popupContent.jsx';
 import DeparturesBoard from '../transit/DeparturesBoard.jsx';
 import { useControllableState } from '../../hooks/useControllableState.js';
 import { useSelector } from '../../services/state/store.js';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
+import { normalizeTheme } from '../../services/theme/theme.js';
 import MapControls from './MapControls.jsx';
 import './Map.less';
 
@@ -33,61 +37,78 @@ import './Map.less';
  */
 const EXPANDED_BODY_CLASS = 'fredy-map-expanded';
 
-/** Colour of the pin the user drops in `pickMode`, distinct from listing blue and home red. */
-const PICK_MARKER_COLOR = '#f5a623';
+/** The light vector basemap. Unchanged: this is what the light theme has always shown. */
+const STANDARD_LIGHT = 'https://tiles.openfreemap.org/styles/bright';
 
 /**
- * Colour of the pins standing for the user's own addresses, on every map that draws them.
+ * The dark vector basemap.
  *
- * Named rather than repeated at the two call sites, which is all this constant is for: listing pins
- * are the one blue, so red is unambiguous.
+ * OpenFreeMap's fork of dark-matter: background `rgb(12,12,12)`, a hair away from `@color-base`.
+ * Fewer layers than `bright` - 47 against 119 - and the difference is real: no POIs, no bridge or
+ * tunnel casings, buildings as one flat fill. What it keeps is water, land use, roads by class,
+ * railways, street names, place names and boundaries, and the transit overlay supplies the stops
+ * it does not.
  *
- * @type {string}
+ * `fiord` was the other candidate and is richer at 60 layers, but its `#45516E` background is a
+ * slate blue that would sit in a warm brown interface as a blue rectangle.
  */
-export const HOME_MARKER_COLOR = 'red';
+const STANDARD_DARK = 'https://tiles.openfreemap.org/styles/dark';
 
-export const STYLES = {
-  STANDARD: 'https://tiles.openfreemap.org/styles/bright',
-  SATELLITE: {
-    version: 8,
-    // Raster tiles need no glyphs, but the transit overlay labels its stops with them - the
-    // satellite imagery carries no names of its own.
-    glyphs: OPENFREEMAP_GLYPHS_URL,
-    sources: {
-      'satellite-tiles': {
-        type: 'raster',
-        tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],
-        tileSize: 256,
-        attribution:
-          'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
-      },
-      'satellite-labels': {
-        type: 'raster',
-        tiles: [
-          'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
-        ],
-        tileSize: 256,
-        attribution: '© Esri',
-      },
+/** The satellite basemap, raster imagery and therefore the same in both themes. */
+const SATELLITE = {
+  version: 8,
+  // Raster tiles need no glyphs, but the transit overlay labels its stops with them - the
+  // satellite imagery carries no names of its own.
+  glyphs: OPENFREEMAP_GLYPHS_URL,
+  sources: {
+    'satellite-tiles': {
+      type: 'raster',
+      tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],
+      tileSize: 256,
+      attribution:
+        'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
     },
-    layers: [
-      {
-        id: 'satellite-tiles',
-        type: 'raster',
-        source: 'satellite-tiles',
-        minzoom: 0,
-        maxzoom: 19,
-      },
-      {
-        id: 'satellite-labels',
-        type: 'raster',
-        source: 'satellite-labels',
-        minzoom: 0,
-        maxzoom: 19,
-      },
-    ],
+    'satellite-labels': {
+      type: 'raster',
+      tiles: [
+        'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
+      ],
+      tileSize: 256,
+      attribution: '© Esri',
+    },
   },
+  layers: [
+    { id: 'satellite-tiles', type: 'raster', source: 'satellite-tiles', minzoom: 0, maxzoom: 19 },
+    { id: 'satellite-labels', type: 'raster', source: 'satellite-labels', minzoom: 0, maxzoom: 19 },
+  ],
 };
+
+/**
+ * Whether the basemap on screen is a dark one.
+ *
+ * The one question three other decisions hang off: which style URL to load, which overlay paint to
+ * use, and whether the canvas gets the dimmer. Satellite is bright in both themes, so it answers
+ * no whatever the theme says.
+ *
+ * @param {'STANDARD'|'SATELLITE'} styleValue
+ * @param {'light'|'dark'} theme
+ * @returns {boolean}
+ */
+export function isDarkBasemap(styleValue, theme) {
+  return styleValue === 'STANDARD' && theme === 'dark';
+}
+
+/**
+ * The style the map is to load.
+ *
+ * @param {'STANDARD'|'SATELLITE'} styleValue
+ * @param {'light'|'dark'} theme
+ * @returns {string|object}
+ */
+export function basemapStyle(styleValue, theme) {
+  if (styleValue === 'SATELLITE') return SATELLITE;
+  return isDarkBasemap(styleValue, theme) ? STANDARD_DARK : STANDARD_LIGHT;
+}
 
 /** Center of Germany, the fallback view when a consumer has nothing better to show. */
 const GERMANY_CENTER = [10.4515, 51.1657];
@@ -133,8 +154,12 @@ const GERMANY_CENTER = [10.4515, 51.1657];
  * @param {boolean} [props.enableDrawing]
  * @param {Object} [props.initialSpatialFilter]
  * @param {Function} [props.onDrawingChange]
- * @param {import('react').ReactNode} [props.panels] - Extra boxes for the top right column, below
- *   the map's own controls. For view-specific filters that belong with the map.
+ * @param {boolean} [props.controlsInPanels] Render the basemap controls inside the `panels` slot
+ *   instead of as a box of their own. The view is then responsible for the panel around them and
+ *   receives them as the first argument of `panels`, which becomes a function.
+ * @param {import('react').ReactNode|((controls: import('react').ReactNode) => import('react').ReactNode)} [props.panels] -
+ *   Extra boxes for the top right column, below the map's own controls. For view-specific filters
+ *   that belong with the map. A function when `controlsInPanels` is set, see above.
  * @param {import('react').ReactNode} [props.children] - Freely positioned overlay UI, rendered
  *   inside the shell so it travels into the fullscreen overlay without a portal.
  */
@@ -150,6 +175,7 @@ export default function Map({
   defaultShowTransit = false,
   onControlsChange = null,
   controlsMode = 'expanded',
+  controlsInPanels = false,
   transitExtra = null,
   expanded,
   defaultExpanded = false,
@@ -171,6 +197,9 @@ export default function Map({
   const userSettings = useSelector((state) => state.userSettings.settings);
   const language = userSettings?.language ?? 'en';
   const transitHoverPopups = userSettings?.transit_hover_popups === true;
+  // The same source of truth App.jsx paints the document from, so the map can never disagree with
+  // the interface around it. A setting, not a media query: the user picked this.
+  const theme = normalizeTheme(useSelector((state) => state.userSettings.settings.theme));
   const shellRef = useRef(null);
   const mapContainerRef = useRef(null);
   const mapRef = useRef(null);
@@ -211,7 +240,7 @@ export default function Map({
 
     mapRef.current = new maplibregl.Map({
       container: mapContainerRef.current,
-      style: STYLES[styleValue],
+      style: basemapStyle(styleValue, theme),
       center: initialCenter,
       zoom: initialZoom,
       maxBounds: boundsForCountries(countries),
@@ -310,8 +339,34 @@ export default function Map({
       return;
     }
 
-    mapRef.current.setStyle(STYLES[styleValue]);
-  }, [styleValue]);
+    mapRef.current.setStyle(basemapStyle(styleValue, theme));
+  }, [styleValue, theme]);
+
+  // Which of the two overlay colour sets applies. Derived from the basemap rather than the theme:
+  // satellite imagery is bright in both themes and keeps the light one.
+  const isDark = isDarkBasemap(styleValue, theme);
+  const paintVariant = isDark ? 'dark' : 'light';
+
+  // The dark basemap's own background and labels, which the style ships too dark to read against
+  // itself. Same `styledata` signal as the overlays and for the same reason: `setStyle()` reloads
+  // the style from source and drops every paint change with it.
+  useEffect(() => {
+    if (!mapRef.current) return undefined;
+
+    const onStyleData = () => {
+      if (mapRef.current) applyDarkBasemapPaint(mapRef.current, isDark, OPENFREEMAP_SOURCE_ID);
+    };
+
+    if (mapRef.current.isStyleLoaded()) {
+      onStyleData();
+    }
+
+    mapRef.current.on('styledata', onStyleData);
+
+    return () => {
+      mapRef.current?.off('styledata', onStyleData);
+    };
+  }, [isDark, styleValue]);
 
   // Handle 3D buildings layer
   //
@@ -326,7 +381,7 @@ export default function Map({
     if (!mapRef.current) return;
 
     const onStyleData = () => {
-      if (mapRef.current) applyBuildingsLayer(mapRef.current, buildingsValue);
+      if (mapRef.current) applyBuildingsLayer(mapRef.current, buildingsValue, paintVariant);
     };
 
     if (mapRef.current.isStyleLoaded()) {
@@ -338,7 +393,7 @@ export default function Map({
     return () => {
       mapRef.current?.off('styledata', onStyleData);
     };
-  }, [buildingsValue, styleValue]);
+  }, [buildingsValue, styleValue, paintVariant]);
 
   // Handle public transport layer
   useEffect(() => {
@@ -357,7 +412,7 @@ export default function Map({
         if (mapRef.current !== mapInstance) return;
       }
 
-      applyTransitLayers(mapInstance, transitValue);
+      applyTransitLayers(mapInstance, transitValue, paintVariant);
     };
 
     if (mapRef.current.isStyleLoaded()) {
@@ -369,7 +424,7 @@ export default function Map({
     return () => {
       mapRef.current?.off('styledata', onStyleData);
     };
-  }, [transitValue, styleValue]);
+  }, [transitValue, styleValue, paintVariant]);
 
   // Handle pitch for 3D
   useEffect(() => {
@@ -622,7 +677,7 @@ export default function Map({
 
     const place = ({ lng, lat }) => {
       if (marker == null) {
-        marker = new maplibregl.Marker({ color: PICK_MARKER_COLOR, draggable: true })
+        marker = new maplibregl.Marker({ color: MARKER_COLORS.pick, draggable: true })
           .setLngLat([lng, lat])
           .addTo(mapInstance);
         marker.on('dragend', () => {
@@ -646,7 +701,30 @@ export default function Map({
   }, [pickMode, onPick]);
 
   const showControls = controlsMode === 'always' || (controlsMode === 'expanded' && isExpanded);
-  const shellClassName = ['map-shell', isExpanded ? 'map-shell--expanded' : '', pickMode ? 'map-shell--picking' : '']
+
+  // The same rows, without the box around them, for a view that pulls them into a panel of its
+  // own. Handed to `panels` as its argument rather than rendered here, so the view decides where
+  // between its own filters they go.
+  const controlsNode =
+    showControls && controlsInPanels ? (
+      <MapControls
+        style={styleValue}
+        show3dBuildings={buildingsValue}
+        showTransit={transitValue}
+        onChange={applyControls}
+        transitExtra={transitExtra}
+        bare
+      />
+    ) : null;
+
+  const shellClassName = [
+    'map-shell',
+    isExpanded ? 'map-shell--expanded' : '',
+    pickMode ? 'map-shell--picking' : '',
+    // One or the other, never neither: a bright basemap gets toned down, the dark one gets its
+    // whole composite lifted off near-black. Both are canvas filters, see Map.less.
+    isDark ? 'map-shell--lift' : 'map-shell--dim',
+  ]
     .filter(Boolean)
     .join(' ');
 
@@ -676,7 +754,7 @@ export default function Map({
           />
         )}
 
-        {showControls && (
+        {showControls && !controlsInPanels && (
           <MapControls
             style={styleValue}
             show3dBuildings={buildingsValue}
@@ -686,7 +764,7 @@ export default function Map({
           />
         )}
 
-        {panels}
+        {typeof panels === 'function' ? panels(controlsNode) : panels}
       </div>
 
       {children}

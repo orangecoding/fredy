@@ -10,7 +10,7 @@ import { Banner, Button, Image, Space, Spin, Toast, Typography } from '@douyinfe
 import { IconMaximize } from '@douyinfe/semi-icons';
 
 import maplibregl from '../../components/map/maplibre.js';
-import { HOME_MARKER_COLOR } from '../../components/map/Map.jsx';
+import { MARKER_COLORS } from '../../components/map/markerColors.js';
 import { useProviderCountries } from '../../hooks/useProviderCountries.js';
 import { useScreenWidth } from '../../hooks/screenWidth.js';
 import no_image from '../../assets/no_image.png';
@@ -260,7 +260,7 @@ export default function ListingDetail() {
 
     homeAddresses.forEach((home) => {
       markers.push(
-        new maplibregl.Marker({ color: HOME_MARKER_COLOR })
+        new maplibregl.Marker({ color: MARKER_COLORS.home })
           .setLngLat([home.coords.lng, home.coords.lat])
           .setPopup(
             new maplibregl.Popup({ offset: 25 }).setHTML(

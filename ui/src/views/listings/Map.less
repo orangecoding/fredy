@@ -36,7 +36,7 @@
   // query below takes it back to the old width where the screen cannot spare it.
   width: 340px;
   max-width: 100%;
-  color: var(--semi-color-text-0);
+  color: @color-text;
 
   img {
     width: 100%;
@@ -57,7 +57,7 @@
   &__pagerLabel {
     font-size: 0.8rem;
     font-variant-numeric: tabular-nums;
-    color: var(--semi-color-text-1);
+    color: @color-muted;
   }
 
   &__pagerButton {
@@ -67,36 +67,61 @@
     width: 26px;
     height: 26px;
     padding: 0;
-    border: 1px solid var(--semi-color-border);
+    border: 1px solid @color-border;
     border-radius: 6px;
-    background: var(--semi-color-fill-0);
-    color: var(--semi-color-text-0);
+    background: @color-elevated;
+    color: @color-text;
     cursor: pointer;
 
     &:hover {
-      background: var(--semi-color-fill-1);
+      background: @color-fill-1;
     }
   }
 
-  h4 {
-    margin: 0 0 0.5rem 0;
-    font-size: 1.1rem;
+  &__title {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    margin: @space-2 0 0;
+    font-size: 14.5px;
+    font-weight: 600;
+    line-height: 1.35;
+    color: @color-text;
+    text-decoration: none;
+
+    &:hover {
+      color: @color-text;
+      text-decoration: underline;
+    }
   }
 
-  .info {
-    font-size: 0.8rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.1rem;
+  &__facts {
+    margin-top: @space-2;
+    display: grid;
+    grid-template-columns: 62px 1fr;
+    gap: 3px @space-2;
+    font-size: @text-sm;
+    color: @color-text;
+
+    > span:nth-child(odd) {
+      color: @color-muted;
+    }
+  }
+
+  &__num {
+    font-family: @font-mono;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__actions {
+    margin-top: @space-3;
   }
 
   &__transit {
     margin-top: 0.6rem;
     padding-top: 0.5rem;
-    border-top: 1px solid var(--semi-color-border);
+    border-top: 1px solid @color-border;
 
     strong {
       display: block;
@@ -110,80 +135,6 @@
     max-width: 280px;
   }
 
-  &__linkButton {
-    background: var(--semi-color-primary);
-    color: white;
-    font-size: 14px;
-    line-height: 20px;
-    font-weight: 600;
-    height: 32px;
-    width: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 6px;
-
-    a {
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-decoration: none;
-      width: 100%;
-      height: 100%;
-    }
-
-    &:hover {
-      background: var(--semi-color-primary-hover);
-      cursor: pointer;
-    }
-  }
-
-  &__detailsButton {
-    background: var(--semi-color-tertiary);
-    color: white;
-    border: none;
-    font-size: 14px;
-    height: 32px;
-    width: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 6px;
-    cursor: pointer;
-    padding: 0;
-
-    &:hover {
-      background: var(--semi-color-tertiary-hover);
-    }
-
-    svg {
-      fill: currentColor;
-    }
-  }
-
-  &__deleteButton {
-    background: var(--semi-color-danger);
-    color: white;
-    border: none;
-    font-size: 14px;
-    height: 32px;
-    width: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 6px;
-    cursor: pointer;
-    padding: 0;
-
-    &:hover {
-      background: var(--semi-color-danger-hover);
-    }
-
-    svg {
-      fill: currentColor;
-    }
-  }
 }
 
 /* Markers open a popup when clicked, so say so - the canvas' grab hand suggests dragging instead. */
@@ -219,10 +170,10 @@
 
 /* Override MapLibre default popup styles */
 .maplibregl-popup-content {
-  background-color: var(--semi-color-bg-1) !important;
-  color: var(--semi-color-text-0) !important;
+  background-color: @color-surface !important;
+  color: @color-text !important;
   border-radius: 8px !important;
-  box-shadow: var(--semi-shadow-elevated) !important;
+  box-shadow: @shadow-lg !important;
   /* A listing popup with image, details and nearby stops easily outgrows the map. Capping it and
      scrolling inside keeps the whole popup reachable; keepPopupInView() then pans the map so it
      is fully on screen. */
@@ -231,8 +182,8 @@
 }
 
 .maplibregl-popup-tip {
-  border-top-color: var(--semi-color-bg-1) !important;
-  border-bottom-color: var(--semi-color-bg-1) !important;
+  border-top-color: @color-surface !important;
+  border-bottom-color: @color-surface !important;
 }
 
 .map {

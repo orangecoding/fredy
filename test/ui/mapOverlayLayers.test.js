@@ -9,7 +9,7 @@ import {
   applyTransitLayers,
   BUILDINGS_LAYER_ID,
   ensureOpenFreeMapSource,
-  findFirstSymbolLayerId,
+  findOverlayInsertionId,
   OPENFREEMAP_SOURCE_ID,
   OPENFREEMAP_TILEJSON_URL,
   TRANSIT_LAYER_IDS,
@@ -107,19 +107,19 @@ describe('overlayLayers', () => {
     });
   });
 
-  describe('findFirstSymbolLayerId', () => {
+  describe('findOverlayInsertionId', () => {
     it('returns the first text symbol layer', () => {
-      expect(findFirstSymbolLayerId(makeMap(LABELLED_STYLE))).toBe('place-labels');
+      expect(findOverlayInsertionId(makeMap(LABELLED_STYLE))).toBe('place-labels');
     });
 
     it('returns undefined for a style without labels', () => {
-      expect(findFirstSymbolLayerId(makeMap(RASTER_STYLE))).toBeUndefined();
+      expect(findOverlayInsertionId(makeMap(RASTER_STYLE))).toBeUndefined();
     });
 
     it('ignores symbol layers that render no text', () => {
       const map = makeMap([{ id: 'icons-only', type: 'symbol', layout: { 'icon-image': 'dot' } }]);
 
-      expect(findFirstSymbolLayerId(map)).toBeUndefined();
+      expect(findOverlayInsertionId(map)).toBeUndefined();
     });
   });
 
