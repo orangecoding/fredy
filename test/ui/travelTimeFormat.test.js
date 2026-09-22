@@ -6,6 +6,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   addressesWithBudget,
+  answeredModes,
   availableModes,
   commuteBand,
   commuteBandMode,
@@ -26,6 +27,30 @@ describe('travelTimeFormat', () => {
     it('says nothing at all about an entry with no times', () => {
       expect(availableModes({ label: 'Home' })).toEqual([]);
       expect(hasAnyTime({ label: 'Home' })).toBe(false);
+    });
+  });
+
+  describe('answeredModes', () => {
+    it('pools what every address can answer for, so one of them is enough', () => {
+      const answered = answeredModes([
+        { label: 'Home', transit: { minutes: 31 } },
+        { label: 'Groceries', walk: { minutes: 7 } },
+      ]);
+      expect([...answered].sort()).toEqual(['transit', 'walk']);
+    });
+
+    it('offers nothing for a listing nothing has been measured for', () => {
+      // Which is what stops the route picker offering four buttons that can only ever redraw the
+      // straight line the fifth one already draws.
+      expect(answeredModes([]).size).toBe(0);
+      expect(answeredModes(null).size).toBe(0);
+      expect(answeredModes([{ label: 'Groceries', place: { name: 'FitX' } }]).size).toBe(0);
+    });
+
+    it('counts a mode that has a duration but no drawable route', () => {
+      // An estimate worked out from the nearest stop is an answer, and the picker says so next to
+      // it rather than hiding the mode: the number is real even where the line is not.
+      expect(answeredModes([{ label: 'Home', estimate: true, transit: { minutes: 25 } }]).has('transit')).toBe(true);
     });
   });
 

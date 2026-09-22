@@ -111,11 +111,28 @@
     }
   }
 
+  /* The address search, top left, above MapLibre's own zoom and compass. Narrower than the panel
+     column opposite it so the two corners do not meet on a small map. */
+  &__search {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 10;
+    width: min(320px, calc(100% - 24px));
+  }
+
+  /* MapLibre stacks its own controls at the top left, which is where the search now is. Pushed
+     down by the search's height plus the gap it keeps, so the zoom button sits under it rather
+     than behind it.
+     A modifier rather than `:has()` or a sibling combinator: the search element comes *after* the
+     map container in the DOM, so no sibling selector can reach back to it. */
+  &--searchable .maplibregl-ctrl-top-left {
+    margin-top: 44px;
+  }
+
   &__expand {
-    /* Square, and big enough to hit on a phone. */
-    width: 36px;
-    height: 36px;
     padding: 0;
+    flex: none;
     box-shadow: @shadow-sm;
   }
 }
@@ -159,12 +176,30 @@
     display: contents;
   }
 
+  /* A row rather than a bare line, so a heading can carry a control on its right. The first one
+     does: the fullscreen toggle used to float above the box as a lone square. With nothing beside
+     it the row is indistinguishable from the line it replaced. */
   &__groupTitle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: @space-2;
+    min-height: 20px;
     font-size: 10.5px;
     font-weight: 600;
     letter-spacing: 0.07em;
     text-transform: uppercase;
     color: @color-faint;
+
+    /* Smaller than the same button gets on its own: here it sits beside 10.5px type, not on the
+       map. Two classes, because Semi's own `.semi-button { height: 32px }` is one and its
+       stylesheet loads after ours. */
+    .map-shell__expand {
+      width: 24px;
+      height: 24px;
+      min-width: 24px;
+      box-shadow: none;
+    }
   }
 
   &__divider {

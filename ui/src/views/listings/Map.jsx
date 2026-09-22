@@ -484,13 +484,25 @@ export default function MapView() {
       });
       popupRoots.current.push(unmount);
 
-      popup = new maplibregl.Popup({ offset: 25, maxWidth: LISTING_POPUP_MAX_WIDTH }).setDOMContent(element);
+      popup = new maplibregl.Popup({
+        offset: 25,
+        maxWidth: LISTING_POPUP_MAX_WIDTH,
+        // MapLibre otherwise focuses the first `a[href]` in the popup, which since the redesign is
+        // the title, and a heading wearing a focus ring on every open reads as a stray border
+        // rather than as focus. The popup's own container is focused instead, on open below - it
+        // has to be something, because a popup is appended after every marker in the DOM and is
+        // otherwise a few hundred Tab presses away.
+        focusAfterOpen: false,
+      }).setDOMContent(element);
 
       // The stop list is only worth a request once the popup is actually opened, and it is the
       // same for the whole group, so it is mounted once and survives paging.
       popup.on('open', () => {
         refit();
         setOpenListingRef.current(currentId());
+        // The container, not the title: see `focusAfterOpen` above. `preventScroll`, because the
+        // popup is its own scroll box and focusing it must not jump it away from the top.
+        element.focus({ preventScroll: true });
 
         if (!transitMount || transitMount.dataset.mounted === 'true') return;
         transitMount.dataset.mounted = 'true';
@@ -569,6 +581,9 @@ export default function MapView() {
             showTransit={showTransit}
             onControlsChange={handleControlsChange}
             controlsMode="always"
+            // This is the map where an address search earns its place: the pins are spread over
+            // whole cities, and "is there anything near here" is the question the page is for.
+            searchable
             transitExtra={
               /* Only offered while the layer it belongs to is on, and indented under it: on its own
                  it describes nothing. Unlike the switches around it, this one is a preference rather
@@ -592,12 +607,18 @@ export default function MapView() {
             }
             onMapReady={handleMapReady}
             controlsInPanels
-            panels={(controls) => (
+            panels={(controls, expandButton) => (
               /* One box, two named groups. The map's own rows and this view's filters all answer
                  what the map is showing, so they read as one panel with a line between them rather
                  than as two identical boxes four pixels apart, neither of them with a heading. */
               <div className="map-panel">
-                <div className="map-panel__groupTitle">{t('map.groupMap')}</div>
+                {/* The fullscreen toggle rides on this heading rather than floating above the
+                    panel: it is a control over the map as a whole, and this is the line that names
+                    the map. */}
+                <div className="map-panel__groupTitle">
+                  {t('map.groupMap')}
+                  {expandButton}
+                </div>
                 {controls}
 
                 <div className="map-panel__divider" />

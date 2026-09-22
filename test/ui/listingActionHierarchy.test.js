@@ -136,6 +136,17 @@ describe('listing detail layout', () => {
     expect(bar).toBeLessThan(grid);
   });
 
+  it('offers no route mode that nothing has been measured in', () => {
+    // Every one of those buttons used to redraw the same straight line and apologise for it, which
+    // is what a listing measured only against a place type saw on three of its four modes.
+    const location = source('components/ListingLocationCard.jsx');
+    expect(location).toContain('answeredModes');
+    expect(location).toMatch(/disabled=\{!answered\.has\(mode\.key\)\}/);
+    // The apology is for a mode that was measured and still has no line - an estimate, say - and
+    // never for one that cannot be picked at all.
+    expect(location).toMatch(/answered\.has\(routeMode\) && !hasRouteFor\(routeTimes, routeMode\)/);
+  });
+
   it('keeps the map and the control that redraws it in one card', () => {
     const location = source('components/ListingLocationCard.jsx');
     expect(location).toContain('MapCanvas');

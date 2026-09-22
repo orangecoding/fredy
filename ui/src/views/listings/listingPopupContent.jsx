@@ -57,6 +57,17 @@ export function createListingPopupContent({
 }) {
   const element = document.createElement('div');
   element.className = 'map-popup-content';
+  /*
+   * Focusable, but never in the tab order by itself.
+   *
+   * This is where the caller sends focus when the popup opens, instead of letting MapLibre focus
+   * the first link inside it - which since the redesign is the title, and a heading wearing a
+   * focus ring on every open reads as a stray border. Focus has to go *somewhere* in here though:
+   * a popup is appended after every marker in the DOM, so from the marker that opened it the tab
+   * order runs through all the other markers first, and without this the contents would be out of
+   * keyboard reach entirely. Landing on the container puts the title and the actions one Tab away.
+   */
+  element.tabIndex = -1;
 
   const body = document.createElement('div');
   element.appendChild(body);

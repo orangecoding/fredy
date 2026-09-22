@@ -76,6 +76,7 @@ const viewLess = read('ui/src/views/listings/Map.less');
 const popup = read('ui/src/views/listings/listingPopupContent.jsx');
 const actions = read('ui/src/views/listings/components/MapPopupActions.jsx');
 const darkPaint = read('ui/src/components/map/darkBasemapPaint.js');
+const search = read('ui/src/components/map/MapSearch.jsx');
 const legendLess = read('ui/src/components/map/MapLegend.less');
 const actionsLess = read('ui/src/views/listings/components/MapPopupActions.less');
 
@@ -204,6 +205,15 @@ describe('the page', () => {
     expect(viewJsx).toMatch(/map-panel__divider/);
   });
 
+  it('carries the fullscreen toggle on the first heading, not floating above the box', () => {
+    expect(viewJsx).toMatch(/panels=\{\(controls, expandButton\) =>/);
+    expect(viewJsx).toMatch(/\{t\('map\.groupMap'\)\}\s*\{expandButton\}/);
+    // The map renders it itself only where no panel took it.
+    expect(mapJsx).toMatch(/\{!controlsInPanels && expandButton\}/);
+    // Smaller in there than on the map, and it needs two classes to beat Semi's own height.
+    expect(mapLess).toMatch(/&__groupTitle \{[\s\S]*?\.map-shell__expand \{[\s\S]*?height: 24px/);
+  });
+
   it('says why a filter is locked instead of banning a strip across the map', () => {
     expect(viewJsx).not.toMatch(/<Banner/);
     expect(viewJsx).toMatch(/disabled=\{!hasHome\}/);
@@ -260,6 +270,28 @@ describe('the popup', () => {
   it('takes Semi’s palette out of the map stylesheet', () => {
     expect(viewLess).not.toMatch(/--semi-color|--semi-shadow/);
   });
+
+  it('gives the close button a size and a surface, because it sits on the photograph', () => {
+    // MapLibre ships it transparent at the very corner, where it vanished into whatever the
+    // listing photo happened to be behind it.
+    expect(viewLess).toMatch(/\.maplibregl-popup-close-button \{[\s\S]*?width: 28px/);
+    expect(viewLess).toMatch(/\.maplibregl-popup-close-button \{[\s\S]*?background: rgba\(0, 0, 0/);
+  });
+
+  it('does not put a focus ring on the heading every time it opens', () => {
+    // MapLibre focuses the first a[href] in a popup on open, and that is the title link now.
+    expect(viewJsx).toMatch(/focusAfterOpen: false/);
+    // Keyboard focus still shows, in the app's colour rather than the browser's blue.
+    expect(viewLess).toMatch(/&:focus-visible \{[\s\S]*?outline: 2px solid @color-info/);
+    expect(viewLess).toMatch(/&:focus \{\s*outline: none;/);
+  });
+
+  it('still hands the keyboard a way in, by focusing the popup itself', () => {
+    // A popup is appended after every marker, so from the marker that opened it the tab order
+    // runs through all the others first. Without this its contents are unreachable in practice.
+    expect(popup).toMatch(/element\.tabIndex = -1/);
+    expect(viewJsx).toMatch(/element\.focus\(\{ preventScroll: true \}\)/);
+  });
 });
 
 describe('the view state survives a trip to a detail page and back', () => {
@@ -299,6 +331,66 @@ describe('the view state survives a trip to a detail page and back', () => {
     // `?priceMin=300000` alone used to be reset to zero here, because the listings-loaded effect
     // rewrote both ends whenever priceMax happened to be absent.
     expect(viewJsx).toMatch(/setPriceRange\(\[urlPriceMin \?\? 0, getMaxPrice\(\)\]\)/);
+  });
+});
+
+describe('the address search on the map', () => {
+  it('is offered by the map and switched on per view', () => {
+    // Off by default: a map showing one listing has nothing to search for, and the job form's
+    // area filter brings its own box scoped to the providers ticked in it.
+    expect(mapJsx).toMatch(/searchable = false/);
+    expect(viewJsx).toMatch(/^\s*searchable$/m);
+  });
+
+  it('sits top left, above MapLibre’s own controls rather than behind them', () => {
+    expect(mapJsx).toMatch(/map-shell__search/);
+    expect(mapLess).toMatch(/&__search \{/);
+    // The search element comes after the map container in the DOM, so no sibling selector can
+    // reach back to MapLibre's control corner; a modifier on the shell can.
+    expect(mapJsx).toMatch(/map-shell--searchable/);
+    expect(mapLess).toMatch(/&--searchable \.maplibregl-ctrl-top-left/);
+  });
+
+  it('travels into the fullscreen overlay, because it sits inside the shell', () => {
+    // Rendered as a child of `.map-shell`, which is the element that goes fixed and full-viewport.
+    expect(mapJsx).toMatch(/\{searchable && \(\s*<div className="map-shell__search">/);
+  });
+
+  it('waits for a pause in typing, because Nominatim rate-limits hard', () => {
+    expect(search).toMatch(/debounce\(/);
+    expect(search).toMatch(/300/);
+    expect(search).toMatch(/MIN_QUERY_LENGTH/);
+  });
+
+  it('locates what was typed on Enter, not only what was suggested', () => {
+    // Nominatim's completion is patchy on new streets, so the typed text has to be usable.
+    expect(search).toMatch(/event\.key !== 'Enter'/);
+    // On a wrapper, not through AutoComplete's own onKeyDown prop: Semi only forwards that from a
+    // handler on its own outer element, once it has bound keyboard events.
+    expect(search).toMatch(/<div\s+className="mapSearch"\s+onKeyDown=/);
+  });
+
+  it('asks the two endpoints for the two different jobs', () => {
+    // Suggesting is for choosing and answers with names; geocoding costs a lookup and only the
+    // chosen address pays it.
+    expect(search).toMatch(/\/api\/user\/settings\/autocomplete\?q=/);
+    expect(search).toMatch(/\/api\/user\/settings\/geocode\?q=/);
+    // Neither names its countries: the server falls back to the union across the user's jobs,
+    // which is the same reach the map itself has.
+    expect(search).not.toMatch(/providers=/);
+  });
+
+  it('marks the hit with one pin, moved rather than multiplied', () => {
+    expect(mapJsx).toMatch(/searchMarkerRef/);
+    expect(mapJsx).toMatch(/clearSearchResult/);
+    expect(mapJsx).toMatch(/MARKER_COLORS\.pick/);
+  });
+
+  it('stays out of the view state, unlike the filters and the open popup', () => {
+    // Where you are looking and what you are looking for are different decisions; the camera is
+    // not in the URL either.
+    expect(viewJsx).not.toMatch(/search: \{ defaultValue/);
+    expect(search).not.toMatch(/useUrlState|setSearchParams/);
   });
 });
 

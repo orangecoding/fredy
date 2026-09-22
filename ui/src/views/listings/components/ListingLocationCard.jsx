@@ -8,7 +8,7 @@ import { IconClock, IconShield } from '@douyinfe/semi-icons';
 
 import MapCanvas from '../../../components/map/Map.jsx';
 import TravelTimes from '../../../components/transit/TravelTimes.jsx';
-import { TRAVEL_MODES } from '../../../components/transit/travelTimeFormat.js';
+import { answeredModes, TRAVEL_MODES } from '../../../components/transit/travelTimeFormat.js';
 import { useTranslation } from '../../../services/i18n/i18n.jsx';
 import './ListingLocationCard.less';
 
@@ -93,6 +93,10 @@ export default function ListingLocationCard({
 }) {
   const t = useTranslation();
   const hasCoordinates = listing?.latitude != null && listing?.longitude != null;
+  // Which buttons are worth pressing. A mode nothing was measured in cannot draw anything and
+  // cannot label anything either, so pressing it only ever produced the straight line that already
+  // has its own button.
+  const answered = answeredModes(routeTimes);
 
   return (
     <section className="listing-card listing-location">
@@ -111,12 +115,21 @@ export default function ListingLocationCard({
             >
               <Radio value="straight">{t('listing.detail.routeStraight')}</Radio>
               {TRAVEL_MODES.map((mode) => (
-                <Radio key={mode.key} value={mode.key}>
-                  <span aria-hidden="true">{mode.icon}</span> {t(mode.labelKey)}
+                <Radio key={mode.key} value={mode.key} disabled={!answered.has(mode.key)}>
+                  {/* The reason, on the button itself - disabled with no explanation is what makes
+                      an interface feel broken rather than honest. On the label rather than on the
+                      Radio, because Semi forwards only data-* attributes to the element it
+                      renders and a title passed to it would quietly go nowhere. */}
+                  <span title={answered.has(mode.key) ? undefined : t('listing.detail.routeUnmeasured')}>
+                    <span aria-hidden="true">{mode.icon}</span> {t(mode.labelKey)}
+                  </span>
                 </Radio>
               ))}
             </RadioGroup>
-            {routeMode !== 'straight' && !hasRouteFor(routeTimes, routeMode) && (
+            {/* Only for a mode that was measured and still has no line to show: an estimate worked
+                out from the nearest stop, say. Saying it about a mode with no answer at all would
+                be apologising for a button nobody can press. */}
+            {routeMode !== 'straight' && answered.has(routeMode) && !hasRouteFor(routeTimes, routeMode) && (
               <Text size="small" type="tertiary">
                 {t('listing.detail.routeMissing')}
               </Text>

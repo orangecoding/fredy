@@ -196,6 +196,27 @@ export function availableModes(entry) {
 }
 
 /**
+ * The modes anything on this listing has an answer for, across every address.
+ *
+ * What the route picker may offer. A mode nothing was measured in has no route to draw and no
+ * duration to label one with, so offering it can only ever produce the straight line the picker
+ * already has a button for - next to a note apologising for it. A listing measured on foot to the
+ * nearest gym is exactly that case on three of its four buttons.
+ *
+ * @param {Array<Object>|null|undefined} travelTimes
+ * @returns {Set<string>} Mode keys, empty for a listing nothing has been measured for yet.
+ */
+export function answeredModes(travelTimes) {
+  const answered = new Set();
+  for (const entry of Array.isArray(travelTimes) ? travelTimes : []) {
+    for (const mode of availableModes(entry)) {
+      answered.add(mode.key);
+    }
+  }
+  return answered;
+}
+
+/**
  * The one mode to show when there is only room for one.
  *
  * The mode the address is measured in, which is the question the user actually asked - not the

@@ -38,6 +38,13 @@
   max-width: 100%;
   color: @color-text;
 
+  // The popup sends focus here when it opens, so that its contents are one Tab away rather than a
+  // few hundred markers away. No ring for it: this is the box, not a control, and the things a
+  // keyboard reaches from here draw their own.
+  &:focus {
+    outline: none;
+  }
+
   img {
     width: 100%;
     height: 150px;
@@ -93,6 +100,23 @@
     &:hover {
       color: @color-text;
       text-decoration: underline;
+    }
+
+    /*
+     * The browser's own ring is a blue box that reads as a stray border around a heading, and it
+     * was showing on every open: MapLibre focuses the first `a[href]` in a popup when it opens
+     * (`focusAfterOpen`), and since the title became a link that is this element. The open no
+     * longer moves focus - see where the popup is constructed - so what is left here is a
+     * keyboard ring, in the app's own colour, and nothing at all for a pointer.
+     */
+    &:focus {
+      outline: none;
+    }
+
+    &:focus-visible {
+      outline: 2px solid @color-info;
+      outline-offset: 3px;
+      border-radius: @radius-chip;
     }
   }
 
@@ -179,6 +203,35 @@
      is fully on screen. */
   max-height: 70vh;
   overflow-y: auto;
+}
+
+/*
+ * The close button. MapLibre ships it as a bare transparent `×` at the very corner, roughly
+ * 20 by 17 pixels with no surface of its own - and in the listing popup the first thing under that
+ * corner is the photograph, so it disappeared into whatever the picture happened to be.
+ *
+ * Given a size worth aiming at, moved off the corner, and put on a scrim. The scrim and the white
+ * on it are literal on purpose and `test/ui/theme.test.js` allows exactly this: what is behind the
+ * button is a photograph, and a photograph is the same in both themes.
+ */
+.maplibregl-popup-close-button {
+  top: @space-2 !important;
+  right: @space-2 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: @radius-pill !important;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 18px;
+  line-height: 1;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.75) !important;
+  }
 }
 
 .maplibregl-popup-tip {

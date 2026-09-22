@@ -1,0 +1,84 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../tokens.less';
+
+/*
+ * The address box that floats on the map.
+ *
+ * Dressed as the panel below it rather than as a plain input: the same translucent surface, border
+ * and radius, so the corner reads as one stack of map furniture instead of a form control that
+ * happened to land on a map. Semi draws the border on `.semi-input-wrapper`, which is why the
+ * colours are set there and not on the root.
+ */
+.mapSearch {
+  width: 100%;
+  min-width: 0;
+
+  &__field {
+    width: 100%;
+  }
+
+  .semi-input-wrapper {
+    /*
+     * The height of the expand button beside it, so the top row is flush.
+     *
+     * 32 and not the 36 `.map-shell__expand` asks for: Semi's own `.semi-button { height: 32px }`
+     * is a single class like ours and its stylesheet loads later, so it wins and that button has
+     * always been 32 on screen. Matching what is there beats matching what the other rule says.
+     */
+    height: 32px;
+    background: @color-map-panel;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid @color-border;
+    border-radius: @radius-card;
+    box-shadow: @shadow-sm;
+
+    &:hover,
+    &.semi-input-wrapper-focus {
+      border-color: @color-border-bright;
+    }
+  }
+
+  .semi-input {
+    background: transparent;
+    color: @color-text;
+    font-size: @text-sm;
+  }
+
+  .semi-input-prefix {
+    color: @color-muted;
+  }
+}
+
+/*
+ * The suggestion list. Semi's own panel is opaque and carries its palette, which next to the
+ * translucent boxes on the map looks like it belongs to a different application.
+ *
+ * An address runs long - "Musterstraße 12, 40210 Düsseldorf, Nordrhein-Westfalen" - and Semi caps
+ * an option at the trigger's width and clips it. The panel is allowed to grow instead, up to a
+ * width that still fits a phone.
+ */
+.mapSearch__dropdown {
+  .semi-autocomplete-option-list {
+    background: @color-surface;
+    border: 1px solid @color-border;
+    border-radius: @radius-card;
+    max-width: min(420px, calc(100vw - 24px));
+  }
+
+  .semi-autocomplete-option {
+    color: @color-text;
+    font-size: @text-sm;
+    white-space: normal;
+    line-height: 1.4;
+
+    &:hover,
+    &-focused {
+      background: @color-fill-1;
+    }
+  }
+}
