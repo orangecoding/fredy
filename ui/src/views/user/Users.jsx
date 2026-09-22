@@ -51,12 +51,16 @@ const Users = function Users() {
       {/* Still no h1 of its own - the Administration layout already names the page - but a card
           title is not an h1, and without one this was the only admin page that never said what
           its table was or what removing a row does. */}
-      <SegmentPart name={t('users.sectionName')} helpText={t('users.sectionHelp')}>
-        <div className="settingsShell__saveRow">
-          <Button type="primary" theme="solid" icon={<IconPlus />} onClick={() => navigate('/admin/users/new')}>
+      <SegmentPart
+        name={t('users.sectionName')}
+        helpText={t('users.sectionHelp')}
+        helpMode="popover"
+        action={
+          <Button size="small" icon={<IconPlus />} onClick={() => navigate('/admin/users/new')}>
             {t('users.newUser')}
           </Button>
-        </div>
+        }
+      >
         {!loading && (
           <UserTable
             user={users}

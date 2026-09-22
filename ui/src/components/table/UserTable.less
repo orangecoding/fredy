@@ -1,0 +1,81 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../tokens.less';
+
+.userTable {
+  &__user {
+    display: flex;
+    align-items: center;
+    gap: @space-2;
+    flex-wrap: wrap;
+  }
+
+  &__name {
+    font-weight: 500;
+    color: @color-text;
+  }
+
+  // Die Rolle, nicht der Name. Akzentflaeche und Akzentrahmen, Schrift im Akzent - dieselben
+  // Werte wie bisher, nur nicht mehr als acht Zeilen Inline-Style im Markup.
+  &__admin {
+    display: inline-flex;
+    align-items: center;
+    height: 18px;
+    padding: 0 @space-2;
+    border-radius: @radius-pill;
+    background: rgb(@color-accent-rgb / 12%);
+    border: 1px solid rgb(@color-accent-rgb / 35%);
+    color: @color-accent-text;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+
+  // Eine eigene Zeile unter dem Namen, nicht eine Spalte: 71 Zeichen haben die Tabellenzeile
+  // dreimal so hoch gemacht, fuer einen Wert, den man einmal kopiert.
+  //
+  // Und deshalb bricht er auch nicht um. `word-break: break-all` hat den Umzug aus der Spalte
+  // gleich wieder zunichtegemacht: in einer schmalen Spalte wurden aus den drei Zeilen sechs,
+  // derselbe Fehler eine Ebene tiefer. Der Token wird kopiert, nicht gelesen - also eine Zeile,
+  // abgeschnitten wo der Platz endet, mit dem Kopierknopf daneben. `user-select: all` macht ihn
+  // trotzdem mit einem Klick vollstaendig markierbar, falls die Zwischenablage gesperrt ist.
+  &__token {
+    display: flex;
+    align-items: center;
+    gap: @space-2;
+
+    // `width: 0` plus `min-width: 100%`: die Zeile fuellt die Spalte, traegt zu deren
+    // Mindestbreite aber nichts bei. Ohne das waere der Umbruch nur gegen ein Aufziehen
+    // getauscht - eine Zeile mit `nowrap` hat als Mindestbreite ihren ganzen Inhalt, und die
+    // Tabelle hat die Benutzerspalte daraufhin auf 526px gezogen und Letzter Login, Jobs und
+    // Aktionen aus dem Bild geschoben.
+    width: 0;
+    min-width: 100%;
+
+    code {
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      user-select: all;
+      font-family: @font-mono;
+      font-size: @text-xs;
+      color: @color-muted;
+    }
+
+    .semi-button {
+      flex: none;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: @space-1;
+  }
+}

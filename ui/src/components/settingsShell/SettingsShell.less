@@ -23,16 +23,6 @@
     max-width: 860px;
   }
 
-  // Ein Speichern-Knopf am Ende der Seite. Die vier Benutzer-Seiten haben ihn gegen die
-  // Speicherleiste getauscht; die Admin-Seiten und die Benutzerverwaltung tragen ihn weiter, und
-  // solange das so ist, waere das Loeschen dieser Regel kein Aufraeumen, sondern fuenf Knoepfe, die
-  // nach links rutschen.
-  &__saveRow {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: @space-2;
-  }
-
   // Settings that only mean something once their parent feature is switched on. Indented and
   // rule-marked so the dependency is visible at a glance rather than only discoverable by toggling.
   &__subSettings {
@@ -223,4 +213,39 @@
    Anwendung, damit die Beschriftung keinen eigenen Zustand braucht. */
 .settingsShell__tabIcon--alert {
   color: @color-error;
+}
+
+/* Was beim Speichern mehr tut als speichern. Die Systemseite laedt den Browser drei Sekunden
+   danach neu, weil Port und Datenbankpfad beim Start gelesen werden, und das gehoert vor die
+   Entscheidung statt in den Toast danach. Bernstein traegt nur der Punkt, die Schrift bleibt
+   Textfarbe - dieselbe Regel wie beim Versionshinweis im Footer. */
+.settingsShell__cardFlag {
+  display: inline-flex;
+  align-items: center;
+  gap: @space-2;
+  height: 20px;
+  padding: 0 @space-2;
+  border-radius: @radius-chip;
+  background: @color-elevated;
+  border: 1px solid @color-border;
+  font-size: @text-xs;
+  line-height: 1;
+  color: @color-text;
+  white-space: nowrap;
+}
+
+.settingsShell__cardFlagDot {
+  width: 5px;
+  height: 5px;
+  border-radius: @radius-pill;
+  flex: none;
+  background: @color-warning;
+
+  &--live {
+    background: @color-error;
+  }
+
+  &--ok {
+    background: @color-success;
+  }
 }

@@ -3,13 +3,19 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { TimePicker, Button, Checkbox, Input, InputNumber, Banner, Select } from '@douyinfe/semi-ui-19';
-import { IconSave } from '@douyinfe/semi-icons';
+import { TimePicker, Checkbox, Input, InputNumber, Select } from '@douyinfe/semi-ui-19';
+import { IconAlertTriangle } from '@douyinfe/semi-icons';
 import { useOutletContext } from 'react-router';
 import { useMemo } from 'react';
 
 import { SegmentPart } from '../../../components/segment/SegmentPart';
+import SettingsSaveBar from '../../../components/settingsShell/SettingsSaveBar.jsx';
+import AdminField from '../components/AdminField.jsx';
+import { useUnsavedWarning } from '../../../hooks/useUnsavedWarning.js';
+import { useSelector } from '../../../services/state/store';
+import { relativeTime } from '../../../services/time/relativeTime.js';
 import { timeZoneOptions } from '../../../services/time/timeService';
+import './ExecutionPage.less';
 
 /**
  * @param {number} ts
@@ -42,60 +48,113 @@ function formatFromTBackend(time) {
  * @returns {React.ReactElement}
  */
 export default function ExecutionPage() {
-  const { t, form, setField, setWorkingHour, executionDirty, savingExecution, saveExecution } = useOutletContext();
+  const { t, form, setField, setWorkingHour, executionDirty, savingExecution, saveExecution, discardExecution } =
+    useOutletContext();
   const zones = useMemo(() => timeZoneOptions(form.workingHours.timeZone), [form.workingHours.timeZone]);
+
+  // Nur, was das Dashboard ohnehin schon geholt hat - dieselbe Quelle, aus der die Seitenleiste
+  // liest. Diese Seite stellt das Suchintervall ein und war die einzige, die nicht sagt, wann der
+  // naechste Lauf faellig ist.
+  const nextRun = useSelector((state) => state.dashboard.data?.general?.nextRun);
+
+  useUnsavedWarning(executionDirty);
+
+  // Was die vier Regler zusammen bedeuten, in einem Satz. Einzeln sagen sie es nicht: ein leeres
+  // Von und Bis heisst "rund um die Uhr", und das stand bisher nur im Hilfetext.
+  const summary = useMemo(() => {
+    const { from, to, timeZone } = form.workingHours;
+    const zone = timeZone ?? t('admin.execution.serverZone');
+    if (from == null || to == null || from === '' || to === '') {
+      return t('admin.execution.summaryAllDay', { minutes: form.interval || '?' });
+    }
+    return t('admin.execution.summaryWindow', { minutes: form.interval || '?', from, to, zone });
+  }, [form.interval, form.workingHours, t]);
 
   return (
     <div className="settingsShell__page">
-      <SegmentPart name={t('settings.searchInterval')} helpText={t('settings.searchIntervalHelp')}>
-        <InputNumber
-          min={5}
-          max={1440}
-          placeholder={t('settings.searchIntervalPlaceholder')}
-          value={form.interval}
-          formatter={(value) => `${value}`.replace(/\D/g, '')}
-          onChange={(value) => setField('interval', value)}
-          suffix={t('settings.searchIntervalSuffix')}
-          style={{ maxWidth: 200 }}
-        />
-      </SegmentPart>
+      {/* Eine Karte statt zweier. Intervall, Von, Bis und Zeitzone sind vier Bedienelemente, die
+          zusammen einen Sachverhalt beschreiben; als zwei Karten gelesen sagte keine von beiden,
+          was die andere daran aendert. */}
+      <SegmentPart
+        name={t('admin.execution.searchRun')}
+        helpText={t('settings.searchIntervalHelp')}
+        helpMode="popover"
+        action={
+          nextRun != null && nextRun !== 0 ? (
+            <span className="settingsShell__cardFlag">
+              <span className="settingsShell__cardFlagDot settingsShell__cardFlagDot--ok" aria-hidden="true" />
+              {t('nav.nextRun', { time: relativeTime(nextRun, t) })}
+            </span>
+          ) : null
+        }
+      >
+        {/* Drei Zeilen, die sich wie ein Satz lesen: "Alle 60 Minuten", "Zwischen 08:00 und 20:00".
+            Die Beschriftung steht daneben statt darueber, weil sie der Anfang des Satzes ist und
+            nicht die Ueberschrift eines Feldes. */}
+        <div className="executionPage__line">
+          <span className="executionPage__caption">{t('admin.execution.every')}</span>
+          <span className="adminRow__control">
+            <InputNumber
+              id="interval"
+              min={5}
+              max={1440}
+              aria-label={t('settings.searchInterval')}
+              placeholder={t('settings.searchIntervalPlaceholder')}
+              value={form.interval}
+              formatter={(value) => `${value}`.replace(/\D/g, '')}
+              onChange={(value) => setField('interval', value)}
+              suffix={t('settings.searchIntervalSuffix')}
+            />
+          </span>
+        </div>
 
-      <SegmentPart name={t('settings.workingHours')} helpText={t('settings.workingHoursHelp')}>
-        <div className="settingsShell__timePickerContainer">
+        <div className="executionPage__line">
+          <span className="executionPage__caption">{t('admin.execution.between')}</span>
           <TimePicker
             format={'HH:mm'}
-            insetLabel={t('settings.workingHoursFrom')}
+            className="executionPage__time"
             value={formatFromTBackend(form.workingHours.from)}
-            placeholder=""
+            placeholder={t('settings.workingHoursFrom')}
             onChange={(val) => setWorkingHour('from', val == null ? null : formatFromTimestamp(val))}
           />
+          <span className="executionPage__caption executionPage__caption--inline">{t('admin.execution.and')}</span>
           <TimePicker
             format={'HH:mm'}
-            insetLabel={t('settings.workingHoursUntil')}
+            className="executionPage__time"
             value={formatFromTBackend(form.workingHours.to)}
-            placeholder=""
+            placeholder={t('settings.workingHoursUntil')}
             onChange={(val) => setWorkingHour('to', val == null ? null : formatFromTimestamp(val))}
           />
-          {/*
-            Searchable rather than a plain list: there are well over four hundred zones, and an
-            operator knows the name of theirs. Clearable because an empty value is a real state -
-            it means the window follows the server's own zone, which is what every installation did
-            before this setting existed.
-          */}
+        </div>
+
+        {/*
+          Eigene Zeile, weil das Artboard die Zeitzone aus der Zwischen-Zeile heraushaelt - dort
+          steht das Zeitfenster, und die Zone ist keine dritte Uhrzeit. Weggelassen wird sie
+          nicht: der Satz darunter nennt sie, und irgendwo muss man sie setzen koennen.
+
+          Searchable rather than a plain list: there are well over four hundred zones, and an
+          operator knows the name of theirs. Clearable because an empty value is a real state -
+          it means the window follows the server's own zone, which is what every installation
+          did before this setting existed.
+        */}
+        <div className="executionPage__line">
+          <span className="executionPage__caption">{t('settings.workingHoursTimeZone')}</span>
           <Select
             filter
             showClear
+            className="executionPage__zone"
             optionList={zones}
             value={form.workingHours.timeZone ?? undefined}
             placeholder={t('settings.workingHoursTimeZonePlaceholder')}
-            insetLabel={t('settings.workingHoursTimeZone')}
+            aria-label={t('settings.workingHoursTimeZone')}
             onChange={(val) => setWorkingHour('timeZone', val == null || val === '' ? null : val)}
-            style={{ minWidth: 260 }}
           />
         </div>
+
+        <div className="executionPage__summary">{summary}</div>
       </SegmentPart>
 
-      <SegmentPart name={t('settings.proxyUrl')} helpText={t('settings.proxyUrlHelp')}>
+      <SegmentPart name={t('settings.proxyUrl')} helpText={t('settings.proxyUrlHelp')} helpMode="popover">
         <Input
           type="text"
           placeholder={t('settings.proxyUrlPlaceholder')}
@@ -110,25 +169,28 @@ export default function ExecutionPage() {
         invited reading them as four independent knobs. They stay visible while disabled so an
         operator can see what turning the feature on would commit them to.
       */}
-      <SegmentPart name={t('settings.priceTracking')} helpText={t('settings.priceTrackingHelp')}>
-        {/*
-          Above the switch, not below it. Turning this on is the moment the operator takes on the
-          risk, so the warning has to be in front of them beforehand, not revealed as a consequence.
-        */}
-        <Banner
-          fullMode={false}
-          type="warning"
-          closeIcon={null}
-          style={{ marginBottom: '12px' }}
-          title={t('settings.priceTrackingWarningTitle')}
-          description={
-            <>
-              <p style={{ margin: '0 0 8px' }}>{t('settings.priceTrackingWarningBody')}</p>
-              <p style={{ margin: 0 }}>{t('settings.priceTrackingWarningDefaults')}</p>
-            </>
-          }
-        />
-
+      {/*
+        Above the switch, not below it. Turning this on is the moment the operator takes on the
+        risk, so the warning has to be in front of them beforehand, not revealed as a consequence.
+        It sits in the card's own help now, which puts it ahead of the switch all the more: the
+        help is read before the first control, and a warning behind a mark would have to be opened
+        to be a warning at all.
+      */}
+      <SegmentPart
+        name={t('settings.priceTracking')}
+        helpText={
+          <>
+            {t('settings.priceTrackingHelp')}
+            <span className="settingsShell__helpWarning">
+              <IconAlertTriangle size="small" />
+              <span>
+                <strong>{t('settings.priceTrackingWarningTitle')}</strong> {t('settings.priceTrackingWarningBody')}{' '}
+                {t('settings.priceTrackingWarningDefaults')}
+              </span>
+            </span>
+          </>
+        }
+      >
         <Checkbox
           checked={form.priceTrackingEnabled}
           onChange={(e) => setField('priceTrackingEnabled', e.target.checked)}
@@ -139,11 +201,14 @@ export default function ExecutionPage() {
         <div
           className={`settingsShell__subSettings${form.priceTrackingEnabled ? '' : ' settingsShell__subSettings--disabled'}`}
         >
-          <div className="settingsShell__subSetting">
-            <label className="settingsShell__subSetting__label" htmlFor="priceCheckIntervalDays">
-              {t('settings.priceCheckInterval')}
-            </label>
-            <p className="settingsShell__subSetting__help">{t('settings.priceCheckIntervalHelp')}</p>
+          {/* Die Schiene bleibt - sie drueckt die Abhaengigkeit vom Schalter aus, und die ist
+              echt. Was darin steht, sind Feldzeilen wie ueberall sonst: drei Erklaerungen von 15
+              bis 25 Woertern untereinander waren dreimal dieselbe Entscheidung neu begruendet. */}
+          <AdminField
+            label={t('settings.priceCheckInterval')}
+            help={t('settings.priceCheckIntervalHelp')}
+            htmlFor="priceCheckIntervalDays"
+          >
             <InputNumber
               id="priceCheckIntervalDays"
               min={1}
@@ -153,15 +218,14 @@ export default function ExecutionPage() {
               formatter={(value) => `${value}`.replace(/\D/g, '')}
               onChange={(value) => setField('priceCheckIntervalDays', value)}
               suffix={t('settings.listingRetentionSuffix')}
-              style={{ maxWidth: 200 }}
             />
-          </div>
+          </AdminField>
 
-          <div className="settingsShell__subSetting">
-            <label className="settingsShell__subSetting__label" htmlFor="priceCheckLimitPerRun">
-              {t('settings.priceCheckLimit')}
-            </label>
-            <p className="settingsShell__subSetting__help">{t('settings.priceCheckLimitHelp')}</p>
+          <AdminField
+            label={t('settings.priceCheckLimit')}
+            help={t('settings.priceCheckLimitHelp')}
+            htmlFor="priceCheckLimitPerRun"
+          >
             <InputNumber
               id="priceCheckLimitPerRun"
               min={1}
@@ -170,15 +234,14 @@ export default function ExecutionPage() {
               value={form.priceCheckLimitPerRun}
               formatter={(value) => `${value}`.replace(/\D/g, '')}
               onChange={(value) => setField('priceCheckLimitPerRun', value)}
-              style={{ maxWidth: 200 }}
             />
-          </div>
+          </AdminField>
 
-          <div className="settingsShell__subSetting">
-            <label className="settingsShell__subSetting__label" htmlFor="priceChangeThresholdPercent">
-              {t('settings.priceChangeThreshold')}
-            </label>
-            <p className="settingsShell__subSetting__help">{t('settings.priceChangeThresholdHelp')}</p>
+          <AdminField
+            label={t('settings.priceChangeThreshold')}
+            help={t('settings.priceChangeThresholdHelp')}
+            htmlFor="priceChangeThresholdPercent"
+          >
             <InputNumber
               id="priceChangeThresholdPercent"
               min={0}
@@ -188,24 +251,17 @@ export default function ExecutionPage() {
               value={form.priceChangeThresholdPercent}
               onChange={(value) => setField('priceChangeThresholdPercent', value)}
               suffix="%"
-              style={{ maxWidth: 200 }}
             />
-          </div>
+          </AdminField>
         </div>
       </SegmentPart>
 
-      <div className="settingsShell__saveRow">
-        <Button
-          type="primary"
-          theme="solid"
-          onClick={saveExecution}
-          disabled={!executionDirty}
-          loading={savingExecution}
-          icon={<IconSave />}
-        >
-          {t('settings.save')}
-        </Button>
-      </div>
+      <SettingsSaveBar
+        dirty={executionDirty}
+        saving={savingExecution}
+        onSave={saveExecution}
+        onDiscard={discardExecution}
+      />
     </div>
   );
 }

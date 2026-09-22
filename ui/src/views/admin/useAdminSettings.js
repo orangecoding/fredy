@@ -384,6 +384,29 @@ export function useAdminSettings(settings) {
     [save, form, t],
   );
 
+  /**
+   * Put one page's fields back to what is stored.
+   *
+   * Per page rather than for the whole form, for the same reason the saves are: the hook holds one
+   * object for four pages, and discarding on Execution must not throw away an edit somebody left
+   * open on System.
+   *
+   * @param {string[]} fields
+   * @returns {void}
+   */
+  const discard = useCallback(
+    (fields) => {
+      setForm((previous) => {
+        const next = { ...previous };
+        for (const name of fields) {
+          next[name] = baseline[name];
+        }
+        return next;
+      });
+    },
+    [baseline],
+  );
+
   return {
     t,
     form,
@@ -401,5 +424,9 @@ export function useAdminSettings(settings) {
     saveExecution,
     saveConnectivity,
     saveRouting,
+    discardSystem: () => discard(SYSTEM_FIELDS),
+    discardExecution: () => discard(EXECUTION_FIELDS),
+    discardConnectivity: () => discard(CONNECTIVITY_FIELDS),
+    discardRouting: () => discard(ROUTING_FIELDS),
   };
 }

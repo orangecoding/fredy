@@ -30,9 +30,12 @@ import './SettingsSaveBar.less';
  * @param {boolean} [props.saving=false]
  * @param {() => void} props.onSave
  * @param {() => void} props.onDiscard
+ * @param {string|null} [props.note] Replaces the standard sentence, for a page whose save does
+ *   something beyond saving - System reloads the browser, and that has to be readable before the
+ *   button is pressed rather than in the toast afterwards.
  * @returns {React.ReactElement|null}
  */
-export default function SettingsSaveBar({ dirty, saving = false, onSave, onDiscard }) {
+export default function SettingsSaveBar({ dirty, saving = false, onSave, onDiscard, note = null }) {
   const t = useTranslation();
 
   if (!dirty) {
@@ -43,7 +46,7 @@ export default function SettingsSaveBar({ dirty, saving = false, onSave, onDisca
     <div className="settingsSaveBar" role="status">
       <span className="settingsSaveBar__label">
         <span className="settingsSaveBar__dot" aria-hidden="true" />
-        {t('settings.unsavedChanges')}
+        {note ?? t('settings.unsavedChanges')}
       </span>
       <span className="settingsSaveBar__actions">
         <Button className="settingsSaveBar__discard" theme="outline" size="small" onClick={onDiscard}>

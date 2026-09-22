@@ -87,6 +87,14 @@ export default function ApplicationPage() {
    */
   const [previewFor, setPreviewFor] = useState(null);
   const [saveCount, setSaveCount] = useState(0);
+  /**
+   * Whether the placeholder list is open.
+   *
+   * Controlled rather than left to the Popover, because picking one has to close it. Uncontrolled
+   * it stayed open over the preview after every insert, so the one thing you wanted to look at
+   * afterwards - what the letter now reads like - was the thing it covered.
+   */
+  const [placeholdersOpen, setPlaceholdersOpen] = useState(false);
 
   useEffect(() => {
     setProfile(storedProfile ?? {});
@@ -198,6 +206,7 @@ export default function ApplicationPage() {
    * @param {string} key
    */
   const insertPlaceholder = (key) => {
+    setPlaceholdersOpen(false);
     const textarea = editorRef.current?.querySelector('textarea');
     const token = `{{${key}}}`;
     if (textarea == null) {
@@ -450,6 +459,8 @@ export default function ApplicationPage() {
           <Popover
             trigger="click"
             position="bottomLeft"
+            visible={placeholdersOpen}
+            onVisibleChange={setPlaceholdersOpen}
             content={
               <div className="applicationPage__placeholders">
                 {PLACEHOLDER_GROUPS.map((group) => (
