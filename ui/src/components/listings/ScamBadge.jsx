@@ -24,14 +24,18 @@ import './ScamBadge.less';
  * said it is fine. A warning that stays up after being dismissed is a warning people learn to look
  * past.
  *
+ * The word is always on screen now. The old `compact` shape dropped it and left a bare triangle in
+ * front of the table's title, which is where a warning is easiest to miss and hardest to explain.
+ * It survived because the badge was a full-width block in the grid; at 20px high with the word in
+ * it, it fits a table row without taking the headline's space.
+ *
  * @param {Object} props
  * @param {Object|null} props.listing A row as the listings API returns it.
- * @param {boolean} [props.compact=false] Icon only, words in the tooltip. The table's title column
- *   is under a hundred pixels wide, and a badge with a label in it left no room for the headline at
- *   all - the row showed a warning about a listing it could not name.
+ * @param {'inline'|'onImage'} [props.variant='inline'] `onImage` carries its own opaque panel for
+ *   the card's photograph; `inline` sits on a surface and spends the red on the word instead.
  * @returns {React.ReactElement|null}
  */
-export default function ScamBadge({ listing, compact = false }) {
+export default function ScamBadge({ listing, variant = 'inline' }) {
   const t = useTranslation();
   const verdict = readScamVerdict(listing);
 
@@ -39,21 +43,27 @@ export default function ScamBadge({ listing, compact = false }) {
     return null;
   }
 
+  // One reason per line. Joined with spaces, three complete sentences ran together into a
+  // paragraph in which the individual reasons could no longer be told apart.
   const tooltip =
-    verdict.source === 'user'
-      ? t('listings.scamMarkedByYou')
-      : [t('listings.scamWhy'), ...verdict.signals.map((signal) => t(`listings.scamSignal.${signal}`))].join(' ');
+    verdict.source === 'user' ? (
+      t('listings.scamMarkedByYou')
+    ) : (
+      <span className="scamBadge__why">
+        {t('listings.scamWhy')}
+        <ul>
+          {verdict.signals.map((signal) => (
+            <li key={signal}>{t(`listings.scamSignal.${signal}`)}</li>
+          ))}
+        </ul>
+      </span>
+    );
 
   return (
     <Tooltip content={tooltip} position="top">
-      <span
-        className={`scamBadge${compact ? ' scamBadge--compact' : ''}`}
-        // The label is the accessible name in both shapes. Compact only drops it from the screen,
-        // never from the accessibility tree, where there is no width to run out of.
-        aria-label={t('listings.scamBadge')}
-      >
-        <IconAlertTriangle size="small" />
-        {!compact && t('listings.scamBadge')}
+      <span className={`scamBadge scamBadge--${variant}`}>
+        <IconAlertTriangle size="small" aria-hidden="true" />
+        {t('listings.scamBadge')}
       </span>
     </Tooltip>
   );
