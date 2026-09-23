@@ -61,6 +61,13 @@
   &__control {
     flex: none;
 
+    // Ein freies Textfeld ist so lang wie sein Wert und nimmt den Rest der Zeile. Dieselbe Regel,
+    // die `.adminRow__control--grow` fuer die Systemkarten traegt, eine Ebene hoeher.
+    &--grow {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
     // Zahlen rechtsbuendig und in Tabellenziffern: untereinander sind drei Aufbewahrungswerte
     // eine Spalte, und eine Spalte vergleicht man.
     .semi-input-number {

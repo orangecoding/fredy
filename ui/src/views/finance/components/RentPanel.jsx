@@ -57,8 +57,13 @@ export default function RentPanel({ profile, budget, thresholds, onChange }) {
   // The one input and the ceilings it moves share a card. Two cards for a single percentage
   // field made the tab look like a form with a report attached, when it is really one question.
   return (
-    <SegmentPart name={t('finance.rent.resultTitle')} helpText={t('finance.rent.resultHelp')}>
-      <div className="financeForm__grid">
+    <SegmentPart
+      name={t('finance.rent.resultTitle')}
+      helpText={t('finance.rent.resultHelp')}
+      helpMode="popover"
+      action={<span className="financeStep">{t('finance.form.step', { n: '2' })}</span>}
+    >
+      <div className="financeForm__fields">
         {/* Left blank on purpose falls back to the default surcharge, so a user who does not
             know their Nebenkosten still gets a realistic warm rent instead of a cold one. */}
         <NumberField

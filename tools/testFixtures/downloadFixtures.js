@@ -377,8 +377,18 @@ async function downloadFlatfoxFixtures(url) {
   console.log('  Saved flatfox_listings.json');
 }
 
-async function downloadImmoscoutFixtures(mobileApiUrl) {
-  console.log('\nDownloading immoscout...');
+/**
+ * Records one ImmoScout national site's search and exposé responses.
+ *
+ * The provider name is a parameter rather than a constant because Germany and Austria are answered
+ * by one API off one index, so the two providers differ in the search URL they hand in and in
+ * nothing else - and the offline router tells their recordings apart by the geocode in that URL.
+ *
+ * @param {string} mobileApiUrl The run config's translated `search/list` URL.
+ * @param {string} name Provider id, which is also the fixture prefix.
+ */
+async function downloadImmoscoutFixtures(mobileApiUrl, name = 'immoscout') {
+  console.log(`\nDownloading ${name}...`);
 
   const listResponse = await fetch(mobileApiUrl, {
     method: 'POST',
@@ -390,13 +400,13 @@ async function downloadImmoscoutFixtures(mobileApiUrl) {
   });
 
   if (!listResponse.ok) {
-    console.warn(`  Failed to download immoscout list: ${listResponse.statusText}`);
+    console.warn(`  Failed to download ${name} list: ${listResponse.statusText}`);
     return;
   }
 
   const listData = await listResponse.json();
-  await writeFile(path.join(FIXTURES_DIR, 'immoscout_list.json'), JSON.stringify(listData, null, 2), 'utf-8');
-  console.log('  Saved immoscout_list.json');
+  await writeFile(path.join(FIXTURES_DIR, `${name}_list.json`), JSON.stringify(listData, null, 2), 'utf-8');
+  console.log(`  Saved ${name}_list.json`);
 
   const exposes = (listData.resultListItems || []).filter((item) => item.type === 'EXPOSE_RESULT');
   if (exposes.length === 0) {
@@ -407,7 +417,7 @@ async function downloadImmoscoutFixtures(mobileApiUrl) {
   const exposeId = exposes[0].item?.id;
   if (!exposeId) return;
 
-  console.log(`  Downloading immoscout detail (expose ${exposeId})...`);
+  console.log(`  Downloading ${name} detail (expose ${exposeId})...`);
   const detailResponse = await fetch(`https://api.mobile.immobilienscout24.de/expose/${exposeId}`, {
     headers: {
       'User-Agent': 'ImmoScout_27.3_26.0_._',
@@ -416,13 +426,13 @@ async function downloadImmoscoutFixtures(mobileApiUrl) {
   });
 
   if (!detailResponse.ok) {
-    console.warn(`  Failed to download immoscout detail: ${detailResponse.statusText}`);
+    console.warn(`  Failed to download ${name} detail: ${detailResponse.statusText}`);
     return;
   }
 
   const detailData = await detailResponse.json();
-  await writeFile(path.join(FIXTURES_DIR, 'immoscout_detail.json'), JSON.stringify(detailData, null, 2), 'utf-8');
-  console.log('  Saved immoscout_detail.json');
+  await writeFile(path.join(FIXTURES_DIR, `${name}_detail.json`), JSON.stringify(detailData, null, 2), 'utf-8');
+  console.log(`  Saved ${name}_detail.json`);
 }
 
 /**
@@ -780,7 +790,8 @@ async function main() {
 
     switch (name) {
       case 'immoscout':
-        await downloadImmoscoutFixtures(runConfig.url);
+      case 'immoscoutAt':
+        await downloadImmoscoutFixtures(runConfig.url, name);
         break;
       case 'deutscheWohnen':
         await downloadDeutscheWohnenFixtures(runConfig.url, cfg.url);

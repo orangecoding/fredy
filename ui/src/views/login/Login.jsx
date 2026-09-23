@@ -15,19 +15,7 @@ import { Input, Button, Banner } from '@douyinfe/semi-ui-19';
 import './login.less';
 import { IconUser, IconLock, IconAlertTriangle } from '@douyinfe/semi-icons';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
-
-/**
- * Reads the caps lock state from a keyboard event, if the browser reports it.
- * @param {React.KeyboardEvent} event
- * @returns {boolean|null} true/false when known, null when the event carries no modifier state
- */
-function readCapsLockState(event) {
-  const nativeEvent = event?.nativeEvent ?? event;
-  if (typeof nativeEvent?.getModifierState !== 'function') {
-    return null;
-  }
-  return nativeEvent.getModifierState('CapsLock');
-}
+import { useCapsLock } from '../../hooks/useCapsLock.js';
 
 export default function Login() {
   const t = useTranslation();
@@ -36,7 +24,7 @@ export default function Login() {
   const [password, setPassword] = React.useState('');
   const [error, setError] = React.useState(null);
   const [pending, setPending] = React.useState(false);
-  const [capsLockOn, setCapsLockOn] = React.useState(false);
+  const { capsLockOn, trackCapsLock, clearCapsLock } = useCapsLock();
   const demoMode = useSelector((state) => state.demoMode.demoMode || false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -93,14 +81,6 @@ export default function Login() {
     }
   };
 
-  /** @param {React.KeyboardEvent} e */
-  const trackCapsLock = (e) => {
-    const state = readCapsLockState(e);
-    if (state !== null) {
-      setCapsLockOn(state);
-    }
-  };
-
   return (
     <div className="login">
       <div className="login__bgImage" style={{ backgroundImage: `url("${cityBackground}")` }} />
@@ -154,7 +134,7 @@ export default function Login() {
               aria-describedby={capsLockOn ? capsLockHintId : undefined}
               onChange={(value) => setPassword(value)}
               onKeyUp={trackCapsLock}
-              onBlur={() => setCapsLockOn(false)}
+              onBlur={clearCapsLock}
               onKeyPress={submitOnEnter}
             />
             {capsLockOn && (

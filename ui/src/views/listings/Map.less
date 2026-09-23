@@ -53,11 +53,23 @@
     margin-bottom: 0.5rem;
   }
 
+  /*
+   * The pager, and the corner it has to keep clear.
+   *
+   * It is the first thing in the popup, so its "next" button sits exactly where MapLibre puts the
+   * close button - and in a group of several listings the close button landed on top of the arrow,
+   * which is the one popup where both controls exist at once.
+   *
+   * The reserved strip is measured from the popup's own padding box: the close button is 28px wide
+   * and offset 8px from the content edge, so it reaches 36px in; the content's padding already
+   * accounts for 10px of that, and the rest is this, plus a gap so the two do not touch.
+   */
   &__pager {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
+    padding-right: 32px;
     margin-bottom: 0.5rem;
   }
 
@@ -158,7 +170,6 @@
   &--transit {
     max-width: 280px;
   }
-
 }
 
 /* Markers open a popup when clicked, so say so - the canvas' grab hand suggests dragging instead. */

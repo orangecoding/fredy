@@ -33,9 +33,29 @@ import './SettingsSaveBar.less';
  * @param {string|null} [props.note] Replaces the standard sentence, for a page whose save does
  *   something beyond saving - System reloads the browser, and that has to be readable before the
  *   button is pressed rather than in the toast afterwards.
+ * @param {React.ReactNode} [props.status] Replaces the dot and the sentence outright, for a form
+ *   whose "not saved yet" has more to say than that. The job form puts its readiness list here, so
+ *   that a Save disabled for a missing provider says so in the same bar as the button.
+ * @param {boolean} [props.saveDisabled=false] Whether saving is refused for now. Only for a form
+ *   that says elsewhere in the bar why - a disabled button with nothing next to it is the thing
+ *   `status` exists to avoid.
+ * @param {string} [props.saveLabel] Replaces "Save", for a form where what is being saved is worth
+ *   naming: on a settings page the page title says it, on the job form the bar can be the first
+ *   thing read after a scroll past ten cards.
+ * @param {string} [props.discardLabel] Replaces "Discard", likewise.
  * @returns {React.ReactElement|null}
  */
-export default function SettingsSaveBar({ dirty, saving = false, onSave, onDiscard, note = null }) {
+export default function SettingsSaveBar({
+  dirty,
+  saving = false,
+  onSave,
+  onDiscard,
+  note = null,
+  status = null,
+  saveDisabled = false,
+  saveLabel = null,
+  discardLabel = null,
+}) {
   const t = useTranslation();
 
   if (!dirty) {
@@ -44,13 +64,15 @@ export default function SettingsSaveBar({ dirty, saving = false, onSave, onDisca
 
   return (
     <div className="settingsSaveBar" role="status">
-      <span className="settingsSaveBar__label">
-        <span className="settingsSaveBar__dot" aria-hidden="true" />
-        {note ?? t('settings.unsavedChanges')}
-      </span>
+      {status ?? (
+        <span className="settingsSaveBar__label">
+          <span className="settingsSaveBar__dot" aria-hidden="true" />
+          {note ?? t('settings.unsavedChanges')}
+        </span>
+      )}
       <span className="settingsSaveBar__actions">
         <Button className="settingsSaveBar__discard" theme="outline" size="small" onClick={onDiscard}>
-          {t('settings.discard')}
+          {discardLabel ?? t('settings.discard')}
         </Button>
         <Button
           className="settingsSaveBar__save"
@@ -58,10 +80,11 @@ export default function SettingsSaveBar({ dirty, saving = false, onSave, onDisca
           theme="solid"
           type="primary"
           size="small"
+          disabled={saveDisabled}
           loading={saving}
           onClick={onSave}
         >
-          {t('settings.save')}
+          {saveLabel ?? t('settings.save')}
         </Button>
       </span>
     </div>

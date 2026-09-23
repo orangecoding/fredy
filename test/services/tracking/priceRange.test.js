@@ -148,6 +148,7 @@ const NO_RANGE_IN_URL = [
 ];
 
 const IMMOSCOUT = 'https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/duesseldorf';
+const IMMOSCOUT_AT = 'https://www.immobilienscout24.at/regional/wien/wien';
 
 describe('services/tracking/priceRange', () => {
   describe('reading the range off a real search URL', () => {
@@ -161,7 +162,11 @@ describe('services/tracking/priceRange', () => {
 
     it('every shipped provider has been looked at', () => {
       const declared = new Set([...RECORDED_SEARCHES, ...NO_RANGE_IN_URL].map(([id]) => id));
+      // Both ImmoScout sites read their range with a parser rather than a pair of named
+      // parameters, so neither can be recorded as a `[min, max]` row above. They have describes of
+      // their own instead.
       declared.add('immoscout');
+      declared.add('immoscoutAt');
       expect(providers.map((provider) => provider.metaInformation.id).filter((id) => !declared.has(id))).toEqual([]);
     });
   });
@@ -195,6 +200,40 @@ describe('services/tracking/priceRange', () => {
 
     it('answers no range for a URL the translator refuses rather than throwing', () => {
       expect(rangeOf('https://www.immobilienscout24.de/nonsense')).toEqual({ min: null, max: null });
+    });
+  });
+
+  // The Austrian site states its bounds as two parameters of its own and the translator assembles
+  // them into the one the mobile API takes, so the range is read off that translated URL - the same
+  // route the German side uses, over a different vocabulary.
+  describe('immoscoutAt, whose bounds are two parameters until the translator joins them', () => {
+    const rangeOf = (url) => priceRangeFromUrl(url, configOf('immoscoutAt').priceRangeParams);
+
+    it('reads both bounds', () => {
+      expect(rangeOf(`${IMMOSCOUT_AT}/wohnung-mieten?primaryPriceFrom=500&primaryPriceTo=1000`)).toEqual({
+        min: 500,
+        max: 1000,
+      });
+    });
+
+    it('treats a missing lower bound as open rather than as zero', () => {
+      expect(rangeOf(`${IMMOSCOUT_AT}/wohnung-mieten?primaryPriceTo=1200`)).toEqual({ min: null, max: 1200 });
+    });
+
+    it('reads an open upper bound', () => {
+      expect(rangeOf(`${IMMOSCOUT_AT}/wohnung-kaufen?primaryPriceFrom=250000`)).toEqual({ min: 250000, max: null });
+    });
+
+    it('finds the bound the SEO path hides, where there is no price parameter at all', () => {
+      expect(rangeOf(`${IMMOSCOUT_AT}/wohnung-bis-1100-euro-mieten`)).toEqual({ min: null, max: 1100 });
+    });
+
+    it('finds nothing in an unfiltered search', () => {
+      expect(rangeOf(`${IMMOSCOUT_AT}/wohnung-mieten`)).toEqual({ min: null, max: null });
+    });
+
+    it('answers no range for a URL the translator refuses rather than throwing', () => {
+      expect(rangeOf(`${IMMOSCOUT_AT}/wohnungen`)).toEqual({ min: null, max: null });
     });
   });
 

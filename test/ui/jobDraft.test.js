@@ -192,7 +192,7 @@ describe('jobDraft', () => {
       const restored = [...form.matchAll(/if \(draft\.(\w+) !== undefined\)/g)].map((match) => match[1]);
       expect(restored.length).toBeGreaterThan(0);
 
-      const [, discard] = form.match(/const discardDraft = \(\) => \{([\s\S]*?)\n {2}\};/) ?? [];
+      const [, discard] = form.match(/const discardChanges = \(\) => \{([\s\S]*?)\n {2}\};/) ?? [];
       expect(discard).toBeDefined();
       expect(
         restored.filter((field) => !new RegExp(`set${field[0].toUpperCase()}${field.slice(1)}\\(`).test(discard)),

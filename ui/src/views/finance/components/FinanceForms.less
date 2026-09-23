@@ -5,28 +5,34 @@
 
 @import '../../../tokens.less';
 
+/*
+ * What is left of the old stacked field: the caption over the rent panel's four ceilings, which are
+ * figures the user cannot type into. Every actual input is an `AdminField` row now.
+ */
 .financeField {
   display: flex;
   flex-direction: column;
   gap: @space-1;
   min-width: 0;
 
+  /* The same treatment AdminField gives a setting's name, because they are the same thing: the
+     name of one value. This used to be @text-xs uppercase with letter-spacing - a column heading's
+     typography, applied to twelve field names in a column, which is most of why this page read as
+     a tax return. */
   &__label {
     display: flex;
     align-items: center;
-    gap: @space-1;
-    font-size: @text-xs;
-    color: @color-muted;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    gap: @space-2;
+    font-size: @text-sm;
+    color: @color-text;
   }
 
-  // The help affordance has to be noticeable enough to be found and quiet enough not to
-  // compete with the label it belongs to.
+  /* Noticeable enough to be found, quiet enough not to compete with the name it belongs to.
+     @color-faint measured 2,47:1 on @color-base and fails AA. */
   &__help {
     display: inline-flex;
     align-items: center;
-    color: @color-faint;
+    color: @color-muted;
     cursor: help;
 
     &:hover,
@@ -41,28 +47,99 @@
     }
   }
 
-  &__input {
-    width: 100%;
-  }
-
-  // Figures read as figures: monospace keeps the digits aligned between fields, the way an
-  // amortization table does.
-  &__input input {
-    font-family: @font-mono;
-  }
-
+  /* The unit a figure is measured in, not decoration on it. Same reason as above. AdminField draws
+     the box around both; this only says what colour the unit is. */
   &__suffix {
-    color: @color-faint;
-    padding-right: @space-2;
+    color: @color-muted;
     font-size: @text-sm;
   }
 }
 
+/* Same measure as AdminField's help body, so a sentence breaks in the same place wherever it is
+   read. */
+.financeField__helpBody {
+  max-width: 22rem;
+  padding: @space-2 @space-3;
+  color: @color-text;
+  font-size: @text-sm;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+/* "Step 1" on the household, "Step 2" on the tab that follows it. The page asks for two numbers
+   and then for one tab's worth of detail, and saying so in the card headers is what turns two
+   cards into an order. An eyebrow, not a field name - which is why it keeps the uppercase
+   treatment that .financeField__label gave up. */
+.financeStep {
+  font-size: @text-xs;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: @color-success;
+  white-space: nowrap;
+
+  /* It takes its width out of the card's title, and on a phone "Objekt und Kaufnebenkosten" needs
+     all of it - with the mark beside it there was nowhere left for either to go. Dropped rather
+     than wrapped: on a phone the cards are already one under the other, so the order they are
+     worked through is the order they are read in, and the number says nothing new. */
+  @media (max-width: 600px) {
+    display: none;
+  }
+}
+
 .financeForm {
-  &__grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: @space-4;
+  /*
+   * One field per line, separated by a rule - the shape of every settings and admin page, and the
+   * reason this one is built from the same row. Side by side in a `repeat(auto-fit, minmax(150px))`
+   * grid, a field was as wide as the card, which is where the euro sign ended up on the card's edge
+   * instead of inside the input.
+   *
+   * No gap: `AdminField` puts a rule between two adjacent rows and carries its own min-height.
+   */
+  &__fields {
+    display: flex;
+    flex-direction: column;
+
+    /*
+     * Wider than the 112px of an admin setting, because the figures are longer. A purchase price
+     * runs to seven digits, and in @font-mono "1.500.000" alone is around 65px before the euro sign
+     * beside it. One width for every field on the page, so a column of them still reads as a
+     * column.
+     *
+     * Hung off `__fields` and not off `.financeForm`: these are flat BEM names and no element on
+     * this page carries `.financeForm` on its own, so a rule nested under it would match nothing.
+     */
+    .adminField__control .semi-input-number {
+      width: 148px;
+    }
+
+    /* Long enough for "Nordrhein-Westfalen · 6,5 %" to be picked from, and it is not a figure, so
+       it does not owe the column above anything. */
+    .financeField__select {
+      width: 260px;
+      max-width: 100%;
+    }
+
+    /*
+     * A row does not fit on a phone. "Lebenshaltungskosten" and a 148px control are together wider
+     * than the card at 375px, and a flex row that cannot shrink does not wrap - it overflows, which
+     * clipped the label and pushed the whole page sideways. Stacked, which is what
+     * `adminField--wide` does for a path on the admin pages and for the same reason: a caption and
+     * a full-width field, where the unit still sits inside the box because AdminField's stylesheet
+     * took Semi's inner boxes apart.
+     */
+    @media (max-width: 600px) {
+      .adminField {
+        flex-direction: column;
+        align-items: stretch;
+        gap: @space-2;
+      }
+
+      .adminField__control .semi-input-number,
+      .financeField__select {
+        width: 100%;
+      }
+    }
   }
 
   &__person {
@@ -146,6 +223,49 @@
     font-family: @font-mono;
     font-size: @text-base;
     color: @color-text;
+  }
+}
+
+/* Deliberately after .financeForm: `resultSummary__rows` sits on the same element as
+   `financeForm__readout` and overrides its margin-top and border-top. Both selectors are one class
+   deep, so the one further down the file wins - move this block up and the override stops. */
+.resultSummary {
+  /* The four figures that back the answer up. Same rows PropertyForm uses for the closing costs,
+     because they are the same kind of figure: a label and a number, read once. */
+  &__rows {
+    margin-top: @space-4;
+    padding: @space-4;
+    border: 1px solid @color-border;
+    border-radius: @radius-card;
+  }
+
+  &__label {
+    font-size: @text-sm;
+    color: @color-muted;
+  }
+}
+
+.propertyForm {
+  /* The household fold in FinanceCalculator.less sits between cards and is drawn as a box. This
+     one sits inside a card, where a second bordered box would be a card within a card, so it is
+     a rule and a header row instead. The header itself is the shared .finance__fold* markup, so
+     both folds are read the same way. */
+  &__rates {
+    margin-top: @space-4;
+    border-top: 1px solid @color-border;
+
+    .semi-collapse-item {
+      border-bottom: none;
+    }
+
+    .semi-collapse-header {
+      padding: @space-3 0;
+      cursor: pointer;
+    }
+
+    .semi-collapse-content {
+      padding: 0 0 @space-2;
+    }
   }
 }
 

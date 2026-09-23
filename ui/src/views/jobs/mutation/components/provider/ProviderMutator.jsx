@@ -51,9 +51,13 @@ export default function ProviderMutator({
   const isMobile = width <= 850;
 
   /**
-   * Why the pasted URL cannot be used, in words the user can act on.
+   * Why the pasted URL cannot be used, in words the user can act on, and at which field.
    *
-   * @returns {string|null}
+   * The three URL problems belong under the URL field - they are all statements about the thing
+   * that was pasted. The fourth case is "nothing chosen at all", which is not about either field
+   * in particular and stays a notice above both.
+   *
+   * @returns {{ where: 'url'|'form', message: string }|null}
    */
   const validate = () => {
     const { ok, problem, expectedHost } = validateProviderUrl(providerUrl, selectedProvider);
@@ -62,13 +66,13 @@ export default function ProviderMutator({
     }
     switch (problem) {
       case 'bareHost':
-        return t('provider.validationBareHost', { host: expectedHost });
+        return { where: 'url', message: t('provider.validationBareHost', { host: expectedHost }) };
       case 'wrongHost':
-        return t('provider.validationWrongHost', { host: expectedHost });
+        return { where: 'url', message: t('provider.validationWrongHost', { host: expectedHost }) };
       case 'unparsable':
-        return t('provider.validationUnparsable');
+        return { where: 'url', message: t('provider.validationUnparsable') };
       default:
-        return t('provider.validationSelectAndUrl');
+        return { where: 'form', message: t('provider.validationSelectAndUrl') };
     }
   };
 
@@ -118,84 +122,97 @@ export default function ProviderMutator({
       // Three short lines and two fields do not need half a screen. It was 50rem, which left the
       // controls stranded in the left third of an otherwise empty dialog.
       style={{ width: isMobile ? '95%' : '34rem' }}
-      okText={t('provider.save')}
+      okText={providerToEdit ? t('provider.save') : t('provider.addAction')}
     >
-      {validationMessage != null && (
+      {validationMessage?.where === 'form' && (
         <Banner
           fullMode={false}
           type="danger"
           closeIcon={null}
-          title={
-            <div style={{ fontWeight: 600, fontSize: '14px', lineHeight: '20px' }}>{t('provider.errorTitle')}</div>
-          }
-          style={{ marginBottom: '1rem' }}
-          description={validationMessage}
+          className="providerMutator__banner"
+          description={validationMessage.message}
         />
       )}
+
       {providerToEdit != null ? (
-        <p>{t('provider.editDescription', { name: providerToEdit.name })}</p>
-      ) : (
-        // Three numbered steps, where there used to be the same instruction written out three
-        // times: once as the section's help text, and twice more as paragraphs here.
-        <ol className="providerMutator__steps">
-          <li>{t('provider.step1')}</li>
-          <li>{t('provider.step2')}</li>
-          <li>{t('provider.step3')}</li>
-        </ol>
-      )}
-      <Select
-        filter
-        placeholder={t('provider.selectPlaceholder')}
-        className="providerMutator__fields"
-        disabled={providerToEdit != null}
-        // Sorted by country and then by size, rather than by name: somebody searching in Vienna
-        // should not have to read past every German portal, and the one most people want should not
-        // sit halfway down the list because of its initial.
-        optionList={sortProviders(provider).map((pro) => {
-          return {
-            otherKey: pro.id,
-            value: pro.id,
-            // The flags come from what the provider declared it covers, so a portal serving two
-            // countries shows both. Only the label carries them - the name stored on the job stays
-            // the plain one.
-            label: labelWithFlags(pro),
-          };
-        })}
-        style={{ width: '100%' }}
-        value={selectedProvider == null ? '' : selectedProvider.id}
-        onChange={(value) => {
-          setSelectedProvider(provider.find((pro) => pro.id === value));
-          setValidationMessage(null);
-        }}
-      />
+        <p className="providerMutator__editNote">{t('provider.editDescription', { name: providerToEdit.name })}</p>
+      ) : null}
 
-      {/* A link the user clicks, rather than a window.open() fired from the Select's onChange. That
-          opened a tab before they had read a word of the instructions, opened a second one if they
-          changed their mind about the portal, and was swallowed without a trace by a popup
-          blocker. */}
-      {selectedProvider != null && (
-        <a
-          className="providerMutator__openLink"
-          href={selectedProvider.baseUrl}
-          target="_blank"
-          rel="noreferrer noopener"
-        >
-          <IconExternalOpen />
-          {t('provider.openInNewTab', { name: selectedProvider.name })}
-        </a>
-      )}
+      {/* Two numbered steps, each holding the field it describes. They used to be three sentences
+          of grey prose above three controls that did not correspond to them: step one said
+          "choose below", step three said "paste it here" and meant a field two rows further
+          down. */}
+      <ol className="providerMutator__steps">
+        <li className="providerMutator__step">
+          <span className="providerMutator__stepTitle">{t('provider.stepChooseTitle')}</span>
+          <Select
+            filter
+            placeholder={t('provider.selectPlaceholder')}
+            className="providerMutator__fields"
+            dropdownClassName="providerMutator__dropdown"
+            disabled={providerToEdit != null}
+            // Sorted by country and then by size, rather than by name: somebody searching in Vienna
+            // should not have to read past every German provider, and the one most people want
+            // should not sit halfway down the list because of its initial.
+            optionList={sortProviders(provider).map((pro) => {
+              return {
+                otherKey: pro.id,
+                value: pro.id,
+                // The flags come from what the provider declared it covers, so one serving two
+                // countries shows both. Only the label carries them - the name stored on the job
+                // stays the plain one.
+                label: labelWithFlags(pro),
+              };
+            })}
+            value={selectedProvider == null ? '' : selectedProvider.id}
+            onChange={(value) => {
+              setSelectedProvider(provider.find((pro) => pro.id === value));
+              setValidationMessage(null);
+            }}
+          />
 
-      <Input
-        type="text"
-        placeholder={t('provider.urlPlaceholder')}
-        width={10}
-        className="providerMutator__fields providerMutator__url"
-        value={providerUrl}
-        onChange={(value) => {
-          setProviderUrl(value);
-          setValidationMessage(null);
-        }}
-      />
+          {/* The row is reserved whether or not a provider has been picked. It used to appear on
+              selection and push the URL field down under the cursor that had just clicked.
+
+              A link the user clicks, rather than a `window.open()` fired from the Select's
+              onChange. That opened a tab before they had read a word of the instructions, opened a
+              second one if they changed their mind, and was swallowed without a trace by a popup
+              blocker. */}
+          <span className="providerMutator__openRow">
+            {selectedProvider != null && (
+              <a
+                className="providerMutator__openLink"
+                href={selectedProvider.baseUrl}
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                <IconExternalOpen />
+                {t('provider.openInNewTab', { name: selectedProvider.name })}
+              </a>
+            )}
+          </span>
+
+          <span className="providerMutator__stepHint">{t('provider.stepChooseHint')}</span>
+        </li>
+
+        <li className="providerMutator__step">
+          <span className="providerMutator__stepTitle">{t('provider.stepPasteTitle')}</span>
+          <Input
+            type="text"
+            placeholder={t('provider.urlPlaceholder')}
+            className="providerMutator__fields"
+            validateStatus={validationMessage?.where === 'url' ? 'error' : 'default'}
+            value={providerUrl}
+            onChange={(value) => {
+              setProviderUrl(value);
+              setValidationMessage(null);
+            }}
+          />
+          {validationMessage?.where === 'url' && (
+            <span className="providerMutator__error">{validationMessage.message}</span>
+          )}
+        </li>
+      </ol>
     </Modal>
   );
 }

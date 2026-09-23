@@ -1,0 +1,857 @@
+{
+  "header": {
+    "id": "171090023",
+    "title": "Beschreibung",
+    "fraudReportUrl": "https://angebot-melden.immobilienscout24.de/report?realEstateId=171090023&publicationState=live",
+    "displayStatusIcon": true,
+    "shareMessage": "Dieses Angebot habe ich bei ImmoScout24 gefunden:\nhttps://www.immobilienscout24.de/expose/171090023?utm_medium=social&utm_campaign=expose_sharing&utm_content=expose_toolbar&utm_source=other&referrer=taf\n\n        Details\n-------------------------\nKaltmiete 34,98 €/m²: 1.192,13 €\nZimmer:         1\nWohnfläche:     34,08 m²\nWarmmiete:      1.192,13 €\n\n1010, Wien",
+    "publicationState": "active",
+    "isTenantNetwork": false,
+    "realEstateType": "apartmentrent"
+  },
+  "sections": [
+    {
+      "type": "MEDIA",
+      "media": [
+        {
+          "type": "PICTURE",
+          "caption": "ba00fefd47f844c8b9dfaf26216ef2",
+          "previewImageUrl": "https://pictures.immobilienscout24.de/listings/cb4366f0-b3e4-4817-903e-c3c577dcd3bc-2097798857.jpg/ORIG/resize/800x600/format/webp/quality/80",
+          "imageUrlForWeb": "https://pictures.immobilienscout24.de/listings/cb4366f0-b3e4-4817-903e-c3c577dcd3bc-2097798857.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/jpg",
+          "fullImageUrl": "https://pictures.immobilienscout24.de/listings/cb4366f0-b3e4-4817-903e-c3c577dcd3bc-2097798857.jpg/ORIG/resize/1500x1000/format/webp/quality/80"
+        },
+        {
+          "type": "PICTURE",
+          "caption": "ea7b1699d3974d3cb817475285bfce",
+          "previewImageUrl": "https://pictures.immobilienscout24.de/listings/90dd73c7-b4d4-4b31-bad5-f792602a52c0-2097798856.jpg/ORIG/resize/800x600/format/webp/quality/80",
+          "imageUrlForWeb": "https://pictures.immobilienscout24.de/listings/90dd73c7-b4d4-4b31-bad5-f792602a52c0-2097798856.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/jpg",
+          "fullImageUrl": "https://pictures.immobilienscout24.de/listings/90dd73c7-b4d4-4b31-bad5-f792602a52c0-2097798856.jpg/ORIG/resize/1500x1000/format/webp/quality/80"
+        },
+        {
+          "type": "PICTURE",
+          "caption": "13ddca53a2824416a6fdde44b3e162",
+          "previewImageUrl": "https://pictures.immobilienscout24.de/listings/13b0a0b8-1da8-4849-98c1-8c7b4ef0b74e-2097798849.jpg/ORIG/resize/800x600/format/webp/quality/80",
+          "imageUrlForWeb": "https://pictures.immobilienscout24.de/listings/13b0a0b8-1da8-4849-98c1-8c7b4ef0b74e-2097798849.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/jpg",
+          "fullImageUrl": "https://pictures.immobilienscout24.de/listings/13b0a0b8-1da8-4849-98c1-8c7b4ef0b74e-2097798849.jpg/ORIG/resize/1500x1000/format/webp/quality/80"
+        },
+        {
+          "type": "PICTURE",
+          "caption": "d3aed1cdbc6f4f5988eefe3626969f",
+          "previewImageUrl": "https://pictures.immobilienscout24.de/listings/21585876-0b02-460d-8c9b-0c2bb50fa87f-2097798855.jpg/ORIG/resize/800x600/format/webp/quality/80",
+          "imageUrlForWeb": "https://pictures.immobilienscout24.de/listings/21585876-0b02-460d-8c9b-0c2bb50fa87f-2097798855.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/jpg",
+          "fullImageUrl": "https://pictures.immobilienscout24.de/listings/21585876-0b02-460d-8c9b-0c2bb50fa87f-2097798855.jpg/ORIG/resize/1500x1000/format/webp/quality/80"
+        },
+        {
+          "type": "PICTURE",
+          "caption": "847119c4e0b448278675c0af648f55",
+          "previewImageUrl": "https://pictures.immobilienscout24.de/listings/e4172671-821d-462f-b4ef-c7c4c6c7889c-2097798854.jpg/ORIG/resize/800x600/format/webp/quality/80",
+          "imageUrlForWeb": "https://pictures.immobilienscout24.de/listings/e4172671-821d-462f-b4ef-c7c4c6c7889c-2097798854.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/jpg",
+          "fullImageUrl": "https://pictures.immobilienscout24.de/listings/e4172671-821d-462f-b4ef-c7c4c6c7889c-2097798854.jpg/ORIG/resize/1500x1000/format/webp/quality/80"
+        },
+        {
+          "type": "PICTURE",
+          "caption": "101a665e8c814fe08b4f55d9ab2408",
+          "previewImageUrl": "https://pictures.immobilienscout24.de/listings/fd2365c9-d977-4302-886a-0f0e18820b8f-2097798858.jpg/ORIG/resize/800x600/format/webp/quality/80",
+          "imageUrlForWeb": "https://pictures.immobilienscout24.de/listings/fd2365c9-d977-4302-886a-0f0e18820b8f-2097798858.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/jpg",
+          "fullImageUrl": "https://pictures.immobilienscout24.de/listings/fd2365c9-d977-4302-886a-0f0e18820b8f-2097798858.jpg/ORIG/resize/1500x1000/format/webp/quality/80"
+        },
+        {
+          "type": "PICTURE",
+          "caption": "010f6ca5ddde439c8e156515172424",
+          "previewImageUrl": "https://pictures.immobilienscout24.de/listings/0d7beccd-a72f-46bf-8259-fdb5e1ca3826-2097798861.jpg/ORIG/resize/800x600/format/webp/quality/80",
+          "imageUrlForWeb": "https://pictures.immobilienscout24.de/listings/0d7beccd-a72f-46bf-8259-fdb5e1ca3826-2097798861.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/jpg",
+          "fullImageUrl": "https://pictures.immobilienscout24.de/listings/0d7beccd-a72f-46bf-8259-fdb5e1ca3826-2097798861.jpg/ORIG/resize/1500x1000/format/webp/quality/80"
+        },
+        {
+          "type": "PICTURE",
+          "caption": "e35f2f98bff1470981baba8731b118",
+          "previewImageUrl": "https://pictures.immobilienscout24.de/listings/f9926456-186f-4a36-9605-a34e3448ed19-2097798864.jpg/ORIG/resize/800x600/format/webp/quality/80",
+          "imageUrlForWeb": "https://pictures.immobilienscout24.de/listings/f9926456-186f-4a36-9605-a34e3448ed19-2097798864.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/jpg",
+          "fullImageUrl": "https://pictures.immobilienscout24.de/listings/f9926456-186f-4a36-9605-a34e3448ed19-2097798864.jpg/ORIG/resize/1500x1000/format/webp/quality/80"
+        },
+        {
+          "type": "PICTURE",
+          "caption": "b89cb73082eb4e2faa7f34c5e1a844",
+          "previewImageUrl": "https://pictures.immobilienscout24.de/listings/bce8ca65-8eee-46ed-811b-eff59fa903a6-2097798863.jpg/ORIG/resize/800x600/format/webp/quality/80",
+          "imageUrlForWeb": "https://pictures.immobilienscout24.de/listings/bce8ca65-8eee-46ed-811b-eff59fa903a6-2097798863.jpg/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/jpg",
+          "fullImageUrl": "https://pictures.immobilienscout24.de/listings/bce8ca65-8eee-46ed-811b-eff59fa903a6-2097798863.jpg/ORIG/resize/1500x1000/format/webp/quality/80"
+        },
+        {
+          "type": "AD",
+          "caption": "Gesponsert",
+          "ad": {
+            "id": "/4467/IS24_APP_DE/app_iOS_gallery_ad"
+          }
+        }
+      ]
+    },
+    {
+      "type": "TOP_ATTRIBUTES",
+      "attributes": [
+        {
+          "label": "Kaltmiete 34,98 €/m²",
+          "highlighted": true,
+          "text": "1.192,13 €",
+          "type": "TEXT"
+        },
+        {
+          "label": "Zimmer",
+          "text": "1",
+          "type": "TEXT"
+        },
+        {
+          "label": "Wohnfläche",
+          "text": "34,08 m²",
+          "type": "TEXT"
+        },
+        {
+          "label": "Warmmiete",
+          "text": "1.192,13 €",
+          "type": "TEXT"
+        }
+      ]
+    },
+    {
+      "type": "TITLE",
+      "title": "WUNDERSCHÖNE, KLIMATISIERTE STADTWOHNUNG - HOHER MARKT"
+    },
+    {
+      "type": "RELOCATION",
+      "text": "Was kostet mich der Umzug?",
+      "subText": "Angebote kostenlos erhalten",
+      "reference": {
+        "label": "",
+        "url": "is24://retargetRelocation?pag_source=expose_criteria&floor=3&street=Hoher%20Markt&houseNumber=&postcode=1010&city=Wien",
+        "type": "URL_LINK",
+        "target": "INTERNAL",
+        "trackingConfig": {
+          "category": "expose",
+          "action": "consumerservices",
+          "label": "relocation_criteria",
+          "event_name": "productintegration_click",
+          "event_product": "search",
+          "parameters": {
+            "event_parameter_1": "relocation_criteria"
+          }
+        }
+      }
+    },
+    {
+      "type": "MAP",
+      "title": "Karte",
+      "location": {
+        "lat": 48.21071,
+        "lng": 16.37302
+      },
+      "addressLine1": "Die vollständige Adresse der Immobilie erhältst du vom Anbieter.",
+      "addressLine2": "1010, Wien",
+      "zipCodeShapes": [],
+      "enableEnterFullAddressAction": true
+    },
+    {
+      "type": "TRAVELTIME",
+      "isBlocked": true,
+      "exposeId": "171090023",
+      "address": "Adresse vom Anbieter unveröffentlicht",
+      "location": {
+        "lat": 48.21071,
+        "lng": 16.37302
+      }
+    },
+    {
+      "type": "ATTRIBUTE_LIST",
+      "title": "Hauptkriterien",
+      "attributes": [
+        {
+          "type": "TEXT",
+          "label": "Wohnungstyp:",
+          "text": "Etagenwohnung"
+        },
+        {
+          "type": "TEXT",
+          "label": "Wohnfläche ca.:",
+          "text": "34,08 m²"
+        },
+        {
+          "type": "TEXT",
+          "label": "Etage:",
+          "text": "3"
+        },
+        {
+          "type": "TEXT",
+          "label": "Badezimmer:",
+          "text": "1"
+        },
+        {
+          "type": "TEXT",
+          "label": "Bezugsfrei ab:",
+          "text": "ab sofort"
+        },
+        {
+          "type": "TEXT",
+          "label": "Anzahl Garage/Stellplatz:",
+          "text": "0"
+        },
+        {
+          "type": "CHECK",
+          "label": "Personenaufzug:"
+        },
+        {
+          "type": "CHECK",
+          "label": "Stufenloser Zugang:"
+        },
+        {
+          "type": "LINK",
+          "label": "SCHUFA-BonitätsCheck:",
+          "reference": {
+            "type": "URL_LINK",
+            "label": "Online anfordern",
+            "url": "https://bonitaetscheck.immobilienscout24.de/?utm_medium=app&utm_source=ios&utm_campaign=solvency_check&utm_content=residential_expose_criteria",
+            "target": "WEB_INTERNAL",
+            "trackingConfig": {
+              "category": "expose",
+              "action": "consumerservices",
+              "label": "solvencycheck_criteria",
+              "event_name": "productintegration_click",
+              "event_product": "search",
+              "parameters": {
+                "event_parameter_1": "solvencycheck_criteria"
+              }
+            }
+          }
+        },
+        {
+          "type": "LINK",
+          "label": "Internet:",
+          "reference": {
+            "type": "URL_LINK",
+            "label": "Verfügbarkeit prüfen",
+            "iconUrl": "https://www.immobilienscout24.de/content/dam/is24/expose-snippets/services/powered-by-telekom-new.png",
+            "url": "https://rebrand.ly/anodsl",
+            "target": "WEB_INTERNAL",
+            "trackingConfig": {
+              "category": "clickout",
+              "action": "relocation",
+              "label": "internet_checkavailability_criteria",
+              "event_name": "expose_clickout",
+              "event_product": "search",
+              "parameters": {
+                "event_parameter_1": "internet_checkavailability_criteria"
+              }
+            },
+            "additionalInfoForIcon": {
+              "title": "Warum diese Werbung?",
+              "text": "Für die Bereitstellung von Informationen zur Internet-Verfügbarkeit am Standort des Inserats arbeiten wir mit der Telekom Deutschland GmbH zusammen.",
+              "buttonText": "Weitere Informationen",
+              "buttonUrl": "https://www.immobilienscout24.de/anbieten/dsa-info/telekom.html"
+            },
+            "onClickTrackingTag": "INTERNET_AVAILABILITY_CHECK"
+          }
+        }
+      ]
+    },
+    {
+      "type": "ATTRIBUTE_LIST",
+      "title": "Kosten",
+      "attributes": [
+        {
+          "type": "TEXT",
+          "label": "Kaltmiete (zzgl. Nebenkosten):",
+          "text": "1.192,13 €"
+        },
+        {
+          "type": "TEXT",
+          "label": "Preis/m²:",
+          "text": "34,98 €/m²",
+          "additionalInfoText": "Kalkuliert von ImmoScout24"
+        },
+        {
+          "type": "TEXT",
+          "label": "Gesamtmiete:",
+          "text": "1.192,13 €"
+        },
+        {
+          "type": "TEXT",
+          "label": "Kaution oder Genossenschaftsanteile:",
+          "text": "3900"
+        }
+      ]
+    },
+    {
+      "type": "COST_CHECK",
+      "totalRent": 1192.13,
+      "expenses": [
+        {
+          "name": "Strom",
+          "grouping": "Strom",
+          "price": 40,
+          "providers": [
+            {
+              "id": "klarwatt-electricity",
+              "name": "KlarWatt Strom",
+              "chipName": "KlarWatt Energy by ImmoScout24",
+              "logo": "https://www.immobilienscout24.de/content/dam/is24/expose-snippets/KlarWatt-Logo-72x72.png",
+              "modalTitle": "KlarWatt Energy by ImmoScout24",
+              "modalContent": "/expose/content?fragment=/content/campaigns/is24/expose/cost-check/klarwatt-energy/_jcr_content/par.html",
+              "ctaText": "Jetzt berechnen",
+              "ctaLink": "https://rebrand.ly/KlarWatt-Strom",
+              "price": 30
+            },
+            {
+              "id": "lichtblick-electricity",
+              "name": "Strom",
+              "chipName": "LichtBlick",
+              "logo": "https://www.immobilienscout24.de/content/dam/is24/expose-snippets/lichtblick-logo.png",
+              "modalTitle": "100 % ÖkoStrom im neuen Zuhause",
+              "modalContent": "/expose/content?fragment=/content/campaigns/is24/expose/cost-check/lichtblick-electricity/_jcr_content/par.html",
+              "ctaText": "Jetzt berechnen",
+              "ctaLink": "https://rebrand.ly/Kostencheck-Lichtblick-Strom",
+              "randomlySelected": true,
+              "price": 40.09
+            },
+            {
+              "id": "yello-electricity",
+              "name": "Strom",
+              "chipName": "Yello",
+              "logo": "https://www.immobilienscout24.de/content/dam/is24/expose-snippets/yello-logo.png",
+              "modalTitle": "Gelbe Energie fürs neue Zuhause",
+              "modalContent": "/expose/content?fragment=/content/campaigns/is24/expose/cost-check/yello-electricity/_jcr_content/par.html",
+              "ctaText": "Jetzt berechnen",
+              "ctaLink": "https://rebrand.ly/Kostencheck-Yello-Strom",
+              "randomlySelected": true,
+              "price": 39,
+              "selected": true
+            }
+          ],
+          "order": 0
+        },
+        {
+          "name": "Internet",
+          "grouping": "Internet",
+          "price": 32.5,
+          "providers": [
+            {
+              "id": "telekom-internet",
+              "name": "Telekom Internet",
+              "chipName": "Telekom",
+              "logo": "https://www.immobilienscout24.de/content/dam/is24/expose-snippets/Telekom-Logo-72x72.png",
+              "price": 9.95,
+              "modalTitle": "Telekom Internet",
+              "modalContent": "/expose/content?fragment=/content/campaigns/is24/expose/cost-check/telekom-internet/_jcr_content/par.html",
+              "ctaText": "Jetzt informieren",
+              "ctaLink": "https://rebrand.ly/Kostencheck-Telekom-Internet",
+              "selected": true
+            }
+          ],
+          "order": 2
+        },
+        {
+          "name": "TV & Streaming",
+          "grouping": "TV & Streaming",
+          "price": 20,
+          "providers": [
+            {
+              "id": "telekom-streaming",
+              "name": "MagentaTV Smart",
+              "chipName": "Telekom",
+              "logo": "https://www.immobilienscout24.de/content/dam/is24/expose-snippets/Telekom-Logo-72x72.png",
+              "price": 11,
+              "modalTitle": "MagentaTV Smart",
+              "modalContent": "/expose/content?fragment=/content/campaigns/is24/expose/cost-check/telekom-streaming/_jcr_content/par.html",
+              "ctaText": "Jetzt informieren",
+              "ctaLink": "https://rebrand.ly/Kostencheck-Telekom-MagentaTV-Smart",
+              "popup": "<small>Für MagentaTV Neukunden in den ersten 6 Monaten 0 €.</small>",
+              "selected": true
+            }
+          ],
+          "order": 1
+        },
+        {
+          "name": "Hausratversicherung",
+          "grouping": "Versicherungen",
+          "price": 6
+        }
+      ]
+    },
+    {
+      "type": "PREMIUM_ADDITIONAL_INFO",
+      "title": "Plus Mitglieder wissen mehr!",
+      "isExposeBuy": false,
+      "chancenCheck": {
+        "enabled": false,
+        "title": "Plus Insights",
+        "publishedLabel": "Veröffentlicht",
+        "visitedLabel": "Aufrufe",
+        "shortlistedLabel": "Gemerkt",
+        "contactedLabel": "Kontaktiert"
+      },
+      "competitionAnalysis": {
+        "enabled": false,
+        "title": "Konkurrenzanalyse",
+        "plusUser": {
+          "label": "Plus-Mitglieder",
+          "count": null
+        },
+        "basicUser": {
+          "label": "Basic-Mitglieder",
+          "count": null
+        },
+        "totalUserCount": null,
+        "description": "inkl. 6 weiterer Diagramme mit Plus+",
+        "activationLabel": "mit Plus oder einzeln",
+        "quickCartUrl": "https://www.immobilienscout24.de/warenkorb/mieterplus?isMobileView=true&utm_campaign=chancen_check&utm_content=residential_expose_competitionanalysis_cta",
+        "trackingConfig": {
+          "event_name": "subscription_clickout",
+          "event_product": "expose",
+          "parameters": {
+            "event_parameter_1": "rent",
+            "event_parameter_2": "competition_analysis"
+          }
+        }
+      },
+      "quickCartButton": {
+        "enabled": true,
+        "label": "Jetzt Plus aktivieren",
+        "url": "https://www.immobilienscout24.de/warenkorb/mieterplus?isMobileView=true&utm_campaign=chancen_check&utm_content=residential_expose_plusinsights_cta",
+        "trackingConfig": {
+          "event_name": "subscription_clickout",
+          "event_product": "expose",
+          "parameters": {
+            "event_parameter_1": "rent",
+            "event_parameter_2": "plus_insights"
+          }
+        }
+      },
+      "visits": null,
+      "contactRequests": null,
+      "shortlistAddEvents": null,
+      "prospectiveCustomersCount": {
+        "basic": null,
+        "premium": null,
+        "total": null
+      },
+      "newExposeHoursThreshold": null,
+      "calculated": null,
+      "privateOffer": null,
+      "onlineSince": null
+    },
+    {
+      "type": "ATTRIBUTE_LIST",
+      "title": "Bausubstanz & Energieausweis",
+      "attributes": [
+        {
+          "type": "TEXT",
+          "label": "Baujahr:",
+          "text": "unbekannt"
+        },
+        {
+          "type": "TEXT",
+          "label": "Objektzustand:",
+          "text": "Erstbezug"
+        },
+        {
+          "type": "TEXT",
+          "label": "Heizungsart:",
+          "text": "Fernwärme"
+        },
+        {
+          "type": "TEXT",
+          "label": "Wesentliche Energieträger:",
+          "text": "Keine Angabe"
+        }
+      ]
+    },
+    {
+      "type": "AVAILABLE_SERVICES",
+      "services": [
+        {
+          "id": "home-entertainment",
+          "title": "MagentaTV MegaStream",
+          "chipName": "Home Entertainment",
+          "contentUrl": "https://www.immobilienscout24.de/expose/content?fragment=/content/campaigns/is24/expose/available-services/home-entertainment/_jcr_content/par.html",
+          "dsaLogo": "https://www.immobilienscout24.de/content/dam/is24/expose-snippets/Telekom-Logo-Transparent-72x72.png",
+          "dsaLink": "https://www.immobilienscout24.de/anbieten/dsa-info/telekom-services.html",
+          "company": "Telekom Deutschland GmbH",
+          "ctaLink": "https://rebrand.ly/services-miete-web",
+          "ctaText": "Hier informieren"
+        },
+        {
+          "id": "electricity-calculator-mobile",
+          "chipName": "Stromverbrauch",
+          "contentUrl": "https://www.immobilienscout24.de/content/campaigns/is24/expose/available-services/electricity-calculator-mobile.html?zipCode=1010&squareMeters=34.08&lang=de"
+        },
+        {
+          "id": "omaze",
+          "chipName": "Verlosung",
+          "contentUrl": "https://www.immobilienscout24.de/expose/content?fragment=/content/campaigns/is24/expose/available-services/Omaze/_jcr_content/par.html",
+          "dsaLogo": "https://www.immobilienscout24.de/content/dam/is24/dsa-info/Omaze logo__200x80.jpg",
+          "dsaLink": "https://www.immobilienscout24.de/anbieten/dsa-info/omaze.html",
+          "company": "Lybellum GmbH",
+          "ctaText": "Mach jetzt mit",
+          "ctaLink": "https://rebrand.ly/Verfuegbare-Services_Omaze"
+        },
+        {
+          "id": "schufa",
+          "chipName": "SCHUFA",
+          "contentUrl": "https://www.immobilienscout24.de/expose/content?fragment=/content/campaigns/is24/expose/available-services/schufa/_jcr_content/par.html",
+          "ctaText": "Zum SCHUFA-BonitätsCheck",
+          "ctaLink": "https://bonitaetscheck.immobilienscout24.de/?cmp_id=10-053023&cmp_name=solvency_check&cmp_position=residential_expose&cmp_creative=services"
+        },
+        {
+          "id": "rent-protection-and-security",
+          "chipName": "Mietschutz & Sicherheit",
+          "contentListItems": [
+            {
+              "title": "Wohnen+ - MieterSchutz von der Nr. 1",
+              "subline": "Absicherung, die Wohnen leicht macht.",
+              "link": "https://www.immobilienscout24.de/lp/wohnen-plus.html?cmp_id=10-053024&cmp_name=living_plus&cmp_position=residential_expose&cmp_creative=services"
+            },
+            {
+              "title": "Einziehen ohne Kaution",
+              "subline": "Ziehe ein, ohne eine Mietkaution zu hinterlegen, und behalte deine finanzielle Flexibilität.",
+              "link": "https://www.immobilienscout24.de/lp/kautionsbuergschaft/"
+            }
+          ]
+        },
+        {
+          "id": "relocation-and-organization-mobile",
+          "chipName": "Umzug & Organisation",
+          "contentListItems": [
+            {
+              "title": "Kostenlos Umzugsunternehmen finden",
+              "subline": "Finde passende Umzugsprofis und vergleiche Angebote.",
+              "link": "is24://retargetRelocation?pag_source=expose_criteria&floor=3&street=Hoher%20Markt&houseNumber=&postcode=1010&city=Wien"
+            },
+            {
+              "title": "Wohnung kündigen",
+              "subline": "Gratis Kündigungsvorlage erstellen und direkt herunterladen.",
+              "link": "https://www.immobilienscout24.de/umzug/ratgeber/vorlagen/musterbrief-kuendigung/brief-erstellen.html?cmp_id=10-053022&cmp_name=cancelation_letter&cmp_position=residential_expose&cmp_creative=services"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "AD",
+      "ad": {
+        "id": "/4467/IS24_APP_DE/app_iOS_iPhone_expose_contentbanner_1"
+      }
+    },
+    {
+      "type": "TEXT_AREA",
+      "title": "Objektbeschreibung",
+      "collapseAfterLines": 5,
+      "text": "HERRLICHE STADTWOHNUNG, KOMPLETT SANIERT, PERFEKTE LAGE!\n\nHIGHLIGHTS\nBestlage im 1. Bezirkhochwertige AusstattungPersonenliftBeste Infrastruktur\n\nRAUMAUFTEILUNG\nVorraumKücheBadWohnbereich\n\nAUSSTATTUNG\nhochwertige SanitärausstattungParkett und SteinbödenKlimaanlagehochwertige KücheKästen im VorraumSicherheitstüreGastherme\n\nFLÄCHE:\nWohnfläche: 34m2\n\nVERFÜGBARKEIT \nab sofort\n\nMIETDAUER \nbefristet auf 5 Jahre\n\nINFRASTRUKTUR\nIn der Nähe dieser perfekten Innenstadtlage befinden sich zahlreiche Restaurants, Bars, Hotels und eine Vielzahl an Geschäften des täglichen Bedarfs (zB Merkur, Billa, Hofer, Apotheke, Bank, Post etc.).\n\nÖFFENTLICHE VERKEHRSANBINDUNG\n• Autobuslinien: 1A, 2A, 3A\n• U-Bahnlinien: U1, U2, U3, U4 Station Herrengasse, Stephansplatz bzw. Schwedenplatz (Fußweg rund 7-10 Minuten)\n\nPREISE:\nGesamtmiete inkl. Betriebskosten und USt. (ohne Heizung und Strom): EUR 1.192,13\nHeizungs- und Klimaanlagenakonto: EUR 93,64 netto wird monatlich zusätzlich zur Miete mit eingehoben.\nKaution: EUR 3.900,00\nMietvertragsdauer: 5 Jahre\n\nDa wir mit dem Verkäufer eine regelmäßige Geschäftsbeziehung unterhalten, weisen wir ausdrücklich auf das wirtschaftliche Naheverhältnis hin.\n\nWollen Sie Ihren Wohntraum verwirklichen?Ursula Rabas, IMMOBILIEN RABAS, Tel.: [Telefonnummer entfernt], E-Mail: [E-Mail-Adresse entfernt] steht Ihnen sehr gerne für Fragen oder einen Besichtigungstermin zur Verfügung.\n\nWir weisen darauf hin, dass zwischen dem Vermittler und dem zu vermittelnden Dritten ein familiäres oder wirtschaftliches Naheverhältnis besteht.\n\nDer Immobilienmakler erklärt, dass er – entgegen dem in der Immobilienwirtschaft üblichen Geschäftsgebrauch des Doppelmaklers – einseitig nur für den Vermieter tätig ist.\n\n\nInfrastruktur / Entfernungen\n\nGesundheit\nArzt &lt;250m\nApotheke &lt;250m\nKlinik &lt;500m\nKrankenhaus &lt;1.000m\n\nKinder &amp; Schulen\nSchule &lt;250m\nKindergarten &lt;500m\nUniversität &lt;500m\nHöhere Schule &lt;750m\n\nNahversorgung\nSupermarkt &lt;250m\nBäckerei &lt;250m\nEinkaufszentrum &lt;1.000m\n\nSonstige\nGeldautomat &lt;250m\nBank &lt;250m\nPost &lt;500m\nPolizei &lt;250m\n\nVerkehr\nBus &lt;250m\nU-Bahn &lt;250m\nStraßenbahn &lt;500m\nBahnhof &lt;250m\nAutobahnanschluss &lt;3.500m\n\nAngaben Entfernung Luftlinie / Quelle: OpenStreetMap"
+    },
+    {
+      "type": "TEXT_AREA",
+      "title": "Lage",
+      "collapseAfterLines": 5,
+      "text": "HOHER MARKT"
+    },
+    {
+      "type": "REFERENCE_LIST",
+      "title": "Services passend zur Wohnung",
+      "references": [
+        {
+          "type": "BUTTON",
+          "label": "SCHUFA-BonitätsCheck",
+          "url": "https://bonitaetscheck.immobilienscout24.de/?utm_medium=app&utm_source=ios&utm_campaign=solvency_check&utm_content=residential_expose_services",
+          "target": "WEB_INTERNAL",
+          "trackingConfig": {
+            "category": "expose",
+            "action": "consumerservices",
+            "label": "solvencycheck_services",
+            "event_name": "productintegration_click",
+            "event_product": "search",
+            "parameters": {
+              "event_parameter_1": "solvencycheck_services"
+            }
+          }
+        },
+        {
+          "type": "BUTTON",
+          "label": "Umzugsfirma finden",
+          "url": "is24://retargetRelocation?pag_source=expose_services&floor=3&street=Hoher%20Markt&houseNumber=&postcode=1010&city=Wien",
+          "target": "INTERNAL",
+          "trackingConfig": {
+            "category": "expose",
+            "action": "consumerservices",
+            "label": "relocation_services",
+            "event_name": "productintegration_click",
+            "event_product": "search",
+            "parameters": {
+              "event_parameter_1": "relocation_services"
+            }
+          }
+        },
+        {
+          "type": "BUTTON",
+          "label": "Mein Eigentümerbereich",
+          "url": "https://www.immobilienscout24.de/meinkonto/meine-immobilien?utm_medium=app&utm_source=ios&utm_campaign=residential_atlas_myproperty&utm_content=residential_expose_service&street=Hoher%20Markt&houseNumber=&zipcode=1010&city=Wien",
+          "target": "WEB_INTERNAL",
+          "trackingConfig": {
+            "category": "expose",
+            "action": "further_links",
+            "label": "myproperty_services",
+            "event_name": "productintegration_click",
+            "event_product": "search",
+            "parameters": {
+              "event_parameter_1": "myproperty_services"
+            }
+          }
+        },
+        {
+          "type": "BUTTON",
+          "label": "Stromverbrauch berechnen",
+          "url": "https://www.immobilienscout24.de/umzug/service/electricity-calculator-mobile.html?zipCode=1010&squareMeters=34.08&lang=de",
+          "target": "WEB_INTERNAL",
+          "trackingConfig": {
+            "category": "clickout",
+            "action": "electricity",
+            "label": "energy_services",
+            "event_name": "productintegration_click",
+            "event_product": "search",
+            "parameters": {
+              "event_parameter_1": "energy_services"
+            }
+          }
+        },
+        {
+          "type": "BUTTON",
+          "label": "Internet umziehen",
+          "url": "https://rebrand.ly/service-android-app",
+          "target": "WEB_INTERNAL",
+          "trackingConfig": {
+            "category": "clickout",
+            "action": "internet",
+            "label": "internet_services",
+            "event_name": "expose_clickout",
+            "event_product": "search",
+            "parameters": {
+              "event_parameter_1": "internet_services"
+            }
+          },
+          "additionalInfoForIcon": {
+            "title": "Warum diese Werbung?",
+            "text": "Für die Bereitstellung von Informationen zur Internet-Verfügbarkeit am Standort des Inserats arbeiten wir mit der Telekom Deutschland GmbH zusammen.",
+            "buttonText": "Weitere Informationen",
+            "buttonUrl": "https://www.immobilienscout24.de/anbieten/dsa-info/telekom.html",
+            "iconUrl": "https://www.immobilienscout24.de/content/dam/is24/expose-snippets/services/powered-by-telekom-new.png"
+          }
+        }
+      ]
+    },
+    {
+      "type": "AGENTS_INFO",
+      "title": "Anbieter Informationen",
+      "company": "ImmoScout24 Österreich",
+      "name": "",
+      "agentProfileUrl": "https://www.immobilienscout24.de/anbieter/immoscout24-oesterreich/a20fe2eab8ee77315bbead4",
+      "verifiedBy": [],
+      "address": "",
+      "references": [
+        {
+          "label": "Impressum des Anbieters",
+          "url": "is24://imprint?text=ImmoScout24%20%C3%96sterreich%0AOpernring%205%0A1010%20Wien%0A%23is24-at-it-dev-ds%40scout24.com%0A%0AImmoScout24%20%C3%96sterreich%0D%0AOpernring%205%0D%0A1010%20Wien%0D%0A%0D%0ABitte%20beachten%3A%0D%0AF%C3%BCr%20Anfragen%20zu%20einem%20Inserat%20nutzen%20Sie%20bitte%20ausschlie%C3%9Flich%20die%20%22Nachricht%22-Funktion%20direkt%20in%20der%20Anzeige.%0D%0AE-Mails%20zu%20Inseraten%20k%C3%B6nnen%20leider%20nicht%20bearbeitet%20werden.%0D%0A%0D%0ATechnische%20Fragen%3F%0D%0ABei%20technischen%20Problemen%20mit%20der%20Plattform%20kontaktieren%20Sie%20uns%20per%20E-Mail%3A%0D%0Ais24-at-it-dev-ds%40scout24.com%0D%0A%0D%0AImmoScout24%20Austria%0D%0AOpernring%205%0D%0A1010%20Vienna%0D%0A%0D%0AImportant%20Notice%3A%0D%0AFor%20inquiries%20about%20a%20listing%2C%20please%20only%20use%20the%20%22Message%22%20button%20directly%20in%20the%20ad.%0D%0AEmails%20regarding%20listings%20cannot%20be%20processed.%0D%0A%0D%0ATechnical%20issues%3F%0D%0AIf%20you%20experience%20technical%20problems%20with%20the%20platform%2C%20please%20contact%20us%20via%20email%3A%0D%0Ais24-at-it-dev-ds%40scout24.com%0A",
+          "type": "URL_LINK",
+          "target": "INTERNAL"
+        },
+        {
+          "label": "Homepage des Anbieters",
+          "url": "https://www.immobilienscout24.at/",
+          "type": "URL_LINK",
+          "target": "WEB"
+        }
+      ]
+    },
+    {
+      "type": "CONTACT",
+      "callButtonLabel": "Anruf",
+      "callButtonState": "inactive",
+      "mailButtonLabel": "Mehr Infos",
+      "mailButtonState": "active",
+      "messengerButtonLabel": "Nachrichten",
+      "premiumProfileRequiredForContacting": "false",
+      "phoneNumbers": [],
+      "contactData": {
+        "agent": {
+          "name": "",
+          "company": "ImmoScout24 Österreich",
+          "rating": {},
+          "verifiedBy": []
+        },
+        "realEstateType": "apartmentrent",
+        "formFieldConfig": {
+          "moveInDateField": "OPTIONAL",
+          "petsInHouseholdField": "OPTIONAL",
+          "numberOfPersonsField": "OPTIONAL",
+          "employmentRelationshipField": "OPTIONAL",
+          "incomeField": "OPTIONAL",
+          "firstnameField": "MANDATORY",
+          "lastnameField": "MANDATORY",
+          "phoneNumberField": "OPTIONAL",
+          "emailAddressField": "MANDATORY",
+          "addressField": "MANDATORY",
+          "applicationPackageCompletedField": "OPTIONAL",
+          "salutationField": "OPTIONAL",
+          "messageField": "OPTIONAL"
+        },
+        "isExposeBuy": false,
+        "isTenantNetwork": false
+      },
+      "clickOutUrl": "https://www.immobilienscout24.at/expose/6ab2a59bf55ba40ff02e7648"
+    },
+    {
+      "type": "AGENTS_CONTACT",
+      "address": "",
+      "references": [
+        {
+          "label": "Impressum des Anbieters",
+          "url": "is24://imprint?text=ImmoScout24%20%C3%96sterreich%0AOpernring%205%0A1010%20Wien%0A%23is24-at-it-dev-ds%40scout24.com%0A%0AImmoScout24%20%C3%96sterreich%0D%0AOpernring%205%0D%0A1010%20Wien%0D%0A%0D%0ABitte%20beachten%3A%0D%0AF%C3%BCr%20Anfragen%20zu%20einem%20Inserat%20nutzen%20Sie%20bitte%20ausschlie%C3%9Flich%20die%20%22Nachricht%22-Funktion%20direkt%20in%20der%20Anzeige.%0D%0AE-Mails%20zu%20Inseraten%20k%C3%B6nnen%20leider%20nicht%20bearbeitet%20werden.%0D%0A%0D%0ATechnische%20Fragen%3F%0D%0ABei%20technischen%20Problemen%20mit%20der%20Plattform%20kontaktieren%20Sie%20uns%20per%20E-Mail%3A%0D%0Ais24-at-it-dev-ds%40scout24.com%0D%0A%0D%0AImmoScout24%20Austria%0D%0AOpernring%205%0D%0A1010%20Vienna%0D%0A%0D%0AImportant%20Notice%3A%0D%0AFor%20inquiries%20about%20a%20listing%2C%20please%20only%20use%20the%20%22Message%22%20button%20directly%20in%20the%20ad.%0D%0AEmails%20regarding%20listings%20cannot%20be%20processed.%0D%0A%0D%0ATechnical%20issues%3F%0D%0AIf%20you%20experience%20technical%20problems%20with%20the%20platform%2C%20please%20contact%20us%20via%20email%3A%0D%0Ais24-at-it-dev-ds%40scout24.com%0A",
+          "type": "URL_LINK",
+          "target": "INTERNAL"
+        },
+        {
+          "label": "Homepage des Anbieters",
+          "url": "https://www.immobilienscout24.at/",
+          "type": "URL_LINK",
+          "target": "WEB"
+        }
+      ]
+    },
+    {
+      "type": "OBJECT_INFO",
+      "text": "Scout-ID: 171090023 | Objekt-Nr.: 6ab2a59bf55ba40ff02e7648"
+    },
+    {
+      "type": "AD",
+      "ad": {
+        "id": "/4467/IS24_APP_DE/app_iOS_iPhone_expose"
+      }
+    },
+    {
+      "type": "FRAUD_REPORT",
+      "text": "Gibt es etwas zu beanstanden?",
+      "reference": {
+        "label": "Angebot melden!",
+        "url": "https://angebot-melden.immobilienscout24.de/report?realEstateId=171090023&publicationState=live",
+        "type": "URL_LINK",
+        "target": "WEB_INTERNAL"
+      }
+    }
+  ],
+  "contact": {
+    "type": "CONTACT",
+    "callButtonLabel": "Anruf",
+    "callButtonState": "inactive",
+    "mailButtonLabel": "Mehr Infos",
+    "mailButtonState": "active",
+    "messengerButtonLabel": "Nachrichten",
+    "premiumProfileRequiredForContacting": "false",
+    "phoneNumbers": [],
+    "contactData": {
+      "agent": {
+        "name": "",
+        "company": "ImmoScout24 Österreich",
+        "rating": {},
+        "verifiedBy": []
+      },
+      "realEstateType": "apartmentrent",
+      "formFieldConfig": {
+        "moveInDateField": "OPTIONAL",
+        "petsInHouseholdField": "OPTIONAL",
+        "numberOfPersonsField": "OPTIONAL",
+        "employmentRelationshipField": "OPTIONAL",
+        "incomeField": "OPTIONAL",
+        "firstnameField": "MANDATORY",
+        "lastnameField": "MANDATORY",
+        "phoneNumberField": "OPTIONAL",
+        "emailAddressField": "MANDATORY",
+        "addressField": "MANDATORY",
+        "applicationPackageCompletedField": "OPTIONAL",
+        "salutationField": "OPTIONAL",
+        "messageField": "OPTIONAL"
+      },
+      "isExposeBuy": false,
+      "isTenantNetwork": false
+    },
+    "clickOutUrl": "https://www.immobilienscout24.at/expose/6ab2a59bf55ba40ff02e7648"
+  },
+  "tracking": {
+    "realEstateType": "APARTMENT_RENT",
+    "parameters": {
+      "obj_commissionsettings": "flow:0",
+      "obj_ityp": "apartment_rent",
+      "obj_listFirstStatus": "false",
+      "obj_nbp": "false",
+      "obj_privateOffer": "false",
+      "obj_scoutid": "171090023",
+      "obj_TenantNetwork": "false",
+      "obj_draftListing": "false",
+      "ga_cd_application_requirements": "profile0",
+      "ga_cd_customer_group": "others",
+      "ga_cd_cxp_interactivepic": "false",
+      "obj_totalRent": "1192.13",
+      "obj_baseRent": "1192.13",
+      "ga_cd_via": "standard",
+      "geo_land": "österreich",
+      "geo_bln": "wien",
+      "geo_krs": "wien",
+      "obj_ExclusiveExpose": "false"
+    }
+  },
+  "adTargetingParameters": {
+    "obj_regio1": "Wien",
+    "obj_heatingType": "district_heating",
+    "obj_cId": "19207361",
+    "obj_newlyConst": "n",
+    "obj_balcony": "n",
+    "obj_picturecount": "9",
+    "obj_totalRent": "1192.13",
+    "obj_privateOffer": "false",
+    "obj_scoutId": "171090023",
+    "obj_noParkSpaces": "0",
+    "obj_firingTypes": "no_information",
+    "obj_hasKitchen": "n",
+    "obj_ExclusiveExpose": "false",
+    "geo_bln": "wien",
+    "obj_cellar": "n",
+    "obj_baseRent": "1192.13",
+    "obj_houseNumber": "no_information",
+    "obj_energyType": "no_information",
+    "obj_livingSpace": "34.08",
+    "geo_krs": "wien",
+    "obj_zipCode": "1010",
+    "obj_condition": "first_time_use",
+    "obj_interiorQual": "no_information",
+    "obj_highDemand": "false",
+    "obj_petsAllowed": "no_information",
+    "obj_street": "Hoher Markt",
+    "obj_lift": "y",
+    "obj_depositLink": "y",
+    "obj_baseRentRange": "7",
+    "obj_streetPlain": "Hoher_Markt",
+    "obj_typeOfFlat": "apartment",
+    "obj_noRooms": "1",
+    "obj_assistedLiving": "n",
+    "obj_ityp": "0,active",
+    "goog_abt": "0",
+    "geo_land": "österreich",
+    "obj_immotype": "wohnung_miete",
+    "obj_privateOfferInvestmentCheck": "false",
+    "obj_contactFormInputFieldCount": "18",
+    "obj_floor": "3",
+    "obj_cwId": "001.18264372",
+    "geo_bg": "01._bezirk,_innere_stadt",
+    "obj_noRoomsRange": "1",
+    "obj_garden": "n",
+    "evt_count_pm_sig": "showqualicontactform",
+    "obj_barrierFree": "y",
+    "obj_international": "y",
+    "obj_regio3": "01._Bezirk_Innere_Stadt",
+    "obj_objectnumber": "6ab2a59bf55ba40ff02e7648",
+    "obj_livingSpaceRange": "1",
+    "obj_regio2": "Wien"
+  }
+}

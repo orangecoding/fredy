@@ -120,6 +120,7 @@ export default function UserTable({ user = [], onUserRemoval, onUserEdit } = {})
               <Dropdown
                 trigger="click"
                 position="bottomRight"
+                clickToHide
                 render={
                   <Dropdown.Menu>
                     <Dropdown.Item icon={<IconKey />} onClick={() => revealToken(record.id)}>

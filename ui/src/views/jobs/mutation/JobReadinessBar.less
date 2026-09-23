@@ -1,0 +1,85 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../../tokens.less';
+
+/* The top row of the save bar, not a card of its own: the bar around it brings the surface, the
+   border and the shadow, and a second bordered box inside it would read as a nested panel. The
+   whole row is the bar's first line, so the two buttons wrap onto the second and sit at its end.
+
+   The state is carried by the dot rather than by a fill - the same rule the save bar applies to
+   its own amber dot, and the reason the text beside it stays text colour: amber on this surface
+   only reaches 4,24 to 1. Warning rather than error throughout, because nothing is wrong,
+   something is not finished yet. */
+.jobReadiness {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  flex-basis: 100%;
+  gap: @space-2 @space-3;
+
+  &__label {
+    display: inline-flex;
+    align-items: center;
+    gap: @space-2;
+    font-size: @text-sm;
+    color: @color-text;
+  }
+
+  &__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: @radius-pill;
+    background: @color-warning;
+    flex: none;
+  }
+
+  &__items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: @space-2;
+  }
+
+  /* A real button: it moves the page, so it is a control and gets the keyboard and the focus ring
+     that go with one. The arrow is what says so before it is pressed. */
+  &__item {
+    display: inline-flex;
+    align-items: center;
+    gap: @space-1;
+    padding: @space-1 @space-2;
+    border: 1px solid @color-border-bright;
+    border-radius: @radius-chip;
+    background: @color-elevated;
+    color: @color-text;
+    font-family: @font-ui;
+    font-size: @text-sm;
+    cursor: pointer;
+    transition: border-color @transition-fast;
+
+    &:hover {
+      border-color: @color-warning;
+    }
+
+    /* `!important` because Index.less suppresses every button focus ring in the app with one of
+       its own, to get rid of Semi's red rings. This control moves the page when it is pressed, so
+       a keyboard user has to be able to see where they are; the accent ring here is Fredy's, not
+       Semi's, and it is the only thing that override would otherwise take away. */
+    &:focus-visible {
+      outline: 2px solid @color-accent !important;
+      outline-offset: 2px;
+    }
+
+    .semi-icon {
+      font-size: @text-xs;
+      color: @color-muted;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &__item {
+      transition: none;
+    }
+  }
+}

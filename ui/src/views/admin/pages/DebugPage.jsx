@@ -249,6 +249,7 @@ export default function DebugPage() {
               <Dropdown
                 trigger="click"
                 position="bottomRight"
+                clickToHide
                 render={
                   <Dropdown.Menu>
                     <Dropdown.Item

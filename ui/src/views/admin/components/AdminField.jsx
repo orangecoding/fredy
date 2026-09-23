@@ -24,10 +24,13 @@ import './AdminField.less';
  * @param {string} props.label
  * @param {string} [props.help] Behind the mark. Omitted where the label says it all.
  * @param {string} [props.htmlFor] Id of the control, so the label actually labels something.
+ * @param {boolean} [props.grow=false] Whether the control takes the rest of the row instead of
+ *   sitting at its own width. For a free text field, where the value is as long as it is - the
+ *   job's name, a path - rather than a number that reads as a column.
  * @param {React.ReactNode} props.children
  * @returns {React.ReactElement}
  */
-export default function AdminField({ label, help, htmlFor, children }) {
+export default function AdminField({ label, help, htmlFor, grow = false, children }) {
   return (
     <div className="adminField">
       <span className="adminField__label">
@@ -40,7 +43,7 @@ export default function AdminField({ label, help, htmlFor, children }) {
           </Popover>
         )}
       </span>
-      <span className="adminField__control">{children}</span>
+      <span className={`adminField__control${grow ? ' adminField__control--grow' : ''}`}>{children}</span>
     </div>
   );
 }

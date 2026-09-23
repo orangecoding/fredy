@@ -61,7 +61,7 @@ export default function NotificationChannelEditor({
 
   const [draft, setDraft] = useState(null);
   const [loaded, setLoaded] = useState(null);
-  const [validationMessage, setValidationMessage] = useState(null);
+  const [validationProblems, setValidationProblems] = useState([]);
   const [successMessage, setSuccessMessage] = useState(null);
   const [secretsHidden, setSecretsHidden] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -72,7 +72,7 @@ export default function NotificationChannelEditor({
     if (!visible) {
       setDraft(null);
       setLoaded(null);
-      setValidationMessage(null);
+      setValidationProblems([]);
       setSuccessMessage(null);
       setSecretsHidden(false);
       return undefined;
@@ -120,7 +120,7 @@ export default function NotificationChannelEditor({
   const save = async () => {
     const problems = validateChannel(draft, adapterConfig, t);
     if (problems.length > 0) {
-      setValidationMessage(problems.join('<br/>'));
+      setValidationProblems(problems);
       return;
     }
     setSaving(true);
@@ -130,23 +130,24 @@ export default function NotificationChannelEditor({
       onSaved?.(saved);
       onClose();
     } catch (error) {
-      setValidationMessage(errorMessage(error, t('common.unknownError')));
+      setValidationProblems([errorMessage(error, t('common.unknownError'))]);
     } finally {
       setSaving(false);
     }
   };
 
   const test = async () => {
-    setValidationMessage(null);
+    setValidationProblems([]);
     setSuccessMessage(null);
 
     const problems = validateChannel(draft, adapterConfig, t);
     if (problems.length > 0) {
-      setValidationMessage(problems.join('<br/>'));
+      setValidationProblems(problems);
       return;
     }
     if (draft.adapterId === 'browser') {
-      triggerTestNotification(t, setSuccessMessage, setValidationMessage);
+      // The helper reports one failure at a time, so the list it writes into is a list of one.
+      triggerTestNotification(t, setSuccessMessage, (message) => setValidationProblems([message]));
       return;
     }
     try {
@@ -155,7 +156,7 @@ export default function NotificationChannelEditor({
       await actions.notificationAdapter.tryDraft(draft.adapterId, draft.fields);
       setSuccessMessage(t('notification.trySuccess'));
     } catch (error) {
-      setValidationMessage(t('notification.tryError', { error: errorMessage(error, t('common.unknownError')) }));
+      setValidationProblems([t('notification.tryError', { error: errorMessage(error, t('common.unknownError')) })]);
     }
   };
 
@@ -174,11 +175,17 @@ export default function NotificationChannelEditor({
       style={{ width: isMobile ? '95%' : '50rem' }}
       onCancel={onClose}
       footer={
-        <div>
-          <Button type="secondary" style={{ float: 'left' }} onClick={test}>
+        <div className="channelEditor__footer">
+          {/* On the left because it is neither of the two ways out of this dialog: it changes
+              nothing and closes nothing, it just asks the service whether these credentials work.
+              It used to get there by floating left inside a `div` with no rule of its own, in
+              Semi's blue, next to a light tertiary Cancel and a solid accent Save: three buttons
+              in three weights for two decisions. */}
+          <Button theme="outline" type="tertiary" onClick={test}>
             {t('notification.try')}
           </Button>
-          <Button theme="light" type="tertiary" onClick={onClose}>
+          <span className="channelEditor__footerGap" />
+          <Button theme="borderless" type="tertiary" onClick={onClose}>
             {t('notification.cancel')}
           </Button>
           <Button theme="solid" type="primary" loading={saving} onClick={save}>
@@ -221,92 +228,120 @@ export default function NotificationChannelEditor({
         />
       )}
 
-      {validationMessage != null && (
+      {/* Two named groups rather than eight equal rows: what the channel is, and what it signs in
+          with. */}
+      <div className="channelEditor__group">
+        <span className="channelEditor__groupTitle">{t('notification.channels.groupChannel')}</span>
+
+        <div className="channelEditor__field">
+          <label className="channelEditor__label" htmlFor="channelEditorName">
+            {t('notification.channels.nameLabel')}
+          </label>
+          <Input
+            id="channelEditorName"
+            value={draft.name}
+            placeholder={t('notification.channels.namePlaceholder')}
+            onChange={(value) => setDraft({ ...draft, name: value })}
+          />
+          <div className="channelEditor__extra">{t('notification.channels.nameHelp')}</div>
+        </div>
+
+        <div className="channelEditor__field">
+          <div className="channelEditor__label">{t('notification.channels.typeLabel')}</div>
+          <div className="channelEditor__value">{adapterConfig.name}</div>
+          <div className="channelEditor__extra">{adapterConfig.description}</div>
+        </div>
+
+        {currentUser?.isAdmin && (
+          <div className="channelEditor__field">
+            <div className="channelEditor__label">{t('notification.channels.visibilityLabel')}</div>
+            <Select
+              value={draft.visibility}
+              className="channelEditor__visibility"
+              dropdownClassName="channelEditor__dropdown"
+              onChange={(value) => setDraft({ ...draft, visibility: value })}
+              optionList={[
+                { value: 'private', label: t('notification.channels.visibilityPrivate') },
+                { value: 'admin', label: t('notification.channels.visibilityAdmin') },
+                { value: 'everyone', label: t('notification.channels.visibilityEveryone') },
+              ]}
+            />
+            <div className="channelEditor__extra">{t('notification.channels.visibilityHelp')}</div>
+          </div>
+        )}
+      </div>
+
+      <div className="channelEditor__group">
+        <span className="channelEditor__groupTitle">{t('notification.channels.groupCredentials')}</span>
+
+        {/* At the head of the group it explains, not floating between the channel's own data and
+            its credentials. */}
+        {adapterConfig.readme != null && <Help readme={adapterConfig.readme} />}
+
+        {Object.entries(adapterConfig.fields ?? {}).map(([key, definition]) =>
+          definition.type === 'boolean' ? (
+            <div key={key} className="channelEditor__field">
+              <div className="channelEditor__switchRow">
+                <Switch checked={draft.fields[key] === true} onChange={(checked) => setField(key, checked)} />
+                <span>{definition.label}</span>
+              </div>
+              {definition.description && <div className="channelEditor__extra">{definition.description}</div>}
+            </div>
+          ) : (
+            <div key={key} className="channelEditor__field">
+              <label className="channelEditor__label" htmlFor={`channelEditorField-${key}`}>
+                {definition.label}
+              </label>
+              <Input
+                id={`channelEditorField-${key}`}
+                // A credential is masked in the form as well as on the wire. `mode="password"`
+                // gives Semi's reveal toggle, so the owner can still check what they typed.
+                mode={definition.secret === true ? 'password' : undefined}
+                type={definition.type === 'number' ? 'number' : 'text'}
+                value={draft.fields[key] ?? ''}
+                placeholder={definition.label}
+                onChange={(value) => setField(key, value)}
+              />
+              {definition.description && <div className="channelEditor__extra">{definition.description}</div>}
+            </div>
+          ),
+        )}
+      </div>
+
+      {/* Above the footer rather than at the top of the dialog: this is the answer to the button
+          that was just pressed, and on a long adapter form the top of the dialog is off screen by
+          the time it is. */}
+      {validationProblems.length > 0 && (
         <Banner
           fullMode={false}
           type="danger"
           closeIcon={null}
           className="channelEditor__banner"
-          title={<div className="channelEditor__bannerTitle">{t('notification.errorTitle')}</div>}
-          description={<p dangerouslySetInnerHTML={{ __html: validationMessage }} />}
+          description={
+            validationProblems.length === 1 ? (
+              validationProblems[0]
+            ) : (
+              // `validateChannel` returns an array. This used to glue it into one string with
+              // line break tags and hand that string to React's raw-HTML escape hatch. It is a
+              // list; it is rendered as one.
+              <ul className="channelEditor__problems">
+                {validationProblems.map((problem) => (
+                  <li key={problem}>{problem}</li>
+                ))}
+              </ul>
+            )
+          }
         />
       )}
+
       {successMessage != null && (
         <Banner
           fullMode={false}
           type="success"
           closeIcon={null}
           className="channelEditor__banner"
-          title={<div className="channelEditor__bannerTitle">{t('notification.successTitle')}</div>}
-          description={<p dangerouslySetInnerHTML={{ __html: successMessage }} />}
+          description={successMessage}
         />
-      )}
-
-      <div className="channelEditor__field">
-        <label className="channelEditor__label" htmlFor="channelEditorName">
-          {t('notification.channels.nameLabel')}
-        </label>
-        <Input
-          id="channelEditorName"
-          value={draft.name}
-          placeholder={t('notification.channels.namePlaceholder')}
-          onChange={(value) => setDraft({ ...draft, name: value })}
-        />
-        <div className="channelEditor__extra">{t('notification.channels.nameHelp')}</div>
-      </div>
-
-      <div className="channelEditor__field">
-        <div className="channelEditor__label">{t('notification.channels.typeLabel')}</div>
-        <div>{adapterConfig.name}</div>
-        <div className="channelEditor__extra">{adapterConfig.description}</div>
-      </div>
-
-      {currentUser?.isAdmin && (
-        <div className="channelEditor__field">
-          <div className="channelEditor__label">{t('notification.channels.visibilityLabel')}</div>
-          <Select
-            value={draft.visibility}
-            style={{ width: 220 }}
-            onChange={(value) => setDraft({ ...draft, visibility: value })}
-            optionList={[
-              { value: 'private', label: t('notification.channels.visibilityPrivate') },
-              { value: 'admin', label: t('notification.channels.visibilityAdmin') },
-              { value: 'everyone', label: t('notification.channels.visibilityEveryone') },
-            ]}
-          />
-          <div className="channelEditor__extra">{t('notification.channels.visibilityHelp')}</div>
-        </div>
-      )}
-
-      {adapterConfig.readme != null && <Help readme={adapterConfig.readme} />}
-
-      {Object.entries(adapterConfig.fields ?? {}).map(([key, definition]) =>
-        definition.type === 'boolean' ? (
-          <div key={key} className="channelEditor__field">
-            <div className="channelEditor__switchRow">
-              <Switch checked={draft.fields[key] === true} onChange={(checked) => setField(key, checked)} />
-              <span>{definition.label}</span>
-            </div>
-            {definition.description && <div className="channelEditor__extra">{definition.description}</div>}
-          </div>
-        ) : (
-          <div key={key} className="channelEditor__field">
-            <label className="channelEditor__label" htmlFor={`channelEditorField-${key}`}>
-              {definition.label}
-            </label>
-            <Input
-              id={`channelEditorField-${key}`}
-              // A credential is masked in the form as well as on the wire. `mode="password"`
-              // gives Semi's reveal toggle, so the owner can still check what they typed.
-              mode={definition.secret === true ? 'password' : undefined}
-              type={definition.type === 'number' ? 'number' : 'text'}
-              value={draft.fields[key] ?? ''}
-              placeholder={definition.label}
-              onChange={(value) => setField(key, value)}
-            />
-            {definition.description && <div className="channelEditor__extra">{definition.description}</div>}
-          </div>
-        ),
       )}
     </Modal>
   );

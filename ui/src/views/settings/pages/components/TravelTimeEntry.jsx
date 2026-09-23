@@ -166,6 +166,7 @@ export default function TravelTimeEntry({ row, startOpen, suggestions, onSearch,
       <Dropdown
         trigger="click"
         position="bottomRight"
+        clickToHide
         render={
           <Dropdown.Menu>
             <Dropdown.Item type="danger" icon={<IconDelete />} onClick={onRemove}>

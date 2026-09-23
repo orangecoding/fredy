@@ -1,11 +1,21 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../../../../tokens.less';
+
+/* This file used to import nothing and colour with `--semi-color-text-0` and `--semi-color-text-2`,
+   with ten free measurements between them. Both are now tokens, and every measurement below comes
+   from the scale. */
 .channelEditor {
   &__banner {
-    margin-bottom: 0.75rem;
+    margin-bottom: @space-3;
 
     /* Semi's banner ships a generous block padding meant for page-width notices. Inside a modal
        that is mostly form, it pushes the first field below the fold. */
     .semi-banner-content {
-      padding: 0.5rem 0.75rem;
+      padding: @space-2 @space-3;
     }
 
     p {
@@ -13,34 +23,85 @@
     }
   }
 
-  &__bannerTitle {
+  &__problems {
+    margin: 0;
+    padding-left: @space-4;
+    line-height: 1.6;
+  }
+
+  /* Two named groups rather than eight equal rows: what the channel is, and what it signs in
+     with. The setup guide belongs to the second and sits at its head. */
+  &__group {
+    margin-bottom: @space-5;
+
+    & + & {
+      padding-top: @space-5;
+      border-top: 1px solid @color-border;
+    }
+  }
+
+  &__groupTitle {
+    display: block;
+    margin-bottom: @space-3;
+    font-size: @text-xs;
     font-weight: 600;
-    font-size: 14px;
-    line-height: 20px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: @color-muted;
   }
 
   &__field {
-    margin-bottom: 0.85rem;
+    margin-bottom: @space-3;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
   }
 
   &__label {
     display: block;
-    margin-bottom: 0.25rem;
+    margin-bottom: @space-1;
     font-weight: 600;
-    font-size: 14px;
-    color: var(--semi-color-text-0);
+    font-size: @text-base;
+    color: @color-text;
+  }
+
+  &__value {
+    font-size: @text-base;
+    color: @color-text;
   }
 
   &__extra {
-    margin-top: 0.25rem;
-    font-size: 12px;
+    margin-top: @space-1;
+    font-size: @text-sm;
     line-height: 1.45;
-    color: var(--semi-color-text-2);
+    color: @color-muted;
   }
 
   &__switchRow {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: @space-4;
   }
+
+  &__visibility {
+    width: 14rem;
+  }
+
+  /* One row, three buttons, no float: Test at one end, the two ways out at the other. */
+  &__footer {
+    display: flex;
+    align-items: center;
+    gap: @space-2;
+  }
+
+  &__footerGap {
+    flex: 1;
+  }
+}
+
+/* Semi renders the option list in a portal at `document.body`, so it is bound by name rather than
+   by nesting. */
+.channelEditor__dropdown {
+  min-width: 14rem;
 }

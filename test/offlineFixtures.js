@@ -51,6 +51,41 @@ const IDEALISTA_PAGES = {
   'www.idealista.pt': 'idealista_es.html',
 };
 
+/**
+ * ImmoScout's two national sites are answered by one mobile API, so each needs a recording of its
+ * own under the same host. Keyed by the country their geocodes name.
+ */
+const IMMOSCOUT_LIST_FIXTURES = { de: 'immoscout_list.json', at: 'immoscoutAt_list.json' };
+
+/** The exposé counterpart of {@link IMMOSCOUT_LIST_FIXTURES}. */
+const IMMOSCOUT_DETAIL_FIXTURES = { de: 'immoscout_detail.json', at: 'immoscoutAt_detail.json' };
+
+/**
+ * Which national site a mobile API search URL belongs to.
+ *
+ * @param {string} urlStr A mobile API `search/list` URL.
+ * @returns {'de'|'at'}
+ */
+function immoscoutCountryOf(urlStr) {
+  const geocodes = new URL(urlStr).searchParams.get('geocodes') ?? '';
+  return geocodes === '/at' || geocodes.startsWith('/at/') ? 'at' : 'de';
+}
+
+/**
+ * The exposé ids a recorded search result holds.
+ *
+ * @param {any} listFixture A parsed `search/list` recording, or null when there is none.
+ * @returns {Set<string>}
+ */
+function exposeIdsOf(listFixture) {
+  return new Set(
+    (listFixture?.resultListItems ?? [])
+      .filter((item) => item?.type === 'EXPOSE_RESULT')
+      .map((item) => String(item?.item?.id))
+      .filter((id) => id !== 'undefined'),
+  );
+}
+
 async function tryReadFile(filepath) {
   try {
     return await readFile(filepath, 'utf-8');
@@ -178,8 +213,11 @@ export function buildFetchMock() {
   let idealistaListData = null;
   let casaPlaces = null;
   let casaListData = null;
-  let listData = null;
-  let detailData = null;
+  // One mobile API answers for both ImmoScout national sites, so each has a recording of its own
+  // and the request says which one it wants. Keyed by country to keep that explicit.
+  const immoscoutListData = { de: null, at: null };
+  const immoscoutDetailData = { de: null, at: null };
+  let austrianExposeIds = null;
   let deutscheWohnenListData = null;
   let willhabenHtml = null;
   let flatfoxPins = null;
@@ -326,23 +364,37 @@ export function buildFetchMock() {
       return { ok: true, status: 200, json: () => Promise.resolve(body) };
     }
 
+    // The one thing in a search request that says which national site it belongs to is its
+    // geocode: Austrian adverts live in the German index under `/at/...`, everything else is
+    // Germany's own.
     if (urlStr.includes('api.mobile.immobilienscout24.de/search/list')) {
-      if (!listData) {
-        const raw = await tryReadFile(path.join(FIXTURES_DIR, 'immoscout_list.json'));
-        listData = raw ? JSON.parse(raw) : { resultListItems: [] };
+      const country = immoscoutCountryOf(urlStr);
+      if (!immoscoutListData[country]) {
+        const raw = await tryReadFile(path.join(FIXTURES_DIR, IMMOSCOUT_LIST_FIXTURES[country]));
+        immoscoutListData[country] = raw ? JSON.parse(raw) : { resultListItems: [] };
       }
 
       const requestedType = new URL(urlStr).searchParams.get('realestatetype');
-      const responseData = withRealEstateType(listData, requestedType);
+      const responseData = withRealEstateType(immoscoutListData[country], requestedType);
       return { ok: true, status: 200, json: () => Promise.resolve(responseData) };
     }
 
+    // The exposé endpoint carries no geocode - both sites' adverts share one identifier space -
+    // so the recording is picked by whether the id is one the Austrian list fixture holds. An id
+    // from neither reads the German exposé, which is what keeps the German suites untouched.
     if (urlStr.includes('api.mobile.immobilienscout24.de/expose/')) {
-      if (!detailData) {
-        const raw = await tryReadFile(path.join(FIXTURES_DIR, 'immoscout_detail.json'));
-        detailData = raw ? JSON.parse(raw) : { sections: [], contact: {} };
+      if (austrianExposeIds == null) {
+        const raw = await tryReadFile(path.join(FIXTURES_DIR, IMMOSCOUT_LIST_FIXTURES.at));
+        austrianExposeIds = exposeIdsOf(raw ? JSON.parse(raw) : null);
       }
-      return { ok: true, status: 200, json: () => Promise.resolve(detailData) };
+      const exposeId = urlStr.split('/expose/').pop().split(/[?#]/)[0];
+      const country = austrianExposeIds.has(exposeId) ? 'at' : 'de';
+
+      if (!immoscoutDetailData[country]) {
+        const raw = await tryReadFile(path.join(FIXTURES_DIR, IMMOSCOUT_DETAIL_FIXTURES[country]));
+        immoscoutDetailData[country] = raw ? JSON.parse(raw) : { sections: [], contact: {} };
+      }
+      return { ok: true, status: 200, json: () => Promise.resolve(immoscoutDetailData[country]) };
     }
 
     if (urlStr.includes('deutsche-wohnen.com/api/deuwo-real-estate/list')) {

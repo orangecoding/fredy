@@ -51,7 +51,7 @@ async function loadSweeper(providers = null) {
         if (providerId === 'explodes') {
           throw new Error('provider metadata is unreadable');
         }
-        return { swissportal: ['ch'], austrianportal: ['at'] }[providerId] ?? ['de'];
+        return { swissportal: ['ch'], italianportal: ['it'] }[providerId] ?? ['de'];
       },
     }));
   }
@@ -150,13 +150,13 @@ describe('services/connectivity/connectivitySweeper', () => {
   });
 
   it('stamps a listing in a country no register covers', async () => {
-    state.pending = [{ id: 'l1', latitude: 48.21, longitude: 16.37, provider: 'austrianportal' }];
+    state.pending = [{ id: 'l1', latitude: 41.89, longitude: 12.49, provider: 'italianportal' }];
     const sweep = await loadSweeper();
 
     const tally = await sweep({ now: 1000 });
 
     // Stamped rather than skipped: without the timestamp every sweep would re-derive the same
-    // answer for every Austrian listing the instance holds, forever.
+    // answer for every Italian listing the instance holds, forever.
     expect(tally.empty).toBe(1);
     expect(state.stored[0]).toMatchObject({ id: 'l1', connectivity: null, checkedAt: 1000 });
     expect(state.lookups).toEqual([]);
@@ -240,9 +240,9 @@ describe('services/connectivity/connectivitySweeper', () => {
   });
 
   it('does not call an outage on a run that never asked anything', async () => {
-    // A sweep with only Austrian listings stamps them and asks nobody. A register left standing off
+    // A sweep with only Italian listings stamps them and asks nobody. A register left standing off
     // by an earlier run must not turn that into an outage report.
-    state.pending = [{ id: 'l1', latitude: 48.21, longitude: 16.37, provider: 'austrianportal' }];
+    state.pending = [{ id: 'l1', latitude: 41.89, longitude: 12.49, provider: 'italianportal' }];
     state.paused = ['de-bba'];
     const sweep = await loadSweeper();
 
@@ -278,8 +278,10 @@ describe('services/connectivity/connectivitySweeper', () => {
  * stamped on the row for the whole retry interval. The advert's own link is what says which market
  * it is on, and `metaInformation.countryOf` is how a provider reads it.
  *
- * idealista is the shipped implementation of that, over Spain, Italy and Portugal; none of the
- * three has a coverage register here yet, so the two markets used below are the two that do.
+ * idealista is the shipped implementation of that, over Spain, Italy and Portugal. One of the
+ * three has a register and the other two do not, which is what the last two cases below are about;
+ * `alpine` stands in for the rest, so that the narrowing itself is tested against a provider whose
+ * markets both answer.
  */
 describe('services/connectivity/connectivitySweeper, on a provider covering several countries', () => {
   /**
@@ -345,11 +347,10 @@ describe('services/connectivity/connectivitySweeper, on a provider covering seve
   });
 
   /**
-   * idealista's own narrowing, read through the shipped `countryOf`. No register covers Spain, so
-   * the row is stamped and left alone - no request is spent, and the sweep does not come back to it
-   * on every run.
+   * idealista's own narrowing, read through the shipped `countryOf`, on the market of its three
+   * that a register covers.
    */
-  it('spends no request on an idealista listing in a country no register covers', async () => {
+  it('asks the Spanish register about an idealista listing on the Spanish site', async () => {
     const { metaInformation } = await import(root + '/lib/provider/idealista.js');
     state.pending = [
       {
@@ -363,10 +364,32 @@ describe('services/connectivity/connectivitySweeper, on a provider covering seve
 
     const tally = await (await loadSweeper([{ metaInformation }]))({ now: 1000 });
 
+    expect(tally.enriched).toBe(1);
+    expect(state.lookups).toEqual([{ lat: 40.42, lng: -3.7, countries: ['es'] }]);
+  });
+
+  /**
+   * And on one of the two that no register covers: the row is stamped and left alone - no request
+   * is spent, and the sweep does not come back to it on every run.
+   */
+  it('spends no request on an idealista listing in a country no register covers', async () => {
+    const { metaInformation } = await import(root + '/lib/provider/idealista.js');
+    state.pending = [
+      {
+        id: 'it-1',
+        latitude: 45.46,
+        longitude: 9.19,
+        provider: 'idealista',
+        link: 'https://www.idealista.it/immobile/1/',
+      },
+    ];
+
+    const tally = await (await loadSweeper([{ metaInformation }]))({ now: 1000 });
+
     expect(state.lookups).toEqual([]);
     expect(tally).toMatchObject({ enriched: 0, empty: 1 });
     expect(state.stored).toEqual([
-      { id: 'es-1', connectivity: null, columns: { maxDown: null, fiber: null, mobile: null }, checkedAt: 1000 },
+      { id: 'it-1', connectivity: null, columns: { maxDown: null, fiber: null, mobile: null }, checkedAt: 1000 },
     ]);
   });
 });
