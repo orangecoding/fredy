@@ -41,9 +41,16 @@ describe('#willhaben provider testsuite()', () => {
 
   it('reads the headline figures as numbers', () => {
     for (const listing of listings) {
-      expect(typeof listing.price, `price of ${listing.id}`).toBe('number');
-      expect(listing.price).toBeGreaterThan(0);
-      expect(listing.size).toBeGreaterThan(0);
+      // An advertiser may leave the price and the living area out altogether, and the provider
+      // reads a missing figure as unknown. So, as for the rooms below, the assertion is on the
+      // figure being sane when there is one.
+      if (listing.price != null) {
+        expect(typeof listing.price, `price of ${listing.id}`).toBe('number');
+        expect(listing.price, `price of ${listing.id}`).toBeGreaterThan(0);
+      }
+      if (listing.size != null) {
+        expect(listing.size, `size of ${listing.id}`).toBeGreaterThan(0);
+      }
       // willhaben writes a room count of 0 for adverts whose advertiser left the field empty, and
       // leaves the "Zimmer" teaser off its own cards for them. The provider reads that as unknown,
       // so the assertion is on the figure being sane when there is one.
@@ -54,9 +61,27 @@ describe('#willhaben provider testsuite()', () => {
         expect(listing.rooms, `rooms of ${listing.id}`).toBeLessThan(30);
       }
     }
-    // A run where nothing at all carries a room count is the parsing breaking, not the advertisers
-    // all going quiet on the same day.
+    // A run where nothing at all carries a figure is the parsing breaking, not the advertisers all
+    // going quiet on the same day.
+    expect(listings.some((listing) => listing.price != null)).toBe(true);
+    expect(listings.some((listing) => listing.size != null)).toBe(true);
     expect(listings.some((listing) => listing.rooms != null)).toBe(true);
+  });
+
+  it('reads a figure the advertiser left out as unknown rather than as zero', () => {
+    const { normalize } = provider.createConfig(providerConfig.willhaben, []);
+    const listing = normalize({
+      id: '1',
+      title: 'Moderne Wohnungen',
+      link: 'https://www.willhaben.at/iad/immobilien/d/mietwohnungen/wien/1/',
+      postcode: '1210',
+      location: 'Wien, 21. Bezirk, Floridsdorf',
+      rooms: '0',
+    });
+
+    expect(listing.price).toBeNull();
+    expect(listing.size).toBeNull();
+    expect(listing.rooms).toBeNull();
   });
 
   /**

@@ -20,8 +20,15 @@ const TEST_PROVIDER_PATH = path.join(ROOT, 'test', 'provider', 'testProvider.jso
  * of the first page alone would be a truncated search - `paging.info.count` promising listings the
  * offline suite can never reach. The pages are merged into one payload instead, keeping the first
  * response's `paging` so the offline fetch mock can serve them back sliced, page by page.
+ *
+ * The endpoint refuses a search without the token the website fetches first, so the provider's
+ * own token request is used rather than a copy of it.
+ *
+ * @param {string} apiUrl The run's list endpoint.
+ * @param {string} refererUrl The search page the user pasted.
+ * @param {(headers: Object.<string, string>) => Promise<string|null>} fetchSearchToken
  */
-async function downloadDeutscheWohnenFixtures(apiUrl, refererUrl) {
+async function downloadDeutscheWohnenFixtures(apiUrl, refererUrl, fetchSearchToken) {
   console.log('\nDownloading deutscheWohnen...');
 
   const headers = {
@@ -30,6 +37,11 @@ async function downloadDeutscheWohnenFixtures(apiUrl, refererUrl) {
     Accept: 'application/json',
     Referer: refererUrl,
   };
+
+  const token = await fetchSearchToken(headers);
+  if (token) {
+    headers['X-VON-Search-Token'] = token;
+  }
 
   const pageSize = Number.parseInt(new URL(apiUrl).searchParams.get('limit') ?? '', 10) || 50;
   const listData = { paging: null, results: [] };
@@ -794,7 +806,7 @@ async function main() {
         await downloadImmoscoutFixtures(runConfig.url, name);
         break;
       case 'deutscheWohnen':
-        await downloadDeutscheWohnenFixtures(runConfig.url, cfg.url);
+        await downloadDeutscheWohnenFixtures(runConfig.url, cfg.url, provider.fetchSearchToken);
         break;
       case 'immowelt':
         await downloadImmoweltFixtures(runConfig, launchBrowser, closeBrowser);

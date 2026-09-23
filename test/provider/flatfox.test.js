@@ -54,12 +54,37 @@ describe('#flatfox provider testsuite()', () => {
     }
   });
 
-  it('carries a price and an address on every listing', () => {
+  /**
+   * Flatfox lets an advertiser publish the rent "auf Anfrage", and the API then carries no rent
+   * field at all - so a listing without a price is the portal's data, not the parsing breaking. A
+   * price that is not a positive number would be, and so would a run in which no listing has one.
+   */
+  it('carries an address on every listing, and a price on every one that publishes it', () => {
     for (const listing of listings) {
-      expect(typeof listing.price, `price of ${listing.id}`).toBe('number');
-      expect(listing.price).toBeGreaterThan(0);
       expect(listing.address, `address of ${listing.id}`).toBeTruthy();
+      if (listing.price != null) {
+        expect(typeof listing.price, `price of ${listing.id}`).toBe('number');
+        expect(listing.price, `price of ${listing.id}`).toBeGreaterThan(0);
+      }
     }
+    expect(listings.some((listing) => listing.price != null)).toBe(true);
+  });
+
+  it('reads a rent "auf Anfrage" as unknown rather than as free', () => {
+    const { normalize } = provider.createConfig(providerConfig.flatfox, []);
+    const onRequest = {
+      pk: 1,
+      title: 'Wohnung',
+      url: '/de/flat/1',
+      surface_living: 80,
+      number_of_rooms: 3,
+      city: 'Zürich',
+      price_display: null,
+      rent_gross: null,
+      rent_net: null,
+    };
+
+    expect(normalize(onRequest).price).toBeNull();
   });
 
   /**

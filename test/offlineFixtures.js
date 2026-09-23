@@ -397,7 +397,23 @@ export function buildFetchMock() {
       return { ok: true, status: 200, json: () => Promise.resolve(immoscoutDetailData[country]) };
     }
 
+    // The token is minted per request and says nothing about the search, so like idealista's it is
+    // not recorded: offline mode hands out one of its own.
+    if (urlStr.includes('deutsche-wohnen.com/api/real-estate/search-token')) {
+      return { ok: true, status: 200, json: () => Promise.resolve({ token: 'offline', ttl: 900 }) };
+    }
+
     if (urlStr.includes('deutsche-wohnen.com/api/deuwo-real-estate/list')) {
+      // Refused the way the endpoint refuses it, so a provider that stops sending the token fails
+      // here instead of passing against a recording that never asks for one.
+      if (new Headers(init?.headers).get('X-VON-Search-Token') !== 'offline') {
+        return {
+          ok: false,
+          status: 401,
+          statusText: 'Unauthorized',
+          json: () => Promise.resolve({ error: 'Unauthorized' }),
+        };
+      }
       if (!deutscheWohnenListData) {
         const raw = await tryReadFile(path.join(FIXTURES_DIR, 'deutscheWohnen_list.json'));
         deutscheWohnenListData = raw ? JSON.parse(raw) : { results: [] };
