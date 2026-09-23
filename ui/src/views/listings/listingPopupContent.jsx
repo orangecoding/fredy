@@ -126,15 +126,18 @@ export function createListingPopupContent({
 }
 
 /**
- * Escapes text that came from the user's own settings before it goes into the popup markup.
+ * Escapes text before it goes into markup that MapLibre hands to `innerHTML`.
  *
- * Also every field of the listing itself: the title, the address and the job name arrive from a
- * scraped portal, and a `<` or an `&` in one of them used to land in this markup unescaped.
+ * Text from the user's own settings, and every field of a listing: the title, the address, the job
+ * name and the image URL all arrive from a scraped portal, and a `<` or a `"` in one of them used to
+ * land in this markup unescaped - which in a document served from Fredy's own origin is stored
+ * cross-site scripting. Exported for the other popups built from strings (the listing detail map,
+ * the home markers on the map view).
  *
- * @param {string} value
+ * @param {unknown} value
  * @returns {string}
  */
-function escapeHtml(value) {
+export function escapeHtml(value) {
   return String(value).replace(
     /[&<>"']/g,
     (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char],
@@ -198,13 +201,13 @@ function renderListingBody(listing, index, total, t, locale) {
   return `
     ${pager}
     <img
-      src="${listing.image_url}"
+      src="${escapeHtml(listing.image_url || no_image)}"
       onerror="this.onerror=null;this.src='${no_image}'"
     />
-    <a class="map-popup-content__title" href="#/listings/listing/${listing.id}">${escapeHtml(listing.title)}</a>
+    <a class="map-popup-content__title" href="#/listings/listing/${encodeURIComponent(listing.id)}">${escapeHtml(listing.title)}</a>
     <div class="map-popup-content__facts">
       <span>${t('map.popupPrice')}</span>
-      <span class="map-popup-content__num">${listing.price ? formatEuroPrice(listing.price, locale) : t('common.na')}</span>
+      <span class="map-popup-content__num">${listing.price ? escapeHtml(formatEuroPrice(listing.price, locale)) : t('common.na')}</span>
       <span>${t('map.popupAddress')}</span>
       <span>${escapeHtml(listing.address || t('common.na'))}</span>
       <span>${t('map.popupJob')}</span>
@@ -212,7 +215,7 @@ function renderListingBody(listing, index, total, t, locale) {
       <span>${t('map.popupProvider')}</span>
       <span>${escapeHtml(capitalizedProvider)}</span>
       <span>${t('map.popupSize')}</span>
-      <span class="map-popup-content__num">${listing.size != null ? `${formatDecimal(listing.size, locale)} m²` : t('common.na')}</span>
+      <span class="map-popup-content__num">${listing.size != null ? `${escapeHtml(formatDecimal(listing.size, locale))} m²` : t('common.na')}</span>
     </div>
     ${renderTravelTimes(listing, t)}
     <div class="map-popup-content__actions"></div>`;

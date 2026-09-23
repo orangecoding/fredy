@@ -24,17 +24,24 @@ import './AdminField.less';
  * @param {string} props.label
  * @param {string} [props.help] Behind the mark. Omitted where the label says it all.
  * @param {string} [props.htmlFor] Id of the control, so the label actually labels something.
+ * @param {string} [props.labelId] Id for the label itself, for a control that cannot be pointed at
+ *   with `htmlFor` and takes `aria-labelledby` instead - Semi's Select ignores `aria-label`.
+ * @param {boolean} [props.wide=false] Label above the control rather than beside it, for a value as
+ *   long as a URL. The Routing page used to write this markup out by hand to get it, and lost the
+ *   help mark on the way.
  * @param {boolean} [props.grow=false] Whether the control takes the rest of the row instead of
  *   sitting at its own width. For a free text field, where the value is as long as it is - the
  *   job's name, a path - rather than a number that reads as a column.
  * @param {React.ReactNode} props.children
  * @returns {React.ReactElement}
  */
-export default function AdminField({ label, help, htmlFor, grow = false, children }) {
+export default function AdminField({ label, help, htmlFor, labelId, wide = false, grow = false, children }) {
   return (
-    <div className="adminField">
+    <div className={`adminField${wide ? ' adminField--wide' : ''}`}>
       <span className="adminField__label">
-        <label htmlFor={htmlFor}>{label}</label>
+        <label htmlFor={htmlFor} id={labelId}>
+          {label}
+        </label>
         {help && (
           <Popover content={<div className="adminField__help">{help}</div>} position="right" showArrow>
             <span className="adminField__mark" tabIndex={0} role="note" aria-label={help}>

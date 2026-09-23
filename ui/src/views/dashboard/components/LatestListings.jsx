@@ -105,7 +105,11 @@ export default function LatestListings({ listings = [], locale = 'de-DE', t, onO
                 <span className="dashboard__latestTitle">{row.title}</span>
                 <span className="dashboard__latestMeta">{metaLine(row, locale, t)}</span>
               </div>
-              <span className="dashboard__latestPrice">{formatEuroPrice(row.price, locale)}</span>
+              {/* `price` is nullable (only id, link and title are required), and formatting null
+                  prints "0 €". */}
+              <span className="dashboard__latestPrice">
+                {row.price != null ? formatEuroPrice(row.price, locale) : t('common.na')}
+              </span>
               <span className="dashboard__latestSqm">
                 {row.price_per_sqm != null && (
                   <span className="dashboard__chip">{formatPricePerSqm(row.price_per_sqm, locale)}</span>

@@ -22,20 +22,24 @@
  * @returns {string|null} `null` when there is nothing to describe.
  */
 export function relativeTime(timestamp, t, now = Date.now()) {
-  if (timestamp == null || timestamp === 0) {
+  // Not a number is nothing to describe either: the arithmetic below would print "NaN days ago".
+  if (timestamp == null || timestamp === 0 || !Number.isFinite(Number(timestamp))) {
     return null;
   }
-  const deltaMinutes = Math.round((timestamp - now) / 60000);
+  const deltaMinutes = Math.round((Number(timestamp) - now) / 60000);
   const magnitude = Math.abs(deltaMinutes);
   if (magnitude < 1) {
     return t('dashboard.timeNow');
   }
+  const days = Math.round(magnitude / (60 * 24));
+  // Minutes and hours are abbreviated ("min", "h") and read the same for one and for many. Days are
+  // spelled out, so one of them needs its own key: "1 days ago".
   const unit =
     magnitude < 60
       ? { key: 'Minutes', value: magnitude }
       : magnitude < 60 * 24
         ? { key: 'Hours', value: Math.round(magnitude / 60) }
-        : { key: 'Days', value: Math.round(magnitude / (60 * 24)) };
+        : { key: days === 1 ? 'Day' : 'Days', value: days };
   const direction = deltaMinutes > 0 ? 'in' : 'ago';
   return t(`dashboard.time${direction === 'in' ? 'In' : 'Ago'}${unit.key}`, { count: String(unit.value) });
 }

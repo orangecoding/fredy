@@ -13,10 +13,16 @@ import { useUnsavedWarning } from '../../../hooks/useUnsavedWarning.js';
 import { errorMessage } from '../../../services/xhr';
 import { useActions, useSelector, useIsLoading } from '../../../services/state/store';
 import { useTranslation, availableLanguages } from '../../../services/i18n/i18n.jsx';
-import { DEFAULT_THEME } from '../../../services/theme/theme.js';
+import { normalizeTheme } from '../../../services/theme/theme.js';
 import './PreferencesPage.less';
 
 const { Text } = Typography;
+
+/** The themes offered as a preview tile, in the order they are drawn. */
+const THEME_TILES = Object.freeze(['dark', 'light']);
+
+/** How far each arrow key moves within the tiles. Both axes, because the group is one row. */
+const ARROW_STEPS = Object.freeze({ ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 });
 
 /**
  * The two deletion modes, as data rather than as two hand-written blocks.
@@ -27,12 +33,6 @@ const { Text } = Typography;
  *
  * @type {ReadonlyArray<{value: string, labelKey: string, descKey: string, warningKey: string|null}>}
  */
-/** The themes offered as a preview tile, in the order they are drawn. */
-const THEME_TILES = Object.freeze(['dark', 'light']);
-
-/** How far each arrow key moves within the tiles. Both axes, because the group is one row. */
-const ARROW_STEPS = Object.freeze({ ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 });
-
 const DELETION_MODES = Object.freeze([
   {
     value: 'soft',
@@ -63,7 +63,9 @@ export default function PreferencesPage() {
   const actions = useActions();
 
   const language = useSelector((state) => state.userSettings.settings.language);
-  const theme = useSelector((state) => state.userSettings.settings.theme) ?? DEFAULT_THEME;
+  // Normalised, the same way App reads it: an unknown stored value paints the default theme, and a
+  // bare `??` left both tiles unchecked and without a tab stop.
+  const theme = normalizeTheme(useSelector((state) => state.userSettings.settings.theme));
   const listingDeletionPreference = useSelector((state) => state.userSettings.settings.listing_deletion_preference);
   const savingLanguage = useIsLoading(actions.userSettings.setLanguage);
   const savingTheme = useIsLoading(actions.userSettings.setTheme);

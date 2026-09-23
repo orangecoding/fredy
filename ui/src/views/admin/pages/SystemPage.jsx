@@ -74,7 +74,9 @@ export default function SystemPage() {
       <div className="settingsShell__groupTitle">{t('admin.system.groupReach')}</div>
       <SegmentPart
         name={t('admin.system.cardAddress')}
-        helpText={t('settings.baseUrlHelp')}
+        // One card for what used to be two, so one mark for both explanations: the port's (a
+        // restart, and the Docker mapping has to follow) is not said anywhere else.
+        helpText={`${t('settings.portHelp')} ${t('settings.baseUrlHelp')}`}
         helpMode="popover"
         action={restartFlag}
       >
@@ -121,7 +123,9 @@ export default function SystemPage() {
       <div className="settingsShell__groupTitle">{t('admin.system.groupRetention')}</div>
       <SegmentPart
         name={t('admin.system.cardRetention')}
-        helpText={t('settings.listingRetentionHelp')}
+        helpText={`${t('settings.listingRetentionHelp')} ${t('settings.listingAttachmentMaxMbHelp')} ${t(
+          'settings.listingAttachmentMaxPerListingHelp',
+        )}`}
         helpMode="popover"
       >
         {/* "14 Tage", "10 MB", "20 Dateien" - nebeneinander gelesen sagt die Zeile, was die Karte
@@ -194,7 +198,13 @@ export default function SystemPage() {
       </SegmentPart>
 
       <div className="settingsShell__groupTitle">{t('admin.system.groupInstance')}</div>
-      <SegmentPart name={t('admin.system.cardInstance')} helpText={t('settings.analyticsHelp')} helpMode="popover">
+      {/* Both explanations, as both switches are here: that demo mode resets everything at midnight
+          is not said anywhere else. */}
+      <SegmentPart
+        name={t('admin.system.cardInstance')}
+        helpText={`${t('settings.analyticsHelp')} ${t('settings.demoModeHelp')}`}
+        helpMode="popover"
+      >
         {/* Ein Ankreuzfeld traegt seine Beschriftung selbst - die wegzunehmen und rechts danebenzu-
             stellen waere hier keine Vereinfachung, sondern ein Klickziel weniger. */}
         <div className="adminRow adminRow--stack">

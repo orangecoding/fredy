@@ -68,14 +68,25 @@ JobSpark.displayName = 'JobSpark';
  * @param {Object} props
  * @param {Array<Object>} props.jobs
  * @param {Record<string, {perDay: number[], total: number}>} props.jobActivity Keyed by job id.
- * @param {Array<{id: string}>} props.attention Jobs that want looking at, from
- *   `findJobsNeedingAttention`.
+ * @param {Array<{id: string}>} props.attention Every job that wants looking at, from
+ *   `allJobsNeedingAttention` (not the capped list the attention card shows).
+ * @param {boolean} [props.loaded=true] Whether `jobActivity` has arrived. Until it has, a row cannot
+ *   say "nothing found" without that being a guess.
  * @param {(key: string, params?: Object) => string} props.t
  * @param {() => void} props.onManage Opens the jobs page.
- * @param {(id: string) => void} props.onOpenJob Opens one job.
+ * @param {(job: Object) => void} props.onOpenJob Opens one job; handed the whole job so the caller
+ *   can tell one that is only shared with this user.
  * @returns {React.ReactElement}
  */
-export default function JobsPanel({ jobs = [], jobActivity = {}, attention = [], t, onManage, onOpenJob }) {
+export default function JobsPanel({
+  jobs = [],
+  jobActivity = {},
+  attention = [],
+  loaded = true,
+  t,
+  onManage,
+  onOpenJob,
+}) {
   const rows = Array.isArray(jobs) ? jobs : [];
   const flagged = new Set((Array.isArray(attention) ? attention : []).map((entry) => entry.id));
 
@@ -90,20 +101,21 @@ export default function JobsPanel({ jobs = [], jobActivity = {}, attention = [],
         {rows.map((job) => {
           const activity = jobActivity?.[job.id] ?? NO_ACTIVITY;
           const time = relativeTime(job.lastRunAt, t) ?? '---';
+          const noHits = loaded && activity.total === 0;
           return (
-            <button type="button" className="dashboard__jobRow" key={job.id} onClick={() => onOpenJob(job.id)}>
+            <button type="button" className="dashboard__jobRow" key={job.id} onClick={() => onOpenJob(job)}>
               <div className="dashboard__jobText">
                 <span className="dashboard__jobName">
                   {job.name}
                   {flagged.has(job.id) && <IconAlertTriangle className="dashboard__jobWarning" />}
                 </span>
                 <span className="dashboard__jobMeta">
-                  {activity.total === 0 ? t('dashboard.jobNoHits', { time }) : t('dashboard.jobLastRun', { time })}
+                  {noHits ? t('dashboard.jobNoHits', { time }) : t('dashboard.jobLastRun', { time })}
                 </span>
               </div>
               <JobSpark perDay={activity.perDay} />
-              <span className={`dashboard__jobCount${activity.total === 0 ? ' dashboard__jobCount--zero' : ''}`}>
-                {activity.total}
+              <span className={`dashboard__jobCount${noHits ? ' dashboard__jobCount--zero' : ''}`}>
+                {loaded ? activity.total : '---'}
               </span>
             </button>
           );

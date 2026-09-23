@@ -160,17 +160,26 @@ export function ensureOpenFreeMapSource(map) {
  * satellite style is raster only, in which case overlays are appended on top).
  */
 export function findOverlayInsertionId(map) {
-  const layers = map.getStyle()?.layers ?? [];
+  const style = map.getStyle();
+  const layers = style?.layers ?? [];
+  const sources = style?.sources ?? {};
+
+  // The basemap's own layers only. Ours - the transit and building overlays on the shared vector
+  // source, the detail route and the distance ring on GeoJSON sources - sit on top of the geometry
+  // already, and counting them moved the anchor above every label (the route line) or past the end
+  // of the style (the ring), so an overlay switched on afterwards covered the street names.
+  const isBasemap = (layer) =>
+    layer.source == null || (layer.source !== OPENFREEMAP_SOURCE_ID && sources[layer.source]?.type !== 'geojson');
 
   let lastNonSymbol = -1;
   for (let i = 0; i < layers.length; i++) {
-    if (layers[i].type !== 'symbol') {
+    if (layers[i].type !== 'symbol' && isBasemap(layers[i])) {
       lastNonSymbol = i;
     }
   }
 
   for (let i = lastNonSymbol + 1; i < layers.length; i++) {
-    if (layers[i].type === 'symbol' && layers[i].layout?.['text-field']) {
+    if (layers[i].type === 'symbol' && isBasemap(layers[i]) && layers[i].layout?.['text-field']) {
       return layers[i].id;
     }
   }

@@ -26,7 +26,7 @@ import { useNavigate, useParams, useLocation } from 'react-router';
 import { Input, Switch, Button, TagInput, Toast, Select, Banner, Collapse } from '@douyinfe/semi-ui-19';
 import './JobMutation.less';
 import { SegmentPart } from '../../../components/segment/SegmentPart';
-import { loadDraft, saveDraft, clearDraft } from '../../../services/jobs/jobDraft.js';
+import { loadDraft, saveDraft, clearDraft, hasContent } from '../../../services/jobs/jobDraft.js';
 import { missingRequirements } from '../../../services/jobs/jobValidation.js';
 import { summariseJobRefinements } from '../../../services/jobs/jobSummary.js';
 import { withReturnTo } from '../../../services/routes/returnTo.js';
@@ -156,7 +156,10 @@ export default function JobMutator() {
 
   // Memoize the spatial filter change handler to prevent map reinitializations
   const handleSpatialFilterChange = useCallback((data) => {
-    setSpatialFilter(data);
+    // Drawing a shape and deleting it again leaves an empty FeatureCollection, which is "no area"
+    // just as null is. Kept as it came, it held the form dirty against a job without an area and
+    // was saved as a filter that filters nothing.
+    setSpatialFilter(data?.features?.length > 0 ? data : null);
   }, []);
 
   useEffect(() => {
@@ -173,6 +176,14 @@ export default function JobMutator() {
 
     const draft = loadDraft(draftId);
     if (draft == null) return;
+
+    // A draft of a stored job that says nothing the job does not already say is no unsaved work,
+    // and restoring it would announce changes nobody made. Older copies like that were written on
+    // every visit to an edit form.
+    if (draftId != null && !isJobDirty({ ...baseline, ...draft }, baseline)) {
+      clearDraft(draftId);
+      return;
+    }
 
     if (draft.name !== undefined) setName(draft.name);
     if (draft.dealType !== undefined) setDealType(draft.dealType);
@@ -191,7 +202,7 @@ export default function JobMutator() {
   // write is synchronous, so a keystroke costs less than the render it already triggered.
   useEffect(() => {
     if (!draftChecked.current) return;
-    saveDraft(draftId, {
+    const draft = {
       name,
       dealType,
       providerData,
@@ -202,7 +213,15 @@ export default function JobMutator() {
       spatialFilter,
       specFilter,
       commuteFilter,
-    });
+    };
+    // A stored job always "has content", so without this every visit to its form left a copy
+    // behind. The next visit restored that copy over whatever had changed in the meantime - a job
+    // switched off in the list came back on - and after a Discard the banner returned anyway.
+    if (draftId != null && !isJobDirty(draft, baseline)) {
+      clearDraft(draftId);
+      return;
+    }
+    saveDraft(draftId, draft);
   }, [
     draftId,
     name,
@@ -273,23 +292,26 @@ export default function JobMutator() {
     setDealTypeWasInferred(false);
   };
 
+  const current = {
+    name,
+    dealType,
+    providerData,
+    selectedChannelIds,
+    blacklist,
+    shareWithUsers,
+    enabled,
+    spatialFilter,
+    specFilter,
+    commuteFilter,
+  };
+
   // Compared, not tracked. Drives the save bar, so a character typed and deleted again closes it
   // rather than leaving the page claiming an edit that is no longer there.
-  const dirty = isJobDirty(
-    {
-      name,
-      dealType,
-      providerData,
-      selectedChannelIds,
-      blacklist,
-      shareWithUsers,
-      enabled,
-      spatialFilter,
-      specFilter,
-      commuteFilter,
-    },
-    baseline,
-  );
+  //
+  // Only a stored job has something to compare against. A job that is not stored yet - a new one,
+  // or a clone - is unsaved as soon as it holds anything: compared against its own starting point,
+  // a clone saved as it came never showed the bar that holds the only Save button.
+  const dirty = params.jobId == null ? hasContent(current) : isJobDirty(current, baseline);
 
   // Covers a reload, a closed tab and a typed address. An in-app navigation is not covered - see
   // the hook for why - which is the other half of why the bar is sticky.
@@ -338,6 +360,9 @@ export default function JobMutator() {
   };
 
   const mutateJob = async () => {
+    // A second press (or a held Enter) while the first save is in flight would create a new job
+    // twice.
+    if (saving) return;
     setSaving(true);
     try {
       await xhrPost('/api/jobs', {
@@ -433,7 +458,9 @@ export default function JobMutator() {
           }
         />
       )}
-      <form className="jobMutation__form">
+      {/* No implicit submission: with the name as the only text field on the page, Enter in it
+          submitted the form as a GET to the current URL and reloaded the app. */}
+      <form className="jobMutation__form" onSubmit={(event) => event.preventDefault()}>
         {/* The four things a job cannot exist without, in the order `JOB_REQUIREMENTS` names them,
             and the two decisions about the job itself. Every filter is folded away below, so the
             shortest path to a working job is a straight read down this column rather than a scroll
@@ -466,9 +493,11 @@ export default function JobMutator() {
               {/* Directly under the name rather than in a card of its own further down, but still
                 after it: the hint about a guessed answer has to sit near the provider it was
                 guessed from, and the provider card is the next thing below. */}
-              <AdminField label={t('jobs.mutation.requirement.dealType')}>
+              <AdminField label={t('jobs.mutation.requirement.dealType')} labelId="jobDealTypeLabel">
                 <Select
-                  aria-label={t('jobs.mutation.requirement.dealType')}
+                  // Semi's Select sets its own `aria-label` on the trigger and forwards only
+                  // `aria-labelledby`.
+                  aria-labelledby="jobDealTypeLabel"
                   placeholder={t('jobs.mutation.dealTypePlaceholder')}
                   value={dealType}
                   onChange={(value) => {
@@ -589,26 +618,39 @@ export default function JobMutator() {
                 }
               />
             ) : (
-              <NotificationChannelTable
-                channels={selectedChannels}
-                // Detach, not delete: taking a channel off this job must never remove it from the
-                // instance. Deleting lives on the Settings page and is blocked while a job uses it.
-                actions={['test', 'edit', 'clone', 'detach']}
-                showVisibility={false}
-                showUsage={false}
-                emptyText={t('notification.channels.emptyInJob')}
-                onTest={async (channel) => {
-                  try {
-                    await actions.notificationChannels.tryChannel(channel.id);
-                    Toast.success(t('notification.trySuccess'));
-                  } catch (error) {
-                    Toast.error(t('notification.tryError', { error: errorMessage(error, t('common.unknownError')) }));
-                  }
-                }}
-                onEdit={(channel) => setChannelEditor({ mode: 'edit', channelId: channel.id })}
-                onClone={(channel) => setChannelEditor({ mode: 'clone', channelId: channel.id })}
-                onDetach={(channel) => setSelectedChannelIds((current) => current.filter((id) => id !== channel.id))}
-              />
+              <>
+                <NotificationChannelTable
+                  channels={selectedChannels}
+                  // Detach, not delete: taking a channel off this job must never remove it from the
+                  // instance. Deleting lives on the Settings page and is blocked while a job uses it.
+                  actions={['test', 'edit', 'clone', 'detach']}
+                  showVisibility={false}
+                  showUsage={false}
+                  emptyText={t('notification.channels.emptyInJob')}
+                  onTest={async (channel) => {
+                    try {
+                      await actions.notificationChannels.tryChannel(channel.id);
+                      Toast.success(t('notification.trySuccess'));
+                    } catch (error) {
+                      Toast.error(t('notification.tryError', { error: errorMessage(error, t('common.unknownError')) }));
+                    }
+                  }}
+                  onEdit={(channel) => setChannelEditor({ mode: 'edit', channelId: channel.id })}
+                  onClone={(channel) => setChannelEditor({ mode: 'clone', channelId: channel.id })}
+                  onDetach={(channel) => setSelectedChannelIds((current) => current.filter((id) => id !== channel.id))}
+                />
+                {/* Still reachable once the job has a channel. A second kind of channel is made on
+                    the Settings page, and the picker only offers that way out while it has nothing
+                    left to list. */}
+                <Button
+                  theme="borderless"
+                  size="small"
+                  className="jobMutation__manageLink"
+                  onClick={() => leaveWithReturnPath('/settings/notifications')}
+                >
+                  {t('notification.channels.manage')}
+                </Button>
+              </>
             )}
           </SegmentPart>
         </div>
@@ -727,17 +769,20 @@ export default function JobMutator() {
           helpMode="popover"
         >
           <div className="jobMutation__rows">
-            <AdminField label={t('jobs.mutation.sectionSharing')}>
+            <AdminField label={t('jobs.mutation.sectionSharing')} labelId="jobShareWithLabel">
               {shareableUserList.length === 0 ? (
                 <span className="jobMutation__rowNote">{t('jobs.mutation.sharingNoUsers')}</span>
               ) : (
                 <Select
                   filter
                   multiple
-                  aria-label={t('jobs.mutation.sectionSharing')}
+                  aria-labelledby="jobShareWithLabel"
                   placeholder={t('jobs.mutation.sharingSearchPlaceholder')}
                   autoClearSearchValue={false}
-                  defaultValue={shareWithUsers}
+                  // Controlled: with `defaultValue` a Discard (or a restored draft) changed the state
+                  // but not what the field showed, and the next save shared with the users on screen
+                  // being the ones the user believed they had removed.
+                  value={shareWithUsers}
                   onChange={(value) => setShareWithUsers(value)}
                   dropdownClassName="jobMutation__dropdown"
                   className="jobMutation__shareWith"

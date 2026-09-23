@@ -20,14 +20,15 @@ const { Text } = Typography;
  * One percentage, written the way the reader's language writes one.
  *
  * `toFixed` always puts a full stop there, so a German reader was told the closing costs came to
- * "11.6 %" while every euro figure beside it used a comma.
+ * "11.57 %" while every euro figure beside it used a comma. Two decimals, as before: the Makler
+ * field steps by 0.01, and with one the total did not move when it changed.
  *
  * @param {number} value
  * @param {string} locale
  * @returns {string}
  */
 function formatPct(value, locale) {
-  return new Intl.NumberFormat(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(value);
+  return new Intl.NumberFormat(locale, { minimumFractionDigits: 1, maximumFractionDigits: 2 }).format(value);
 }
 
 /**

@@ -78,9 +78,11 @@
       text-underline-offset: 3px;
     }
 
-    // Die eine Stelle, an der ein Rechteck erscheinen muss.
+    // Die eine Stelle, an der ein Rechteck erscheinen muss. `!important` wie beim Versionshinweis im
+    // Footer: ohne verliert die Regel gegen das pauschale `outline: none !important` in Index.less,
+    // und der Ring erschien nie.
     &:focus-visible {
-      outline: 2px solid @color-accent;
+      outline: 2px solid @color-accent !important;
       outline-offset: 2px;
       border-radius: @radius-btn;
     }

@@ -42,9 +42,17 @@ const ListingsGrid = ({
         // No role and no tabIndex. The card carried role="button" while containing seven
         // interactive children, which ARIA forbids and which a screen reader announces as a button
         // full of buttons. The click stays as a convenience for the mouse; the keyboard and the
-        // accessibility tree use the title, which is a real link now. Clicking the title fires
-        // both paths, and navigating twice to the same route is a no-op.
-        <div key={item.id} className="listingsGrid__card" onClick={() => onNavigate(item.id)}>
+        // accessibility tree use the title, which is a real link now. A click on that link is the
+        // link's alone: letting it reach the card as well navigated twice - two history entries,
+        // so Back landed on the same listing - and a Ctrl/Cmd-click opened the new tab *and* moved
+        // this one.
+        <div
+          key={item.id}
+          className="listingsGrid__card"
+          onClick={(event) => {
+            if (event.target.closest('a') == null) onNavigate(item.id);
+          }}
+        >
           <div className="listingsGrid__card__image-wrapper">
             {/* Decorative: the title says the same thing one line below, and alt={item.title} made
                 a screen reader read every headline twice. */}

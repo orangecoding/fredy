@@ -139,11 +139,14 @@ export default function AttachmentsCard({ listingId }) {
    * it. Missing a box by a few pixels would take the page away and the half-written note beside it
    * with it, which is a steep price for aiming badly at a feature that only just appeared.
    *
-   * Swallowed for as long as this card is on screen. Nothing else on the listing page takes a
-   * drop, and the zone's own handler has already run by the time this one does.
+   * Swallowed for as long as this card is on screen - file drags only. Text dragged into the notes
+   * or an address field is a drop the browser handles itself, and cancelling every drop cancelled
+   * that too. The zone's own handler has already run by the time this one does.
    */
   useEffect(() => {
-    const swallow = (event) => event.preventDefault();
+    const swallow = (event) => {
+      if (dragHasFiles(event)) event.preventDefault();
+    };
     window.addEventListener('dragover', swallow);
     window.addEventListener('drop', swallow);
     return () => {
@@ -303,17 +306,21 @@ export default function AttachmentsCard({ listingId }) {
             )}
             {attachments.map((attachment) => (
               <li key={attachment.id} className="attachmentsCard__item">
+                {/* Not draggable: the list is the drop zone, and a thumbnail nudged a few pixels
+                    and let go over it arrived as a file drop - a second copy of the document. */}
                 <a
                   href={attachmentUrl(listingId, attachment.id)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="attachmentsCard__link"
+                  draggable={false}
                 >
                   {PREVIEWABLE.has(attachment.mimeType) ? (
                     <img
                       src={attachmentUrl(listingId, attachment.id)}
                       alt={attachment.filename}
                       className="attachmentsCard__thumb"
+                      draggable={false}
                     />
                   ) : (
                     <span className="attachmentsCard__thumb attachmentsCard__thumb--icon">
@@ -347,7 +354,11 @@ export default function AttachmentsCard({ listingId }) {
             <span>
               {acceptsDrop
                 ? t('listing.detail.attachmentsDropActive')
-                : t('listing.detail.attachmentsFull', { max: limits?.maxCount })}
+                : atCapacity
+                  ? t('listing.detail.attachmentsFull', { max: limits?.maxCount })
+                  : // Refused because an upload or a delete is still running, which is not the
+                    // listing being full.
+                    t('listing.detail.attachmentsBusy')}
             </span>
           </div>
         )}

@@ -24,16 +24,22 @@ import Donate from '../donate/Donate.jsx';
 import ScopeBadge from '../scopeBadge/ScopeBadge.jsx';
 import NewsHistory from '../news/NewsHistory.jsx';
 import { useLocation, useNavigate } from 'react-router';
-import { currentTheme } from '../../services/theme/theme.js';
+import { normalizeTheme } from '../../services/theme/theme.js';
 
 import './Navigate.less';
 import { useScreenWidth } from '../../hooks/screenWidth.js';
-import { useSelector } from '../../services/state/store.js';
+import { useActions, useSelector } from '../../services/state/store.js';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
 // A pure function that already answers exactly this question for the dashboard's own rows. A copy
 // here would be a second set of rounding rules for the same clock.
 import { relativeTime } from '../../services/time/relativeTime.js';
 import { navTreeFor, resolveActiveKey, sectionScope, startsSection } from './navModel.js';
+
+/** How long after a promised run the status is asked for again: the run itself takes a moment. */
+const STATUS_REFRESH_GRACE_MS = 60 * 1000;
+
+/** `setTimeout` overflows past about 24.8 days and would fire at once. */
+const MAX_TIMER_MS = 2 ** 31 - 1;
 
 /**
  * The icon each top-level entry carries. Keyed by nav key so the tree itself stays free of JSX.
@@ -64,10 +70,14 @@ const ICONS = {
  * @returns {React.ReactElement}
  */
 function Brand({ collapsed }) {
+  // From the store, like App: the document attribute is only written in App's effect, after the
+  // remount on a theme switch has already rendered this - which left the white cut on a light
+  // sidebar until the next navigation.
+  const theme = normalizeTheme(useSelector((state) => state.userSettings.settings.theme));
   if (collapsed) {
     return <img className="navigate__logoMark" src={heart} alt="Fredy" />;
   }
-  return <img className="navigate__logo" src={currentTheme() === 'dark' ? logoWhite : logo} alt="Fredy" />;
+  return <img className="navigate__logo" src={theme === 'dark' ? logoWhite : logo} alt="Fredy" />;
 }
 
 Brand.displayName = 'Brand';
@@ -104,10 +114,22 @@ export default function Navigation({ isAdmin }) {
   // so the sidebar asks nothing of its own.
   const username = useSelector((state) => state.user.currentUser?.username);
 
-  // Only ever what the dashboard has already fetched. The sidebar makes no request of its own, so
-  // before that page has been open once there is no answer here and the row is simply not drawn -
-  // no placeholder, no dash, nothing that pretends to know.
+  // What the dashboard has fetched. Before that page has been open once there is no answer here and
+  // the row is simply not drawn - no placeholder, no dash, nothing that pretends to know. Once there
+  // is one, the sidebar asks again when it falls due (below).
   const nextRun = useSelector((state) => state.dashboard.data?.general?.nextRun);
+  const actions = useActions();
+
+  // That answer goes stale the moment the promised run comes round, and nothing else refreshes it
+  // away from the dashboard - so the dot turned amber for anybody who had not opened the dashboard
+  // for an interval, with the scheduler running fine. Asked again once the run is due, plus a
+  // minute for the run itself: amber then means a fresh answer still points into the past.
+  useEffect(() => {
+    if (nextRun == null || nextRun === 0) return undefined;
+    const delay = Math.min(Math.max(0, nextRun - Date.now()) + STATUS_REFRESH_GRACE_MS, MAX_TIMER_MS);
+    const timer = setTimeout(() => actions.dashboard.getDashboard(), delay);
+    return () => clearTimeout(timer);
+  }, [nextRun]);
 
   const tree = navTreeFor(isAdmin);
   const activeKey = resolveActiveKey(tree, location.pathname);
@@ -188,7 +210,10 @@ export default function Navigation({ isAdmin }) {
           // only opens.
           const isGroup = !node.key.startsWith('/');
           const open = isGroup && isOpen(node);
-          const isActive = node.key === activeKey;
+          // A group stands in for its children wherever they are not on screen - in the narrow rail,
+          // and while it is folded. Otherwise /map or /listings marked nothing at all there.
+          const holdsActive = isGroup && (node.children ?? []).some((child) => child.key === activeKey);
+          const isActive = node.key === activeKey || (holdsActive && (collapsed || !open));
           const childrenId = `navigate-children-${node.key}`;
           // Null for everything under "the daily work": naming that section would be naming the
           // obvious, and an entry that announces nothing simply carries no popover.
@@ -198,7 +223,8 @@ export default function Navigation({ isAdmin }) {
             <button
               type="button"
               className={`navigate__item${isActive ? ' navigate__item--active' : ''}`}
-              aria-current={isActive ? 'page' : undefined}
+              // 'true' rather than 'page' on a group: it holds the current page, it is not it.
+              aria-current={isActive ? (isGroup ? 'true' : 'page') : undefined}
               // Only while the children are a list under this entry. In the narrow rail they are a
               // menu beside it that opens on its own, and claiming to control an element that is
               // not there would be a lie told to a screen reader.
@@ -206,7 +232,11 @@ export default function Navigation({ isAdmin }) {
               aria-controls={isGroup && !collapsed ? childrenId : undefined}
               onClick={() => {
                 if (isGroup) {
-                  setToggledGroups((current) => ({ ...current, [node.key]: !open }));
+                  // In the rail the children open as a menu beside the entry; a click there must not
+                  // quietly fold or unfold the group for when the sidebar is widened again.
+                  if (!collapsed) {
+                    setToggledGroups((current) => ({ ...current, [node.key]: !open }));
+                  }
                   return;
                 }
                 navigate(node.key);
@@ -299,7 +329,9 @@ export default function Navigation({ isAdmin }) {
         (() => {
           const label = t('nav.nextRun', { time: relativeTime(nextRun, t) });
           const dot = (
-            <span className={`navigate__statusDot${nextRun <= Date.now() ? ' navigate__statusDot--stale' : ''}`} />
+            <span
+              className={`navigate__statusDot${nextRun + STATUS_REFRESH_GRACE_MS <= Date.now() ? ' navigate__statusDot--stale' : ''}`}
+            />
           );
 
           return (

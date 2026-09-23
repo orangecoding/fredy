@@ -60,6 +60,24 @@ const EMPTY_PREVIEW = { text: '', missing: [], unknown: [] };
  *
  * @returns {React.ReactElement}
  */
+/**
+ * The applicant profile with its empty answers left out, in a fixed key order, for comparing.
+ *
+ * A flag set and cleared again, or a date picked and removed, holds `null` or '' where the stored
+ * profile has no key at all - and after an all-empty save the stored profile is `null`. Compared as
+ * raw JSON those differ, and the save bar stayed up after a successful save.
+ *
+ * @param {Object|null|undefined} profile
+ * @returns {Object}
+ */
+function compactProfile(profile) {
+  return Object.fromEntries(
+    Object.entries(profile ?? {})
+      .filter(([, value]) => value != null && String(value).trim().length > 0)
+      .sort(([a], [b]) => a.localeCompare(b)),
+  );
+}
+
 export default function ApplicationPage() {
   const t = useTranslation();
   const actions = useActions();
@@ -229,7 +247,7 @@ export default function ApplicationPage() {
   // Memoised because both sides can be large - six templates at up to 20 000 characters each - and
   // an unmemoised comparison runs on every keystroke in the editor.
   const profileDirty = useMemo(
-    () => JSON.stringify(profile) !== JSON.stringify(storedProfile ?? {}),
+    () => JSON.stringify(compactProfile(profile)) !== JSON.stringify(compactProfile(storedProfile)),
     [profile, storedProfile],
   );
   const templatesDirty = useMemo(

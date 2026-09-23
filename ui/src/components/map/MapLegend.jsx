@@ -28,7 +28,9 @@ export default function MapLegend({ hasStacks, hasRing, hasHome }) {
 
   const entries = [
     { key: 'listing', color: MARKER_COLORS.listing, show: true },
-    { key: 'stack', color: MARKER_COLORS.stack, show: hasStacks },
+    // No colour of its own: the dot takes the badge's accent token from the stylesheet, so it is
+    // the same red as the badge it explains in both themes.
+    { key: 'stack', color: null, show: hasStacks },
     { key: 'inRing', color: MARKER_COLORS.inRing, show: hasRing },
     { key: 'home', color: MARKER_COLORS.home, show: hasHome },
   ].filter((entry) => entry.show);
@@ -37,7 +39,10 @@ export default function MapLegend({ hasStacks, hasRing, hasHome }) {
     <div className="mapLegend">
       {entries.map((entry) => (
         <span className="mapLegend__entry" key={entry.key}>
-          <span className="mapLegend__dot" style={{ background: entry.color }} />
+          <span
+            className={`mapLegend__dot mapLegend__dot--${entry.key}`}
+            style={entry.color == null ? undefined : { background: entry.color }}
+          />
           {t(`map.legend.${entry.key}`)}
         </span>
       ))}

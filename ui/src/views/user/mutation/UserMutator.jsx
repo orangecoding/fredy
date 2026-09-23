@@ -12,7 +12,7 @@ import { IconAlertTriangle, IconArrowLeft } from '@douyinfe/semi-icons';
 import AdminField from '../../admin/components/AdminField.jsx';
 import SettingsSaveBar from '../../../components/settingsShell/SettingsSaveBar.jsx';
 import { SegmentPart } from '../../../components/segment/SegmentPart';
-import { useActions } from '../../../services/state/store';
+import { useActions, useSelector } from '../../../services/state/store';
 import { useCapsLock } from '../../../hooks/useCapsLock.js';
 import { useTranslation } from '../../../services/i18n/i18n.jsx';
 import { useUnsavedWarning } from '../../../hooks/useUnsavedWarning.js';
@@ -28,6 +28,7 @@ export default function UserMutator() {
   const params = useParams();
   const navigate = useNavigate();
   const actions = useActions();
+  const currentUser = useSelector((state) => state.user.currentUser);
 
   const mode = params.userId == null ? 'create' : 'edit';
 
@@ -63,8 +64,13 @@ export default function UserMutator() {
         // The two password fields stay empty on purpose. The stored value is a hash and cannot be
         // read back, and since the route learned to treat an empty password on an edit as "keep the
         // one you have", empty is now a valid answer rather than a refused one.
-      } catch (Exception) {
-        console.error(Exception);
+      } catch (error) {
+        // No form for an account that could not be read. A blank one saved from here would rename
+        // the user and drop their admin flag, or, for an account deleted in the meantime, ask for
+        // one to be created without a password.
+        console.error(error);
+        Toast.error(errorMessage(error, t('users.mutation.loadError')));
+        navigate('/admin/users');
       }
     }
 
@@ -104,13 +110,26 @@ export default function UserMutator() {
     try {
       await xhrPost('/api/admin/users', {
         userId: params.userId || null,
-        username,
+        // Trimmed the way the login form trims what it sends, or "kim " could never sign in.
+        username: username.trim(),
         password,
         password2,
         isAdmin,
       });
-      await actions.user.getUsers();
+      const editedSelf = mode === 'edit' && params.userId === currentUser?.userId;
+      if (editedSelf) {
+        // The sidebar shows the signed-in account's name and role, and this save may have changed
+        // either.
+        await actions.user.getCurrentUser();
+      }
       Toast.success(t('users.mutation.saved'));
+      if (editedSelf && !isAdmin) {
+        // No longer an administrator: the user list is an admin route, and the 401 it would answer
+        // with is read by the app as an expired session and sent to the login screen.
+        navigate('/dashboard');
+        return;
+      }
+      await actions.user.getUsers();
       navigate('/admin/users');
     } catch (error) {
       // `error.json` is absent when the request never reached the backend, and reading `.error`

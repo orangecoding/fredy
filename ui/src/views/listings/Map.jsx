@@ -24,7 +24,7 @@ import './Map.less';
 import { xhrDelete, errorMessage } from '../../services/xhr.js';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import ListingDeletionModal from '../../components/ListingDeletionModal.jsx';
-import { createListingPopupContent } from './listingPopupContent.jsx';
+import { createListingPopupContent, escapeHtml } from './listingPopupContent.jsx';
 // Not imported as `Map`. This module is itself called Map.jsx, and a component of that name shadows
 // the global `Map` constructor for the whole file: `new Map()` then invokes a React function
 // component with no props, which fails somewhere inside it rather than where it was written.
@@ -139,6 +139,10 @@ export default function MapView() {
   setOpenListingRef.current = (id) => {
     // Same value means nothing to write, and writing it anyway is a navigation per popup open.
     if ((id ?? null) === (openListingIdRef.current ?? null)) return;
+    // Recorded at once, not on the next render. A click from one pin straight onto another opens
+    // the new popup and closes the old one in the same tick; without this the old one's close
+    // handler still saw itself as the open one and wrote `popup` away again, last write winning.
+    openListingIdRef.current = id ?? null;
     setUrlValue('popup', id ?? null);
   };
 
@@ -157,12 +161,20 @@ export default function MapView() {
    */
   const isTearingDownRef = useRef(false);
 
+  /** Set while the marker effect reopens the popup the URL names, which is not a person opening it. */
+  const reopeningRef = useRef(false);
+
   // The unmount half. Declared before the map is rendered and therefore torn down before it: React
   // destroys a deleted subtree from the top, so this runs while the map below still exists and is
   // about to take its popups with it.
   useEffect(
     () => () => {
       isTearingDownRef.current = true;
+      // The popups' own React roots live outside this tree and do not go with it. The marker effect
+      // only unmounts them when it rebuilds, so leaving the page kept every one alive - and an open
+      // departure board polling - for as long as the tab was.
+      popupRoots.current.forEach((unmount) => unmount());
+      popupRoots.current = [];
     },
     [],
   );
@@ -377,21 +389,29 @@ export default function MapView() {
       const marker = new maplibregl.Marker({ color: MARKER_COLORS.home })
         .setLngLat([home.coords.lng, home.coords.lat])
         .setPopup(
+          // Escaped: `setHTML` is `innerHTML`, and a label or an address picked from the
+          // OpenStreetMap suggestions is text somebody else wrote.
           new maplibregl.Popup({ offset: 25 }).setHTML(
-            `<div class="map-popup-content"><h4>${home.label || t('map.popupHomeAddress')}</h4><p>${home.address}</p></div>`,
+            `<div class="map-popup-content"><h4>${escapeHtml(home.label || t('map.popupHomeAddress'))}</h4><p>${escapeHtml(home.address ?? '')}</p></div>`,
           ),
         )
         .addTo(map.current);
       homeMarkers.current.push(marker);
     });
 
+    const mapInstance = map.current;
+    const wantsRing = distanceFilter > 0 && homeAddresses.length > 0;
+
     const addCircleLayer = () => {
       if (!map.current || !map.current.isStyleLoaded()) return;
       if (map.current.getLayer('distance-circle')) map.current.removeLayer('distance-circle');
       if (map.current.getLayer('distance-circle-outline')) map.current.removeLayer('distance-circle-outline');
       if (map.current.getSource('distance-circle-source')) map.current.removeSource('distance-circle-source');
+      drawRing();
+    };
 
-      if (distanceFilter > 0 && homeAddresses.length > 0) {
+    function drawRing() {
+      if (wantsRing) {
         map.current.addSource('distance-circle-source', {
           type: 'geojson',
           data: {
@@ -432,17 +452,30 @@ export default function MapView() {
           },
         });
       }
-    };
+    }
 
     const updateLayers = () => {
       addCircleLayer();
     };
 
-    if (map.current.isStyleLoaded()) {
+    // A basemap switch loads a new style, and applying it drops every source and layer the old one
+    // did not have - the ring included, which then stayed gone. Put back on `styledata`, the way the
+    // detail page redraws its route, and only when it is missing.
+    const restoreRing = () => {
+      if (!wantsRing || !map.current || map.current.getSource('distance-circle-source')) return;
+      try {
+        drawRing();
+      } catch {
+        // The new style is not far enough along to take a source yet; the next `styledata` is.
+      }
+    };
+
+    if (mapInstance.isStyleLoaded()) {
       updateLayers();
     } else {
-      map.current.on('load', updateLayers);
+      mapInstance.on('load', updateLayers);
     }
+    mapInstance.on('styledata', restoreRing);
 
     // The marker carrying the listing the URL says is open, filled in below and opened once every
     // marker is on the map. Opening it inside the loop would work too, but this keeps the reopen
@@ -501,8 +534,12 @@ export default function MapView() {
         refit();
         setOpenListingRef.current(currentId());
         // The container, not the title: see `focusAfterOpen` above. `preventScroll`, because the
-        // popup is its own scroll box and focusing it must not jump it away from the top.
-        element.focus({ preventScroll: true });
+        // popup is its own scroll box and focusing it must not jump it away from the top. Not for
+        // the reopen after a rebuild: that follows a filter change, and taking the focus there
+        // pulled it out of the slider or select the user was operating.
+        if (!reopeningRef.current) {
+          element.focus({ preventScroll: true });
+        }
 
         if (!transitMount || transitMount.dataset.mounted === 'true') return;
         transitMount.dataset.mounted = 'true';
@@ -559,7 +596,19 @@ export default function MapView() {
     // Nothing happens when the id is no longer among the pins, which a tightened filter can do.
     // The param is deliberately left alone in that case rather than cleared: widening the filter
     // again brings the pin back, and with it the popup.
-    reopen?.togglePopup();
+    if (reopen != null) {
+      reopeningRef.current = true;
+      try {
+        reopen.togglePopup();
+      } finally {
+        reopeningRef.current = false;
+      }
+    }
+
+    return () => {
+      mapInstance.off('load', updateLayers);
+      mapInstance.off('styledata', restoreRing);
+    };
     // `isDark` because the ring is painted with a literal that the effect reads, so a theme switch
     // has to redraw it. Without it the dark variant would only appear the next time one of the
     // others changed. The open popup is deliberately *not* in here - it is read through a ref, see

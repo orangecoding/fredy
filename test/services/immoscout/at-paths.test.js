@@ -237,6 +237,14 @@ describe('#at-paths translateAtQueryParams()', () => {
     expect(translateAtQueryParams({ primaryPriceTo: '' })).toEqual({});
   });
 
+  // `abc` became `-NaN`, which the API refuses, and `0` a price cap of nothing.
+  it('drops a bound that is not a positive number', () => {
+    const warn = vi.spyOn(logger, 'warn').mockImplementation(() => {});
+
+    expect(translateAtQueryParams({ primaryPriceTo: 'abc', primaryAreaFrom: '0' })).toEqual({});
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining('primaryPriceTo'));
+  });
+
   // A filter the user set and did not get is worth a log line, the same trade the German side's
   // `keepSupported` makes. Silence here would hand back a wider search with no trace of why.
   it('reports a filter it cannot translate', () => {

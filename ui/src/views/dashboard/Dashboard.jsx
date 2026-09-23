@@ -19,7 +19,11 @@ import {
 } from '@douyinfe/semi-icons';
 
 import { useSelector, useActions } from '../../services/state/store';
-import { findJobsNeedingAttention, countJobsNeedingAttention } from '../../services/dashboard/attention.js';
+import {
+  allJobsNeedingAttention,
+  findJobsNeedingAttention,
+  countJobsNeedingAttention,
+} from '../../services/dashboard/attention.js';
 // Semi's IconNoteMoney draws a yen note. Fredy quotes euros everywhere, so it gets a euro.
 import IconEuro from '../../components/icons/IconEuro.jsx';
 import KpiCard from '../../components/cards/KpiCard.jsx';
@@ -58,6 +62,9 @@ export default function Dashboard() {
 
   React.useEffect(() => {
     actions.dashboard.getDashboard();
+    // The jobs panel and the attention list read the job list, which App loads once at start-up.
+    // Without a reload here each row's "last run" is as old as the tab.
+    actions.jobsData.getJobs();
   }, []);
 
   const kpis = dashboard?.kpis || { totalJobs: 0, totalListings: 0, providersUsed: 0 };
@@ -71,6 +78,8 @@ export default function Dashboard() {
   // Read off the jobs the app has already loaded, so this costs no request of its own.
   const attention = findJobsNeedingAttention(jobs, { lastRun });
   const attentionTotal = countJobsNeedingAttention(jobs, { lastRun });
+  // The attention card shows the first few; the jobs panel marks every one of them.
+  const attentionAll = allJobsNeedingAttention(jobs, { lastRun });
 
   const runNow = async () => {
     setSearching(true);
@@ -192,8 +201,10 @@ export default function Dashboard() {
           color="plain"
           value={!kpis.numberOfActiveListings ? '---' : kpis.numberOfActiveListings}
           icon={<IconStarStroked />}
+          // `numberOfListings`, not `totalListings`: the latter counts the active ones only, and
+          // "of 42 ever found" under a 42 said nothing.
           description={t('dashboard.kpiListingsActiveDesc', {
-            total: String(kpis.totalListings ?? 0),
+            total: String(kpis.numberOfListings ?? kpis.totalListings ?? 0),
           })}
           onClick={() => navigate('/listings')}
         />
@@ -232,10 +243,12 @@ export default function Dashboard() {
           // Both medians are taken over every listing that was ever found, active or not, while
           // the first card counts only the active ones. Without the population named, two numbers
           // that cannot be reconciled sit next to each other.
+          // The priced listings the median is taken over. Not the m² card's sample, which covers one
+          // deal type and only listings that state a size.
           description={
-            kpis.medianPricePerSqm == null
-              ? t('dashboard.kpiMedianSqmPending')
-              : t('dashboard.kpiMedianPriceDesc', { count: String(kpis.medianPricePerSqm.sampleSize) })
+            kpis.medianPriceSampleSize > 0
+              ? t('dashboard.kpiMedianPriceDesc', { count: String(kpis.medianPriceSampleSize) })
+              : null
           }
           onClick={() => navigate('/listings?sort=price&dir=asc')}
         />
@@ -264,6 +277,9 @@ export default function Dashboard() {
           people stop looking at, which defeats the point of having one. */}
       {attention.length > 0 && (
         <div className="dashboard__card dashboard__attention">
+          <div className="dashboard__cardHead">
+            <h2 className="dashboard__cardLabel">{t('dashboard.sectionAttention')}</h2>
+          </div>
           <ul className="dashboard__attention-list">
             {attention.map((entry) => (
               <li key={entry.id} className="dashboard__attention-item">
@@ -315,10 +331,14 @@ export default function Dashboard() {
           <JobsPanel
             jobs={jobs}
             jobActivity={jobActivity}
-            attention={attention}
+            attention={attentionAll}
+            loaded={dashboard != null}
             t={t}
             onManage={() => navigate('/jobs')}
-            onOpenJob={(id) => navigate(`/jobs/edit/${id}`)}
+            // A job that is only shared with this user cannot be edited by them (the Jobs page
+            // disables Edit for it), so its row leads to the jobs page instead of a form whose save
+            // is refused.
+            onOpenJob={(job) => navigate(job.isOnlyShared ? '/jobs' : `/jobs/edit/${job.id}`)}
           />
           <div className="dashboard__card">
             <div className="dashboard__cardHead">

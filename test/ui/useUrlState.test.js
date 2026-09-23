@@ -10,9 +10,16 @@ import { describe, it, expect, vi } from 'vitest';
  * around plain functions, so stubbing those to call through gives the real logic with none of the
  * renderer. That keeps the suite free of a DOM dependency it otherwise does not need.
  */
+/**
+ * One ref for every call, which is what React gives one component across its renders. The hook
+ * assigns `current` on every call, so a test that renders once sees its own setter either way.
+ */
+const sharedRef = { current: undefined };
+
 vi.mock('react', () => ({
   useMemo: (factory) => factory(),
   useCallback: (fn) => fn,
+  useRef: () => sharedRef,
 }));
 
 const { useUrlState, parseNumber, parseString, parseNullableBoolean, parseBoolean } =
@@ -102,6 +109,27 @@ describe('useUrlState', () => {
       const { pair, state } = makeSearchParams();
       useUrlState(pair(), SCHEMA).setValues({ nonsense: 'x' });
       expect(state.params.has('nonsense')).toBe(false);
+    });
+
+    // react-router's setter hands the updater the params of the render it came from. A setter kept
+    // from an earlier render - the debounced search box creates its handler once - used to write
+    // the search on top of the URL as it was when the page opened, dropping the sort chosen since.
+    it('writes on top of the latest params even through a setter kept from an earlier render', () => {
+      let url = new URLSearchParams('');
+      const routerSetterFor = (captured) =>
+        vi.fn((updater) => {
+          url = updater(new URLSearchParams(captured));
+        });
+
+      const firstRender = useUrlState([url, routerSetterFor(url)], SCHEMA);
+      // The user filters; the URL moves on, and the next render brings a setter closed over it.
+      url = new URLSearchParams('active=all');
+      useUrlState([url, routerSetterFor(url)], SCHEMA);
+
+      firstRender.setValues({ q: 'berlin', page: 1 });
+
+      expect(url.get('q')).toBe('berlin');
+      expect(url.get('active')).toBe('all');
     });
 
     it('replaces rather than pushes, so filters do not fill the back button', () => {

@@ -5,7 +5,7 @@
 
 import { describe, it, expect } from 'vitest';
 
-import { financeDirtyState, isSectionDirty } from '../../ui/src/services/finance/financeDirty.js';
+import { discardSection, financeDirtyState, isSectionDirty } from '../../ui/src/services/finance/financeDirty.js';
 
 /** A profile shaped like the one the server normalizes and hands back. */
 const stored = Object.freeze({
@@ -82,5 +82,54 @@ describe('isSectionDirty', () => {
     const state = { household: false, rent: false, buy: true };
     expect(isSectionDirty(state, 'buy')).toBe(true);
     expect(isSectionDirty(state, 'rent')).toBe(false);
+  });
+});
+
+describe('rate scenario labels', () => {
+  // The label is printed from the rate ("3 %") while the defaults spell it "3.0 %". Typing a rate
+  // and then the original one back must not leave the tab dirty over that spelling.
+  it('does not count a re-spelt label as a change', () => {
+    const baseline = {
+      ...stored,
+      financing: { ...stored.financing, scenarios: [{ label: '3.0 %', annualRate: 3, tilgung: 2 }] },
+    };
+    const retyped = {
+      ...stored,
+      financing: { ...stored.financing, scenarios: [{ label: '3 %', annualRate: 3, tilgung: 2 }] },
+    };
+    expect(financeDirtyState(retyped, baseline).buy).toBe(false);
+  });
+
+  it('still counts a changed rate', () => {
+    const changed = {
+      ...stored,
+      financing: { ...stored.financing, scenarios: [{ label: '3.9 %', annualRate: 3.9, tilgung: 2 }] },
+    };
+    expect(financeDirtyState(changed, stored).buy).toBe(true);
+  });
+});
+
+describe('discardSection', () => {
+  it('takes back the household and the tab on screen, and leaves the other tab alone', () => {
+    const edited = {
+      ...stored,
+      livingCosts: 1500,
+      renting: { nebenkostenPct: 30 },
+      financing: { ...stored.financing, equity: 90000 },
+    };
+
+    const next = discardSection(edited, stored, 'rent');
+
+    expect(next.livingCosts).toBe(stored.livingCosts);
+    expect(next.renting).toEqual(stored.renting);
+    // The purchase tab's edit was not on screen and is not what this bar saves.
+    expect(next.financing.equity).toBe(90000);
+    expect(financeDirtyState(next, stored)).toEqual({ household: false, rent: false, buy: true });
+  });
+
+  it('does not change the draft it was handed', () => {
+    const edited = { ...stored, livingCosts: 1500 };
+    discardSection(edited, stored, 'buy');
+    expect(edited.livingCosts).toBe(1500);
   });
 });

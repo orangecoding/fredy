@@ -91,6 +91,9 @@ export default function BackupPage() {
       try {
         setRestoreBusy(true);
         await clientRestore(selectedRestoreFile, force);
+        // Closed once it has done its job: left open, its button was live again and a second click
+        // restored the same archive a second time.
+        setRestoreModalVisible(false);
         Toast.success(t('settings.backupRestoreCompleted'));
       } catch (e) {
         console.error(e);

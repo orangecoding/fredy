@@ -16,6 +16,7 @@ import {
 import ScopeBadge from '../../components/scopeBadge/ScopeBadge.jsx';
 import SettingsShell from '../../components/settingsShell/SettingsShell.jsx';
 import { useAdminSettings } from './useAdminSettings.js';
+import { useUnsavedWarning } from '../../hooks/useUnsavedWarning.js';
 import { useSelector } from '../../services/state/store';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
 
@@ -35,6 +36,9 @@ export default function AdminLayout() {
   const t = useTranslation();
   const settings = useSelector((state) => state.generalSettings.settings);
   const admin = useAdminSettings(settings);
+  // Here as well as on each page: the form outlives a tab switch, so an edit left on System is still
+  // unsaved while Routing is on screen, and a closed tab must still ask about it.
+  useUnsavedWarning(admin.systemDirty || admin.executionDirty || admin.connectivityDirty || admin.routingDirty);
 
   const tabs = [
     { path: '/admin/system', label: t('admin.tabSystem'), icon: <IconSignal size="small" /> },

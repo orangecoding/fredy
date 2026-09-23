@@ -15,6 +15,7 @@ import { useProviderCountries } from '../../hooks/useProviderCountries.js';
 import { useScreenWidth } from '../../hooks/screenWidth.js';
 import no_image from '../../assets/no_image.png';
 import { getBoundsFromCoords } from './mapUtils.js';
+import { escapeHtml } from './listingPopupContent.jsx';
 import { applyRouteLayers, buildRouteData, placeTargets } from './detailMapLayers.js';
 import { getAddresses } from '../../utils.js';
 import { lagecheckUrl } from '../../services/listings/lagecheckUrl.js';
@@ -247,12 +248,14 @@ export default function ListingDetail() {
     const mapInstance = map.current;
     const markers = [];
 
+    // Escaped: the address is scraped from a portal and `setHTML` is `innerHTML`, and a place name
+    // from OpenStreetMap reaches the home markers below the same way.
     markers.push(
-      new maplibregl.Marker({ color: '#3FB1CE' })
+      new maplibregl.Marker({ color: MARKER_COLORS.listing })
         .setLngLat([listing.longitude, listing.latitude])
         .setPopup(
           new maplibregl.Popup({ offset: 25 }).setHTML(
-            `<h4>${t('listing.detail.mapPopupListingLocation')}</h4><p>${listing.address}</p>`,
+            `<h4>${t('listing.detail.mapPopupListingLocation')}</h4><p>${escapeHtml(listing.address ?? '')}</p>`,
           ),
         )
         .addTo(mapInstance),
@@ -264,7 +267,7 @@ export default function ListingDetail() {
           .setLngLat([home.coords.lng, home.coords.lat])
           .setPopup(
             new maplibregl.Popup({ offset: 25 }).setHTML(
-              `<h4>${home.label || t('listing.detail.mapPopupHomeAddress')}</h4><p>${home.address}</p>`,
+              `<h4>${escapeHtml(home.label || t('listing.detail.mapPopupHomeAddress'))}</h4><p>${escapeHtml(home.address ?? '')}</p>`,
             ),
           )
           .addTo(mapInstance),

@@ -157,7 +157,20 @@ describe('travel time', () => {
 
   it('opens the controls for a row that was just added, and only for that one', () => {
     expect(entry).toMatch(/useState\(startOpen\)/);
-    expect(travelTime).toMatch(/setOpenIndex/);
+    expect(travelTime).toMatch(/setOpenKey\(row\.key\)/);
+  });
+
+  // The rows keep state of their own, so they are keyed by identity: keyed by position, removing a
+  // row handed its open controls (and its address suggestions) to the row below.
+  it('keys the rows by identity rather than by position', () => {
+    expect(travelTime).toMatch(/key=\{row\.key\}/);
+    expect(travelTime).not.toMatch(/key=\{idx\}/);
+  });
+
+  // Saving the unchanged list is how a failed geocode is retried, so the bar that holds Save has to
+  // be there for it.
+  it('offers Save while an address could not be located', () => {
+    expect(travelTime).toMatch(/dirty=\{dirty \|\| geocodeFailed\}/);
   });
 
   it('takes the red trash icon out of every row', () => {
@@ -185,7 +198,7 @@ describe('listing details', () => {
 describe('application', () => {
   it('shows the letter next to what produces it', () => {
     expect(application).toMatch(/applicationPage__split/);
-    expect(applicationLess).toMatch(/auto-fit, minmax\(320px, 1fr\)/);
+    expect(applicationLess).toMatch(/auto-fit, minmax\(min\(320px, 100%\), 1fr\)/);
     // The preview stopped being a card of its own at the very bottom.
     expect([...application.matchAll(/<SegmentPart/g)]).toHaveLength(5);
   });

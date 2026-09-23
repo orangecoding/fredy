@@ -41,9 +41,11 @@ describe('both views survive', () => {
   });
 
   it('keeps deleting a shared job’s listings allowed', () => {
-    const block = actions.match(/onDeleteListings[\s\S]{0,400}/);
-    expect(block).not.toBeNull();
-    expect(block[0]).not.toMatch(/isOnlyShared/);
+    // The menu item itself, from its opening tag to the call. Matching the first `onDeleteListings`
+    // found the JSDoc instead, so the assertion could not fail.
+    const item = actions.match(/<Dropdown\.Item(?:(?!<Dropdown\.Item)[\s\S])*?onDeleteListings\(/);
+    expect(item).not.toBeNull();
+    expect(item[0]).not.toMatch(/disabled/);
   });
 });
 
@@ -75,7 +77,7 @@ describe('stylesheets', () => {
   });
 
   it('lays the cards out without floating columns', () => {
-    expect(gridLess).toMatch(/repeat\(auto-fill, minmax\(@job-card-min, 1fr\)\)/);
+    expect(gridLess).toMatch(/repeat\(auto-fill, minmax\(~'min\(@\{job-card-min\}, 100%\)', 1fr\)\)/);
     expect(grid).not.toMatch(/<Row|<Col/);
   });
 });

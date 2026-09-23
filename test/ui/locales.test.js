@@ -9,6 +9,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { TRACKING_POIS } from '../../lib/TRACKING_POIS.js';
 import { COMMUTE_ACTIONS } from '../../ui/src/services/jobs/commuteFilter.js';
+import { JOB_REQUIREMENTS } from '../../ui/src/services/jobs/jobValidation.js';
 import {
   CONNECTIVITY_SOURCES,
   DISPLAY_TECHNOLOGIES,
@@ -159,6 +160,13 @@ const COMPUTED_KEYS = [
   ...['permanent', 'temporary', 'selfEmployed', 'civilServant', 'student', 'retired'].map(
     (type) => `settings.application.employmentType.${type}`,
   ),
+  // The job form's readiness bar names each missing requirement by a key built from the list, and
+  // a fifth requirement without one would print the raw key into the bar.
+  ...JOB_REQUIREMENTS.map((requirement) => `jobs.mutation.requirement.${requirement.key}`),
+  // `relativeTime` builds its key from the direction and the unit, one day included.
+  ...['In', 'Ago'].flatMap((direction) =>
+    ['Minutes', 'Hours', 'Day', 'Days'].map((unit) => `dashboard.time${direction}${unit}`),
+  ),
 ];
 
 /**
@@ -167,9 +175,12 @@ const COMPUTED_KEYS = [
  * The lookbehind is what keeps this honest: without it the pattern also matches the tail of any
  * method whose name ends in `t`, so an ordinary `params.get('returnTo')` or `url.set('x')` would be
  * reported as a missing translation key and fail the suite for no reason.
+ *
+ * A comma as well as a closing parenthesis after the key: a call that passes variables,
+ * `t('key', { count })`, is a key the app asks for just the same, and those used to go unchecked.
  * @type {RegExp}
  */
-const TRANSLATION_CALL = /(?<![\w.$])t\('([^']+)'\)/g;
+const TRANSLATION_CALL = /(?<![\w.$])t\('([^']+)'[,)]/g;
 
 describe('locales', () => {
   it('ships english as the fallback language', () => {

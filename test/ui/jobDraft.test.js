@@ -173,7 +173,8 @@ describe('jobDraft', () => {
     );
 
     it('carries every piece of state the job form asks it to keep', () => {
-      const [, literal] = form.match(/saveDraft\(draftId,\s*\{([^}]*)\}/) ?? [];
+      // The literal the save effect builds and hands to `saveDraft(draftId, draft)`.
+      const [, literal] = form.match(/const draft = \{([^}]*)\};\s*\n[\s\S]*?saveDraft\(draftId, draft\)/) ?? [];
       expect(literal).toBeDefined();
       const saved = literal
         .split(',')

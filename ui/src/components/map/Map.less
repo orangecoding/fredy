@@ -111,14 +111,23 @@
     }
   }
 
-  /* The address search, top left, above MapLibre's own zoom and compass. Narrower than the panel
-     column opposite it so the two corners do not meet on a small map. */
+  /* The address search, top left, above MapLibre's own zoom and compass. */
   &__search {
     position: absolute;
     top: 12px;
     left: 12px;
     z-index: 10;
     width: min(320px, calc(100% - 24px));
+  }
+
+  /* On a map narrower than the two corners together (about 660px, which the page's own map is below
+     roughly this viewport width) the panel column, later in the DOM, lay on top of the search and
+     hid it completely. The column starts under the search box there instead. */
+  @media (max-width: 960px) {
+    &--searchable &__ui {
+      top: 56px;
+      max-height: calc(100% - 68px);
+    }
   }
 
   /* MapLibre stacks its own controls at the top left, which is where the search now is. Pushed

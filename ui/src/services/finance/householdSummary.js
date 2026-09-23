@@ -29,7 +29,10 @@ export function summariseHousehold(profile, t) {
     parts.push(t('finance.form.summaryPartner'));
   }
 
-  const secondary = Number(profile?.personA?.secondaryIncome ?? 0) + Number(profile?.personB?.secondaryIncome ?? 0);
+  // The partner's income only counts while the partner does, which is how the income calculation
+  // reads it too: switching the partner off keeps the typed value but takes it out of the sums.
+  const partnerSecondary = profile?.personB?.enabled === true ? Number(profile?.personB?.secondaryIncome ?? 0) : 0;
+  const secondary = Number(profile?.personA?.secondaryIncome ?? 0) + partnerSecondary;
   if (secondary > 0) {
     parts.push(t('finance.form.summarySecondary'));
   }

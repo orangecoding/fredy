@@ -28,6 +28,7 @@ async function loadHandlers() {
   vi.doMock(root + '/lib/services/storage/userStorage.js', () => ({
     getUsers: () => storedUsers,
     getUser: (userId) => storedUsers.find((user) => user.id === userId) ?? null,
+    getUserByUsername: (username) => storedUsers.find((user) => user.username === username) ?? null,
     getMcpToken: () => null,
     removeUser: vi.fn(),
     upsertUser: async (payload) => upserts.push(payload),
@@ -165,5 +166,79 @@ describe('POST /api/admin/users', () => {
 
     expect(status).toBe(200);
     expect(upserts).toEqual([{ userId: null, username: 'nina', password: 'correct horse', isAdmin: true }]);
+  });
+
+  it('refuses an edit of a user that does not exist instead of creating one without a password', async () => {
+    // `upsertUser` inserts for an unknown id, so an edit of an account deleted in the meantime used
+    // to create a new one whose password was the empty string.
+    const { status, payload } = await save({
+      userId: 'deleted-meanwhile',
+      username: 'ghost',
+      password: '',
+      password2: '',
+      isAdmin: true,
+    });
+
+    expect(status).toBe(404);
+    expect(payload).toEqual({ error: 'User not found.' });
+    expect(upserts).toEqual([]);
+  });
+
+  it('refuses a name another account already has, on create and on rename', async () => {
+    for (const body of [
+      { userId: null, username: 'kim', password: 'pw', password2: 'pw', isAdmin: false },
+      { userId: 'admin-1', username: 'kim', password: '', password2: '', isAdmin: true },
+    ]) {
+      upserts = [];
+      const { status, payload } = await save(body);
+
+      expect(status, String(body.userId)).toBe(409);
+      expect(payload).toEqual({ error: 'A user with this name already exists.' });
+      expect(upserts).toEqual([]);
+    }
+  });
+
+  it('lets a user keep their own name on an edit', async () => {
+    const { status } = await save({ userId: 'kim-1', username: 'kim', password: '', password2: '', isAdmin: false });
+
+    expect(status).toBe(200);
+  });
+
+  it('stores the name trimmed, the way the login form sends it', async () => {
+    const { status } = await save({
+      userId: null,
+      username: '  nina ',
+      password: 'pw',
+      password2: 'pw',
+      isAdmin: false,
+    });
+
+    expect(status).toBe(200);
+    expect(upserts[0].username).toBe('nina');
+  });
+
+  it('refuses a name made of spaces only', async () => {
+    const { status, payload } = await save({ userId: 'kim-1', username: '   ', password: '', password2: '' });
+
+    expect(status).toBe(400);
+    expect(payload).toEqual({ error: 'A username is mandatory.' });
+  });
+});
+
+describe('GET /api/admin/users/:userId', () => {
+  it('answers 404 for an unknown id rather than 200 with null', async () => {
+    const get = (await loadHandlers())['GET /:userId'];
+    const reply = replyDouble();
+    await get({ params: { userId: 'nobody' } }, reply);
+
+    expect(reply.recorded.status).toBe(404);
+    expect(reply.recorded.payload).toEqual({ error: 'User not found.' });
+  });
+
+  it('still returns a known user', async () => {
+    const get = (await loadHandlers())['GET /:userId'];
+    const user = await get({ params: { userId: 'kim-1' } }, replyDouble());
+
+    expect(user).toEqual({ id: 'kim-1', username: 'kim', isAdmin: false });
   });
 });

@@ -52,19 +52,21 @@ export default function ExecutionPage() {
     useOutletContext();
   const zones = useMemo(() => timeZoneOptions(form.workingHours.timeZone), [form.workingHours.timeZone]);
 
-  // Nur, was das Dashboard ohnehin schon geholt hat - dieselbe Quelle, aus der die Seitenleiste
-  // liest. Diese Seite stellt das Suchintervall ein und war die einzige, die nicht sagt, wann der
-  // naechste Lauf faellig ist.
   const nextRun = useSelector((state) => state.dashboard.data?.general?.nextRun);
 
   useUnsavedWarning(executionDirty);
 
-  // Was die vier Regler zusammen bedeuten, in einem Satz. Einzeln sagen sie es nicht: ein leeres
-  // Von und Bis heisst "rund um die Uhr", und das stand bisher nur im Hilfetext.
   const summary = useMemo(() => {
     const { from, to, timeZone } = form.workingHours;
     const zone = timeZone ?? t('admin.execution.serverZone');
-    if (from == null || to == null || from === '' || to === '') {
+    const hasFrom = from != null && from !== '';
+    const hasTo = to != null && to !== '';
+    // One edge alone is not "around the clock": it is a window the save will refuse, and saying
+    // otherwise here contradicted the toast that follows.
+    if (hasFrom !== hasTo) {
+      return t('settings.toastWorkingHoursIncomplete');
+    }
+    if (!hasFrom) {
       return t('admin.execution.summaryAllDay', { minutes: form.interval || '?' });
     }
     return t('admin.execution.summaryWindow', { minutes: form.interval || '?', from, to, zone });
@@ -72,25 +74,27 @@ export default function ExecutionPage() {
 
   return (
     <div className="settingsShell__page">
-      {/* Eine Karte statt zweier. Intervall, Von, Bis und Zeitzone sind vier Bedienelemente, die
-          zusammen einen Sachverhalt beschreiben; als zwei Karten gelesen sagte keine von beiden,
-          was die andere daran aendert. */}
       <SegmentPart
         name={t('admin.execution.searchRun')}
-        helpText={t('settings.searchIntervalHelp')}
+        // The working hours sit in this card too, and theirs is the explanation of what an empty
+        // time zone means (the server's, which in Docker is UTC).
+        helpText={`${t('settings.searchIntervalHelp')} ${t('settings.workingHoursHelp')}`}
         helpMode="popover"
         action={
           nextRun != null && nextRun !== 0 ? (
             <span className="settingsShell__cardFlag">
-              <span className="settingsShell__cardFlagDot settingsShell__cardFlagDot--ok" aria-hidden="true" />
+              {/* Green only while the promised run is still ahead. Past it, this is the page an
+                  admin opens to find out why nothing runs, and a green dot beside "3 h ago" said
+                  the opposite of the sidebar's amber one. */}
+              <span
+                className={`settingsShell__cardFlagDot${nextRun > Date.now() ? ' settingsShell__cardFlagDot--ok' : ''}`}
+                aria-hidden="true"
+              />
               {t('nav.nextRun', { time: relativeTime(nextRun, t) })}
             </span>
           ) : null
         }
       >
-        {/* Drei Zeilen, die sich wie ein Satz lesen: "Alle 60 Minuten", "Zwischen 08:00 und 20:00".
-            Die Beschriftung steht daneben statt darueber, weil sie der Anfang des Satzes ist und
-            nicht die Ueberschrift eines Feldes. */}
         <div className="executionPage__line">
           <span className="executionPage__caption">{t('admin.execution.every')}</span>
           <span className="adminRow__control">
@@ -127,16 +131,6 @@ export default function ExecutionPage() {
           />
         </div>
 
-        {/*
-          Eigene Zeile, weil das Artboard die Zeitzone aus der Zwischen-Zeile heraushaelt - dort
-          steht das Zeitfenster, und die Zone ist keine dritte Uhrzeit. Weggelassen wird sie
-          nicht: der Satz darunter nennt sie, und irgendwo muss man sie setzen koennen.
-
-          Searchable rather than a plain list: there are well over four hundred zones, and an
-          operator knows the name of theirs. Clearable because an empty value is a real state -
-          it means the window follows the server's own zone, which is what every installation
-          did before this setting existed.
-        */}
         <div className="executionPage__line">
           <span className="executionPage__caption">{t('settings.workingHoursTimeZone')}</span>
           <Select
@@ -163,19 +157,6 @@ export default function ExecutionPage() {
         />
       </SegmentPart>
 
-      {/*
-        One block rather than four. The three dials are meaningless on their own - they only
-        describe how the sweep behaves once it exists - so presenting them as peers of the switch
-        invited reading them as four independent knobs. They stay visible while disabled so an
-        operator can see what turning the feature on would commit them to.
-      */}
-      {/*
-        Above the switch, not below it. Turning this on is the moment the operator takes on the
-        risk, so the warning has to be in front of them beforehand, not revealed as a consequence.
-        It sits in the card's own help now, which puts it ahead of the switch all the more: the
-        help is read before the first control, and a warning behind a mark would have to be opened
-        to be a warning at all.
-      */}
       <SegmentPart
         name={t('settings.priceTracking')}
         helpText={
@@ -201,9 +182,6 @@ export default function ExecutionPage() {
         <div
           className={`settingsShell__subSettings${form.priceTrackingEnabled ? '' : ' settingsShell__subSettings--disabled'}`}
         >
-          {/* Die Schiene bleibt - sie drueckt die Abhaengigkeit vom Schalter aus, und die ist
-              echt. Was darin steht, sind Feldzeilen wie ueberall sonst: drei Erklaerungen von 15
-              bis 25 Woertern untereinander waren dreimal dieselbe Entscheidung neu begruendet. */}
           <AdminField
             label={t('settings.priceCheckInterval')}
             help={t('settings.priceCheckIntervalHelp')}

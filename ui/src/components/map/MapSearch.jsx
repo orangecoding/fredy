@@ -3,7 +3,7 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AutoComplete, Toast } from '@douyinfe/semi-ui-19';
 import { IconSearch } from '@douyinfe/semi-icons';
 
@@ -59,23 +59,51 @@ export default function MapSearch({ onLocate, onClear }) {
   const [suggestions, setSuggestions] = useState([]);
   const [locating, setLocating] = useState(false);
 
+  /*
+   * Bumped by every request and by clearing the field, so an answer that arrives after the question
+   * changed is recognised as stale: suggestions for "Berliner Str" no longer drop into a field that
+   * was emptied, and a geocode still in flight no longer puts the pin back after a clear.
+   */
+  const suggestionSeq = useRef(0);
+  const locateSeq = useRef(0);
+  /**
+   * Set while a suggestion is being selected. Semi selects a highlighted suggestion on Enter itself,
+   * and the same key then reached the wrapper below, which geocoded the half-typed text as well.
+   */
+  const selectingRef = useRef(false);
+
   // The suggestion endpoint talks to Nominatim, which rate-limits hard. Waiting for a pause in
   // typing keeps one lookup per address rather than one per keystroke.
   const requestSuggestions = useMemo(
     () =>
       debounce((value) => {
+        const seq = ++suggestionSeq.current;
         fetchSuggestions(value)
-          .then(setSuggestions)
-          .catch(() => setSuggestions([]));
+          .then((result) => {
+            if (seq === suggestionSeq.current) setSuggestions(result);
+          })
+          .catch(() => {
+            if (seq === suggestionSeq.current) setSuggestions([]);
+          });
       }, 300),
     [],
   );
 
+  // A pending lookup must not fire into a component that is gone.
+  useEffect(() => () => requestSuggestions.cancel?.(), [requestSuggestions]);
+
   const search = (value) => {
     setQuery(value);
+    // The field changing because a suggestion was picked is not a new question to look up.
+    if (selectingRef.current) return;
     if (!value || value.trim().length < MIN_QUERY_LENGTH) {
+      requestSuggestions.cancel?.();
+      suggestionSeq.current += 1;
       setSuggestions([]);
-      if (!value) onClear?.();
+      if (!value) {
+        locateSeq.current += 1;
+        onClear?.();
+      }
       return;
     }
     requestSuggestions(value);
@@ -86,22 +114,39 @@ export default function MapSearch({ onLocate, onClear }) {
       const target = typeof address === 'string' ? address.trim() : '';
       if (target.length === 0) return;
 
+      requestSuggestions.cancel?.();
+      const seq = ++locateSeq.current;
       setQuery(target);
       setLocating(true);
       try {
         const response = await xhrGet(`/api/user/settings/geocode?q=${encodeURIComponent(target)}`);
+        if (seq !== locateSeq.current) return;
         const { lat, lng } = response.json;
         onLocate?.({ lat, lng }, target);
       } catch {
+        if (seq !== locateSeq.current) return;
         // The endpoint answers 404 for "looked, found nothing" and 500 for "could not ask", and
         // the difference does not change what the user can do about it: try another wording.
         Toast.warning(t('map.searchNotFound'));
       } finally {
-        setLocating(false);
+        if (seq === locateSeq.current) setLocating(false);
       }
     },
-    [t, onLocate],
+    [t, onLocate, requestSuggestions],
   );
+
+  /**
+   * @param {string} value The suggestion picked.
+   * @returns {void}
+   */
+  const select = (value) => {
+    selectingRef.current = true;
+    // Cleared once this event is over: it only has to cover the handlers of the same key press.
+    setTimeout(() => {
+      selectingRef.current = false;
+    }, 0);
+    goTo(value);
+  };
 
   return (
     /*
@@ -119,6 +164,8 @@ export default function MapSearch({ onLocate, onClear }) {
       onKeyDown={(event) => {
         if (event.key !== 'Enter') return;
         event.preventDefault();
+        // Semi already handled this Enter by selecting the highlighted suggestion.
+        if (selectingRef.current) return;
         goTo(query);
       }}
     >
@@ -129,7 +176,7 @@ export default function MapSearch({ onLocate, onClear }) {
         value={query}
         onChange={search}
         onSearch={search}
-        onSelect={goTo}
+        onSelect={select}
         loading={locating}
         prefix={<IconSearch />}
         showClear

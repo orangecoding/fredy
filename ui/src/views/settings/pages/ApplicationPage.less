@@ -10,7 +10,9 @@
     display: grid;
     // Two columns where there is room, one on a phone. The fields are short and pairing them keeps
     // the profile from reading as an endless form.
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    /* min(): never wider than the card. A fixed minimum wider than the card on a phone overflowed
+       it, and the card clips what overflows. */
+    grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
     gap: @space-3;
   }
 
@@ -64,7 +66,9 @@
      stapeln sie, wo zwei Spalten zwei zu schmale Spalten waeren. */
   &__split {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    /* min(): on a phone the card is narrower than 320px, and a column that may not shrink below it
+       was clipped at the card's edge - the right side of the letter editor could not be reached. */
+    grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
     gap: @space-3;
   }
 

@@ -211,8 +211,11 @@
 
 /* Rot, solange die Aufzeichnung laeuft. Gelesen aus derselben globalen Flagge wie das Banner der
    Anwendung, damit die Beschriftung keinen eigenen Zustand braucht. */
+/* !important, because Semi colours every tab icon with a selector of up to five classes
+   (`.semi-tabs-bar .semi-tabs-tab-active:hover .semi-icon:not(...)`), and a single class lost to it:
+   the icon stayed grey while capture was running. */
 .settingsShell__tabIcon--alert {
-  color: @color-error;
+  color: @color-error !important;
 }
 
 /* Was beim Speichern mehr tut als speichern. Die Systemseite laedt den Browser drei Sekunden

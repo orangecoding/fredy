@@ -38,7 +38,9 @@
      only says how many fit. */
   &__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(@job-card-min, 1fr));
+    /* min(): below about 400px the column is narrower than a card, and a card that may not shrink
+       lost its right edge - and the menu with both deletes - to the page's clipping. */
+    grid-template-columns: repeat(auto-fill, minmax(~'min(@{job-card-min}, 100%)', 1fr));
     gap: @space-4;
     align-items: start;
   }

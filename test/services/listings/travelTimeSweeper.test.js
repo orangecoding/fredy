@@ -770,6 +770,49 @@ describe('place types', () => {
     expect(state.saved[0].entries[0].originName).toBe('Rewe');
   });
 
+  it('keeps a walking row from an earlier day, since walking has no timetable', async () => {
+    // The departure only matters to public transport. Rejecting a walk row whenever the next
+    // working day came round re-measured an unchanged answer at the cost of a POI lookup.
+    state.stored.set('l1', [
+      storedRow({
+        label: 'Groceries',
+        origin_ref: 'supermarket',
+        origin_name: 'Rewe',
+        estimate_mode: 'walk',
+        is_estimate: 0,
+        walk_minutes: 7,
+        transit_minutes: null,
+        reference_time: new Date(2026, 6, 20, 8, 0, 0).getTime(),
+      }),
+    ]);
+    state.addressesByUser = { u1: [placeType()] };
+
+    const { run } = await loadSweeper();
+    await run({ now: NOW });
+
+    expect(state.matrixCalls).toHaveLength(0);
+    expect(state.poiCalls).toHaveLength(0);
+  });
+
+  it('still re-measures a public transport row from an earlier day', async () => {
+    state.stored.set('l1', [
+      storedRow({
+        label: 'Groceries',
+        origin_ref: 'supermarket',
+        origin_name: 'Rewe',
+        estimate_mode: 'transit',
+        is_estimate: 0,
+        reference_time: new Date(2026, 6, 20, 8, 0, 0).getTime(),
+      }),
+    ]);
+    state.addressesByUser = { u1: [placeType({ mode: 'transit' })] };
+
+    const { run } = await loadSweeper();
+    await run({ now: NOW });
+
+    expect(state.poiCalls.length + state.matrixCalls.length).toBeGreaterThan(0);
+  });
+
   it('writes an empty row when there is genuinely nothing of that kind nearby', async () => {
     state.placesByCategory = { supermarket: [] };
     state.addressesByUser = { u1: [placeType()] };
@@ -986,6 +1029,53 @@ describe('place types on the detail page', () => {
 
     expect(state.planCalls).toHaveLength(0);
     expect(state.saved[0].entries[0].originRef).toBe('bakery');
+    // Written, but not stamped done: the sweep still has to answer which bakery this is, and a
+    // stamp would take the listing out of its queue for a month.
+    expect(state.saved[0].stamp).toBe(false);
+  });
+
+  it('does not stamp the listing while a place type has no row yet', async () => {
+    // Opening the page right after a new place type was added (or the location was corrected,
+    // which deletes every row) must not mark the listing as measured for that place type.
+    state.stored.set('l1', []);
+
+    const { refine } = await loadSweeper();
+    await refine(listing, [placeType(), address({ label: 'Work' })], { now: NOW });
+
+    expect(state.saved).toHaveLength(1);
+    expect(state.saved[0].stamp).toBe(false);
+  });
+
+  it('stamps the listing once every place type is answered for', async () => {
+    const { refine } = await loadSweeper();
+    await refine(listing, [placeType()], { now: NOW });
+
+    expect(state.saved[0].stamp).toBe(true);
+  });
+
+  it('ends the journey at the place, not at the listing', async () => {
+    // The plan runs from the listing to the place, so its last leg ends at the plan's END, which
+    // arrives without a name. Left empty, the detail view reads it as arriving "at the listing".
+    state.planResult = {
+      ok: true,
+      times: {
+        transit: {
+          minutes: 9,
+          transfers: 0,
+          legs: [
+            { mode: 'BUS', from: 'Hauptstr.', to: 'Markt', geometry: 'a' },
+            { mode: 'WALK', from: 'Markt', to: null, geometry: 'b' },
+          ],
+        },
+      },
+    };
+
+    const { refine } = await loadSweeper();
+    await refine(listing, [placeType()], { now: NOW });
+
+    const legs = state.saved[0].entries[0].transitLegs;
+    expect(legs.at(-1).to).toBe('Rewe');
+    expect(legs[0].to).toBe('Markt');
   });
 });
 

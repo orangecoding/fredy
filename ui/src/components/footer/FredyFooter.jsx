@@ -64,17 +64,21 @@ export default function FredyFooter() {
   const [notesVisible, setNotesVisible] = useState(false);
   const versionUpdate = useSelector((state) => state.versionUpdate.versionUpdate);
   const hasUpdate = Boolean(versionUpdate?.newVersion);
+  // Only when GitHub actually answered. `newVersion: false` alone is also what an install that
+  // cannot reach GitHub (or is rate-limited) gets, and the answer is not in before the request is.
+  const upToDate = !hasUpdate && versionUpdate?.checked === true;
 
   return (
     <footer className="fredyFooter" aria-label={t('footer.landmark')}>
       <div className="fredyFooter__left">
         <span className="fredyFooter__version">Fredy v{versionUpdate?.localFredyVersion || t('common.na')}</span>
-        {hasUpdate ? (
+        {hasUpdate && (
           <button type="button" className="fredyFooter__update" onClick={() => setNotesVisible(true)}>
             <span className="fredyFooter__updateDot" />
             {t('version.updateChip', { version: versionUpdate.version })}
           </button>
-        ) : (
+        )}
+        {upToDate && (
           <span className="fredyFooter__state">
             <Tick />
             {t('version.upToDate')}

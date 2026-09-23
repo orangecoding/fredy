@@ -3,7 +3,7 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 
 // Preset codecs for the common types.
 export const parseString = {
@@ -62,12 +62,20 @@ export function useUrlState([searchParams, setSearchParams], schema) {
     return out;
   }, [serialized, schema]);
 
+  // The newest `setSearchParams`, read when a write happens rather than when the setter was made.
+  // react-router's closes over the params of the render it came from and hands those to the updater,
+  // so a caller holding on to `setValues` - a debounced search box, created once - wrote every
+  // search on top of the URL as it was when the page opened: typing threw away the sort and the
+  // filters chosen since.
+  const setSearchParamsRef = useRef(setSearchParams);
+  setSearchParamsRef.current = setSearchParams;
+
   /**
    * Apply several params at once. One navigation, so nothing can be lost to a racing sibling.
    */
   const setValues = useCallback(
     (patch) => {
-      setSearchParams(
+      setSearchParamsRef.current(
         (prev) => {
           const next = new URLSearchParams(prev);
           for (const [key, value] of Object.entries(patch)) {
@@ -89,7 +97,7 @@ export function useUrlState([searchParams, setSearchParams], schema) {
         { replace: true },
       );
     },
-    [setSearchParams, schema],
+    [schema],
   );
 
   const setValue = useCallback((key, value) => setValues({ [key]: value }), [setValues]);

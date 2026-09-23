@@ -9,7 +9,7 @@ import { IconFullScreenStroked, IconShrinkScreenStroked } from '@douyinfe/semi-i
 import maplibregl from './maplibre.js';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
-import { fixMapboxDrawCompatibility, addDrawingControl, setupAreaFilterEventListeners } from './MapDrawingExtension.js';
+import { addDrawingControl, fixMapboxDrawCompatibility, setupAreaFilterEventListeners } from './MapDrawingExtension.js';
 import { getBoundsFromCoords } from '../../views/listings/mapUtils.js';
 import {
   applyBuildingsLayer,
@@ -372,12 +372,19 @@ export default function Map({
           hasFittedToInitialAreaRef.current = true;
         }
       }
+    } else {
+      // The filter was taken back to "no area" from outside - the job form's Discard. Without this
+      // the shape stayed on the map, and the next one drawn was saved together with it, because
+      // `draw.getAll()` still held both.
+      try {
+        drawRef.current.deleteAll();
+      } catch (error) {
+        console.error('Error clearing spatial filter:', error);
+      }
     }
 
     // Setup drawing event listeners
-    const cleanup = setupAreaFilterEventListeners(mapRef.current, drawRef.current, onDrawingChange);
-
-    return cleanup;
+    return setupAreaFilterEventListeners(mapRef.current, drawRef.current, onDrawingChange);
   }, [initialSpatialFilter, onDrawingChange, enableDrawing]);
 
   // Handle style changes

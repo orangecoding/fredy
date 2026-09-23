@@ -209,8 +209,15 @@ setting has one home, and a second copy is a second answer waiting to disagree w
 
 **Colours that are legitimately literal**: scrims and hairlines drawn over listing photography,
 which stays photography in both themes; `#000` used as a mask stencil; white on the accent, which
-is dark red either way. The map basemap is the light OpenFreeMap style in both themes, so map
-overlays follow the page rather than inverting.
+is dark red either way; and MapLibre paint and marker colours (`ui/src/components/map/overlayLayers.js`,
+`darkBasemapPaint.js`, `markerColors.js`), because a map layer or marker takes a colour string and
+cannot read a custom property. Anything drawn in HTML around the map (legend, badges) still uses
+the tokens.
+
+**The map follows the theme.** The vector basemap is OpenFreeMap's `bright` style in the light theme
+and its `dark` style in the dark theme; satellite imagery is the same in both (`isDarkBasemap` in
+`ui/src/components/map/Map.jsx`). The overlays carry one paint set per basemap (`OVERLAY_PAINT.light`
+and `.dark`), and the canvas is dimmed on a bright basemap and lifted on the dark one.
 
 **Tracking.** Switching theme fires `CHANGE_THEME_DARK` or `CHANGE_THEME_LIGHT`. A tracking event
 carries a feature name and nothing else (`trackPoi` sends one string), so any value worth reporting

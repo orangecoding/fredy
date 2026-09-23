@@ -84,6 +84,29 @@ describe('#betterhomes provider testsuite()', () => {
    * heard of still reach the portal. A regression here does not fail loudly: the search simply runs
    * wider than the user set it.
    */
+  describe('a url that is not a BETTERHOMES search', () => {
+    const originalFetch = globalThis.fetch;
+
+    afterEach(() => {
+      globalThis.fetch = originalFetch;
+    });
+
+    // Without its scheme (or on another host) nothing about it can be read, and the fallback was
+    // an unfiltered search of every German advert.
+    it('searches nothing rather than everything', async () => {
+      let called = false;
+      globalThis.fetch = async () => {
+        called = true;
+        throw new Error('should not be called');
+      };
+
+      const rows = await provider.config.getListings('www.betterhomes.ch/de/immobilie-suchen/mieten?priceMax=1500');
+
+      expect(rows).toEqual([]);
+      expect(called).toBe(false);
+    });
+  });
+
   describe('buildSearchPayload', () => {
     it('carries every search parameter over as it stands', () => {
       const payload = provider.buildSearchPayload(
@@ -152,6 +175,37 @@ describe('#betterhomes provider testsuite()', () => {
      */
     it('does not read the decimal point as a thousands separator', () => {
       expect(runConfig.normalize(row({ priceGrossFloat: '1200.00' })).price).toBe(1200);
+    });
+
+    /**
+     * A rent is the Nettomiete everywhere else in Fredy: the affordability check adds the
+     * Nebenkosten itself, so the Bruttomiete beside it would count them twice.
+     */
+    it('prices a rental at its Nettomiete, as the German and Swiss rows state it', () => {
+      const listing = runConfig.normalize(
+        row({ rental: 'M', priceNet: '850', priceGross: '1.150 &euro;', priceGrossFloat: '1150.00' }),
+      );
+
+      expect(listing.price).toBe(850);
+    });
+
+    it('reads the Nettomiete the Austrian rows write as display text', () => {
+      expect(runConfig.normalize(row({ rental: 'M', priceNet: '€   1.600,-', priceGrossFloat: '1760.00' })).price).toBe(
+        1600,
+      );
+      expect(runConfig.normalize(row({ rental: 'M', priceNet: '€   684,55', priceGrossFloat: '980.00' })).price).toBe(
+        684.55,
+      );
+    });
+
+    it('falls back to the Bruttomiete when a rental states no Nettomiete', () => {
+      expect(runConfig.normalize(row({ rental: 'M', priceNet: null, priceGrossFloat: '1200.00' })).price).toBe(1200);
+    });
+
+    it('keeps the price of a sale as it is', () => {
+      expect(runConfig.normalize(row({ rental: 'K', priceNet: null, priceGrossFloat: '420000.00' })).price).toBe(
+        420000,
+      );
     });
 
     it('leaves a withheld price empty rather than free', () => {
@@ -270,10 +324,39 @@ describe('#betterhomes provider testsuite()', () => {
 
       expect(enriched.description).toBe('Helle Wohnung im Hinterhaus.\n\n- Balkon\n- Aufzug\n\nRuhige Seitenstraße.');
       expect(enriched.address).toBe('10115 Berlin-Mitte');
-      expect(enriched.latitude).toBe(52.5321);
-      expect(enriched.longitude).toBe(13.3849);
+      // The detail's coordinates are the town centre. With an address to geocode they are left out,
+      // so the pipeline locates the postcode instead of putting every Berlin advert in Mitte.
+      expect(enriched.latitude).toBeUndefined();
+      expect(enriched.longitude).toBeUndefined();
       expect(enriched.buildYear).toBe(1998);
       expect(enriched.energyClass).toBe('C');
+    });
+
+    // The town centre is only worth having for a listing with no address to geocode at all. And it
+    // is a machine decimal: read as "thousands" the way `extractNumber` reads a dot before three
+    // digits, "47.377" became 47377 and the listing fell off the planet.
+    it('uses the town centre, read as a coordinate, when there is no address to geocode', async () => {
+      globalThis.fetch = async () => ({
+        ok: true,
+        status: 200,
+        json: async () => ({
+          responseCode: 200,
+          responseData: {
+            id: '11111111-2222-3333-4444-555555555555',
+            address: { city: '', street: '', cityLatitude: '47.377', cityLongitude: '8.540' },
+          },
+        }),
+      });
+
+      const enriched = await runConfig.fetchDetails({
+        id: 'x',
+        link: 'https://www.betterhomes.ch/de/immobilie-suchen/detail/objectId/11111111-2222-3333-4444-555555555555',
+        description: '',
+        address: null,
+      });
+
+      expect(enriched.latitude).toBe(47.377);
+      expect(enriched.longitude).toBe(8.54);
     });
 
     it('hands the listing back untouched when the link carries no object id', async () => {
@@ -339,6 +422,31 @@ describe('#betterhomes provider testsuite()', () => {
       await expect(provider.config.activityProbe(link)).resolves.toBe(-1);
     });
 
+    // An answer without a payload that is not the endpoint's own "no such object" - an error
+    // envelope, a maintenance page as JSON - says nothing about the advert either.
+    it('reports an error envelope as unknown rather than as gone', async () => {
+      globalThis.fetch = async () => ({
+        ok: true,
+        status: 200,
+        json: async () => ({ responseCode: 500, responseData: null }),
+      });
+
+      await expect(provider.config.activityProbe(link)).resolves.toBe(-1);
+    });
+
+    it('reports no price for an advert whose detail says the price is on request', async () => {
+      globalThis.fetch = async () => ({
+        ok: true,
+        status: 200,
+        json: async () => ({
+          responseCode: 200,
+          responseData: { id: 'x', priceGrossFloat: '420000.00', priceOnApplication: true },
+        }),
+      });
+
+      await expect(provider.config.priceTracking.probe({ link })).resolves.toBeNull();
+    });
+
     it('reports a link on no BETTERHOMES site as unknown, without asking anyone', async () => {
       let called = false;
       globalThis.fetch = async () => {
@@ -350,7 +458,17 @@ describe('#betterhomes provider testsuite()', () => {
       expect(called).toBe(false);
     });
 
-    it('tracks the same figure the search list reports, not the Nettomiete beside it', async () => {
+    /**
+     * The probe has to read the figure the search list stored, or every listing reports a price
+     * change at once. For a rental that is the Nettomiete, which the detail payload only has as
+     * display text - in each site's own spelling.
+     */
+    it.each([
+      ['1.500 &euro;', 1500],
+      ['€   1.600,-', 1600],
+      ["CHF 1'795.-", 1795],
+      ['€   684,55', 684.55],
+    ])('tracks the Nettomiete of a rental, written as %s', async (priceNet, expected) => {
       globalThis.fetch = async () => ({
         ok: true,
         status: 200,
@@ -358,15 +476,36 @@ describe('#betterhomes provider testsuite()', () => {
           responseCode: 200,
           responseData: {
             id: '11111111-2222-3333-4444-555555555555',
+            rental: true,
             priceGross: '1.800 &euro;',
             priceGrossFloat: '1800.00',
-            priceNet: '1.500 &euro;',
-            be_obj_preisnachvereinbarung: '0',
+            priceNet,
+            priceOnApplication: 'null',
           },
         }),
       });
 
-      await expect(provider.config.priceTracking.probe({ link })).resolves.toBe(1800);
+      await expect(provider.config.priceTracking.probe({ link })).resolves.toBe(expected);
+    });
+
+    it('tracks the price of a sale', async () => {
+      globalThis.fetch = async () => ({
+        ok: true,
+        status: 200,
+        json: async () => ({
+          responseCode: 200,
+          responseData: {
+            id: '11111111-2222-3333-4444-555555555555',
+            rental: false,
+            priceGross: '420.000 &euro;',
+            priceGrossFloat: '420000.00',
+            priceNet: null,
+            priceOnApplication: false,
+          },
+        }),
+      });
+
+      await expect(provider.config.priceTracking.probe({ link })).resolves.toBe(420000);
     });
 
     it('returns null rather than zero for an advert it cannot read', async () => {

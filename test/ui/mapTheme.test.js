@@ -122,6 +122,31 @@ describe('the overlays are inserted above the geometry, not above the first labe
   it('still returns nothing for a raster style', () => {
     expect(findOverlayInsertionId(styleOf([{ id: 'satellite', type: 'raster' }]))).toBeUndefined();
   });
+
+  // The detail page draws its route before the transit overlay arrives, and the map view adds a
+  // distance ring. Neither is basemap geometry: counted as such, they moved the anchor above every
+  // label or past the end of the style, and the overlays then covered the street names.
+  it('ignores the layers Fredy adds itself', () => {
+    const map = {
+      getStyle: () => ({
+        sources: {
+          openmaptiles: { type: 'vector' },
+          openfreemap: { type: 'vector' },
+          route: { type: 'geojson' },
+          'distance-circle': { type: 'geojson' },
+        },
+        layers: [
+          { id: 'background', type: 'background' },
+          { id: 'highway', type: 'line', source: 'openmaptiles' },
+          { id: 'place_city', type: 'symbol', source: 'openmaptiles', layout: { 'text-field': ['get', 'name'] } },
+          { id: 'route-line', type: 'line', source: 'route' },
+          { id: 'distance-circle', type: 'fill', source: 'distance-circle' },
+          { id: 'transit-stops', type: 'symbol', source: 'openfreemap', layout: { 'text-field': ['get', 'name'] } },
+        ],
+      }),
+    };
+    expect(findOverlayInsertionId(map)).toBe('place_city');
+  });
 });
 
 describe('both paint variants are complete', () => {
@@ -305,7 +330,20 @@ describe('the view state survives a trip to a detail page and back', () => {
     expect(popup).toMatch(/initialId/);
     expect(popup).toMatch(/listings\.findIndex\(\(listing\) => listing\.id === initialId\)/);
     expect(viewJsx).toMatch(/initialId: holdsOpenListing\(\)/);
-    expect(viewJsx).toMatch(/reopen\?\.togglePopup\(\)/);
+    expect(viewJsx).toMatch(/reopen\.togglePopup\(\)/);
+  });
+
+  // Reopening after a rebuild follows a filter change; focusing the popup then pulled the focus out
+  // of the control the user was operating.
+  it('does not take the focus when it reopens the popup itself', () => {
+    expect(viewJsx).toMatch(/reopeningRef\.current = true;/);
+    expect(viewJsx).toMatch(/if \(!reopeningRef\.current\) \{\s*element\.focus/);
+  });
+
+  // A click from one pin onto another opens and closes in one tick; the old popup's close must see
+  // that it is no longer the open one.
+  it('records the newly open popup before the old one closes', () => {
+    expect(viewJsx).toMatch(/openListingIdRef\.current = id \?\? null;\s*setUrlValue\('popup', id \?\? null\);/);
   });
 
   it('reports the page turn, so the address bar names what is on screen', () => {

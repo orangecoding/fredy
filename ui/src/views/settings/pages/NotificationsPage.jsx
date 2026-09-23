@@ -32,6 +32,10 @@ export default function NotificationsPage() {
   const t = useTranslation();
   const actions = useActions();
   const channels = useSelector((state) => state.notificationChannels.channels);
+  // "Create your first channel" only once the list has actually arrived. Before that (and after a
+  // failed request) an empty list says nothing, and telling somebody who has channels that they
+  // have none invites a duplicate.
+  const channelsLoaded = useSelector((state) => state.notificationChannels.loaded);
   const adapters = useSelector((state) => state.notificationAdapter);
   const currentUser = useSelector((state) => state.user.currentUser);
 
@@ -124,7 +128,7 @@ export default function NotificationsPage() {
           )
         }
       >
-        {channels.length === 0 ? (
+        {channelsLoaded && channels.length === 0 ? (
           <SettingsEmptyState
             icon={<IconBell size="extra-large" />}
             title={t('notification.channels.emptyTitle')}

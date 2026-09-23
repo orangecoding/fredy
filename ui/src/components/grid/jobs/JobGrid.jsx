@@ -118,6 +118,16 @@ const JobGrid = () => {
     loadData();
   }, [page, sortField, sortDir, freeTextFilter, activityFilter]);
 
+  // Deleting the only job on the last page leaves that page empty, and the pager only draws while
+  // there are rows: the user was left looking at "no jobs yet" with jobs to show. Back to the last
+  // page that has any.
+  useEffect(() => {
+    const total = jobsData?.totalNumber ?? 0;
+    if (page > 1 && total > 0 && (jobsData?.result ?? []).length === 0) {
+      setValue('page', Math.max(1, Math.ceil(total / pageSize)));
+    }
+  }, [jobsData, page]);
+
   // SSE connection for live job status updates
   useEffect(() => {
     // establish SSE connection

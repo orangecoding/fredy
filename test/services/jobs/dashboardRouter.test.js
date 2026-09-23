@@ -20,7 +20,10 @@ describe('api/routes/dashboardRouter.js', () => {
 
     vi.resetModules();
     vi.doMock(jobStoragePath, () => ({
-      getJobs: () => state.jobs.slice(),
+      getJobs: (options) => {
+        state.getJobsOptions = options;
+        return state.jobs.slice();
+      },
     }));
     vi.doMock(listingsStoragePath, () => ({
       getListingsKpisForJobIds: () => ({ numberOfActiveListings: 0, medianPriceOfListings: 0 }),
@@ -107,6 +110,25 @@ describe('api/routes/dashboardRouter.js', () => {
 
     const res = await app.inject({ method: 'GET', url: '/api/dashboard/' });
     expect(res.json().general.lastRun).toBe(7000);
+  });
+
+  it('counts paused jobs in the figures but leaves them out of the scheduler status', async () => {
+    // The jobs panel lists every job the user has, paused ones included. Leaving those out of the
+    // figures showed a paused job as "nothing found", and a user whose jobs were all paused the
+    // "create your first job" screen.
+    state.jobs = [
+      { id: 'running', userId: 'u1', shared_with_user: [], enabled: true, lastRunAt: 1000 },
+      { id: 'paused', userId: 'u1', shared_with_user: [], enabled: false, lastRunAt: 5000 },
+    ];
+    app = await buildApp();
+
+    const body = (await app.inject({ method: 'GET', url: '/api/dashboard/' })).json();
+
+    expect(state.getJobsOptions).toEqual({ includeDisabled: true });
+    expect(body.kpis.totalJobs).toBe(2);
+    expect(state.activityCall.jobIds).toEqual(['running', 'paused']);
+    // A paused job waits for no next run.
+    expect(body.general.lastRun).toBe(1000);
   });
 
   it('returns null lastRun and 0 nextRun when no accessible job has ever run', async () => {

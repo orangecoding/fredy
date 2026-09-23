@@ -25,14 +25,23 @@ import './travelTimePage.less';
  */
 const DEFAULT_DEPARTURE = { time: '08:00' };
 
+/** Source of the rows' client-side keys. Never sent to the server. */
+let lastRowKey = 0;
+
 /**
  * One entry, normalised out of whatever the server sent.
+ *
+ * Carries `key`, an identity for React only. The rows keep state of their own (whether their
+ * controls are open), and keyed by position that state moved to the next row whenever one above it
+ * was removed. Left out of the comparison and of the save payload.
  *
  * @param {Object} entry
  * @returns {Object}
  */
 function toRow(entry) {
+  lastRowKey += 1;
   return {
+    key: `row-${lastRowKey}`,
     kind: entry.kind === 'category' ? 'category' : 'address',
     category: entry.category || '',
     label: entry.label || '',
@@ -41,6 +50,16 @@ function toRow(entry) {
     departure: entry.departure || DEFAULT_DEPARTURE,
     mode: entry.mode || 'transit',
   };
+}
+
+/**
+ * The rows as they would be saved, for comparing: without their client-side keys.
+ *
+ * @param {Object[]} rows
+ * @returns {string}
+ */
+function comparableRows(rows) {
+  return JSON.stringify(rows.map(({ key: _key, ...row }) => row));
 }
 
 /**
@@ -67,12 +86,13 @@ export default function TravelTimePage() {
 
   const [rows, setRows] = useState([]);
   const [dataSource, setDataSource] = useState([]);
-  const [activeSearchIdx, setActiveSearchIdx] = useState(null);
+  /** The row the suggestions belong to, by key: an index pointed at the next row after a removal. */
+  const [activeSearchKey, setActiveSearchKey] = useState(null);
   const [progress, setProgress] = useState(null);
-  // Welche Zeile gerade neu angelegt wurde, damit sie ihre Regler offen zeigt. Ein Index, kein
+  // Welche Zeile gerade neu angelegt wurde, damit sie ihre Regler offen zeigt. Ein Schluessel, kein
   // Flag an der Zeile: die Zeilen werden aus der Antwort des Servers neu gebaut und ein Flag daran
   // ueberlebte das Speichern nicht.
-  const [openIndex, setOpenIndex] = useState(null);
+  const [openKey, setOpenKey] = useState(null);
 
   /**
    * How far through the backlog the sweeper is.
@@ -103,11 +123,16 @@ export default function TravelTimePage() {
   // auch wenn nichts geaendert war. Verglichen wird gegen dieselbe Normalisierung, aus der die
   // Zeilen gebaut werden, sonst meldete jede frisch geladene Seite eine Aenderung.
   const dirty = useMemo(
-    () => JSON.stringify(rows) !== JSON.stringify((Array.isArray(homeAddresses) ? homeAddresses : []).map(toRow)),
+    () => comparableRows(rows) !== comparableRows((Array.isArray(homeAddresses) ? homeAddresses : []).map(toRow)),
     [rows, homeAddresses],
   );
 
   useUnsavedWarning(dirty);
+
+  // An address whose geocode failed is stored at -1/-1, and saving the list again is how it is
+  // retried: the route geocodes every address on save. The bar holds the only Save, so it has to be
+  // there for that too, not only once something was edited.
+  const geocodeFailed = rows.some((row) => row.kind !== 'category' && row.coords?.lat === -1);
 
   /**
    * Put the list back on what is stored.
@@ -130,8 +155,8 @@ export default function TravelTimePage() {
     [],
   );
 
-  const searchAddress = (value, idx) => {
-    setActiveSearchIdx(idx);
+  const searchAddress = (value, key) => {
+    setActiveSearchKey(key);
     if (!value) {
       setDataSource([]);
       return;
@@ -154,10 +179,9 @@ export default function TravelTimePage() {
    * @returns {void}
    */
   const addRow = (kind, mode) => {
-    setRows((prev) => {
-      setOpenIndex(prev.length);
-      return [...prev, toRow({ kind, mode })];
-    });
+    const row = toRow({ kind, mode });
+    setOpenKey(row.key);
+    setRows((prev) => [...prev, row]);
   };
 
   const handleSave = async () => {
@@ -193,7 +217,9 @@ export default function TravelTimePage() {
     <div className="settingsShell__page">
       <SegmentPart
         name={t('settings.travelTimeSection')}
-        helpText={`${t('settings.travelTimeSectionHelp')} ${t('settings.addressDepartureHelp')} ${t('settings.addressStreetModeHelp')}`}
+        // Every explanation the rows used to print, once, including the place types' one: that a
+        // place type is measured to the nearest one found in OpenStreetMap is said nowhere else.
+        helpText={`${t('settings.travelTimeSectionHelp')} ${t('settings.addressDepartureHelp')} ${t('settings.addressStreetModeHelp')} ${t('settings.placeTypeHelp')}`}
       >
         <>
           {/* What the sweeper has got through. Only shown once there is something to measure, and
@@ -214,18 +240,22 @@ export default function TravelTimePage() {
                   ? t('settings.travelTimeProgress', progress)
                   : t('settings.travelTimeProgressAll', progress)}
               </span>
+              {/* Why a page that will not change before tomorrow is not broken. */}
+              {progress.measured < progress.total && (
+                <span className="settingsShell__inlineHint">{t('settings.travelTimeProgressHelp')}</span>
+              )}
             </div>
           )}
 
           {rows.map((row, idx) => (
             <TravelTimeEntry
-              key={idx}
+              key={row.key}
               row={row}
-              startOpen={idx === openIndex}
-              suggestions={activeSearchIdx === idx ? dataSource : []}
-              onSearch={(value) => searchAddress(value, idx)}
+              startOpen={row.key === openKey}
+              suggestions={activeSearchKey === row.key ? dataSource : []}
+              onSearch={(value) => searchAddress(value, row.key)}
               onChange={(patch) => update(idx, patch)}
-              onRemove={() => setRows((prev) => prev.filter((_, i) => i !== idx))}
+              onRemove={() => setRows((prev) => prev.filter((candidate) => candidate.key !== row.key))}
             />
           ))}
 
@@ -265,7 +295,13 @@ export default function TravelTimePage() {
         </>
       </SegmentPart>
 
-      <SettingsSaveBar dirty={dirty} saving={saving} onSave={handleSave} onDiscard={discard} />
+      <SettingsSaveBar
+        dirty={dirty || geocodeFailed}
+        saving={saving}
+        note={!dirty && geocodeFailed ? t('settings.travelTimeRetryGeocode') : null}
+        onSave={handleSave}
+        onDiscard={discard}
+      />
     </div>
   );
 }

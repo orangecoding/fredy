@@ -77,7 +77,25 @@ function normalise(value) {
  * @returns {string}
  */
 function fingerprint(profile, fields) {
-  return JSON.stringify(fields.map((field) => normalise(profile?.[field])));
+  return JSON.stringify(fields.map((field) => normalise(comparable(profile, field))));
+}
+
+/**
+ * A field without the parts that are derived from the rest of it.
+ *
+ * A rate scenario's `label` is printed from its `annualRate` ("3 %"), while the stored defaults spell
+ * it "3.0 %". Compared as text, typing a rate and then the original one back left the tab dirty.
+ *
+ * @param {Object|null} profile
+ * @param {string} field
+ * @returns {unknown}
+ */
+function comparable(profile, field) {
+  const value = profile?.[field];
+  if (field === 'financing' && Array.isArray(value?.scenarios)) {
+    return { ...value, scenarios: value.scenarios.map(({ label: _label, ...scenario }) => scenario) };
+  }
+  return value;
 }
 
 /**
@@ -93,6 +111,26 @@ export function financeDirtyState(current, baseline) {
     rent: fingerprint(current, SECTION_FIELDS.rent) !== fingerprint(baseline, SECTION_FIELDS.rent),
     buy: fingerprint(current, SECTION_FIELDS.buy) !== fingerprint(baseline, SECTION_FIELDS.buy),
   };
+}
+
+/**
+ * The draft with one tab's edits taken back.
+ *
+ * The household and that tab's own block go back to what is stored; the other tab keeps whatever
+ * was typed into it. Discard sits in the bar that saves one tab, and resetting the whole page from
+ * there threw away the other tab's edits without a word about them.
+ *
+ * @param {Object|null} current The draft as it stands.
+ * @param {Object|null} baseline The normalized profile as stored.
+ * @param {'rent'|'buy'} section The tab whose edits are discarded.
+ * @returns {Object}
+ */
+export function discardSection(current, baseline, section) {
+  const next = { ...(current ?? {}) };
+  for (const field of [...HOUSEHOLD_FIELDS, ...SECTION_FIELDS[section]]) {
+    next[field] = baseline?.[field];
+  }
+  return next;
 }
 
 /**

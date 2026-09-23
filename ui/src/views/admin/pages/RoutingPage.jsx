@@ -117,19 +117,19 @@ export default function RoutingPage() {
         {/* Keine Schiene mehr um diese vier Zeilen: sie hingen an keinem Schalter, waren aber
             eingerueckt und rule-markiert und drueckten damit eine Abhaengigkeit aus, die es nicht
             gibt. Die Orte-Karte darunter behaelt ihre, weil ihre echt ist. */}
-        <div className="adminField adminField--wide">
-          <span className="adminField__label">
-            <label htmlFor="motisBaseUrl">{t('settings.motisBaseUrl')}</label>
-          </span>
-          <span className="adminField__control">
-            <Input
-              id="motisBaseUrl"
-              value={form.motisBaseUrl}
-              placeholder="https://api.transitous.org/api"
-              onChange={(value) => setField('motisBaseUrl', value)}
-            />
-          </span>
-        </div>
+        <AdminField
+          wide
+          label={t('settings.motisBaseUrl')}
+          help={t('settings.motisBaseUrlHelp')}
+          htmlFor="motisBaseUrl"
+        >
+          <Input
+            id="motisBaseUrl"
+            value={form.motisBaseUrl}
+            placeholder="https://api.transitous.org/api"
+            onChange={(value) => setField('motisBaseUrl', value)}
+          />
+        </AdminField>
 
         {dialsOf('travel', false)}
       </SegmentPart>
@@ -143,20 +143,20 @@ export default function RoutingPage() {
             an operator deciding whether to turn this on should be able to see what it commits them
             to before they do. */}
         <div className={`settingsShell__subSettings${form.poiEnabled ? '' : ' settingsShell__subSettings--disabled'}`}>
-          <div className="adminField adminField--wide">
-            <span className="adminField__label">
-              <label htmlFor="overpassBaseUrl">{t('settings.overpassBaseUrl')}</label>
-            </span>
-            <span className="adminField__control">
-              <Input
-                id="overpassBaseUrl"
-                disabled={!form.poiEnabled}
-                value={form.overpassBaseUrl}
-                placeholder="https://overpass-api.de/api/interpreter"
-                onChange={(value) => setField('overpassBaseUrl', value)}
-              />
-            </span>
-          </div>
+          <AdminField
+            wide
+            label={t('settings.overpassBaseUrl')}
+            help={t('settings.overpassBaseUrlHelp')}
+            htmlFor="overpassBaseUrl"
+          >
+            <Input
+              id="overpassBaseUrl"
+              disabled={!form.poiEnabled}
+              value={form.overpassBaseUrl}
+              placeholder="https://overpass-api.de/api/interpreter"
+              onChange={(value) => setField('overpassBaseUrl', value)}
+            />
+          </AdminField>
 
           {dialsOf('places', !form.poiEnabled)}
         </div>

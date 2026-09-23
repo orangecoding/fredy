@@ -61,6 +61,11 @@ describe('#immoscoutAt provider testsuite()', () => {
           });
 
           expect(hasValidNotification).toBe(true);
+          // Something only an Austrian answer has: the search is Vienna, a German fixture served by
+          // a broken routing would still pass every shape check above. And the feed's
+          // "(unvollständige Adresse)" marker stays out of what is notified.
+          expect(notificationObj.payload.some((notify) => /Wien/.test(notify.address))).toBe(true);
+          expect(notificationObj.payload.some((notify) => /unvollständige Adresse/.test(notify.address))).toBe(false);
           resolve();
         });
       });

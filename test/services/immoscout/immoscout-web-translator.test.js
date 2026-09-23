@@ -434,6 +434,23 @@ describe('#immoscout-at URL conversion', () => {
     expect(atParamsOf(`${WIEN}/wohnung-bis-1100-euro-mieten?primaryPriceTo=800`).get('price')).toBe('-800.0');
   });
 
+  // The path and the query can each state one half of the same range. Replacing the whole
+  // parameter dropped the path's half - the 1100 maximum below, or the minimum of three rooms.
+  it('should keep the half of a range the query leaves open', () => {
+    expect(atParamsOf(`${WIEN}/wohnung-bis-1100-euro-mieten?primaryPriceFrom=500`).get('price')).toBe('500.0-1100.0');
+    expect(atParamsOf(`${WIEN}/wohnung-ab-3-zimmer-mieten?numberOfRoomsTo=4`).get('numberofrooms')).toBe('3.0-4.0');
+  });
+
+  // The API has no Austrian flat shares; accepting the slug built a job that never found anything.
+  it('should refuse a flat-share search the API has no Austrian listings for', () => {
+    expect(() => convertAtWebToMobile(`${WIEN}/wg-zimmer-mieten`)).toThrow('no Austrian listings');
+  });
+
+  // Registered as a plain building-plot search, it notified about every residential plot.
+  it('should not read an agricultural search as a building-plot search', () => {
+    expect(() => convertAtWebToMobile(`${WIEN}/agrarflaeche-kaufen`)).toThrow('Real estate type not found');
+  });
+
   // The site serves district pages the API has no geocode for. Widening is the same trade the
   // parameter filter makes - a wider search still finds the flat, a 412 finds nothing.
   it('should widen a district search to its municipality', () => {

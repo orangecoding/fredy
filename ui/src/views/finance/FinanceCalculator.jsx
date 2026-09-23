@@ -24,11 +24,11 @@ import InterestPrincipalChart from './charts/InterestPrincipalChart.jsx';
 import CostBreakdownChart from './charts/CostBreakdownChart.jsx';
 import BudgetChart from './charts/BudgetChart.jsx';
 
-import { useActions, useSelector } from '../../services/state/store.js';
+import { useActions, useFredyState, useSelector } from '../../services/state/store.js';
 import { errorMessage } from '../../services/xhr.js';
 import { useFinanceProfile } from '../../hooks/useFinanceProfile.js';
 import { summariseHousehold } from '../../services/finance/householdSummary.js';
-import { financeDirtyState, isSectionDirty } from '../../services/finance/financeDirty.js';
+import { discardSection, financeDirtyState, isSectionDirty } from '../../services/finance/financeDirty.js';
 import { useUnsavedWarning } from '../../hooks/useUnsavedWarning.js';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
 
@@ -228,6 +228,14 @@ export default function FinanceCalculator() {
     setDeleting(section);
     try {
       await actions.userSettings.deleteFinanceSection(section);
+      // The block just deleted goes back to the defaults the server now answers with. Left as it
+      // was, the draft still held the deleted values, the bar reported them as unsaved straight
+      // away, and pressing Save recreated what had just been removed.
+      const refreshed = useFredyState.getState().finance.summary?.profile;
+      const key = section === 'rent' ? 'renting' : 'financing';
+      if (refreshed != null) {
+        setDraft((current) => ({ ...current, [key]: refreshed[key] }));
+      }
       actions.tracking.trackPoi(pois.FINANCE_PROFILE_DELETED);
       Toast.success(t('finance.deleted'));
     } catch (error) {
@@ -263,21 +271,29 @@ export default function FinanceCalculator() {
   const dirtyState = React.useMemo(() => financeDirtyState(draft, storedProfile), [draft, storedProfile]);
   const dirty = isSectionDirty(dirtyState, activeTab);
   const canSave = activeTab === 'rent' ? draftRentComplete : draftComplete;
+  // A tab that has never been saved can be complete on the server's defaults alone (renting needs
+  // only the household), and then equals what is "stored" field for field. Gated on `dirty` alone,
+  // the bar - which holds the only Save - never appeared, and rent verdicts could not be switched on.
+  const tabSaved = activeTab === 'rent' ? rentSaved : buySaved;
+  const showSaveBar = dirty || (canSave && !tabSaved);
 
-  useUnsavedWarning(dirty);
+  // Every part, not only the tab on screen: edits left on the other tab are just as unsaved.
+  useUnsavedWarning(dirtyState.household || dirtyState.rent || dirtyState.buy);
 
   /**
-   * Put the form back on what is stored.
+   * Put the household and the tab on screen back on what is stored.
    *
-   * `edited` is cleared with it, so a profile arriving late is allowed to seed the draft again -
-   * the flag exists to stop a late answer overwriting the user's typing, and after a discard there
-   * is no typing left to protect.
+   * Only the part this bar saves: the other tab keeps its edits. `edited` is cleared only when
+   * nothing is left to protect, so a profile arriving late may seed the draft again - the flag
+   * exists to stop a late answer overwriting the user's typing.
    *
    * @returns {void}
    */
   const discard = () => {
-    edited.current = false;
-    setDraft(storedProfile ?? EMPTY_DRAFT);
+    const baseline = storedProfile ?? EMPTY_DRAFT;
+    const next = discardSection(draft, baseline, activeTab);
+    edited.current = financeDirtyState(next, baseline)[activeTab === 'rent' ? 'buy' : 'rent'];
+    setDraft(next);
   };
 
   return (
@@ -464,7 +480,7 @@ export default function FinanceCalculator() {
           `status` rather than a disabled button on its own: renting needs two figures and buying
           three, and a Save that refuses without saying why is the thing that bar exists to avoid. */}
       <SettingsSaveBar
-        dirty={dirty}
+        dirty={showSaveBar}
         saving={saving === activeTab}
         saveDisabled={!canSave}
         saveLabel={t(activeTab === 'rent' ? 'finance.saveRent' : 'finance.saveBuy')}

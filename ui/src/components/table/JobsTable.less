@@ -6,7 +6,9 @@
 @import '../../tokens.less';
 
 @job-row: 52px;
-@job-columns: 16px minmax(0, 1fr) 92px 78px 78px 116px 44px 148px;
+/* The last column holds Run with its word, edit and the menu: 140px in English, up to 170px in
+   Spanish. At 148px the German, Spanish and Turkish rows spilled out of it. */
+@job-columns: 16px minmax(0, 1fr) 92px 78px 78px 116px 44px 172px;
 
 .jobsTable {
   display: flex;
@@ -65,14 +67,28 @@
       }
     }
 
+    /* A row of its own inside the cell, so only the name gives way. With the ellipsis on the whole
+       cell, the RUNNING tag and the shared warning after the name were the first things cut. */
     &__name {
+      display: flex;
+      align-items: center;
+      gap: @space-1;
+      min-width: 0;
+      font-size: @text-base;
+      font-weight: 500;
+      color: @color-text;
+
+      > * {
+        flex: none;
+      }
+    }
+
+    &__nameText {
+      flex: 1 1 auto;
       min-width: 0;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      font-size: @text-base;
-      font-weight: 500;
-      color: @color-text;
     }
 
     /* Monospaced and right aligned, so the digits of several jobs line up under their heading
@@ -94,7 +110,7 @@
   @media (max-width: 900px) {
     &__head,
     &__row {
-      grid-template-columns: 16px minmax(0, 1fr) 92px 116px 44px 148px;
+      grid-template-columns: 16px minmax(0, 1fr) 92px 116px 44px 172px;
     }
 
     &__headCell--providers,
@@ -109,6 +125,17 @@
     &__head,
     &__row {
       grid-template-columns: 16px minmax(0, 1fr) 44px 120px;
+    }
+
+    /* Run loses its word here, the way the other two already are icons: with it the group was wider
+       than the column, and the page clipped the menu - the only way to clone or delete from a row. */
+    .jobActions__run {
+      width: 28px;
+      padding: 0;
+
+      .semi-button-content-right {
+        display: none;
+      }
     }
 
     &__headCell--listings,

@@ -71,7 +71,10 @@ export default function SettingsSaveBar({
         </span>
       )}
       <span className="settingsSaveBar__actions">
-        <Button className="settingsSaveBar__discard" theme="outline" size="small" onClick={onDiscard}>
+        {/* Both refused while a save is in flight. Semi's `loading` only sets `pointer-events: none`,
+            so Enter on the focused button saved a second time (a new job twice), and a Discard in
+            the middle reset the form under a save that then landed anyway. */}
+        <Button className="settingsSaveBar__discard" theme="outline" size="small" disabled={saving} onClick={onDiscard}>
           {discardLabel ?? t('settings.discard')}
         </Button>
         <Button
@@ -80,7 +83,7 @@ export default function SettingsSaveBar({
           theme="solid"
           type="primary"
           size="small"
-          disabled={saveDisabled}
+          disabled={saveDisabled || saving}
           loading={saving}
           onClick={onSave}
         >

@@ -69,7 +69,12 @@ export default function TrendBars({ data = [], previousWeek = 0, thisWeek = 0, l
         tooltip: {
           displayColors: false,
           callbacks: {
-            title: (items) => new Date(items[0].label).toLocaleDateString(locale),
+            // The label is a local calendar day ("YYYY-MM-DD"). `new Date()` reads that form as
+            // UTC midnight, which is the previous day anywhere west of UTC.
+            title: (items) => {
+              const [year, month, day] = String(items[0].label).split('-').map(Number);
+              return new Date(year, month - 1, day).toLocaleDateString(locale);
+            },
             label: (ctx) => `${ctx.parsed.y}`,
           },
         },

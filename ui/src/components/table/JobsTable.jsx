@@ -21,32 +21,35 @@ const JobsTable = ({ jobs, onRun, onEdit, onClone, onDeleteListings, onDeleteJob
       {/* The table used to have no header: three numbers side by side with 12px icons and no
           words, while the grid spelled all three out. The two blank cells hold the dot and the
           action group, which are the only columns that need no name. */}
-      <div className="jobsTable__head">
-        <span aria-hidden="true" />
-        <div className="jobsTable__headCell">{t('jobs.columnName')}</div>
-        <div className="jobsTable__headCell jobsTable__headCell--number jobsTable__headCell--listings">
-          {t('jobs.columnListings')}
+      {/* Only over rows: with none, a strip of column titles stood under the empty state. */}
+      {jobs.length > 0 && (
+        <div className="jobsTable__head">
+          <span aria-hidden="true" />
+          <div className="jobsTable__headCell">{t('jobs.columnName')}</div>
+          <div className="jobsTable__headCell jobsTable__headCell--number jobsTable__headCell--listings">
+            {t('jobs.columnListings')}
+          </div>
+          <div className="jobsTable__headCell jobsTable__headCell--number jobsTable__headCell--providers">
+            {t('jobs.columnProviders')}
+          </div>
+          <div className="jobsTable__headCell jobsTable__headCell--number jobsTable__headCell--channels">
+            {t('jobs.columnChannels')}
+          </div>
+          <div className="jobsTable__headCell jobsTable__headCell--lastRun">{t('jobs.columnLastRun')}</div>
+          <div className="jobsTable__headCell">{t('jobs.columnActive')}</div>
+          <span aria-hidden="true" />
         </div>
-        <div className="jobsTable__headCell jobsTable__headCell--number jobsTable__headCell--providers">
-          {t('jobs.columnProviders')}
-        </div>
-        <div className="jobsTable__headCell jobsTable__headCell--number jobsTable__headCell--channels">
-          {t('jobs.columnChannels')}
-        </div>
-        <div className="jobsTable__headCell jobsTable__headCell--lastRun">{t('jobs.columnLastRun')}</div>
-        <div className="jobsTable__headCell">{t('jobs.columnActive')}</div>
-        <span aria-hidden="true" />
-      </div>
+      )}
 
       {jobs.map((job) => (
         <div key={job.id} className={`jobsTable__row${!job.enabled ? ' jobsTable__row--inactive' : ''}`}>
           <span className={`jobsTable__row__dot${job.enabled ? ' jobsTable__row__dot--active' : ''}`} />
 
-          {/* The chip and the warning ride inline with the name. They are inline content in a cell
-              that already clips with an ellipsis, so a very long name crowds them out rather than
-              pushing the row wider. */}
+          {/* The chip and the warning ride inline with the name, and only the name gives way to a
+              long one: the running state and the reason Run, Edit and the switch are disabled are
+              the two things this row must not lose to an ellipsis. */}
           <div className="jobsTable__row__name" title={job.name}>
-            {job.name}{' '}
+            <span className="jobsTable__row__nameText">{job.name}</span>
             {job.running && (
               <Tag color="green" variant="light" size="small">
                 {t('jobs.cardRunning')}

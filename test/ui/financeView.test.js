@@ -124,8 +124,16 @@ describe('saving works the way the settings pages save', () => {
     expect(page).toMatch(/const discard = \(\) => \{/);
   });
 
+  // Every part, not only the tab on screen: edits left on the other tab are just as unsaved.
   it('warns before the page is left with something unsaved', () => {
-    expect(page).toMatch(/useUnsavedWarning\(dirty\)/);
+    expect(page).toMatch(/useUnsavedWarning\(dirtyState\.household \|\| dirtyState\.rent \|\| dirtyState\.buy\)/);
+  });
+
+  // A tab never saved can be complete on the defaults alone and then equals what is "stored"; the
+  // bar holds the only Save, so it has to show for such a tab too.
+  it('offers Save for a complete tab that was never saved, even when nothing differs', () => {
+    expect(page).toMatch(/const showSaveBar = dirty \|\| \(canSave && !tabSaved\);/);
+    expect(page).toMatch(/dirty=\{showSaveBar\}/);
   });
 
   // A Save that refuses without saying why is what the bar's `status` slot exists to avoid.

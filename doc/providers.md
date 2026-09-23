@@ -112,8 +112,12 @@ what Fredy asks as well, so this provider needs no browser and costs one request
 
 Paste the search url as usual: every filter it carries is passed on untouched, so anything the
 portal offers works whether or not Fredy has heard of it. The exact street is never published on a
-BETTERHOMES advert, so a listing is located to its town and the map pin sits where the portal's own
-does.
+BETTERHOMES advert, so a listing is located by its postcode and district. The coordinates the
+portal itself shows are its town's centre, so they are only used for an advert without any address.
+
+A rent is stored as the Nettomiete, like every other provider's, because the affordability check
+adds the Nebenkosten itself; the Bruttomiete is only the fallback for an advert that states no net
+figure.
 
 ## Countries and the map
 

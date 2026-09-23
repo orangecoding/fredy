@@ -41,21 +41,31 @@ const ListingsTable = ({
       {/* The rows carried four unlabelled values side by side while the roomier grid spelled each
           of them out. The header uses the same column variable as the row, so the two cannot end
           up describing different things. */}
-      <div className="listingsTable__head" aria-hidden="true">
-        <span />
-        <span>{t('listings.columnListing')}</span>
-        <span className="listingsTable__head__right">{t('listings.columnPrice')}</span>
-        <span>{t('listings.columnAddress')}</span>
-        <span>{t('listings.columnProvider')}</span>
-        <span>{t('listings.columnDate')}</span>
-        <span>{t('listings.columnStatus')}</span>
-        <span />
-      </div>
+      {/* Only over rows: with none, the titles stood under the "no results" illustration. */}
+      {listings.length > 0 && (
+        <div className="listingsTable__head" aria-hidden="true">
+          <span />
+          <span>{t('listings.columnListing')}</span>
+          <span className="listingsTable__head__right">{t('listings.columnPrice')}</span>
+          <span>{t('listings.columnAddress')}</span>
+          <span>{t('listings.columnProvider')}</span>
+          <span>{t('listings.columnDate')}</span>
+          <span>{t('listings.columnStatus')}</span>
+          <span />
+        </div>
+      )}
 
       {listings.map((item) => (
         // No role and no tabIndex, same as the card: the row used to be a button containing seven
-        // buttons. The title carries the keyboard and the accessibility tree.
-        <div key={item.id} className="listingsTable__row" onClick={() => onNavigate(item.id)}>
+        // buttons. The title carries the keyboard and the accessibility tree, and a click on it is
+        // the link's alone, for the reason the card gives.
+        <div
+          key={item.id}
+          className="listingsTable__row"
+          onClick={(event) => {
+            if (event.target.closest('a') == null) onNavigate(item.id);
+          }}
+        >
           <div className="listingsTable__row__thumb">
             <img
               src={item.image_url || no_image}

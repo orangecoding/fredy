@@ -423,9 +423,19 @@ describe('services/connectivity/normalize', () => {
       expect(result.mobile.neutral['4g']).toBe(true);
       expect(result.mobile.neutral['5g']).toBe(true);
       expect(result.mobile.bestTech).toBe('5g');
-      // The larger of the two: an operator with 4G here and no 5G still has coverage here.
+      // Every operator on either map: an operator with 4G here and no 5G still has coverage here.
       expect(result.mobile.operatorCount).toBe(4);
       expect(result.mobile.operatorTotal).toBe(4);
+    });
+
+    it('counts an operator that is only on the 5G map as well', () => {
+      // The larger of the two sets said two here, while three operators cover the place.
+      const result = normalizeSpanish({
+        mobile4g: [{ COBERTURA: 'A80907397;A82009812' }],
+        mobile5g: [{ COBERTURA: 'A82528548' }],
+      });
+
+      expect(result.mobile.operatorCount).toBe(3);
     });
 
     it('reads a square only the older network reaches', () => {
