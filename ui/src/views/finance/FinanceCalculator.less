@@ -8,44 +8,26 @@
 .finance {
   padding-bottom: @space-8;
 
-  &__intro {
-    max-width: 70ch;
-    margin-bottom: @space-5;
-    display: flex;
-    flex-direction: column;
-    gap: @space-1;
-  }
-
+  /* The one line the page opens with. It carries the margin the intro container used to, now
+     that the rule and the caveat no longer stand under it. */
   &__intro-lead {
     display: block;
+    max-width: 70ch;
+    margin-bottom: @space-5;
     color: @color-muted;
     line-height: 1.6;
   }
 
-  /* The rule every verdict is derived from. It gets an accent rule and body-level contrast
-     because it is the one thing on this page a user has to understand to trust the numbers -
-     but it stays type, not a tinted box, so it informs without shouting. */
-  &__rule {
-    margin: @space-2 0;
-    padding-left: @space-3;
-    border-left: 2px solid @color-accent-dim;
+  /* The estimate/no-advice caveat. It has to be present and readable - @color-faint measured
+     2,47:1 and was not - but it is not what the user came for, so it sits at the foot of the page
+     rather than above the first field. */
+  &__disclaimer {
+    display: block;
+    margin-top: @space-6;
+    padding-top: @space-4;
+    border-top: 1px solid @color-border;
     color: @color-muted;
     font-size: @text-sm;
-    line-height: 1.6;
-  }
-
-  &__rule-label {
-    margin-right: @space-2;
-    color: @color-text;
-    font-weight: 600;
-  }
-
-  /* The estimate/no-advice caveat. It has to be present and readable, but it is not what the
-     user came for - a full-width tinted banner made it the loudest thing above the fold. */
-  &__intro-note {
-    display: block;
-    color: @color-faint;
-    font-size: @text-xs;
     line-height: 1.5;
   }
 
@@ -62,6 +44,21 @@
     > .semi-col {
       float: none;
       display: flex;
+      min-width: 0;
+    }
+  }
+
+  /* Same reason as `__kpi-row` above: Semi lays its grid out with floated columns, and the two
+     columns here are a form on the left and an answer on the right, which are never the same
+     height. `align-items: flex-start` rather than `stretch`, because stretching the shorter
+     input column would pull the cards inside it apart. */
+  &__split {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+
+    > .semi-col {
+      float: none;
       min-width: 0;
     }
   }
@@ -88,31 +85,86 @@
     }
   }
 
-  &__save-row {
+  /* Only Delete stands here now; Save moved into the sticky bar at the foot of the page. One
+     borderless button against the left edge, set off from the tab above it by a rule, so that the
+     one destructive action on the tab is findable without being loud. */
+  &__delete-row {
     display: flex;
     align-items: center;
-    gap: @space-4;
-    margin: @space-5 0 @space-4;
-    flex-wrap: wrap;
+    margin-top: @space-5;
+    padding-top: @space-4;
+    border-top: 1px solid @color-border;
 
-    /* On a phone the hint would otherwise be squeezed into a one-word-per-line sliver beside the
-       buttons. Giving it the whole next line keeps both buttons at a full tap target. */
     @media (max-width: 600px) {
-      gap: @space-3;
-
       .semi-button {
         flex: 1 1 auto;
         justify-content: center;
-      }
-
-      > .semi-typography {
-        flex: 1 0 100%;
       }
     }
   }
 
   &__household {
     margin-bottom: @space-6;
+  }
+
+  /* The optional half of the household. Collapsed by default, with a line saying what is inside,
+     so it does not have to be opened to find out. */
+  &__householdMore {
+    margin-top: @space-3;
+
+    .semi-collapse-item {
+      border-bottom: none;
+    }
+
+    .semi-collapse-header {
+      padding: @space-3 @space-4;
+      border: 1px solid @color-border;
+      border-radius: @radius-card;
+      background: @color-fill-subtle;
+      cursor: pointer;
+      transition:
+        background @transition-fast,
+        border-color @transition-fast;
+
+      &:hover {
+        border-color: @color-border-bright;
+        background: @color-fill-1;
+      }
+    }
+
+    .semi-collapse-content {
+      padding: @space-4 0 0;
+    }
+  }
+
+  &__foldHeader {
+    display: flex;
+    align-items: baseline;
+    gap: @space-2;
+    flex-wrap: wrap;
+
+    /* Semi lays its collapse header out as a flex row with the chevron at the end, so this span is
+       only as wide as its text unless it is told to take the rest. Without that, `margin-left: auto`
+       on the toggle word has nothing to push against and it sits against the summary. */
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  &__foldTitle {
+    color: @color-text;
+    font-weight: 600;
+  }
+
+  &__foldSummary {
+    color: @color-muted;
+    font-size: @text-sm;
+  }
+
+  &__foldToggle {
+    margin-left: auto;
+    color: @color-muted;
+    font-size: @text-sm;
+    white-space: nowrap;
   }
 
   /* Renting and buying sit in two tabs side by side. The accent - blue for renting, green for

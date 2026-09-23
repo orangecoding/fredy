@@ -95,7 +95,10 @@ describe('services/connectivity/connectivityService', () => {
   it('has no answer for a country no register covers', async () => {
     const service = await loadService();
 
-    expect(await service.getConnectivity(48.21, 16.37, ['at'])).toBeNull();
+    // Italy, because its registers are the ones Fredy cannot query: Infratel publishes the
+    // state-funded rollout rather than what an address can order, and AGCOM's own map is served as
+    // tiles with no features behind them.
+    expect(await service.getConnectivity(41.89, 12.49, ['it'])).toBeNull();
     expect(state.germanCalls).toEqual([]);
     expect(state.swissCalls).toEqual([]);
   });
@@ -161,6 +164,8 @@ describe('services/connectivity/connectivityService', () => {
     expect(service.normalizeSourceSwitches({ 'de-bba': false, 'xx-made-up': true })).toEqual({
       'de-bba': false,
       'ch-bakom': true,
+      'at-rtr': true,
+      'es-setid': true,
     });
   });
 

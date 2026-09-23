@@ -1,0 +1,221 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../../tokens.less';
+
+.adminField {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: @space-3;
+  min-height: 34px;
+
+  & + .adminField {
+    border-top: 1px solid @color-border;
+  }
+
+  &__label {
+    display: inline-flex;
+    align-items: center;
+    gap: @space-2;
+    min-width: 0;
+    font-size: @text-sm;
+    color: @color-text;
+  }
+
+  // Dieselbe Behandlung wie die Marke in SegmentPart, damit die zwei Ebenen dieselbe Geste haben.
+  &__mark {
+    display: inline-flex;
+    width: 14px;
+    height: 14px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid @color-border-bright;
+    border-radius: @radius-pill;
+    color: @color-muted;
+    cursor: help;
+    flex: none;
+    transition: color @transition-fast;
+
+    &:hover,
+    &:focus-visible {
+      color: @color-text;
+    }
+
+    .semi-icon {
+      font-size: 10px;
+    }
+  }
+
+  &__help {
+    max-width: 22rem;
+    padding: @space-2 @space-3;
+    color: @color-text;
+    font-size: @text-sm;
+    font-weight: 400;
+    line-height: 1.6;
+  }
+
+  &__control {
+    flex: none;
+
+    // Ein freies Textfeld ist so lang wie sein Wert und nimmt den Rest der Zeile. Dieselbe Regel,
+    // die `.adminRow__control--grow` fuer die Systemkarten traegt, eine Ebene hoeher.
+    &--grow {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    // Zahlen rechtsbuendig und in Tabellenziffern: untereinander sind drei Aufbewahrungswerte
+    // eine Spalte, und eine Spalte vergleicht man.
+    .semi-input-number {
+      width: 112px;
+      font-family: @font-mono;
+      font-variant-numeric: tabular-nums;
+    }
+
+    // Suffix und Steppertasten teilen sich die 112px mit der Eingabe. Bei einem siebenbuchstabigen
+    // Suffix - "Dateien" auf System, "Minuten" auf Ausfuehrung - blieben ihr 14px, und ein
+    // zweistelliger Wert war damit nicht mehr zu sehen. Die Zeile waechst in diesen beiden Faellen
+    // ueber die 112px hinaus, statt ihren Wert zu verstecken.
+    .semi-input-number input {
+      text-align: right;
+      min-width: 48px;
+    }
+  }
+
+  // Ein Pfad oder eine URL ist so lang wie sie ist und bekommt die ganze Zeile.
+  &--wide {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: @space-2;
+
+    .adminField__control {
+      width: 100%;
+      flex: 1 1 auto;
+    }
+  }
+}
+
+/*
+ * Die Systemkarten tragen ihre Felder nebeneinander statt untereinander. Der Gruppentitel und der
+ * Kartentitel sagen, worum es geht, und das Suffix im Feld sagt den Rest: "14 Tage", "10 MB",
+ * "20 Dateien" brauchen daneben keine zweite Beschriftung mehr, die dasselbe noch einmal sagt.
+ * Wo kein Suffix steht - Port, Basis-URL, Datenbankpfad - traegt das Bedienelement ein
+ * `aria-label`, damit eine Bildschirmleseanwendung den Namen weiterhin bekommt.
+ */
+.adminRow {
+  display: flex;
+  align-items: center;
+  gap: @space-3;
+  flex-wrap: wrap;
+
+  &__control {
+    flex: none;
+
+    .semi-input-number {
+      width: 112px;
+      font-family: @font-mono;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .semi-input-number input {
+      text-align: right;
+    }
+  }
+
+  // Ein Pfad oder eine URL ist so lang wie sie ist und nimmt den Rest der Zeile.
+  &__control--grow {
+    flex: 1 1 12rem;
+    min-width: 0;
+  }
+
+  // Ankreuzfelder tragen ihre Beschriftung selbst und stehen deshalb untereinander: nebeneinander
+  // liest man zwei Beschriftungen als eine.
+  &--stack {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: @space-2;
+  }
+}
+
+/*
+ * Ein Kasten, nicht vier.
+ *
+ * Semi schachtelt: `.semi-input-number` traegt Rahmen, Fuellung und Radius aus SettingsShell.less,
+ * darin sitzt `.semi-input-wrapper` mit eigener Fuellung, darin `.semi-input` mit eigenem Rahmen
+ * und eigenem Radius, und daneben steht `.semi-input-number-suffix-btns` als vierter Kasten mit
+ * Rahmen und Fuellung. Solange das Eingabefeld den ganzen Platz ausfuellte, lagen die Kanten
+ * uebereinander und das fiel nicht auf. Sobald ein Suffix danebensteht, schrumpft die Eingabe und
+ * man sieht alle vier auf einmal.
+ *
+ * Das Artboard zeigt genau einen Kasten - `.ctrl`, ein Rahmen, Wert und Suffix darin. Also bleibt
+ * genau einer stehen, der aeussere, und alles darin wird durchsichtig. Die Steppertasten brauchen
+ * `!important`, weil die Regel, die sie fuellt, in SettingsShell.less selbst eines traegt.
+ */
+.adminField__control,
+.adminRow__control {
+  // Der Wrapper ist in keinem der beiden Faelle der Kasten: bei einem blanken `Input` ist es
+  // `.semi-input` selbst, bei einem `InputNumber` der aeussere `.semi-input-number`. Sichtbar
+  // trug er nur einen zweiten Rahmen einen Pixel daneben und mit anderem Radius - 3px gegen 8px -,
+  // der an den vier Ecken unter dem inneren hervorschaute.
+  .semi-input-wrapper {
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .semi-input-number {
+    // Die Steppertasten sind ein Geschwister des Wrappers, kein Kind: ohne das Schrumpfen
+    // beansprucht er die vollen 112px und schiebt sie 17px ueber den Rahmen hinaus.
+    .semi-input-wrapper {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    // `!important`, weil die Regel, die den inneren Kasten zeichnet, selbst eines traegt:
+    // `SegmentParts.less` gibt jedem `.semi-input` in einer Karte Fuellung, Rahmen und Radius.
+    // Fuer ein blankes Eingabefeld ist das richtig - dort ist es der einzige Kasten. Hier drin
+    // ist es der zweite.
+    .semi-input {
+      background: transparent !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+    }
+
+    // Luft zum Rahmen, sonst klebt das Suffix daran. Das Artboard setzt 7px, @space-2 ist der
+    // Wert der Skala daneben.
+    padding: 0 @space-2;
+
+    // Semi setzt zwischen Wert und Suffix 12px. Zusammen mit einem siebenbuchstabigen Suffix
+    // ("Dateien", "Minuten") laeuft das Suffix damit 8px ueber den Rahmen hinaus, statt in ihm zu
+    // stehen. Vier reichen, um Wert und Suffix als zwei Dinge zu lesen.
+    .semi-input-suffix {
+      margin-left: @space-1;
+    }
+
+    // Suffix und Wert teilen sich die verbleibenden 96px. Ohne eine Mindestbreite bekaeme der
+    // Wert neben "Dateien" 18px und schon zwei Stellen waeren nicht mehr zu lesen. 36px tragen
+    // vier Stellen in @font-mono - mehr kann keines dieser Felder annehmen (1440, 5000, 1000).
+    input {
+      min-width: 36px;
+    }
+  }
+
+  /* Keine Steppertasten. Das Artboard zeichnet einen Kasten mit Wert und Suffix darin und sonst
+     nichts, und die 112px aus der Masstabelle gehen genau dann auf: 48px fuer den Wert und 52px
+     fuer das laengste Suffix ("Dateien") sind 100 von 112. Mit den 14px der Tasten sind es 114,
+     und das Suffix laeuft unter die Pfeile. Getippt wird hier ohnehin, nicht geklickt - die
+     Grenzen halten `min`/`max` am Feld und die Pruefung in `useAdminSettings` weiterhin ein. */
+  .semi-input-number-suffix-btns {
+    display: none;
+  }
+
+  // Das Suffix gehoert zum Wert, nicht zum Rahmen: gedaempft, damit die Zahl die Zeile fuehrt.
+  .semi-input-suffix-text {
+    color: @color-muted;
+    font-family: @font-ui;
+  }
+}

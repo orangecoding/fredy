@@ -13,13 +13,20 @@ import ProviderMutator from './components/provider/ProviderMutator';
 import AreaFilter from './components/areaFilter/AreaFilter';
 import CommuteFilter from './components/CommuteFilter.jsx';
 import Headline from '../../../components/headline/Headline';
+import SettingsEmptyState from '../../../components/settingsShell/SettingsEmptyState';
+import SettingsSaveBar from '../../../components/settingsShell/SettingsSaveBar.jsx';
+import AdminField from '../../admin/components/AdminField.jsx';
+import JobReadinessBar from './JobReadinessBar.jsx';
+import { SECTION_BY_REQUIREMENT } from './jobSections.js';
+import { isJobDirty } from '../../../services/jobs/jobDirty.js';
+import { useUnsavedWarning } from '../../../hooks/useUnsavedWarning.js';
 import { useActions, useSelector } from '../../../services/state/store';
 import { xhrPost, errorMessage } from '../../../services/xhr';
 import { useNavigate, useParams, useLocation } from 'react-router';
 import { Input, Switch, Button, TagInput, Toast, Select, Banner, Collapse } from '@douyinfe/semi-ui-19';
 import './JobMutation.less';
 import { SegmentPart } from '../../../components/segment/SegmentPart';
-import { loadDraft, saveDraft, clearDraft } from '../../../services/jobs/jobDraft.js';
+import { loadDraft, saveDraft, clearDraft, hasContent } from '../../../services/jobs/jobDraft.js';
 import { missingRequirements } from '../../../services/jobs/jobValidation.js';
 import { summariseJobRefinements } from '../../../services/jobs/jobSummary.js';
 import { withReturnTo } from '../../../services/routes/returnTo.js';
@@ -33,14 +40,27 @@ import {
   IconBell,
   IconBriefcase,
   IconPaperclip,
-  IconPlayCircle,
   IconPlusCircle,
   IconUser,
   IconFilter,
-  IconHome,
-  IconSetting,
 } from '@douyinfe/semi-icons';
 import { useTranslation, useLocale } from '../../../services/i18n/i18n.jsx';
+
+/**
+ * One sentence with a control in the middle of it.
+ *
+ * The alternative is three translation keys for one sentence, which puts the word order of five
+ * languages into the markup - and German alone would need the link somewhere English never puts it.
+ * One key with a `{{link}}` in it keeps the sentence a sentence.
+ *
+ * @param {string} sentence Carries `{{link}}` exactly once.
+ * @param {React.ReactNode} link
+ * @returns {React.ReactNode[]}
+ */
+function withManageLink(sentence, link) {
+  const [before, after = ''] = sentence.split('{{link}}');
+  return [before, link, after];
+}
 
 export default function JobMutator() {
   const t = useTranslation();
@@ -117,6 +137,18 @@ export default function JobMutator() {
   /** Whether the filter section is folded open. Drives the "click to set filters" line in its header. */
   const [refineOpen, setRefineOpen] = useState(false);
 
+  /** Which section the readiness bar last jumped to, so it can be marked for a moment. */
+  const [highlighted, setHighlighted] = useState(null);
+
+  /** Whether a save is in flight, so the bar's button can say so rather than look ignored. */
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (highlighted == null) return undefined;
+    const timer = setTimeout(() => setHighlighted(null), 2000);
+    return () => clearTimeout(timer);
+  }, [highlighted]);
+
   const draftId = params.jobId ?? null;
   const [draftRestored, setDraftRestored] = useState(false);
   /** Whether the restore attempt has run. Until it has, nothing may be written back over it. */
@@ -124,7 +156,10 @@ export default function JobMutator() {
 
   // Memoize the spatial filter change handler to prevent map reinitializations
   const handleSpatialFilterChange = useCallback((data) => {
-    setSpatialFilter(data);
+    // Drawing a shape and deleting it again leaves an empty FeatureCollection, which is "no area"
+    // just as null is. Kept as it came, it held the form dirty against a job without an area and
+    // was saved as a filter that filters nothing.
+    setSpatialFilter(data?.features?.length > 0 ? data : null);
   }, []);
 
   useEffect(() => {
@@ -141,6 +176,14 @@ export default function JobMutator() {
 
     const draft = loadDraft(draftId);
     if (draft == null) return;
+
+    // A draft of a stored job that says nothing the job does not already say is no unsaved work,
+    // and restoring it would announce changes nobody made. Older copies like that were written on
+    // every visit to an edit form.
+    if (draftId != null && !isJobDirty({ ...baseline, ...draft }, baseline)) {
+      clearDraft(draftId);
+      return;
+    }
 
     if (draft.name !== undefined) setName(draft.name);
     if (draft.dealType !== undefined) setDealType(draft.dealType);
@@ -159,7 +202,7 @@ export default function JobMutator() {
   // write is synchronous, so a keystroke costs less than the render it already triggered.
   useEffect(() => {
     if (!draftChecked.current) return;
-    saveDraft(draftId, {
+    const draft = {
       name,
       dealType,
       providerData,
@@ -170,7 +213,15 @@ export default function JobMutator() {
       spatialFilter,
       specFilter,
       commuteFilter,
-    });
+    };
+    // A stored job always "has content", so without this every visit to its form left a copy
+    // behind. The next visit restored that copy over whatever had changed in the meantime - a job
+    // switched off in the list came back on - and after a Discard the banner returned anyway.
+    if (draftId != null && !isJobDirty(draft, baseline)) {
+      clearDraft(draftId);
+      return;
+    }
+    saveDraft(draftId, draft);
   }, [
     draftId,
     name,
@@ -205,20 +256,66 @@ export default function JobMutator() {
    */
   const leaveWithReturnPath = (to) => navigate(withReturnTo(to, `${location.pathname}${location.search}`));
 
-  const discardDraft = () => {
+  /**
+   * What this form started from: the job as stored, or the empty defaults of a new one.
+   *
+   * The one place both the save bar and Discard read, so "there is something to save" and "put it
+   * back the way it was" can never disagree about what "the way it was" means.
+   */
+  const baseline = {
+    name: defaultName,
+    dealType: defaultDealType,
+    providerData: defaultProviderData,
+    selectedChannelIds: sourceChannelIds,
+    blacklist: defaultBlacklist,
+    shareWithUsers: defaultShareWithUsers,
+    enabled: defaultEnabled,
+    spatialFilter: defaultSpatialFilter,
+    specFilter: defaultSpecFilter,
+    commuteFilter: defaultCommuteFilter,
+  };
+
+  const discardChanges = () => {
     clearDraft(draftId);
     setDraftRestored(false);
-    setName(defaultName);
-    setDealType(defaultDealType);
-    setProviderData(defaultProviderData);
-    setSelectedChannelIds(sourceChannelIds);
-    setBlacklist(defaultBlacklist);
-    setShareWithUsers(defaultShareWithUsers);
-    setEnabled(defaultEnabled);
-    setSpatialFilter(defaultSpatialFilter);
-    setSpecFilter(defaultSpecFilter);
-    setCommuteFilter(defaultCommuteFilter);
+    setName(baseline.name);
+    setDealType(baseline.dealType);
+    setProviderData(baseline.providerData);
+    setSelectedChannelIds(baseline.selectedChannelIds);
+    setBlacklist(baseline.blacklist);
+    setShareWithUsers(baseline.shareWithUsers);
+    setEnabled(baseline.enabled);
+    setSpatialFilter(baseline.spatialFilter);
+    setSpecFilter(baseline.specFilter);
+    setCommuteFilter(baseline.commuteFilter);
+    // A guessed deal type is only a guess about a provider that has just been discarded.
+    setDealTypeWasInferred(false);
   };
+
+  const current = {
+    name,
+    dealType,
+    providerData,
+    selectedChannelIds,
+    blacklist,
+    shareWithUsers,
+    enabled,
+    spatialFilter,
+    specFilter,
+    commuteFilter,
+  };
+
+  // Compared, not tracked. Drives the save bar, so a character typed and deleted again closes it
+  // rather than leaving the page claiming an edit that is no longer there.
+  //
+  // Only a stored job has something to compare against. A job that is not stored yet - a new one,
+  // or a clone - is unsaved as soon as it holds anything: compared against its own starting point,
+  // a clone saved as it came never showed the bar that holds the only Save button.
+  const dirty = params.jobId == null ? hasContent(current) : isJobDirty(current, baseline);
+
+  // Covers a reload, a closed tab and a typed address. An in-app navigation is not covered - see
+  // the hook for why - which is the other half of why the bar is sticky.
+  useUnsavedWarning(dirty);
 
   const leaveForm = () => {
     clearDraft(draftId);
@@ -231,9 +328,24 @@ export default function JobMutator() {
     setSpecFilter({ ...specFilter, [key]: value ? parseFloat(value) : null });
   };
 
-  // A list, not a boolean. A disabled Save with nothing explaining it leaves the user hunting
-  // through eight sections for whichever one is incomplete.
+  // A list, not a boolean. It is rendered as one by the readiness bar above the footer: a disabled
+  // Save with nothing explaining it left the user hunting through ten sections, seven of them
+  // visible without a click, for whichever one was incomplete.
   const missing = missingRequirements({ name, dealType, providerData, selectedChannels });
+
+  /**
+   * The wrapper that makes a section a jump target for the readiness bar.
+   *
+   * @param {string} requirementKey
+   * @returns {{ id: string, className: string }}
+   */
+  const anchorProps = (requirementKey) => {
+    const id = SECTION_BY_REQUIREMENT[requirementKey];
+    return {
+      id,
+      className: `jobMutation__anchor${highlighted === id ? ' jobMutation__anchor--highlight' : ''}`,
+    };
+  };
 
   // What the collapsed section holds, so it does not have to be opened to find out.
   const refinementSummary = summariseJobRefinements(
@@ -248,6 +360,10 @@ export default function JobMutator() {
   };
 
   const mutateJob = async () => {
+    // A second press (or a held Enter) while the first save is in flight would create a new job
+    // twice.
+    if (saving) return;
+    setSaving(true);
     try {
       await xhrPost('/api/jobs', {
         provider: providerData,
@@ -274,6 +390,8 @@ export default function JobMutator() {
       // rendered an empty toast and looked like nothing had happened at all.
       console.error('Error while trying to save the job.', Exception);
       Toast.error(errorMessage(Exception, t('jobs.mutation.saveError')));
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -319,7 +437,7 @@ export default function JobMutator() {
       <Headline
         text={jobToBeEdit ? t('jobs.mutation.editTitle') : t('jobs.mutation.createTitle')}
         actions={
-          <Button icon={<IconArrowLeft />} onClick={leaveForm} theme="borderless" style={{ color: 'var(--f-muted)' }}>
+          <Button icon={<IconArrowLeft />} onClick={leaveForm} theme="borderless" className="jobMutation__back">
             {t('jobs.mutation.back')}
           </Button>
         }
@@ -329,137 +447,213 @@ export default function JobMutator() {
           type="info"
           fullMode={false}
           closeIcon={null}
-          style={{ marginBottom: '1rem' }}
+          className="jobMutation__draftNotice"
           description={
             <div className="jobMutation__draftBanner">
               <span>{t('jobs.mutation.draftRestored')}</span>
-              <Button size="small" theme="borderless" onClick={discardDraft}>
+              <Button size="small" theme="borderless" onClick={discardChanges}>
                 {t('jobs.mutation.draftDiscard')}
               </Button>
             </div>
           }
         />
       )}
-      <form className="jobMutation__form">
-        {/* The three things a job cannot exist without, and nothing else. Everything optional is
-            folded away below, so the shortest path to a working job is a straight read down this
-            column rather than a scroll past nine open cards. */}
-        <SegmentPart
-          name={t('jobs.mutation.sectionName')}
-          Icon={IconPaperclip}
-          helpText={t('jobs.mutation.nameHelp')}
-          helpMode="popover"
-        >
-          <Input
-            autoFocus
-            type="text"
-            maxLength={40}
-            placeholder={t('jobs.mutation.namePlaceholder')}
-            width={6}
-            value={name}
-            onChange={(value) => setName(value)}
-          />
-        </SegmentPart>
-
-        <SegmentPart
-          name={t('jobs.mutation.sectionProviders')}
-          Icon={IconBriefcase}
-          helpText={t('jobs.mutation.providersHelp')}
-          helpMode="popover"
-        >
-          <Button
-            type="primary"
-            icon={<IconPlusCircle />}
-            className="jobMutation__newButton"
-            onClick={() => {
-              setProviderToEdit(null);
-              setProviderCreationVisibility(true);
-            }}
+      {/* No implicit submission: with the name as the only text field on the page, Enter in it
+          submitted the form as a GET to the current URL and reloaded the app. */}
+      <form className="jobMutation__form" onSubmit={(event) => event.preventDefault()}>
+        {/* The four things a job cannot exist without, in the order `JOB_REQUIREMENTS` names them,
+            and the two decisions about the job itself. Every filter is folded away below, so the
+            shortest path to a working job is a straight read down this column rather than a scroll
+            past nine open cards. The readiness bar at the foot says which of the four is still
+            open. */}
+        {/* Two rows, one card. They were two cards holding one short field each, which is two
+            titles, two help marks and two borders spent on "what is it called" and "rent or buy".
+            The artboard calls the pair Grunddaten and the readiness bar sends both requirements
+            here. */}
+        <div {...anchorProps('name')}>
+          <SegmentPart
+            name={t('jobs.mutation.sectionBasics')}
+            Icon={IconPaperclip}
+            helpText={t('jobs.mutation.basicsHelp')}
+            helpMode="popover"
           >
-            {t('jobs.mutation.addProvider')}
-          </Button>
+            <div className="jobMutation__rows">
+              <AdminField grow label={t('jobs.mutation.sectionName')} htmlFor="jobName">
+                <Input
+                  autoFocus
+                  id="jobName"
+                  type="text"
+                  maxLength={40}
+                  placeholder={t('jobs.mutation.namePlaceholder')}
+                  value={name}
+                  onChange={(value) => setName(value)}
+                />
+              </AdminField>
 
-          <ProviderTable
-            providerData={providerData}
-            onRemove={(providerUrl) => {
-              setProviderData(providerData.filter((provider) => provider.url !== providerUrl));
-            }}
-            onEdit={(provider) => {
-              setProviderCreationVisibility(true);
-              setProviderToEdit(provider);
-            }}
-          />
-        </SegmentPart>
+              {/* Directly under the name rather than in a card of its own further down, but still
+                after it: the hint about a guessed answer has to sit near the provider it was
+                guessed from, and the provider card is the next thing below. */}
+              <AdminField label={t('jobs.mutation.requirement.dealType')} labelId="jobDealTypeLabel">
+                <Select
+                  // Semi's Select sets its own `aria-label` on the trigger and forwards only
+                  // `aria-labelledby`.
+                  aria-labelledby="jobDealTypeLabel"
+                  placeholder={t('jobs.mutation.dealTypePlaceholder')}
+                  value={dealType}
+                  onChange={(value) => {
+                    setDealType(value);
+                    setDealTypeWasInferred(false);
+                  }}
+                  dropdownClassName="jobMutation__dropdown"
+                  className="jobMutation__dealType"
+                >
+                  <Select.Option value="rent">{t('jobs.mutation.dealTypeRent')}</Select.Option>
+                  <Select.Option value="buy">{t('jobs.mutation.dealTypeBuy')}</Select.Option>
+                </Select>
+              </AdminField>
+            </div>
+            {dealTypeWasInferred && <p className="jobMutation__inferredHint">{t('jobs.mutation.dealTypeInferred')}</p>}
+          </SegmentPart>
+        </div>
 
-        {/* Directly under the providers, because that is where its value is read from: the hint
-            about a guessed answer has to sit next to the thing it was guessed from. */}
-        <SegmentPart
-          name={t('jobs.mutation.sectionDealType')}
-          Icon={IconHome}
-          helpText={t('jobs.mutation.dealTypeHelp')}
-          helpMode="popover"
-        >
-          <Select
-            placeholder={t('jobs.mutation.dealTypePlaceholder')}
-            value={dealType}
-            onChange={(value) => {
-              setDealType(value);
-              setDealTypeWasInferred(false);
-            }}
-            style={{ width: '100%', maxWidth: 220 }}
+        <div {...anchorProps('provider')}>
+          <SegmentPart
+            name={t('jobs.mutation.sectionProviders')}
+            Icon={IconBriefcase}
+            helpText={t('jobs.mutation.providersHelp')}
+            helpMode="popover"
+            // In the header rather than above the table: a button that is pressed once should not
+            // push the list down on every visit. Short, because the card title already says what
+            // is being added, and it stays in the empty state too - the big button below it is the
+            // one being offered, this is the one that will still be there once the list is full.
+            action={
+              <Button
+                theme="borderless"
+                size="small"
+                icon={<IconPlusCircle />}
+                aria-label={t('jobs.mutation.addProvider')}
+                onClick={() => {
+                  setProviderToEdit(null);
+                  setProviderCreationVisibility(true);
+                }}
+              >
+                {t('jobs.mutation.addShort')}
+              </Button>
+            }
           >
-            <Select.Option value="rent">{t('jobs.mutation.dealTypeRent')}</Select.Option>
-            <Select.Option value="buy">{t('jobs.mutation.dealTypeBuy')}</Select.Option>
-          </Select>
-          {dealTypeWasInferred && <p className="jobMutation__inferredHint">{t('jobs.mutation.dealTypeInferred')}</p>}
-        </SegmentPart>
+            {providerData.length === 0 ? (
+              <SettingsEmptyState
+                icon={<IconBriefcase size="large" />}
+                title={t('jobs.mutation.providerEmptyTitle')}
+                description={t('jobs.mutation.providerEmptyText')}
+                action={
+                  <Button
+                    type="primary"
+                    icon={<IconPlusCircle />}
+                    onClick={() => {
+                      setProviderToEdit(null);
+                      setProviderCreationVisibility(true);
+                    }}
+                  >
+                    {t('jobs.mutation.providerEmptyAction')}
+                  </Button>
+                }
+              />
+            ) : (
+              <ProviderTable
+                providerData={providerData}
+                onRemove={(providerUrl) => {
+                  setProviderData(providerData.filter((provider) => provider.url !== providerUrl));
+                }}
+                onEdit={(provider) => {
+                  setProviderCreationVisibility(true);
+                  setProviderToEdit(provider);
+                }}
+              />
+            )}
+          </SegmentPart>
+        </div>
 
-        <SegmentPart
-          Icon={IconBell}
-          name={t('jobs.mutation.sectionNotifications')}
-          helpText={t('jobs.mutation.notificationsHelp')}
-          helpMode="popover"
-        >
-          <div className="jobMutation__notificationActions">
-            <Button
-              type="primary"
-              className="jobMutation__newButton"
-              icon={<IconPlusCircle />}
-              onClick={() => setPickerVisible(true)}
-            >
-              {t('jobs.mutation.addNotification')}
-            </Button>
-            <Button
-              type="secondary"
-              icon={<IconSetting />}
-              className="jobMutation__newButton"
-              onClick={() => leaveWithReturnPath('/settings/notifications')}
-            >
-              {t('notification.channels.manage')}
-            </Button>
-          </div>
-
-          <NotificationChannelTable
-            channels={selectedChannels}
-            // Detach, not delete: taking a channel off this job must never remove it from the
-            // instance. Deleting lives on the Settings page and is blocked while a job uses it.
-            actions={['test', 'edit', 'clone', 'detach']}
-            showVisibility={false}
-            showUsage={false}
-            emptyText={t('notification.channels.emptyInJob')}
-            onTest={async (channel) => {
-              try {
-                await actions.notificationChannels.tryChannel(channel.id);
-                Toast.success(t('notification.trySuccess'));
-              } catch (error) {
-                Toast.error(t('notification.tryError', { error: errorMessage(error, t('common.unknownError')) }));
-              }
-            }}
-            onEdit={(channel) => setChannelEditor({ mode: 'edit', channelId: channel.id })}
-            onClone={(channel) => setChannelEditor({ mode: 'clone', channelId: channel.id })}
-            onDetach={(channel) => setSelectedChannelIds((current) => current.filter((id) => id !== channel.id))}
-          />
-        </SegmentPart>
+        <div {...anchorProps('channel')}>
+          <SegmentPart
+            Icon={IconBell}
+            name={t('jobs.mutation.sectionNotifications')}
+            helpText={t('jobs.mutation.notificationsHelp')}
+            helpMode="popover"
+            action={
+              <Button
+                theme="borderless"
+                size="small"
+                icon={<IconPlusCircle />}
+                aria-label={t('jobs.mutation.addNotification')}
+                onClick={() => setPickerVisible(true)}
+              >
+                {t('jobs.mutation.addShort')}
+              </Button>
+            }
+          >
+            {selectedChannels.length === 0 ? (
+              <SettingsEmptyState
+                icon={<IconBell size="large" />}
+                title={t('jobs.mutation.channelEmptyTitle')}
+                // The way out of the empty state is a sentence with a link in it, not a second
+                // button beside the first: "pick one" and "go make one" are one thought, and two
+                // buttons side by side make them look like two equal offers.
+                description={withManageLink(
+                  t('jobs.mutation.channelEmptyText'),
+                  <Button
+                    key="manage"
+                    theme="borderless"
+                    size="small"
+                    className="jobMutation__manageLink"
+                    onClick={() => leaveWithReturnPath('/settings/notifications')}
+                  >
+                    {t('notification.channels.manage')}
+                  </Button>,
+                )}
+                action={
+                  <Button type="primary" icon={<IconPlusCircle />} onClick={() => setPickerVisible(true)}>
+                    {t('jobs.mutation.channelEmptyAction')}
+                  </Button>
+                }
+              />
+            ) : (
+              <>
+                <NotificationChannelTable
+                  channels={selectedChannels}
+                  // Detach, not delete: taking a channel off this job must never remove it from the
+                  // instance. Deleting lives on the Settings page and is blocked while a job uses it.
+                  actions={['test', 'edit', 'clone', 'detach']}
+                  showVisibility={false}
+                  showUsage={false}
+                  emptyText={t('notification.channels.emptyInJob')}
+                  onTest={async (channel) => {
+                    try {
+                      await actions.notificationChannels.tryChannel(channel.id);
+                      Toast.success(t('notification.trySuccess'));
+                    } catch (error) {
+                      Toast.error(t('notification.tryError', { error: errorMessage(error, t('common.unknownError')) }));
+                    }
+                  }}
+                  onEdit={(channel) => setChannelEditor({ mode: 'edit', channelId: channel.id })}
+                  onClone={(channel) => setChannelEditor({ mode: 'clone', channelId: channel.id })}
+                  onDetach={(channel) => setSelectedChannelIds((current) => current.filter((id) => id !== channel.id))}
+                />
+                {/* Still reachable once the job has a channel. A second kind of channel is made on
+                    the Settings page, and the picker only offers that way out while it has nothing
+                    left to list. */}
+                <Button
+                  theme="borderless"
+                  size="small"
+                  className="jobMutation__manageLink"
+                  onClick={() => leaveWithReturnPath('/settings/notifications')}
+                >
+                  {t('notification.channels.manage')}
+                </Button>
+              </>
+            )}
+          </SegmentPart>
+        </div>
 
         {/* keepDOM={false} is the point of the fold, not a detail of it: the area filter mounts an
             800px MapLibre canvas, and it used to do so on every visit to this form - including the
@@ -565,57 +759,70 @@ export default function JobMutator() {
 
         {/* Outside the fold, and after it: neither is a filter. Who else sees this job and whether
             it runs at all are decisions about the job itself, and burying them under a heading that
-            says "filters" is how people missed the switch that turns the job on. */}
+            says "filters" is how people missed the switch that turns the job on. One card rather
+            than two, because they are one question asked twice: what happens with this job once it
+            exists. */}
         <SegmentPart
           Icon={IconUser}
-          name={t('jobs.mutation.sectionSharing')}
-          helpText={t('jobs.mutation.sharingHelp')}
+          name={t('jobs.mutation.sectionSharingActivation')}
+          helpText={t('jobs.mutation.sharingActivationHelp')}
           helpMode="popover"
         >
-          {shareableUserList.length === 0 ? (
-            <div>{t('jobs.mutation.sharingNoUsers')}</div>
-          ) : (
-            <Select
-              filter
-              multiple
-              placeholder={t('jobs.mutation.sharingSearchPlaceholder')}
-              autoClearSearchValue={false}
-              defaultValue={shareWithUsers}
-              onChange={(value) => setShareWithUsers(value)}
-              style={{ width: '100%' }}
-            >
-              {shareableUserList.map((user) => (
-                <Select.Option value={user.id} key={user.id}>
-                  {user.name}
-                </Select.Option>
-              ))}
-            </Select>
-          )}
-        </SegmentPart>
+          <div className="jobMutation__rows">
+            <AdminField label={t('jobs.mutation.sectionSharing')} labelId="jobShareWithLabel">
+              {shareableUserList.length === 0 ? (
+                <span className="jobMutation__rowNote">{t('jobs.mutation.sharingNoUsers')}</span>
+              ) : (
+                <Select
+                  filter
+                  multiple
+                  aria-labelledby="jobShareWithLabel"
+                  placeholder={t('jobs.mutation.sharingSearchPlaceholder')}
+                  autoClearSearchValue={false}
+                  // Controlled: with `defaultValue` a Discard (or a restored draft) changed the state
+                  // but not what the field showed, and the next save shared with the users on screen
+                  // being the ones the user believed they had removed.
+                  value={shareWithUsers}
+                  onChange={(value) => setShareWithUsers(value)}
+                  dropdownClassName="jobMutation__dropdown"
+                  className="jobMutation__shareWith"
+                >
+                  {shareableUserList.map((user) => (
+                    <Select.Option value={user.id} key={user.id}>
+                      {user.name}
+                    </Select.Option>
+                  ))}
+                </Select>
+              )}
+            </AdminField>
 
-        <SegmentPart
-          Icon={IconPlayCircle}
-          name={t('jobs.mutation.sectionActivation')}
-          helpText={t('jobs.mutation.activationHelp')}
-          helpMode="popover"
-        >
-          <Switch className="jobMutation__spaceTop" onChange={(checked) => setEnabled(checked)} checked={enabled} />
-        </SegmentPart>
-
-        {/* Sticky, because on a phone the form is still taller than the screen and Save used to be
-            several screens below the fold. */}
-        <div className="jobMutation__footer">
-          <div className="jobMutation__footerActions">
-            {/* Cancel used to be `danger`, so the red button was the harmless one and Save sat next
-                to it in the colour that usually means "go ahead". */}
-            <Button type="tertiary" onClick={leaveForm}>
-              {t('jobs.mutation.cancel')}
-            </Button>
-            <Button type="primary" icon={<IconPlusCircle />} disabled={missing.length > 0} onClick={mutateJob}>
-              {t('jobs.mutation.save')}
-            </Button>
+            <AdminField label={t('jobs.mutation.labelRunning')}>
+              <Switch
+                onChange={(checked) => setEnabled(checked)}
+                checked={enabled}
+                aria-label={t('jobs.mutation.labelRunning')}
+              />
+            </AdminField>
           </div>
-        </div>
+        </SegmentPart>
+
+        {/* The same sticky bar the settings and administration pages use, and it appears on the
+            same condition: there is something to save. A form that has not been touched shows no
+            bar at all, which is the whole difference from the row of buttons that used to sit here
+            - one of them permanently greyed out, the other one duplicating the Back button above.
+
+            Its status is the readiness list, so the one place a Save can be disabled is the one
+            place that says why, and pressing a name in it still jumps to the section it means. */}
+        <SettingsSaveBar
+          dirty={dirty}
+          saving={saving}
+          saveDisabled={missing.length > 0}
+          saveLabel={t('jobs.mutation.saveJob')}
+          discardLabel={t('jobs.mutation.cancel')}
+          status={<JobReadinessBar missing={missing} onJump={setHighlighted} />}
+          onSave={mutateJob}
+          onDiscard={discardChanges}
+        />
       </form>
     </Fragment>
   );

@@ -44,6 +44,7 @@ describe('detectDealTypeFromUrl', () => {
     sparkasse: 'buy', // marketingType=buy
     schwarzesbrett: 'rent', // .../mietobjekte
     deutscheWohnen: 'rent', // rentType=miete&...
+    betterhomes: 'buy', // .../immobilie-suchen/kaufen?searchType=buy
   };
 
   for (const [provider, expected] of Object.entries(fixtures)) {

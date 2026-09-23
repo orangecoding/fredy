@@ -24,6 +24,10 @@
     "url": "https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/duesseldorf/wohnung-mieten?enteredFrom=one_step_search",
     "enabled": true
   },
+  "immoscoutAt": {
+    "url": "https://www.immobilienscout24.at/regional/wien/wien/wohnung-mieten",
+    "enabled": true
+  },
   "immoswp": {
     "url": "https://immo.swp.de/suchergebnisse?l=M%C3%BCnchen&r=0km&_multiselect_r=0km&ut=private&t=apartment%3Arental&a=de.muenchen&pf=&pt=&rf=0&rt=0&sf=50&st=&yf=&yt=&ff=&ft=&s=most_recently_updated_first&pa=&o=&ad=&u=",
     "enabled": true
@@ -97,6 +101,10 @@
   },
   "subito": {
     "url": "https://www.subito.it/annunci-lazio/affitto/appartamenti/roma/",
+    "enabled": true
+  },
+  "betterhomes": {
+    "url": "https://www.betterhomes.de/de/immobilie-suchen/kaufen?searchType=buy&objectType=all&zipCity=Bundesland+Berlin&territoryId=3&cityType=3&radius=0&sortOrder=newestDesc",
     "enabled": true
   }
 }

@@ -80,9 +80,9 @@
   &__value {
     font-size: 1.2rem;
     font-weight: 700;
-    margin-bottom: 4px;
+    margin-bottom: @space-1;
     line-height: 1.25;
-    color: var(--card-accent, @color-text);
+    color: var(--card-value, @color-text);
   }
 
   &__desc {
@@ -93,22 +93,35 @@
   &.blue {
     --card-accent: @color-blue-text;
     --card-glow: @color-blue-border;
+    --card-value: @color-blue-text;
   }
   &.orange {
     --card-accent: @color-orange-text;
     --card-glow: @color-orange-border;
+    --card-value: @color-orange-text;
   }
   &.green {
     --card-accent: @color-green-text;
     --card-glow: @color-green-border;
+    --card-value: @color-green-text;
   }
   &.purple {
     --card-accent: @color-purple-text;
     --card-glow: @color-purple-border;
+    --card-value: @color-purple-text;
   }
   &.gray {
     --card-accent: @color-gray-text;
     --card-glow: @color-gray-border;
+    --card-value: @color-gray-text;
+  }
+
+  /* Die Variante fuer das Dashboard. Vier Kacheln nebeneinander, deren Farben nichts bedeuten,
+     lesen sich als Kategorien, die es nicht gibt. Hier traegt nur die Zahl, und Farbe bleibt der
+     Primaeraktion, der Richtung einer Veraenderung und dem Handlungsbedarf vorbehalten. */
+  &.plain {
+    --card-accent: @color-border-bright;
+    --card-glow: @color-border-bright;
   }
 }
 

@@ -5,10 +5,11 @@
 
 import { useMemo, useState } from 'react';
 import { SideSheet, Tooltip } from '@douyinfe/semi-ui-19';
-import { IconGift } from '@douyinfe/semi-icons';
+import { IconBell } from '@douyinfe/semi-icons';
 
 import newsConfig from '../../assets/news/news.json';
-import { allReleases } from '../../services/news/newsSelection.js';
+import { allReleases, selectUnseenReleases } from '../../services/news/newsSelection.js';
+import { useSelector } from '../../services/state/store.js';
 import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
 import { NewsEntryBody } from './newsContent.jsx';
 
@@ -30,6 +31,12 @@ export default function NewsHistory({ collapsed }) {
   const locale = useLocale();
   const [visible, setVisible] = useState(false);
   const releases = useMemo(() => allReleases(newsConfig), []);
+  // The same marker the dialog that appears on its own writes when it is dismissed, so the dot on
+  // the bell means what the dialog would have said and goes out when it has been said. Nothing is
+  // invented here: a user with no marker stored - a fresh account - has no unseen releases by
+  // definition, so the dot stays off rather than greeting them with a history they have no use for.
+  const lastSeen = useSelector((state) => state.userSettings.settings.news_last_seen_version);
+  const hasUnread = useMemo(() => selectUnseenReleases(newsConfig, lastSeen).length > 0, [lastSeen]);
 
   if (releases.length === 0) {
     return null;
@@ -43,10 +50,18 @@ export default function NewsHistory({ collapsed }) {
     return Number.isNaN(date.getTime()) ? null : date.toLocaleDateString(locale, { dateStyle: 'long' });
   };
 
+  // A bell in the account row rather than a labelled block of its own above the support button.
+  // The name it used to carry in full is now the tooltip and the aria-label, which is what it was
+  // doing for the icon rail already.
   const trigger = (
-    <button className="news__historyTrigger" onClick={() => setVisible(true)} aria-label={t('news.historyTitle')}>
-      <IconGift size="default" />
-      {!collapsed && <span>{t('news.historyTrigger')}</span>}
+    <button
+      type="button"
+      className="navigate__accountAction"
+      onClick={() => setVisible(true)}
+      aria-label={t('nav.news')}
+    >
+      <IconBell size="default" />
+      {hasUnread && <span className="navigate__badge" />}
     </button>
   );
 

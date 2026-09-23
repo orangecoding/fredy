@@ -1,0 +1,53 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../../tokens.less';
+
+.debugPage {
+  &__usage {
+    display: flex;
+    align-items: center;
+    gap: @space-3;
+    margin-bottom: @space-4;
+
+    .semi-progress {
+      flex: 1;
+    }
+
+    /* Rot, solange aufgezeichnet wird - und nur hier, nicht global: der Balken misst einen
+       Speicher, der volllaeuft, und das ist die einzige Stelle der Anwendung, wo ein Fortschritt
+       etwas Unerwuenschtes anzeigt. */
+    .semi-progress-track-inner {
+      background: @color-error !important;
+    }
+  }
+
+  &__usageText {
+    flex: none;
+    font-family: @font-mono;
+    font-size: @text-xs;
+    color: @color-muted;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: @space-2;
+    flex-wrap: wrap;
+  }
+
+  /* Das Ueberlaufmenue gehoert zu keinem der beiden Knoepfe und steht deshalb am rechten Rand,
+     nicht als dritter in der Reihe. */
+  &__overflow {
+    margin-left: auto;
+  }
+
+  &__modalFooter {
+    display: flex;
+    justify-content: flex-end;
+    gap: @space-2;
+  }
+}

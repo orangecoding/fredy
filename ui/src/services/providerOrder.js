@@ -47,6 +47,7 @@ export const PROVIDER_SIZE_ORDER = [
   'immobilienDe',
   'engelVoelkers',
   'mcMakler',
+  'betterhomes',
   'sparkasse',
   'neubauKompass',
   'deutscheWohnen',
@@ -58,6 +59,7 @@ export const PROVIDER_SIZE_ORDER = [
   'schwarzesbrett',
   // Austria
   'willhaben',
+  'immoscoutAt',
   // Switzerland
   'flatfox',
   // Spain, Italy and Portugal

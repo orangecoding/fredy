@@ -1,0 +1,59 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../tokens.less';
+
+.watchToggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  color: @color-accent;
+  transition:
+    background @transition-fast,
+    border-color @transition-fast;
+
+  .semi-icon {
+    font-size: 14px;
+  }
+
+  &:focus-visible {
+    outline: 2px solid @color-accent;
+    outline-offset: 2px;
+  }
+
+  // Auf dem Foto der Kachel. Dieselbe deckende Flaeche wie der Betrugschip daneben, damit die
+  // Overlays wie eine Familie aussehen statt wie drei verschiedene Grautoene. Die Tokens der
+  // Kartenoverlays schlagen mit dem Theme um, eine feste Tönung täte das nicht.
+  &--overlay {
+    position: absolute;
+    top: @space-2;
+    right: @space-2;
+    width: 28px;
+    height: 28px;
+    border-radius: @radius-pill;
+    background: @color-map-panel;
+    border: 1px solid @color-map-panel-border;
+
+    &:hover {
+      border-color: @color-accent;
+    }
+  }
+
+  // In der Aktionsgruppe der Tabellenzeile, in der Grösse der Knöpfe daneben.
+  &--inline {
+    width: 28px;
+    height: 28px;
+    border-radius: @radius-chip;
+    background: transparent;
+    border: 1px solid @color-border-bright;
+
+    &:hover {
+      background: @color-fill-1;
+    }
+  }
+}

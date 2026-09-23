@@ -3,28 +3,18 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { Button, Tooltip } from '@douyinfe/semi-ui-19';
-import {
-  IconBriefcase,
-  IconCart,
-  IconDelete,
-  IconMapPin,
-  IconPaperclip,
-  IconStar,
-  IconStarStroked,
-  IconCopy,
-  IconEyeOpened,
-  IconRefresh,
-} from '@douyinfe/semi-icons';
+import { Link } from 'react-router';
+import { IconBriefcase, IconMapPin, IconPaperclip } from '@douyinfe/semi-icons';
 import no_image from '../../../assets/no_image.png';
 import { formatEuroPrice } from '../../../services/price/priceService.js';
 import * as timeService from '../../../services/time/timeService.js';
 import StatusControl from '../../listings/StatusControl.jsx';
-import ExternalListingLink from '../../listings/ExternalListingLink.jsx';
 import AffordabilityChip from '../../listings/AffordabilityChip.jsx';
 import PriceChangeBadge from '../../listings/PriceChangeBadge.jsx';
 import PricePerSqmBadge from '../../listings/PricePerSqmBadge.jsx';
 import ScamBadge from '../../listings/ScamBadge.jsx';
+import WatchToggle from '../../listings/WatchToggle.jsx';
+import ListingActions from '../../listings/ListingActions.jsx';
 import CommuteBadge from '../../transit/CommuteBadge.jsx';
 
 import './ListingsGrid.less';
@@ -49,71 +39,63 @@ const ListingsGrid = ({
   return (
     <div className="listingsGrid__grid">
       {listings.map((item) => (
+        // No role and no tabIndex. The card carried role="button" while containing seven
+        // interactive children, which ARIA forbids and which a screen reader announces as a button
+        // full of buttons. The click stays as a convenience for the mouse; the keyboard and the
+        // accessibility tree use the title, which is a real link now. A click on that link is the
+        // link's alone: letting it reach the card as well navigated twice - two history entries,
+        // so Back landed on the same listing - and a Ctrl/Cmd-click opened the new tab *and* moved
+        // this one.
         <div
           key={item.id}
           className="listingsGrid__card"
-          style={{ cursor: 'pointer' }}
-          role="button"
-          tabIndex={0}
-          onClick={() => onNavigate(item.id)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') onNavigate(item.id);
+          onClick={(event) => {
+            if (event.target.closest('a') == null) onNavigate(item.id);
           }}
         >
           <div className="listingsGrid__card__image-wrapper">
+            {/* Decorative: the title says the same thing one line below, and alt={item.title} made
+                a screen reader read every headline twice. */}
             <img
               src={item.image_url || no_image}
-              alt={item.title}
+              alt=""
               onError={(e) => {
                 e.target.src = no_image;
               }}
             />
-            {!item.is_active && (
-              <div className="listingsGrid__card__inactive-watermark">
-                <span>{t('listings.cardInactive')}</span>
-              </div>
-            )}
-            <Tooltip
-              content={
-                item.isWatched === 1 ? t('listings.tooltipRemoveFromWatchlist') : t('listings.tooltipAddToWatchlist')
-              }
-            >
-              <button
-                type="button"
-                className="listingsGrid__card__star"
-                onClick={(e) => onWatch(e, item)}
-                aria-label={
-                  item.isWatched === 1 ? t('listings.tooltipRemoveFromWatchlist') : t('listings.tooltipAddToWatchlist')
-                }
-              >
-                {item.isWatched === 1 ? <IconStar /> : <IconStarStroked />}
-              </button>
-            </Tooltip>
+            <ScamBadge listing={item} variant="onImage" />
+            <WatchToggle listing={item} onWatch={onWatch} variant="overlay" />
+            {!item.is_active && <span className="listingsGrid__card__inactive">{t('listings.cardInactive')}</span>}
           </div>
 
           <div className="listingsGrid__card__body">
-            <div className="listingsGrid__card__title" title={item.title}>
-              {item.title}
-            </div>
-            {/* Above the price rather than beside it. A fraud warning is not another attribute of
-                the flat to be weighed against the rent, it is a reason to read the rest
-                differently, so it comes first. */}
-            <ScamBadge listing={item} />
+            {/* In the hidden view onNavigate refuses to go anywhere, so the title is not a link
+                there either - a link that leads nowhere is worse than plain text. */}
+            {isHiddenView ? (
+              <span className="listingsGrid__card__title" title={item.title}>
+                {item.title}
+              </span>
+            ) : (
+              <Link className="listingsGrid__card__title" to={`/listings/listing/${item.id}`} title={item.title}>
+                {item.title}
+              </Link>
+            )}
+
             {item.price && (
               <div className="listingsGrid__card__price">
-                <IconCart size="small" />
-                {formatEuroPrice(item.price, locale)}
+                <span className="listingsGrid__card__amount">{formatEuroPrice(item.price, locale)}</span>
+                {/* Next to the price rather than on a line of its own: it is the same figure said
+                    a second way, and reading the two together is the whole point. */}
+                <PricePerSqmBadge listing={item} />
                 <AffordabilityChip verdict={item.affordabilityVerdict} dealType={item.dealType} />
                 <PriceChangeBadge
                   price={item.price}
                   previousPrice={item.previous_price}
                   changedAt={item.price_changed_at}
                 />
-                {/* Next to the price rather than on a line of its own: it is the same figure said
-                    a second way, and reading the two together is the whole point. */}
-                <PricePerSqmBadge listing={item} />
               </div>
             )}
+
             {item.address && (
               <div className="listingsGrid__card__meta">
                 <IconMapPin />
@@ -138,104 +120,38 @@ const ListingsGrid = ({
                   : t('listings.cardDocuments', { count: item.attachmentCount })}
               </div>
             )}
-            {/* The date the list is ordered by: the portal's own, where it states one, and the
-                moment Fredy found the listing where it does not. The detail page tells the two
-                apart. */}
-            <div className="listingsGrid__card__provider">
-              {timeService.format(item.published_at ?? item.created_at, false, locale)}
+
+            <div className="listingsGrid__card__foot">
+              {/* The date the list is ordered by: the portal's own, where it states one, and the
+                  moment Fredy found the listing where it does not. The detail page tells the two
+                  apart. */}
+              <span className="listingsGrid__card__date">
+                {timeService.format(item.published_at ?? item.created_at, false, locale)}
+              </span>
+              {/* A state, not a command, so it sits with the listing's own facts rather than in
+                  the action bar below. */}
+              <span className="listingsGrid__card__status" onClick={(e) => e.stopPropagation()}>
+                <StatusControl
+                  status={item.status?.status ?? null}
+                  compact
+                  onChange={(next) => onStatusChange?.(item, next)}
+                  onTriggerClick={(e) => e.stopPropagation()}
+                />
+              </span>
             </div>
           </div>
 
-          <div
-            className="listingsGrid__card__actions"
-            onClick={(e) => e.stopPropagation()}
-            onKeyDown={(e) => e.stopPropagation()}
-          >
-            <StatusControl
-              status={item.status?.status ?? null}
-              compact
-              onChange={(next) => onStatusChange?.(item, next)}
-              onTriggerClick={(e) => e.stopPropagation()}
+          {/* One place that stops the click, instead of one call per button inside. */}
+          <div className="listingsGrid__card__actions" onClick={(e) => e.stopPropagation()}>
+            <ListingActions
+              listing={item}
+              density="card"
+              isHiddenView={isHiddenView}
+              onApplication={onApplication}
+              onReactivate={onReactivate}
+              onRestore={onRestore}
+              onDelete={onDelete}
             />
-            <ExternalListingLink href={item.link} label={t('listings.tooltipOriginalListing')} />
-            <Tooltip content={t('listings.tooltipViewInFredy')}>
-              <Button
-                size="small"
-                icon={<IconEyeOpened />}
-                style={{ color: 'var(--f-success)' }}
-                theme="borderless"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onNavigate(item.id);
-                }}
-              />
-            </Tooltip>
-            {/* Not in the hidden view: the row is soft-deleted there, and writing to an agent
-                about a listing you have just thrown away is noise. */}
-            {!isHiddenView && (
-              <Tooltip content={t('listings.tooltipApplication')}>
-                <Button
-                  size="small"
-                  icon={<IconCopy />}
-                  theme="borderless"
-                  aria-label={t('listings.tooltipApplication')}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onApplication?.(item);
-                  }}
-                />
-              </Tooltip>
-            )}
-            {/* Only offered where it can do something: the alive-checker marked this one gone, and
-                the user is presumably looking at the ad that says otherwise. Not shown in the
-                hidden view, where the row is soft-deleted and undelete is the action that matters. */}
-            {!item.is_active && !isHiddenView && (
-              <Tooltip content={t('listings.tooltipReactivate')}>
-                <Button
-                  size="small"
-                  icon={<IconRefresh />}
-                  style={{ color: 'var(--f-success)' }}
-                  theme="borderless"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onReactivate?.(item.id);
-                  }}
-                  aria-label={t('listings.tooltipReactivate')}
-                />
-              </Tooltip>
-            )}
-            {isHiddenView ? (
-              <Tooltip content={t('listings.tooltipUndelete')}>
-                <Button
-                  size="small"
-                  icon={
-                    <span className="listingsGrid__strike" aria-hidden="true">
-                      <IconDelete />
-                    </span>
-                  }
-                  style={{ color: 'var(--f-success)' }}
-                  theme="borderless"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onRestore?.(item.id);
-                  }}
-                  aria-label={t('listings.tooltipUndelete')}
-                />
-              </Tooltip>
-            ) : (
-              <Tooltip content={t('listings.tooltipRemove')}>
-                <Button
-                  size="small"
-                  icon={<IconDelete />}
-                  style={{ color: 'var(--f-error)' }}
-                  theme="borderless"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onDelete(item.id);
-                  }}
-                />
-              </Tooltip>
-            )}
           </div>
         </div>
       ))}

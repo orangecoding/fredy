@@ -5,12 +5,14 @@
 
 import React from 'react';
 import { Button, Col, Collapse, Popconfirm, Row, Tabs, Toast, Typography } from '@douyinfe/semi-ui-19';
-import { IconSave, IconHome, IconKey, IconDelete } from '@douyinfe/semi-icons';
+import { IconHome, IconKey, IconDelete } from '@douyinfe/semi-icons';
 import { useSearchParams } from 'react-router';
 
 import Headline from '../../components/headline/Headline.jsx';
 import { SegmentPart } from '../../components/segment/SegmentPart.jsx';
+import SettingsSaveBar from '../../components/settingsShell/SettingsSaveBar.jsx';
 import ProfileForm from './components/ProfileForm.jsx';
+import HouseholdHeadline from './components/HouseholdHeadline.jsx';
 import PropertyForm from './components/PropertyForm.jsx';
 import RentPanel from './components/RentPanel.jsx';
 import ScenarioForm from './components/ScenarioForm.jsx';
@@ -22,9 +24,12 @@ import InterestPrincipalChart from './charts/InterestPrincipalChart.jsx';
 import CostBreakdownChart from './charts/CostBreakdownChart.jsx';
 import BudgetChart from './charts/BudgetChart.jsx';
 
-import { useActions, useSelector } from '../../services/state/store.js';
+import { useActions, useFredyState, useSelector } from '../../services/state/store.js';
 import { errorMessage } from '../../services/xhr.js';
 import { useFinanceProfile } from '../../hooks/useFinanceProfile.js';
+import { summariseHousehold } from '../../services/finance/householdSummary.js';
+import { discardSection, financeDirtyState, isSectionDirty } from '../../services/finance/financeDirty.js';
+import { useUnsavedWarning } from '../../hooks/useUnsavedWarning.js';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
 
 import './FinanceCalculator.less';
@@ -47,52 +52,49 @@ const EMPTY_DRAFT = Object.freeze({
 });
 
 /**
- * The Save/Delete row under a tab. Save persists this tab (and the shared household); Delete,
- * shown only when the tab is currently stored, removes it again behind a confirmation.
+ * The Delete button under a tab, shown only while that tab is stored.
+ *
+ * Saving is not here. It lives in the sticky bar at the foot of the page, the same one every
+ * settings page uses, because a Save button at the end of a tab is a button the user has to go
+ * looking for - on the purchase tab there are two forms, six figures and three charts between the
+ * first field and where it used to sit. Removing a stored half is the opposite kind of action:
+ * rare, deliberate, and it belongs beside the thing it removes rather than beside a Save that is
+ * pressed on every visit.
  *
  * @param {Object} props
  * @param {'rent'|'buy'} props.section
- * @param {boolean} props.canSave Whether this tab's inputs are complete enough to save.
  * @param {boolean} props.saved Whether this tab is currently persisted.
- * @param {boolean} props.saving
  * @param {boolean} props.deleting
- * @param {() => void} props.onSave
  * @param {() => void} props.onDelete
- * @param {string} props.hint
  * @param {(key: string, params?: Object) => string} props.t
+ * @returns {React.ReactElement|null}
  */
-function SectionActions({ section, canSave, saved, saving, deleting, onSave, onDelete, hint, t }) {
-  return (
-    <div className="finance__save-row">
-      <Button theme="solid" type="primary" icon={<IconSave />} loading={saving} disabled={!canSave} onClick={onSave}>
-        {t('finance.save')}
-      </Button>
+function SectionDelete({ section, saved, deleting, onDelete, t }) {
+  if (!saved) {
+    return null;
+  }
 
+  return (
+    <div className="finance__delete-row">
       {/* The button names the half it removes. "Delete" alone, on a page with two tabs that
           each own their own data, does not say what is about to disappear. */}
-      {saved && (
-        <Popconfirm
-          title={t(section === 'rent' ? 'finance.delete.confirmTitleRent' : 'finance.delete.confirmTitleBuy')}
-          content={t(section === 'rent' ? 'finance.delete.confirmRent' : 'finance.delete.confirmBuy')}
-          okType="danger"
-          okText={t('finance.delete.ok')}
-          cancelText={t('finance.delete.cancel')}
-          onConfirm={onDelete}
-        >
-          <Button theme="borderless" type="danger" icon={<IconDelete />} loading={deleting}>
-            {t(section === 'rent' ? 'finance.delete.buttonRent' : 'finance.delete.buttonBuy')}
-          </Button>
-        </Popconfirm>
-      )}
-
-      <Text type="tertiary" size="small">
-        {hint}
-      </Text>
+      <Popconfirm
+        title={t(section === 'rent' ? 'finance.delete.confirmTitleRent' : 'finance.delete.confirmTitleBuy')}
+        content={t(section === 'rent' ? 'finance.delete.confirmRent' : 'finance.delete.confirmBuy')}
+        okType="danger"
+        okText={t('finance.delete.ok')}
+        cancelText={t('finance.delete.cancel')}
+        onConfirm={onDelete}
+      >
+        <Button theme="borderless" type="danger" icon={<IconDelete />} loading={deleting}>
+          {t(section === 'rent' ? 'finance.delete.buttonRent' : 'finance.delete.buttonBuy')}
+        </Button>
+      </Popconfirm>
     </div>
   );
 }
 
-SectionActions.displayName = 'SectionActions';
+SectionDelete.displayName = 'SectionDelete';
 
 /**
  * The credit and debt calculator.
@@ -226,35 +228,20 @@ export default function FinanceCalculator() {
     setDeleting(section);
     try {
       await actions.userSettings.deleteFinanceSection(section);
+      // The block just deleted goes back to the defaults the server now answers with. Left as it
+      // was, the draft still held the deleted values, the bar reported them as unsaved straight
+      // away, and pressing Save recreated what had just been removed.
+      const refreshed = useFredyState.getState().finance.summary?.profile;
+      const key = section === 'rent' ? 'renting' : 'financing';
+      if (refreshed != null) {
+        setDraft((current) => ({ ...current, [key]: refreshed[key] }));
+      }
       actions.tracking.trackPoi(pois.FINANCE_PROFILE_DELETED);
       Toast.success(t('finance.deleted'));
     } catch (error) {
       Toast.error(errorMessage(error, t('finance.deleteFailed')));
     } finally {
       setDeleting(null);
-    }
-  };
-
-  /**
-   * Persist quietly when a field loses focus, so edits are not lost by navigating away.
-   *
-   * Only for a section that is already saved: autosaving a half the user has not set up yet
-   * would create it behind their back, and the explicit Save button is what opts them in.
-   * No Toast either - a save the user did not ask for should not interrupt them; the failure
-   * case still speaks up, because silently losing an edit is the thing worth reporting.
-   *
-   * @param {'rent'|'buy'} section
-   */
-  const autoSaveSection = async (section) => {
-    const alreadySaved = section === 'rent' ? stored?.renting != null : stored?.financing != null;
-    const usable = section === 'rent' ? draftRentComplete : draftComplete;
-    if (!alreadySaved || !usable || saving != null || deleting != null) {
-      return;
-    }
-    try {
-      await actions.userSettings.saveFinanceSection({ section, profile: draft });
-    } catch (error) {
-      Toast.error(errorMessage(error, t('finance.saveFailed')));
     }
   };
 
@@ -275,34 +262,88 @@ export default function FinanceCalculator() {
   // Tracked because the shared household block sits outside the tabs: when one of its fields is
   // left, the autosave has to know which half it belongs to.
   const [activeTab, setActiveTab] = React.useState(defaultTab);
+  /** Whether the optional half of the household is folded open. */
+  const [householdOpen, setHouseholdOpen] = React.useState(false);
+
+  // What the draft has changed, per part. Compared against the stored profile rather than tracked
+  // per input, for the reason `financeDirty.js` gives; split into three, because this page saves in
+  // halves and a bar over the renting tab must not go quiet because the purchase tab was saved.
+  const dirtyState = React.useMemo(() => financeDirtyState(draft, storedProfile), [draft, storedProfile]);
+  const dirty = isSectionDirty(dirtyState, activeTab);
+  const canSave = activeTab === 'rent' ? draftRentComplete : draftComplete;
+  // A tab that has never been saved can be complete on the server's defaults alone (renting needs
+  // only the household), and then equals what is "stored" field for field. Gated on `dirty` alone,
+  // the bar - which holds the only Save - never appeared, and rent verdicts could not be switched on.
+  const tabSaved = activeTab === 'rent' ? rentSaved : buySaved;
+  const showSaveBar = dirty || (canSave && !tabSaved);
+
+  // Every part, not only the tab on screen: edits left on the other tab are just as unsaved.
+  useUnsavedWarning(dirtyState.household || dirtyState.rent || dirtyState.buy);
+
+  /**
+   * Put the household and the tab on screen back on what is stored.
+   *
+   * Only the part this bar saves: the other tab keeps its edits. `edited` is cleared only when
+   * nothing is left to protect, so a profile arriving late may seed the draft again - the flag
+   * exists to stop a late answer overwriting the user's typing.
+   *
+   * @returns {void}
+   */
+  const discard = () => {
+    const baseline = storedProfile ?? EMPTY_DRAFT;
+    const next = discardSection(draft, baseline, activeTab);
+    edited.current = financeDirtyState(next, baseline)[activeTab === 'rent' ? 'buy' : 'rent'];
+    setDraft(next);
+  };
 
   return (
     <div className="finance">
       <Headline text={t('finance.title')} />
 
-      {/* Two quiet lines instead of a lead, a numbered how-to and a full-width banner: what the
-          page is for, and the caveat that it is an estimate. Everything else the user needs to
-          know is said where it applies - on the tab, on the field, next to the Save button. */}
-      <div className="finance__intro">
-        <Text className="finance__intro-lead">{t('finance.intro')}</Text>
-        {/* Every verdict on this page, and every chip on the listings pages, comes out of this
-            one rule. Stating it up front is the difference between a number the user trusts and
-            a number they have to reverse-engineer. */}
-        <p className="finance__rule">
-          <span className="finance__rule-label">{t('finance.rule.label')}</span>
-          {t('finance.rule.body')}
-        </p>
-        <Text className="finance__intro-note">{t('finance.disclaimer')}</Text>
-      </div>
+      {/* One line, and the caveat at the foot of the page. The rule that produces every verdict
+          here used to stand third, above the first field, with an accent rule down its side - the
+          answer to "why this number?" printed before there was a number. It now lives behind the
+          mark on the household card, which is the card that applies it. */}
+      <Text className="finance__intro-lead">{t('finance.intro')}</Text>
 
       {/* Shared by both tabs: one household, one income, one set of living costs. It sits above
-          the tabs because deleting a tab must never take the income with it, and because the
-          user should not have to type it twice. */}
+          the tabs because deleting a tab must never take the income with it, and because the user
+          should not have to type it twice.
+
+          Two fields are in the open and the rest is folded, because `isRentProfileComplete` asks
+          for exactly those two and `isProfileComplete` for those two plus equity. Everything
+          behind the fold arrives with a working default from `defaultProfile()`. */}
       <section className="finance__household">
-        {/* React's onBlur bubbles, so one handler per region autosaves every field inside it
-            without each form component having to know that autosave exists. */}
-        <div onBlur={() => autoSaveSection(activeTab)}>
-          <ProfileForm profile={draft} onChange={patchProfile} />
+        <div>
+          <HouseholdHeadline
+            profile={draft}
+            budget={draftSummary?.budget ?? null}
+            housingBudget={result?.recommendation?.recommendedRate ?? null}
+            onChange={patchProfile}
+            onPersonChange={(patch) => patchProfile({ personA: { ...draft.personA, ...patch } })}
+          />
+
+          <Collapse
+            className="finance__householdMore"
+            keepDOM={false}
+            activeKey={householdOpen ? ['more'] : []}
+            onChange={(keys) => setHouseholdOpen([].concat(keys ?? []).includes('more'))}
+          >
+            <Collapse.Panel
+              itemKey="more"
+              header={
+                <span className="finance__foldHeader">
+                  <span className="finance__foldTitle">{t('finance.form.moreHousehold')}</span>
+                  <span className="finance__foldSummary">{summariseHousehold(draft, t)}</span>
+                  <span className="finance__foldToggle">
+                    {householdOpen ? t('finance.form.foldClose') : t('finance.form.foldOpen')}
+                  </span>
+                </span>
+              }
+            >
+              <ProfileForm profile={draft} onChange={patchProfile} />
+            </Collapse.Panel>
+          </Collapse>
         </div>
       </section>
 
@@ -323,24 +364,18 @@ export default function FinanceCalculator() {
             {t('finance.area.rentLead')}
           </Text>
 
-          <div onBlur={() => autoSaveSection('rent')}>
-            <RentPanel
-              profile={draft}
-              budget={draftSummary?.budget ?? null}
-              thresholds={draftSummary?.thresholds?.rent ?? null}
-              onChange={patchRenting}
-            />
-          </div>
+          <RentPanel
+            profile={draft}
+            budget={draftSummary?.budget ?? null}
+            thresholds={draftSummary?.thresholds?.rent ?? null}
+            onChange={patchRenting}
+          />
 
-          <SectionActions
+          <SectionDelete
             section="rent"
-            canSave={draftRentComplete}
             saved={rentSaved}
-            saving={saving === 'rent'}
             deleting={deleting === 'rent'}
-            onSave={() => saveSection('rent')}
             onDelete={() => deleteSection('rent')}
-            hint={draftRentComplete ? t('finance.saveHintRent') : t('finance.saveBlockedRent')}
             t={t}
           />
         </TabPane>
@@ -361,17 +396,15 @@ export default function FinanceCalculator() {
           {/* Inputs on the left, the answer on the right. The charts that justify the answer
               rather than give it live in the disclosure below, so the default view is one
               screen of figures instead of five charts the user has to triage. */}
-          <Row gutter={[16, 16]}>
+          <Row gutter={[16, 16]} className="finance__split">
             <Col xs={24} lg={10} xl={9}>
-              <div onBlur={() => autoSaveSection('buy')}>
-                <PropertyForm
-                  financing={draft.financing ?? EMPTY_DRAFT.financing}
-                  costs={result?.financing?.closingCosts ?? null}
-                  totalCost={result?.financing?.totalCost ?? null}
-                  loanAmount={result?.financing?.loanAmount ?? null}
-                  onChange={patchFinancing}
-                />
-              </div>
+              <PropertyForm
+                financing={draft.financing ?? EMPTY_DRAFT.financing}
+                costs={result?.financing?.closingCosts ?? null}
+                totalCost={result?.financing?.totalCost ?? null}
+                loanAmount={result?.financing?.loanAmount ?? null}
+                onChange={patchFinancing}
+              />
               <ScenarioForm
                 scenarios={draft.financing?.scenarios ?? []}
                 computed={result?.financing?.scenarios ?? []}
@@ -417,15 +450,11 @@ export default function FinanceCalculator() {
             </Collapse.Panel>
           </Collapse>
 
-          <SectionActions
+          <SectionDelete
             section="buy"
-            canSave={draftComplete}
             saved={buySaved}
-            saving={saving === 'buy'}
             deleting={deleting === 'buy'}
-            onSave={() => saveSection('buy')}
             onDelete={() => deleteSection('buy')}
-            hint={draftComplete ? t('finance.saveHintBuy') : t('finance.saveBlockedBuy')}
             t={t}
           />
         </TabPane>
@@ -440,6 +469,33 @@ export default function FinanceCalculator() {
           </Text>
         </SegmentPart>
       )}
+
+      <Text className="finance__disclaimer">{t('finance.disclaimer')}</Text>
+
+      {/* One bar for the whole page, sticky, and only while there is something to save - the same
+          one every settings page carries. It saves the tab you are on, because that is the half the
+          Save writes; the household goes along with whichever half that is, which is why
+          `isSectionDirty` counts a household edit towards both.
+
+          `status` rather than a disabled button on its own: renting needs two figures and buying
+          three, and a Save that refuses without saying why is the thing that bar exists to avoid. */}
+      <SettingsSaveBar
+        dirty={showSaveBar}
+        saving={saving === activeTab}
+        saveDisabled={!canSave}
+        saveLabel={t(activeTab === 'rent' ? 'finance.saveRent' : 'finance.saveBuy')}
+        note={canSave ? t(activeTab === 'rent' ? 'finance.saveHintRent' : 'finance.saveHintBuy') : null}
+        status={
+          canSave ? null : (
+            <span className="settingsSaveBar__label">
+              <span className="settingsSaveBar__dot" aria-hidden="true" />
+              {t(activeTab === 'rent' ? 'finance.saveBlockedRent' : 'finance.saveBlockedBuy')}
+            </span>
+          )
+        }
+        onSave={() => saveSection(activeTab)}
+        onDiscard={discard}
+      />
     </div>
   );
 }

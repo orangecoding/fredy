@@ -1,0 +1,33 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../tokens.less';
+
+.mapLegend {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: @space-1 14px;
+
+  &__entry {
+    display: inline-flex;
+    align-items: center;
+    gap: @space-2;
+    font-size: @text-xs;
+    color: @color-map-panel-text;
+  }
+
+  &__dot {
+    width: 9px;
+    height: 9px;
+    border-radius: @radius-pill;
+    flex: none;
+
+    /* The stack badge on the pin (`.map-marker-badge`) is painted with the accent token. */
+    &--stack {
+      background: @color-accent;
+    }
+  }
+}

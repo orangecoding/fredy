@@ -1,0 +1,34 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../../tokens.less';
+
+/* Was ein verbundener Client darf. Die Flaeche traegt die Stufe, die Schrift bleibt Textfarbe -
+   dieselbe Regel wie bei den Preis-Badges der Inserate, wo eine farbige Schrift auf ihrer eigenen
+   gedaempften Flaeche in je einem Theme AA reisst.
+ *
+ * Kein Bernstein: fuer die Warnfarbe gibt es kein -rgb-Alias, und dafuer eines anzulegen gehoert
+ * nicht in diesen Plan. Den Unterschied traegt hier ohnehin das Wort. */
+.accessTag {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 @space-2;
+  border-radius: @radius-chip;
+  font-size: @text-xs;
+  line-height: 1;
+  white-space: nowrap;
+  color: @color-text;
+
+  &--write {
+    background: @color-fill-strong;
+    border: 1px solid @color-border-bright;
+  }
+
+  &--read {
+    background: @color-fill-1;
+    border: 1px solid @color-border;
+  }
+}

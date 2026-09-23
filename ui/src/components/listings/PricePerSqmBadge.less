@@ -24,21 +24,22 @@
     padding: 1px @space-2;
     border-radius: @radius-chip;
 
-    // Semi's own tokens rather than fixed hex values, so the badge follows the theme in both
-    // directions. Below the local median is the direction a searcher is hoping for, so it reads as
-    // the good one; above it reads as the expensive one.
+    // Dieselbe Regel wie im Preisänderungs-Badge: die Fläche trägt die Richtung, die Schrift
+    // bleibt lesbar. Unter dem Median ist die Richtung, auf die ein Suchender hofft, also liest
+    // sie sich als die gute; darüber als die teure.
+    color: @color-text;
+
     &--below {
-      color: var(--semi-color-success);
-      background: var(--semi-color-success-light-default);
+      background: @color-success-dim;
     }
 
     &--above {
-      color: var(--semi-color-danger);
-      background: var(--semi-color-danger-light-default);
+      background: @color-error-dim;
     }
 
-    // No colour for an ordinary asking price. Painting every second listing neutral-grey would make
-    // the two that are not ordinary harder to spot, which is the only thing the badge is for.
+    // Keine Farbe für einen gewöhnlichen Angebotspreis. Jedes zweite Inserat neutralgrau
+    // anzustreichen machte die zwei, die nicht gewöhnlich sind, schwerer zu finden, und dafür
+    // allein ist das Badge da.
     &--inline {
       color: @color-muted;
       background: @color-elevated;

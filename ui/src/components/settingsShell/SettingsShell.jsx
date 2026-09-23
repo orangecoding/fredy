@@ -24,13 +24,21 @@ import './SettingsShell.less';
  *   out. Administration used to state this as a full-width coloured band on all seven of its tabs,
  *   which is what `Headline`'s own documentation argues against: a band reads as "something just
  *   happened", and this is true on every visit.
+ * @param {React.ReactNode} [props.badge] Whose settings these are. See ScopeBadge.
  * @param {{path: string, label: string, icon?: React.ReactNode}[]} props.tabs Sub-pages, in order.
  * @param {React.ReactNode} [props.banner] Rendered between the heading and the strip, for something
  *   that really did just happen. Standing facts belong in `subtitle`.
  * @param {any} [props.context] Passed to the sub-route through `useOutletContext()`.
  * @returns {React.ReactElement}
  */
-export default function SettingsShell({ title, subtitle = null, tabs, banner = null, context = undefined }) {
+export default function SettingsShell({
+  title,
+  subtitle = null,
+  badge = null,
+  tabs,
+  banner = null,
+  context = undefined,
+}) {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -44,7 +52,7 @@ export default function SettingsShell({ title, subtitle = null, tabs, banner = n
 
   return (
     <div className="settingsShell">
-      <Headline text={title} subtitle={subtitle} />
+      <Headline text={title} subtitle={subtitle} badge={badge} />
       {banner}
       <Tabs
         type="line"

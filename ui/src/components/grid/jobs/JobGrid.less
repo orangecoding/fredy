@@ -1,5 +1,12 @@
-@import '../../cards/DashboardCardColors.less';
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
 @import '../../../tokens.less';
+
+@job-card-min: 320px;
+@job-row: 52px;
 
 .jobGrid {
   display: flex;
@@ -20,159 +27,140 @@
 
     &__view-toggle {
       display: flex;
-      gap: 4px;
+      gap: @space-1;
       flex-shrink: 0;
     }
   }
 
+  /* auto-fill with a minimum rather than Semi's Row and Col. Their columns float, and floats of
+     unequal height stagger instead of wrapping cleanly, which is the same trap Dashboard.less
+     documents. A minimum width also says what a card needs, where a set of breakpoint fractions
+     only says how many fit. */
+  &__grid {
+    display: grid;
+    /* min(): below about 400px the column is narrower than a card, and a card that may not shrink
+       lost its right edge - and the menu with both deletes - to the page's clipping. */
+    grid-template-columns: repeat(auto-fill, minmax(~'min(@{job-card-min}, 100%)', 1fr));
+    gap: @space-4;
+    align-items: start;
+  }
+
   &__card {
+    box-sizing: border-box;
     height: 100%;
-    background-color: @color-surface !important;
-    border: 1px solid @color-border !important;
-    border-radius: @radius-card !important;
-    transition:
-      transform @transition-card,
-      box-shadow @transition-card;
+    padding: @space-4;
+    background: @color-surface;
+    border: 1px solid @color-border;
+    border-radius: @radius-card;
+    transition: border-color @transition-card;
 
     &:hover {
-      box-shadow: @shadow-md;
+      border-color: @color-border-bright;
     }
 
     &__header {
       display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 10px;
+      align-items: center;
+      gap: 9px;
+      min-width: 0;
+    }
+
+    /* The state at a glance, up in the header. The switch in the footer is the control; this is
+       the readout, and the word "Active" that used to sit next to the switch was a third way of
+       saying the same thing. */
+    &__dot {
+      flex: none;
+      width: 8px;
+      height: 8px;
+      border-radius: @radius-pill;
+      background: @color-faint;
+
+      &--active {
+        background: @color-success;
+      }
     }
 
     &__name {
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      flex: 1 1 auto;
       min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 15px;
+      font-weight: 600;
+      color: @color-text;
     }
 
-    &__dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      flex-shrink: 0;
-      background-color: rgb(@color-error-rgb / 70%);
+    &__running {
+      display: inline-flex;
+      align-items: center;
+      flex: none;
+      height: 20px;
+      padding: 0 @space-2;
+      border: 1px solid @color-success;
+      border-radius: @radius-chip;
+      background: @color-success-dim;
+      color: @color-success;
+      font-size: @text-xs;
+      font-weight: 600;
+    }
 
-      &--active {
-        background-color: rgb(@color-success-rgb / 80%);
-      }
+    /* Indented to start under the name rather than under the dot. */
+    &__lastRun {
+      margin-top: 5px;
+      padding-left: 17px;
+      font-size: @text-sm;
+      color: @color-muted;
     }
 
     &__stats {
-      display: flex;
-      gap: 6px;
-      // Without this the row is as wide as its contents demand and simply overflows the card.
-      min-width: 0;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: @space-2;
+      margin-top: @space-3;
     }
 
+    /* One treatment for all three. Blue, orange and purple carried no information, and the tokens
+       behind them fail the separation check anyway, so they could never have carried any. */
     &__stat {
-      // `flex: 1` leaves `min-width: auto`, which means a flex item will not shrink below its own
-      // content. Three blocks each holding an icon and an unbreakable word therefore had a combined
-      // minimum wider than a narrow card, and the third one was clipped by the card's edge.
-      flex: 1 1 0;
+      box-sizing: border-box;
       min-width: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background: @color-fill-subtle;
-      border: 1px solid transparent;
+      padding: 10px;
+      background: @color-hover;
+      border: 1px solid @color-border;
       border-radius: @radius-chip;
-      padding: 7px 4px 6px;
+    }
 
-      /* Was 22px. Three of them per card, on a grid of cards, is a lot of display type for what
-         are mostly single digits - it read as a scoreboard rather than as a list of searches. */
-      &__number {
-        font-size: 17px;
-        font-weight: 600;
-        color: @color-text;
-        line-height: 1.25;
-      }
+    &__statNumber {
+      font-family: @font-mono;
+      font-size: 17px;
+      font-weight: 700;
+      color: @color-text;
+    }
 
-      &__label {
-        font-size: @text-xs;
-        color: @color-faint;
-        display: flex;
-        align-items: center;
-        gap: 3px;
-        margin-top: 2px;
-        min-width: 0;
-        max-width: 100%;
+    /* No opacity. At 0.7 the three labels landed between 3.35:1 and 3.74:1 on their own tiles,
+       below AA, and they are the part that says what the number means. */
+    &__statLabel {
+      margin-top: 3px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 11.5px;
+      color: @color-muted;
+    }
 
-        // The icon keeps its size; the word is what gives, if anything has to.
-        svg {
-          flex: none;
-        }
-      }
-
-      // Its own element because `text-overflow` does not apply to a bare text node inside a flex
-      // container - it would be clipped mid-word instead of ellipsised. A backstop for the
-      // narrowest cards and the longest translations, not the normal state.
-      &__labelText {
-        min-width: 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-
-      &--blue {
-        background: @color-blue-bg;
-        border-color: @color-blue-border;
-        .jobGrid__card__stat__number {
-          color: @color-blue-text;
-        }
-        .jobGrid__card__stat__label {
-          color: @color-blue-text;
-          opacity: 0.7;
-        }
-      }
-
-      &--orange {
-        background: @color-orange-bg;
-        border-color: @color-orange-border;
-        .jobGrid__card__stat__number {
-          color: @color-orange-text;
-        }
-        .jobGrid__card__stat__label {
-          color: @color-orange-text;
-          opacity: 0.7;
-        }
-      }
-
-      &--purple {
-        background: @color-purple-bg;
-        border-color: @color-purple-border;
-        .jobGrid__card__stat__number {
-          color: @color-purple-text;
-        }
-        .jobGrid__card__stat__label {
-          color: @color-purple-text;
-          opacity: 0.7;
-        }
-      }
+    &__divider {
+      height: 1px;
+      margin: @space-3 0;
+      background: @color-border;
     }
 
     &__footer {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: @space-3;
     }
-  }
-
-  &__title {
-    color: @color-text !important;
-  }
-
-  &__actions {
-    display: flex;
-    gap: 4px;
-    flex-shrink: 0;
   }
 
   &__pagination {
@@ -180,10 +168,4 @@
     display: flex;
     justify-content: center;
   }
-}
-
-.jobPopoverContent {
-  font-size: @text-sm;
-  padding: 4px 8px;
-  color: @color-text;
 }

@@ -17,14 +17,20 @@ import './Headline.less';
  * @param {string} props.text
  * @param {React.ReactNode} [props.subtitle]
  * @param {React.ReactNode} [props.actions]
+ * @param {React.ReactNode} [props.badge] Rendered inline after the title, for a short statement
+ *   about the page itself - whose settings these are, for instance. Not for actions: those are
+ *   right-aligned and go in `actions`.
  * @returns {React.ReactElement}
  */
-export default function Headline({ text, subtitle, actions } = {}) {
+export default function Headline({ text, subtitle, actions, badge = null } = {}) {
   return (
     <div className="page-heading">
       <div className="page-heading__row">
         <div>
-          <h1 className="page-heading__title">{text}</h1>
+          <div className="page-heading__titleRow">
+            <h1 className="page-heading__title">{text}</h1>
+            {badge}
+          </div>
           {subtitle && <p className="page-heading__subtitle">{subtitle}</p>}
         </div>
         {actions && <div>{actions}</div>}

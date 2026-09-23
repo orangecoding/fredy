@@ -1,15 +1,26 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../../tokens.less';
+
 .notificationsPage {
+  &__back {
+    margin-bottom: @space-4;
+  }
+
   &__typePicker {
-    /* Room under the select so the modal does not close in around it, and the first line pulled
-       up under the divider - Semi's modal body padding is sized for a full form, not one line. */
-    margin-top: -0.5rem;
-    padding-bottom: 0.75rem;
+    /* Semis Modal-Rumpf ist fuer ein ganzes Formular bemessen. Hier steht eine Zeile darin, und
+       ohne diese Korrektur schliesst der Dialog unten um das Auswahlfeld herum zu. */
+    margin-top: -@space-2;
+    padding-bottom: @space-3;
   }
 
   &__typeIntro {
-    margin: 0 0 0.75rem;
-    font-size: 13px;
+    margin: 0 0 @space-3;
+    font-size: @text-sm;
     line-height: 1.5;
-    color: var(--semi-color-text-2);
+    color: @color-muted;
   }
 }

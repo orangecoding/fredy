@@ -60,9 +60,9 @@ describe('GET /api/version', () => {
     expect((await handler()).bodyHtml).toBe('');
   });
 
-  it('reports no update when the local version is current', async () => {
+  it('reports no update when the local version is current, and that it was checked', async () => {
     githubReturns({ tag_name: '23.2.3' });
-    expect(await handler()).toEqual({ newVersion: false, localFredyVersion: '23.2.3' });
+    expect(await handler()).toEqual({ newVersion: false, checked: true, localFredyVersion: '23.2.3' });
   });
 
   it('calls GitHub once across many requests', async () => {

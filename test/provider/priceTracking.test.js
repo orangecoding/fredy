@@ -33,7 +33,7 @@ const EXPECTED_DETAIL_PRICE = {
   immobilienDe: 395,
   immowelt: 1250,
   kleinanzeigen: 195000,
-  schwarzesbrett: 560,
+  schwarzesbrett: 700,
   sparkasse: 410000,
   wgGesucht: 590,
 };

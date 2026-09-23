@@ -26,9 +26,20 @@ import './SegmentParts.less';
  * @param {string} [props.helpText]
  * @param {'inline'|'popover'} [props.helpMode]
  * @param {string} [props.className]
+ * @param {React.ReactNode} [props.action] Rendered at the right edge of the header. For the one
+ *   action a section is about - adding the thing it lists. Below the header it would push the list
+ *   down on every visit to make room for a button that is pressed once.
  * @returns {React.ReactElement}
  */
-export const SegmentPart = ({ name, Icon = null, children, helpText = null, helpMode = 'inline', className = '' }) => {
+export const SegmentPart = ({
+  name,
+  Icon = null,
+  children,
+  helpText = null,
+  helpMode = 'inline',
+  className = '',
+  action = null,
+}) => {
   const { Meta } = Card;
   const asPopover = helpMode === 'popover' && helpText != null;
 
@@ -48,6 +59,7 @@ export const SegmentPart = ({ name, Icon = null, children, helpText = null, help
   return (
     <Card
       className={`segmentParts ${className}`}
+      headerExtraContent={action}
       title={
         (helpText || name) && (
           <Meta

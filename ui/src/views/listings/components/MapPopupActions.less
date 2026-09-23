@@ -1,0 +1,49 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../../tokens.less';
+
+.mapPopupActions {
+  display: flex;
+  align-items: center;
+  gap: @space-2;
+
+  &__details {
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 30px !important;
+    padding: 0 @space-3 !important;
+    border-radius: @radius-chip !important;
+    font-size: @text-sm !important;
+  }
+
+  &__open,
+  &__more {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    // The 30px of the measurement table is the box, border included. Semi's Button already says so
+    // for itself; the bare anchor next to it does not and came out 32px, two pixels taller than the
+    // button it sits beside.
+    box-sizing: border-box;
+    width: 30px !important;
+    height: 30px !important;
+    padding: 0 !important;
+    flex: none;
+    border: 1px solid @color-border-bright;
+    border-radius: @radius-chip !important;
+    background: transparent;
+    color: @color-muted;
+
+    &:hover {
+      color: @color-text;
+      background: @color-fill-1;
+    }
+  }
+
+  &__open {
+    text-decoration: none;
+  }
+}

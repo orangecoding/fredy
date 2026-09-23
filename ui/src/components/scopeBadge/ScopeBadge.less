@@ -1,0 +1,38 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../tokens.less';
+
+.scopeBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: @space-2;
+  height: 22px;
+  padding: 0 @space-2;
+  border-radius: @radius-chip;
+  background: @color-elevated;
+  border: 1px solid @color-border-bright;
+  color: @color-text;
+  font-size: @text-xs;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  vertical-align: middle;
+
+  // Nur das Icon traegt Farbe. Die Schrift bleibt Textfarbe, damit vier Woerter neben einer
+  // Ueberschrift nicht lauter sind als die Ueberschrift.
+  .semi-icon {
+    font-size: 11px;
+    flex: none;
+  }
+
+  &--user .semi-icon {
+    color: @color-info;
+  }
+
+  &--instance .semi-icon {
+    color: @color-warning;
+  }
+}

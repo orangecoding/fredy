@@ -20,7 +20,9 @@ const Users = function Users() {
   const actions = useActions();
   const [loading, setLoading] = React.useState(true);
   const users = useSelector((state) => state.user.users);
-  const [userIdToBeRemoved, setUserIdToBeRemoved] = React.useState(null);
+  // The whole row, not just its id: the confirmation dialog names the person and counts the
+  // jobs that go with them, and both of those are already on the row the table handed over.
+  const [userToBeRemoved, setUserToBeRemoved] = React.useState(null);
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -33,16 +35,16 @@ const Users = function Users() {
 
   const onUserRemoval = async () => {
     try {
-      await xhrDelete('/api/admin/users', { userId: userIdToBeRemoved });
+      await xhrDelete('/api/admin/users', { userId: userToBeRemoved.id });
       Toast.success(t('users.toastRemoved'));
-      setUserIdToBeRemoved(null);
+      setUserToBeRemoved(null);
       await actions.jobsData.getJobs();
       await actions.user.getUsers();
     } catch (error) {
       // Same wrong key as everywhere else: the rejection is `{ status, json }`, so `error.error`
       // was undefined and a refused removal rendered an empty toast.
       Toast.error(errorMessage(error, t('users.toastRemoveError')));
-      setUserIdToBeRemoved(null);
+      setUserToBeRemoved(null);
     }
   };
 
@@ -51,22 +53,26 @@ const Users = function Users() {
       {/* Still no h1 of its own - the Administration layout already names the page - but a card
           title is not an h1, and without one this was the only admin page that never said what
           its table was or what removing a row does. */}
-      <SegmentPart name={t('users.sectionName')} helpText={t('users.sectionHelp')}>
-        <div className="settingsShell__saveRow">
-          <Button type="primary" theme="solid" icon={<IconPlus />} onClick={() => navigate('/admin/users/new')}>
+      <SegmentPart
+        name={t('users.sectionName')}
+        helpText={t('users.sectionHelp')}
+        helpMode="popover"
+        action={
+          <Button size="small" icon={<IconPlus />} onClick={() => navigate('/admin/users/new')}>
             {t('users.newUser')}
           </Button>
-        </div>
+        }
+      >
         {!loading && (
           <UserTable
             user={users}
             onUserEdit={(userId) => navigate(`/admin/users/edit/${userId}`)}
-            onUserRemoval={(userId) => setUserIdToBeRemoved(userId)}
+            onUserRemoval={(userId) => setUserToBeRemoved(users.find((user) => user.id === userId) ?? null)}
           />
         )}
       </SegmentPart>
-      {!loading && userIdToBeRemoved && (
-        <UserRemovalModal onCancel={() => setUserIdToBeRemoved(null)} onOk={onUserRemoval} />
+      {!loading && userToBeRemoved && (
+        <UserRemovalModal user={userToBeRemoved} onCancel={() => setUserToBeRemoved(null)} onOk={onUserRemoval} />
       )}
     </div>
   );

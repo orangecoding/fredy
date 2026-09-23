@@ -76,12 +76,15 @@
   }
 
   /* An empty document list is drawn as the slot it is. Dashed rather than solid because the panel
-     is a placeholder, and deliberately NOT captioned as a drop target: the card takes files through
-     its picker only, and a box that says "drop here" when nothing listens for a drop is a lie. */
+     is a placeholder - and now also because it is a drop target, which is what dashed has always
+     meant on the web. The card listens for a drop on this box, so the caption underneath saying so
+     is the truth; it was left off while the picker was the only way in. */
   .attachmentsCard__empty {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: @space-1;
     min-height: 116px;
     padding: @space-4;
     border: 1px dashed @color-border-bright;

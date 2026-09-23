@@ -4,10 +4,12 @@
  */
 
 import { useEffect } from 'react';
-import { Modal } from '@douyinfe/semi-ui-19';
+import { Button, Modal } from '@douyinfe/semi-ui-19';
+import { IconBell, IconPlusCircle } from '@douyinfe/semi-icons';
 import { useNavigate } from 'react-router';
 
 import NotificationChannelTable from '../../../../../components/table/NotificationChannelTable';
+import SettingsEmptyState from '../../../../../components/settingsShell/SettingsEmptyState';
 import { useActions, useSelector } from '../../../../../services/state/store';
 import { useScreenWidth } from '../../../../../hooks/screenWidth.js';
 import { useTranslation } from '../../../../../services/i18n/i18n.jsx';
@@ -60,28 +62,31 @@ export default function NotificationChannelPicker({
   // they have three - all already on this job - sends them off to create a duplicate.
   const nothingExists = channels.length === 0;
 
-  // Rendered instead of the table, not inside its empty slot. Semi lays the table's placeholder
-  // out at the width of the (empty) table rather than the modal's, which broke one sentence into
-  // nine stacked fragments a few pixels wide.
+  const leaveForSettings = () => {
+    onClose();
+    if (onManageChannels != null) {
+      onManageChannels();
+      return;
+    }
+    navigate('/settings/notifications');
+  };
+
+  // The same empty state the rest of the app uses: what is missing, what that costs, and the one
+  // button that fixes it. It used to be a single centred sentence with a link in Semi's blue -
+  // rendered instead of the table, not inside its empty slot, because Semi lays the table's
+  // placeholder out at the width of the (empty) table rather than the modal's, which broke one
+  // sentence into nine stacked fragments a few pixels wide. That reason still holds.
   const emptyState = (
-    <p className="channelPicker__empty">
-      {nothingExists ? t('notification.channels.pickerEmptyLead') : t('notification.channels.pickerAllAddedLead')}{' '}
-      <a
-        className="channelPicker__emptyLink"
-        href="#/settings/notifications"
-        onClick={(event) => {
-          event.preventDefault();
-          onClose();
-          if (onManageChannels != null) {
-            onManageChannels();
-            return;
-          }
-          navigate('/settings/notifications');
-        }}
-      >
-        {nothingExists ? t('notification.channels.pickerEmptyLink') : t('notification.channels.pickerAllAddedLink')}
-      </a>
-    </p>
+    <SettingsEmptyState
+      icon={<IconBell size="large" />}
+      title={nothingExists ? t('notification.channels.emptyTitle') : t('notification.channels.pickerAllAddedTitle')}
+      description={nothingExists ? t('notification.channels.emptyText') : t('notification.channels.pickerAllAddedLead')}
+      action={
+        <Button type="primary" icon={<IconPlusCircle />} onClick={leaveForSettings}>
+          {nothingExists ? t('notification.channels.emptyAction') : t('notification.channels.pickerAllAddedLink')}
+        </Button>
+      }
+    />
   );
 
   return (

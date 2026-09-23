@@ -16,7 +16,7 @@ import {
   getBoundsFromCoords,
   groupListingsByPosition,
 } from './mapUtils.js';
-import { Banner, Select, Switch, Toast, Typography } from '@douyinfe/semi-ui-19';
+import { Select, Switch, Toast, Typography } from '@douyinfe/semi-ui-19';
 
 import _RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
@@ -24,17 +24,21 @@ import './Map.less';
 import { xhrDelete, errorMessage } from '../../services/xhr.js';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import ListingDeletionModal from '../../components/ListingDeletionModal.jsx';
-import { createListingPopupContent } from './listingPopupContent.jsx';
+import { createListingPopupContent, escapeHtml } from './listingPopupContent.jsx';
 // Not imported as `Map`. This module is itself called Map.jsx, and a component of that name shadows
 // the global `Map` constructor for the whole file: `new Map()` then invokes a React function
 // component with no props, which fails somewhere inside it rather than where it was written.
-import MapCanvas, { HOME_MARKER_COLOR } from '../../components/map/Map.jsx';
+import MapCanvas, { isDarkBasemap } from '../../components/map/Map.jsx';
+import MapLegend from '../../components/map/MapLegend.jsx';
+import { MARKER_COLORS } from '../../components/map/markerColors.js';
 import { useProviderCountries } from '../../hooks/useProviderCountries.js';
 import Headline from '../../components/headline/Headline.jsx';
 import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
 import { keepPopupInView, mountPopupNode } from '../../components/map/popupContent.jsx';
 import NearbyStops from '../../components/transit/NearbyStops.jsx';
 import { COMMUTE_OPTIONS, parseCommuteFilter } from '../../components/transit/travelTimeFormat.js';
+import { formatEuroCompact } from '../../components/cards/chartTheme.js';
+import { normalizeTheme } from '../../services/theme/theme.js';
 
 /**
  * The map's URL-backed view state: which job, the distance ring, the basemap and the optional
@@ -52,6 +56,11 @@ const MAP_URL_STATE = {
   // On by default: "how do I get out of here?" is asked about every flat, so the answer should be
   // on screen without switching anything on first. `?transit=false` turns it off.
   transit: { defaultValue: true, codec: parseBoolean },
+  // Which listing's popup is open, by id. Here rather than in component state because the popup is
+  // where the trip to a detail page starts: opening the details and coming back used to land on a
+  // map with nothing open, and the pin you were looking at had to be found again. The id, not the
+  // pin, because it also says which page of a stacked popup was showing.
+  popup: { defaultValue: null, codec: parseString },
 };
 
 /**
@@ -60,9 +69,6 @@ const MAP_URL_STATE = {
  * again on phones.
  */
 const LISTING_POPUP_MAX_WIDTH = '380px';
-
-/** The plain pin, for every job without a limit and for anything not measured yet. */
-const DEFAULT_MARKER_COLOR = '#3FB1CE';
 
 const RangeSlider = _RangeSlider?.default ?? _RangeSlider;
 
@@ -83,6 +89,7 @@ export default function MapView() {
   const listings = useSelector((state) => state.listingsData.mapListings);
   const userSettings = useSelector((state) => state.userSettings.settings);
   const homeAddresses = useMemo(() => getAddresses(userSettings), [userSettings]);
+  const hasHome = homeAddresses.length > 0;
 
   const language = userSettings?.language ?? 'en';
   // Absent means off, which is why this needed no migration.
@@ -105,10 +112,72 @@ export default function MapView() {
     style,
     buildings: show3dBuildings,
     transit: showTransit,
+    popup: openListingId,
   } = urlState;
+  // Read the same way `components/map/Map.jsx` reads it, so the ring drawn on top of the basemap
+  // and the basemap itself can never disagree about how dark the map is.
+  const theme = normalizeTheme(useSelector((state) => state.userSettings.settings.theme));
+  const isDark = isDarkBasemap(style, theme);
+
   const setJobId = (value) => setUrlValue('job', value);
   const setDistanceFilter = (value) => setUrlValue('distance', value);
   const setCommuteFilter = (value) => setUrlValue('commute', value);
+
+  /*
+   * The open popup, read and written through refs.
+   *
+   * Both directions have to stay out of the marker effect's dependencies. Reading it as a value
+   * would rebuild every marker each time a popup opens, which would tear down the popup that was
+   * just opened; writing through a value captured at build time would let a marker built before
+   * the last filter change write a stale id. So the effect reads the current id and the current
+   * setter from refs that every render refreshes, and never re-runs for either.
+   */
+  const openListingIdRef = useRef(openListingId);
+  openListingIdRef.current = openListingId;
+
+  const setOpenListingRef = useRef(null);
+  setOpenListingRef.current = (id) => {
+    // Same value means nothing to write, and writing it anyway is a navigation per popup open.
+    if ((id ?? null) === (openListingIdRef.current ?? null)) return;
+    // Recorded at once, not on the next render. A click from one pin straight onto another opens
+    // the new popup and closes the old one in the same tick; without this the old one's close
+    // handler still saw itself as the open one and wrote `popup` away again, last write winning.
+    openListingIdRef.current = id ?? null;
+    setUrlValue('popup', id ?? null);
+  };
+
+  /*
+   * Set while something other than a person is closing a popup.
+   *
+   * MapLibre reports `close` the same way whoever caused it: a user dismissing the popup, the
+   * marker effect removing its markers to rebuild them, or the map being destroyed because the
+   * page is going away. Only the first of those means "no popup is open any more", and the other
+   * two are exactly the moments the open popup has to survive - a filter change, and the trip to a
+   * detail page and back.
+   *
+   * Getting this wrong is not subtle: without the unmount half, clicking through to a listing
+   * cleared the param, and because that write is a `replace` it overwrote the detail page's own
+   * history entry with the map's.
+   */
+  const isTearingDownRef = useRef(false);
+
+  /** Set while the marker effect reopens the popup the URL names, which is not a person opening it. */
+  const reopeningRef = useRef(false);
+
+  // The unmount half. Declared before the map is rendered and therefore torn down before it: React
+  // destroys a deleted subtree from the top, so this runs while the map below still exists and is
+  // about to take its popups with it.
+  useEffect(
+    () => () => {
+      isTearingDownRef.current = true;
+      // The popups' own React roots live outside this tree and do not go with it. The marker effect
+      // only unmounts them when it rebuilds, so leaving the page kept every one alive - and an open
+      // departure board polling - for as long as the tab was.
+      popupRoots.current.forEach((unmount) => unmount());
+      popupRoots.current = [];
+    },
+    [],
+  );
 
   // Price range: stored as priceMin/priceMax URL params; default max derived from loaded listings
   const urlPriceMin = searchParams.has('priceMin') ? Number(searchParams.get('priceMin')) : null;
@@ -145,9 +214,12 @@ export default function MapView() {
   };
 
   useEffect(() => {
-    // Only reset to full range when no URL override is set
+    // The open end is what the loaded listings fill in: until they arrive there is no ceiling to
+    // put on the slider. The lower end belongs to the user, so it is taken from the URL rather
+    // than zeroed - a bookmarked `?priceMin=300000` used to arrive here as no filter at all,
+    // because this reset both ends whenever `priceMax` happened to be absent.
     if (urlPriceMax === null) {
-      setPriceRange([0, getMaxPrice()]);
+      setPriceRange([urlPriceMin ?? 0, getMaxPrice()]);
     }
   }, [listings]);
 
@@ -189,18 +261,13 @@ export default function MapView() {
     );
   }
 
-  useEffect(() => {
-    window.deleteListing = (id) => deleteListingRef.current(id);
-
-    window.viewDetails = (id) => {
-      navigate(`/listings/listing/${id}`);
-    };
-
-    return () => {
-      delete window.deleteListing;
-      delete window.viewDetails;
-    };
-  }, [navigate]);
+  // Whether any pin stands for more than one listing, which is the only thing the "stack" entry in
+  // the legend explains. Computed from the same grouping the markers are built from, so the legend
+  // cannot claim a stack that is not on the map.
+  const hasStacks = useMemo(
+    () => groupListingsByPosition(filterListings()).some((group) => group.listings.length > 1),
+    [listings, priceRange, commuteFilter],
+  );
 
   const handleMapReady = (mapInstance) => {
     map.current = mapInstance;
@@ -306,6 +373,8 @@ export default function MapView() {
   useEffect(() => {
     if (!map.current) return;
 
+    // Removing a marker fires its popup's `close`; see isTearingDownRef.
+    isTearingDownRef.current = true;
     markers.current.forEach((marker) => marker.remove());
     markers.current = [];
 
@@ -314,26 +383,35 @@ export default function MapView() {
 
     popupRoots.current.forEach((unmount) => unmount());
     popupRoots.current = [];
+    isTearingDownRef.current = false;
 
     homeAddresses.forEach((home) => {
-      const marker = new maplibregl.Marker({ color: HOME_MARKER_COLOR })
+      const marker = new maplibregl.Marker({ color: MARKER_COLORS.home })
         .setLngLat([home.coords.lng, home.coords.lat])
         .setPopup(
+          // Escaped: `setHTML` is `innerHTML`, and a label or an address picked from the
+          // OpenStreetMap suggestions is text somebody else wrote.
           new maplibregl.Popup({ offset: 25 }).setHTML(
-            `<div class="map-popup-content"><h4>${home.label || t('map.popupHomeAddress')}</h4><p>${home.address}</p></div>`,
+            `<div class="map-popup-content"><h4>${escapeHtml(home.label || t('map.popupHomeAddress'))}</h4><p>${escapeHtml(home.address ?? '')}</p></div>`,
           ),
         )
         .addTo(map.current);
       homeMarkers.current.push(marker);
     });
 
+    const mapInstance = map.current;
+    const wantsRing = distanceFilter > 0 && homeAddresses.length > 0;
+
     const addCircleLayer = () => {
       if (!map.current || !map.current.isStyleLoaded()) return;
       if (map.current.getLayer('distance-circle')) map.current.removeLayer('distance-circle');
       if (map.current.getLayer('distance-circle-outline')) map.current.removeLayer('distance-circle-outline');
       if (map.current.getSource('distance-circle-source')) map.current.removeSource('distance-circle-source');
+      drawRing();
+    };
 
-      if (distanceFilter > 0 && homeAddresses.length > 0) {
+    function drawRing() {
+      if (wantsRing) {
         map.current.addSource('distance-circle-source', {
           type: 'geojson',
           data: {
@@ -348,13 +426,19 @@ export default function MapView() {
           },
         });
 
+        // The ring over a near-black basemap needs less of everything: lime at 0.3 turns into a wash
+        // there, and the dark outline disappears. Map layer literals, like the marker colours.
+        const ring = isDark
+          ? { fill: '#6fbf95', fillOpacity: 0.16, line: '#6fbf95' }
+          : { fill: '#90EE90', fillOpacity: 0.3, line: '#006400' };
+
         map.current.addLayer({
           id: 'distance-circle',
           type: 'fill',
           source: 'distance-circle-source',
           paint: {
-            'fill-color': '#90EE90',
-            'fill-opacity': 0.3,
+            'fill-color': ring.fill,
+            'fill-opacity': ring.fillOpacity,
           },
         });
 
@@ -363,22 +447,40 @@ export default function MapView() {
           type: 'line',
           source: 'distance-circle-source',
           paint: {
-            'line-color': '#006400',
+            'line-color': ring.line,
             'line-width': 1,
           },
         });
       }
-    };
+    }
 
     const updateLayers = () => {
       addCircleLayer();
     };
 
-    if (map.current.isStyleLoaded()) {
+    // A basemap switch loads a new style, and applying it drops every source and layer the old one
+    // did not have - the ring included, which then stayed gone. Put back on `styledata`, the way the
+    // detail page redraws its route, and only when it is missing.
+    const restoreRing = () => {
+      if (!wantsRing || !map.current || map.current.getSource('distance-circle-source')) return;
+      try {
+        drawRing();
+      } catch {
+        // The new style is not far enough along to take a source yet; the next `styledata` is.
+      }
+    };
+
+    if (mapInstance.isStyleLoaded()) {
       updateLayers();
     } else {
-      map.current.on('load', updateLayers);
+      mapInstance.on('load', updateLayers);
     }
+    mapInstance.on('styledata', restoreRing);
+
+    // The marker carrying the listing the URL says is open, filled in below and opened once every
+    // marker is on the map. Opening it inside the loop would work too, but this keeps the reopen
+    // in one place next to the comment that explains it.
+    let reopen = null;
 
     // One marker per position rather than per listing: listings that share an address (a whole
     // house, or a town that could only be geocoded to its centre) used to stack invisibly, with
@@ -394,19 +496,50 @@ export default function MapView() {
         stopFit = keepPopupInView(map.current, popup);
       };
 
-      const { element, transitMount } = createListingPopupContent({
+      // Whether the id in the address bar belongs to this group, which is what makes this the pin
+      // to reopen and this the popup allowed to clear the param again.
+      const holdsOpenListing = () => grouped.some((listing) => listing.id === openListingIdRef.current);
+
+      const { element, transitMount, unmount, currentId } = createListingPopupContent({
         listings: grouped,
         t,
         locale,
-        onPageChange: refit,
+        language,
+        onDelete: (id) => deleteListingRef.current(id),
+        onNavigate: (id) => navigate(`/listings/listing/${id}`),
+        // Opens on the listing the URL names, so a stacked popup comes back on the page it was
+        // left on rather than at the top of its group.
+        initialId: holdsOpenListing() ? openListingIdRef.current : null,
+        onPageChange: (id) => {
+          refit();
+          setOpenListingRef.current(id);
+        },
       });
+      popupRoots.current.push(unmount);
 
-      popup = new maplibregl.Popup({ offset: 25, maxWidth: LISTING_POPUP_MAX_WIDTH }).setDOMContent(element);
+      popup = new maplibregl.Popup({
+        offset: 25,
+        maxWidth: LISTING_POPUP_MAX_WIDTH,
+        // MapLibre otherwise focuses the first `a[href]` in the popup, which since the redesign is
+        // the title, and a heading wearing a focus ring on every open reads as a stray border
+        // rather than as focus. The popup's own container is focused instead, on open below - it
+        // has to be something, because a popup is appended after every marker in the DOM and is
+        // otherwise a few hundred Tab presses away.
+        focusAfterOpen: false,
+      }).setDOMContent(element);
 
       // The stop list is only worth a request once the popup is actually opened, and it is the
       // same for the whole group, so it is mounted once and survives paging.
       popup.on('open', () => {
         refit();
+        setOpenListingRef.current(currentId());
+        // The container, not the title: see `focusAfterOpen` above. `preventScroll`, because the
+        // popup is its own scroll box and focusing it must not jump it away from the top. Not for
+        // the reopen after a rebuild: that follows a filter change, and taking the focus there
+        // pulled it out of the slider or select the user was operating.
+        if (!reopeningRef.current) {
+          element.focus({ preventScroll: true });
+        }
 
         if (!transitMount || transitMount.dataset.mounted === 'true') return;
         transitMount.dataset.mounted = 'true';
@@ -419,15 +552,22 @@ export default function MapView() {
         popupRoots.current.push(unmount);
       });
 
+      // Only this group's own popup may clear the param, and only when a person closed it: a
+      // filter change removes the marker and MapLibre reports that as a close too.
+      popup.on('close', () => {
+        if (isTearingDownRef.current || !holdsOpenListing()) return;
+        setOpenListingRef.current(null);
+      });
+
       // The commute verdict is drawn as the shape underneath rather than onto the pin, so the only
       // thing left that recolours a pin is the distance ring, which is asked for explicitly.
-      let color = DEFAULT_MARKER_COLOR;
+      let color = MARKER_COLORS.listing;
       if (distanceFilter > 0 && homeAddresses.length > 0) {
         const inRange = homeAddresses.some(
           (home) => distanceMeters(home.coords.lat, home.coords.lng, lat, lng) <= distanceFilter * 1000,
         );
         if (inRange) {
-          color = 'orange';
+          color = MARKER_COLORS.inRing;
         }
       }
 
@@ -442,9 +582,38 @@ export default function MapView() {
         marker.getElement().appendChild(badge);
       }
 
+      if (holdsOpenListing()) {
+        reopen = marker;
+      }
+
       markers.current.push(marker);
     });
-  }, [listings, priceRange, homeAddresses, distanceFilter, commuteFilter]);
+
+    // Reopen whatever the address bar says was open, once every marker exists - this is what makes
+    // the back button from a detail page land on the popup it was opened from, and a bookmarked
+    // map address open on that listing.
+    //
+    // Nothing happens when the id is no longer among the pins, which a tightened filter can do.
+    // The param is deliberately left alone in that case rather than cleared: widening the filter
+    // again brings the pin back, and with it the popup.
+    if (reopen != null) {
+      reopeningRef.current = true;
+      try {
+        reopen.togglePopup();
+      } finally {
+        reopeningRef.current = false;
+      }
+    }
+
+    return () => {
+      mapInstance.off('load', updateLayers);
+      mapInstance.off('styledata', restoreRing);
+    };
+    // `isDark` because the ring is painted with a literal that the effect reads, so a theme switch
+    // has to redraw it. Without it the dark variant would only appear the next time one of the
+    // others changed. The open popup is deliberately *not* in here - it is read through a ref, see
+    // openListingIdRef, because rebuilding the markers would close the popup that just opened.
+  }, [listings, priceRange, homeAddresses, distanceFilter, commuteFilter, isDark]);
 
   return (
     <>
@@ -453,23 +622,6 @@ export default function MapView() {
           map for attention every single visit. */}
       <Headline text={t('map.title')} subtitle={t('map.onlyValidAddresses')} />
       <div className="map-view-container">
-        {homeAddresses.length === 0 && (
-          <Banner
-            fullMode={true}
-            type="warning"
-            bordered
-            closeIcon={null}
-            style={{ marginBottom: '8px' }}
-            description={
-              <span>
-                {t('map.noHomeAddressBefore')}
-                <Link to="/settings/travel-time">{t('map.noHomeAddressLink')}</Link>
-                {t('map.noHomeAddressAfter')}
-              </span>
-            }
-          />
-        )}
-
         <div className="map-view-container__map-wrapper">
           <MapCanvas
             countries={countries}
@@ -478,6 +630,9 @@ export default function MapView() {
             showTransit={showTransit}
             onControlsChange={handleControlsChange}
             controlsMode="always"
+            // This is the map where an address search earns its place: the pins are spread over
+            // whole cities, and "is there anything near here" is the question the page is for.
+            searchable
             transitExtra={
               /* Only offered while the layer it belongs to is on, and indented under it: on its own
                  it describes nothing. Unlike the switches around it, this one is a preference rather
@@ -500,11 +655,25 @@ export default function MapView() {
               </div>
             }
             onMapReady={handleMapReady}
-            panels={
-              /* Filters that only mean something for listings, so they stay with the view that owns
-                 them. In the map's own panel column, which is what carries them into the fullscreen
-                 overlay. */
+            controlsInPanels
+            panels={(controls, expandButton) => (
+              /* One box, two named groups. The map's own rows and this view's filters all answer
+                 what the map is showing, so they read as one panel with a line between them rather
+                 than as two identical boxes four pixels apart, neither of them with a heading. */
               <div className="map-panel">
+                {/* The fullscreen toggle rides on this heading rather than floating above the
+                    panel: it is a control over the map as a whole, and this is the line that names
+                    the map. */}
+                <div className="map-panel__groupTitle">
+                  {t('map.groupMap')}
+                  {expandButton}
+                </div>
+                {controls}
+
+                <div className="map-panel__divider" />
+
+                <div className="map-panel__groupTitle">{t('map.groupListings')}</div>
+
                 <div className="map-panel__row">
                   <Text size="small" strong className="map-panel__label">
                     {t('map.filterJobLabel')}
@@ -525,6 +694,9 @@ export default function MapView() {
                   </Select>
                 </div>
 
+                {/* Disabled rather than hidden, and it says why one line below. A control that
+                    cannot work is the honest place for that sentence - it used to be a full-width
+                    banner above the map, on every visit, for a fact that never changes. */}
                 <div className="map-panel__row">
                   <Text size="small" strong className="map-panel__label">
                     {t('map.filterDistanceLabel')}
@@ -532,6 +704,7 @@ export default function MapView() {
                   <Select
                     placeholder={t('map.filterDistanceNone')}
                     size="small"
+                    disabled={!hasHome}
                     onChange={(val) => setDistanceFilter(val)}
                     value={distanceFilter}
                     style={{ width: 100 }}
@@ -545,35 +718,31 @@ export default function MapView() {
                   </Select>
                 </div>
 
-                {/* Only for the people it can answer for: without a ceiling in Settings there is no
-                    budget to draw an area from. */}
-
-                {/* Only offered once there is an address to measure a commute from. Unlike the
-                    distance ring above, which recolours pins, this one hides them: a commute
-                    ceiling is asked as "show me only what I could live with". */}
-                {homeAddresses.length > 0 && (
-                  <div className="map-panel__row">
-                    <Text size="small" strong className="map-panel__label">
-                      {t('map.filterCommuteLabel')}
-                    </Text>
-                    <Select
-                      placeholder={t('map.filterCommuteNone')}
-                      showClear
-                      size="small"
-                      onChange={(val) => setCommuteFilter(val ?? null)}
-                      value={commuteFilter}
-                      style={{ width: 150 }}
-                    >
-                      {COMMUTE_OPTIONS.map(({ mode, minutes }) =>
-                        minutes.map((max) => (
-                          <Select.Option key={`${mode}:${max}`} value={`${mode}:${max}`}>
-                            {t('listings.filterCommuteOption', { mode: t(`travelTime.mode.${mode}`), minutes: max })}
-                          </Select.Option>
-                        )),
-                      )}
-                    </Select>
-                  </div>
-                )}
+                {/* Locked rather than hidden, for the same reason as the ring above. Unlike the
+                    distance ring, which recolours pins, this one hides them: a commute ceiling is
+                    asked as "show me only what I could live with". */}
+                <div className="map-panel__row">
+                  <Text size="small" strong className="map-panel__label">
+                    {t('map.filterCommuteLabel')}
+                  </Text>
+                  <Select
+                    placeholder={t('map.filterCommuteNone')}
+                    showClear
+                    size="small"
+                    disabled={!hasHome}
+                    onChange={(val) => setCommuteFilter(val ?? null)}
+                    value={commuteFilter}
+                    style={{ width: 150 }}
+                  >
+                    {COMMUTE_OPTIONS.map(({ mode, minutes }) =>
+                      minutes.map((max) => (
+                        <Select.Option key={`${mode}:${max}`} value={`${mode}:${max}`}>
+                          {t('listings.filterCommuteOption', { mode: t(`travelTime.mode.${mode}`), minutes: max })}
+                        </Select.Option>
+                      )),
+                    )}
+                  </Select>
+                </div>
 
                 <div className="map-panel__row">
                   <Text size="small" strong className="map-panel__label">
@@ -581,14 +750,25 @@ export default function MapView() {
                   </Text>
                   <div className="map-view-container__price-slider">
                     <div className="map__rangesliderLabels">
-                      <span>{priceRange[0]}</span>
-                      <span>{priceRange[1]}</span>
+                      <span>{formatEuroCompact(priceRange[0], locale)}</span>
+                      <span>{formatEuroCompact(priceRange[1] || getMaxPrice(), locale)}</span>
                     </div>
                     <RangeSlider min={0} max={getMaxPrice()} step={100} value={priceRange} onInput={handlePriceRange} />
                   </div>
                 </div>
+
+                {!hasHome && (
+                  <div className="map-panel__hint">
+                    {t('map.noHomeAddressBefore')}
+                    <Link to="/settings/travel-time">{t('map.noHomeAddressLink')}</Link>
+                    {t('map.noHomeAddressAfter')}
+                  </div>
+                )}
+
+                <div className="map-panel__divider" />
+                <MapLegend hasStacks={hasStacks} hasRing={distanceFilter > 0 && hasHome} hasHome={hasHome} />
               </div>
-            }
+            )}
           />
         </div>
 

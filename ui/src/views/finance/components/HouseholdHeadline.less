@@ -1,0 +1,70 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../../tokens.less';
+
+.householdHeadline {
+  /* The answer to the two fields above, separated by a rule rather than by a card boundary: it is
+     what they produce, not a second topic. */
+  &__readout {
+    margin-top: @space-5;
+    padding-top: @space-4;
+    border-top: 1px solid @color-border;
+  }
+
+  &__row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: @space-4;
+  }
+
+  &__caption {
+    font-size: @text-sm;
+    color: @color-muted;
+  }
+
+  &__value {
+    font-family: @font-mono;
+    font-size: @text-lg;
+    color: @color-accent;
+  }
+
+  &__bar {
+    display: flex;
+    overflow: hidden;
+    height: 8px;
+    margin-top: @space-3;
+    border-radius: @radius-chip;
+    background: @color-elevated;
+  }
+
+  &__seg {
+    height: 100%;
+
+    &--rule {
+      background: @color-accent;
+    }
+
+    &--living {
+      background: @color-border-bright;
+    }
+  }
+
+  &__legend {
+    display: flex;
+    justify-content: space-between;
+    margin-top: @space-2;
+    font-size: @text-xs;
+    color: @color-muted;
+  }
+
+  &__prompt {
+    margin: 0;
+    font-size: @text-sm;
+    line-height: 1.55;
+    color: @color-muted;
+  }
+}

@@ -20,8 +20,15 @@ const TEST_PROVIDER_PATH = path.join(ROOT, 'test', 'provider', 'testProvider.jso
  * of the first page alone would be a truncated search - `paging.info.count` promising listings the
  * offline suite can never reach. The pages are merged into one payload instead, keeping the first
  * response's `paging` so the offline fetch mock can serve them back sliced, page by page.
+ *
+ * The endpoint refuses a search without the token the website fetches first, so the provider's
+ * own token request is used rather than a copy of it.
+ *
+ * @param {string} apiUrl The run's list endpoint.
+ * @param {string} refererUrl The search page the user pasted.
+ * @param {(headers: Object.<string, string>) => Promise<string|null>} fetchSearchToken
  */
-async function downloadDeutscheWohnenFixtures(apiUrl, refererUrl) {
+async function downloadDeutscheWohnenFixtures(apiUrl, refererUrl, fetchSearchToken) {
   console.log('\nDownloading deutscheWohnen...');
 
   const headers = {
@@ -30,6 +37,11 @@ async function downloadDeutscheWohnenFixtures(apiUrl, refererUrl) {
     Accept: 'application/json',
     Referer: refererUrl,
   };
+
+  const token = await fetchSearchToken(headers);
+  if (token) {
+    headers['X-VON-Search-Token'] = token;
+  }
 
   const pageSize = Number.parseInt(new URL(apiUrl).searchParams.get('limit') ?? '', 10) || 50;
   const listData = { paging: null, results: [] };
@@ -271,6 +283,64 @@ async function downloadCasaMapFixture(mapSearchUrl, launchBrowser, closeBrowser,
 }
 
 /**
+ * BETTERHOMES answers both a search and one advert's detail from the same endpoint, so both
+ * fixtures are recorded through the provider's own payload builder rather than a URL written out
+ * here - the payload is the whole translation, and a copy of it would drift.
+ *
+ * @param {string} url the search url from testProvider.json
+ * @returns {Promise<void>}
+ */
+async function downloadBetterhomesFixtures(url) {
+  console.log('\nDownloading betterhomes...');
+
+  const { buildSearchPayload } = await import('../../lib/provider/betterhomes.js');
+  const origin = new URL(url).origin;
+  const payload = buildSearchPayload(url);
+
+  const call = (action, data) =>
+    fetch(`${origin}/apirequest`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'User-Agent': BROWSER_USER_AGENT,
+        Referer: url,
+      },
+      body: JSON.stringify({ action, method: 'POST', data }),
+    });
+
+  const listResponse = await call('Object/search', payload);
+  if (!listResponse.ok) {
+    console.warn(`  Failed to download betterhomes list: ${listResponse.statusText}`);
+    return;
+  }
+
+  const rows = await listResponse.json();
+  await writeFile(path.join(FIXTURES_DIR, 'betterhomes_list.json'), JSON.stringify(rows, null, 2), 'utf-8');
+  console.log(`  Saved betterhomes_list.json (${Array.isArray(rows) ? rows.length : 0} listings)`);
+
+  const first = (Array.isArray(rows) ? rows : [])[0];
+  if (first?.uniqueKey == null) {
+    console.warn('  No advert in the search response - skipping detail fixture');
+    return;
+  }
+
+  const detailResponse = await call('Object/detail', {
+    id: first.uniqueKey,
+    countryCode: payload.countryCode,
+    languageCode: payload.languageCode,
+  });
+  if (!detailResponse.ok) {
+    console.warn(`  Failed to download betterhomes detail: ${detailResponse.statusText}`);
+    return;
+  }
+
+  const detail = await detailResponse.json();
+  await writeFile(path.join(FIXTURES_DIR, 'betterhomes_detail.json'), JSON.stringify(detail, null, 2), 'utf-8');
+  console.log(`  Saved betterhomes_detail.json (${first.uniqueKey})`);
+}
+
+/**
  * Flatfox answers a search in two requests, so it needs two fixtures.
  *
  * The pins carry the primary keys of everything matching the search; the second call hydrates those
@@ -319,8 +389,18 @@ async function downloadFlatfoxFixtures(url) {
   console.log('  Saved flatfox_listings.json');
 }
 
-async function downloadImmoscoutFixtures(mobileApiUrl) {
-  console.log('\nDownloading immoscout...');
+/**
+ * Records one ImmoScout national site's search and exposé responses.
+ *
+ * The provider name is a parameter rather than a constant because Germany and Austria are answered
+ * by one API off one index, so the two providers differ in the search URL they hand in and in
+ * nothing else - and the offline router tells their recordings apart by the geocode in that URL.
+ *
+ * @param {string} mobileApiUrl The run config's translated `search/list` URL.
+ * @param {string} name Provider id, which is also the fixture prefix.
+ */
+async function downloadImmoscoutFixtures(mobileApiUrl, name = 'immoscout') {
+  console.log(`\nDownloading ${name}...`);
 
   const listResponse = await fetch(mobileApiUrl, {
     method: 'POST',
@@ -332,13 +412,13 @@ async function downloadImmoscoutFixtures(mobileApiUrl) {
   });
 
   if (!listResponse.ok) {
-    console.warn(`  Failed to download immoscout list: ${listResponse.statusText}`);
+    console.warn(`  Failed to download ${name} list: ${listResponse.statusText}`);
     return;
   }
 
   const listData = await listResponse.json();
-  await writeFile(path.join(FIXTURES_DIR, 'immoscout_list.json'), JSON.stringify(listData, null, 2), 'utf-8');
-  console.log('  Saved immoscout_list.json');
+  await writeFile(path.join(FIXTURES_DIR, `${name}_list.json`), JSON.stringify(listData, null, 2), 'utf-8');
+  console.log(`  Saved ${name}_list.json`);
 
   const exposes = (listData.resultListItems || []).filter((item) => item.type === 'EXPOSE_RESULT');
   if (exposes.length === 0) {
@@ -349,7 +429,7 @@ async function downloadImmoscoutFixtures(mobileApiUrl) {
   const exposeId = exposes[0].item?.id;
   if (!exposeId) return;
 
-  console.log(`  Downloading immoscout detail (expose ${exposeId})...`);
+  console.log(`  Downloading ${name} detail (expose ${exposeId})...`);
   const detailResponse = await fetch(`https://api.mobile.immobilienscout24.de/expose/${exposeId}`, {
     headers: {
       'User-Agent': 'ImmoScout_27.3_26.0_._',
@@ -358,13 +438,13 @@ async function downloadImmoscoutFixtures(mobileApiUrl) {
   });
 
   if (!detailResponse.ok) {
-    console.warn(`  Failed to download immoscout detail: ${detailResponse.statusText}`);
+    console.warn(`  Failed to download ${name} detail: ${detailResponse.statusText}`);
     return;
   }
 
   const detailData = await detailResponse.json();
-  await writeFile(path.join(FIXTURES_DIR, 'immoscout_detail.json'), JSON.stringify(detailData, null, 2), 'utf-8');
-  console.log('  Saved immoscout_detail.json');
+  await writeFile(path.join(FIXTURES_DIR, `${name}_detail.json`), JSON.stringify(detailData, null, 2), 'utf-8');
+  console.log(`  Saved ${name}_detail.json`);
 }
 
 /**
@@ -722,10 +802,11 @@ async function main() {
 
     switch (name) {
       case 'immoscout':
-        await downloadImmoscoutFixtures(runConfig.url);
+      case 'immoscoutAt':
+        await downloadImmoscoutFixtures(runConfig.url, name);
         break;
       case 'deutscheWohnen':
-        await downloadDeutscheWohnenFixtures(runConfig.url, cfg.url);
+        await downloadDeutscheWohnenFixtures(runConfig.url, cfg.url, provider.fetchSearchToken);
         break;
       case 'immowelt':
         await downloadImmoweltFixtures(runConfig, launchBrowser, closeBrowser);
@@ -735,6 +816,9 @@ async function main() {
         break;
       case 'flatfox':
         await downloadFlatfoxFixtures(runConfig.url);
+        break;
+      case 'betterhomes':
+        await downloadBetterhomesFixtures(runConfig.url);
         break;
       case 'tecnocasa':
       case 'tecnorete':

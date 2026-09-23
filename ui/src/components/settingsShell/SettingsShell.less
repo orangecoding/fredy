@@ -23,12 +23,6 @@
     max-width: 860px;
   }
 
-  &__saveRow {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: @space-2;
-  }
-
   // Settings that only mean something once their parent feature is switched on. Indented and
   // rule-marked so the dependency is visible at a glance rather than only discoverable by toggling.
   &__subSettings {
@@ -101,17 +95,25 @@
 }
 
 // Tabs styling
+//
+// Nicht gewaehlt stand in @color-faint: 2,47 zu 1 auf @color-base im dunklen und 2,88 im hellen
+// Theme, wo AA 4,5 verlangt. Damit waren fuenf von sechs Reitern unlesbar, und der lesbare Zustand
+// war ausgerechnet der, den nur eine Maus erreicht - :hover ging auf @color-muted.
+//
+// Jetzt traegt den Unterschied zwischen gewaehlt und nicht gewaehlt der Akzentbalken darunter und
+// das Schriftgewicht, nicht die Lesbarkeit. @color-muted schafft 5,43 zu 1 dunkel und 5,65 hell.
 .semi-tabs-bar-line .semi-tabs-tab {
-  color: @color-faint;
+  color: @color-muted;
   font-size: @text-base;
   transition: color @transition-fast;
 
   &:hover {
-    color: @color-muted;
+    color: @color-text;
   }
 
   &.semi-tabs-tab-active {
     color: @color-text !important;
+    font-weight: 600;
   }
 }
 
@@ -120,20 +122,80 @@
   height: 2px;
 }
 
+/* Sagt, dass die Karten darunter zusammengehoeren, ohne eine eigene Karte um sie zu ziehen. Die
+   Bewerbungsseite traegt sechs gleich aussehende Karten, von denen vier das Profil sind und zwei
+   der Brief - der Dateikommentar sagt das seit jeher, die Seite selbst sagte es nirgends. */
+.settingsShell__groupTitle {
+  /* Oben mehr als unten, und zwar deutlich: eine Ueberschrift, die von der Karte darueber genauso
+     weit weg steht wie von der darunter, gruppiert nichts - sie stand vorher sogar auf 0 unten und
+     klebte damit an der Karte, die sie benennt.
+     Der obere Rand faellt mit den 16px zusammen, die jede Karte nach unten traegt, statt sich mit
+     ihnen zu addieren; @space-6 setzt die Gruppengrenze also auf 24px gegen die 16px zwischen zwei
+     gewoehnlichen Karten. Unten bleiben 8. */
+  margin-top: @space-6;
+  margin-bottom: @space-2;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: @color-faint;
+  user-select: none;
+}
+
+/* Eine Warnung, die zur Hilfe der Karte gehoert und nicht zu einem einzelnen Bedienelement: dass
+   Anbieter-Details je Inserat einen weiteren Abruf kosten, gilt fuer die ganze Karte. Die Werte
+   sind die von `preferencesPage__modeWarning`, weil es dieselbe Art Zeile ist, und es gilt
+   dieselbe Regel: Bernstein traegt nur das Zeichen, die Schrift bleibt gedaempfte Textfarbe. */
+.settingsShell__helpWarning {
+  display: flex;
+  align-items: flex-start;
+  gap: @space-2;
+  margin-top: @space-2;
+  font-size: @text-sm;
+  line-height: 1.5;
+  color: @color-muted;
+
+  .semi-icon {
+    color: @color-warning;
+    flex: none;
+    margin-top: 2px;
+  }
+}
+
+/* Der einzige Ort in den Einstellungen, an dem "gilt sofort" steht. Ueberall sonst wartet eine
+   Aenderung auf die Speicherleiste, und dass genau diese eine Karte das nicht tut, ist eine
+   Entscheidung, die der Leser kennen muss. */
+.settingsShell__instant {
+  display: inline-flex;
+  align-items: center;
+  gap: @space-2;
+  margin-bottom: @space-3;
+  font-size: @text-xs;
+  color: @color-muted;
+}
+
+.settingsShell__instantDot {
+  width: 5px;
+  height: 5px;
+  border-radius: @radius-pill;
+  background: @color-success;
+  flex: none;
+}
+
 /* Sits next to an inline control - the departure pickers under an address - and has to read as a
    caption for them rather than as another field label above them. */
 .settingsShell__inlineLabel {
-  color: var(--semi-color-text-2);
-  font-size: 0.78rem;
+  color: @color-muted;
+  font-size: @text-sm;
   white-space: nowrap;
 }
 
 /* Explanation under an inline control, indented to read as belonging to it rather than to the
    next field down. */
 .settingsShell__inlineHint {
-  color: var(--semi-color-text-2);
-  font-size: 0.72rem;
-  margin-top: 4px;
+  color: @color-muted;
+  font-size: @text-xs;
+  margin-top: @space-1;
   line-height: 1.4;
 }
 
@@ -145,4 +207,48 @@
   color: @color-muted;
   font-size: @text-sm;
   line-height: 1.5;
+}
+
+/* Rot, solange die Aufzeichnung laeuft. Gelesen aus derselben globalen Flagge wie das Banner der
+   Anwendung, damit die Beschriftung keinen eigenen Zustand braucht. */
+/* !important, because Semi colours every tab icon with a selector of up to five classes
+   (`.semi-tabs-bar .semi-tabs-tab-active:hover .semi-icon:not(...)`), and a single class lost to it:
+   the icon stayed grey while capture was running. */
+.settingsShell__tabIcon--alert {
+  color: @color-error !important;
+}
+
+/* Was beim Speichern mehr tut als speichern. Die Systemseite laedt den Browser drei Sekunden
+   danach neu, weil Port und Datenbankpfad beim Start gelesen werden, und das gehoert vor die
+   Entscheidung statt in den Toast danach. Bernstein traegt nur der Punkt, die Schrift bleibt
+   Textfarbe - dieselbe Regel wie beim Versionshinweis im Footer. */
+.settingsShell__cardFlag {
+  display: inline-flex;
+  align-items: center;
+  gap: @space-2;
+  height: 20px;
+  padding: 0 @space-2;
+  border-radius: @radius-chip;
+  background: @color-elevated;
+  border: 1px solid @color-border;
+  font-size: @text-xs;
+  line-height: 1;
+  color: @color-text;
+  white-space: nowrap;
+}
+
+.settingsShell__cardFlagDot {
+  width: 5px;
+  height: 5px;
+  border-radius: @radius-pill;
+  flex: none;
+  background: @color-warning;
+
+  &--live {
+    background: @color-error;
+  }
+
+  &--ok {
+    background: @color-success;
+  }
 }

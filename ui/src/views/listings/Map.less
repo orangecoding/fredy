@@ -36,7 +36,14 @@
   // query below takes it back to the old width where the screen cannot spare it.
   width: 340px;
   max-width: 100%;
-  color: var(--semi-color-text-0);
+  color: @color-text;
+
+  // The popup sends focus here when it opens, so that its contents are one Tab away rather than a
+  // few hundred markers away. No ring for it: this is the box, not a control, and the things a
+  // keyboard reaches from here draw their own.
+  &:focus {
+    outline: none;
+  }
 
   img {
     width: 100%;
@@ -46,18 +53,30 @@
     margin-bottom: 0.5rem;
   }
 
+  /*
+   * The pager, and the corner it has to keep clear.
+   *
+   * It is the first thing in the popup, so its "next" button sits exactly where MapLibre puts the
+   * close button - and in a group of several listings the close button landed on top of the arrow,
+   * which is the one popup where both controls exist at once.
+   *
+   * The reserved strip is measured from the popup's own padding box: the close button is 28px wide
+   * and offset 8px from the content edge, so it reaches 36px in; the content's padding already
+   * accounts for 10px of that, and the rest is this, plus a gap so the two do not touch.
+   */
   &__pager {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
+    padding-right: 32px;
     margin-bottom: 0.5rem;
   }
 
   &__pagerLabel {
     font-size: 0.8rem;
     font-variant-numeric: tabular-nums;
-    color: var(--semi-color-text-1);
+    color: @color-muted;
   }
 
   &__pagerButton {
@@ -67,36 +86,78 @@
     width: 26px;
     height: 26px;
     padding: 0;
-    border: 1px solid var(--semi-color-border);
+    border: 1px solid @color-border;
     border-radius: 6px;
-    background: var(--semi-color-fill-0);
-    color: var(--semi-color-text-0);
+    background: @color-elevated;
+    color: @color-text;
     cursor: pointer;
 
     &:hover {
-      background: var(--semi-color-fill-1);
+      background: @color-fill-1;
     }
   }
 
-  h4 {
-    margin: 0 0 0.5rem 0;
-    font-size: 1.1rem;
+  &__title {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    margin: @space-2 0 0;
+    font-size: 14.5px;
+    font-weight: 600;
+    line-height: 1.35;
+    color: @color-text;
+    text-decoration: none;
+
+    &:hover {
+      color: @color-text;
+      text-decoration: underline;
+    }
+
+    /*
+     * The browser's own ring is a blue box that reads as a stray border around a heading, and it
+     * was showing on every open: MapLibre focuses the first `a[href]` in a popup when it opens
+     * (`focusAfterOpen`), and since the title became a link that is this element. The open no
+     * longer moves focus - see where the popup is constructed - so what is left here is a
+     * keyboard ring, in the app's own colour, and nothing at all for a pointer.
+     */
+    &:focus {
+      outline: none;
+    }
+
+    &:focus-visible {
+      outline: 2px solid @color-info;
+      outline-offset: 3px;
+      border-radius: @radius-chip;
+    }
   }
 
-  .info {
-    font-size: 0.8rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.1rem;
+  &__facts {
+    margin-top: @space-2;
+    display: grid;
+    grid-template-columns: 62px 1fr;
+    gap: 3px @space-2;
+    font-size: @text-sm;
+    color: @color-text;
+
+    > span:nth-child(odd) {
+      color: @color-muted;
+    }
+  }
+
+  &__num {
+    font-family: @font-mono;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__actions {
+    margin-top: @space-3;
   }
 
   &__transit {
     margin-top: 0.6rem;
     padding-top: 0.5rem;
-    border-top: 1px solid var(--semi-color-border);
+    border-top: 1px solid @color-border;
 
     strong {
       display: block;
@@ -108,81 +169,6 @@
      250px cap the listing popup brings. */
   &--transit {
     max-width: 280px;
-  }
-
-  &__linkButton {
-    background: var(--semi-color-primary);
-    color: white;
-    font-size: 14px;
-    line-height: 20px;
-    font-weight: 600;
-    height: 32px;
-    width: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 6px;
-
-    a {
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-decoration: none;
-      width: 100%;
-      height: 100%;
-    }
-
-    &:hover {
-      background: var(--semi-color-primary-hover);
-      cursor: pointer;
-    }
-  }
-
-  &__detailsButton {
-    background: var(--semi-color-tertiary);
-    color: white;
-    border: none;
-    font-size: 14px;
-    height: 32px;
-    width: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 6px;
-    cursor: pointer;
-    padding: 0;
-
-    &:hover {
-      background: var(--semi-color-tertiary-hover);
-    }
-
-    svg {
-      fill: currentColor;
-    }
-  }
-
-  &__deleteButton {
-    background: var(--semi-color-danger);
-    color: white;
-    border: none;
-    font-size: 14px;
-    height: 32px;
-    width: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 6px;
-    cursor: pointer;
-    padding: 0;
-
-    &:hover {
-      background: var(--semi-color-danger-hover);
-    }
-
-    svg {
-      fill: currentColor;
-    }
   }
 }
 
@@ -219,10 +205,10 @@
 
 /* Override MapLibre default popup styles */
 .maplibregl-popup-content {
-  background-color: var(--semi-color-bg-1) !important;
-  color: var(--semi-color-text-0) !important;
+  background-color: @color-surface !important;
+  color: @color-text !important;
   border-radius: 8px !important;
-  box-shadow: var(--semi-shadow-elevated) !important;
+  box-shadow: @shadow-lg !important;
   /* A listing popup with image, details and nearby stops easily outgrows the map. Capping it and
      scrolling inside keeps the whole popup reachable; keepPopupInView() then pans the map so it
      is fully on screen. */
@@ -230,9 +216,38 @@
   overflow-y: auto;
 }
 
+/*
+ * The close button. MapLibre ships it as a bare transparent `×` at the very corner, roughly
+ * 20 by 17 pixels with no surface of its own - and in the listing popup the first thing under that
+ * corner is the photograph, so it disappeared into whatever the picture happened to be.
+ *
+ * Given a size worth aiming at, moved off the corner, and put on a scrim. The scrim and the white
+ * on it are literal on purpose and `test/ui/theme.test.js` allows exactly this: what is behind the
+ * button is a photograph, and a photograph is the same in both themes.
+ */
+.maplibregl-popup-close-button {
+  top: @space-2 !important;
+  right: @space-2 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: @radius-pill !important;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 18px;
+  line-height: 1;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.75) !important;
+  }
+}
+
 .maplibregl-popup-tip {
-  border-top-color: var(--semi-color-bg-1) !important;
-  border-bottom-color: var(--semi-color-bg-1) !important;
+  border-top-color: @color-surface !important;
+  border-bottom-color: @color-surface !important;
 }
 
 .map {

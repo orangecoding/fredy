@@ -26,6 +26,59 @@ export const OPENFREEMAP_TILEJSON_URL = 'https://tiles.openfreemap.org/planet';
 /** Glyph endpoint of the OpenFreeMap styles; needed by any style that renders our text labels. */
 export const OPENFREEMAP_GLYPHS_URL = 'https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf';
 
+/**
+ * The overlay colours, once per basemap brightness.
+ *
+ * MapLibre paint cannot read a custom property, so these are the literals `AGENTS.md` allows for
+ * map layers - collected here rather than scattered through two layer factories, and in two
+ * complete sets rather than one set plus exceptions.
+ *
+ * Which set applies follows the *basemap*, not the theme. Aerial imagery is bright in both themes,
+ * so the satellite basemap always takes `light`; only the dark vector basemap takes `dark`.
+ *
+ * `#e8e3de` on the dark basemap's own `rgb(12,12,12)` measures 15,3 to 1.
+ *
+ * @type {Readonly<Record<'light'|'dark', object>>}
+ */
+export const OVERLAY_PAINT = Object.freeze({
+  light: {
+    stopLabel: '#1f2937',
+    stopHalo: '#ffffff',
+    lineCasing: '#ffffff',
+    lineCasingOpacity: 0.6,
+    lineMetro: '#2563eb',
+    lineTram: '#ef4444',
+    lineOther: '#7c3aed',
+    buildingLow: 'lightgray',
+    buildingMid: 'royalblue',
+    buildingHigh: 'lightblue',
+    buildingOpacity: 0.6,
+  },
+  dark: {
+    stopLabel: '#e8e3de',
+    stopHalo: '#0c0c0c',
+    lineCasing: '#000000',
+    lineCasingOpacity: 0.55,
+    lineMetro: '#60a5fa',
+    lineTram: '#f87171',
+    lineOther: '#a78bfa',
+    buildingLow: '#2a2a2e',
+    buildingMid: '#3b4a6b',
+    buildingHigh: '#4a6fa5',
+    buildingOpacity: 0.75,
+  },
+});
+
+/**
+ * Coerces anything to a paint variant.
+ *
+ * @param {unknown} variant
+ * @returns {'light'|'dark'}
+ */
+function paintFor(variant) {
+  return variant === 'dark' ? OVERLAY_PAINT.dark : OVERLAY_PAINT.light;
+}
+
 /** Id of the 3D buildings fill-extrusion layer. */
 export const BUILDINGS_LAYER_ID = '3d-buildings';
 
@@ -90,17 +143,43 @@ export function ensureOpenFreeMapSource(map) {
 }
 
 /**
- * Finds the first label layer of the current style, so overlays can be inserted underneath it and
- * leave the basemap labels legible.
+ * Where overlays are inserted, so they stay under the basemap's labels and over its geometry.
+ *
+ * Two conditions, and the second one is the whole reason this is not simply "the first label
+ * layer". A style may label its water long before it draws its roads: in OpenFreeMap's `dark` the
+ * first symbol layer carrying a `text-field` is `water_name` at position 9 of 47, and inserting
+ * there puts the transit lines underneath every building, road and railway, which is to say
+ * nowhere. `bright` puts it at position 95 of 119, above everything drawn, which is what the
+ * overlays were built against.
+ *
+ * So: the first labelled symbol layer that comes *after* the last layer which is not a symbol.
+ * On `bright` that is position 95 again, unchanged; on `dark` it is `place_other` at 38.
  *
  * @param {import('maplibre-gl').Map} map
  * @returns {string|undefined} the layer id, or `undefined` for styles without text labels (the
  * satellite style is raster only, in which case overlays are appended on top).
  */
-export function findFirstSymbolLayerId(map) {
-  const layers = map.getStyle()?.layers ?? [];
+export function findOverlayInsertionId(map) {
+  const style = map.getStyle();
+  const layers = style?.layers ?? [];
+  const sources = style?.sources ?? {};
+
+  // The basemap's own layers only. Ours - the transit and building overlays on the shared vector
+  // source, the detail route and the distance ring on GeoJSON sources - sit on top of the geometry
+  // already, and counting them moved the anchor above every label (the route line) or past the end
+  // of the style (the ring), so an overlay switched on afterwards covered the street names.
+  const isBasemap = (layer) =>
+    layer.source == null || (layer.source !== OPENFREEMAP_SOURCE_ID && sources[layer.source]?.type !== 'geojson');
+
+  let lastNonSymbol = -1;
   for (let i = 0; i < layers.length; i++) {
-    if (layers[i].type === 'symbol' && layers[i].layout?.['text-field']) {
+    if (layers[i].type !== 'symbol' && isBasemap(layers[i])) {
+      lastNonSymbol = i;
+    }
+  }
+
+  for (let i = lastNonSymbol + 1; i < layers.length; i++) {
+    if (layers[i].type === 'symbol' && isBasemap(layers[i]) && layers[i].layout?.['text-field']) {
       return layers[i].id;
     }
   }
@@ -110,9 +189,10 @@ export function findFirstSymbolLayerId(map) {
 /**
  * Builds the 3D buildings layer spec.
  *
+ * @param {object} paint One of {@link OVERLAY_PAINT}.
  * @returns {import('maplibre-gl').LayerSpecification}
  */
-function buildingsLayer() {
+function buildingsLayer(paint) {
   return {
     id: BUILDINGS_LAYER_ID,
     source: OPENFREEMAP_SOURCE_ID,
@@ -126,15 +206,15 @@ function buildingsLayer() {
         ['linear'],
         ['get', 'render_height'],
         0,
-        'lightgray',
+        paint.buildingLow,
         200,
-        'royalblue',
+        paint.buildingMid,
         400,
-        'lightblue',
+        paint.buildingHigh,
       ],
       'fill-extrusion-height': ['interpolate', ['linear'], ['zoom'], 15, 0, 16, ['get', 'render_height']],
       'fill-extrusion-base': ['case', ['>=', ['get', 'zoom'], 16], ['get', 'render_min_height'], 0],
-      'fill-extrusion-opacity': 0.6,
+      'fill-extrusion-opacity': paint.buildingOpacity,
     },
   };
 }
@@ -150,9 +230,10 @@ function buildingsLayer() {
  * no rail at all, so there is nothing to label them with. Which line serves a place is answered by
  * the departure board behind {@link TRANSIT_STOPS_LAYER_ID} instead.
  *
+ * @param {object} paint One of {@link OVERLAY_PAINT}.
  * @returns {import('maplibre-gl').LayerSpecification[]}
  */
-function transitLayers() {
+function transitLayers(paint) {
   return [
     {
       id: 'transit-line-casing',
@@ -163,8 +244,8 @@ function transitLayers() {
       filter: TRANSIT_LINE_FILTER,
       layout: { 'line-cap': 'round', 'line-join': 'round' },
       paint: {
-        'line-color': '#ffffff',
-        'line-opacity': 0.6,
+        'line-color': paint.lineCasing,
+        'line-opacity': paint.lineCasingOpacity,
         'line-width': ['interpolate', ['linear'], ['zoom'], 8, 2.8, 14, 4.5, 18, 7],
       },
     },
@@ -181,10 +262,10 @@ function transitLayers() {
           'match',
           ['get', 'subclass'],
           ['subway', 'light_rail'],
-          '#2563eb',
+          paint.lineMetro,
           ['tram'],
-          '#ef4444',
-          '#7c3aed',
+          paint.lineTram,
+          paint.lineOther,
         ],
         'line-width': ['interpolate', ['linear'], ['zoom'], 8, 0.8, 14, 2.5, 18, 5],
       },
@@ -226,8 +307,8 @@ function transitLayers() {
         'text-max-width': 9,
       },
       paint: {
-        'text-color': '#1f2937',
-        'text-halo-color': '#ffffff',
+        'text-color': paint.stopLabel,
+        'text-halo-color': paint.stopHalo,
         'text-halo-width': 1.2,
       },
     },
@@ -330,14 +411,15 @@ function setBasemapTransitPoisVisible(map, visible) {
  *
  * @param {import('maplibre-gl').Map} map
  * @param {boolean} enabled
+ * @param {'light'|'dark'} [variant='light'] Follows the basemap's brightness, not the theme.
  */
-export function applyBuildingsLayer(map, enabled) {
+export function applyBuildingsLayer(map, enabled, variant = 'light') {
   if (!enabled) {
     removeLayers(map, [BUILDINGS_LAYER_ID]);
     return;
   }
   ensureOpenFreeMapSource(map);
-  addLayers(map, [buildingsLayer()], findFirstSymbolLayerId(map));
+  addLayers(map, [buildingsLayer(paintFor(variant))], findOverlayInsertionId(map));
 }
 
 /**
@@ -345,8 +427,9 @@ export function applyBuildingsLayer(map, enabled) {
  *
  * @param {import('maplibre-gl').Map} map
  * @param {boolean} enabled
+ * @param {'light'|'dark'} [variant='light'] Follows the basemap's brightness, not the theme.
  */
-export function applyTransitLayers(map, enabled) {
+export function applyTransitLayers(map, enabled, variant = 'light') {
   setBasemapTransitPoisVisible(map, !enabled);
 
   if (!enabled) {
@@ -357,5 +440,8 @@ export function applyTransitLayers(map, enabled) {
   ensureOpenFreeMapSource(map);
   // The basemap's own stop icons and names are suppressed above, so the overlay names its stops
   // itself on every style - one icon, one name, and the same look on the satellite basemap.
-  addLayers(map, transitLayers(), findFirstSymbolLayerId(map));
+  //
+  // On the dark basemap there is nothing to suppress: it ships no POI layers at all, which is also
+  // why the overlay is the only thing naming a stop there.
+  addLayers(map, transitLayers(paintFor(variant)), findOverlayInsertionId(map));
 }

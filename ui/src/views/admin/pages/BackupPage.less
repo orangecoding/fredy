@@ -1,0 +1,57 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../../tokens.less';
+
+.backupPage {
+  &__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: @space-3;
+    flex-wrap: wrap;
+  }
+
+  &__meta {
+    font-size: @text-sm;
+    color: @color-muted;
+  }
+
+  &__file {
+    display: none;
+  }
+
+  /* Die Karte, die die Datenbank ersetzt, traegt die Farbe der Gefahr an ihrem Rand statt in einem
+     Knopf. Ein roter Knopf neben einem grauen sagt "eine dieser Aktionen ist heikel"; ein roter
+     Rahmen um eine eigene Karte sagt, welche. */
+  &__danger {
+    border-color: rgb(@color-error-rgb / 30%) !important;
+
+    .semi-card-header {
+      border-bottom-color: rgb(@color-error-rgb / 20%) !important;
+    }
+  }
+
+  &__dangerTitle {
+    display: inline-flex;
+    align-items: center;
+    gap: @space-2;
+
+    .semi-icon {
+      color: @color-error;
+    }
+  }
+
+  &__migrationInfo {
+    margin-top: @space-2;
+    font-size: @text-sm;
+    color: @color-muted;
+  }
+
+  &__bannerTitle {
+    font-weight: 600;
+    font-size: @text-base;
+  }
+}

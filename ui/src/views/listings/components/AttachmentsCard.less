@@ -21,6 +21,40 @@
     margin-bottom: 1rem;
   }
 
+  // Wraps the list, because that is what a file is dropped onto - the box showing what is already
+  // attached, not the button under it. Positioned, so the "release to upload" panel can cover it.
+  &__dropzone {
+    position: relative;
+    border-radius: @radius-card;
+  }
+
+  &__dropzone--active {
+    outline: 2px dashed @color-accent;
+    outline-offset: 2px;
+  }
+
+  &__dropOverlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: @space-1;
+    border-radius: @radius-card;
+    // Opaque: the rows underneath would otherwise read through the message that is telling the
+    // user this whole area is one target.
+    background: @color-elevated;
+    color: @color-text;
+    font-size: @text-base;
+    /*
+     * Never takes the pointer. A drag entering the overlay would leave the zone underneath, which
+     * fires dragleave, which hides the overlay, which puts the pointer back over the zone - the
+     * highlight would strobe under the cursor for as long as the file is held there.
+     */
+    pointer-events: none;
+  }
+
   &__list {
     list-style: none;
     margin: 0 0 @space-3 0;
@@ -29,6 +63,10 @@
 
   &__empty {
     padding: @space-3 0;
+  }
+
+  &__emptyHint {
+    display: block;
   }
 
   &__item {

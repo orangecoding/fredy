@@ -9,6 +9,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { TRACKING_POIS } from '../../lib/TRACKING_POIS.js';
 import { COMMUTE_ACTIONS } from '../../ui/src/services/jobs/commuteFilter.js';
+import { JOB_REQUIREMENTS } from '../../ui/src/services/jobs/jobValidation.js';
 import {
   CONNECTIVITY_SOURCES,
   DISPLAY_TECHNOLOGIES,
@@ -117,6 +118,9 @@ function sourceFiles(dir) {
 const COMPUTED_KEYS = [
   ...['transit', 'car', 'bike', 'walk'].map((mode) => `travelTime.mode.${mode}`),
   ...['good', 'acceptable', 'poor'].map((band) => `map.commuteBand.${band}`),
+  // The map's colour key, built from the entry it is explaining. Same failure mode one line up: a
+  // missing one paints `map.legend.stack` next to the dot instead of naming what the dot means.
+  ...['listing', 'stack', 'inRing', 'home'].map((entry) => `map.legend.${entry}`),
   // Both families are built from COMMUTE_ACTIONS, so the list below is the one place that has to be
   // kept in step with it - and the assertion below does exactly that rather than repeating the
   // three names a fourth time. A missing entry here would print `jobs.mutation.commuteAction.mark`
@@ -156,6 +160,13 @@ const COMPUTED_KEYS = [
   ...['permanent', 'temporary', 'selfEmployed', 'civilServant', 'student', 'retired'].map(
     (type) => `settings.application.employmentType.${type}`,
   ),
+  // The job form's readiness bar names each missing requirement by a key built from the list, and
+  // a fifth requirement without one would print the raw key into the bar.
+  ...JOB_REQUIREMENTS.map((requirement) => `jobs.mutation.requirement.${requirement.key}`),
+  // `relativeTime` builds its key from the direction and the unit, one day included.
+  ...['In', 'Ago'].flatMap((direction) =>
+    ['Minutes', 'Hours', 'Day', 'Days'].map((unit) => `dashboard.time${direction}${unit}`),
+  ),
 ];
 
 /**
@@ -164,9 +175,12 @@ const COMPUTED_KEYS = [
  * The lookbehind is what keeps this honest: without it the pattern also matches the tail of any
  * method whose name ends in `t`, so an ordinary `params.get('returnTo')` or `url.set('x')` would be
  * reported as a missing translation key and fail the suite for no reason.
+ *
+ * A comma as well as a closing parenthesis after the key: a call that passes variables,
+ * `t('key', { count })`, is a key the app asks for just the same, and those used to go unchecked.
  * @type {RegExp}
  */
-const TRANSLATION_CALL = /(?<![\w.$])t\('([^']+)'\)/g;
+const TRANSLATION_CALL = /(?<![\w.$])t\('([^']+)'[,)]/g;
 
 describe('locales', () => {
   it('ships english as the fallback language', () => {

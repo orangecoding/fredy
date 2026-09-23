@@ -6,11 +6,13 @@
 import { useState } from 'react';
 import { IllustrationNoResult, IllustrationNoResultDark } from '@douyinfe/semi-illustrations';
 import { format } from '../../services/time/timeService';
-import { Table, Button, Empty, Tag, Toast } from '@douyinfe/semi-ui-19';
-import { IconDelete, IconEdit, IconCopy } from '@douyinfe/semi-icons';
+import { Table, Button, Dropdown, Empty, Tooltip, Toast } from '@douyinfe/semi-ui-19';
+import { IconDelete, IconEdit, IconCopy, IconKey, IconMore } from '@douyinfe/semi-icons';
 import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
 import { xhrGet } from '../../services/xhr.js';
 import { copyToClipboard } from '../../services/clipboard.js';
+
+import './UserTable.less';
 
 export default function UserTable({ user = [], onUserRemoval, onUserEdit } = {}) {
   const t = useTranslation();
@@ -62,25 +64,27 @@ export default function UserTable({ user = [], onUserRemoval, onUserEdit } = {})
         {
           title: t('users.tableColumnUser'),
           dataIndex: 'username',
+          /*
+           * The token is a line under the name rather than a column of its own. As a column it was
+           * 71 characters with `word-break: break-all` in a table cell, which made every row three
+           * times as tall - for a value somebody copies once in their life.
+           */
           render: (value, record) => (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <span style={{ color: 'var(--f-text)', fontWeight: 500 }}>{value}</span>
-              {record.isAdmin && (
-                <Tag
-                  size="small"
-                  style={{
-                    background: 'rgb(var(--f-accent-rgb) / 12%)',
-                    border: '1px solid rgb(var(--f-accent-rgb) / 35%)',
-                    color: 'var(--f-accent)',
-                    borderRadius: 9999,
-                    fontSize: 10,
-                    fontWeight: 600,
-                    letterSpacing: '0.04em',
-                    padding: '0 8px',
-                  }}
-                >
-                  {t('users.tableAdminBadge')}
-                </Tag>
+            <div className="userTable__user">
+              <span className="userTable__name">{value}</span>
+              {record.isAdmin && <span className="userTable__admin">{t('users.tableAdminBadge')}</span>}
+              {revealedTokens[record.id] && (
+                <span className="userTable__token">
+                  <code>{revealedTokens[record.id]}</code>
+                  {/* A 71-character token is not something anyone should be selecting by hand. */}
+                  <Button
+                    size="small"
+                    theme="borderless"
+                    icon={<IconCopy />}
+                    aria-label={t('users.mcpTokenCopy')}
+                    onClick={() => copyToken(revealedTokens[record.id])}
+                  />
+                </span>
               )}
             </div>
           ),
@@ -95,51 +99,42 @@ export default function UserTable({ user = [], onUserRemoval, onUserEdit } = {})
           dataIndex: 'numberOfJobs',
         },
         {
-          title: t('users.tableColumnMcpToken'),
-          dataIndex: 'id',
-          render: (userId) =>
-            revealedTokens[userId] ? (
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
-                <span
-                  style={{
-                    fontFamily: 'JetBrains Mono, monospace',
-                    fontSize: '0.85em',
-                    wordBreak: 'break-all',
-                    color: 'var(--f-faint)',
-                  }}
-                >
-                  {revealedTokens[userId]}
-                </span>
-                {/* A 71-character token is not something anyone should be selecting by hand. */}
-                <Button
-                  size="small"
-                  theme="borderless"
-                  icon={<IconCopy />}
-                  aria-label={t('users.mcpTokenCopy')}
-                  onClick={() => copyToken(revealedTokens[userId])}
-                />
-              </div>
-            ) : (
-              <Button size="small" theme="borderless" onClick={() => revealToken(userId)}>
-                {t('users.mcpTokenReveal')}
-              </Button>
-            ),
-        },
-        {
-          title: '',
+          /*
+           * The same hierarchy as every other table here. The loudest element of this one used to
+           * be Edit - a filled primary button on every row - with Remove next to it as a quieter
+           * hand-built danger button, so the most harmless action shouted and the irreversible one
+           * did not. Edit is an icon now, and removing takes a word in a menu.
+           */
+          title: t('users.tableColumnActions'),
           dataIndex: 'tools',
           render: (_, record) => (
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
-              <Button
-                style={{
-                  background: 'transparent',
-                  border: '1px solid rgb(var(--f-error-rgb) / 20%)',
-                  color: 'var(--f-error)',
-                }}
-                icon={<IconDelete />}
-                onClick={() => onUserRemoval(record.id)}
-              />
-              <Button type="primary" theme="solid" icon={<IconEdit />} onClick={() => onUserEdit(record.id)} />
+            <div className="userTable__actions">
+              <Tooltip content={t('users.editUser')}>
+                <Button
+                  size="small"
+                  icon={<IconEdit />}
+                  aria-label={t('users.editUser')}
+                  onClick={() => onUserEdit(record.id)}
+                />
+              </Tooltip>
+              <Dropdown
+                trigger="click"
+                position="bottomRight"
+                clickToHide
+                render={
+                  <Dropdown.Menu>
+                    <Dropdown.Item icon={<IconKey />} onClick={() => revealToken(record.id)}>
+                      {t('users.mcpTokenReveal')}
+                    </Dropdown.Item>
+                    <Dropdown.Divider />
+                    <Dropdown.Item type="danger" icon={<IconDelete />} onClick={() => onUserRemoval(record.id)}>
+                      {t('users.removeUser')}
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                }
+              >
+                <Button size="small" icon={<IconMore />} aria-label={t('listings.moreActions')} />
+              </Dropdown>
             </div>
           ),
         },

@@ -4,8 +4,8 @@
  */
 
 import React from 'react';
-import { Button, Banner, Modal, Progress, Toast, Typography } from '@douyinfe/semi-ui-19';
-import { IconSave } from '@douyinfe/semi-icons';
+import { Button, Dropdown, Modal, Progress, Toast } from '@douyinfe/semi-ui-19';
+import { IconSave, IconDelete, IconMore } from '@douyinfe/semi-icons';
 
 import { SegmentPart } from '../../../components/segment/SegmentPart';
 import {
@@ -18,7 +18,7 @@ import {
 import { useActions } from '../../../services/state/store';
 import { useTranslation } from '../../../services/i18n/i18n.jsx';
 
-const { Text } = Typography;
+import './DebugPage.less';
 
 /**
  * Human-readable byte formatter for the usage label.
@@ -187,55 +187,58 @@ export default function DebugPage() {
             strip saying something that is true on every visit, directly above the danger Banner
             that really is a live state. As the card's own help text it says the same thing
             without competing with it. */}
-        <SegmentPart name={t('settings.debugSectionName')} helpText={t('settings.debugSectionHelp')}>
-          {debugStatus?.enabled ? (
-            <Banner
-              type="danger"
-              fullMode={false}
-              closeIcon={null}
-              style={{ marginBottom: 12 }}
-              description={
-                <div>
-                  <div style={{ fontWeight: 600 }}>{t('settings.debugStatusActive')}</div>
-                  <div style={{ marginTop: 8 }}>
-                    <Text type="secondary" style={{ marginRight: 8 }}>
-                      {t('settings.debugUsedLabel')}
-                    </Text>
-                    <Text>
-                      {t('settings.debugUsedValue', {
-                        used: formatBytes(debugStatus.size),
-                        max: formatBytes(debugStatus.max),
-                        percent: percentOf(debugStatus.size, debugStatus.max),
-                      })}
-                    </Text>
-                    <Progress
-                      percent={percentOf(debugStatus.size, debugStatus.max)}
-                      stroke="var(--semi-color-danger)"
-                      aria-label="debug log storage"
-                      style={{ marginTop: 6 }}
-                    />
-                  </div>
-                </div>
-              }
-            />
-          ) : (
-            <div style={{ marginBottom: 12 }}>
-              <Text type="secondary">{t('settings.debugStatusInactive')}</Text>
+        {/* Ein Zustand, eine Form. Aktiv war ein Warnbanner mit Titel, Groessenangabe und Balken,
+            inaktiv ein nackter Sekundaertext - zwei voellig verschiedene Formen fuer denselben
+            Statussatz. Beide sind jetzt derselbe Chip im Kartenkopf, und nur der Punkt wechselt
+            die Farbe. */}
+        <SegmentPart
+          name={t('settings.debugSectionName')}
+          helpText={t('settings.debugSectionHelp')}
+          action={
+            <span className="settingsShell__cardFlag">
+              <span
+                className={`settingsShell__cardFlagDot${debugStatus?.enabled ? ' settingsShell__cardFlagDot--live' : ''}`}
+                aria-hidden="true"
+              />
+              {t(debugStatus?.enabled ? 'settings.debugStatusActive' : 'settings.debugStatusInactive')}
+            </span>
+          }
+        >
+          {debugStatus?.enabled && (
+            <div className="debugPage__usage">
+              <Progress
+                percent={percentOf(debugStatus.size, debugStatus.max)}
+                aria-label={t('settings.debugUsedLabel')}
+              />
+              <span className="debugPage__usageText">
+                {t('settings.debugUsedValue', {
+                  used: formatBytes(debugStatus.size),
+                  max: formatBytes(debugStatus.max),
+                  percent: percentOf(debugStatus.size, debugStatus.max),
+                })}
+              </span>
             </div>
           )}
 
-          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+          {/* Genau ein gefuellter Knopf, und das ist das Herunterladen: dafuer schaltet man die
+              Aufzeichnung ueberhaupt ein. Starten und Beenden ist Outline, Loeschen liegt im
+              Ueberlaufmenue - vorher standen zwei gefuellte Knoepfe in Warnfarben nebeneinander
+              und dazwischen der harmlose Download.
+              Der Outline-Knopf steht links vom gefuellten, weil man erst aufzeichnet und dann
+              herunterlaedt; das Menue rutscht an den rechten Rand, weil es zu keinem von beiden
+              gehoert. */}
+          <div className="debugPage__actions">
             <Button
-              theme="solid"
-              type={debugStatus?.enabled ? 'danger' : 'primary'}
+              theme="outline"
               loading={debugBusy}
               disabled={debugStatus == null}
               onClick={handleToggleDebugLogging}
             >
-              {debugStatus?.enabled ? t('settings.debugDisableButton') : t('settings.debugEnableButton')}
+              {t(debugStatus?.enabled ? 'settings.debugDisableButton' : 'settings.debugEnableButton')}
             </Button>
             <Button
-              theme="light"
+              theme="solid"
+              type="primary"
               icon={<IconSave />}
               disabled={debugStatus == null || !debugStatus?.everEnabled || !debugStatus?.hasLogs}
               onClick={handleDownloadDebugBundle}
@@ -243,9 +246,29 @@ export default function DebugPage() {
               {t('settings.debugDownloadButton')}
             </Button>
             {debugStatus?.hasLogs && (
-              <Button theme="solid" type="warning" onClick={() => setDebugClearConfirmVisible(true)}>
-                {t('settings.debugClearButton')}
-              </Button>
+              <Dropdown
+                trigger="click"
+                position="bottomRight"
+                clickToHide
+                render={
+                  <Dropdown.Menu>
+                    <Dropdown.Item
+                      type="danger"
+                      icon={<IconDelete />}
+                      onClick={() => setDebugClearConfirmVisible(true)}
+                    >
+                      {t('settings.debugClearButton')}
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                }
+              >
+                <Button
+                  className="debugPage__overflow"
+                  theme="borderless"
+                  icon={<IconMore />}
+                  aria-label={t('listings.moreActions')}
+                />
+              </Dropdown>
             )}
           </div>
         </SegmentPart>
@@ -262,7 +285,7 @@ export default function DebugPage() {
             setDebugConfirmVisible(false);
           }}
           footer={
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+            <div className="debugPage__modalFooter">
               <Button onClick={() => performEnableDebug({ clearPrevious: false })} loading={debugBusy}>
                 {t('settings.debugConfirmKeep')}
               </Button>
@@ -290,7 +313,7 @@ export default function DebugPage() {
             setDebugClearConfirmVisible(false);
           }}
           footer={
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+            <div className="debugPage__modalFooter">
               <Button onClick={() => setDebugClearConfirmVisible(false)} disabled={debugBusy}>
                 {t('settings.debugClearConfirmCancel')}
               </Button>

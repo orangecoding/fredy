@@ -4,8 +4,10 @@
  */
 
 import {
+  convertAtWebToMobile,
   convertImmoscoutListingToMobileListing,
   convertWebToMobile,
+  listKnownAtPaths,
   listKnownWebPaths,
 } from '../../../lib/services/immoscout/immoscout-web-translator.js';
 import logger from '../../../lib/services/logger.js';
@@ -397,4 +399,119 @@ describe('#immoscout-mobile URL conversion', () => {
       expect(responseBody.resultListItems.filter((r) => r.type === 'EXPOSE_RESULT')[0].item.realEstateType).toBe(type);
     }
   });
+});
+
+const WIEN = 'https://www.immobilienscout24.at/regional/wien/wien';
+
+/** Converts an Austrian web URL and hands back its mobile query parameters. */
+const atParamsOf = (webUrl) => new URL(convertAtWebToMobile(webUrl)).searchParams;
+
+/**
+ * The Austrian site is a different web application with a different URL scheme, but the same index
+ * answers it, so the two translations end at the same place. The tables behind this one have their
+ * own tests in at-paths.test.js; what follows is the assembly on top of them.
+ */
+describe('#immoscout-at URL conversion', () => {
+  it('should convert a full Austrian web URL to the mobile URL', () => {
+    const webUrl = `${WIEN}/wohnung-mieten?primaryPriceFrom=500&primaryPriceTo=1200&numberOfRoomsFrom=2&page=2`;
+
+    expect(convertAtWebToMobile(webUrl)).toBe(
+      'https://api.mobile.immobilienscout24.de/search/list?exclusioncriteria=swapflat&geocodes=%2Fat%2Fwien%2Fwien&numberofrooms=2.0-&price=500.0-1200.0&realestatetype=apartmentrent&searchType=region',
+    );
+  });
+
+  it('should search the whole country for the site country-wide path', () => {
+    expect(atParamsOf('https://www.immobilienscout24.at/regional/oesterreich/haus-kaufen').get('geocodes')).toBe('/at');
+  });
+
+  // The German search defaults the apartment rental type away from exchange flats, and nothing
+  // about that is German - it is a property of the type, so the Austrian search carries it too.
+  it('should apply the same type defaults the German search does', () => {
+    expect(atParamsOf(`${WIEN}/wohnung-mieten`).get('exclusioncriteria')).toBe('swapflat');
+  });
+
+  it('should let a query parameter replace what the path implied', () => {
+    expect(atParamsOf(`${WIEN}/wohnung-bis-1100-euro-mieten?primaryPriceTo=800`).get('price')).toBe('-800.0');
+  });
+
+  // The path and the query can each state one half of the same range. Replacing the whole
+  // parameter dropped the path's half - the 1100 maximum below, or the minimum of three rooms.
+  it('should keep the half of a range the query leaves open', () => {
+    expect(atParamsOf(`${WIEN}/wohnung-bis-1100-euro-mieten?primaryPriceFrom=500`).get('price')).toBe('500.0-1100.0');
+    expect(atParamsOf(`${WIEN}/wohnung-ab-3-zimmer-mieten?numberOfRoomsTo=4`).get('numberofrooms')).toBe('3.0-4.0');
+  });
+
+  // The API has no Austrian flat shares; accepting the slug built a job that never found anything.
+  it('should refuse a flat-share search the API has no Austrian listings for', () => {
+    expect(() => convertAtWebToMobile(`${WIEN}/wg-zimmer-mieten`)).toThrow('no Austrian listings');
+  });
+
+  // Registered as a plain building-plot search, it notified about every residential plot.
+  it('should not read an agricultural search as a building-plot search', () => {
+    expect(() => convertAtWebToMobile(`${WIEN}/agrarflaeche-kaufen`)).toThrow('Real estate type not found');
+  });
+
+  // The site serves district pages the API has no geocode for. Widening is the same trade the
+  // parameter filter makes - a wider search still finds the flat, a 412 finds nothing.
+  it('should widen a district search to its municipality', () => {
+    expect(atParamsOf(`${WIEN}/1-bezirk-innere-stadt/wohnung-mieten`).get('geocodes')).toBe('/at/wien/wien');
+  });
+
+  it('should ignore the paging the site writes into the path', () => {
+    expect(convertAtWebToMobile(`${WIEN}/wohnung-mieten/seite-4`)).toBe(convertAtWebToMobile(`${WIEN}/wohnung-mieten`));
+  });
+
+  describe('searches it refuses', () => {
+    it('should refuse a German URL, which names its anchor differently', () => {
+      expect(() => convertAtWebToMobile(`${BERLIN}/wohnung-mieten`)).toThrow('Unexpected path format');
+    });
+
+    it('should refuse a path that names no property type', () => {
+      expect(() => convertAtWebToMobile('https://www.immobilienscout24.at/regional/wien')).toThrow(
+        'Unexpected path format',
+      );
+    });
+
+    // The API answers a rent/buy pair of one category with the first of the two and says nothing
+    // about it, so honouring these would watch half the search the user pasted.
+    it('should refuse a search over both renting and buying, naming the alternatives', () => {
+      expect(() => convertAtWebToMobile(`${WIEN}/wohnungen`)).toThrow(/"wohnung-mieten" or "wohnung-kaufen"/);
+    });
+
+    it('should refuse a commercial search the provider cannot read', () => {
+      expect(() => convertAtWebToMobile(`${WIEN}/bueros`)).toThrow('Commercial searches are not supported');
+    });
+
+    it('should refuse a property type it has no translation for', () => {
+      expect(() => convertAtWebToMobile(`${WIEN}/almhuette-kaufen`)).toThrow(
+        'Real estate type not found: almhuette-kaufen',
+      );
+    });
+
+    it('should refuse a malformed URL', () => {
+      expect(() => convertAtWebToMobile('not-a-url')).toThrow('Invalid URL: not-a-url');
+    });
+  });
+
+  // The Austrian counterpart of the German catalogue replay, and the only thing that can notice
+  // that the `/at` half of the index stopped accepting a type or a path. Skipped offline.
+  it.skipIf(process.env.TEST_MODE === 'offline')(
+    'should be accepted by the mobile API for every known Austrian web path',
+    { timeout: 180_000 },
+    async () => {
+      const rejected = [];
+      for (const path of listKnownAtPaths()) {
+        const url = convertAtWebToMobile(`${WIEN}/${path}`).replace('/search/list?', '/search/total?');
+
+        const response = await fetch(url, { headers: { 'User-Agent': 'ImmoScout_28.1_26.5.2_._' } });
+        const body = await response.json();
+        if (!response.ok || body.error) {
+          rejected.push(`${path}: ${response.status} ${JSON.stringify(body).slice(0, 160)}`);
+        }
+        await new Promise((resolve) => setTimeout(resolve, 250));
+      }
+
+      expect(rejected).toEqual([]);
+    },
+  );
 });

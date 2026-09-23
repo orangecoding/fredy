@@ -9,23 +9,37 @@ import { IconFullScreenStroked, IconShrinkScreenStroked } from '@douyinfe/semi-i
 import maplibregl from './maplibre.js';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
-import { fixMapboxDrawCompatibility, addDrawingControl, setupAreaFilterEventListeners } from './MapDrawingExtension.js';
+import { addDrawingControl, fixMapboxDrawCompatibility, setupAreaFilterEventListeners } from './MapDrawingExtension.js';
 import { getBoundsFromCoords } from '../../views/listings/mapUtils.js';
 import {
   applyBuildingsLayer,
   applyTransitLayers,
   OPENFREEMAP_GLYPHS_URL,
+  OPENFREEMAP_SOURCE_ID,
   TRANSIT_STOPS_LAYER_ID,
 } from './overlayLayers.js';
+import { applyDarkBasemapPaint } from './darkBasemapPaint.js';
 import { ensureTransitIcons } from './transitIcons.js';
 import { boundsForCountries, DEFAULT_COUNTRIES } from './countryBounds.js';
+import { MARKER_COLORS } from './markerColors.js';
 import { keepPopupInView, mountPopupNode } from './popupContent.jsx';
 import DeparturesBoard from '../transit/DeparturesBoard.jsx';
 import { useControllableState } from '../../hooks/useControllableState.js';
 import { useSelector } from '../../services/state/store.js';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
+import { normalizeTheme } from '../../services/theme/theme.js';
 import MapControls from './MapControls.jsx';
+import MapSearch from './MapSearch.jsx';
 import './Map.less';
+
+/**
+ * How close the camera goes when the search finds an address.
+ *
+ * Closer than the 13 the job form's area search uses, and for a different job: there the point is
+ * to frame a neighbourhood to draw an outline around, here it is to see which of the pins around
+ * that address are which, so the listings have to be individually distinguishable.
+ */
+const SEARCH_RESULT_ZOOM = 15;
 
 /**
  * Marks the expanded map on `<body>`. The app's scroll container is `.app__content`, not the body,
@@ -33,61 +47,78 @@ import './Map.less';
  */
 const EXPANDED_BODY_CLASS = 'fredy-map-expanded';
 
-/** Colour of the pin the user drops in `pickMode`, distinct from listing blue and home red. */
-const PICK_MARKER_COLOR = '#f5a623';
+/** The light vector basemap. Unchanged: this is what the light theme has always shown. */
+const STANDARD_LIGHT = 'https://tiles.openfreemap.org/styles/bright';
 
 /**
- * Colour of the pins standing for the user's own addresses, on every map that draws them.
+ * The dark vector basemap.
  *
- * Named rather than repeated at the two call sites, which is all this constant is for: listing pins
- * are the one blue, so red is unambiguous.
+ * OpenFreeMap's fork of dark-matter: background `rgb(12,12,12)`, a hair away from `@color-base`.
+ * Fewer layers than `bright` - 47 against 119 - and the difference is real: no POIs, no bridge or
+ * tunnel casings, buildings as one flat fill. What it keeps is water, land use, roads by class,
+ * railways, street names, place names and boundaries, and the transit overlay supplies the stops
+ * it does not.
  *
- * @type {string}
+ * `fiord` was the other candidate and is richer at 60 layers, but its `#45516E` background is a
+ * slate blue that would sit in a warm brown interface as a blue rectangle.
  */
-export const HOME_MARKER_COLOR = 'red';
+const STANDARD_DARK = 'https://tiles.openfreemap.org/styles/dark';
 
-export const STYLES = {
-  STANDARD: 'https://tiles.openfreemap.org/styles/bright',
-  SATELLITE: {
-    version: 8,
-    // Raster tiles need no glyphs, but the transit overlay labels its stops with them - the
-    // satellite imagery carries no names of its own.
-    glyphs: OPENFREEMAP_GLYPHS_URL,
-    sources: {
-      'satellite-tiles': {
-        type: 'raster',
-        tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],
-        tileSize: 256,
-        attribution:
-          'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
-      },
-      'satellite-labels': {
-        type: 'raster',
-        tiles: [
-          'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
-        ],
-        tileSize: 256,
-        attribution: '© Esri',
-      },
+/** The satellite basemap, raster imagery and therefore the same in both themes. */
+const SATELLITE = {
+  version: 8,
+  // Raster tiles need no glyphs, but the transit overlay labels its stops with them - the
+  // satellite imagery carries no names of its own.
+  glyphs: OPENFREEMAP_GLYPHS_URL,
+  sources: {
+    'satellite-tiles': {
+      type: 'raster',
+      tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],
+      tileSize: 256,
+      attribution:
+        'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
     },
-    layers: [
-      {
-        id: 'satellite-tiles',
-        type: 'raster',
-        source: 'satellite-tiles',
-        minzoom: 0,
-        maxzoom: 19,
-      },
-      {
-        id: 'satellite-labels',
-        type: 'raster',
-        source: 'satellite-labels',
-        minzoom: 0,
-        maxzoom: 19,
-      },
-    ],
+    'satellite-labels': {
+      type: 'raster',
+      tiles: [
+        'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
+      ],
+      tileSize: 256,
+      attribution: '© Esri',
+    },
   },
+  layers: [
+    { id: 'satellite-tiles', type: 'raster', source: 'satellite-tiles', minzoom: 0, maxzoom: 19 },
+    { id: 'satellite-labels', type: 'raster', source: 'satellite-labels', minzoom: 0, maxzoom: 19 },
+  ],
 };
+
+/**
+ * Whether the basemap on screen is a dark one.
+ *
+ * The one question three other decisions hang off: which style URL to load, which overlay paint to
+ * use, and whether the canvas gets the dimmer. Satellite is bright in both themes, so it answers
+ * no whatever the theme says.
+ *
+ * @param {'STANDARD'|'SATELLITE'} styleValue
+ * @param {'light'|'dark'} theme
+ * @returns {boolean}
+ */
+export function isDarkBasemap(styleValue, theme) {
+  return styleValue === 'STANDARD' && theme === 'dark';
+}
+
+/**
+ * The style the map is to load.
+ *
+ * @param {'STANDARD'|'SATELLITE'} styleValue
+ * @param {'light'|'dark'} theme
+ * @returns {string|object}
+ */
+export function basemapStyle(styleValue, theme) {
+  if (styleValue === 'SATELLITE') return SATELLITE;
+  return isDarkBasemap(styleValue, theme) ? STANDARD_DARK : STANDARD_LIGHT;
+}
 
 /** Center of Germany, the fallback view when a consumer has nothing better to show. */
 const GERMANY_CENTER = [10.4515, 51.1657];
@@ -119,6 +150,9 @@ const GERMANY_CENTER = [10.4515, 51.1657];
  * @param {boolean} [props.defaultShowTransit]
  * @param {(patch: Object) => void} [props.onControlsChange]
  * @param {'expanded'|'always'|'never'} [props.controlsMode] - When to show the controls panel.
+ * @param {boolean} [props.searchable] - Show the address search in the top right corner. Off by
+ *   default: a map showing one listing has nothing to search for, and the job form's area filter
+ *   brings its own box scoped to the providers ticked in it.
  * @param {import('react').ReactNode} [props.transitExtra] - Extra row under the transit switch.
  * @param {boolean} [props.expanded] - Controlled expansion.
  * @param {boolean} [props.defaultExpanded]
@@ -133,8 +167,14 @@ const GERMANY_CENTER = [10.4515, 51.1657];
  * @param {boolean} [props.enableDrawing]
  * @param {Object} [props.initialSpatialFilter]
  * @param {Function} [props.onDrawingChange]
- * @param {import('react').ReactNode} [props.panels] - Extra boxes for the top right column, below
- *   the map's own controls. For view-specific filters that belong with the map.
+ * @param {boolean} [props.controlsInPanels] Render the basemap controls inside the `panels` slot
+ *   instead of as a box of their own. The view is then responsible for the panel around them, and
+ *   `panels` becomes a function receiving the controls and the expand button - the button too,
+ *   because a view that owns the panel owns where its heading is, and that is where the button
+ *   belongs rather than floating above the box.
+ * @param {import('react').ReactNode|((controls: import('react').ReactNode, expandButton: import('react').ReactNode) => import('react').ReactNode)} [props.panels] -
+ *   Extra boxes for the top right column, below the map's own controls. For view-specific filters
+ *   that belong with the map. A function when `controlsInPanels` is set, see above.
  * @param {import('react').ReactNode} [props.children] - Freely positioned overlay UI, rendered
  *   inside the shell so it travels into the fullscreen overlay without a portal.
  */
@@ -150,6 +190,8 @@ export default function Map({
   defaultShowTransit = false,
   onControlsChange = null,
   controlsMode = 'expanded',
+  controlsInPanels = false,
+  searchable = false,
   transitExtra = null,
   expanded,
   defaultExpanded = false,
@@ -171,6 +213,9 @@ export default function Map({
   const userSettings = useSelector((state) => state.userSettings.settings);
   const language = userSettings?.language ?? 'en';
   const transitHoverPopups = userSettings?.transit_hover_popups === true;
+  // The same source of truth App.jsx paints the document from, so the map can never disagree with
+  // the interface around it. A setting, not a media query: the user picked this.
+  const theme = normalizeTheme(useSelector((state) => state.userSettings.settings.theme));
   const shellRef = useRef(null);
   const mapContainerRef = useRef(null);
   const mapRef = useRef(null);
@@ -205,13 +250,50 @@ export default function Map({
     [setIsExpanded, onExpandedChange],
   );
 
+  /*
+   * The pin marking what the search found. One marker, moved rather than multiplied, the same way
+   * `pickMode` handles its own - and in the colour `MARKER_COLORS` already reserves for a pin the
+   * user put there, which is what this is.
+   *
+   * Not in the legend, deliberately. The legend explains the colours a map is showing on its own;
+   * this pin is the answer to a question asked seconds ago and goes away with the search term.
+   */
+  const searchMarkerRef = useRef(null);
+
+  const clearSearchResult = useCallback(() => {
+    searchMarkerRef.current?.remove();
+    searchMarkerRef.current = null;
+  }, []);
+
+  const locateSearchResult = useCallback(
+    ({ lat, lng }, label) => {
+      const mapInstance = mapRef.current;
+      if (!mapInstance) return;
+
+      clearSearchResult();
+      const marker = new maplibregl.Marker({ color: MARKER_COLORS.pick }).setLngLat([lng, lat]).addTo(mapInstance);
+      // A marker takes no title of its own, and the address is worth keeping within reach: the
+      // search field shows what was typed, this says what was actually found.
+      marker.getElement().title = label;
+      searchMarkerRef.current = marker;
+
+      mapInstance.flyTo({ center: [lng, lat], zoom: SEARCH_RESULT_ZOOM });
+    },
+    [clearSearchResult],
+  );
+
+  // The marker belongs to this map instance, so it goes when the map does. `map.remove()` in the
+  // constructor's cleanup would take it anyway; this keeps it from outliving a `searchable` that
+  // was switched off.
+  useEffect(() => clearSearchResult, [clearSearchResult]);
+
   // Initialize map - ONLY when container changes, never reinitialize
   useEffect(() => {
     if (mapRef.current) return; // Map already exists, don't reinitialize
 
     mapRef.current = new maplibregl.Map({
       container: mapContainerRef.current,
-      style: STYLES[styleValue],
+      style: basemapStyle(styleValue, theme),
       center: initialCenter,
       zoom: initialZoom,
       maxBounds: boundsForCountries(countries),
@@ -290,12 +372,19 @@ export default function Map({
           hasFittedToInitialAreaRef.current = true;
         }
       }
+    } else {
+      // The filter was taken back to "no area" from outside - the job form's Discard. Without this
+      // the shape stayed on the map, and the next one drawn was saved together with it, because
+      // `draw.getAll()` still held both.
+      try {
+        drawRef.current.deleteAll();
+      } catch (error) {
+        console.error('Error clearing spatial filter:', error);
+      }
     }
 
     // Setup drawing event listeners
-    const cleanup = setupAreaFilterEventListeners(mapRef.current, drawRef.current, onDrawingChange);
-
-    return cleanup;
+    return setupAreaFilterEventListeners(mapRef.current, drawRef.current, onDrawingChange);
   }, [initialSpatialFilter, onDrawingChange, enableDrawing]);
 
   // Handle style changes
@@ -310,8 +399,34 @@ export default function Map({
       return;
     }
 
-    mapRef.current.setStyle(STYLES[styleValue]);
-  }, [styleValue]);
+    mapRef.current.setStyle(basemapStyle(styleValue, theme));
+  }, [styleValue, theme]);
+
+  // Which of the two overlay colour sets applies. Derived from the basemap rather than the theme:
+  // satellite imagery is bright in both themes and keeps the light one.
+  const isDark = isDarkBasemap(styleValue, theme);
+  const paintVariant = isDark ? 'dark' : 'light';
+
+  // The dark basemap's own background and labels, which the style ships too dark to read against
+  // itself. Same `styledata` signal as the overlays and for the same reason: `setStyle()` reloads
+  // the style from source and drops every paint change with it.
+  useEffect(() => {
+    if (!mapRef.current) return undefined;
+
+    const onStyleData = () => {
+      if (mapRef.current) applyDarkBasemapPaint(mapRef.current, isDark, OPENFREEMAP_SOURCE_ID);
+    };
+
+    if (mapRef.current.isStyleLoaded()) {
+      onStyleData();
+    }
+
+    mapRef.current.on('styledata', onStyleData);
+
+    return () => {
+      mapRef.current?.off('styledata', onStyleData);
+    };
+  }, [isDark, styleValue]);
 
   // Handle 3D buildings layer
   //
@@ -326,7 +441,7 @@ export default function Map({
     if (!mapRef.current) return;
 
     const onStyleData = () => {
-      if (mapRef.current) applyBuildingsLayer(mapRef.current, buildingsValue);
+      if (mapRef.current) applyBuildingsLayer(mapRef.current, buildingsValue, paintVariant);
     };
 
     if (mapRef.current.isStyleLoaded()) {
@@ -338,7 +453,7 @@ export default function Map({
     return () => {
       mapRef.current?.off('styledata', onStyleData);
     };
-  }, [buildingsValue, styleValue]);
+  }, [buildingsValue, styleValue, paintVariant]);
 
   // Handle public transport layer
   useEffect(() => {
@@ -357,7 +472,7 @@ export default function Map({
         if (mapRef.current !== mapInstance) return;
       }
 
-      applyTransitLayers(mapInstance, transitValue);
+      applyTransitLayers(mapInstance, transitValue, paintVariant);
     };
 
     if (mapRef.current.isStyleLoaded()) {
@@ -369,7 +484,7 @@ export default function Map({
     return () => {
       mapRef.current?.off('styledata', onStyleData);
     };
-  }, [transitValue, styleValue]);
+  }, [transitValue, styleValue, paintVariant]);
 
   // Handle pitch for 3D
   useEffect(() => {
@@ -622,7 +737,7 @@ export default function Map({
 
     const place = ({ lng, lat }) => {
       if (marker == null) {
-        marker = new maplibregl.Marker({ color: PICK_MARKER_COLOR, draggable: true })
+        marker = new maplibregl.Marker({ color: MARKER_COLORS.pick, draggable: true })
           .setLngLat([lng, lat])
           .addTo(mapInstance);
         marker.on('dragend', () => {
@@ -646,7 +761,44 @@ export default function Map({
   }, [pickMode, onPick]);
 
   const showControls = controlsMode === 'always' || (controlsMode === 'expanded' && isExpanded);
-  const shellClassName = ['map-shell', isExpanded ? 'map-shell--expanded' : '', pickMode ? 'map-shell--picking' : '']
+
+  // The same rows, without the box around them, for a view that pulls them into a panel of its
+  // own. Handed to `panels` as its argument rather than rendered here, so the view decides where
+  // between its own filters they go.
+  const controlsNode =
+    showControls && controlsInPanels ? (
+      <MapControls
+        style={styleValue}
+        show3dBuildings={buildingsValue}
+        showTransit={transitValue}
+        onChange={applyControls}
+        transitExtra={transitExtra}
+        bare
+      />
+    ) : null;
+
+  const expandButton = showExpandButton ? (
+    <Button
+      className="map-shell__expand"
+      theme="solid"
+      type="tertiary"
+      icon={isExpanded ? <IconShrinkScreenStroked /> : <IconFullScreenStroked />}
+      aria-label={isExpanded ? t('map.collapse') : t('map.expand')}
+      title={isExpanded ? t('map.collapse') : t('map.expand')}
+      onClick={() => setExpanded(!isExpanded)}
+    />
+  ) : null;
+
+  const shellClassName = [
+    'map-shell',
+    isExpanded ? 'map-shell--expanded' : '',
+    pickMode ? 'map-shell--picking' : '',
+    // Moves MapLibre's own top-left controls out from under the search box, see Map.less.
+    searchable ? 'map-shell--searchable' : '',
+    // One or the other, never neither: a bright basemap gets toned down, the dark one gets its
+    // whole composite lifted off near-black. Both are canvas filters, see Map.less.
+    isDark ? 'map-shell--lift' : 'map-shell--dim',
+  ]
     .filter(Boolean)
     .join(' ');
 
@@ -660,23 +812,23 @@ export default function Map({
     >
       <div ref={mapContainerRef} className="map-container" />
 
-      {/* One column in the top right corner: the expand button, the map's own controls, and
-          whatever the consumer adds - stacked as separate boxes rather than piled on top of each
-          other. MapLibre's own controls were moved to the left to keep this corner free. */}
-      <div className="map-shell__ui">
-        {showExpandButton && (
-          <Button
-            className="map-shell__expand"
-            theme="solid"
-            type="tertiary"
-            icon={isExpanded ? <IconShrinkScreenStroked /> : <IconFullScreenStroked />}
-            aria-label={isExpanded ? t('map.collapse') : t('map.expand')}
-            title={isExpanded ? t('map.collapse') : t('map.expand')}
-            onClick={() => setExpanded(!isExpanded)}
-          />
-        )}
+      {/* Top left, above MapLibre's own zoom and compass, which the stylesheet pushes down to make
+          room. On the left because that is where a map search is looked for, and because the right
+          hand column is a stack of boxes the search is not part of. */}
+      {searchable && (
+        <div className="map-shell__search">
+          <MapSearch onLocate={locateSearchResult} onClear={clearSearchResult} />
+        </div>
+      )}
 
-        {showControls && (
+      {/* One column in the top right corner: the map's own controls and whatever the consumer
+          adds - stacked as separate boxes rather than piled on top of each other. */}
+      <div className="map-shell__ui">
+        {/* Only where no panel took it. A view that builds its own panel gets the button as the
+            second argument of `panels` and puts it where its own heading is. */}
+        {!controlsInPanels && expandButton}
+
+        {showControls && !controlsInPanels && (
           <MapControls
             style={styleValue}
             show3dBuildings={buildingsValue}
@@ -686,7 +838,7 @@ export default function Map({
           />
         )}
 
-        {panels}
+        {typeof panels === 'function' ? panels(controlsNode, expandButton) : panels}
       </div>
 
       {children}

@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
 @import '../../../tokens.less';
 
 .userMutator__header {
@@ -8,14 +13,65 @@
   margin-bottom: @space-4;
 }
 
+/* Semis Title brings a margin of its own, which sat under a heading that is already spaced by the
+   header row around it. */
+.userMutator__title {
+  margin: 0;
+}
+
+/* Leaves the page, so it is quieter than anything that changes it.
+   Qualified on Semi's own classes because `.semi-button-primary.semi-button-borderless` paints a
+   borderless button in the accent and carries two classes doing it - a bare `.userMutator__back`
+   loses to it, which is why this colour used to be an inline style. */
+.semi-button.semi-button-borderless.userMutator__back {
+  color: @color-muted;
+}
+
 .userMutator {
   display: flex;
   flex-direction: column;
+}
 
-  &__actions {
-    display: flex;
+/* Beschriftung ueber das Bedienelement, sobald die Zeile zu schmal fuer beides nebeneinander wird.
+   `AdminField` haelt sein Bedienelement auf `flex: none`, also gibt auf einem Telefon die
+   Beschriftung nach: "Benutzername" stand als "Benutzernam" halb unter dem Eingabefeld. Hier
+   eingegrenzt statt in `AdminField.less`, weil diese Regel dort jede Verwaltungsseite mitnaehme -
+   deren Felder sind Zahlen und Schalter und passen nebeneinander, dieses sind vier Textfelder. */
+@media (max-width: 560px) {
+  .userMutator .adminField {
+    flex-direction: column;
+    align-items: stretch;
     gap: @space-2;
-    margin-top: @space-2;
-    justify-content: flex-start;
+  }
+
+  .userMutator .adminField__control {
+    flex: 1 1 auto;
+    width: 100%;
   }
 }
+
+/* At the field it belongs to. It used to be a toast in the corner of the screen, after a round
+   trip, saying "Passwords do not match" without marking either of the two. */
+.userMutator__error {
+  margin: @space-1 0 0;
+  font-size: @text-sm;
+  line-height: 1.55;
+  color: @color-error;
+}
+
+/* The same shape as the login screen's hint, so the warning reads the same in both places. */
+.userMutator__capsHint {
+  display: flex;
+  align-items: center;
+  gap: @space-2;
+  margin: @space-3 0 0;
+  font-family: @font-mono;
+  font-size: @text-xs;
+  letter-spacing: 0.04em;
+  color: @color-warning;
+}
+
+/* No rule of its own for the footer: saving is the sticky `SettingsSaveBar` the settings and admin
+   pages use, which brings its own surface, border and spacing. What stood here was a row of two
+   buttons at the left edge, without a rule, both at `size="small"` - including the primary action
+   of the page - and always present whether or not there was anything to save. */

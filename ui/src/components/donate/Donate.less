@@ -45,11 +45,14 @@
   }
 
   &__btn {
-    // Above the aurora, and opaque, so the glow reads as a halo around the button rather than as a
-    // wash behind its label. Matches the sidebar's own surface, so the button itself stays flat.
+    // Kein Rahmen, keine Fläche: beides zeichnet ein Rechteck mitten in die Aurora, und genau
+    // dieses Rechteck liest sich als Knopf. Sichtbar bleiben Herz und Schrift, die
+    // Berührungsfläche bleibt die volle Breite. Die Fläche war früher deckend, damit der Schein
+    // als Hof um den Knopf liegt statt hinter der Schrift; für die Lesbarkeit braucht es sie
+    // nicht: über dem hellsten Punkt steht der Text dunkel bei 4,95:1 und hell bei 9,08:1.
     position: relative;
     z-index: 1;
-    background: @color-surface;
+    background: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -57,22 +60,31 @@
     width: 100%;
     height: 34px;
     padding: 0 10px;
-    border: 1px solid @color-border;
+    border: none;
+    // Folgt dem Theme: dunkel fast weiß, hell fast schwarz. Eine feste Farbe hier wäre der eine
+    // Weg, das helle Theme zu zerstören: Weiß auf der hellen Aurora liegt bei 1,92:1.
     color: @color-text;
-    border-radius: @radius-btn;
     cursor: pointer;
     font-family: @font-ui;
     font-size: @text-base;
     font-weight: 500;
     white-space: nowrap;
-    overflow: hidden;
-    transition:
-      border-color @transition-fast,
-      color @transition-fast;
+    transition: color @transition-fast;
 
-    &:hover {
-      border-color: @color-accent;
-      color: @color-text;
+    // Der Hinweis, dass man klicken kann, ohne eine Kontur zu zeichnen. Die Aurora wird beim
+    // Zeigen ohnehin heller, das macht `:hover::before` mit brightness(1.35).
+    &:hover .donate__btn-label {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    // Die eine Stelle, an der ein Rechteck erscheinen muss. `!important` wie beim Versionshinweis im
+    // Footer: ohne verliert die Regel gegen das pauschale `outline: none !important` in Index.less,
+    // und der Ring erschien nie.
+    &:focus-visible {
+      outline: 2px solid @color-accent !important;
+      outline-offset: 2px;
+      border-radius: @radius-btn;
     }
 
     &--icon-only {
@@ -82,10 +94,12 @@
     }
   }
 
-  // Red where everything around it is grey, which is what makes the button findable at all.
+  // Red where everything around it is grey, which is what makes the button findable at all. It is
+  // the logo's own heart, a bitmap, so it carries its colour with it and takes a size instead.
   &__btn-heart {
-    color: @color-accent;
     flex: none;
+    width: 16px;
+    height: 16px;
   }
 
   &__btn-label {

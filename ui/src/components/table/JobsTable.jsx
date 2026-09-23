@@ -3,19 +3,11 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { Button, Tag, Tooltip, Switch } from '@douyinfe/semi-ui-19';
-import {
-  IconAlertTriangle,
-  IconBell,
-  IconBriefcase,
-  IconCopy,
-  IconDelete,
-  IconDescend2,
-  IconEdit,
-  IconHome,
-  IconPlayCircle,
-} from '@douyinfe/semi-icons';
+import { Tag, Tooltip, Switch } from '@douyinfe/semi-ui-19';
+import { IconAlertTriangle } from '@douyinfe/semi-icons';
 
+import JobActions from '../jobs/JobActions.jsx';
+import { relativeTime } from '../../services/time/relativeTime.js';
 import './JobsTable.less';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
 
@@ -26,40 +18,38 @@ const JobsTable = ({ jobs, onRun, onEdit, onClone, onDeleteListings, onDeleteJob
   const t = useTranslation();
   return (
     <div className="jobsTable">
+      {/* The table used to have no header: three numbers side by side with 12px icons and no
+          words, while the grid spelled all three out. The two blank cells hold the dot and the
+          action group, which are the only columns that need no name. */}
+      {/* Only over rows: with none, a strip of column titles stood under the empty state. */}
+      {jobs.length > 0 && (
+        <div className="jobsTable__head">
+          <span aria-hidden="true" />
+          <div className="jobsTable__headCell">{t('jobs.columnName')}</div>
+          <div className="jobsTable__headCell jobsTable__headCell--number jobsTable__headCell--listings">
+            {t('jobs.columnListings')}
+          </div>
+          <div className="jobsTable__headCell jobsTable__headCell--number jobsTable__headCell--providers">
+            {t('jobs.columnProviders')}
+          </div>
+          <div className="jobsTable__headCell jobsTable__headCell--number jobsTable__headCell--channels">
+            {t('jobs.columnChannels')}
+          </div>
+          <div className="jobsTable__headCell jobsTable__headCell--lastRun">{t('jobs.columnLastRun')}</div>
+          <div className="jobsTable__headCell">{t('jobs.columnActive')}</div>
+          <span aria-hidden="true" />
+        </div>
+      )}
+
       {jobs.map((job) => (
         <div key={job.id} className={`jobsTable__row${!job.enabled ? ' jobsTable__row--inactive' : ''}`}>
-          <div className="jobsTable__row__dot">
-            <span
-              className={`jobsTable__row__dot__indicator${job.enabled ? ' jobsTable__row__dot__indicator--active' : ''}`}
-            />
-          </div>
+          <span className={`jobsTable__row__dot${job.enabled ? ' jobsTable__row__dot--active' : ''}`} />
 
+          {/* The chip and the warning ride inline with the name, and only the name gives way to a
+              long one: the running state and the reason Run, Edit and the switch are disabled are
+              the two things this row must not lose to an ellipsis. */}
           <div className="jobsTable__row__name" title={job.name}>
-            {job.name}
-          </div>
-
-          <div className="jobsTable__row__stat jobsTable__row__stat--blue">
-            <IconHome size="small" />
-            {job.numberOfFoundListings || 0}
-          </div>
-
-          <div className="jobsTable__row__stat jobsTable__row__stat--orange">
-            <IconBriefcase size="small" />
-            {job.provider?.length || 0}
-          </div>
-
-          <div className="jobsTable__row__stat jobsTable__row__stat--purple">
-            <IconBell size="small" />
-            {job.notificationAdapter?.length || 0}
-          </div>
-
-          <div className="jobsTable__row__badges">
-            <Switch
-              size="small"
-              checked={job.enabled}
-              disabled={job.isOnlyShared}
-              onChange={(checked) => onStatusChange(job.id, checked)}
-            />
+            <span className="jobsTable__row__nameText">{job.name}</span>
             {job.running && (
               <Tag color="green" variant="light" size="small">
                 {t('jobs.cardRunning')}
@@ -67,60 +57,41 @@ const JobsTable = ({ jobs, onRun, onEdit, onClone, onDeleteListings, onDeleteJob
             )}
             {job.isOnlyShared && (
               <Tooltip content={t('jobs.tableSharedTooltip')}>
-                <span style={{ display: 'flex', alignItems: 'center' }}>
-                  <IconAlertTriangle style={{ color: 'rgba(var(--semi-yellow-7), 1)' }} />
-                </span>
+                <IconAlertTriangle style={{ color: 'rgba(var(--semi-yellow-7), 1)' }} />
               </Tooltip>
             )}
           </div>
 
-          <div className="jobsTable__row__actions">
-            <Tooltip content={t('jobs.tableRunJob')}>
-              <Button
-                type="primary"
-                style={{ background: '#3f8f68b5' }}
-                size="small"
-                theme="solid"
-                icon={<IconPlayCircle />}
-                disabled={job.isOnlyShared || job.running}
-                onClick={() => onRun(job.id)}
-              />
-            </Tooltip>
-            <Tooltip content={t('jobs.tableEditJob')}>
-              <Button
-                type="secondary"
-                size="small"
-                icon={<IconEdit />}
-                disabled={job.isOnlyShared}
-                onClick={() => onEdit(job.id)}
-              />
-            </Tooltip>
-            <Tooltip content={t('jobs.tableCloneJob')}>
-              <Button
-                type="tertiary"
-                size="small"
-                icon={<IconCopy />}
-                disabled={job.isOnlyShared}
-                onClick={() => onClone(job.id)}
-              />
-            </Tooltip>
-            {/* Not disabled for a shared job, unlike its neighbours: the listings of a shared job
-                are the shared part, and the API has always let anyone the job was shared with
-                delete them one by one from the overview. Greying this out only hid the faster
-                route to the same thing. Deleting the job itself stays with its owner. */}
-            <Tooltip content={t('jobs.tableDeleteListings')}>
-              <Button type="danger" size="small" icon={<IconDescend2 />} onClick={() => onDeleteListings(job.id)} />
-            </Tooltip>
-            <Tooltip content={t('jobs.tableDeleteJob')}>
-              <Button
-                type="danger"
-                size="small"
-                icon={<IconDelete />}
-                disabled={job.isOnlyShared}
-                onClick={() => onDeleteJob(job.id)}
-              />
-            </Tooltip>
+          <div className="jobsTable__row__stat jobsTable__row__stat--listings">{job.numberOfFoundListings || 0}</div>
+
+          <div className="jobsTable__row__stat jobsTable__row__stat--providers">{job.provider?.length || 0}</div>
+
+          <div className="jobsTable__row__stat jobsTable__row__stat--channels">
+            {job.notificationAdapter?.length || 0}
           </div>
+
+          {/* Bare, because the column heading above already says "last run". */}
+          <div className="jobsTable__row__lastRun">
+            {job.lastRunAt ? relativeTime(job.lastRunAt, t) : t('jobs.lastRunNever')}
+          </div>
+
+          <Switch
+            size="small"
+            checked={job.enabled}
+            disabled={job.isOnlyShared}
+            onChange={(checked) => onStatusChange(job.id, checked)}
+            aria-label={t('jobs.toggleEnabled')}
+          />
+
+          <JobActions
+            job={job}
+            density="row"
+            onRun={onRun}
+            onEdit={onEdit}
+            onClone={onClone}
+            onDeleteListings={onDeleteListings}
+            onDeleteJob={onDeleteJob}
+          />
         </div>
       ))}
     </div>

@@ -53,6 +53,12 @@ export class BackupRestoreClient {
       headers: { 'Content-Type': 'application/zip' },
       body: file,
     });
+    // A failed analysis (an archive over the body limit answers 413) is not a verdict. Returned as
+    // one, it has no `compatible`, and the dialog offered "Restore anyway" - a forced restore of an
+    // archive nobody had looked at.
+    if (!resp.ok) {
+      throw new Error(`Backup analysis failed (${resp.status})`);
+    }
     return resp.json();
   }
 

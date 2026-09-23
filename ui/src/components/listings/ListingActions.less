@@ -1,0 +1,82 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../tokens.less';
+
+.listingActions {
+  display: flex;
+  align-items: center;
+
+  &__open,
+  &__apply,
+  &__more {
+    flex-shrink: 0;
+    border-radius: @radius-chip !important;
+  }
+
+  // Die Kachel hat Platz fuer das Wort, und die Bewerbung ist die Aktion, wegen der man ein
+  // Inserat ueberhaupt aufmacht. Outline statt solid: zwanzig gefuellte Knoepfe in einem Raster
+  // sind kein hervorgehobener Knopf mehr, sondern eine Tapete.
+  &--card {
+    gap: @space-2;
+    width: 100%;
+
+    .listingActions__open,
+    .listingActions__more {
+      width: 30px !important;
+      height: 30px !important;
+      padding: 0 !important;
+    }
+
+    .listingActions__apply {
+      flex: 1 1 auto;
+      min-width: 0;
+      height: 30px !important;
+      padding: 0 @space-3 !important;
+      font-size: @text-sm !important;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+
+  // In der Zeile bleibt vom Wort der Hinweis beim Zeigen. Drei Knoepfe zu 28px plus zwei Gaps,
+  // zusammen mit dem Stern davor genau die 124px der Aktionsspalte.
+  &--row {
+    gap: @space-1;
+    justify-content: flex-end;
+
+    .listingActions__open,
+    .listingActions__apply,
+    .listingActions__more {
+      width: 28px !important;
+      height: 28px !important;
+      padding: 0 !important;
+    }
+  }
+}
+
+/* Semis Standardfläche für das Menü ist var(--semi-color-bg-3), ein flaches Grau, das dem Theme
+   der Anwendung nicht folgt - im hellen Theme steht es als Fremdkörper über Karte und Zeile.
+   Dieselben Tokens wie die Kartenfläche daneben, damit das Menü dazugehört.
+   Steht ausserhalb von .listingActions, weil Semi das Menü in ein Portal am Ende des Body rendert
+   und es damit kein Nachfahre der Aktionsgruppe mehr ist. */
+.listingActions__menuPopup {
+  /* On the element itself: Semi puts the Dropdown's className on the same node as
+     `semi-dropdown-wrapper`, so a descendant selector never matched and the panel kept Semi's grey. */
+  &.semi-dropdown-wrapper {
+    background: @color-surface;
+    border: 1px solid @color-border;
+    border-radius: @radius-card;
+  }
+
+  /* Semi deckelt einen Eintrag bei 280px. "Wieder als verfügbar markieren" brach dadurch auf zwei
+     Zeilen; das Menü ist die eine Stelle, an der diese Aktionen ausgeschrieben statt als Icon
+     gezeichnet sind, also bleibt der Satz einzeilig und das Feld wächst mit. */
+  .semi-dropdown-item {
+    max-width: none;
+    white-space: nowrap;
+  }
+}

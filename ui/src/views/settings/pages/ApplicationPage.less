@@ -10,7 +10,9 @@
     display: grid;
     // Two columns where there is room, one on a phone. The fields are short and pairing them keeps
     // the profile from reading as an endless form.
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    /* min(): never wider than the card. A fixed minimum wider than the card on a phone overflowed
+       it, and the card clips what overflows. */
+    grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
     gap: @space-3;
   }
 
@@ -35,7 +37,8 @@
     display: flex;
     flex-direction: column;
     gap: @space-3;
-    margin-top: @space-4;
+    max-width: 22rem;
+    padding: @space-3;
   }
 
   &__placeholderGroup {
@@ -54,17 +57,53 @@
     margin-top: @space-3;
   }
 
+  &__extra {
+    margin-top: @space-3;
+  }
+
+  /* Editor und Vorschau nebeneinander, solange Platz ist. Man schreibt einen Brief und sieht ihn;
+     untereinander lagen dreissig Chips und eine Kartengrenze dazwischen. Unter etwa 700 Pixeln
+     stapeln sie, wo zwei Spalten zwei zu schmale Spalten waeren. */
+  &__split {
+    display: grid;
+    /* min(): on a phone the card is narrower than 320px, and a column that may not shrink below it
+       was clipped at the card's edge - the right side of the letter editor could not be reached. */
+    grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+    gap: @space-3;
+  }
+
+  &__pane {
+    display: flex;
+    flex-direction: column;
+    gap: @space-2;
+    min-width: 0;
+  }
+
+  &__paneTitle {
+    font-size: @text-xs;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: @color-faint;
+  }
+
   &__preview {
     margin: 0;
-    padding: @space-4;
+    padding: @space-3;
     border: 1px solid @color-border;
-    border-radius: @radius-card;
+    border-radius: @radius-chip;
     background: @color-surface;
     // The preview is the letter, so it wraps like prose rather than scrolling sideways like code.
     white-space: pre-wrap;
     word-break: break-word;
     font-family: inherit;
-    font-size: 14px;
+    font-size: @text-base;
     line-height: 1.55;
+    flex: 1;
+    overflow: auto;
+  }
+
+  &__chips .semi-tag {
+    cursor: pointer;
   }
 }

@@ -7,7 +7,7 @@ platform into Fredy.
 > Always make sure the search results are sorted by **date**, so Fredy picks up the newest listings
 > first.
 
-## The 24 built-in providers
+## The 26 built-in providers
 
 **🇩🇪 Germany**
 
@@ -20,7 +20,8 @@ platform into Fredy.
 | InBerlinWohnen | Kleinanzeigen | Sparkasse Immobilien |
 | McMakler | Wg gesucht | |
 
-**🇦🇹 Austria** · willhaben
+**🇩🇪 Germany · 🇦🇹 Austria · 🇨🇭 Switzerland** · BETTERHOMES
+**🇦🇹 Austria** · willhaben · Immoscout Österreich
 **🇨🇭 Switzerland** · Flatfox
 **🇪🇸 Spain · 🇮🇹 Italy · 🇵🇹 Portugal** · idealista
 **🇮🇹 Italy** · Subito · Tecnocasa · Tecnorete · Casa.it
@@ -51,6 +52,39 @@ Worth knowing:
 - If a search URL cannot be mapped at all, the job fails with `Real estate type not found: <path>`.
   Please open an issue with the URL, it is a one line fix.
 
+## Immoscout Österreich
+
+`immobilienscout24.at` is a separate provider (`immoscoutAt`), not a country setting on the German
+one. The two websites share nothing you can see: Austria has its own URL scheme
+(`/regional/<bundesland>/<gemeinde>/<slug>`), its own filter parameters and its own listing ids.
+What they do share is the index behind them, so Fredy reads Austria through the same reverse
+engineered mobile API and both providers are thin descriptors over one client.
+
+Paste the search URL from `immobilienscout24.at` as usual. Flats, houses and plots are covered, with
+the site's filters for price, living space and room count, whether they sit in the path
+(`wohnung-bis-1100-euro-mieten`) or in the query string (`?primaryPriceTo=1100`). Paging and sorting
+in the path (`/seite-3`, `/aktualitaet`) are ignored rather than refused - Fredy walks and sorts on
+its own.
+
+Three limits, all of them the API's rather than Fredy's:
+
+- **Districts are widened.** The Austrian part of the index files areas by Bundesland and Gemeinde
+  and no deeper, so a Viennese district URL searches all of Vienna and says so in the log. Narrow
+  the job down with a map area filter if that is too wide.
+- **Renting and buying cannot be searched at once.** The API answers a request for both with the
+  first of the two and reports nothing about it, so the site's plural pages (`wohnungen`,
+  `einfamilienhaeuser`, `3-zimmer-wohnungen`, ...) are refused with the single-deal alternative
+  named in the message. `immobilien`, which spans four types, does work.
+- **Commercial searches are not supported**, the same as on the German site.
+
+Listings link to `immobilienscout24.de/expose/<id>`. That is not a mistake: an Austrian advert is
+served by the German index under a German id, and the API states that page as the advert's own
+share link.
+
+**Switzerland is not covered by this provider.** `immoscout24.ch` belongs to a different company and
+runs a different platform, with no listings in this index at all. Switzerland is served by Flatfox
+and BETTERHOMES.
+
 ## idealista
 
 Uses the mobile APIs for idealista.com, idealista.it and idealista.pt, and the search URL determines
@@ -69,6 +103,21 @@ Uses its mobile API and geography service to translate search URLs. Searches tha
 translated into API requests use the job's browser; the fallback reads up to twenty pages and stops
 when a page provides no valid results. See the
 [provider documentation](../reverse-engineered-casa.md) for supported endpoints and filters.
+
+## BETTERHOMES
+
+One brokerage on three domains - `betterhomes.de`, `betterhomes.at` and `betterhomes.ch` - and a
+search url from any of them works. Its results page fills itself from a JSON endpoint, which is
+what Fredy asks as well, so this provider needs no browser and costs one request per run.
+
+Paste the search url as usual: every filter it carries is passed on untouched, so anything the
+portal offers works whether or not Fredy has heard of it. The exact street is never published on a
+BETTERHOMES advert, so a listing is located by its postcode and district. The coordinates the
+portal itself shows are its town's centre, so they are only used for an advert without any address.
+
+A rent is stored as the Nettomiete, like every other provider's, because the affordability check
+adds the Nebenkosten itself; the Bruttomiete is only the fallback for an advert that states no net
+figure.
 
 ## Countries and the map
 

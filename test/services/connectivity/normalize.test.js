@@ -8,16 +8,21 @@ import { describe, it, expect } from 'vitest';
 import {
   normalizeGerman,
   normalizeSwiss,
+  normalizeAustrian,
+  normalizeSpanish,
+  parseSpanishCoverage,
+  parseSpanishOperators,
   AVAILABILITY_THRESHOLD_PERCENT,
 } from '../../../lib/services/connectivity/normalize.js';
 
 /**
- * Turning two national registers into one answer.
+ * Turning four national registers into one answer.
  *
- * Both of them describe an area rather than a building, in units of their own - Germany a
- * percentage of households per 100m cell, Switzerland a class number per 250m square - so this is
- * where most of the ways to be subtly wrong live. The fixtures are trimmed copies of real answers
- * from both services.
+ * Each of them describes an area rather than a building, in units of its own - Germany a
+ * percentage of households per 100m cell, Switzerland a class number per 250m square, Austria the
+ * providers' own offers per 100m cell, Spain the same per cadastral parcel - so this is where most
+ * of the ways to be subtly wrong live. The fixtures are trimmed copies of real answers from all
+ * four services.
  */
 describe('services/connectivity/normalize', () => {
   describe('germany', () => {
@@ -211,6 +216,240 @@ describe('services/connectivity/normalize', () => {
     it('has nothing to say when no layer answered', () => {
       expect(normalizeSwiss({})).toBeNull();
       expect(normalizeSwiss(null)).toBeNull();
+    });
+  });
+
+  describe('austria', () => {
+    /** One fixed-line provider, written the way the register lists them. */
+    const offer = (technik, download, upload = 50) => ({
+      company: `${technik} AG`,
+      company_short: `${technik} AG`,
+      technik,
+      download,
+      upload,
+    });
+
+    it('reports the fastest offer anyone makes at the address', () => {
+      const result = normalizeAustrian([offer('FTTH', 1000), offer('xDSL', 55)], null);
+
+      expect(result.maxDownMbit).toBe(1000);
+      expect(result.source).toBe('at-rtr');
+    });
+
+    it('leaves the household share empty rather than inventing one', () => {
+      // The register publishes the offers themselves, so there is nothing to take a fraction of.
+      // A share here would put a meter on the card measuring a number nobody reported.
+      const result = normalizeAustrian([offer('FTTH', 1000)], null);
+
+      expect(result.sharePercent).toBeNull();
+      expect(result.technologies.ftthb.sharePercent).toBeNull();
+    });
+
+    it('sorts the technology names of the register into the three the card names', () => {
+      const result = normalizeAustrian([offer('FTTB', 300), offer('DOCSIS 3.1', 1000), offer('xDSL', 55)], null);
+
+      expect(result.technologies.ftthb.maxDownMbit).toBe(300);
+      expect(result.technologies.hfc.maxDownMbit).toBe(1000);
+      expect(result.technologies.fttc.maxDownMbit).toBe(55);
+      expect(result.fiber).toBe(true);
+    });
+
+    it('keeps the fastest of two offers on the same technology', () => {
+      const result = normalizeAustrian([offer('FTTH', 300), offer('FTTH', 1000)], null);
+
+      expect(result.technologies.ftthb.maxDownMbit).toBe(1000);
+    });
+
+    it('counts a radio link towards the headline without calling it a line', () => {
+      // The register files fixed wireless under "Festnetz", and for a farmhouse the hundred
+      // megabits arriving by antenna is the answer. It is still not cable, so no chip lights up.
+      const result = normalizeAustrian([offer('4G-FWA', 100)], null);
+
+      expect(result.maxDownMbit).toBe(100);
+      expect(result.fiber).toBe(false);
+      expect(result.technologies.hfc.maxDownMbit).toBeNull();
+      expect(result.technologies.fttc.maxDownMbit).toBeNull();
+    });
+
+    it('reads a cell the register knows and nobody serves', () => {
+      const result = normalizeAustrian([], []);
+
+      expect(result.maxDownMbit).toBeNull();
+      expect(result.fiber).toBe(false);
+      expect(result.mobile.bestTech).toBeNull();
+    });
+
+    it('counts the mobile operators instead of naming them', () => {
+      // The register names all three, but the stored bitmask has room only for the four German
+      // codes - so what survives is the count, with the denominator alongside it.
+      const result = normalizeAustrian(null, [
+        { technik: '5G', company_key: 'a1', download: 1000 },
+        { technik: '4G', company_key: 'a1', download: 500 },
+        { technik: '4G', company_key: 'drei', download: 420 },
+      ]);
+
+      expect(result.mobile.neutral['5g']).toBe(true);
+      expect(result.mobile.neutral['4g']).toBe(true);
+      expect(result.mobile.bestTech).toBe('5g');
+      expect(result.mobile.operatorCount).toBe(2);
+      expect(result.mobile.operatorTotal).toBe(3);
+      expect(result.mobile.operators).toEqual({});
+    });
+
+    it('does not count one operator twice for having two technologies', () => {
+      const result = normalizeAustrian(null, [
+        { technik: '5G', company_key: 'magenta' },
+        { technik: '4G', company_key: 'magenta' },
+      ]);
+
+      expect(result.mobile.operatorCount).toBe(1);
+    });
+
+    it('tells a cell with no coverage apart from a lookup that failed', () => {
+      // An empty list is the register saying nobody is there, which is worth storing. Both halves
+      // missing is the backend not answering, which is not.
+      expect(normalizeAustrian([], null).mobile).toBeNull();
+      expect(normalizeAustrian(null, null)).toBeNull();
+    });
+  });
+
+  describe('spain', () => {
+    /** One parcel, written the way the ministry's map packs a whole table into one column. */
+    const parcel = (velocidad, ...entries) => ({ Velocidad: velocidad, Cobertura: entries.join('#') });
+
+    it('unpacks the operators packed into one column', () => {
+      expect(
+        parseSpanishCoverage('A82018474;FTTH;1000;INFRAESTRUCTURA_PROPIA;NO#B87706305;DOCSIS3.1;500;X;SI'),
+      ).toEqual([
+        { operator: 'A82018474', technology: 'FTTH', downMbit: 1000 },
+        { operator: 'B87706305', technology: 'DOCSIS3.1', downMbit: 500 },
+      ]);
+    });
+
+    it('reads an empty column as nobody rather than as a nameless operator', () => {
+      expect(parseSpanishCoverage('')).toEqual([]);
+      expect(parseSpanishCoverage(null)).toEqual([]);
+    });
+
+    it('reads the mobile column, which packs the same name differently', () => {
+      // A bare list of tax numbers, no technology and no speed. Read with the fixed-line parser it
+      // comes back as one operator whose "technology" is the second operator - wrong in a way
+      // nothing downstream can notice.
+      expect(parseSpanishOperators('A80907397;A82009812;A82528548')).toEqual(['A80907397', 'A82009812', 'A82528548']);
+      expect(parseSpanishOperators('')).toEqual([]);
+      expect(parseSpanishOperators(null)).toEqual([]);
+    });
+
+    it('reports the fastest line reaching the block', () => {
+      const result = normalizeSpanish({
+        wired: [parcel(1000, 'A82018474;FTTH;1000;INFRAESTRUCTURA_PROPIA;NO')],
+      });
+
+      expect(result.maxDownMbit).toBe(1000);
+      expect(result.fiber).toBe(true);
+      expect(result.technologies.ftthb.maxDownMbit).toBe(1000);
+      expect(result.source).toBe('es-setid');
+    });
+
+    it('has no copper to report, because the map has none', () => {
+      // Spain is switching its copper off and the ministry stopped mapping it, so an empty `fttc`
+      // is the data rather than a gap in the parsing.
+      const result = normalizeSpanish({ wired: [parcel(500, 'A1;DOCSIS3.1;500;X;NO')] });
+
+      expect(result.technologies.hfc.maxDownMbit).toBe(500);
+      expect(result.technologies.fttc.maxDownMbit).toBeNull();
+      expect(result.fiber).toBe(false);
+    });
+
+    it('folds the parcels a doorstep sits between into one answer', () => {
+      const result = normalizeSpanish({
+        wired: [parcel(300, 'A1;FTTH;300;X;NO'), parcel(1000, 'A2;FTTH;1000;X;NO')],
+      });
+
+      expect(result.maxDownMbit).toBe(1000);
+    });
+
+    it('takes the headline of the ministry when it beats the entries', () => {
+      // `Velocidad` is already reconciled across the parcel's operators, and an entry whose own
+      // speed column is blank must not drag the headline down with it.
+      const result = normalizeSpanish({ wired: [parcel(1000, 'A1;FTTH;;X;NO')] });
+
+      expect(result.maxDownMbit).toBe(1000);
+      expect(result.fiber).toBe(true);
+    });
+
+    it('lets fixed wireless raise the headline without claiming a line', () => {
+      const result = normalizeSpanish({ wired: [], fwa: [parcel(100, 'A1;FWA;100;X;NO')] });
+
+      expect(result.maxDownMbit).toBe(100);
+      expect(result.fiber).toBe(false);
+      expect(result.technologies.hfc.maxDownMbit).toBeNull();
+    });
+
+    it('reads the three fields the fixed-wireless map writes instead of five', () => {
+      // That map puts the operator's name where the wired one puts a technology, and over much of
+      // rural Spain it records the operator and leaves the speed at zero. A zero there is "no
+      // figure", not "no megabits", so nothing may be claimed off the back of it.
+      const result = normalizeSpanish({
+        wired: [],
+        fwa: [
+          {
+            Velocidad: 0,
+            Cobertura: 'A82009812;ORANGE ESPAGNE, S.A.U.;0#A78923125;TELEFÓNICA MÓVILES ESPAÑA, S.A.U.;0',
+          },
+        ],
+      });
+
+      expect(result.maxDownMbit).toBeNull();
+      expect(result.fiber).toBe(false);
+      // The operator name must not have been mistaken for a technology on the way through.
+      expect(result.technologies.ftthb.maxDownMbit).toBeNull();
+      expect(result.technologies.hfc.maxDownMbit).toBeNull();
+      expect(result.technologies.fttc.maxDownMbit).toBeNull();
+    });
+
+    it('takes the speed the fixed-wireless map does carry', () => {
+      const result = normalizeSpanish({ wired: [], fwa: [{ Velocidad: 0, Cobertura: 'A1;SOME OPERATOR, S.A.;300' }] });
+
+      expect(result.maxDownMbit).toBe(300);
+    });
+
+    it('counts the mobile operators out of the four Spain has', () => {
+      const result = normalizeSpanish({
+        mobile4g: [{ COBERTURA: 'A80907397;A82009812;A82528548;A78923125' }],
+        mobile5g: [{ COBERTURA: 'A82009812;A80907397' }],
+      });
+
+      expect(result.mobile.neutral['4g']).toBe(true);
+      expect(result.mobile.neutral['5g']).toBe(true);
+      expect(result.mobile.bestTech).toBe('5g');
+      // Every operator on either map: an operator with 4G here and no 5G still has coverage here.
+      expect(result.mobile.operatorCount).toBe(4);
+      expect(result.mobile.operatorTotal).toBe(4);
+    });
+
+    it('counts an operator that is only on the 5G map as well', () => {
+      // The larger of the two sets said two here, while three operators cover the place.
+      const result = normalizeSpanish({
+        mobile4g: [{ COBERTURA: 'A80907397;A82009812' }],
+        mobile5g: [{ COBERTURA: 'A82528548' }],
+      });
+
+      expect(result.mobile.operatorCount).toBe(3);
+    });
+
+    it('reads a square only the older network reaches', () => {
+      const result = normalizeSpanish({ mobile4g: [{ COBERTURA: 'A1' }], mobile5g: [] });
+
+      expect(result.mobile.neutral['5g']).toBe(false);
+      expect(result.mobile.bestTech).toBe('4g');
+      expect(result.mobile.operatorCount).toBe(1);
+    });
+
+    it('tells a place with no coverage apart from a lookup that failed', () => {
+      expect(normalizeSpanish({ wired: [], fwa: [], mobile4g: [], mobile5g: [] }).maxDownMbit).toBeNull();
+      expect(normalizeSpanish({})).toBeNull();
+      expect(normalizeSpanish()).toBeNull();
     });
   });
 });

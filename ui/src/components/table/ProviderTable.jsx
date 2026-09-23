@@ -3,9 +3,11 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { Empty, Table, Button, Typography } from '@douyinfe/semi-ui-19';
+import { Empty, Table, Button, Tooltip, Typography } from '@douyinfe/semi-ui-19';
 import { IconDelete, IconEdit } from '@douyinfe/semi-icons';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
+
+import './ProviderTable.less';
 
 export default function ProviderTable({ providerData = [], onRemove, onEdit } = {}) {
   const t = useTranslation();
@@ -27,17 +29,33 @@ export default function ProviderTable({ providerData = [], onRemove, onEdit } = 
           },
         },
         {
-          title: '',
+          // A named column, not an empty header. Two icon buttons under a blank heading are two
+          // symbols nobody has to be able to read.
+          title: t('provider.tableColumnActions'),
           dataIndex: 'tools',
-          render: (_, record) => {
-            return (
-              <div style={{ float: 'right' }}>
-                <Button type="secondary" icon={<IconEdit />} onClick={() => onEdit(record)} />
-                <div style={{ display: 'inline-block', width: '16px' }} />
-                <Button type="danger" icon={<IconDelete />} onClick={() => onRemove(record.url)} />
-              </div>
-            );
-          },
+          width: 120,
+          render: (_, record) => (
+            <div className="providerTable__actions">
+              <Tooltip content={t('provider.tableEdit')}>
+                <Button
+                  theme="borderless"
+                  type="tertiary"
+                  icon={<IconEdit />}
+                  aria-label={t('provider.tableEdit')}
+                  onClick={() => onEdit(record)}
+                />
+              </Tooltip>
+              <Tooltip content={t('provider.tableRemove')}>
+                <Button
+                  theme="borderless"
+                  type="danger"
+                  icon={<IconDelete />}
+                  aria-label={t('provider.tableRemove')}
+                  onClick={() => onRemove(record.url)}
+                />
+              </Tooltip>
+            </div>
+          ),
         },
       ]}
       dataSource={providerData}

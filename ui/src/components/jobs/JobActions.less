@@ -1,0 +1,73 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../tokens.less';
+
+.jobActions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+
+  /* Outlined rather than filled, and the green on the icon rather than behind it. This page has
+     one primary action, "New job" up in the headline, and a solid button on every card would
+     compete with it for the same job. The colour comes from the palette, so it follows the theme
+     instead of being the one literal that only ever suited the dark one. */
+  &__run {
+    height: 30px;
+    padding: 0 11px;
+
+    .semi-icon {
+      color: @color-success;
+    }
+
+    &.semi-button-disabled .semi-icon {
+      color: @color-faint;
+    }
+  }
+
+  /* Square, so edit, duplicate and the menu read as one row of equal weights next to the one
+     button that carries a word. */
+  &__icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  /* The row is the denser of the two views and gives the same group less width, so its icons are
+     a touch smaller. Nothing else differs; which actions are visible is the component's decision,
+     not this file's. */
+  &--row &__icon {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+/*
+ * The menu renders in a portal, so none of this can live inside .jobActions above.
+ *
+ * Semi paints the panel with --semi-color-bg-3, which is a flat grey against the light theme's
+ * paper and belongs to no palette this app defines. The surface, the border and the radius come
+ * from the tokens instead, so the menu is the same object as the card it was opened from and
+ * follows the theme with it.
+ */
+.jobActions__menuPopup {
+  /* On the element itself: Semi puts the Dropdown's className on the same node as
+     `semi-dropdown-wrapper`, so a descendant selector never matched and the panel kept Semi's grey. */
+  &.semi-dropdown-wrapper {
+    background: @color-surface;
+    border: 1px solid @color-border;
+    border-radius: @radius-card;
+  }
+}
+
+/* Semi caps an item at 280px, which folded "delete all listings found by this job" onto a second
+   line. The menu is the one place these two actions are spelled out rather than drawn as an icon,
+   so the sentence stays on one line and the panel grows to fit it. */
+.jobActions__menu {
+  .semi-dropdown-item {
+    max-width: none;
+    white-space: nowrap;
+  }
+}

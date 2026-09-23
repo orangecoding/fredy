@@ -77,8 +77,15 @@ export default function ConnectivityCard({ connectivity }) {
           {DISPLAY_TECHNOLOGIES.map((technology) => {
             const coverage = connectivity.technologies?.[technology];
             // Fibre is the exception: the Swiss register says a square is served by fibre without
-            // saying how fast, so a present share and an absent speed still means "yes".
-            const available = coverage != null && (coverage.maxDownMbit != null || coverage.sharePercent != null);
+            // saying how fast, so a present share and an absent speed still means "yes". The same
+            // for the Austrian and Spanish registers, which record a fibre line with its speed left
+            // blank - `fiber` is set for it, the overview's fibre filter matches it, and this chip
+            // said "No fibre" beside it.
+            const available =
+              coverage != null &&
+              (coverage.maxDownMbit != null ||
+                coverage.sharePercent != null ||
+                (technology === 'ftthb' && connectivity.fiber === true));
             const label = t(`connectivity.fixed.${technology}`);
             return (
               <span
@@ -142,14 +149,16 @@ export default function ConnectivityCard({ connectivity }) {
             </div>
           )}
 
-          {/* Switzerland reports how many operators reach a square without naming them, so this is
-              all there is to say there - and it is worth saying, because one operator out of three
-              means the choice of contract is made for you. */}
+          {/* Three of the four registers give a number rather than a list of names - Switzerland
+              because it only counts, Austria and Spain because Fredy keeps only the count. It is
+              worth saying either way, because one operator out of three means the choice of
+              contract is made for you. The denominator comes with the number: Spain has four
+              networks where its neighbours have three. */}
           {mobile.operatorCount != null && Object.keys(mobile.operators ?? {}).length === 0 && (
             <div className="connectivity__row">
               <span className="connectivity__label">{t('connectivity.operators')}</span>
               <span className="connectivity__share">
-                {t('connectivity.operatorCount', { count: mobile.operatorCount })}
+                {t('connectivity.operatorCount', { count: mobile.operatorCount, total: mobile.operatorTotal ?? 3 })}
               </span>
             </div>
           )}

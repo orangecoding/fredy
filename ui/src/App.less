@@ -34,3 +34,10 @@
 body.fredy-map-expanded .app__content {
   overflow: hidden;
 }
+
+/* While a save bar floats over the bottom of the page, keep what scrolls into view above it. Tabbing
+   or tapping to the next field only scrolled it as far as the bottom edge, which is where the bar
+   sits, so the field that had focus was hidden under it. */
+.app__content:has(.settingsSaveBar) {
+  scroll-padding-bottom: 120px;
+}

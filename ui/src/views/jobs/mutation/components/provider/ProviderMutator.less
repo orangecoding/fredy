@@ -1,47 +1,104 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
 @import '../../../../../tokens.less';
 
 .providerMutator {
   /* Both controls fill the dialog. They were pinned at 25rem inside a 50rem modal, which read as
-     two small boxes floating in the left half of it. */
+     two small boxes floating in the left half of it. The `!important` this used to need is gone
+     with the `width={10}` prop that fought it. */
   &__fields {
-    width: 100% !important;
+    width: 100%;
   }
 
-  /* Numbered, because this is a procedure carried out across two browser tabs and the order is the
-     whole of it. Set small: it is a one-time instruction sitting above the controls it explains,
-     and at body size it dominated the dialog it belongs to. */
-  &__steps {
+  &__banner {
+    margin-bottom: @space-4;
+  }
+
+  &__editNote {
     margin: 0 0 @space-4;
-    padding-left: 1.1rem;
-    color: @color-muted;
     font-size: @text-sm;
     line-height: 1.6;
+    color: @color-muted;
+  }
 
-    li {
-      margin-bottom: 2px;
+  /* A procedure carried out across two browser tabs: the order is the whole of it, so the steps
+     are numbered and each one holds the control it describes rather than pointing at one further
+     down the dialog. */
+  &__steps {
+    margin: 0;
+    padding-left: @space-5;
+    color: @color-muted;
+    font-size: @text-sm;
+  }
+
+  /* `display: list-item` rather than the flex column it reads like: a flex `li` loses its marker,
+     and the number is the whole point of an ordered list. The children below are blocks instead,
+     which stacks them the same way. */
+  &__step {
+    display: list-item;
+
+    & + & {
+      margin-top: @space-4;
+      padding-top: @space-4;
+      border-top: 1px solid @color-border;
     }
+  }
+
+  &__stepTitle {
+    display: block;
+    margin-bottom: @space-2;
+    font-size: @text-base;
+    font-weight: 600;
+    color: @color-text;
+  }
+
+  &__stepHint {
+    display: block;
+    font-size: @text-sm;
+    line-height: 1.6;
+    color: @color-muted;
+  }
+
+  /* Reserved whether or not a provider has been chosen, so picking one does not move the field
+     below it out from under the cursor. */
+  &__openRow {
+    display: flex;
+    align-items: center;
+    min-height: @space-6;
   }
 
   &__openLink {
     display: inline-flex;
     align-items: center;
     gap: @space-1;
-    margin: @space-2 0 0;
     color: @color-accent;
     font-size: @text-sm;
     text-decoration: none;
 
-    &:hover {
+    &:hover,
+    &:focus-visible {
       text-decoration: underline;
     }
   }
 
-  &__url {
-    margin-top: @space-3;
+  /* At the field, not in a banner above everything: all three of these are statements about the
+     address that was pasted. */
+  &__error {
+    margin-top: @space-2;
+    font-size: @text-sm;
+    line-height: 1.6;
+    color: @color-error;
   }
 }
 
-/* Semi sizes this off the widest option rather than the field, so it hung out past the dialog. */
-.providerMutator .semi-select-option-list-wrapper {
-  width: 100%;
+/* Semi sizes the option list off the widest option and renders it in a portal at `document.body`.
+   A descendant selector from inside the modal cannot reach it - which is what the old rule in this
+   file tried, nesting Semi's option list wrapper under a `providerMutator` class no element even
+   carried, and why a global 25rem rule ended up in JobMutation.less instead. `dropdownClassName`
+   is the binding that works. */
+.providerMutator__dropdown {
+  max-width: 32rem;
 }

@@ -9,26 +9,51 @@
   display: inline-flex;
   align-items: center;
   gap: @space-1;
-  padding: 1px @space-2;
+  height: 20px;
+  padding: 0 @space-2;
   border-radius: @radius-chip;
   font-size: @text-xs;
   font-weight: 500;
-  line-height: 1.5;
+  line-height: 1;
   white-space: nowrap;
   vertical-align: middle;
 
-  // Semi's danger tokens, like the price change badge: the chip has to stay legible against both
-  // themes, and a fixed hex only ever looks right against one of them.
-  color: var(--semi-color-danger);
-  background: var(--semi-color-danger-light-default);
-  border: 1px solid var(--semi-color-danger-light-active);
+  // Die eigene Palette, nicht Semis. Semis Danger folgt nicht dem Rot der Anwendung, und
+  // theme.test.js sieht var(--semi-*) nicht als Literal, weshalb es lange unbemerkt blieb.
+  color: @color-error;
 
   .semi-icon {
     font-size: 11px;
   }
 
-  &--compact {
-    padding: 1px 3px;
-    gap: 0;
+  // In einer dichten Textspalte sieht eine gefuellte Flaeche wie ein Knopf aus, also traegt hier
+  // das Wort selbst das Rot: @color-error auf @color-elevated sind 4,89 zu 1 im dunklen und
+  // 6,00 zu 1 im hellen Theme. Die Flaeche steht ausdruecklich da und wird nicht geerbt, sonst
+  // verschoebe eine ueberfahrene Zeile den Kontrast.
+  &--inline {
+    background: @color-elevated;
+    border: 1px solid rgb(@color-error-rgb / 45%);
+  }
+
+  // Ueber einem Foto braucht der Chip eine eigene deckende Flaeche. Das sind die Tokens, die die
+  // Kartenoverlays fuer genau diesen Fall benutzen, und sie schlagen mit dem Theme um:
+  // 5,22 zu 1 dunkel, 6,00 zu 1 hell.
+  &--onImage {
+    position: absolute;
+    top: @space-2;
+    left: @space-2;
+    background: @color-map-panel;
+    border: 1px solid rgb(@color-error-rgb / 55%);
+  }
+}
+
+.scamBadge__why {
+  ul {
+    margin: @space-1 0 0;
+    padding-left: @space-4;
+  }
+
+  li {
+    margin: 0;
   }
 }

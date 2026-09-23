@@ -22,12 +22,22 @@ const { Text } = Typography;
  * @param {(patch: {style?: string, show3dBuildings?: boolean, showTransit?: boolean}) => void} props.onChange
  * @param {import('react').ReactNode} [props.transitExtra] - Rendered indented below the transit row
  *   while transit is on, for settings that only mean something once the layer is there.
+ * @param {boolean} [props.bare=false] Render only the rows, without the panel box. For a view that
+ *   puts these rows into a panel of its own together with its own filters, so the user sees one
+ *   box with two named groups rather than two identical boxes four pixels apart.
  */
-export default function MapControls({ style, show3dBuildings, showTransit, onChange, transitExtra = null }) {
+export default function MapControls({
+  style,
+  show3dBuildings,
+  showTransit,
+  onChange,
+  transitExtra = null,
+  bare = false,
+}) {
   const t = useTranslation();
 
   return (
-    <div className="map-panel map-shell__controls">
+    <div className={bare ? 'map-panel__group' : 'map-panel map-shell__controls'}>
       <div className="map-panel__row">
         <Text size="small" strong className="map-panel__label">
           {t('map.filterStyleLabel')}

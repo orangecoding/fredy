@@ -99,7 +99,10 @@ export default function ListingActionBar({ listing, onBack, onWatch, onApply, on
         <span className="listing-actionbar__open-label">{openLabel}</span>
       </a>
 
-      <Dropdown trigger="click" position="bottomRight" render={overflow}>
+      {/* clickToHide, because Semi's Dropdown does not close itself: without it the menu stayed
+          open on top of the deletion dialog it had just opened, and the only way out was a click
+          somewhere else. Same fix, same reason as ListingActions, JobActions and MapPopupActions. */}
+      <Dropdown trigger="click" position="bottomRight" clickToHide render={overflow}>
         <Button
           icon={<IconMore />}
           theme="borderless"

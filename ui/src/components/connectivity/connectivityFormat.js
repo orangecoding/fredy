@@ -18,15 +18,17 @@
  * framework along.
  * @type {string[]}
  */
-export const CONNECTIVITY_SOURCES = ['de-bba', 'ch-bakom'];
+export const CONNECTIVITY_SOURCES = ['de-bba', 'ch-bakom', 'at-rtr', 'es-setid'];
 
 /**
  * The downstream thresholds the overview filter offers, in Mbit/s.
  *
- * Every one of them exists in both registers' own class ladders (Germany counts 10/16/30/50/100/
- * 200/400/1000, Switzerland 10/30/100/300/500/1000). A step in between would still work as a `>=`
- * comparison, but the chip would then claim a threshold neither register can actually report on,
- * which is a promise the number underneath does not keep.
+ * Every one of them exists in the class ladders of the two registers that publish classes at all
+ * (Germany counts 10/16/30/50/100/200/400/1000, Switzerland 10/30/100/300/500/1000). A step in
+ * between would still work as a `>=` comparison, but the chip would then claim a threshold neither
+ * register can actually report on, which is a promise the number underneath does not keep. Austria
+ * and Spain publish the real figure rather than a class, so they land on whichever side of a
+ * threshold they belong on without any of this mattering to them.
  * @type {number[]}
  */
 export const DOWNSTREAM_FILTER_STEPS = [30, 100, 1000];
@@ -41,8 +43,12 @@ export const DOWNSTREAM_FILTER_STEPS = [30, 100, 1000];
 export const FILTERABLE_TECHNOLOGIES = ['4g', '5g', '5g_sa'];
 
 /**
- * Mobile operators worth filtering by. Germany only - the Swiss register counts operators rather
- * than naming them, so there is nothing to filter on there.
+ * Mobile operators worth filtering by. Germany only.
+ *
+ * Switzerland counts operators rather than naming them, so there is nothing there to filter on.
+ * Austria and Spain do name theirs, but Fredy keeps only the count: the per-operator half of the
+ * stored bitmask is laid out for these four codes, and widening it would change the meaning of
+ * every mask already in the database.
  * @type {string[]}
  */
 export const FILTERABLE_OPERATORS = ['dt', 'vf', 'tf', 'ee'];
@@ -85,6 +91,19 @@ export const SOURCE_ATTRIBUTION = {
     href: 'https://www.bakom.admin.ch',
     extraLabel: '© swisstopo',
     extraHref: 'https://www.geo.admin.ch/de/about-swiss-geoportal/impressum.html',
+  },
+  'at-rtr': {
+    label: 'Breitbandatlas Österreich',
+    href: 'https://breitbandatlas.gv.at',
+    extraLabel: '© RTR-GmbH, CC BY 3.0 AT',
+    extraHref: 'https://creativecommons.org/licenses/by/3.0/at/deed.de',
+  },
+  'es-setid': {
+    label: 'Mapas de cobertura de banda ancha',
+    href: 'https://digital.gob.es/telecomunicaciones-infraestructuras-digitales/areas-interes/banda-ancha/informacion-cobertura',
+    // The parcels the Spanish map is drawn on are the cadastre's, not the ministry's.
+    extraLabel: '© Dirección General del Catastro',
+    extraHref: 'https://www.sedecatastro.gob.es/',
   },
 };
 

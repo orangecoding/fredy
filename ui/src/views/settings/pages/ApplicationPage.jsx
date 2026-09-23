@@ -6,8 +6,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Button,
+  DatePicker,
   Input,
   InputNumber,
+  Popover,
   Select,
   RadioGroup,
   Radio,
@@ -16,9 +18,11 @@ import {
   Toast,
   Typography,
 } from '@douyinfe/semi-ui-19';
-import { IconSave, IconRefresh } from '@douyinfe/semi-icons';
+import { IconRefresh } from '@douyinfe/semi-icons';
 
 import { SegmentPart } from '../../../components/segment/SegmentPart';
+import SettingsSaveBar from '../../../components/settingsShell/SettingsSaveBar.jsx';
+import { useUnsavedWarning } from '../../../hooks/useUnsavedWarning.js';
 import { errorMessage } from '../../../services/xhr';
 import { useActions, useSelector, useIsLoading } from '../../../services/state/store';
 import { useTranslation } from '../../../services/i18n/i18n.jsx';
@@ -56,6 +60,24 @@ const EMPTY_PREVIEW = { text: '', missing: [], unknown: [] };
  *
  * @returns {React.ReactElement}
  */
+/**
+ * The applicant profile with its empty answers left out, in a fixed key order, for comparing.
+ *
+ * A flag set and cleared again, or a date picked and removed, holds `null` or '' where the stored
+ * profile has no key at all - and after an all-empty save the stored profile is `null`. Compared as
+ * raw JSON those differ, and the save bar stayed up after a successful save.
+ *
+ * @param {Object|null|undefined} profile
+ * @returns {Object}
+ */
+function compactProfile(profile) {
+  return Object.fromEntries(
+    Object.entries(profile ?? {})
+      .filter(([, value]) => value != null && String(value).trim().length > 0)
+      .sort(([a], [b]) => a.localeCompare(b)),
+  );
+}
+
 export default function ApplicationPage() {
   const t = useTranslation();
   const actions = useActions();
@@ -83,6 +105,14 @@ export default function ApplicationPage() {
    */
   const [previewFor, setPreviewFor] = useState(null);
   const [saveCount, setSaveCount] = useState(0);
+  /**
+   * Whether the placeholder list is open.
+   *
+   * Controlled rather than left to the Popover, because picking one has to close it. Uncontrolled
+   * it stayed open over the preview after every insert, so the one thing you wanted to look at
+   * afterwards - what the letter now reads like - was the thing it covered.
+   */
+  const [placeholdersOpen, setPlaceholdersOpen] = useState(false);
 
   useEffect(() => {
     setProfile(storedProfile ?? {});
@@ -194,6 +224,7 @@ export default function ApplicationPage() {
    * @param {string} key
    */
   const insertPlaceholder = (key) => {
+    setPlaceholdersOpen(false);
     const textarea = editorRef.current?.querySelector('textarea');
     const token = `{{${key}}}`;
     if (textarea == null) {
@@ -216,13 +247,27 @@ export default function ApplicationPage() {
   // Memoised because both sides can be large - six templates at up to 20 000 characters each - and
   // an unmemoised comparison runs on every keystroke in the editor.
   const profileDirty = useMemo(
-    () => JSON.stringify(profile) !== JSON.stringify(storedProfile ?? {}),
+    () => JSON.stringify(compactProfile(profile)) !== JSON.stringify(compactProfile(storedProfile)),
     [profile, storedProfile],
   );
   const templatesDirty = useMemo(
     () => JSON.stringify(overrides) !== JSON.stringify(storedTemplates ?? {}),
     [overrides, storedTemplates],
   );
+
+  const dirty = profileDirty || templatesDirty;
+
+  useUnsavedWarning(dirty);
+
+  /**
+   * Put the profile and the letter drafts back on what is stored.
+   *
+   * @returns {void}
+   */
+  const discard = () => {
+    setProfile(storedProfile ?? {});
+    setOverrides(storedTemplates ?? {});
+  };
 
   const handleSave = async () => {
     try {
@@ -255,6 +300,7 @@ export default function ApplicationPage() {
     <div className="settingsShell__page applicationPage">
       {/* The only place in the interface that connects this page to the button it feeds. */}
       <p className="settingsShell__pageIntro">{t('settings.application.pageIntro')}</p>
+      <div className="settingsShell__groupTitle">{t('settings.application.groupProfile')}</div>
       <SegmentPart name={t('settings.application.contact')} helpText={t('settings.application.contactHelp')}>
         <div className="applicationPage__grid">
           <Input
@@ -360,6 +406,7 @@ export default function ApplicationPage() {
             min={0}
             step={100}
             prefix={t('settings.application.netIncome')}
+            suffix="€"
             style={{ width: '100%' }}
           />
         </div>
@@ -367,11 +414,17 @@ export default function ApplicationPage() {
 
       <SegmentPart name={t('settings.application.details')} helpText={t('settings.application.detailsHelp')}>
         <div className="applicationPage__grid">
-          <Input
-            value={profile.moveInDate ?? ''}
-            onChange={field('moveInDate')}
-            placeholder="2026-12-01"
-            prefix={t('settings.application.moveInDate')}
+          {/* Semi hands `onChange` two values; the string is the second one, and it is the one that
+              is stored - the template still expects `yyyy-MM-dd`, and a Date object in the profile
+              would serialise to something else. */}
+          <DatePicker
+            type="date"
+            format="yyyy-MM-dd"
+            value={profile.moveInDate || null}
+            onChange={(_date, dateString) => field('moveInDate')(dateString || null)}
+            placeholder={t('settings.application.moveInDate')}
+            insetLabel={t('settings.application.moveInDate')}
+            style={{ width: '100%' }}
           />
         </div>
 
@@ -398,11 +451,15 @@ export default function ApplicationPage() {
           onChange={field('extra')}
           autosize={{ minRows: 3, maxRows: 8 }}
           placeholder={t('settings.application.extraPlaceholder')}
-          style={{ marginTop: 12 }}
+          className="applicationPage__extra"
         />
       </SegmentPart>
 
-      <SegmentPart name={t('settings.application.template')} helpText={t('settings.application.templateHelp')}>
+      <div className="settingsShell__groupTitle">{t('settings.application.groupLetter')}</div>
+      <SegmentPart
+        name={t('settings.application.template')}
+        helpText={`${t('settings.application.templateHelp')} ${t('settings.application.previewHelp')}`}
+      >
         <div className="applicationPage__templateControls">
           <Select
             value={language}
@@ -414,63 +471,84 @@ export default function ApplicationPage() {
             <Radio value="rent">{t('settings.application.dealTypeRent')}</Radio>
             <Radio value="buy">{t('settings.application.dealTypeBuy')}</Radio>
           </RadioGroup>
-          <Button icon={<IconRefresh />} theme="borderless" disabled={!isOverridden} onClick={resetCurrentTemplate}>
+
+          {/* Gebraucht beim Schreiben, im Weg beim Lesen. Vier Gruppen mit ueber dreissig Chips
+              standen dauerhaft zwischen dem Editor und dem, was er erzeugt. */}
+          <Popover
+            trigger="click"
+            position="bottomLeft"
+            visible={placeholdersOpen}
+            onVisibleChange={setPlaceholdersOpen}
+            content={
+              <div className="applicationPage__placeholders">
+                {PLACEHOLDER_GROUPS.map((group) => (
+                  <div key={group} className="applicationPage__placeholderGroup">
+                    <Text type="tertiary" size="small">
+                      {t(`settings.application.group.${group}`)}
+                    </Text>
+                    <div className="applicationPage__chips">
+                      {(grouped[group] ?? []).map((key) => (
+                        <Tag key={key} onClick={() => insertPlaceholder(key)}>
+                          {t(PLACEHOLDER_CATALOG[key].labelKey)}
+                        </Tag>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            }
+          >
+            <Button theme="borderless" size="small">
+              {t('settings.application.insertPlaceholder')}
+            </Button>
+          </Popover>
+
+          <Button
+            icon={<IconRefresh />}
+            theme="borderless"
+            size="small"
+            disabled={!isOverridden}
+            onClick={resetCurrentTemplate}
+          >
             {t('settings.application.resetTemplate')}
           </Button>
         </div>
 
-        <div ref={editorRef}>
-          {/* Semi puts className on the wrapper, not on the textarea, so the editor's type has to
-              be set through textareaStyle or it silently keeps the form default. */}
-          <TextArea
-            value={currentTemplate}
-            onChange={setCurrentTemplate}
-            autosize={{ minRows: 12, maxRows: 28 }}
-            className="applicationPage__editor"
-            textareaStyle={{ fontSize: 13, lineHeight: 1.55 }}
-          />
-        </div>
-
-        <div className="applicationPage__placeholders">
-          {PLACEHOLDER_GROUPS.map((group) => (
-            <div key={group} className="applicationPage__placeholderGroup">
-              <Text type="tertiary" size="small">
-                {t(`settings.application.group.${group}`)}
-              </Text>
-              <div className="applicationPage__chips">
-                {(grouped[group] ?? []).map((key) => (
-                  <Tag key={key} onClick={() => insertPlaceholder(key)} style={{ cursor: 'pointer' }}>
-                    {t(PLACEHOLDER_CATALOG[key].labelKey)}
-                  </Tag>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-
+        {/* Direkt ueber dem Editor, der sie verursacht hat. Sie stand unter den Chips, also unter
+            allem, was man beim Tippen gar nicht sieht. */}
         {preview.unknown.length > 0 && (
           <Paragraph type="warning" size="small" className="applicationPage__warning">
             {t('settings.application.unknownPlaceholders', { placeholders: preview.unknown.join(', ') })}
           </Paragraph>
         )}
+
+        <div className="applicationPage__split">
+          <div className="applicationPage__pane" ref={editorRef}>
+            <span className="applicationPage__paneTitle">{t('settings.application.template')}</span>
+            {/* Semi puts className on the wrapper, not on the textarea, so the editor's type has to
+                be set through textareaStyle or it silently keeps the form default. */}
+            <TextArea
+              value={currentTemplate}
+              onChange={setCurrentTemplate}
+              autosize={{ minRows: 14, maxRows: 28 }}
+              className="applicationPage__editor"
+              textareaStyle={{ fontSize: 13, lineHeight: 1.55 }}
+            />
+          </div>
+
+          <div className="applicationPage__pane">
+            <span className="applicationPage__paneTitle">{t('settings.application.preview')}</span>
+            <pre className="applicationPage__preview">{preview.text}</pre>
+          </div>
+        </div>
       </SegmentPart>
 
-      <SegmentPart name={t('settings.application.preview')} helpText={t('settings.application.previewHelp')}>
-        <pre className="applicationPage__preview">{preview.text}</pre>
-      </SegmentPart>
-
-      <div className="settingsShell__saveRow">
-        <Button
-          icon={<IconSave />}
-          theme="solid"
-          type="primary"
-          onClick={handleSave}
-          disabled={!profileDirty && !templatesDirty}
-          loading={savingProfile || savingTemplates}
-        >
-          {t('settings.save')}
-        </Button>
-      </div>
+      <SettingsSaveBar
+        dirty={dirty}
+        saving={savingProfile || savingTemplates}
+        onSave={handleSave}
+        onDiscard={discard}
+      />
     </div>
   );
 }

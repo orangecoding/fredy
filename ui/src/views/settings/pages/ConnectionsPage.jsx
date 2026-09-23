@@ -4,13 +4,16 @@
  */
 
 import { useCallback, useEffect, useState } from 'react';
-import { Button, Empty, Popconfirm, Table, Tag, Toast } from '@douyinfe/semi-ui-19';
+import { Button, Empty, Popconfirm, Table, Toast } from '@douyinfe/semi-ui-19';
 import { IconDelete } from '@douyinfe/semi-icons';
 
 import { SegmentPart } from '../../../components/segment/SegmentPart';
 import { xhrDelete, xhrGet, errorMessage } from '../../../services/xhr';
 import { useLocale, useTranslation } from '../../../services/i18n/i18n.jsx';
 import { format } from '../../../services/time/timeService';
+import { relativeTime } from '../../../services/time/relativeTime.js';
+
+import './ConnectionsPage.less';
 
 /**
  * The MCP clients this user has let read their jobs and listings over OAuth, and the way to take
@@ -70,19 +73,23 @@ export default function ConnectionsPage() {
       render: (scopes) => {
         const writes = (scopes ?? []).includes('mcp:write');
         return (
-          <Tag color={writes ? 'amber' : 'grey'}>
+          <span className={`accessTag accessTag--${writes ? 'write' : 'read'}`}>
             {t(writes ? 'settings.connections.accessWrite' : 'settings.connections.accessRead')}
-          </Tag>
+          </span>
         );
       },
     },
     {
       title: t('settings.connections.columnGrantedAt'),
       dataIndex: 'grantedAt',
-      render: (grantedAt) => format(grantedAt, false, locale),
+      // Relativ, weil man von einer Freigabeliste wissen will, wie lange sie schon offen steht,
+      // und nicht, auf welches Datum das fiel. Das genaue Datum steht im Titel.
+      render: (grantedAt) => (
+        <span title={format(grantedAt, false, locale)}>{relativeTime(grantedAt, t, Date.now())}</span>
+      ),
     },
     {
-      title: '',
+      title: t('settings.connections.columnAction'),
       dataIndex: 'clientId',
       render: (clientId) => (
         <Popconfirm
@@ -91,7 +98,7 @@ export default function ConnectionsPage() {
           okType="danger"
           onConfirm={() => revoke(clientId)}
         >
-          <Button type="danger" icon={<IconDelete />} size="small">
+          <Button type="danger" theme="borderless" size="small" icon={<IconDelete />}>
             {t('settings.connections.revoke')}
           </Button>
         </Popconfirm>

@@ -75,7 +75,7 @@ export default function ScenarioForm({ scenarios, computed = [], onChange }) {
   const palette = chartPalette();
 
   return (
-    <SegmentPart name={t('finance.form.scenariosTitle')} helpText={t('finance.form.scenariosHelp')}>
+    <SegmentPart name={t('finance.form.scenariosTitle')} helpText={t('finance.form.scenariosHelp')} helpMode="popover">
       {scenarios.map((scenario, index) => (
         <div className="scenarioRow" key={scenario.id ?? index}>
           <span
@@ -83,7 +83,7 @@ export default function ScenarioForm({ scenarios, computed = [], onChange }) {
             style={{ backgroundColor: palette[index % palette.length] }}
             aria-hidden="true"
           />
-          <div className="financeForm__grid scenarioRow__fields">
+          <div className="financeForm__fields scenarioRow__fields">
             <NumberField
               label={t('finance.form.interestRate')}
               value={scenario.annualRate}

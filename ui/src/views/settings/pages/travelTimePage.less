@@ -29,7 +29,7 @@
 .travelTimePage__icon {
   /* Nudged onto the first control's optical centre rather than its box top. */
   line-height: 32px;
-  font-size: 1.05rem;
+  font-size: @text-md;
   text-align: center;
   user-select: none;
 }
@@ -67,7 +67,7 @@
   border-left: 2px solid rgb(@color-accent-rgb / 45%);
   padding-left: @space-3;
   color: @color-text;
-  font-size: 0.82rem;
+  font-size: @text-sm;
   line-height: 1.5;
 }
 
@@ -78,17 +78,107 @@
   margin-top: @space-3;
 }
 
+/* Name und Ziel in einer Zeile. Sie gehoeren zusammen - "Arbeit" und die Adresse sind zwei Haelften
+   derselben Angabe - und untereinander waren es zwei von vier Zeilen je Eintrag. */
+.travelTimePage__where {
+  display: flex;
+  align-items: center;
+  gap: @space-2;
+}
+
+.travelTimePage__name {
+  flex: 0 0 180px;
+}
+
+.travelTimePage__summary {
+  display: flex;
+  align-items: center;
+  gap: @space-2;
+}
+
+.travelTimePage__edit {
+  flex: none;
+}
+
+.travelTimePage__more {
+  flex: none;
+}
+
+.travelTimePage__empty {
+  margin: 0 0 @space-3;
+  font-size: @text-sm;
+  line-height: 1.5;
+  color: @color-muted;
+}
+
+/* Zwei Knoepfe, die nach einem Unterschied fragen, den ein Erstbesucher nicht kennt, sagen ihn
+   jetzt selbst. */
+.travelTimePage__addOption {
+  flex: 1;
+  box-sizing: border-box;
+  padding: @space-3;
+  border: 1px dashed @color-border-bright;
+  border-radius: @radius-card;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+
+  &:hover {
+    border-color: @color-accent;
+    border-style: solid;
+  }
+
+  &:focus-visible {
+    outline: 2px solid @color-accent;
+    outline-offset: 2px;
+  }
+}
+
+.travelTimePage__addName {
+  display: flex;
+  align-items: center;
+  gap: @space-2;
+  font-size: @text-sm;
+  font-weight: 600;
+  color: @color-text;
+}
+
+.travelTimePage__addHelp {
+  display: block;
+  margin-top: @space-1;
+  font-size: @text-xs;
+  line-height: 1.45;
+  color: @color-muted;
+}
+
 /* How far the sweeper has got. Sits above the list because it answers the question somebody arrives
    with after saving - whether anything is happening - rather than commenting on any one row. */
 .travelTimePage__progress {
   display: flex;
-  flex-direction: column;
-  gap: @space-1;
+  flex-direction: row;
+  align-items: center;
+  gap: @space-3;
   margin-bottom: @space-4;
+}
+
+.travelTimePage__progressBar {
+  flex: 1;
 }
 
 .travelTimePage__progressText {
   color: @color-muted;
-  font-size: 0.78rem;
+  font-size: @text-xs;
   font-variant-numeric: tabular-nums;
+}
+
+/* Zwei kurze Felder nebeneinander sind auf einem Telefon zwei zu schmale Felder. */
+@media (max-width: 600px) {
+  .travelTimePage__where {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .travelTimePage__name {
+    flex: 1 1 auto;
+  }
 }

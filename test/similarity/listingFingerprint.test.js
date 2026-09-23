@@ -130,6 +130,17 @@ describe('listingFingerprint', () => {
       expect(parseAddress(null)).toEqual({ street: null, precise: false, zip: null, locality: new Set() });
       expect(parseAddress('')).toEqual({ street: null, precise: false, zip: null, locality: new Set() });
     });
+
+    // Austria and Switzerland write four digits. Without them every Viennese address was the
+    // locality {wien} and nothing else.
+    it('reads a four-digit postcode when the address has no German one', () => {
+      expect(parseAddress('1030 Wien, Landstraße').zip).toBe('1030');
+      expect(parseAddress('8001 Zürich').zip).toBe('8001');
+    });
+
+    it('still prefers a German postcode over a four-digit house number', () => {
+      expect(parseAddress('Industriestraße 1234, 93049 Regensburg').zip).toBe('93049');
+    });
   });
 
   describe('titleTokens', () => {
@@ -183,6 +194,24 @@ describe('listingFingerprint', () => {
   });
 
   describe('isLikelyDuplicate', () => {
+    // Two different Viennese flats, one per Austrian portal: same size, rooms and price, but two
+    // districts. They used to meet on the locality "wien" alone and the second was never notified.
+    it('keeps two flats with different postcodes apart', () => {
+      const willhaben = {
+        jobId: 'job-at',
+        provider: 'willhaben',
+        title: 'Schöne Wohnung',
+        address: '1030 Wien, Landstraße',
+        price: 1010,
+        size: 50.4,
+        rooms: 2,
+        description: '',
+      };
+      const scoutAt = { ...willhaben, provider: 'immoscoutAt', address: '1200 Wien', price: 1000, size: 50 };
+
+      expect(duplicateOf(willhaben, scoutAt)).toBe(false);
+    });
+
     it('matches the same flat across all three portals', () => {
       expect(duplicateOf(immoscout, immowelt)).toBe(true);
       expect(duplicateOf(immoscout, kleinanzeigen)).toBe(true);

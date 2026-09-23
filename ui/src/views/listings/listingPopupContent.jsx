@@ -4,11 +4,13 @@
  */
 
 import { renderToString } from 'react-dom/server';
-import { IconChevronLeft, IconChevronRight, IconDelete, IconEyeOpened, IconLink } from '@douyinfe/semi-icons';
+import { IconChevronLeft, IconChevronRight } from '@douyinfe/semi-icons';
 import no_image from '../../assets/no_image.png';
 import { availableModes, formatMinutes, hasAnyTime } from '../../components/transit/travelTimeFormat.js';
 import { formatEuroPrice } from '../../services/price/priceService.js';
 import { formatDecimal } from '../../services/number/numberService.js';
+import { mountPopupNode } from '../../components/map/popupContent.jsx';
+import MapPopupActions from './components/MapPopupActions.jsx';
 
 /**
  * Builds the DOM for a listing popup on the map.
@@ -18,22 +20,54 @@ import { formatDecimal } from '../../services/number/numberService.js';
  * through them. The nearby-stops block is the same for all of them, so it sits outside the paged
  * part and is mounted once by the caller.
  *
- * The buttons still call the `viewDetails` / `deleteListing` globals the map view installs on
- * `window`, which is how this markup has always worked.
+ * The action bar is React, mounted into this markup through `mountPopupNode()` - the same way the
+ * nearby-stops block is. That is what let the two globals go that the map view used to install on
+ * `window`: an inline click handler inside a string of markup can only reach a global, whereas a
+ * mounted component takes callbacks.
  *
  * @param {Object} params
  * @param {object[]} params.listings - The listings at this position, at least one.
  * @param {(key: string, vars?: Record<string, string|number>) => string} params.t
  * @param {string} [params.locale] - BCP 47 locale for the price. This markup is built outside
  * React, so the view hands its `useLocale()` value down.
- * @param {() => void} [params.onPageChange] - Called after the popup switched to another listing,
- * which changes its height.
- * @returns {{element: HTMLElement, transitMount: HTMLElement}} The popup content and the empty node
- * the nearby stops are to be rendered into.
+ * @param {string} params.language - Active language code, for the translation provider the mounted
+ * action bar needs: it sits in a React root of its own and inherits no context from the app.
+ * @param {(id: string) => void} params.onDelete - Asked for the removal of a listing.
+ * @param {(id: string) => void} params.onNavigate - Asked to open a listing's detail page. A
+ * callback rather than `useNavigate()`, which would throw outside the router.
+ * @param {string|null} [params.initialId] - Which of the group to show first. For reopening the
+ * popup the URL says was open, on the page it was left on; an id that is not in this group falls
+ * back to the first, so a stale address cannot leave the popup blank.
+ * @param {(id: string) => void} [params.onPageChange] - Called after the popup switched to another
+ * listing, with its id. That changes the popup's height, and it changes which listing the address
+ * bar has to name.
+ * @returns {{element: HTMLElement, transitMount: HTMLElement, unmount: () => void,
+ * currentId: () => string}} The popup content, the empty node the nearby stops are to be rendered
+ * into, the teardown of the action bar, and which listing is on screen right now.
  */
-export function createListingPopupContent({ listings, t, locale, onPageChange }) {
+export function createListingPopupContent({
+  listings,
+  t,
+  locale,
+  language,
+  onDelete,
+  onNavigate,
+  initialId = null,
+  onPageChange,
+}) {
   const element = document.createElement('div');
   element.className = 'map-popup-content';
+  /*
+   * Focusable, but never in the tab order by itself.
+   *
+   * This is where the caller sends focus when the popup opens, instead of letting MapLibre focus
+   * the first link inside it - which since the redesign is the title, and a heading wearing a
+   * focus ring on every open reads as a stray border. Focus has to go *somewhere* in here though:
+   * a popup is appended after every marker in the DOM, so from the marker that opened it the tab
+   * order runs through all the other markers first, and without this the contents would be out of
+   * keyboard reach entirely. Landing on the container puts the title and the actions one Tab away.
+   */
+  element.tabIndex = -1;
 
   const body = document.createElement('div');
   element.appendChild(body);
@@ -44,32 +78,66 @@ export function createListingPopupContent({ listings, t, locale, onPageChange })
     <div class="map-popup-content__transit-mount"></div>`;
   element.appendChild(transit);
 
-  let index = 0;
+  // Where the group opens. `findIndex` returns -1 for an id that is not in it, which the max turns
+  // back into the first listing.
+  let index = Math.max(
+    0,
+    listings.findIndex((listing) => listing.id === initialId),
+  );
+  // The action bar is React mounted into the paged part, and paging replaces that part's markup.
+  // So the previous root has to be unmounted before the next one is created, or every page turn
+  // leaks one.
+  let unmountActions = null;
 
   const render = () => {
+    unmountActions?.();
+    unmountActions = null;
+
     body.innerHTML = renderListingBody(listings[index], index, listings.length, t, locale);
 
     const step = (delta) => {
       index = (index + delta + listings.length) % listings.length;
       render();
-      onPageChange?.();
+      onPageChange?.(listings[index].id);
     };
     body.querySelector('.js-popup-prev')?.addEventListener('click', () => step(-1));
     body.querySelector('.js-popup-next')?.addEventListener('click', () => step(1));
+
+    const actions = body.querySelector('.map-popup-content__actions');
+    if (actions) {
+      unmountActions = mountPopupNode(
+        actions,
+        <MapPopupActions listing={listings[index]} onDelete={onDelete} onNavigate={onNavigate} />,
+        language,
+      );
+    }
   };
 
   render();
 
-  return { element, transitMount: transit.querySelector('.map-popup-content__transit-mount') };
+  return {
+    element,
+    transitMount: transit.querySelector('.map-popup-content__transit-mount'),
+    /** Tears the action bar down with its popup. The caller already collects these. */
+    unmount: () => unmountActions?.(),
+    /** Which listing is on screen, for the caller to put in the address bar when it opens. */
+    currentId: () => listings[index].id,
+  };
 }
 
 /**
- * Escapes text that came from the user's own settings before it goes into the popup markup.
+ * Escapes text before it goes into markup that MapLibre hands to `innerHTML`.
  *
- * @param {string} value
+ * Text from the user's own settings, and every field of a listing: the title, the address, the job
+ * name and the image URL all arrive from a scraped portal, and a `<` or a `"` in one of them used to
+ * land in this markup unescaped - which in a document served from Fredy's own origin is stored
+ * cross-site scripting. Exported for the other popups built from strings (the listing detail map,
+ * the home markers on the map view).
+ *
+ * @param {unknown} value
  * @returns {string}
  */
-function escapeHtml(value) {
+export function escapeHtml(value) {
   return String(value).replace(
     /[&<>"']/g,
     (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char],
@@ -133,37 +201,22 @@ function renderListingBody(listing, index, total, t, locale) {
   return `
     ${pager}
     <img
-      src="${listing.image_url}"
+      src="${escapeHtml(listing.image_url || no_image)}"
       onerror="this.onerror=null;this.src='${no_image}'"
     />
-    <h4>${listing.title}</h4>
-    <div class="info">
-      <span><strong>${t('map.popupPrice')}</strong> ${listing.price ? formatEuroPrice(listing.price, locale) : t('common.na')}</span>
-      <span><strong>${t('map.popupAddress')}</strong> ${listing.address || t('common.na')}</span>
-      <span><strong>${t('map.popupJob')}</strong> ${listing.job_name || t('common.na')}</span>
-      <span><strong>${t('map.popupProvider')}</strong> ${capitalizedProvider}</span>
-      <span><strong>${t('map.popupSize')}</strong> ${listing.size != null ? `${formatDecimal(listing.size, locale)} m²` : t('common.na')}</span>
-      ${renderTravelTimes(listing, t)}
-      <div style="display: flex; gap: 8px; margin-top: 8px; justify-content: space-between;">
-        <div class="map-popup-content__linkButton">
-          <a href="${listing.link}" target="_blank" rel="noopener noreferrer">
-            ${renderToString(<IconLink />)}
-          </a>
-        </div>
-        <button
-          class="map-popup-content__detailsButton"
-          title="${t('map.popupViewDetails')}"
-          onclick="viewDetails('${listing.id}')"
-        >
-          ${renderToString(<IconEyeOpened />)}
-        </button>
-        <button
-          class="map-popup-content__deleteButton"
-          title="${t('map.popupRemove')}"
-          onclick="deleteListing('${listing.id}')"
-        >
-          ${renderToString(<IconDelete />)}
-        </button>
-      </div>
-    </div>`;
+    <a class="map-popup-content__title" href="#/listings/listing/${encodeURIComponent(listing.id)}">${escapeHtml(listing.title)}</a>
+    <div class="map-popup-content__facts">
+      <span>${t('map.popupPrice')}</span>
+      <span class="map-popup-content__num">${listing.price ? escapeHtml(formatEuroPrice(listing.price, locale)) : t('common.na')}</span>
+      <span>${t('map.popupAddress')}</span>
+      <span>${escapeHtml(listing.address || t('common.na'))}</span>
+      <span>${t('map.popupJob')}</span>
+      <span>${escapeHtml(listing.job_name || t('common.na'))}</span>
+      <span>${t('map.popupProvider')}</span>
+      <span>${escapeHtml(capitalizedProvider)}</span>
+      <span>${t('map.popupSize')}</span>
+      <span class="map-popup-content__num">${listing.size != null ? `${escapeHtml(formatDecimal(listing.size, locale))} m²` : t('common.na')}</span>
+    </div>
+    ${renderTravelTimes(listing, t)}
+    <div class="map-popup-content__actions"></div>`;
 }

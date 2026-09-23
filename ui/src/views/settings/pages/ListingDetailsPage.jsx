@@ -4,13 +4,16 @@
  */
 
 import { useEffect, useState } from 'react';
-import { Button, Checkbox, Select, Banner, Toast } from '@douyinfe/semi-ui-19';
-import { IconSave } from '@douyinfe/semi-icons';
+import { Checkbox, Select, Toast } from '@douyinfe/semi-ui-19';
+import { IconAlertTriangle } from '@douyinfe/semi-icons';
 
 import { SegmentPart } from '../../../components/segment/SegmentPart';
+import SettingsSaveBar from '../../../components/settingsShell/SettingsSaveBar.jsx';
+import { useUnsavedWarning } from '../../../hooks/useUnsavedWarning.js';
 import { errorMessage } from '../../../services/xhr';
 import { useActions, useSelector, useIsLoading } from '../../../services/state/store';
 import { useTranslation } from '../../../services/i18n/i18n.jsx';
+import './ListingDetailsPage.less';
 
 /**
  * Which portals get their detail pages fetched, and whether the blacklist is applied to what comes
@@ -35,6 +38,16 @@ export default function ListingDetailsPage() {
   const [selected, setSelected] = useState([]);
   const [filterEnabled, setFilterEnabled] = useState(false);
 
+  /**
+   * Put both controls back on what is stored.
+   *
+   * @returns {void}
+   */
+  const discard = () => {
+    setSelected(Array.isArray(providerDetails) ? providerDetails : []);
+    setFilterEnabled(blacklistFilter === true);
+  };
+
   useEffect(() => {
     setSelected(Array.isArray(providerDetails) ? providerDetails : []);
   }, [providerDetails]);
@@ -49,6 +62,8 @@ export default function ListingDetailsPage() {
     selected.length !== stored.length ||
     selected.some((id) => !stored.includes(id));
 
+  useUnsavedWarning(dirty);
+
   const handleSave = async () => {
     try {
       await actions.userSettings.setProviderDetails(selected);
@@ -59,47 +74,57 @@ export default function ListingDetailsPage() {
     }
   };
 
+  const providers = allProviders ?? [];
+
   return (
     <div className="settingsShell__page">
-      <SegmentPart name={t('settings.providerDetails')} helpText={t('settings.providerDetailsHelp')}>
-        <Banner
-          type="warning"
-          description={t('settings.providerDetailsWarning')}
-          closeIcon={null}
-          style={{ marginBottom: 12 }}
-        />
+      <SegmentPart
+        name={t('settings.providerDetails')}
+        helpText={
+          <>
+            {t('settings.providerDetailsHelp')}
+            <span className="settingsShell__helpWarning">
+              <IconAlertTriangle size="small" />
+              {t('settings.providerDetailsWarning')}
+            </span>
+          </>
+        }
+      >
         <Select
           multiple
           style={{ width: '100%' }}
           value={selected}
-
-          optionList={(allProviders ?? []).map((p) => ({ label: p.name, value: p.id }))}
+          optionList={providers.map((p) => ({ label: p.name, value: p.id }))}
           placeholder={t('settings.providerDetailsPlaceholder')}
           onChange={setSelected}
         />
-      </SegmentPart>
+        {/* Wovon abhaengt, wie teuer das wird. Die Hilfe sagt "ein zusaetzlicher Abruf pro Inserat",
+            und die Zahl dazu stand nirgends. */}
+        <p className="listingDetailsPage__count">
+          {t('settings.providerDetailsCount', { selected: selected.length, total: providers.length })}
+        </p>
 
-      <SegmentPart
-        name={t('settings.blacklistFilterOnProviderDetails')}
-        helpText={t('settings.blacklistFilterOnProviderDetailsHelp')}
-      >
-        <Checkbox checked={filterEnabled} onChange={(e) => setFilterEnabled(e.target.checked)}>
-          {t('settings.blacklistFilterOnProviderDetailsEnable')}
-        </Checkbox>
-      </SegmentPart>
-
-      <div className="settingsShell__saveRow">
-        <Button
-          icon={<IconSave />}
-          theme="solid"
-          type="primary"
-          onClick={handleSave}
-          disabled={!dirty}
-          loading={savingProviders || savingFilter}
+        {/* Ohne einen einzigen gewaehlten Anbieter gibt es keinen vollen Anzeigentext, gegen den
+            gefiltert werden koennte. Gedaempft statt versteckt: wer ueberlegt, ob er Anbieter-
+            Details einschaltet, soll sehen, was danach moeglich ist. */}
+        <div
+          className={`settingsShell__subSettings${selected.length > 0 ? '' : ' settingsShell__subSettings--disabled'}`}
         >
-          {t('settings.save')}
-        </Button>
-      </div>
+          <div className="settingsShell__subSetting">
+            <span className="settingsShell__subSetting__label">{t('settings.blacklistFilterOnProviderDetails')}</span>
+            <p className="settingsShell__subSetting__help">{t('settings.blacklistFilterOnProviderDetailsHelp')}</p>
+            <Checkbox
+              checked={filterEnabled}
+              disabled={selected.length === 0}
+              onChange={(e) => setFilterEnabled(e.target.checked)}
+            >
+              {t('settings.blacklistFilterOnProviderDetailsEnable')}
+            </Checkbox>
+          </div>
+        </div>
+      </SegmentPart>
+
+      <SettingsSaveBar dirty={dirty} saving={savingProviders || savingFilter} onSave={handleSave} onDiscard={discard} />
     </div>
   );
 }

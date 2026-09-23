@@ -1,0 +1,17 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../../tokens.less';
+
+.connectivityPage {
+  /* Das Abfragebudget haengt an denselben Quellen darueber und braucht dafuer keinen eigenen
+     Gruppentitel - eine Linie sagt "hier faengt etwas anderes an", ohne eine dritte Ebene Text
+     aufzumachen. So zeichnet es das Artboard. */
+  &__budget {
+    margin-top: @space-2;
+    padding-top: @space-2;
+    border-top: 1px solid @color-border;
+  }
+}

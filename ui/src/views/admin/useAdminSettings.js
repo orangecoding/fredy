@@ -3,11 +3,12 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Toast } from '@douyinfe/semi-ui-19';
 
 import { xhrPost, errorMessage } from '../../services/xhr';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
+import { useActions } from '../../services/state/store.js';
 import { CONNECTIVITY_SOURCES } from '../../components/connectivity/connectivityFormat.js';
 
 /**
@@ -170,15 +171,38 @@ function differs(a, b, fields) {
  */
 export function useAdminSettings(settings) {
   const t = useTranslation();
+  const actions = useActions();
 
   // The values as stored. Re-derived whenever the store hands over a new object, which happens
-  // once the settings request lands - this may well have mounted before that.
+  // once the settings request lands - this may well have mounted before that, and again after every
+  // save below.
   const baseline = useMemo(() => toForm(settings), [settings]);
   const [form, setForm] = useState(baseline);
   const [saving, setSaving] = useState(null);
 
+  /** The baseline the form was last reconciled with, to tell an edited field from an untouched one. */
+  const previousBaseline = useRef(baseline);
+  /** Fields whose save just landed: they take the stored value whatever the form holds. */
+  const justSaved = useRef(new Set());
+
+  // Merged rather than replaced. A new baseline arrives after a save and whenever another page
+  // reloads the settings (Debug does); replacing the whole form threw away an edit left open on a
+  // different page, which this hook lives on the layout precisely to keep.
   useEffect(() => {
-    setForm(baseline);
+    const before = previousBaseline.current;
+    previousBaseline.current = baseline;
+    const saved = justSaved.current;
+    justSaved.current = new Set();
+    setForm((current) => {
+      const next = { ...current };
+      for (const name of Object.keys(baseline)) {
+        const untouched = JSON.stringify(current[name]) === JSON.stringify(before[name]);
+        if (untouched || saved.has(name)) {
+          next[name] = baseline[name];
+        }
+      }
+      return next;
+    });
   }, [baseline]);
 
   const setField = useCallback((name, value) => {
@@ -249,10 +273,19 @@ export function useAdminSettings(settings) {
         // The backend returns the concrete reason (e.g. a 403 "Only admins can change these
         // settings."), which errorMessage() reads from whichever key the route used.
         Toast.error(errorMessage(exception, t('settings.toastSaveError')));
-        return;
-      } finally {
         setSaving(null);
+        return;
       }
+
+      // What was saved becomes the new baseline. Without it the page stayed "unsaved" after a
+      // successful save, Discard put the old values back on screen, and the next save of this page
+      // quietly wrote them to the server again. Before the reload below as well: the leave warning
+      // is armed for as long as the page counts as unsaved, and would have stopped the reload.
+      for (const name of fields) {
+        justSaved.current.add(name);
+      }
+      await actions.generalSettings.getGeneralSettings();
+      setSaving(null);
 
       if (reload) {
         Toast.success(t('settings.toastSavedReloading'));
@@ -263,7 +296,7 @@ export function useAdminSettings(settings) {
       }
       Toast.success(t('settings.toastSaved'));
     },
-    [form, t],
+    [form, t, actions],
   );
 
   const saveSystem = useCallback(
@@ -286,7 +319,10 @@ export function useAdminSettings(settings) {
           ) {
             return t('settings.toastListingRetentionInvalid');
           }
+          // Checked for empty before `Number()`, which turns a cleared box into 0.
           if (
+            nullOrEmpty(form.listingAttachmentMaxMb) ||
+            nullOrEmpty(form.listingAttachmentMaxPerListing) ||
             !Number.isInteger(Number(form.listingAttachmentMaxMb)) ||
             !Number.isInteger(Number(form.listingAttachmentMaxPerListing))
           ) {
@@ -310,6 +346,8 @@ export function useAdminSettings(settings) {
           // sends at somebody else's public service, so a cleared field must not be coerced into
           // a value the operator never chose.
           if (
+            nullOrEmpty(form.connectivityLimitPerRun) ||
+            nullOrEmpty(form.connectivityMaxAgeDays) ||
             !Number.isInteger(Number(form.connectivityLimitPerRun)) ||
             Number(form.connectivityLimitPerRun) < 1 ||
             !Number.isInteger(Number(form.connectivityMaxAgeDays)) ||
@@ -341,6 +379,11 @@ export function useAdminSettings(settings) {
             poiCacheMaxAgeDays: 1,
           };
           for (const [name, min] of Object.entries(bounds)) {
+            // Empty first: `Number('')` is 0, which for the two lookup budgets is a valid answer
+            // meaning "switched off" - a cleared box turned street routing or nearby places off.
+            if (nullOrEmpty(form[name])) {
+              return t('settings.toastRoutingInvalid');
+            }
             const value = Number(form[name]);
             if (!Number.isInteger(value) || value < min) {
               return t('settings.toastRoutingInvalid');
@@ -370,6 +413,12 @@ export function useAdminSettings(settings) {
           // operator never chose - the threshold is allowed to be 0, which legitimately means
           // "notify me about anything".
           if (
+            nullOrEmpty(form.priceCheckIntervalDays) ||
+            nullOrEmpty(form.priceCheckLimitPerRun) ||
+            // Zero is a valid threshold ("notify me about anything"), an empty box is not: `Number('')`
+            // would have saved exactly that zero without the operator choosing it.
+            nullOrEmpty(form.priceChangeThresholdPercent) ||
+            !Number.isFinite(Number(form.priceChangeThresholdPercent)) ||
             !Number.isInteger(Number(form.priceCheckIntervalDays)) ||
             Number(form.priceCheckIntervalDays) < 1 ||
             !Number.isInteger(Number(form.priceCheckLimitPerRun)) ||
@@ -382,6 +431,29 @@ export function useAdminSettings(settings) {
         false,
       ),
     [save, form, t],
+  );
+
+  /**
+   * Put one page's fields back to what is stored.
+   *
+   * Per page rather than for the whole form, for the same reason the saves are: the hook holds one
+   * object for four pages, and discarding on Execution must not throw away an edit somebody left
+   * open on System.
+   *
+   * @param {string[]} fields
+   * @returns {void}
+   */
+  const discard = useCallback(
+    (fields) => {
+      setForm((previous) => {
+        const next = { ...previous };
+        for (const name of fields) {
+          next[name] = baseline[name];
+        }
+        return next;
+      });
+    },
+    [baseline],
   );
 
   return {
@@ -401,5 +473,9 @@ export function useAdminSettings(settings) {
     saveExecution,
     saveConnectivity,
     saveRouting,
+    discardSystem: () => discard(SYSTEM_FIELDS),
+    discardExecution: () => discard(EXECUTION_FIELDS),
+    discardConnectivity: () => discard(CONNECTIVITY_FIELDS),
+    discardRouting: () => discard(ROUTING_FIELDS),
   };
 }

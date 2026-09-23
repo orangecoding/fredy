@@ -1,11 +1,6 @@
 @import '../../../tokens.less';
 
 .jobMutation {
-  &__newButton {
-    float: right;
-    margin-bottom: @space-4;
-  }
-
   &__specFilter {
     display: flex;
     gap: @space-4;
@@ -25,24 +20,23 @@
     font-size: @text-sm;
     color: @color-muted;
   }
-
-  &__actions {
-    display: flex;
-    gap: @space-3;
-    margin-top: @space-4;
-    justify-content: flex-end;
-  }
 }
 
-.semi-select-option-list-wrapper {
-  width: 25rem;
+/* Bound to the three selects of this form by `dropdownClassName`, because Semi renders the list in
+   a portal at `document.body`: a descendant selector from inside the form cannot reach it. This
+   rule used to sit at the top level of this file without a class at all, which made every select
+   list in the application 25rem wide the moment the job form had been opened once. */
+.jobMutation__dropdown {
+  min-width: 18rem;
 }
 
-.jobMutation__notificationActions {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-  margin-bottom: 1rem;
+/* Leaves the page, so it is quieter than anything that changes it. */
+.jobMutation__back {
+  color: @color-muted;
+}
+
+.jobMutation__draftNotice {
+  margin-bottom: @space-4;
 }
 
 .jobMutation__draftBanner {
@@ -70,20 +64,21 @@
 .jobMutation__refine {
   margin-bottom: @space-4;
 
-  /* Reads as a control rather than a caption: the pointer, the accent border and the lift on hover
-     are the whole of what tells someone the filters are one click away. */
+  /* Reads as a control rather than a caption: the pointer and the lift on hover are the whole of
+     what tells someone the filters are one click away. The accent used to do that job three times
+     over - border, hover border and an uppercase pill - for a section that is optional. */
   .semi-collapse-header {
     padding: @space-3 @space-4;
-    border: 1px solid @color-accent-dim;
+    border: 1px solid @color-border;
     border-radius: @radius-card;
     background: @color-fill-subtle;
     cursor: pointer;
     transition:
-      background 0.15s ease,
-      border-color 0.15s ease;
+      background @transition-fast,
+      border-color @transition-fast;
 
     &:hover {
-      border-color: @color-accent;
+      border-color: @color-border-bright;
       background: @color-fill-1;
     }
   }
@@ -117,18 +112,12 @@
   font-size: @text-sm;
 }
 
-/* The invitation, in the accent and pushed to the far end of the row so it sits beside the chevron
-   and reads with it. It says which way the next click goes, which a chevron on its own does not. */
+/* Which way the next click goes, which a chevron on its own does not say. In the body colour and
+   at body size: it is a label on a header, not a badge. */
 .jobMutation__refineToggle {
   margin-left: auto;
-  padding: @space-1 @space-2;
-  border: 1px solid @color-accent-dim;
-  border-radius: @radius-pill;
-  color: @color-accent;
-  font-size: @text-xs;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  color: @color-muted;
+  font-size: @text-sm;
   white-space: nowrap;
 }
 
@@ -141,10 +130,74 @@
   line-height: 1.5;
 }
 
+/* The rows of the Grunddaten and the sharing card are `AdminField`, so this form and the
+   administration draw a labelled row the same way.
+
+   With one difference, and this is it: `AdminField` puts the control at the far end of the row,
+   which is right in the administration, where a column of right-aligned numbers is a column you
+   compare down. The artboard draws the same thing here because its card is 372px wide, so "far
+   end" and "next to the label" are the same place. This card is as wide as the page. At 1900px
+   that rule strands the deal type against the right edge with a foot of empty card between it and
+   the label naming it. A label column instead: every control starts at the same x, and the one
+   that grows grows from there. */
+.jobMutation__rows {
+  .adminField {
+    justify-content: flex-start;
+    padding: @space-2 0;
+  }
+
+  .adminField__label {
+    flex: none;
+    width: 11rem;
+  }
+}
+
+.jobMutation__rowNote {
+  font-size: @text-sm;
+  color: @color-muted;
+}
+
+/* Two options of four words each. Given a width rather than left to the row: a select sized by its
+   content is as wide as whichever option is longest, so it would change width on being answered. */
+.jobMutation__dealType {
+  width: 14rem;
+  max-width: 100%;
+}
+
+/* A multi-select grows with what is in it, so the same applies with more room for the names. */
+.jobMutation__shareWith {
+  width: 18rem;
+  max-width: 100%;
+}
+
+/* Under the label column's width there is no column left: the label goes above what it names. */
+@media (max-width: 700px) {
+  .jobMutation__rows {
+    .adminField {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: @space-2;
+    }
+
+    .adminField__label {
+      width: auto;
+    }
+  }
+}
+
+/* Navigation away from the form, inside the sentence that offers it. Semi's button is a block in
+   its own right, so it is pulled back into the line of text around it. */
+.jobMutation__manageLink {
+  height: auto !important;
+  padding: 0 !important;
+  font-size: inherit !important;
+  vertical-align: baseline;
+}
+
 /* Numbered, because drawing a polygon is a sequence of clicks and the order is the whole of it. */
 .jobMutation__areaSteps {
   margin: 0 0 @space-3;
-  padding-left: 1.25rem;
+  padding-left: @space-5;
   color: @color-muted;
   font-size: @text-sm;
   line-height: 1.6;
@@ -162,16 +215,16 @@
   }
 }
 
-/* Sits at the end of the form. It was sticky, to keep Save reachable on a long page - but with
-   the optional sections folded away the form is short enough not to need it, and a bar floating
-   over the area filter's map while scrolling was worse than the scroll it saved. */
-.jobMutation__footer {
-  padding: @space-4 0 0;
-  border-top: 1px solid @color-border;
+/* The four sections the readiness bar can jump to. `scroll-margin-top` keeps the card clear of the
+   sticky header instead of landing under it. */
+.jobMutation__anchor {
+  scroll-margin-top: @space-12;
 }
 
-.jobMutation__footerActions {
-  display: flex;
-  justify-content: flex-end;
-  gap: @space-3;
+/* Two seconds of outline after a jump. Without it the page moves and nothing says which of the six
+   cards now on screen was the one meant. */
+.jobMutation__anchor--highlight .semi-card {
+  outline: 2px solid @color-warning;
+  outline-offset: 2px;
+  border-radius: @radius-card;
 }

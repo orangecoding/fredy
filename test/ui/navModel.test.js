@@ -8,7 +8,14 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-import { NAV_TREE, navTreeFor, routeKeysOf, resolveActiveKey } from '../../ui/src/components/navigation/navModel.js';
+import {
+  NAV_TREE,
+  navTreeFor,
+  routeKeysOf,
+  resolveActiveKey,
+  sectionScope,
+  startsSection,
+} from '../../ui/src/components/navigation/navModel.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const english = JSON.parse(fs.readFileSync(path.join(here, '../../ui/src/locales/en.json'), 'utf-8'));
@@ -75,6 +82,59 @@ describe('navModel', () => {
   it('does not light up administration for a user who cannot see it', () => {
     const tree = navTreeFor(false);
     expect(routeKeysOf(tree)).not.toContain(resolveActiveKey(tree, '/admin/settings'));
+  });
+
+  it('files every top-level entry under a section, and lets children inherit their parent', () => {
+    for (const node of NAV_TREE) {
+      expect(['work', 'personal', 'instance']).toContain(node.section);
+      for (const child of node.children ?? []) {
+        expect(child.section).toBeUndefined();
+      }
+    }
+  });
+
+  it('never puts a rule above the first entry, because there is nothing to divide it from', () => {
+    expect(startsSection(navTreeFor(true), 0)).toBe(false);
+    expect(startsSection(navTreeFor(false), 0)).toBe(false);
+  });
+
+  // The rule is a consequence of the sections rather than a position in the markup, which is what
+  // keeps it in the right place for a user who cannot see administration at all.
+  it('breaks above settings for a user without the admin bit', () => {
+    const tree = navTreeFor(false);
+    const breaks = tree.map((_node, index) => index).filter((index) => startsSection(tree, index));
+
+    expect(breaks).toHaveLength(1);
+    expect(tree[breaks[0]].key).toBe('/settings');
+  });
+
+  it('breaks above both settings and administration for an admin', () => {
+    // Two, not one: they used to share a section, which is why the sidebar could not say that one
+    // of them is yours alone and the other one is everybody's.
+    const tree = navTreeFor(true);
+    const breaks = tree.map((_node, index) => index).filter((index) => startsSection(tree, index));
+
+    expect(breaks).toHaveLength(2);
+    expect(breaks.map((index) => tree[index].key)).toEqual(['/settings', '/admin']);
+  });
+
+  it('names the two sections that need naming, and leaves the first one unnamed', () => {
+    // The scope a ScopeBadge takes, not a translation key of its own: the sidebar says whose
+    // settings these are with the same chip the two pages carry beside their heading.
+    const tree = navTreeFor(true);
+    expect(sectionScope(tree, 0)).toBeNull();
+    expect(
+      sectionScope(
+        tree,
+        tree.findIndex((node) => node.key === '/settings'),
+      ),
+    ).toBe('user');
+    expect(
+      sectionScope(
+        tree,
+        tree.findIndex((node) => node.key === '/admin'),
+      ),
+    ).toBe('instance');
   });
 
   it('prefers the longest match, so a listing does not resolve to a shorter sibling', () => {

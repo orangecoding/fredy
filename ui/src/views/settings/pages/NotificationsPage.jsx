@@ -4,11 +4,12 @@
  */
 
 import { useEffect, useState } from 'react';
-import { Banner, Button, Modal, Select, Toast } from '@douyinfe/semi-ui-19';
-import { IconPlusCircle, IconArrowLeft } from '@douyinfe/semi-icons';
+import { Button, Modal, Select, Toast } from '@douyinfe/semi-ui-19';
+import { IconBell, IconPlusCircle, IconArrowLeft } from '@douyinfe/semi-icons';
 import { useNavigate, useSearchParams } from 'react-router';
 
 import { SegmentPart } from '../../../components/segment/SegmentPart.jsx';
+import SettingsEmptyState from '../../../components/settingsShell/SettingsEmptyState.jsx';
 import NotificationChannelTable from '../../../components/table/NotificationChannelTable';
 import NotificationChannelEditor from '../../jobs/mutation/components/notificationAdapter/NotificationChannelEditor';
 import { useActions, useSelector } from '../../../services/state/store';
@@ -31,6 +32,10 @@ export default function NotificationsPage() {
   const t = useTranslation();
   const actions = useActions();
   const channels = useSelector((state) => state.notificationChannels.channels);
+  // "Create your first channel" only once the list has actually arrived. Before that (and after a
+  // failed request) an empty list says nothing, and telling somebody who has channels that they
+  // have none invites a duplicate.
+  const channelsLoaded = useSelector((state) => state.notificationChannels.loaded);
   const adapters = useSelector((state) => state.notificationAdapter);
   const currentUser = useSelector((state) => state.user.currentUser);
 
@@ -95,48 +100,57 @@ export default function NotificationsPage() {
         <Button
           icon={<IconArrowLeft />}
           theme="borderless"
-          style={{ marginBottom: '1rem' }}
+          className="notificationsPage__back"
           onClick={() => navigate(returnTo)}
         >
           {t('notification.channels.backToJob')}
         </Button>
       )}
 
-      {currentUser?.isAdmin && (
-        <Banner
-          fullMode={false}
-          type="info"
-          closeIcon={null}
-          style={{ marginBottom: '1rem' }}
-          description={t('notification.channels.scopeBanner')}
-        />
-      )}
-
       {/* The only page in Einstellungen that had no section at all, so it was also the only one
           that never said what its table was for - and the only one whose content ran the full
           width of a wide monitor while every neighbouring page stayed in one column. The back
-          button and the admin scope notice stay outside it: one is navigation, the other is
-          something that is true right now rather than standing help. */}
-      <SegmentPart name={t('settings.tabNotifications')} helpText={t('notification.channels.sectionHelp')}>
-        <Button
-          type="primary"
-          icon={<IconPlusCircle />}
-          style={{ marginBottom: '1rem' }}
-          onClick={() => setPickingType(true)}
-        >
-          {t('notification.channels.new')}
-        </Button>
-
-        <NotificationChannelTable
-          channels={channels}
-          actions={['test', 'edit', 'clone', 'delete']}
-          onTest={test}
-          onEdit={(channel) => setEditor({ mode: 'edit', channelId: channel.id })}
-          onClone={(channel) => setEditor({ mode: 'clone', channelId: channel.id })}
-          onDelete={remove}
-          canManageVisibility={currentUser?.isAdmin === true}
-          onVisibilityChange={changeVisibility}
-        />
+          button stays outside it because it is navigation. What an admin additionally sees here is
+          true on every visit, so it is standing help and belongs in the card's own, where it used
+          to be a permanent info Banner. */}
+      <SegmentPart
+        name={t('settings.tabNotifications')}
+        helpText={
+          currentUser?.isAdmin
+            ? `${t('notification.channels.sectionHelp')} ${t('notification.channels.scopeBanner')}`
+            : t('notification.channels.sectionHelp')
+        }
+        action={
+          channels.length > 0 && (
+            <Button icon={<IconPlusCircle />} size="small" onClick={() => setPickingType(true)}>
+              {t('notification.channels.new')}
+            </Button>
+          )
+        }
+      >
+        {channelsLoaded && channels.length === 0 ? (
+          <SettingsEmptyState
+            icon={<IconBell size="extra-large" />}
+            title={t('notification.channels.emptyTitle')}
+            description={t('notification.channels.emptyText')}
+            action={
+              <Button type="primary" theme="solid" icon={<IconPlusCircle />} onClick={() => setPickingType(true)}>
+                {t('notification.channels.emptyAction')}
+              </Button>
+            }
+          />
+        ) : (
+          <NotificationChannelTable
+            channels={channels}
+            actions={['test', 'edit', 'clone', 'delete']}
+            onTest={test}
+            onEdit={(channel) => setEditor({ mode: 'edit', channelId: channel.id })}
+            onClone={(channel) => setEditor({ mode: 'clone', channelId: channel.id })}
+            onDelete={remove}
+            canManageVisibility={currentUser?.isAdmin === true}
+            onVisibilityChange={changeVisibility}
+          />
+        )}
       </SegmentPart>
 
       {/* Choosing the type is its own step because it is the one decision that cannot be changed

@@ -1,34 +1,138 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
 @import '../../tokens.less';
 
+@footer-height: 36px;
+
 .fredyFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  height: @footer-height;
+  padding: 0 @space-6;
   background-color: @color-base;
   border-top: 1px solid @color-border;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 24px;
-  height: 36px;
-  flex-shrink: 0;
-  box-sizing: border-box;
+
+  /* Both lines used to sit in @color-faint, which is 2.47:1 on the dark ground and 2.88:1 on the
+     light one. Faint is for hairlines and disabled states; a line of text that is meant to be read
+     wears @color-muted, which clears AA in both themes. */
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: @space-2;
+    min-width: 0;
+  }
 
   &__version {
-    font-size: @text-xs;
-    color: @color-faint;
     font-family: @font-mono;
+    font-size: @text-xs;
+    color: @color-muted;
+    white-space: nowrap;
+  }
+
+  /* No update: the number alone leaves the reader to work out whether it is the current one. */
+  &__state {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: @text-xs;
+    color: @color-success;
+    white-space: nowrap;
+  }
+
+  &__stateIcon {
+    flex: none;
+    width: 11px;
+    height: 11px;
+  }
+
+  /* An update is not a warning, and it does not deserve a permanent amber strip across the top of
+     every page. It belongs next to the version number, which is where somebody is already looking
+     when the question comes up. */
+  &__update {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-sizing: border-box;
+    height: 20px;
+    padding: 0 @space-2;
+    border: 1px solid @color-orange-border;
+    border-radius: @radius-chip;
+    background: @color-orange-bg;
+    font-family: @font-ui;
+    font-size: @text-xs;
+    font-weight: 500;
+    /* Text wears a text token. The amber itself reaches only 4.24:1 on its own fill in the light
+       theme; the dot and the border carry the colour instead. */
+    color: @color-text;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: border-color @transition-fast;
+
+    &:hover {
+      border-color: @color-orange-text;
+    }
+
+    /* Index.less suppresses the focus ring on every button in the application, with !important, so
+       a control that has to stay reachable by keyboard has to say it louder. Step 8 asks for a
+       visible ring on this chip; without the flag the rule below loses to that blanket reset. */
+    &:focus-visible {
+      outline: 2px solid @color-accent !important;
+      outline-offset: 2px;
+    }
+  }
+
+  &__updateDot {
+    flex: none;
+    width: 6px;
+    height: 6px;
+    border-radius: @radius-pill;
+    background: @color-orange-text;
   }
 
   &__credit {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-width: 0;
     font-size: @text-xs;
-    color: @color-faint;
+    color: @color-muted;
+    white-space: nowrap;
+  }
 
-    a {
-      color: @color-muted;
-      text-decoration: none;
-      transition: color @transition-fast;
+  /* The same path the logo draws, rather than an emoji: an emoji follows no theme and renders
+     differently on every platform. */
+  &__heart {
+    flex: none;
+    width: 12px;
+    height: 12px;
+    color: @color-accent;
+  }
 
-      &:hover {
-        color: @color-text;
-      }
+  a {
+    color: @color-text;
+    text-decoration: none;
+    border-bottom: 1px solid @color-border-bright;
+    transition: border-color @transition-fast;
+
+    &:visited {
+      color: @color-text;
+    }
+
+    &:hover {
+      border-bottom-color: @color-accent;
+    }
+  }
+
+  /* On a phone the credit is the first thing to go: the version is the useful half. */
+  @media (max-width: 560px) {
+    &__credit span {
+      display: none;
     }
   }
 }

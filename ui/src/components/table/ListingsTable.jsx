@@ -3,26 +3,18 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { Button, Tooltip } from '@douyinfe/semi-ui-19';
-import {
-  IconBriefcase,
-  IconDelete,
-  IconMapPin,
-  IconStar,
-  IconStarStroked,
-  IconCopy,
-  IconEyeOpened,
-  IconRefresh,
-} from '@douyinfe/semi-icons';
+import { Link } from 'react-router';
+import { IconMapPin } from '@douyinfe/semi-icons';
 import no_image from '../../assets/no_image.png';
 import { formatEuroPrice } from '../../services/price/priceService.js';
 import * as timeService from '../../services/time/timeService.js';
 import StatusControl from '../listings/StatusControl.jsx';
-import ExternalListingLink from '../listings/ExternalListingLink.jsx';
 import AffordabilityChip from '../listings/AffordabilityChip.jsx';
 import PriceChangeBadge from '../listings/PriceChangeBadge.jsx';
 import PricePerSqmBadge from '../listings/PricePerSqmBadge.jsx';
 import ScamBadge from '../listings/ScamBadge.jsx';
+import WatchToggle from '../listings/WatchToggle.jsx';
+import ListingActions from '../listings/ListingActions.jsx';
 import CommuteBadge from '../transit/CommuteBadge.jsx';
 
 import './ListingsTable.less';
@@ -46,43 +38,77 @@ const ListingsTable = ({
   const locale = useLocale();
   return (
     <div className="listingsTable">
+      {/* The rows carried four unlabelled values side by side while the roomier grid spelled each
+          of them out. The header uses the same column variable as the row, so the two cannot end
+          up describing different things. */}
+      {/* Only over rows: with none, the titles stood under the "no results" illustration. */}
+      {listings.length > 0 && (
+        <div className="listingsTable__head" aria-hidden="true">
+          <span />
+          <span>{t('listings.columnListing')}</span>
+          <span className="listingsTable__head__right">{t('listings.columnPrice')}</span>
+          <span>{t('listings.columnAddress')}</span>
+          <span>{t('listings.columnProvider')}</span>
+          <span>{t('listings.columnDate')}</span>
+          <span>{t('listings.columnStatus')}</span>
+          <span />
+        </div>
+      )}
+
       {listings.map((item) => (
+        // No role and no tabIndex, same as the card: the row used to be a button containing seven
+        // buttons. The title carries the keyboard and the accessibility tree, and a click on it is
+        // the link's alone, for the reason the card gives.
         <div
           key={item.id}
-          className={`listingsTable__row${!item.is_active ? ' listingsTable__row--inactive' : ''}`}
-          role="button"
-          tabIndex={0}
-          onClick={() => onNavigate(item.id)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') onNavigate(item.id);
+          className="listingsTable__row"
+          onClick={(event) => {
+            if (event.target.closest('a') == null) onNavigate(item.id);
           }}
         >
           <div className="listingsTable__row__thumb">
             <img
               src={item.image_url || no_image}
-              alt={item.title}
+              alt=""
               onError={(e) => {
                 e.target.src = no_image;
               }}
             />
           </div>
 
-          <div className="listingsTable__row__title" title={item.title}>
-            <ScamBadge listing={item} compact />
-            <span className="listingsTable__row__title-text">{item.title}</span>
+          <div className="listingsTable__row__title">
+            {isHiddenView ? (
+              <span className="listingsTable__row__title-text" title={item.title}>
+                {item.title}
+              </span>
+            ) : (
+              <Link className="listingsTable__row__title-text" to={`/listings/listing/${item.id}`} title={item.title}>
+                {item.title}
+              </Link>
+            )}
+            {/* Under the headline rather than in front of it. In front, the badge had to give up
+                its word to leave room for the title, and a warning without a word is a shape. */}
+            {(!item.is_active || item.scam_signals?.length > 0 || item.scam_override != null) && (
+              <div className="listingsTable__row__flags">
+                <ScamBadge listing={item} />
+                {!item.is_active && <span className="listingsTable__row__inactive">{t('listings.cardInactive')}</span>}
+              </div>
+            )}
           </div>
 
           <div className="listingsTable__row__price">
             {item.price ? (
               <>
-                {formatEuroPrice(item.price, locale)}
-                <AffordabilityChip verdict={item.affordabilityVerdict} dealType={item.dealType} />
-                <PriceChangeBadge
-                  price={item.price}
-                  previousPrice={item.previous_price}
-                  changedAt={item.price_changed_at}
-                />
-                <PricePerSqmBadge listing={item} />
+                <span className="listingsTable__row__amount">{formatEuroPrice(item.price, locale)}</span>
+                <span className="listingsTable__row__perSqm">
+                  <PricePerSqmBadge listing={item} />
+                  <AffordabilityChip verdict={item.affordabilityVerdict} dealType={item.dealType} />
+                  <PriceChangeBadge
+                    price={item.price}
+                    previousPrice={item.previous_price}
+                    changedAt={item.price_changed_at}
+                  />
+                </span>
               </>
             ) : (
               <span className="listingsTable__row__empty">---</span>
@@ -91,10 +117,10 @@ const ListingsTable = ({
 
           <div className="listingsTable__row__address">
             {item.address ? (
-              <>
+              <span className="listingsTable__row__address-text">
                 <IconMapPin size="small" />
                 {item.address}
-              </>
+              </span>
             ) : (
               <span className="listingsTable__row__empty">---</span>
             )}
@@ -103,10 +129,7 @@ const ListingsTable = ({
             <CommuteBadge travelTimes={item.travelTimes} jobId={item.job_id} />
           </div>
 
-          <div className="listingsTable__row__meta">
-            <IconBriefcase size="small" />
-            {item.provider}
-          </div>
+          <div className="listingsTable__row__meta">{item.provider}</div>
 
           {/* The portal's own publication date, falling back to the day Fredy first saw the
               advert - the same expression the grid renders and the same one the default sort
@@ -115,111 +138,30 @@ const ListingsTable = ({
             {timeService.format(item.published_at ?? item.created_at, false, locale)}
           </div>
 
-          <div
-            className="listingsTable__row__actions"
-            onClick={(e) => e.stopPropagation()}
-            onKeyDown={(e) => e.stopPropagation()}
-          >
+          {/* Its own column. A state is not a command, and it is the only control here whose width
+              depends on its value - inside the action group it dragged the whole row's columns out
+              of line with every other row. */}
+          <div className="listingsTable__row__status" onClick={(e) => e.stopPropagation()}>
             <StatusControl
               status={item.status?.status ?? null}
               compact
               onChange={(next) => onStatusChange?.(item, next)}
               onTriggerClick={(e) => e.stopPropagation()}
             />
-            <Tooltip
-              content={
-                item.isWatched === 1 ? t('listings.tooltipRemoveFromWatchlist') : t('listings.tooltipAddToWatchlist')
-              }
-            >
-              <button
-                type="button"
-                className="listingsTable__row__star"
-                onClick={(e) => onWatch(e, item)}
-                aria-label={
-                  item.isWatched === 1 ? t('listings.tooltipRemoveFromWatchlist') : t('listings.tooltipAddToWatchlist')
-                }
-              >
-                {item.isWatched === 1 ? <IconStar /> : <IconStarStroked />}
-              </button>
-            </Tooltip>
-            <ExternalListingLink href={item.link} label={t('listings.tooltipOriginalListing')} />
-            <Tooltip content={t('listings.tooltipViewInFredy')}>
-              <Button
-                size="small"
-                icon={<IconEyeOpened />}
-                style={{ color: 'var(--f-success)' }}
-                theme="borderless"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onNavigate(item.id);
-                }}
-              />
-            </Tooltip>
-            {/* Not in the hidden view: the row is soft-deleted there, and writing to an agent
-                about a listing you have just thrown away is noise. */}
-            {!isHiddenView && (
-              <Tooltip content={t('listings.tooltipApplication')}>
-                <Button
-                  size="small"
-                  icon={<IconCopy />}
-                  theme="borderless"
-                  aria-label={t('listings.tooltipApplication')}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onApplication?.(item);
-                  }}
-                />
-              </Tooltip>
-            )}
-            {/* Mirrors the grid card: only where the alive-checker marked the row gone, and never in
-                the hidden view, where undelete is the action that matters. */}
-            {!item.is_active && !isHiddenView && (
-              <Tooltip content={t('listings.tooltipReactivate')}>
-                <Button
-                  size="small"
-                  icon={<IconRefresh />}
-                  style={{ color: 'var(--f-success)' }}
-                  theme="borderless"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onReactivate?.(item.id);
-                  }}
-                  aria-label={t('listings.tooltipReactivate')}
-                />
-              </Tooltip>
-            )}
-            {isHiddenView ? (
-              <Tooltip content={t('listings.tooltipUndelete')}>
-                <Button
-                  size="small"
-                  icon={
-                    <span className="listingsTable__strike" aria-hidden="true">
-                      <IconDelete />
-                    </span>
-                  }
-                  style={{ color: 'var(--f-success)' }}
-                  theme="borderless"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onRestore?.(item.id);
-                  }}
-                  aria-label={t('listings.tooltipUndelete')}
-                />
-              </Tooltip>
-            ) : (
-              <Tooltip content={t('listings.tooltipRemove')}>
-                <Button
-                  size="small"
-                  icon={<IconDelete />}
-                  style={{ color: 'var(--f-error)' }}
-                  theme="borderless"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onDelete(item.id);
-                  }}
-                />
-              </Tooltip>
-            )}
+          </div>
+
+          {/* One place that stops the click, instead of one call per button inside. */}
+          <div className="listingsTable__row__actions" onClick={(e) => e.stopPropagation()}>
+            <WatchToggle listing={item} onWatch={onWatch} variant="inline" />
+            <ListingActions
+              listing={item}
+              density="row"
+              isHiddenView={isHiddenView}
+              onApplication={onApplication}
+              onReactivate={onReactivate}
+              onRestore={onRestore}
+              onDelete={onDelete}
+            />
           </div>
         </div>
       ))}

@@ -1,0 +1,54 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../../tokens.less';
+
+.executionPage {
+  /* Eine Zeile des Satzes, den die Karte beschreibt: "Alle 60 Minuten", "Zwischen 08:00 und
+     20:00". Die Bedienelemente stehen in der Zeile, nicht unter einer Ueberschrift. */
+  &__line {
+    display: flex;
+    align-items: center;
+    gap: @space-3;
+    min-height: 34px;
+    flex-wrap: wrap;
+  }
+
+  /* Der Anfang des Satzes. Eine feste Spalte, damit "Alle", "Zwischen" und "Zeitzone"
+     untereinander buendig stehen und die Felder daneben eine Kante bilden.
+     82px: das Artboard setzt 62px bei einer Bedienelementhoehe von 24px, die echte Oberflaeche
+     misst 32px - dieselbe Spalte auf denselben Massstab gebracht. */
+  &__caption {
+    width: 82px;
+    flex: none;
+    font-size: @text-sm;
+    color: @color-muted;
+  }
+
+  /* Das "und" zwischen den beiden Uhrzeiten ist keine Spalte, sondern ein Wort. */
+  &__caption--inline {
+    width: auto;
+  }
+
+  &__time {
+    width: 112px;
+  }
+
+  &__zone {
+    min-width: 224px;
+  }
+
+  /* Was die vier Regler darueber zusammen bedeuten. Dieselbe Behandlung wie die Zusammenfassung
+     eines Fahrzeit-Eintrags: die Schiene sagt, dass der Satz aus den Bedienelementen folgt und
+     nicht ein weiteres Feld ist. */
+  &__summary {
+    margin-top: @space-3;
+    padding-left: @space-3;
+    border-left: 2px solid rgb(@color-accent-rgb / 45%);
+    font-size: @text-sm;
+    line-height: 1.5;
+    color: @color-text;
+  }
+}
