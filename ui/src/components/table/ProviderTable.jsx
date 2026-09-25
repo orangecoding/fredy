@@ -25,7 +25,7 @@ export default function ProviderTable({ providerData = [], onRemove, onEdit } = 
           title: t('provider.tableColumnUrl'),
           dataIndex: 'url',
           render: (_, data) => {
-            return <Text link={{ href: data.url, target: '_blank' }}>{t('provider.tableOpenProvider')}</Text>;
+            return <Text link={{ href: data.url, target: '_blank', rel: 'noopener noreferrer' }}>{t('provider.tableOpenProvider')}</Text>;
           },
         },
         {
