@@ -9,6 +9,7 @@ import { readFile, readdir, rm, writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { extractFirstDetailUrl } from './extractDetailUrl.js';
+import { siteOf } from '../../lib/services/immowelt/site.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '../..');
@@ -491,18 +492,78 @@ async function writeImmoweltServerState(detailHtml, exposeUrl) {
 }
 
 /**
- * Immowelt serves both its result list and its exposé from behind DataDome, so nothing here can be
- * fetched with a plain `fetch` - the provider's own transport, which runs inside the browser page,
- * is used instead. The three fixtures mirror exactly what it returns: the `/classifiedList`
- * payload, one exposé's markup, and that exposé's embedded server state.
+ * How many adverts the list fixtures of the French providers keep. A full page of any of them -
+ * descriptions, photo lists and all - runs to a megabyte, and a handful exercises every path the
+ * offline suites walk.
+ */
+const LIST_FIXTURE_ADS = 5;
+
+/**
+ * An exposé cut down to what the provider reads off it: the title the price probe parses and the
+ * server state the description and the building facts come from. The live page is ~630 KB of
+ * micro-frontend bootstrap around those two.
  *
+ * @param {string} detailHtml the exposé page source
+ * @param {string} exposeUrl the url it was downloaded from, for the fixture's header comment
+ * @returns {string|null} the trimmed page, or null when the exposé carries no server state
+ */
+function trimExpose(detailHtml, exposeUrl) {
+  const open = detailHtml.indexOf('<script id="__UFRN_LIFECYCLE_SERVERREQUEST__">');
+  const close = open < 0 ? -1 : detailHtml.indexOf('</script>', open);
+  if (close < 0) return null;
+
+  const title = /<title>[^<]*<\/title>/.exec(detailHtml)?.[0] ?? '';
+  const ogTitle = /<meta property="og:title"[^>]*>/.exec(detailHtml)?.[0] ?? '';
+
+  return `<!doctype html>
+<!--
+  Trimmed capture of ${exposeUrl}: the title the price probe reads and the
+  \`__UFRN_LIFECYCLE_SERVERREQUEST__\` tag the description and building facts come from, both
+  verbatim, so a change on the portal's side breaks the offline test the way it breaks production.
+-->
+<html>
+  <head>
+    ${title}
+    ${ogTitle}
+    ${detailHtml.slice(open, close + '</script>'.length)}
+  </head>
+  <body></body>
+</html>
+`;
+}
+
+/**
+ * The exposé to record: the first advert on one of the provider's own sites.
+ *
+ * SeLoger's results carry Belles Demeures' adverts too, whose links the transport refuses to fetch,
+ * and the newest result is regularly one of them. Taking it lost the detail fixture on a download
+ * that had just deleted the old one.
+ *
+ * @param {Array<string|null|undefined>} links the cards' links, newest first
+ * @param {'immowelt'|'seloger'} provider the provider the fixtures are recorded for
+ * @returns {string|null} the link to record, or null when no card is on the provider's sites
+ */
+export function pickExposeLink(links, provider) {
+  return links.find((link) => siteOf(link)?.provider === provider) ?? null;
+}
+
+/**
+ * Immowelt and SeLoger serve both their result list and their exposé from behind DataDome, so
+ * nothing here can be fetched with a plain `fetch` - the providers' shared transport, which runs
+ * inside the browser page, is used instead. The fixtures mirror exactly what it returns: the
+ * `/classifiedList` payload and one exposé's markup, plus - for immowelt, whose suite pins the
+ * server-state path - that exposé's embedded server state on its own. SeLoger's are recorded
+ * trimmed already (see {@link LIST_FIXTURE_ADS} and {@link trimExpose}); immowelt's are trimmed by
+ * hand, and a download replaces them with the full capture.
+ *
+ * @param {'immowelt'|'seloger'} name the provider, which is also the fixtures' prefix
  * @param {import('../../lib/types/providerConfig.js').ProviderConfig} runConfig the initialized provider config
  * @param {Function} launchBrowser
  * @param {Function} closeBrowser
  * @returns {Promise<void>}
  */
-async function downloadImmoweltFixtures(runConfig, launchBrowser, closeBrowser) {
-  console.log('\nDownloading immowelt...');
+async function downloadClassifiedFixtures(name, runConfig, launchBrowser, closeBrowser) {
+  console.log(`\nDownloading ${name}...`);
 
   const { fetchExposeHtml, releaseSession } = await import('../../lib/services/immowelt/immoweltBff.js');
   const browser = await launchBrowser(runConfig.url, {});
@@ -510,36 +571,124 @@ async function downloadImmoweltFixtures(runConfig, launchBrowser, closeBrowser) 
   try {
     const classifieds = await runConfig.getListings(runConfig.url, browser);
     if (!classifieds?.length) {
-      console.warn('  Immowelt returned no classifieds - skipping fixtures');
+      console.warn(`  ${name} returned no classifieds - skipping fixtures`);
       return;
     }
 
-    await writeFile(
-      path.join(FIXTURES_DIR, 'immowelt_classifieds.json'),
-      JSON.stringify(classifieds, null, 2),
-      'utf-8',
-    );
-    console.log(`  Saved immowelt_classifieds.json (${classifieds.length} listings)`);
+    const kept = name === 'immowelt' ? classifieds : classifieds.slice(0, LIST_FIXTURE_ADS);
+    await writeFile(path.join(FIXTURES_DIR, `${name}_classifieds.json`), JSON.stringify(kept, null, 2), 'utf-8');
+    console.log(`  Saved ${name}_classifieds.json (${kept.length} listings)`);
 
-    const exposeUrl = classifieds
-      .map((entry) => runConfig.normalize(entry)?.link)
-      .find((link) => link?.startsWith('http'));
+    // From the cards kept, so the recorded exposé belongs to a card of the recorded list.
+    const exposeUrl = pickExposeLink(
+      kept.map((entry) => runConfig.normalize(entry)?.link),
+      name,
+    );
     if (!exposeUrl) {
       console.warn('  No exposé url among the classifieds - skipping detail fixture');
       return;
     }
 
-    console.log(`  Downloading immowelt detail (${exposeUrl})...`);
+    console.log(`  Downloading ${name} detail (${exposeUrl})...`);
     const detailHtml = await fetchExposeHtml(browser, exposeUrl);
     if (!detailHtml) {
-      console.warn('  Failed to download immowelt detail');
+      console.warn(`  Failed to download ${name} detail`);
       return;
     }
 
-    await writeFile(path.join(FIXTURES_DIR, 'immowelt_detail.html'), detailHtml, 'utf-8');
-    console.log('  Saved immowelt_detail.html');
+    if (name === 'immowelt') {
+      await writeFile(path.join(FIXTURES_DIR, 'immowelt_detail.html'), detailHtml, 'utf-8');
+      console.log('  Saved immowelt_detail.html');
+      await writeImmoweltServerState(detailHtml, exposeUrl);
+      return;
+    }
 
-    await writeImmoweltServerState(detailHtml, exposeUrl);
+    const trimmed = trimExpose(detailHtml, exposeUrl);
+    if (trimmed == null) {
+      console.warn(`  ${name} exposé carries no server state - skipping detail fixture`);
+      return;
+    }
+    await writeFile(path.join(FIXTURES_DIR, `${name}_detail.html`), trimmed, 'utf-8');
+    console.log(`  Saved ${name}_detail.html`);
+  } finally {
+    await releaseSession(browser);
+    await closeBrowser(browser);
+  }
+}
+
+/**
+ * Bien'ici answers a search in two steps - the places the url names, then the adverts in them -
+ * and the price and activity probes ask one advert's own endpoint, so three fixtures are recorded,
+ * all through the provider's own translator and transport rather than a request written out here.
+ *
+ * @param {string} url the search url from testProvider.json
+ * @returns {Promise<void>}
+ */
+async function downloadBieniciFixtures(url) {
+  console.log('\nDownloading bienici...');
+
+  const { parseSearchUrl } = await import('../../lib/services/bienici/search-model.js');
+  const { fetchAd, lookUpPlace, resolveZoneIds, searchAds } = await import('../../lib/services/bienici/api.js');
+  const search = parseSearchUrl(url);
+
+  // Recorded through the provider's own lookup, so the fixture answers the request production
+  // sends rather than one written out again here.
+  /** @type {Record<string, any>} */
+  const places = {};
+  for (const place of search.places) {
+    const { status, body } = await lookUpPlace(place);
+    if (body == null) {
+      console.warn(`  Failed to look up bienici place '${place.q}': status ${status}`);
+      return;
+    }
+    places[place.q] = body;
+  }
+  await writeFile(path.join(FIXTURES_DIR, 'bienici_places.json'), JSON.stringify(places, null, 2), 'utf-8');
+  console.log(`  Saved bienici_places.json (${Object.keys(places).length} places)`);
+
+  const ads = (await searchAds(search, await resolveZoneIds(search.places, url))).slice(0, LIST_FIXTURE_ADS);
+  const list = { total: ads.length, from: 0, perPage: ads.length, realEstateAds: ads };
+  await writeFile(path.join(FIXTURES_DIR, 'bienici_list.json'), JSON.stringify(list, null, 2), 'utf-8');
+  console.log(`  Saved bienici_list.json (${ads.length} listings)`);
+
+  if (ads[0]?.id == null) {
+    console.warn('  No advert in the search response - skipping detail fixture');
+    return;
+  }
+  const { ad } = await fetchAd(ads[0].id);
+  if (ad == null) {
+    console.warn('  Failed to download bienici detail');
+    return;
+  }
+  await writeFile(path.join(FIXTURES_DIR, 'bienici_detail.json'), JSON.stringify(ad, null, 2), 'utf-8');
+  console.log(`  Saved bienici_detail.json (${ads[0].id})`);
+}
+
+/**
+ * leboncoin's adverts come from its finder endpoint, which answers only a request issued from a
+ * page on www.leboncoin.fr - so the provider's own transport is used, browser and all. The search
+ * answer carries everything the provider reads, so it is the one fixture there is.
+ *
+ * @param {import('../../lib/types/providerConfig.js').ProviderConfig} runConfig the initialized provider config
+ * @param {Function} launchBrowser
+ * @param {Function} closeBrowser
+ * @returns {Promise<void>}
+ */
+async function downloadLeboncoinFixtures(runConfig, launchBrowser, closeBrowser) {
+  console.log('\nDownloading leboncoin...');
+
+  const { releaseSession } = await import('../../lib/services/leboncoin/finder.js');
+  const browser = await launchBrowser(runConfig.url, {});
+
+  try {
+    const ads = await runConfig.getListings(runConfig.url, browser);
+    if (!ads?.length) {
+      console.warn('  leboncoin returned no adverts - skipping fixture');
+      return;
+    }
+    const kept = ads.slice(0, LIST_FIXTURE_ADS);
+    await writeFile(path.join(FIXTURES_DIR, 'leboncoin_list.json'), JSON.stringify(kept, null, 2), 'utf-8');
+    console.log(`  Saved leboncoin_list.json (${kept.length} listings)`);
   } finally {
     await releaseSession(browser);
     await closeBrowser(browser);
@@ -809,7 +958,14 @@ async function main() {
         await downloadDeutscheWohnenFixtures(runConfig.url, cfg.url, provider.fetchSearchToken);
         break;
       case 'immowelt':
-        await downloadImmoweltFixtures(runConfig, launchBrowser, closeBrowser);
+      case 'seloger':
+        await downloadClassifiedFixtures(name, runConfig, launchBrowser, closeBrowser);
+        break;
+      case 'bienici':
+        await downloadBieniciFixtures(runConfig.url);
+        break;
+      case 'leboncoin':
+        await downloadLeboncoinFixtures(runConfig, launchBrowser, closeBrowser);
         break;
       case 'willhaben':
         await downloadWillhabenFixtures(runConfig.url);

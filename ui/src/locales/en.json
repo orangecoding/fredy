@@ -748,7 +748,7 @@
   "settings.debugClearConfirmCancel": "Cancel",
   "settings.debugToastCleared": "Stored debug logs were deleted.",
   "settings.debugToastClearError": "Could not delete the stored debug logs.",
-  "app.debugLoggingBanner": "Debug logging is active! Everything Fredy logs is being stored in its database. Disable it in Settings → Debug once you're done.",
+  "app.debugLoggingBanner": "Debug logging is active! Everything Fredy logs is being stored in its database. Disable it in Administration → Debug once you're done.",
   "watchlist.sectionName": "Notification for Watch List",
   "watchlist.sectionHelp": "You can get notified for changes on listings from your watch list.",
   "watchlist.noteTitle": "Note",

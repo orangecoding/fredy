@@ -26,6 +26,8 @@ describe('storeListings id propagation', () => {
         provider TEXT,
         job_id TEXT,
         price REAL,
+        charges_included INTEGER,
+        charges REAL,
         size REAL,
         rooms REAL,
         build_year INTEGER,

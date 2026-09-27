@@ -126,6 +126,24 @@ const RECORDED_SEARCHES = [
     'https://www.tecnorete.it/affitto/immobili/lombardia/brescia/brescia.html?min_price=500&max_price=1000',
     { min: 500, max: 1000 },
   ],
+  // The French three are written the way each site's own url formatter writes a band, which is
+  // where their translators take the names from: leboncoin packs both bounds into one `price`,
+  // Bien'ici spells them in French, and SeLoger shares immowelt's search model.
+  [
+    'leboncoin',
+    'https://www.leboncoin.fr/recherche?category=10&locations=Paris__48.85717_2.3414_9256&price=500-1000',
+    { min: 500, max: 1000 },
+  ],
+  [
+    'bienici',
+    'https://www.bienici.com/recherche/location/paris-75000/appartement?prix-min=500&prix-max=1000',
+    { min: 500, max: 1000 },
+  ],
+  [
+    'seloger',
+    'https://www.seloger.com/classified-search?distributionTypes=Rent&estateTypes=Apartment&locations=AD08FR31096&priceMin=500&priceMax=1000',
+    { min: 500, max: 1000 },
+  ],
 ];
 
 /**

@@ -30,6 +30,8 @@ describe('listing id batches larger than the SQLite parameter limit', () => {
         title TEXT,
         address TEXT,
         price REAL,
+        charges_included INTEGER,
+        charges REAL,
         size REAL,
         rooms REAL,
         is_active INTEGER DEFAULT 1,

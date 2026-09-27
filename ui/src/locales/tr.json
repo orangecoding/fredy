@@ -708,7 +708,7 @@
   "settings.debugClearConfirmCancel": "İptal",
   "settings.debugToastCleared": "Kayıtlı hata ayıklama günlükleri silindi.",
   "settings.debugToastClearError": "Kayıtlı hata ayıklama günlükleri silinemedi.",
-  "app.debugLoggingBanner": "Hata ayıklama günlüğü etkin! Fredy'nin kaydettiği her şey veritabanında saklanıyor. İşiniz bittiğinde Ayarlar → Hata Ayıklama'dan devre dışı bırakın.",
+  "app.debugLoggingBanner": "Hata ayıklama günlüğü etkin! Fredy'nin kaydettiği her şey veritabanında saklanıyor. İşiniz bittiğinde Yönetim → Hata Ayıklama'dan devre dışı bırakın.",
   "watchlist.sectionName": "Takip Listesi için Bildirim",
   "watchlist.sectionHelp": "Takip listenizdeki ilanlardaki değişiklikler için bildirim alabilirsiniz.",
   "watchlist.noteTitle": "Not",

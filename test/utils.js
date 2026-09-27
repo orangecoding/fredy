@@ -43,20 +43,40 @@ vi.mock('../lib/services/extractor/puppeteerExtractor.js', async (importOriginal
   };
 });
 
-// Immowelt talks to its search BFF from inside the browser page (the only place a DataDome cookie
-// is worth anything), so neither the extractor mock nor the fetch mock above can intercept it. The
-// transport module is swapped out wholesale instead.
+// Immowelt and SeLoger talk to their shared search BFF from inside the browser page (the only
+// place a DataDome cookie is worth anything), so neither the extractor mock nor the fetch mock above
+// can intercept it. The transport module is swapped out wholesale instead, serving the recording of
+// whichever provider the request's site - or the exposé link's site - belongs to. A link on no site
+// of the platform gets nothing, exactly as production fetches nothing for it.
 vi.mock('../lib/services/immowelt/immoweltBff.js', async (importOriginal) => {
   if (process.env.TEST_MODE !== 'offline') {
     return importOriginal();
   }
-  const { readImmoweltFixtures } = await import('./offlineFixtures.js');
+  const { readClassifiedFixtures } = await import('./offlineFixtures.js');
+  const { siteOf } = await import('../lib/services/immowelt/site.js');
   return {
     IMMOWELT_ORIGIN: 'https://www.immowelt.de',
-    searchClassifieds: async () => (await readImmoweltFixtures()).classifieds,
-    fetchExposeHtml: async () => (await readImmoweltFixtures()).detailHtml,
+    searchClassifieds: async (_browser, _request, site) => (await readClassifiedFixtures(site?.provider)).classifieds,
+    fetchExposeHtml: async (_browser, link) => {
+      const site = siteOf(link);
+      return site == null ? null : (await readClassifiedFixtures(site.provider)).detailHtml;
+    },
+    // Offline there is no portal to ask, which is the "no answer" the probe contract has for it.
+    probeExpose: async () => -1,
     releaseSession: async () => {},
     resolveSearchAreas: async (_browser, request) => request,
+  };
+});
+
+// leboncoin's finder endpoint is asked from inside the browser page for the same reason.
+vi.mock('../lib/services/leboncoin/finder.js', async (importOriginal) => {
+  if (process.env.TEST_MODE !== 'offline') {
+    return importOriginal();
+  }
+  const { readLeboncoinFixtures } = await import('./offlineFixtures.js');
+  return {
+    searchAds: async () => readLeboncoinFixtures(),
+    releaseSession: async () => {},
   };
 });
 

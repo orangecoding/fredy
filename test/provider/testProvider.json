@@ -106,5 +106,17 @@
   "betterhomes": {
     "url": "https://www.betterhomes.de/de/immobilie-suchen/kaufen?searchType=buy&objectType=all&zipCity=Bundesland+Berlin&territoryId=3&cityType=3&radius=0&sortOrder=newestDesc",
     "enabled": true
+  },
+  "leboncoin": {
+    "url": "https://www.leboncoin.fr/recherche?category=10&locations=Paris__48.85717_2.3414_9256&real_estate_type=2",
+    "enabled": true
+  },
+  "seloger": {
+    "url": "https://www.seloger.com/classified-search?distributionTypes=Rent&estateTypes=Apartment&locations=AD08FR31096",
+    "enabled": true
+  },
+  "bienici": {
+    "url": "https://www.bienici.com/recherche/location/paris-75000/appartement",
+    "enabled": true
   }
 }

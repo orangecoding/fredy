@@ -231,4 +231,40 @@ describe('similarityCache', () => {
     expect(checkAndAddEntry({ jobId: 'job-1', ...listing })).toBe(false);
     expect(checkAndAddEntry({ jobId: 'job-2', ...listing })).toBe(true);
   });
+
+  // The basis of a rent has to survive the hourly reload: the same flat is often listed on the
+  // second portal hours after the first, by which time the first one is known only from its row.
+  it('reads the basis of a stored rent back when it reloads', async () => {
+    const { initSimilarityCache, checkAndAddEntry } = await loadModuleWith({
+      entries: [
+        {
+          job_id: 'job-fr',
+          provider: 'leboncoin',
+          title: 'Appartement 2 pièces',
+          address: 'Nation - Picpus, 75012 Paris',
+          price: 1140,
+          charges_included: 0,
+          charges: 50,
+          size: 37,
+          rooms: 2,
+          description: null,
+        },
+      ],
+    });
+    initSimilarityCache();
+
+    expect(
+      checkAndAddEntry({
+        jobId: 'job-fr',
+        provider: 'seloger',
+        title: 'Appartement à louer',
+        address: '75012 Vallée de Fécamp, Paris',
+        price: 1190,
+        chargesIncluded: true,
+        size: 37,
+        rooms: 2,
+        description: null,
+      }),
+    ).toBe(true);
+  });
 });

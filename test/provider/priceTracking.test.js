@@ -31,7 +31,6 @@ const EXPECTED_DETAIL_PRICE = {
   engelVoelkers: 24900000,
   imaxx: 526000,
   immobilienDe: 395,
-  immowelt: 1250,
   kleinanzeigen: 195000,
   schwarzesbrett: 700,
   sparkasse: 410000,
@@ -64,10 +63,6 @@ const CUSTOM_LIST_PRICES = {
       .filter((item) => item.vermarktungsart_miete === '1')
       .map((item) => providerModule('deutscheWohnen').config.normalize({ id: item.wrk_id, price: item.preis })?.price)
       .filter((price) => price != null);
-  },
-  immowelt: () => {
-    const classifieds = JSON.parse(fs.readFileSync(path.join(FIXTURES, 'immowelt_classifieds.json'), 'utf8'));
-    return classifieds.map((entry) => providerModule('immowelt').config.normalize(entry)?.price).filter(Boolean);
   },
   immobilienDe: () => {
     const provider = providerModule('immobilienDe');
@@ -140,8 +135,8 @@ describe('#price tracking extractors', () => {
     for (const [id, provider] of providersById) {
       const priceTracking = provider.config.priceTracking;
       if (priceTracking == null) continue;
-      const ways = ['selector', 'extract', 'probe'].filter((key) => priceTracking[key] != null);
-      expect(ways, `${id} must declare exactly one of selector/extract/probe`).toHaveLength(1);
+      const ways = ['selector', 'extract', 'probe', 'browserProbe'].filter((key) => priceTracking[key] != null);
+      expect(ways, `${id} must declare exactly one of selector/extract/probe/browserProbe`).toHaveLength(1);
     }
   });
 

@@ -175,6 +175,61 @@ describe('detecting signals', () => {
     ]);
   });
 
+  it('reads the same fraud in French', () => {
+    // leboncoin, SeLoger and Bien'ici. The same stories again, with the prepaid vouchers French
+    // frauds are paid in.
+    expect(
+      detectScamSignals(
+        listing("Je suis actuellement à l'étranger. Caution avant la visite, envoi des clés par la poste."),
+      ),
+    ).toEqual(['advancePayment', 'keysByPost', 'landlordAbroad']);
+    expect(detectScamSignals(listing('Paiement par coupon PCS ou mandat cash uniquement.'))).toEqual([
+      'moneyTransferService',
+    ]);
+    expect(detectScamSignals(listing("J'ai été muté à l'étranger pour mon travail."))).toEqual(['landlordAbroad']);
+    expect(detectScamSignals(listing("La visite n'est pas possible."))).toEqual(['noViewing']);
+  });
+
+  // Spelled the way French adverts write them: hyphenated, in the plural, in the feminine, with the
+  // older "clefs". A list that knew only one spelling of each matched the tidy half of the frauds.
+  it('reads the French frauds in the spellings they come in', () => {
+    expect(detectScamSignals(listing('Paiement en crypto-monnaie uniquement.'))).toEqual(['moneyTransferService']);
+    expect(detectScamSignals(listing('Règlement par carte-cadeau.'))).toEqual(['moneyTransferService']);
+    expect(detectScamSignals(listing('Paiement par cartes cadeaux ou mandats cash.'))).toEqual([
+      'moneyTransferService',
+    ]);
+    expect(detectScamSignals(listing('Paiement en coupons PCS uniquement.'))).toEqual(['moneyTransferService']);
+    expect(detectScamSignals(listing("J'ai été mutée à l'étranger."))).toEqual(['landlordAbroad']);
+    expect(detectScamSignals(listing("Nous avons été mutés à l'étranger."))).toEqual(['landlordAbroad']);
+    expect(detectScamSignals(listing('Je vous envoie les clefs par la poste.'))).toEqual(['keysByPost']);
+    expect(detectScamSignals(listing('Les clés vous seront envoyées par la poste.'))).toEqual(['keysByPost']);
+    expect(detectScamSignals(listing('Les visites ne sont pas possibles.'))).toEqual(['noViewing']);
+  });
+
+  // Honest French adverts warn about exactly these frauds, in exactly these words, and a warning is
+  // not a confession. Each of these fired, the payment ones at the weight that warns on its own.
+  it('leaves the French honest wordings alone', () => {
+    expect(detectScamSignals(listing('Pas de location sans visite, merci de votre compréhension.'))).toEqual([]);
+    expect(detectScamSignals(listing('Aucun dossier ne sera étudié sans visite préalable.'))).toEqual([]);
+    expect(detectScamSignals(listing('Par précaution avant la visite, merci de préparer votre dossier.'))).toEqual([]);
+    expect(detectScamSignals(listing('Frais de réservation : 150 € (résidence étudiante avec services).'))).toEqual([]);
+    expect(detectScamSignals(listing('Aucun virement avant la visite ne vous sera demandé.'))).toEqual([]);
+
+    // The frauds themselves still read as frauds.
+    expect(detectScamSignals(listing('Caution avant la visite obligatoire.'))).toEqual(['advancePayment']);
+    expect(detectScamSignals(listing('Frais de réservation avant la visite par virement.'))).toEqual([
+      'advancePayment',
+    ]);
+  });
+
+  it('leaves the French standard clauses alone', () => {
+    // Rent paid in advance is the law in France as everywhere else, a deposit is on every lease, and
+    // "visite sans rendez-vous" is a welcome rather than a refusal.
+    expect(detectScamSignals(listing("Loyer payable d'avance. Dépôt de garantie d'un mois."))).toEqual([]);
+    expect(detectScamSignals(listing('Visite sans rendez-vous le samedi matin.'))).toEqual([]);
+    expect(detectScamSignals(listing('Honoraires de location à la charge du locataire.'))).toEqual([]);
+  });
+
   it('reads an accent and an elision the way the portal wrote them', () => {
     // Accents get typed, dropped and mangled in turn, and Italian elides by default. A list written
     // without either has to match all of those spellings, or it matches the tidy half of the web.
@@ -202,6 +257,27 @@ describe('detecting signals', () => {
     expect(detectScamSignals(listing('Pagamento prima della visita.'))).toEqual(['advancePayment']);
     expect(detectScamSignals(listing('Se requiere pago antes de la visita.'))).toEqual(['advancePayment']);
     expect(detectScamSignals(listing('Pagamento antes da visita.'))).toEqual(['advancePayment']);
+  });
+
+  // "Keine Vorkasse", "no Western Union", "nicht ohne Besichtigung": the phrase is there because
+  // the advert says it will not happen. A signal that fired on it warned about the adverts that
+  // warn their readers.
+  it('does not read a phrase the advert negates as the fraud it rules out', () => {
+    expect(detectScamSignals(listing('Keine Vorkasse, Zahlung erst bei Schlüsselübergabe.'))).toEqual([]);
+    expect(detectScamSignals(listing('No Western Union payments, please.'))).toEqual([]);
+    expect(detectScamSignals(listing('Wir vermieten nicht ohne Besichtigung.'))).toEqual([]);
+    expect(detectScamSignals(listing('Nessun pagamento prima della visita.'))).toEqual([]);
+    expect(detectScamSignals(listing('Nunca pago antes de la visita.'))).toEqual([]);
+
+    // Negated elsewhere in the sentence, or not at all, it still counts.
+    expect(detectScamSignals(listing('Zahlung nur per Vorkasse.'))).toEqual(['advancePayment']);
+    expect(detectScamSignals(listing('Pas de problème, paiement avant la visite par virement.'))).toEqual([
+      'advancePayment',
+    ]);
+    expect(detectScamSignals(listing('Estou no estrangeiro, pagamento antes da visita.'))).toEqual([
+      'advancePayment',
+      'landlordAbroad',
+    ]);
   });
 
   it('does not read a walk-in welcome as a viewing being refused', () => {

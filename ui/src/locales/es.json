@@ -748,7 +748,7 @@
   "settings.debugClearConfirmCancel": "Cancelar",
   "settings.debugToastCleared": "Se han borrado los registros de diagnóstico guardados.",
   "settings.debugToastClearError": "No se han podido borrar los registros guardados.",
-  "app.debugLoggingBanner": "El registro de diagnóstico está activo. Todo lo que Fredy registra se está guardando en su base de datos. Desactívalo en Ajustes → Diagnóstico cuando termines.",
+  "app.debugLoggingBanner": "El registro de diagnóstico está activo. Todo lo que Fredy registra se está guardando en su base de datos. Desactívalo en Administración → Diagnóstico cuando termines.",
   "watchlist.sectionName": "Avisos de favoritos",
   "watchlist.sectionHelp": "Puedes recibir avisos cuando cambie algo en los anuncios de tus favoritos.",
   "watchlist.noteTitle": "Nota",

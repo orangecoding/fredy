@@ -748,7 +748,7 @@
   "settings.debugClearConfirmCancel": "Abbrechen",
   "settings.debugToastCleared": "Gespeicherte Debug-Logs wurden gelöscht.",
   "settings.debugToastClearError": "Gespeicherte Debug-Logs konnten nicht gelöscht werden.",
-  "app.debugLoggingBanner": "Debug-Logging ist aktiv! Alles was Fredy loggt, wird in der Datenbank gespeichert. Deaktiviere es unter Einstellungen → Debug, sobald du fertig bist.",
+  "app.debugLoggingBanner": "Debug-Logging ist aktiv! Alles was Fredy loggt, wird in der Datenbank gespeichert. Deaktiviere es unter Administration → Debug, sobald du fertig bist.",
   "watchlist.sectionName": "Benachrichtigung für Watchlist",
   "watchlist.sectionHelp": "Du kannst bei Änderungen an Inseraten auf deiner Watchlist benachrichtigt werden.",
   "watchlist.noteTitle": "Hinweis",

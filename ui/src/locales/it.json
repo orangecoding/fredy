@@ -748,7 +748,7 @@
   "settings.debugClearConfirmCancel": "Annulla",
   "settings.debugToastCleared": "I registri di diagnostica salvati sono stati eliminati.",
   "settings.debugToastClearError": "Non è stato possibile eliminare i registri salvati.",
-  "app.debugLoggingBanner": "Il registro di diagnostica è attivo. Tutto ciò che Fredy registra viene salvato nel suo database. Disattivalo in Impostazioni → Diagnostica quando hai finito.",
+  "app.debugLoggingBanner": "Il registro di diagnostica è attivo. Tutto ciò che Fredy registra viene salvato nel suo database. Disattivalo in Amministrazione → Diagnostica quando hai finito.",
   "watchlist.sectionName": "Notifiche per i preferiti",
   "watchlist.sectionHelp": "Puoi ricevere notifiche quando cambia qualcosa negli annunci tra i tuoi preferiti.",
   "watchlist.noteTitle": "Nota",

@@ -1,0 +1,2584 @@
+[
+  {
+    "list_id": 3276619393,
+    "first_publication_date": "2026-09-25 20:27:35",
+    "index_date": "2026-09-25 20:27:35",
+    "status": "active",
+    "category_id": "10",
+    "category_name": "Locations",
+    "subject": "Appartement 2 pièces 37 m²",
+    "body": "2 PIECES - RUE WATTIGNIES\n\nAppartement situé rue de Wattignies proche des métros 6 et 8 au 4ème étage comprenant: une entrée, un séjour, une cuisine séparée, une chambre avec rangement, une salle d'eau avec watercloset.\nLes informations sur les risques auxquels ce bien est exposé sont disponibles sur le site Géorisques : www. georisques. gouv. fr\nRéférence annonce : 56978\nDate de réalisation du diagnostic : 16/09/2026\nHonoraires à la charge du locataire : 573 € TTC dont 114 € pour l’état des lieux\nDépôt de garantie : 2280 €\nMontant des charges : 50 € / mois\nModalité de récupération des charges locatives : provision avec régularisation annuelle\n\nMontant estimé des dépenses annuelles d'énergie pour un usage standard : entre 1 170 € et 1 640 € sur les années 2021, 2022 et 2023 (abonnements compris).",
+    "brand": "leboncoin",
+    "ad_type": "offer",
+    "url": "https://www.leboncoin.fr/ad/locations/3276619393",
+    "price": [
+      1190
+    ],
+    "price_cents": 119000,
+    "images": {
+      "thumb_url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/d4/fc/28/d4fc283c7c587e60076c735422df513c5492dd73.jpg?rule=ad-thumb",
+      "small_url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/d4/fc/28/d4fc283c7c587e60076c735422df513c5492dd73.jpg?rule=ad-small",
+      "nb_images": 8,
+      "urls": [
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/d4/fc/28/d4fc283c7c587e60076c735422df513c5492dd73.jpg?rule=ad-image",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/44/68/c0/4468c080c49097e5f179488a32e7a8b45059b982.jpg?rule=ad-image",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/97/45/05/97450599b198e9eec0a7ee1c5682b0d645724591.jpg?rule=ad-image",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/c0/ca/eb/c0caebeb965cbb22b8b10dbbe2f880b903e72065.jpg?rule=ad-image",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/4f/d6/16/4fd6162bd357eb281f3b6ec2da78c3645e01131d.jpg?rule=ad-image",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/81/fa/fd/81fafd9eb14ab5784f71fb69cc55790244d40f91.jpg?rule=ad-image",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/13/d5/d3/13d5d353dde27ccdecb74f379989aff6ee011541.jpg?rule=ad-image",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/fe/ad/58/fead588282d436b6c8b38bb6b63e997a5ed31c10.jpg?rule=ad-image"
+      ],
+      "urls_thumb": [
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/d4/fc/28/d4fc283c7c587e60076c735422df513c5492dd73.jpg?rule=ad-thumb",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/44/68/c0/4468c080c49097e5f179488a32e7a8b45059b982.jpg?rule=ad-thumb",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/97/45/05/97450599b198e9eec0a7ee1c5682b0d645724591.jpg?rule=ad-thumb",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/c0/ca/eb/c0caebeb965cbb22b8b10dbbe2f880b903e72065.jpg?rule=ad-thumb",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/4f/d6/16/4fd6162bd357eb281f3b6ec2da78c3645e01131d.jpg?rule=ad-thumb",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/81/fa/fd/81fafd9eb14ab5784f71fb69cc55790244d40f91.jpg?rule=ad-thumb",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/13/d5/d3/13d5d353dde27ccdecb74f379989aff6ee011541.jpg?rule=ad-thumb",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/fe/ad/58/fead588282d436b6c8b38bb6b63e997a5ed31c10.jpg?rule=ad-thumb"
+      ],
+      "urls_large": [
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/d4/fc/28/d4fc283c7c587e60076c735422df513c5492dd73.jpg?rule=ad-large",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/44/68/c0/4468c080c49097e5f179488a32e7a8b45059b982.jpg?rule=ad-large",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/97/45/05/97450599b198e9eec0a7ee1c5682b0d645724591.jpg?rule=ad-large",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/c0/ca/eb/c0caebeb965cbb22b8b10dbbe2f880b903e72065.jpg?rule=ad-large",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/4f/d6/16/4fd6162bd357eb281f3b6ec2da78c3645e01131d.jpg?rule=ad-large",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/81/fa/fd/81fafd9eb14ab5784f71fb69cc55790244d40f91.jpg?rule=ad-large",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/13/d5/d3/13d5d353dde27ccdecb74f379989aff6ee011541.jpg?rule=ad-large",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/fe/ad/58/fead588282d436b6c8b38bb6b63e997a5ed31c10.jpg?rule=ad-large"
+      ]
+    },
+    "attributes": [
+      {
+        "key": "activity_sector",
+        "value": "2",
+        "values": [
+          "2"
+        ],
+        "value_label": "2",
+        "generic": false
+      },
+      {
+        "key": "external_ad_id",
+        "value": "ubiflow_551410913",
+        "values": [
+          "ubiflow_551410913"
+        ],
+        "value_label": "ubiflow_551410913",
+        "generic": false
+      },
+      {
+        "key": "real_estate_type",
+        "value": "2",
+        "values": [
+          "2"
+        ],
+        "key_label": "Type de bien",
+        "value_label": "Appartement",
+        "generic": true
+      },
+      {
+        "key": "furnished",
+        "value": "1",
+        "values": [
+          "1"
+        ],
+        "key_label": "Ce bien est :",
+        "value_label": "Meublé",
+        "generic": true
+      },
+      {
+        "key": "square",
+        "value": "37",
+        "values": [
+          "37"
+        ],
+        "key_label": "Surface habitable",
+        "value_label": "37 m²",
+        "value_label_reader": "37 Mètres carrés",
+        "generic": true
+      },
+      {
+        "key": "rooms",
+        "value": "2",
+        "values": [
+          "2"
+        ],
+        "key_label": "Nombre de pièces",
+        "value_label": "2",
+        "generic": true
+      },
+      {
+        "key": "bedrooms",
+        "value": "1",
+        "values": [
+          "1"
+        ],
+        "key_label": "Nombre de chambres",
+        "value_label": "1 ch.",
+        "generic": true
+      },
+      {
+        "key": "nb_shower_room",
+        "value": "1",
+        "values": [
+          "1"
+        ],
+        "key_label": "Nombre de salles d'eau",
+        "value_label": "1",
+        "generic": true
+      },
+      {
+        "key": "energy_rate",
+        "value": "e",
+        "values": [
+          "e"
+        ],
+        "key_label": "Classe énergie",
+        "value_label": "E",
+        "generic": true
+      },
+      {
+        "key": "ges",
+        "value": "e",
+        "values": [
+          "e"
+        ],
+        "key_label": "GES",
+        "value_label": "E",
+        "generic": true
+      },
+      {
+        "key": "specificities",
+        "value": "",
+        "values": [
+          "cellar"
+        ],
+        "key_label": "Caractéristiques",
+        "value_label": "Cave",
+        "values_label": [
+          "Cave"
+        ],
+        "values_label_reader": [
+          ""
+        ],
+        "generic": true
+      },
+      {
+        "key": "heating_type",
+        "value": "individual",
+        "values": [
+          "individual"
+        ],
+        "key_label": "Type de chauffage",
+        "value_label": "Individuel",
+        "generic": true
+      },
+      {
+        "key": "floor_number",
+        "value": "4",
+        "values": [
+          "4"
+        ],
+        "key_label": "Étage de votre bien",
+        "value_label": "4",
+        "generic": true
+      },
+      {
+        "key": "elevator",
+        "value": "2",
+        "values": [
+          "2"
+        ],
+        "key_label": "Ascenseur",
+        "value_label": "Non",
+        "generic": true
+      },
+      {
+        "key": "available_date",
+        "value": "25/09/2026",
+        "values": [
+          "25/09/2026"
+        ],
+        "key_label": "Disponible à partir de",
+        "value_label": "25/09/2026",
+        "generic": true
+      },
+      {
+        "key": "monthly_charges",
+        "value": "50",
+        "values": [
+          "50"
+        ],
+        "key_label": "Charges locatives",
+        "value_label": "50 €",
+        "value_label_reader": "50 Euro",
+        "generic": false
+      },
+      {
+        "key": "security_deposit",
+        "value": "2280",
+        "values": [
+          "2280"
+        ],
+        "key_label": "Dépôt de garantie",
+        "value_label": "2280 €",
+        "value_label_reader": "2280 Euro",
+        "generic": false
+      },
+      {
+        "key": "charges_included",
+        "value": "1",
+        "values": [
+          "1"
+        ],
+        "key_label": "Charges incluses",
+        "value_label": "Oui",
+        "generic": true
+      },
+      {
+        "key": "inventory_fees",
+        "value": "115",
+        "values": [
+          "115"
+        ],
+        "key_label": "Frais d'état des lieux",
+        "value_label": "115 €",
+        "value_label_reader": "115 Euro",
+        "generic": false
+      },
+      {
+        "key": "district_id",
+        "value": "100510",
+        "values": [
+          "100510"
+        ],
+        "value_label": "100510",
+        "generic": false
+      },
+      {
+        "key": "district_visibility",
+        "value": "true",
+        "values": [
+          "true"
+        ],
+        "value_label": "true",
+        "generic": false
+      },
+      {
+        "key": "district_type_id",
+        "value": "1",
+        "values": [
+          "1"
+        ],
+        "value_label": "1",
+        "generic": false
+      },
+      {
+        "key": "district_resolution_type",
+        "value": "integration_flux",
+        "values": [
+          "integration_flux"
+        ],
+        "value_label": "integration_flux",
+        "generic": false
+      },
+      {
+        "key": "mandate_type",
+        "value": "simple",
+        "values": [
+          "simple"
+        ],
+        "value_label": "simple",
+        "generic": false
+      },
+      {
+        "key": "has_visibility_option",
+        "value": "true",
+        "values": [
+          "true"
+        ],
+        "value_label": "true",
+        "generic": false
+      },
+      {
+        "key": "visibility_option_products",
+        "value": "RE_VISIBILITY_FEATURE",
+        "values": [
+          "RE_VISIBILITY_FEATURE"
+        ],
+        "value_label": "RE_VISIBILITY_FEATURE",
+        "generic": false
+      },
+      {
+        "key": "store_logo",
+        "value": "https://img.leboncoin.fr/api/v1/lbcpb1/images/74/ce/5d/74ce5d1a-8c66-4326-927f-591144164dac?rule=bo-thumb",
+        "values": [
+          "https://img.leboncoin.fr/api/v1/lbcpb1/images/74/ce/5d/74ce5d1a-8c66-4326-927f-591144164dac?rule=bo-thumb"
+        ],
+        "value_label": "https://img.leboncoin.fr/api/v1/lbcpb1/images/74/ce/5d/74ce5d1a-8c66-4326-927f-591144164dac?rule=bo-thumb",
+        "generic": false
+      },
+      {
+        "key": "store_name",
+        "value": "CPH Immobilier LOCATION Le Chesnay",
+        "values": [
+          "CPH Immobilier LOCATION Le Chesnay"
+        ],
+        "value_label": "CPH Immobilier LOCATION Le Chesnay",
+        "generic": false
+      },
+      {
+        "key": "online_store_id",
+        "value": "7156361",
+        "values": [
+          "7156361"
+        ],
+        "value_label": "7156361",
+        "generic": false
+      },
+      {
+        "key": "is_public_rent_control",
+        "value": "false",
+        "values": [
+          "false"
+        ],
+        "key_label": "Bien soumis à l'encadrement des loyers",
+        "value_label": "Non",
+        "generic": false
+      },
+      {
+        "key": "annual_energy_budget_min",
+        "value": "1170",
+        "values": [
+          "1170"
+        ],
+        "key_label": "Montant annuel énergétique minimum",
+        "value_label": "1170 €",
+        "value_label_reader": "1170 Euro",
+        "generic": false
+      },
+      {
+        "key": "annual_energy_budget_max",
+        "value": "1640",
+        "values": [
+          "1640"
+        ],
+        "key_label": "Montant annuel énergétique maximum",
+        "value_label": "1640 €",
+        "value_label_reader": "1640 Euro",
+        "generic": false
+      },
+      {
+        "key": "custom_ref",
+        "value": "56978",
+        "values": [
+          "56978"
+        ],
+        "key_label": "Référence",
+        "value_label": "56978",
+        "generic": true
+      },
+      {
+        "key": "is_import",
+        "value": "true",
+        "values": [
+          "true"
+        ],
+        "value_label": "true",
+        "generic": false
+      },
+      {
+        "key": "lease_type",
+        "value": "rent",
+        "values": [
+          "rent"
+        ],
+        "value_label": "rent",
+        "generic": false
+      },
+      {
+        "key": "rental_fees",
+        "value": "573",
+        "values": [
+          "573"
+        ],
+        "key_label": "Honoraires",
+        "value_label": "573",
+        "generic": false
+      },
+      {
+        "key": "rent_excluding_charges",
+        "value": "1140",
+        "values": [
+          "1140"
+        ],
+        "key_label": "Loyer mensuel (hors charges)",
+        "value_label": "1140",
+        "generic": false
+      },
+      {
+        "key": "floor_display",
+        "value": "Étage 4",
+        "value_label": "Étage 4",
+        "value_label_reader": "Étage 4",
+        "generic": false
+      }
+    ],
+    "location": {
+      "country_id": "FR",
+      "region_id": "12",
+      "region_name": "Ile-de-France",
+      "department_id": "75",
+      "department_name": "Paris",
+      "city_label": "Paris 75012 Nation - Picpus",
+      "city": "Paris",
+      "zipcode": "75012",
+      "district": "Nation - Picpus",
+      "lat": 48.84286,
+      "lng": 2.3952026,
+      "source": "city",
+      "provider": "here",
+      "type": "district",
+      "origin_type": "district",
+      "is_shape": true,
+      "feature": {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            2.3952026,
+            48.84286
+          ]
+        },
+        "properties": null
+      }
+    },
+    "owner": {
+      "store_id": "84817093",
+      "user_id": "2ff391b9-034e-4e81-bf3f-071c9750efc9",
+      "type": "pro",
+      "name": "Immo de France - CPH Immobilier LOCATION",
+      "siren": "689801314",
+      "no_salesmen": false,
+      "activity_sector": "2"
+    },
+    "options": {
+      "has_option": false,
+      "booster": false,
+      "photosup": false,
+      "urgent": false,
+      "gallery": false,
+      "sub_toplist": false,
+      "continuous_top_ads": false,
+      "highlight": false
+    },
+    "has_phone": true,
+    "attributes_listing": [
+      {
+        "key": "furnished",
+        "value": "1",
+        "key_label": "Ce bien est :",
+        "value_label": "Meublé",
+        "value_label_reader": "Meublé",
+        "generic": false
+      },
+      {
+        "key": "specificities",
+        "value": "cellar",
+        "key_label": "Caractéristiques",
+        "value_label": "Cave",
+        "value_label_reader": "Cave",
+        "generic": false
+      }
+    ],
+    "similar": null,
+    "counters": {}
+  },
+  {
+    "list_id": 3276618714,
+    "first_publication_date": "2026-09-25 20:26:06",
+    "expiration_date": "2026-11-24 19:26:06",
+    "index_date": "2026-09-25 20:26:06",
+    "status": "active",
+    "category_id": "10",
+    "category_name": "Locations",
+    "subject": "T2 meublé à louer en bail mobilité",
+    "body": "T2 meublé à louer 38 m² - Refait à neuf en 2024\n2ème étage avec ascenseur\nDouble exposition : Sud-Est / Nord-Est\nAgencement : Entrée, salon lumineux, chambre indépendante, petit cagibi de rangement pratique, salle de bain avec WC, cuisine entièrement équipée. Toutes les pièces disposent d’une fenêtre, y compris la salle de bain et la cuisine.\nExtérieurs : Salon et chambre donnant sur 2 petits balcons privatifs \nÉquipement : logement clef en main, entièrement meublé et équipé\n• Cuisine : Four, plaques de cuisson, réfrigérateur, congélateur, lave-vaisselle, petit électroménager.\n• Lavage : Lave-linge inclus dans l'appartement ainsi que le nécessaire de repassage et ménage \nClasse énergétique : DPE : D / GES : C\nLoyer hors charges : 1 345 € / mois\nCharges : 230 € / mois (incluant internet, eau, chauffage collectif, électricité, ascenseur, entretien de l'immeuble et taxe d'enlèvement des ordures ménagères)\nLoyer charges récupérables comprises : 1 575 € / mois\nConditions de Location\n• Type de bail : Bail Mobilité (1 à 10 mois) avec garantie Visale.\nMetro Vaugirard, Rue Francois Villon, 75015 Paris",
+    "brand": "leboncoin",
+    "ad_type": "offer",
+    "url": "https://www.leboncoin.fr/ad/locations/3276618714",
+    "price": [
+      1575
+    ],
+    "price_cents": 157500,
+    "images": {
+      "thumb_url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/8f/98/9c/8f989c833fccf4170243493f34e9c29fde65a5cf.jpg?rule=ad-thumb",
+      "small_url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/8f/98/9c/8f989c833fccf4170243493f34e9c29fde65a5cf.jpg?rule=ad-small",
+      "nb_images": 3,
+      "urls": [
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/8f/98/9c/8f989c833fccf4170243493f34e9c29fde65a5cf.jpg?rule=ad-image",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/e4/20/23/e420235429c08c5174266b6a241e0847a44c26b5.jpg?rule=ad-image",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/1a/d1/80/1ad180c2c8b7ba5e734bd68a33517b2c34c2d757.jpg?rule=ad-image"
+      ],
+      "urls_thumb": [
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/8f/98/9c/8f989c833fccf4170243493f34e9c29fde65a5cf.jpg?rule=ad-thumb",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/e4/20/23/e420235429c08c5174266b6a241e0847a44c26b5.jpg?rule=ad-thumb",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/1a/d1/80/1ad180c2c8b7ba5e734bd68a33517b2c34c2d757.jpg?rule=ad-thumb"
+      ],
+      "urls_large": [
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/8f/98/9c/8f989c833fccf4170243493f34e9c29fde65a5cf.jpg?rule=ad-large",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/e4/20/23/e420235429c08c5174266b6a241e0847a44c26b5.jpg?rule=ad-large",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/1a/d1/80/1ad180c2c8b7ba5e734bd68a33517b2c34c2d757.jpg?rule=ad-large"
+      ],
+      "classifications": [
+        {
+          "url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/8f/98/9c/8f989c833fccf4170243493f34e9c29fde65a5cf.jpg?rule=ad-image",
+          "is_plan": false
+        },
+        {
+          "url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/e4/20/23/e420235429c08c5174266b6a241e0847a44c26b5.jpg?rule=ad-image",
+          "is_plan": false
+        },
+        {
+          "url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/1a/d1/80/1ad180c2c8b7ba5e734bd68a33517b2c34c2d757.jpg?rule=ad-image",
+          "is_plan": false
+        }
+      ]
+    },
+    "attributes": [
+      {
+        "key": "rating_score",
+        "value": "1",
+        "values": [
+          "1"
+        ],
+        "value_label": "1",
+        "generic": false
+      },
+      {
+        "key": "rating_count",
+        "value": "1",
+        "values": [
+          "1"
+        ],
+        "value_label": "1",
+        "generic": false
+      },
+      {
+        "key": "profile_picture_url",
+        "value": "https://img.leboncoin.fr/api/v1/tenants/9a6387a1-6259-4f2c-a887-7e67f23dd4cb/domains/20bda58f-d650-462e-a72a-a5a7ecf2bf88/buckets/21d2b0bc-e54c-4b64-a30b-89127b18b785/images/profile/pictures/default/02ab995f-4e58-53d0-b85c-88f493ec5c74?rule=pp-small",
+        "values": [
+          "https://img.leboncoin.fr/api/v1/tenants/9a6387a1-6259-4f2c-a887-7e67f23dd4cb/domains/20bda58f-d650-462e-a72a-a5a7ecf2bf88/buckets/21d2b0bc-e54c-4b64-a30b-89127b18b785/images/profile/pictures/default/02ab995f-4e58-53d0-b85c-88f493ec5c74?rule=pp-small"
+        ],
+        "value_label": "https://img.leboncoin.fr/api/v1/tenants/9a6387a1-6259-4f2c-a887-7e67f23dd4cb/domains/20bda58f-d650-462e-a72a-a5a7ecf2bf88/buckets/21d2b0bc-e54c-4b64-a30b-89127b18b785/images/profile/pictures/default/02ab995f-4e58-53d0-b85c-88f493ec5c74?rule=pp-small",
+        "generic": false
+      },
+      {
+        "key": "real_estate_type",
+        "value": "2",
+        "values": [
+          "2"
+        ],
+        "key_label": "Type de bien",
+        "value_label": "Appartement",
+        "generic": true
+      },
+      {
+        "key": "furnished",
+        "value": "1",
+        "values": [
+          "1"
+        ],
+        "key_label": "Ce bien est :",
+        "value_label": "Meublé",
+        "generic": true
+      },
+      {
+        "key": "square",
+        "value": "38",
+        "values": [
+          "38"
+        ],
+        "key_label": "Surface habitable",
+        "value_label": "38 m²",
+        "value_label_reader": "38 Mètres carrés",
+        "generic": true
+      },
+      {
+        "key": "rooms",
+        "value": "2",
+        "values": [
+          "2"
+        ],
+        "key_label": "Nombre de pièces",
+        "value_label": "2",
+        "generic": true
+      },
+      {
+        "key": "bedrooms",
+        "value": "1",
+        "values": [
+          "1"
+        ],
+        "key_label": "Nombre de chambres",
+        "value_label": "1 ch.",
+        "generic": true
+      },
+      {
+        "key": "nb_bathrooms",
+        "value": "1",
+        "values": [
+          "1"
+        ],
+        "key_label": "Nombre de salles de bain",
+        "value_label": "1",
+        "generic": true
+      },
+      {
+        "key": "energy_rate",
+        "value": "d",
+        "values": [
+          "d"
+        ],
+        "key_label": "Classe énergie",
+        "value_label": "D",
+        "generic": true
+      },
+      {
+        "key": "ges",
+        "value": "c",
+        "values": [
+          "c"
+        ],
+        "key_label": "GES",
+        "value_label": "C",
+        "generic": true
+      },
+      {
+        "key": "specificities",
+        "value": "",
+        "values": [
+          "old_builiding",
+          "intercom",
+          "equipped_kitchen",
+          "separate_kitchen"
+        ],
+        "key_label": "Caractéristiques",
+        "value_label": "Construction ancienne, Interphone, Cuisine équipée, Cuisine séparée",
+        "value_label_reader": ", , , ",
+        "values_label": [
+          "Construction ancienne",
+          "Interphone",
+          "Cuisine équipée",
+          "Cuisine séparée"
+        ],
+        "values_label_reader": [
+          "",
+          "",
+          "",
+          ""
+        ],
+        "generic": true
+      },
+      {
+        "key": "heating_type",
+        "value": "communal",
+        "values": [
+          "communal"
+        ],
+        "key_label": "Type de chauffage",
+        "value_label": "Collectif",
+        "generic": true
+      },
+      {
+        "key": "heating_mode",
+        "value": "gas",
+        "values": [
+          "gas"
+        ],
+        "key_label": "Mode de chauffage",
+        "value_label": "Gaz",
+        "generic": true
+      },
+      {
+        "key": "floor_number",
+        "value": "2",
+        "values": [
+          "2"
+        ],
+        "key_label": "Étage de votre bien",
+        "value_label": "2",
+        "generic": true
+      },
+      {
+        "key": "nb_floors_building",
+        "value": "7",
+        "values": [
+          "7"
+        ],
+        "key_label": "Nombre d’étages dans l’immeuble",
+        "value_label": "7",
+        "generic": true
+      },
+      {
+        "key": "floor_property",
+        "value": "",
+        "values": [
+          "upper_floor"
+        ],
+        "key_label": "Étage de l'appartement",
+        "values_label": [
+          "Pas de rez-de-chaussée"
+        ],
+        "generic": false
+      },
+      {
+        "key": "elevator",
+        "value": "1",
+        "values": [
+          "1"
+        ],
+        "key_label": "Ascenseur",
+        "value_label": "Oui",
+        "generic": true
+      },
+      {
+        "key": "orientation",
+        "value": "north_west",
+        "values": [
+          "north_west"
+        ],
+        "key_label": "Exposition",
+        "value_label": "Nord-Ouest",
+        "generic": true
+      },
+      {
+        "key": "outside_access",
+        "value": "",
+        "values": [
+          "balcony"
+        ],
+        "key_label": "Extérieur",
+        "value_label": "Balcon",
+        "values_label": [
+          "Balcon"
+        ],
+        "generic": true
+      },
+      {
+        "key": "building_year",
+        "value": "1930",
+        "values": [
+          "1930"
+        ],
+        "key_label": "Année de construction",
+        "value_label": "1930",
+        "generic": true
+      },
+      {
+        "key": "available_date",
+        "value": "01/2027",
+        "values": [
+          "01/2027"
+        ],
+        "key_label": "Disponible à partir de",
+        "value_label": "01/2027",
+        "generic": true
+      },
+      {
+        "key": "monthly_charges",
+        "value": "230",
+        "values": [
+          "230"
+        ],
+        "key_label": "Charges locatives",
+        "value_label": "230 €",
+        "value_label_reader": "230 Euro",
+        "generic": false
+      },
+      {
+        "key": "charges_included",
+        "value": "1",
+        "values": [
+          "1"
+        ],
+        "key_label": "Charges incluses",
+        "value_label": "Oui",
+        "generic": true
+      },
+      {
+        "key": "real_estate_charges_details",
+        "value": "",
+        "values": [
+          "cold_water",
+          "hot_water",
+          "heating",
+          "electricity",
+          "common_areas_maintenance",
+          "waste_collection",
+          "internet"
+        ],
+        "key_label": "Détail des charges",
+        "value_label": "Eau froide, Eau chaude, Chauffage, Électricité, Entretien des parties communes, Ordures ménagères, Internet",
+        "values_label": [
+          "Eau froide",
+          "Eau chaude",
+          "Chauffage",
+          "Électricité",
+          "Entretien des parties communes",
+          "Ordures ménagères",
+          "Internet"
+        ],
+        "generic": false
+      },
+      {
+        "key": "district_id",
+        "value": "3000145",
+        "values": [
+          "3000145"
+        ],
+        "value_label": "3000145",
+        "generic": false
+      },
+      {
+        "key": "district_visibility",
+        "value": "true",
+        "values": [
+          "true"
+        ],
+        "value_label": "true",
+        "generic": false
+      },
+      {
+        "key": "district_type_id",
+        "value": "9",
+        "values": [
+          "9"
+        ],
+        "value_label": "9",
+        "generic": false
+      },
+      {
+        "key": "district_resolution_type",
+        "value": "integration",
+        "values": [
+          "integration"
+        ],
+        "value_label": "integration",
+        "generic": false
+      },
+      {
+        "key": "is_public_rent_control",
+        "value": "true",
+        "values": [
+          "true"
+        ],
+        "key_label": "Bien soumis à l'encadrement des loyers",
+        "value_label": "Oui",
+        "generic": false
+      },
+      {
+        "key": "rent_control_inflated_price",
+        "value": "1345",
+        "values": [
+          "1345"
+        ],
+        "key_label": "Loyer de référence majoré",
+        "value_label": "1345 €",
+        "generic": false
+      },
+      {
+        "key": "street_view_url",
+        "value": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=48.838402,2.299830",
+        "values": [
+          "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=48.838402,2.299830"
+        ],
+        "value_label": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=48.838402,2.299830",
+        "generic": false
+      },
+      {
+        "key": "is_import",
+        "value": "false",
+        "values": [
+          "false"
+        ],
+        "value_label": "false",
+        "generic": false
+      },
+      {
+        "key": "lease_type",
+        "value": "rent",
+        "values": [
+          "rent"
+        ],
+        "value_label": "rent",
+        "generic": false
+      },
+      {
+        "key": "rent_excluding_charges",
+        "value": "1345",
+        "values": [
+          "1345"
+        ],
+        "key_label": "Loyer mensuel (hors charges)",
+        "value_label": "1345",
+        "generic": false
+      },
+      {
+        "key": "floor_display",
+        "value": "Étage 2/7",
+        "value_label": "Étage 2/7",
+        "value_label_reader": "Étage 2 sur 7",
+        "generic": false
+      }
+    ],
+    "location": {
+      "country_id": "FR",
+      "region_id": "12",
+      "region_name": "Ile-de-France",
+      "department_id": "75",
+      "department_name": "Paris",
+      "city_label": "Paris 75015 Volontaires - Vaugirard",
+      "city": "Paris",
+      "zipcode": "75015",
+      "district": "Volontaires - Vaugirard",
+      "lat": 48.8384,
+      "lng": 2.29983,
+      "source": "address",
+      "provider": "here",
+      "type": "streetNumber",
+      "origin_type": "streetNumber",
+      "is_shape": false,
+      "feature": {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            2.29983,
+            48.8384
+          ]
+        },
+        "properties": null
+      }
+    },
+    "owner": {
+      "store_id": "57061192",
+      "user_id": "f3b3cdbc-d62f-4db5-a18e-292d88ef507f",
+      "type": "private",
+      "name": "Christine Cathala-Schaffer",
+      "no_salesmen": true,
+      "activity_sector": ""
+    },
+    "options": {
+      "has_option": false,
+      "booster": false,
+      "photosup": false,
+      "urgent": false,
+      "gallery": false,
+      "sub_toplist": false,
+      "continuous_top_ads": false,
+      "highlight": false
+    },
+    "has_phone": false,
+    "attributes_listing": [
+      {
+        "key": "energy_rate",
+        "value": "d",
+        "key_label": "Classe énergie",
+        "value_label": "DPE",
+        "value_label_reader": "Classe énergie D",
+        "generic": false
+      },
+      {
+        "key": "furnished",
+        "value": "1",
+        "key_label": "Ce bien est :",
+        "value_label": "Meublé",
+        "value_label_reader": "Meublé",
+        "generic": false
+      },
+      {
+        "key": "outside_access",
+        "value": "balcony",
+        "key_label": "Extérieur",
+        "value_label": "Balcon",
+        "value_label_reader": "Balcon",
+        "generic": false
+      }
+    ],
+    "similar": null,
+    "counters": {}
+  },
+  {
+    "list_id": 3276614321,
+    "first_publication_date": "2026-09-25 20:15:29",
+    "index_date": "2026-09-25 20:15:29",
+    "status": "active",
+    "category_id": "10",
+    "category_name": "Locations",
+    "subject": "Appartement 3 pièces 43 m²",
+    "body": "Appartement 3 pièces 43 m²\n\nPAS DE COLOCATIONS - Rue Damrémont, \"Métro Lamarck-Caulaincourt\" (ligne 12), Oralia Lescallier vous propose ce 3 pièces de 42.93 m² situé au 1er étage avec ascenseur. Il comprend : une entrée, un séjour, une cuisine, 2 chambres, une salle d'eau et un wc. Chauffage et eau chaude individuels et électriques. PAS DE COLOCATIONS. BIEN SOUMIS A L'ASSURANCE IMPAYE. LIBRE DE SUITE.\nNous vous invitons à soumettre votre dossier de candidature directement sur notre site web : [URL masquée pour votre sécurité]. Le bien est à louer par l'intermédiaire de l'agent commercial Elodie AMIEL. \n Loyer de 1 295,00 euros par mois charges comprises dont 45,00 euros par mois de provision pour charges (soumis à la régularisation annuelle). \n Les honoraires charge locataire sont de 646,05 euros ( soit 15,05 euros/m² ) dont 129,38 euros pour état des lieux ( soit 3,01 euros/m² ). \nLogement à consommation énergétique excessive. Zone soumise à encadrement des loyers. Le loyer de base du bien proposé est de 1 250 euros, le loyer de référence majoré (fixé par arrêté préfectoral) est de 1 257,849 euros\n\nSurface : 43 m²\nDate de réalisation du diagnostic énergétique : 16/09/2026\n\nConsommation énergie primaire : 417 kWh/m²/an\nConsommation énergie finale : Non communiqué\nLogement à consommation énergétique excessive : classe F",
+    "brand": "leboncoin",
+    "ad_type": "offer",
+    "url": "https://www.leboncoin.fr/ad/locations/3276614321",
+    "price": [
+      1295
+    ],
+    "price_cents": 129500,
+    "images": {
+      "thumb_url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/14/98/50/14985046a39d69ae8688d3b6a485d65fa3b051da.jpg?rule=ad-thumb",
+      "small_url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/14/98/50/14985046a39d69ae8688d3b6a485d65fa3b051da.jpg?rule=ad-small",
+      "nb_images": 10,
+      "urls": [
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/14/98/50/14985046a39d69ae8688d3b6a485d65fa3b051da.jpg?rule=ad-image",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/56/95/9a/56959a292433d0ba2d77c7bb3c890566e7a4b031.jpg?rule=ad-image",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/af/ef/29/afef2997b472cba14e4d3c0969033c1e3c23c69a.jpg?rule=ad-image",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/28/bf/63/28bf63843856136bdba70b763c788957c712a6bb.jpg?rule=ad-image",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/45/7b/51/457b51c8ab0948042a8082dcb1107760e7042978.jpg?rule=ad-image",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/1e/f4/dd/1ef4dd3c947f5f490ab8b8192cd3cc4d3cbdfd84.jpg?rule=ad-image",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/95/58/14/955814a8b3631482ac87336ee520cd850fcb9056.jpg?rule=ad-image",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/71/69/f8/7169f8736c40f51df55895dea10726b7c6798fac.jpg?rule=ad-image",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/e0/77/e5/e077e50818b6fd95e5573069d8b24db261e39e1b.jpg?rule=ad-image",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/d8/b1/ca/d8b1cafeb606a35b43b85f93448fcdab1ee04a29.jpg?rule=ad-image"
+      ],
+      "urls_thumb": [
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/14/98/50/14985046a39d69ae8688d3b6a485d65fa3b051da.jpg?rule=ad-thumb",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/56/95/9a/56959a292433d0ba2d77c7bb3c890566e7a4b031.jpg?rule=ad-thumb",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/af/ef/29/afef2997b472cba14e4d3c0969033c1e3c23c69a.jpg?rule=ad-thumb",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/28/bf/63/28bf63843856136bdba70b763c788957c712a6bb.jpg?rule=ad-thumb",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/45/7b/51/457b51c8ab0948042a8082dcb1107760e7042978.jpg?rule=ad-thumb",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/1e/f4/dd/1ef4dd3c947f5f490ab8b8192cd3cc4d3cbdfd84.jpg?rule=ad-thumb",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/95/58/14/955814a8b3631482ac87336ee520cd850fcb9056.jpg?rule=ad-thumb",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/71/69/f8/7169f8736c40f51df55895dea10726b7c6798fac.jpg?rule=ad-thumb",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/e0/77/e5/e077e50818b6fd95e5573069d8b24db261e39e1b.jpg?rule=ad-thumb",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/d8/b1/ca/d8b1cafeb606a35b43b85f93448fcdab1ee04a29.jpg?rule=ad-thumb"
+      ],
+      "urls_large": [
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/14/98/50/14985046a39d69ae8688d3b6a485d65fa3b051da.jpg?rule=ad-large",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/56/95/9a/56959a292433d0ba2d77c7bb3c890566e7a4b031.jpg?rule=ad-large",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/af/ef/29/afef2997b472cba14e4d3c0969033c1e3c23c69a.jpg?rule=ad-large",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/28/bf/63/28bf63843856136bdba70b763c788957c712a6bb.jpg?rule=ad-large",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/45/7b/51/457b51c8ab0948042a8082dcb1107760e7042978.jpg?rule=ad-large",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/1e/f4/dd/1ef4dd3c947f5f490ab8b8192cd3cc4d3cbdfd84.jpg?rule=ad-large",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/95/58/14/955814a8b3631482ac87336ee520cd850fcb9056.jpg?rule=ad-large",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/71/69/f8/7169f8736c40f51df55895dea10726b7c6798fac.jpg?rule=ad-large",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/e0/77/e5/e077e50818b6fd95e5573069d8b24db261e39e1b.jpg?rule=ad-large",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/d8/b1/ca/d8b1cafeb606a35b43b85f93448fcdab1ee04a29.jpg?rule=ad-large"
+      ],
+      "classifications": [
+        {
+          "url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/14/98/50/14985046a39d69ae8688d3b6a485d65fa3b051da.jpg?rule=ad-image",
+          "is_plan": false
+        },
+        {
+          "url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/56/95/9a/56959a292433d0ba2d77c7bb3c890566e7a4b031.jpg?rule=ad-image",
+          "is_plan": false
+        },
+        {
+          "url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/af/ef/29/afef2997b472cba14e4d3c0969033c1e3c23c69a.jpg?rule=ad-image",
+          "is_plan": false
+        },
+        {
+          "url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/28/bf/63/28bf63843856136bdba70b763c788957c712a6bb.jpg?rule=ad-image",
+          "is_plan": false
+        },
+        {
+          "url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/45/7b/51/457b51c8ab0948042a8082dcb1107760e7042978.jpg?rule=ad-image",
+          "is_plan": false
+        },
+        {
+          "url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/1e/f4/dd/1ef4dd3c947f5f490ab8b8192cd3cc4d3cbdfd84.jpg?rule=ad-image",
+          "is_plan": false
+        },
+        {
+          "url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/95/58/14/955814a8b3631482ac87336ee520cd850fcb9056.jpg?rule=ad-image",
+          "is_plan": false
+        },
+        {
+          "url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/71/69/f8/7169f8736c40f51df55895dea10726b7c6798fac.jpg?rule=ad-image",
+          "is_plan": false
+        },
+        {
+          "url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/e0/77/e5/e077e50818b6fd95e5573069d8b24db261e39e1b.jpg?rule=ad-image",
+          "is_plan": false
+        },
+        {
+          "url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/d8/b1/ca/d8b1cafeb606a35b43b85f93448fcdab1ee04a29.jpg?rule=ad-image",
+          "is_plan": false
+        }
+      ]
+    },
+    "attributes": [
+      {
+        "key": "activity_sector",
+        "value": "2",
+        "values": [
+          "2"
+        ],
+        "value_label": "2",
+        "generic": false
+      },
+      {
+        "key": "external_ad_id",
+        "value": "ics_463316_LEP98230040-910",
+        "values": [
+          "ics_463316_LEP98230040-910"
+        ],
+        "value_label": "ics_463316_LEP98230040-910",
+        "generic": false
+      },
+      {
+        "key": "real_estate_type",
+        "value": "2",
+        "values": [
+          "2"
+        ],
+        "key_label": "Type de bien",
+        "value_label": "Appartement",
+        "generic": true
+      },
+      {
+        "key": "furnished",
+        "value": "2",
+        "values": [
+          "2"
+        ],
+        "key_label": "Ce bien est :",
+        "value_label": "Non meublé",
+        "generic": true
+      },
+      {
+        "key": "square",
+        "value": "43",
+        "values": [
+          "43"
+        ],
+        "key_label": "Surface habitable",
+        "value_label": "43 m²",
+        "value_label_reader": "43 Mètres carrés",
+        "generic": true
+      },
+      {
+        "key": "rooms",
+        "value": "3",
+        "values": [
+          "3"
+        ],
+        "key_label": "Nombre de pièces",
+        "value_label": "3",
+        "generic": true
+      },
+      {
+        "key": "bedrooms",
+        "value": "2",
+        "values": [
+          "2"
+        ],
+        "key_label": "Nombre de chambres",
+        "value_label": "2 ch.",
+        "generic": true
+      },
+      {
+        "key": "nb_shower_room",
+        "value": "1",
+        "values": [
+          "1"
+        ],
+        "key_label": "Nombre de salles d'eau",
+        "value_label": "1",
+        "generic": true
+      },
+      {
+        "key": "energy_rate",
+        "value": "f",
+        "values": [
+          "f"
+        ],
+        "key_label": "Classe énergie",
+        "value_label": "F",
+        "generic": true
+      },
+      {
+        "key": "ges",
+        "value": "c",
+        "values": [
+          "c"
+        ],
+        "key_label": "GES",
+        "value_label": "C",
+        "generic": true
+      },
+      {
+        "key": "specificities",
+        "value": "",
+        "values": [
+          "equipped_kitchen"
+        ],
+        "key_label": "Caractéristiques",
+        "value_label": "Cuisine équipée",
+        "values_label": [
+          "Cuisine équipée"
+        ],
+        "values_label_reader": [
+          ""
+        ],
+        "generic": true
+      },
+      {
+        "key": "heating_type",
+        "value": "individual",
+        "values": [
+          "individual"
+        ],
+        "key_label": "Type de chauffage",
+        "value_label": "Individuel",
+        "generic": true
+      },
+      {
+        "key": "heating_mode",
+        "value": "electric",
+        "values": [
+          "electric"
+        ],
+        "key_label": "Mode de chauffage",
+        "value_label": "Électrique",
+        "generic": true
+      },
+      {
+        "key": "floor_number",
+        "value": "1",
+        "values": [
+          "1"
+        ],
+        "key_label": "Étage de votre bien",
+        "value_label": "1",
+        "generic": true
+      },
+      {
+        "key": "elevator",
+        "value": "1",
+        "values": [
+          "1"
+        ],
+        "key_label": "Ascenseur",
+        "value_label": "Oui",
+        "generic": true
+      },
+      {
+        "key": "orientation",
+        "value": "east",
+        "values": [
+          "east"
+        ],
+        "key_label": "Exposition",
+        "value_label": "Est",
+        "generic": true
+      },
+      {
+        "key": "building_year",
+        "value": "1948",
+        "values": [
+          "1948"
+        ],
+        "key_label": "Année de construction",
+        "value_label": "1948",
+        "generic": true
+      },
+      {
+        "key": "available_date",
+        "value": "08/2026",
+        "values": [
+          "08/2026"
+        ],
+        "key_label": "Disponible à partir de",
+        "value_label": "08/2026",
+        "generic": true
+      },
+      {
+        "key": "global_condition",
+        "value": "2",
+        "values": [
+          "2"
+        ],
+        "key_label": "État du bien",
+        "value_label": "Bon état",
+        "generic": true
+      },
+      {
+        "key": "monthly_charges",
+        "value": "45",
+        "values": [
+          "45"
+        ],
+        "key_label": "Charges locatives",
+        "value_label": "45 €",
+        "value_label_reader": "45 Euro",
+        "generic": false
+      },
+      {
+        "key": "security_deposit",
+        "value": "1250",
+        "values": [
+          "1250"
+        ],
+        "key_label": "Dépôt de garantie",
+        "value_label": "1250 €",
+        "value_label_reader": "1250 Euro",
+        "generic": false
+      },
+      {
+        "key": "charges_included",
+        "value": "1",
+        "values": [
+          "1"
+        ],
+        "key_label": "Charges incluses",
+        "value_label": "Oui",
+        "generic": true
+      },
+      {
+        "key": "inventory_fees",
+        "value": "129",
+        "values": [
+          "129"
+        ],
+        "key_label": "Frais d'état des lieux",
+        "value_label": "129 €",
+        "value_label_reader": "129 Euro",
+        "generic": false
+      },
+      {
+        "key": "district_id",
+        "value": "3000200",
+        "values": [
+          "3000200"
+        ],
+        "value_label": "3000200",
+        "generic": false
+      },
+      {
+        "key": "district_visibility",
+        "value": "true",
+        "values": [
+          "true"
+        ],
+        "value_label": "true",
+        "generic": false
+      },
+      {
+        "key": "district_type_id",
+        "value": "9",
+        "values": [
+          "9"
+        ],
+        "value_label": "9",
+        "generic": false
+      },
+      {
+        "key": "district_resolution_type",
+        "value": "integration",
+        "values": [
+          "integration"
+        ],
+        "value_label": "integration",
+        "generic": false
+      },
+      {
+        "key": "mandate_type",
+        "value": "exclusive",
+        "values": [
+          "exclusive"
+        ],
+        "value_label": "exclusive",
+        "generic": false
+      },
+      {
+        "key": "rent_control_inflated_price",
+        "value": "1258",
+        "values": [
+          "1258"
+        ],
+        "key_label": "Loyer de référence majoré",
+        "value_label": "1258 €",
+        "generic": false
+      },
+      {
+        "key": "custom_ref",
+        "value": "LEP98230040-910",
+        "values": [
+          "LEP98230040-910"
+        ],
+        "key_label": "Référence",
+        "value_label": "LEP98230040-910",
+        "generic": true
+      },
+      {
+        "key": "is_import",
+        "value": "true",
+        "values": [
+          "true"
+        ],
+        "value_label": "true",
+        "generic": false
+      },
+      {
+        "key": "lease_type",
+        "value": "rent",
+        "values": [
+          "rent"
+        ],
+        "value_label": "rent",
+        "generic": false
+      },
+      {
+        "key": "rental_fees",
+        "value": "646",
+        "values": [
+          "646"
+        ],
+        "key_label": "Honoraires",
+        "value_label": "646",
+        "generic": false
+      },
+      {
+        "key": "rent_excluding_charges",
+        "value": "1250",
+        "values": [
+          "1250"
+        ],
+        "key_label": "Loyer mensuel (hors charges)",
+        "value_label": "1250",
+        "generic": false
+      },
+      {
+        "key": "floor_display",
+        "value": "Étage 1",
+        "value_label": "Étage 1",
+        "value_label_reader": "Étage 1",
+        "generic": false
+      }
+    ],
+    "location": {
+      "country_id": "FR",
+      "region_id": "12",
+      "region_name": "Ile-de-France",
+      "department_id": "75",
+      "department_name": "Paris",
+      "city_label": "Paris 75018 Lamarck-Caulaincourt",
+      "city": "Paris",
+      "zipcode": "75018",
+      "district": "Lamarck-Caulaincourt",
+      "lat": 48.89037,
+      "lng": 2.3408492,
+      "source": "city",
+      "provider": "here",
+      "type": "district",
+      "origin_type": "district",
+      "is_shape": true,
+      "feature": {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            2.3408492,
+            48.89037
+          ]
+        },
+        "properties": null
+      }
+    },
+    "owner": {
+      "store_id": "85567104",
+      "user_id": "99040c29-c5b4-4ce5-b9f3-36ae42529700",
+      "type": "pro",
+      "name": "LESCALLIER​",
+      "siren": "542104625",
+      "no_salesmen": false,
+      "activity_sector": "2"
+    },
+    "options": {
+      "has_option": false,
+      "booster": false,
+      "photosup": false,
+      "urgent": false,
+      "gallery": false,
+      "sub_toplist": false,
+      "continuous_top_ads": false,
+      "highlight": false
+    },
+    "has_phone": true,
+    "similar": null,
+    "counters": {}
+  },
+  {
+    "list_id": 3256896774,
+    "first_publication_date": "2026-08-26 03:01:21",
+    "index_date": "2026-09-25 19:30:50",
+    "status": "active",
+    "category_id": "10",
+    "category_name": "Locations",
+    "subject": "Appartement 5 Pièces 90.4m² à louer 2882 - PARIS 75014",
+    "body": "Ce 5 pièces de 90.1 m² au 4ème étage avec ascenseur, se compose d’une entrée, d’un séjour, d’une cuisine à aménager, de quatre chambres, d’une salle de bains, d'une salle d'eau ainsi que deux WC. Une place de parking complète ce bien. TRAVAUX EN COURS\n\nChauffage et eau chaude collectifs\n\nLoyer mensuel : 2882 € charges comprises, dont 342 € de provision pour charges.\nDépôt de garantie : 2540 €\nHonoraires d’agence : 1363.21 €\n\nZone soumise à encadrement des loyers\nLoyer de référence HC : 2108.34 €\nLoyer de référence majoré HC : 2531.81 €\n\nEn cas de bail code civil les honoraires sont de 12% du loyer annuel hors charges, TVA de 20% incluse ainsi que 3 mois de dépôt de garantie.\nPas de colocation - Propriétaire institutionnel : garants que pour les étudiants\nEsprit 14 : résidence récente de 2016, proche tous commerces, écoles, et transports en commun.\n\nMontant estimé des dépenses annuelles d'énergie pour un usage standard : 700 € par an. Prix moyens des énergies indexés sur l'année 2023 (abonnements compris)",
+    "brand": "leboncoin",
+    "ad_type": "offer",
+    "url": "https://www.leboncoin.fr/ad/locations/3256896774",
+    "price": [
+      2882
+    ],
+    "price_cents": 288200,
+    "images": {
+      "thumb_url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/d4/64/ab/d464ab5481809e22aa77582a0a8ce10775aee4d1.jpg?rule=ad-thumb",
+      "small_url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/d4/64/ab/d464ab5481809e22aa77582a0a8ce10775aee4d1.jpg?rule=ad-small",
+      "nb_images": 9,
+      "urls": [
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/d4/64/ab/d464ab5481809e22aa77582a0a8ce10775aee4d1.jpg?rule=ad-image",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/3f/a4/70/3fa4707d989ac3a065c9b07eaed80a0378dbce17.jpg?rule=ad-image",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/4b/83/5f/4b835f3f2608e56d420f4e72eb4aee53a18361e3.jpg?rule=ad-large",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/69/8b/48/698b48d20feb3883e6e35213b73ec6be94b17519.jpg?rule=ad-image",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/e4/84/5b/e4845bc9ac51bb21be9e6f738ce2095b093e5bf1.jpg?rule=ad-image",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/b9/6a/2c/b96a2c7777bac9045c8da11f9832fb62d8348c7e.jpg?rule=ad-image",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/d7/f6/c8/d7f6c8b72976317f7e6bd2392c3b75c40c154842.jpg?rule=ad-image",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/03/82/1e/03821e3f5bb72d76e3eeed53b5a830a08fb7bc34.jpg?rule=ad-image",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/57/71/e3/5771e39dd156b1a3748de5e661f33e8a1cec0d3a.jpg?rule=ad-image"
+      ],
+      "urls_thumb": [
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/d4/64/ab/d464ab5481809e22aa77582a0a8ce10775aee4d1.jpg?rule=ad-thumb",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/3f/a4/70/3fa4707d989ac3a065c9b07eaed80a0378dbce17.jpg?rule=ad-thumb",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/4b/83/5f/4b835f3f2608e56d420f4e72eb4aee53a18361e3.jpg?rule=ad-thumb",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/69/8b/48/698b48d20feb3883e6e35213b73ec6be94b17519.jpg?rule=ad-thumb",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/e4/84/5b/e4845bc9ac51bb21be9e6f738ce2095b093e5bf1.jpg?rule=ad-thumb",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/b9/6a/2c/b96a2c7777bac9045c8da11f9832fb62d8348c7e.jpg?rule=ad-thumb",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/d7/f6/c8/d7f6c8b72976317f7e6bd2392c3b75c40c154842.jpg?rule=ad-thumb",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/03/82/1e/03821e3f5bb72d76e3eeed53b5a830a08fb7bc34.jpg?rule=ad-thumb",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/57/71/e3/5771e39dd156b1a3748de5e661f33e8a1cec0d3a.jpg?rule=ad-thumb"
+      ],
+      "urls_large": [
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/d4/64/ab/d464ab5481809e22aa77582a0a8ce10775aee4d1.jpg?rule=ad-large",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/3f/a4/70/3fa4707d989ac3a065c9b07eaed80a0378dbce17.jpg?rule=ad-large",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/4b/83/5f/4b835f3f2608e56d420f4e72eb4aee53a18361e3.jpg?rule=ad-large",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/69/8b/48/698b48d20feb3883e6e35213b73ec6be94b17519.jpg?rule=ad-large",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/e4/84/5b/e4845bc9ac51bb21be9e6f738ce2095b093e5bf1.jpg?rule=ad-large",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/b9/6a/2c/b96a2c7777bac9045c8da11f9832fb62d8348c7e.jpg?rule=ad-large",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/d7/f6/c8/d7f6c8b72976317f7e6bd2392c3b75c40c154842.jpg?rule=ad-large",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/03/82/1e/03821e3f5bb72d76e3eeed53b5a830a08fb7bc34.jpg?rule=ad-large",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/57/71/e3/5771e39dd156b1a3748de5e661f33e8a1cec0d3a.jpg?rule=ad-large"
+      ],
+      "classifications": [
+        {
+          "url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/d4/64/ab/d464ab5481809e22aa77582a0a8ce10775aee4d1.jpg?rule=ad-image",
+          "is_plan": false
+        },
+        {
+          "url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/3f/a4/70/3fa4707d989ac3a065c9b07eaed80a0378dbce17.jpg?rule=ad-image",
+          "is_plan": false
+        },
+        {
+          "url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/4b/83/5f/4b835f3f2608e56d420f4e72eb4aee53a18361e3.jpg?rule=ad-large",
+          "is_plan": true
+        },
+        {
+          "url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/69/8b/48/698b48d20feb3883e6e35213b73ec6be94b17519.jpg?rule=ad-image",
+          "is_plan": false
+        },
+        {
+          "url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/e4/84/5b/e4845bc9ac51bb21be9e6f738ce2095b093e5bf1.jpg?rule=ad-image",
+          "is_plan": false
+        },
+        {
+          "url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/b9/6a/2c/b96a2c7777bac9045c8da11f9832fb62d8348c7e.jpg?rule=ad-image",
+          "is_plan": false
+        },
+        {
+          "url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/d7/f6/c8/d7f6c8b72976317f7e6bd2392c3b75c40c154842.jpg?rule=ad-image",
+          "is_plan": false
+        },
+        {
+          "url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/03/82/1e/03821e3f5bb72d76e3eeed53b5a830a08fb7bc34.jpg?rule=ad-image",
+          "is_plan": false
+        },
+        {
+          "url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/57/71/e3/5771e39dd156b1a3748de5e661f33e8a1cec0d3a.jpg?rule=ad-image",
+          "is_plan": false
+        }
+      ]
+    },
+    "attributes": [
+      {
+        "key": "activity_sector",
+        "value": "2",
+        "values": [
+          "2"
+        ],
+        "value_label": "2",
+        "generic": false
+      },
+      {
+        "key": "external_ad_id",
+        "value": "emeria_23000-43",
+        "values": [
+          "emeria_23000-43"
+        ],
+        "value_label": "emeria_23000-43",
+        "generic": false
+      },
+      {
+        "key": "real_estate_type",
+        "value": "2",
+        "values": [
+          "2"
+        ],
+        "key_label": "Type de bien",
+        "value_label": "Appartement",
+        "generic": true
+      },
+      {
+        "key": "furnished",
+        "value": "2",
+        "values": [
+          "2"
+        ],
+        "key_label": "Ce bien est :",
+        "value_label": "Non meublé",
+        "generic": true
+      },
+      {
+        "key": "square",
+        "value": "90",
+        "values": [
+          "90"
+        ],
+        "key_label": "Surface habitable",
+        "value_label": "90 m²",
+        "value_label_reader": "90 Mètres carrés",
+        "generic": true
+      },
+      {
+        "key": "rooms",
+        "value": "5",
+        "values": [
+          "5"
+        ],
+        "key_label": "Nombre de pièces",
+        "value_label": "5",
+        "generic": true
+      },
+      {
+        "key": "bedrooms",
+        "value": "4",
+        "values": [
+          "4"
+        ],
+        "key_label": "Nombre de chambres",
+        "value_label": "4 ch.",
+        "generic": true
+      },
+      {
+        "key": "nb_bathrooms",
+        "value": "1",
+        "values": [
+          "1"
+        ],
+        "key_label": "Nombre de salles de bain",
+        "value_label": "1",
+        "generic": true
+      },
+      {
+        "key": "nb_shower_room",
+        "value": "1",
+        "values": [
+          "1"
+        ],
+        "key_label": "Nombre de salles d'eau",
+        "value_label": "1",
+        "generic": true
+      },
+      {
+        "key": "energy_rate",
+        "value": "c",
+        "values": [
+          "c"
+        ],
+        "key_label": "Classe énergie",
+        "value_label": "C",
+        "generic": true
+      },
+      {
+        "key": "ges",
+        "value": "c",
+        "values": [
+          "c"
+        ],
+        "key_label": "GES",
+        "value_label": "C",
+        "generic": true
+      },
+      {
+        "key": "specificities",
+        "value": "",
+        "values": [
+          "second_bathroom"
+        ],
+        "key_label": "Caractéristiques",
+        "value_label": "Plusieurs toilettes",
+        "values_label": [
+          "Plusieurs toilettes"
+        ],
+        "values_label_reader": [
+          ""
+        ],
+        "generic": true
+      },
+      {
+        "key": "heating_type",
+        "value": "communal",
+        "values": [
+          "communal"
+        ],
+        "key_label": "Type de chauffage",
+        "value_label": "Collectif",
+        "generic": true
+      },
+      {
+        "key": "floor_number",
+        "value": "0",
+        "values": [
+          "0"
+        ],
+        "key_label": "Étage de votre bien",
+        "value_label": "0",
+        "generic": true
+      },
+      {
+        "key": "nb_floors_building",
+        "value": "7",
+        "values": [
+          "7"
+        ],
+        "key_label": "Nombre d’étages dans l’immeuble",
+        "value_label": "7",
+        "generic": true
+      },
+      {
+        "key": "floor_property",
+        "value": "",
+        "values": [
+          "ground_floor"
+        ],
+        "key_label": "Étage de l'appartement",
+        "values_label": [
+          "Rez-de-chaussée"
+        ],
+        "generic": false
+      },
+      {
+        "key": "elevator",
+        "value": "1",
+        "values": [
+          "1"
+        ],
+        "key_label": "Ascenseur",
+        "value_label": "Oui",
+        "generic": true
+      },
+      {
+        "key": "available_date",
+        "value": "02/07/2026",
+        "values": [
+          "02/07/2026"
+        ],
+        "key_label": "Disponible à partir de",
+        "value_label": "02/07/2026",
+        "generic": true
+      },
+      {
+        "key": "global_condition",
+        "value": "2",
+        "values": [
+          "2"
+        ],
+        "key_label": "État du bien",
+        "value_label": "Bon état",
+        "generic": true
+      },
+      {
+        "key": "monthly_charges",
+        "value": "342",
+        "values": [
+          "342"
+        ],
+        "key_label": "Charges locatives",
+        "value_label": "342 €",
+        "value_label_reader": "342 Euro",
+        "generic": false
+      },
+      {
+        "key": "security_deposit",
+        "value": "2540",
+        "values": [
+          "2540"
+        ],
+        "key_label": "Dépôt de garantie",
+        "value_label": "2540 €",
+        "value_label_reader": "2540 Euro",
+        "generic": false
+      },
+      {
+        "key": "charges_included",
+        "value": "1",
+        "values": [
+          "1"
+        ],
+        "key_label": "Charges incluses",
+        "value_label": "Oui",
+        "generic": true
+      },
+      {
+        "key": "inventory_fees",
+        "value": "0",
+        "values": [
+          "0"
+        ],
+        "key_label": "Frais d'état des lieux",
+        "value_label": "0 €",
+        "value_label_reader": "0 Euro",
+        "generic": false
+      },
+      {
+        "key": "district_id",
+        "value": "3000162",
+        "values": [
+          "3000162"
+        ],
+        "value_label": "3000162",
+        "generic": false
+      },
+      {
+        "key": "district_visibility",
+        "value": "true",
+        "values": [
+          "true"
+        ],
+        "value_label": "true",
+        "generic": false
+      },
+      {
+        "key": "district_type_id",
+        "value": "9",
+        "values": [
+          "9"
+        ],
+        "value_label": "9",
+        "generic": false
+      },
+      {
+        "key": "district_resolution_type",
+        "value": "integration",
+        "values": [
+          "integration"
+        ],
+        "value_label": "integration",
+        "generic": false
+      },
+      {
+        "key": "has_visibility_option",
+        "value": "true",
+        "values": [
+          "true"
+        ],
+        "value_label": "true",
+        "generic": false
+      },
+      {
+        "key": "visibility_option_products",
+        "value": "RE_SUPER_VISIBILITY_FEATURE",
+        "values": [
+          "RE_SUPER_VISIBILITY_FEATURE"
+        ],
+        "value_label": "RE_SUPER_VISIBILITY_FEATURE",
+        "generic": false
+      },
+      {
+        "key": "store_logo",
+        "value": "https://img.leboncoin.fr/api/v1/lbcpb1/images/f5/e9/21/f5e92125-f079-4ee3-8e19-78515b8bdd98?rule=bo-thumb",
+        "values": [
+          "https://img.leboncoin.fr/api/v1/lbcpb1/images/f5/e9/21/f5e92125-f079-4ee3-8e19-78515b8bdd98?rule=bo-thumb"
+        ],
+        "value_label": "https://img.leboncoin.fr/api/v1/lbcpb1/images/f5/e9/21/f5e92125-f079-4ee3-8e19-78515b8bdd98?rule=bo-thumb",
+        "generic": false
+      },
+      {
+        "key": "store_name",
+        "value": "Esset Property Management- La Défense",
+        "values": [
+          "Esset Property Management- La Défense"
+        ],
+        "value_label": "Esset Property Management- La Défense",
+        "generic": false
+      },
+      {
+        "key": "online_store_id",
+        "value": "316703",
+        "values": [
+          "316703"
+        ],
+        "value_label": "316703",
+        "generic": false
+      },
+      {
+        "key": "custom_ref",
+        "value": "23000-43",
+        "values": [
+          "23000-43"
+        ],
+        "key_label": "Référence",
+        "value_label": "23000-43",
+        "generic": true
+      },
+      {
+        "key": "is_import",
+        "value": "true",
+        "values": [
+          "true"
+        ],
+        "value_label": "true",
+        "generic": false
+      },
+      {
+        "key": "lease_type",
+        "value": "rent",
+        "values": [
+          "rent"
+        ],
+        "value_label": "rent",
+        "generic": false
+      },
+      {
+        "key": "rental_fees",
+        "value": "1363",
+        "values": [
+          "1363"
+        ],
+        "key_label": "Honoraires",
+        "value_label": "1363",
+        "generic": false
+      },
+      {
+        "key": "rent_excluding_charges",
+        "value": "2540",
+        "values": [
+          "2540"
+        ],
+        "key_label": "Loyer mensuel (hors charges)",
+        "value_label": "2540",
+        "generic": false
+      },
+      {
+        "key": "floor_display",
+        "value": "RDC/7",
+        "value_label": "RDC/7",
+        "value_label_reader": "Rez-de-chaussée, bâtiment de 7 étages",
+        "generic": false
+      }
+    ],
+    "location": {
+      "country_id": "FR",
+      "region_id": "12",
+      "region_name": "Ile-de-France",
+      "department_id": "75",
+      "department_name": "Paris",
+      "city_label": "Paris 75014 Porte de Vanves",
+      "city": "Paris",
+      "zipcode": "75014",
+      "district": "Porte de Vanves",
+      "lat": 48.826237,
+      "lng": 2.303255,
+      "source": "city",
+      "provider": "here",
+      "type": "district",
+      "origin_type": "streetNumber",
+      "is_shape": true,
+      "feature": {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            2.303255,
+            48.826237
+          ]
+        },
+        "properties": null
+      }
+    },
+    "owner": {
+      "store_id": "44192335",
+      "user_id": "f7c71afa-67bf-40d4-816f-68029f59369c",
+      "type": "pro",
+      "name": "Esset Property Management- La Défense",
+      "siren": "484882642",
+      "no_salesmen": true,
+      "activity_sector": "2"
+    },
+    "options": {
+      "has_option": false,
+      "booster": false,
+      "photosup": false,
+      "urgent": false,
+      "gallery": false,
+      "sub_toplist": false,
+      "continuous_top_ads": false,
+      "highlight": false
+    },
+    "has_phone": true,
+    "attributes_listing": [
+      {
+        "key": "energy_rate",
+        "value": "c",
+        "key_label": "Classe énergie",
+        "value_label": "DPE",
+        "value_label_reader": "Classe énergie C",
+        "generic": false
+      }
+    ],
+    "is_boosted": true,
+    "similar": null,
+    "counters": {}
+  },
+  {
+    "list_id": 3233794736,
+    "first_publication_date": "2026-09-10 05:02:54",
+    "index_date": "2026-09-25 19:30:50",
+    "status": "active",
+    "category_id": "10",
+    "category_name": "Locations",
+    "subject": "Studio 1 pièce 17 m²",
+    "body": "Studio 1 pièce 17 m²\n\nL'agence Beanstock est fière de vous présenter en exclusivité ce très beau studio de 17m²  entièrement meublé et équipé au 2e étage  d'une copropriété calme et sécurisée, idéalement situé 24 Rue Rodier.\n\nL'appartement comprend de nombreux rangements pour votre confort.\n\nDisponibilité : 29/07/2026\n\nLe bien se compose de la manière suivante :\n\n- Séjour : canapé-lit et literie complète / lit et literie complète\n- Cuisine fermée entièrement équipée : lave-linge / plaques de cuisson / micro-onde / réfrigérateur et freezer / bouilloire / grille-pain / machine à café / et tous les ustensiles de cuisines nécessaires pour une installation rapide et confortable\n- Salle de bain et linge de bain\n\nDécouvrez plus en détail votre futur chez-vous grâce à la visite virtuelle du bien disponible dans les photos de l'annonce !\n\nL'appartement est situé à proximité immédiate de toutes les commodités, dans un quartier bien desservi par les transports en commun.\n\nLoyer et charges :\nLoyer charges comprises : 951€\nDont charges : 69€ au Forfait de charges\nDépôt de garantie : 1764€\nHonoraire agence : 252€\n\nDiagnostic de Performance Énergétique (DPE) :\nClasse énergétique : C\nConsommation énergétique : 154.4 kWh/m²/an\nÉmissions de gaz à effet de serre : 5 kg CO2/m²/an\n\nZone soumise à l'encadrement des loyers. Ce logement présente des caractéristiques de localisation et de confort justifiant un complément de loyer par rapport à un logement de niveau comparable dans cette zone. Ces caractéristiques seront définies dans le bail.\n\nFrais additionnel à prévoir lors de la location :\n\n- Electricité\n- Internet\n\nCet appartement vous a tapé dans l'œil ? Fantastique ! Pour candidater, c'est très simple : soumettez votre candidature directement sur cette plateforme. Vous recevrez ensuite un email détaillé pour vous guider dans la constitution de votre dossier (n'oubliez pas de vérifier vos spams !). Un dossier complet vous assure un traitement rapide et augmente vos chances d'être sélectionné. Nous recontacterons uniquement les meilleurs dossiers, alors mettez toutes les chances de votre côté !\n\nSurface : 17 m²\nModalité de récupération des charges locatives : Prévisionnelles mensuelles avec régularisation annuelle\n\nConsommation énergie primaire : 154 kWh/m²/an\nConsommation énergie finale : 154 kWh/m²/an",
+    "brand": "leboncoin",
+    "ad_type": "offer",
+    "url": "https://www.leboncoin.fr/ad/locations/3233794736",
+    "price": [
+      951
+    ],
+    "price_cents": 95100,
+    "images": {
+      "thumb_url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/67/30/5d/67305de3568f3911ed0fae8d62c39f92d4d098b3.jpg?rule=ad-thumb",
+      "small_url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/67/30/5d/67305de3568f3911ed0fae8d62c39f92d4d098b3.jpg?rule=ad-small",
+      "nb_images": 10,
+      "urls": [
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/67/30/5d/67305de3568f3911ed0fae8d62c39f92d4d098b3.jpg?rule=ad-image",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/gh/fd/30/ghfd30035d83088e552fd60a4cb1293fc5138ee4.jpg?rule=ad-image",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/eb/50/fc/eb50fc8a5c14b01d062d7669a226759b2efb3d33.jpg?rule=ad-image",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/ed/b5/56/edb55640672e704421ace649152e265dbe972483.jpg?rule=ad-image",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/54/78/69/5478696c45f0cb09696eb0c2d02776d29f870dcc.jpg?rule=ad-image",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/34/bb/76/34bb76a14f8a428cc115ecb0e36d6c6c346800e0.jpg?rule=ad-image",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/82/50/f3/8250f3121bd92be16f46bfa5b57a712ea7e6999f.jpg?rule=ad-image",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/da/68/fc/da68fce2a8218b54b59fb8973621b90d7c5aa484.jpg?rule=ad-image",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/76/b0/ae/76b0ae1b673f376e7f7472b7fc6ce158c9196e50.jpg?rule=ad-image",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/f7/0e/d5/f70ed5675bffffda02e2d430b2806a7d4a7e5831.jpg?rule=ad-image"
+      ],
+      "urls_thumb": [
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/67/30/5d/67305de3568f3911ed0fae8d62c39f92d4d098b3.jpg?rule=ad-thumb",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/gh/fd/30/ghfd30035d83088e552fd60a4cb1293fc5138ee4.jpg?rule=ad-thumb",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/eb/50/fc/eb50fc8a5c14b01d062d7669a226759b2efb3d33.jpg?rule=ad-thumb",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/ed/b5/56/edb55640672e704421ace649152e265dbe972483.jpg?rule=ad-thumb",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/54/78/69/5478696c45f0cb09696eb0c2d02776d29f870dcc.jpg?rule=ad-thumb",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/34/bb/76/34bb76a14f8a428cc115ecb0e36d6c6c346800e0.jpg?rule=ad-thumb",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/82/50/f3/8250f3121bd92be16f46bfa5b57a712ea7e6999f.jpg?rule=ad-thumb",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/da/68/fc/da68fce2a8218b54b59fb8973621b90d7c5aa484.jpg?rule=ad-thumb",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/76/b0/ae/76b0ae1b673f376e7f7472b7fc6ce158c9196e50.jpg?rule=ad-thumb",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/f7/0e/d5/f70ed5675bffffda02e2d430b2806a7d4a7e5831.jpg?rule=ad-thumb"
+      ],
+      "urls_large": [
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/67/30/5d/67305de3568f3911ed0fae8d62c39f92d4d098b3.jpg?rule=ad-large",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/gh/fd/30/ghfd30035d83088e552fd60a4cb1293fc5138ee4.jpg?rule=ad-large",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/eb/50/fc/eb50fc8a5c14b01d062d7669a226759b2efb3d33.jpg?rule=ad-large",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/ed/b5/56/edb55640672e704421ace649152e265dbe972483.jpg?rule=ad-large",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/54/78/69/5478696c45f0cb09696eb0c2d02776d29f870dcc.jpg?rule=ad-large",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/34/bb/76/34bb76a14f8a428cc115ecb0e36d6c6c346800e0.jpg?rule=ad-large",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/82/50/f3/8250f3121bd92be16f46bfa5b57a712ea7e6999f.jpg?rule=ad-large",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/da/68/fc/da68fce2a8218b54b59fb8973621b90d7c5aa484.jpg?rule=ad-large",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/76/b0/ae/76b0ae1b673f376e7f7472b7fc6ce158c9196e50.jpg?rule=ad-large",
+        "https://img.leboncoin.fr/api/v1/lbcpb1/images/f7/0e/d5/f70ed5675bffffda02e2d430b2806a7d4a7e5831.jpg?rule=ad-large"
+      ],
+      "classifications": [
+        {
+          "url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/67/30/5d/67305de3568f3911ed0fae8d62c39f92d4d098b3.jpg?rule=ad-image",
+          "is_plan": false
+        },
+        {
+          "url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/gh/fd/30/ghfd30035d83088e552fd60a4cb1293fc5138ee4.jpg?rule=ad-image",
+          "is_plan": false
+        },
+        {
+          "url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/eb/50/fc/eb50fc8a5c14b01d062d7669a226759b2efb3d33.jpg?rule=ad-image",
+          "is_plan": false
+        },
+        {
+          "url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/ed/b5/56/edb55640672e704421ace649152e265dbe972483.jpg?rule=ad-image",
+          "is_plan": false
+        },
+        {
+          "url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/54/78/69/5478696c45f0cb09696eb0c2d02776d29f870dcc.jpg?rule=ad-image",
+          "is_plan": false
+        },
+        {
+          "url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/34/bb/76/34bb76a14f8a428cc115ecb0e36d6c6c346800e0.jpg?rule=ad-image",
+          "is_plan": false
+        },
+        {
+          "url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/82/50/f3/8250f3121bd92be16f46bfa5b57a712ea7e6999f.jpg?rule=ad-image",
+          "is_plan": false
+        },
+        {
+          "url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/da/68/fc/da68fce2a8218b54b59fb8973621b90d7c5aa484.jpg?rule=ad-image",
+          "is_plan": false
+        },
+        {
+          "url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/76/b0/ae/76b0ae1b673f376e7f7472b7fc6ce158c9196e50.jpg?rule=ad-image",
+          "is_plan": false
+        },
+        {
+          "url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/f7/0e/d5/f70ed5675bffffda02e2d430b2806a7d4a7e5831.jpg?rule=ad-image",
+          "is_plan": false
+        }
+      ]
+    },
+    "attributes": [
+      {
+        "key": "activity_sector",
+        "value": "2",
+        "values": [
+          "2"
+        ],
+        "value_label": "2",
+        "generic": false
+      },
+      {
+        "key": "external_ad_id",
+        "value": "nockee_146358_prop_ad_033mO7Kpq7gWUgPvZ7Hyr0",
+        "values": [
+          "nockee_146358_prop_ad_033mO7Kpq7gWUgPvZ7Hyr0"
+        ],
+        "value_label": "nockee_146358_prop_ad_033mO7Kpq7gWUgPvZ7Hyr0",
+        "generic": false
+      },
+      {
+        "key": "real_estate_type",
+        "value": "2",
+        "values": [
+          "2"
+        ],
+        "key_label": "Type de bien",
+        "value_label": "Appartement",
+        "generic": true
+      },
+      {
+        "key": "furnished",
+        "value": "1",
+        "values": [
+          "1"
+        ],
+        "key_label": "Ce bien est :",
+        "value_label": "Meublé",
+        "generic": true
+      },
+      {
+        "key": "square",
+        "value": "17",
+        "values": [
+          "17"
+        ],
+        "key_label": "Surface habitable",
+        "value_label": "17 m²",
+        "value_label_reader": "17 Mètres carrés",
+        "generic": true
+      },
+      {
+        "key": "rooms",
+        "value": "1",
+        "values": [
+          "1"
+        ],
+        "key_label": "Nombre de pièces",
+        "value_label": "1",
+        "generic": true
+      },
+      {
+        "key": "nb_bathrooms",
+        "value": "1",
+        "values": [
+          "1"
+        ],
+        "key_label": "Nombre de salles de bain",
+        "value_label": "1",
+        "generic": true
+      },
+      {
+        "key": "nb_shower_room",
+        "value": "1",
+        "values": [
+          "1"
+        ],
+        "key_label": "Nombre de salles d'eau",
+        "value_label": "1",
+        "generic": true
+      },
+      {
+        "key": "energy_rate",
+        "value": "c",
+        "values": [
+          "c"
+        ],
+        "key_label": "Classe énergie",
+        "value_label": "C",
+        "generic": true
+      },
+      {
+        "key": "ges",
+        "value": "a",
+        "values": [
+          "a"
+        ],
+        "key_label": "GES",
+        "value_label": "A",
+        "generic": true
+      },
+      {
+        "key": "specificities",
+        "value": "",
+        "values": [
+          "separate_kitchen"
+        ],
+        "key_label": "Caractéristiques",
+        "value_label": "Cuisine séparée",
+        "values_label": [
+          "Cuisine séparée"
+        ],
+        "values_label_reader": [
+          ""
+        ],
+        "generic": true
+      },
+      {
+        "key": "heating_type",
+        "value": "individual",
+        "values": [
+          "individual"
+        ],
+        "key_label": "Type de chauffage",
+        "value_label": "Individuel",
+        "generic": true
+      },
+      {
+        "key": "heating_mode",
+        "value": "electric",
+        "values": [
+          "electric"
+        ],
+        "key_label": "Mode de chauffage",
+        "value_label": "Électrique",
+        "generic": true
+      },
+      {
+        "key": "floor_number",
+        "value": "2",
+        "values": [
+          "2"
+        ],
+        "key_label": "Étage de votre bien",
+        "value_label": "2",
+        "generic": true
+      },
+      {
+        "key": "elevator",
+        "value": "2",
+        "values": [
+          "2"
+        ],
+        "key_label": "Ascenseur",
+        "value_label": "Non",
+        "generic": true
+      },
+      {
+        "key": "available_date",
+        "value": "07/2026",
+        "values": [
+          "07/2026"
+        ],
+        "key_label": "Disponible à partir de",
+        "value_label": "07/2026",
+        "generic": true
+      },
+      {
+        "key": "monthly_charges",
+        "value": "69",
+        "values": [
+          "69"
+        ],
+        "key_label": "Charges locatives",
+        "value_label": "69 €",
+        "value_label_reader": "69 Euro",
+        "generic": false
+      },
+      {
+        "key": "security_deposit",
+        "value": "1764",
+        "values": [
+          "1764"
+        ],
+        "key_label": "Dépôt de garantie",
+        "value_label": "1764 €",
+        "value_label_reader": "1764 Euro",
+        "generic": false
+      },
+      {
+        "key": "charges_included",
+        "value": "1",
+        "values": [
+          "1"
+        ],
+        "key_label": "Charges incluses",
+        "value_label": "Oui",
+        "generic": true
+      },
+      {
+        "key": "inventory_fees",
+        "value": "50",
+        "values": [
+          "50"
+        ],
+        "key_label": "Frais d'état des lieux",
+        "value_label": "50 €",
+        "value_label_reader": "50 Euro",
+        "generic": false
+      },
+      {
+        "key": "district_id",
+        "value": "100523",
+        "values": [
+          "100523"
+        ],
+        "value_label": "100523",
+        "generic": false
+      },
+      {
+        "key": "district_visibility",
+        "value": "true",
+        "values": [
+          "true"
+        ],
+        "value_label": "true",
+        "generic": false
+      },
+      {
+        "key": "district_type_id",
+        "value": "1",
+        "values": [
+          "1"
+        ],
+        "value_label": "1",
+        "generic": false
+      },
+      {
+        "key": "district_resolution_type",
+        "value": "integration",
+        "values": [
+          "integration"
+        ],
+        "value_label": "integration",
+        "generic": false
+      },
+      {
+        "key": "has_visibility_option",
+        "value": "true",
+        "values": [
+          "true"
+        ],
+        "value_label": "true",
+        "generic": false
+      },
+      {
+        "key": "visibility_option_products",
+        "value": "RE_VISIBILITY_FEATURE",
+        "values": [
+          "RE_VISIBILITY_FEATURE"
+        ],
+        "value_label": "RE_VISIBILITY_FEATURE",
+        "generic": false
+      },
+      {
+        "key": "store_logo",
+        "value": "https://img.leboncoin.fr/api/v1/lbcpb1/images/3e/30/3e/3e303e24-7dea-4b9b-a684-78b0c9e6a461?rule=bo-thumb",
+        "values": [
+          "https://img.leboncoin.fr/api/v1/lbcpb1/images/3e/30/3e/3e303e24-7dea-4b9b-a684-78b0c9e6a461?rule=bo-thumb"
+        ],
+        "value_label": "https://img.leboncoin.fr/api/v1/lbcpb1/images/3e/30/3e/3e303e24-7dea-4b9b-a684-78b0c9e6a461?rule=bo-thumb",
+        "generic": false
+      },
+      {
+        "key": "store_name",
+        "value": "BEANSTOCK",
+        "values": [
+          "BEANSTOCK"
+        ],
+        "value_label": "BEANSTOCK",
+        "generic": false
+      },
+      {
+        "key": "online_store_id",
+        "value": "3117163",
+        "values": [
+          "3117163"
+        ],
+        "value_label": "3117163",
+        "generic": false
+      },
+      {
+        "key": "rent_supplement",
+        "value": "168",
+        "values": [
+          "168"
+        ],
+        "key_label": "Complément de loyer",
+        "value_label": "168 €",
+        "generic": false
+      },
+      {
+        "key": "custom_ref",
+        "value": "fa102eae79044255aa02",
+        "values": [
+          "fa102eae79044255aa02"
+        ],
+        "key_label": "Référence",
+        "value_label": "fa102eae79044255aa02",
+        "generic": true
+      },
+      {
+        "key": "virtual_tour",
+        "value": "https://my.matterport.com/show?m=hgrb5v7EXvs",
+        "values": [
+          "https://my.matterport.com/show?m=hgrb5v7EXvs"
+        ],
+        "value_label": "https://my.matterport.com/show?m=hgrb5v7EXvs",
+        "generic": false
+      },
+      {
+        "key": "is_import",
+        "value": "true",
+        "values": [
+          "true"
+        ],
+        "value_label": "true",
+        "generic": false
+      },
+      {
+        "key": "lease_type",
+        "value": "rent",
+        "values": [
+          "rent"
+        ],
+        "value_label": "rent",
+        "generic": false
+      },
+      {
+        "key": "rental_fees",
+        "value": "252",
+        "values": [
+          "252"
+        ],
+        "key_label": "Honoraires",
+        "value_label": "252",
+        "generic": false
+      },
+      {
+        "key": "rent_excluding_charges",
+        "value": "882",
+        "values": [
+          "882"
+        ],
+        "key_label": "Loyer mensuel (hors charges)",
+        "value_label": "882",
+        "generic": false
+      },
+      {
+        "key": "floor_display",
+        "value": "Étage 2",
+        "value_label": "Étage 2",
+        "value_label_reader": "Étage 2",
+        "generic": false
+      }
+    ],
+    "location": {
+      "country_id": "FR",
+      "region_id": "12",
+      "region_name": "Ile-de-France",
+      "department_id": "75",
+      "department_name": "Paris",
+      "city_label": "Paris 75009 Trudaine - Rochechouart",
+      "city": "Paris",
+      "zipcode": "75009",
+      "district": "Trudaine - Rochechouart",
+      "lat": 48.88254,
+      "lng": 2.3451533,
+      "source": "city",
+      "provider": "here",
+      "type": "district",
+      "origin_type": "district",
+      "is_shape": true,
+      "feature": {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            2.3451533,
+            48.88254
+          ]
+        },
+        "properties": null
+      }
+    },
+    "owner": {
+      "store_id": "65659743",
+      "user_id": "aa6db953-60d7-4ad3-b5c5-b62c2f881cd5",
+      "type": "pro",
+      "name": "BEANSTOCK",
+      "siren": "883502197",
+      "no_salesmen": false,
+      "activity_sector": "2"
+    },
+    "options": {
+      "has_option": false,
+      "booster": false,
+      "photosup": false,
+      "urgent": false,
+      "gallery": false,
+      "sub_toplist": false,
+      "continuous_top_ads": false,
+      "highlight": false
+    },
+    "has_phone": true,
+    "attributes_listing": [
+      {
+        "key": "energy_rate",
+        "value": "c",
+        "key_label": "Classe énergie",
+        "value_label": "DPE",
+        "value_label_reader": "Classe énergie C",
+        "generic": false
+      },
+      {
+        "key": "furnished",
+        "value": "1",
+        "key_label": "Ce bien est :",
+        "value_label": "Meublé",
+        "value_label_reader": "Meublé",
+        "generic": false
+      }
+    ],
+    "is_boosted": true,
+    "similar": null,
+    "counters": {}
+  }
+]

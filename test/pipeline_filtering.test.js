@@ -59,6 +59,42 @@ describe('Issue reproduction: listings filtered by similarity or area should be 
     });
   });
 
+  // Whether a rent has the charges in it, and what they come to, is what lets the cache recognise
+  // one flat quoted with them on one portal and without them on another.
+  it('hands the cache the basis of the rent along with the rent', async () => {
+    const Fredy = await mockFredy();
+    const checkAndAddEntry = vi.fn(() => false);
+    const providerConfig = {
+      url: 'http://example.com',
+      getListings: () =>
+        Promise.resolve([
+          {
+            id: 'rent-basis',
+            title: 'Appartement',
+            address: '75012 Paris',
+            price: 1140,
+            chargesIncluded: false,
+            charges: 50,
+            link: 'http://example.com/rent-basis',
+          },
+        ]),
+      normalize: (listing) => listing,
+      filter: () => true,
+      crawlFields: { id: 'id', title: 'title', address: 'address', price: 'price' },
+      requiredFieldNames: ['id', 'title', 'address', 'price'],
+    };
+    const mockedJob = { id: 'rent-basis-job', notificationAdapter: null, specFilter: null, spatialFilter: null };
+
+    const fredy = new Fredy(providerConfig, mockedJob, 'leboncoin', { checkAndAddEntry }, undefined);
+    try {
+      await fredy.execute();
+    } catch {
+      // the notification step is not what this is about
+    }
+
+    expect(checkAndAddEntry).toHaveBeenCalledWith(expect.objectContaining({ chargesIncluded: false, charges: 50 }));
+  });
+
   it('should pass the shared browser to a custom getListings implementation', async () => {
     const Fredy = await mockFredy();
     const browser = { connected: true };
