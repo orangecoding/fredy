@@ -6,6 +6,7 @@
 import { Tooltip } from '@douyinfe/semi-ui-19';
 
 import { VERDICT_COLORS, formatEuro, withAlpha } from '../cards/chartTheme.js';
+import { verdictExplanation } from '../../services/finance/rentBasis.js';
 import { useFinanceProfile } from '../../hooks/useFinanceProfile.js';
 import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
 
@@ -23,8 +24,10 @@ import './AffordabilityChip.less';
  * @param {Object} props
  * @param {'affordable'|'stretch'|'unaffordable'|null} [props.verdict] From the listings query.
  * @param {'rent'|'buy'|null} [props.dealType] Deal type of the job, from the listings query.
+ * @param {boolean} [props.chargesIncluded] Whether the rent was quoted with the running charges in it,
+ *   which the server measured against the warm ceiling rather than the cold one.
  */
-export default function AffordabilityChip({ verdict, dealType }) {
+export default function AffordabilityChip({ verdict, dealType, chargesIncluded = false }) {
   const t = useTranslation();
   const locale = useLocale();
   const { thresholds } = useFinanceProfile();
@@ -34,17 +37,12 @@ export default function AffordabilityChip({ verdict, dealType }) {
   }
 
   // A non-null verdict means the matching half of the profile exists, so the threshold quoted
-  // in the tooltip is always there to read.
-  const isRental = dealType === 'rent';
+  // in the tooltip is always there to read - the one the server measured this verdict against.
+  const { key, limit } = verdictExplanation(verdict, { dealType, chargesIncluded }, thresholds);
   const color = VERDICT_COLORS[verdict];
 
   return (
-    <Tooltip
-      content={t(`listings.${isRental ? 'rentAffordabilityTooltip' : 'affordabilityTooltip'}.${verdict}`, {
-        price: formatEuro(isRental ? thresholds.rent.affordableMaxRent : thresholds.buy.affordableMaxPrice, locale),
-      })}
-      position="top"
-    >
+    <Tooltip content={t(key, { price: formatEuro(limit, locale) })} position="top">
       <span
         className="affordabilityChip"
         style={{

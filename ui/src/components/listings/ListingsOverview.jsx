@@ -42,6 +42,7 @@ import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
 import { useFinanceProfile } from '../../hooks/useFinanceProfile.js';
 import { useScrollRestoration } from '../../hooks/useScrollRestoration.js';
 import { formatEuro } from '../cards/chartTheme.js';
+import { affordabilityFilterHelp } from '../../services/finance/rentBasis.js';
 
 /**
  * Listings fetched per page. Large enough that the grid fills a desktop screen without paging,
@@ -140,23 +141,13 @@ const ListingsOverview = () => {
   const activeFilterCount = countActiveFilters(values);
 
   // The filter says nothing about *why* a listing lands in a band, so its tooltip names the
-  // ceilings it is measured against - both of them when the user set up both halves, because a
-  // mixed listings page is judged by two different yardsticks at once.
-  const affordabilityHelp = useMemo(() => {
-    const { buy, rent } = financeThresholds;
-    if (buy != null && rent != null) {
-      return t('listings.filterAffordabilityBothHelp', {
-        price: formatEuro(buy.affordableMaxPrice, locale),
-        rent: formatEuro(rent.affordableMaxRent, locale),
-      });
-    }
-    if (buy != null) {
-      return t('listings.filterAffordabilityHelp', { price: formatEuro(buy.affordableMaxPrice, locale) });
-    }
-    return t('listings.filterAffordabilityRentHelp', {
-      price: formatEuro(rent?.affordableMaxRent, locale),
-    });
-  }, [financeThresholds, locale, t]);
+  // ceilings it is measured against - both halves when the user set up both, because a mixed
+  // listings page is judged by two different yardsticks at once, and for rents the warm ceiling
+  // beside the cold one, which is what a rent quoted with the charges in it is held against.
+  const affordabilityHelp = useMemo(
+    () => affordabilityFilterHelp(financeThresholds, { t, locale, formatEuro }),
+    [financeThresholds, locale, t],
+  );
 
   // The one payload the page is described by. The bulk delete sends the same object, which is the
   // only reason the button can honestly claim to remove what is on screen.

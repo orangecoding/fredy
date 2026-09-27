@@ -32,7 +32,7 @@ vi.mock('../../lib/services/tracking/Tracker.js', () => ({ trackPoi: vi.fn() }))
 vi.mock('../../lib/services/logger.js', () => ({ default: { error: vi.fn(), info: vi.fn(), debug: vi.fn() } }));
 vi.mock('../../lib/api/security.js', () => ({ isAdmin: vi.fn(() => false) }));
 
-import { queryListings } from '../../lib/services/storage/listingsStorage.js';
+import { getListingById, queryListings } from '../../lib/services/storage/listingsStorage.js';
 import { getUserSettings } from '../../lib/services/storage/settingsStorage.js';
 import listingsPlugin from '../../lib/api/routes/listingsRouter.js';
 import { priceThresholds, rentThresholds } from '../../lib/services/finance/affordability.js';
@@ -89,7 +89,49 @@ describe('GET /table affordability filter', () => {
     const thresholds = rentThresholds(COMPLETE_PROFILE);
     // Rentals have no meaningful floor beyond being a real offer - the cheapest ones are the
     // point of the filter - so only zero itself is excluded.
-    expect(bandFromLastCall().rent).toEqual({ minExclusive: 0, max: thresholds.affordableMaxRent });
+    expect(bandFromLastCall().rent).toEqual({
+      minExclusive: 0,
+      max: thresholds.affordableMaxRent,
+      // A rent quoted with the charges in it is already warm, and is held against the warm ceiling.
+      chargesIncluded: { minExclusive: 0, max: thresholds.warmAffordable },
+    });
+  });
+
+  it('keeps every rent quoted without the charges on the cold ceilings, band by band', async () => {
+    const app = await buildApp();
+    const thresholds = rentThresholds(COMPLETE_PROFILE);
+    const expected = {
+      affordable: { minExclusive: 0, max: thresholds.affordableMaxRent },
+      stretch: { minExclusive: thresholds.affordableMaxRent, max: thresholds.stretchMaxRent },
+      unaffordable: { minExclusive: thresholds.stretchMaxRent, max: null },
+    };
+
+    for (const [band, window] of Object.entries(expected)) {
+      await app.inject({ method: 'GET', url: `/table?affordabilityFilter=${band}` });
+      expect(bandFromLastCall().rent, band).toMatchObject(window);
+    }
+  });
+
+  it('holds a rent quoted with the charges against the warm ceilings, band by band', async () => {
+    const app = await buildApp();
+    const thresholds = rentThresholds(COMPLETE_PROFILE);
+    const expected = {
+      affordable: { minExclusive: 0, max: thresholds.warmAffordable },
+      stretch: { minExclusive: thresholds.warmAffordable, max: thresholds.warmStretch },
+      unaffordable: { minExclusive: thresholds.warmStretch, max: null },
+    };
+
+    for (const [band, window] of Object.entries(expected)) {
+      await app.inject({ method: 'GET', url: `/table?affordabilityFilter=${band}` });
+      expect(bandFromLastCall().rent.chargesIncluded, band).toEqual(window);
+    }
+  });
+
+  it('never splits the buy band, since a purchase price has no charges to include', async () => {
+    const app = await buildApp();
+    await app.inject({ method: 'GET', url: '/table?affordabilityFilter=affordable' });
+
+    expect(buyBand().chargesIncluded).toBeUndefined();
   });
 
   it('translates "stretch" into the buy band just above the affordable ceiling', async () => {
@@ -230,5 +272,52 @@ describe('GET /table affordability filter', () => {
     await app.inject({ method: 'GET', url: '/table?affordabilityFilter=affordable' });
 
     expect(queryListings.mock.calls.at(-1)[0]).toMatchObject({ userId: 'user-1', isAdmin: false });
+  });
+});
+
+/*
+ * The per-row verdicts, on the same profile: 1190 warm is the affordable ceiling, 952 cold, and the
+ * stretch ceilings are 1360 warm and 1088 cold. A 1100 EUR rent is therefore affordable when it has
+ * the charges in it, and out of reach when they still come on top.
+ */
+describe('verdicts and the rent basis', () => {
+  const rentRow = (id, chargesIncluded, extra = {}) => ({
+    id,
+    price: 1100,
+    dealType: 'rent',
+    charges_included: chargesIncluded,
+    ...extra,
+  });
+
+  it('judges each overview row on the basis its rent was quoted on', async () => {
+    queryListings.mockReturnValue({
+      totalNumber: 3,
+      page: 1,
+      result: [rentRow('cc', 1), rentRow('hc', 0), rentRow('unknown', null)],
+    });
+    const app = await buildApp();
+    const body = (await app.inject({ method: 'GET', url: '/table' })).json();
+
+    const verdictOf = (id) => body.result.find((row) => row.id === id).affordabilityVerdict;
+    expect(verdictOf('cc')).toBe('affordable');
+    expect(verdictOf('hc')).toBe('unaffordable');
+    expect(verdictOf('unknown')).toBe('unaffordable');
+  });
+
+  it('hands the rent basis on to the UI with every row', async () => {
+    queryListings.mockReturnValue({ totalNumber: 1, page: 1, result: [rentRow('cc', 1, { charges: 90 })] });
+    const app = await buildApp();
+    const body = (await app.inject({ method: 'GET', url: '/table' })).json();
+
+    expect(body.result[0]).toMatchObject({ charges_included: 1, charges: 90 });
+  });
+
+  it('judges the detail page on the same basis as the row it was opened from', async () => {
+    getListingById.mockReturnValue(rentRow('cc', 1, { charges: 90 }));
+    const app = await buildApp();
+    const body = (await app.inject({ method: 'GET', url: '/cc' })).json();
+
+    expect(body.affordabilityVerdict).toBe('affordable');
+    expect(body).toMatchObject({ charges_included: 1, charges: 90 });
   });
 });

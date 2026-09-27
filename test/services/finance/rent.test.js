@@ -7,6 +7,7 @@ import { describe, it, expect } from 'vitest';
 import {
   isRentProfileComplete,
   isProfileComplete,
+  rentIncludesCharges,
   rentThresholds,
   verdictForRent,
   verdictForListing,
@@ -172,6 +173,123 @@ describe('thresholdsFor and verdictForListing', () => {
       const thresholds = thresholdsFor(profile);
       expect(thresholds.buy).toBeNull();
       expect(thresholds.rent).toBeNull();
+    }
+  });
+});
+
+/*
+ * A rent quoted with the running charges in it - a French rent "charges comprises", an immowelt
+ * Warmmiete - is already what leaves the account every month. Adding the Nebenkosten surcharge on
+ * top of it counts the charges twice, so every path that judges a rent has to read how it was quoted.
+ */
+describe('rentIncludesCharges', () => {
+  it('reads the stored flag off a listing row', () => {
+    expect(rentIncludesCharges({ charges_included: 1 })).toBe(true);
+    expect(rentIncludesCharges({ charges_included: 0 })).toBe(false);
+  });
+
+  // NULL is "the portal did not say", which is every German portal and every row stored before the
+  // column existed - and those quote the rent cold.
+  it('reads a rent nobody described as quoted without the charges', () => {
+    expect(rentIncludesCharges({ charges_included: null })).toBe(false);
+    expect(rentIncludesCharges({})).toBe(false);
+    expect(rentIncludesCharges(null)).toBe(false);
+  });
+});
+
+describe('verdictForRent on a rent quoted with the charges', () => {
+  // The rent household: 1400 warm is the affordable ceiling (1120 cold), 1600 warm the stretch one (1280 cold).
+  const thresholds = rentThresholds(rentHousehold());
+
+  it('holds it against the warm ceilings, since there are no Nebenkosten left to add', () => {
+    // 1300 with the charges in it is 1300 warm, inside the 1400 ceiling. Read as a cold rent it
+    // came to 1625 warm and out of reach.
+    expect(verdictForRent(1300, thresholds, { chargesIncluded: true })).toBe('affordable');
+    expect(verdictForRent(thresholds.warmAffordable, thresholds, { chargesIncluded: true })).toBe('affordable');
+    expect(verdictForRent(1500, thresholds, { chargesIncluded: true })).toBe('stretch');
+    expect(verdictForRent(thresholds.warmStretch, thresholds, { chargesIncluded: true })).toBe('stretch');
+    expect(verdictForRent(1700, thresholds, { chargesIncluded: true })).toBe('unaffordable');
+  });
+
+  it('keeps judging a rent without the charges against the cold ceilings', () => {
+    expect(verdictForRent(1300, thresholds)).toBe('unaffordable');
+    expect(verdictForRent(1300, thresholds, { chargesIncluded: false })).toBe('unaffordable');
+  });
+
+  it('still refuses to judge a rent that is not there', () => {
+    expect(verdictForRent(0, thresholds, { chargesIncluded: true })).toBeNull();
+    expect(verdictForRent(1300, null, { chargesIncluded: true })).toBeNull();
+  });
+});
+
+describe('verdictForListing and the rent basis', () => {
+  it('passes the basis on to the rent yardstick', () => {
+    const thresholds = thresholdsFor(rentHousehold());
+    expect(verdictForListing(1300, 'rent', thresholds, { chargesIncluded: true })).toBe('affordable');
+    expect(verdictForListing(1300, 'rent', thresholds)).toBe('unaffordable');
+  });
+});
+
+describe('scoreRentListing on a rent quoted with the charges', () => {
+  it('takes the quoted rent as the warm rent and adds nothing on top', () => {
+    const scored = scoreRentListing({ id: 'cc', price: 1300, charges_included: 1 }, rentHousehold());
+    expect(scored.chargesIncluded).toBe(true);
+    expect(scored.price).toBe(1300);
+    expect(scored.warmRent).toBe(1300);
+    expect(scored.monthlyPayment).toBe(1300);
+    expect(scored.remainingAfterRent).toBe(1300); // 2600 disposable - 1300 warm
+    expect(scored.rateShareOfNetIncome).toBeCloseTo(1300 / 4000, 5);
+    expect(scored.verdict).toBe('affordable');
+    // No surcharge went into it, so none is reported.
+    expect(scored.nebenkostenPct).toBeNull();
+  });
+
+  it('leaves the split unknown where the advert states no charges', () => {
+    const scored = scoreRentListing({ id: 'cc', price: 1300, charges_included: 1, charges: null }, rentHousehold());
+    expect(scored.coldRent).toBeNull();
+    expect(scored.nebenkosten).toBeNull();
+  });
+
+  it('reports the stated charges as the Nebenkosten, and the rest as the cold rent', () => {
+    const scored = scoreRentListing({ id: 'cc', price: 1300, charges_included: 1, charges: 100 }, rentHousehold());
+    expect(scored.nebenkosten).toBe(100);
+    expect(scored.coldRent).toBe(1200);
+    expect(scored.warmRent).toBe(1300);
+  });
+
+  it('ignores a charges figure that would leave no rent at all', () => {
+    const scored = scoreRentListing({ id: 'cc', price: 1300, charges_included: 1, charges: 1300 }, rentHousehold());
+    expect(scored.nebenkosten).toBeNull();
+    expect(scored.coldRent).toBeNull();
+    expect(scored.warmRent).toBe(1300);
+  });
+
+  // Unchanged on purpose: the listings filter and the chips hold those rows against the cold
+  // ceilings, which assume the surcharge, and the detail card has to agree with them.
+  it('keeps a rent without the charges on the surcharge, even where the advert states them', () => {
+    for (const chargesIncluded of [0, null]) {
+      const scored = scoreRentListing(
+        { id: 'hc', price: 1000, charges_included: chargesIncluded, charges: 50 },
+        rentHousehold(),
+      );
+      expect(scored.chargesIncluded).toBe(false);
+      expect(scored.coldRent).toBe(1000);
+      expect(scored.warmRent).toBeCloseTo(1250, 5);
+      expect(scored.nebenkosten).toBeCloseTo(250, 5);
+      expect(scored.nebenkostenPct).toBe(25);
+    }
+  });
+
+  it('agrees with the verdict chip on either basis, at every price', () => {
+    const profile = rentHousehold();
+    const thresholds = rentThresholds(profile);
+    for (const price of [500, 1120, 1120.5, 1280, 1300, 1399.99, 1400, 1400.01, 1600, 1600.01, 3000]) {
+      for (const chargesIncluded of [1, 0, null]) {
+        const scored = scoreRentListing({ id: 'x', price, charges_included: chargesIncluded }, profile);
+        expect(scored.verdict, `${price} with charges_included=${chargesIncluded}`).toBe(
+          verdictForRent(price, thresholds, { chargesIncluded: chargesIncluded === 1 }),
+        );
+      }
     }
   });
 });

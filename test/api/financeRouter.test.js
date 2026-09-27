@@ -423,3 +423,55 @@ describe('GET /listing/:listingId', () => {
     expect(body.result).toBeNull();
   });
 });
+
+/*
+ * A rent quoted with the running charges in it is already what the household pays. PROFILE leaves
+ * 1780 warm under the 35 % rule (5800 net, 250 existing debt) and 2070 under the stretch bound, so a
+ * 1700 EUR rent is affordable with the charges in it, and out of reach with 25 % still to come on top.
+ */
+describe('rents quoted with the charges', () => {
+  const quoted = (id, chargesIncluded, extra = {}) => ({
+    ...listing(id, 1700, 'rent'),
+    charges_included: chargesIncluded,
+    ...extra,
+  });
+
+  beforeEach(() => {
+    getUserSettings.mockReturnValue({ finance_profile: PROFILE });
+  });
+
+  it('scores the rent card on the rent as quoted, with the stated charges as the Nebenkosten', async () => {
+    getListingById.mockReturnValue(quoted('cc', 1, { charges: 150 }));
+    const app = await buildApp();
+
+    const body = (await app.inject({ method: 'GET', url: '/listing/cc' })).json();
+
+    expect(body.scored).toMatchObject({
+      chargesIncluded: true,
+      price: 1700,
+      warmRent: 1700,
+      nebenkosten: 150,
+      coldRent: 1550,
+      verdict: 'affordable',
+    });
+  });
+
+  it('scores the affordability sweep on the same basis, row by row', async () => {
+    queryListings.mockReturnValue({ totalNumber: 2, page: 1, result: [quoted('cc', 1), quoted('hc', 0)] });
+    const app = await buildApp();
+
+    const body = (await app.inject({ method: 'POST', url: '/affordability', payload: { profile: PROFILE } })).json();
+
+    const item = (id) => body.items.find((entry) => entry.id === id);
+    expect(item('cc')).toMatchObject({
+      chargesIncluded: true,
+      price: 1700,
+      warmRent: 1700,
+      monthlyPayment: 1700,
+      verdict: 'affordable',
+    });
+    expect(item('hc')).toMatchObject({ chargesIncluded: false, price: 1700, coldRent: 1700, verdict: 'unaffordable' });
+    expect(item('hc').warmRent).toBeCloseTo(2125, 5);
+    expect(body.summary.rent).toMatchObject({ total: 2, affordable: 1, unaffordable: 1 });
+  });
+});

@@ -167,8 +167,9 @@ comprises* ("cc") or *hors charges* ("hc"), advert by advert, and its result car
 figure to take a "cc" rent down to the one without them. So a SeLoger rent is sometimes with the
 charges and sometimes without, while leboncoin and Bien'ici store it without them wherever the
 advert states them. Fredy records which one each stored rent is, and compares rents on the basis
-both sides share when it looks for the same flat on two portals. Keep it in mind when you read the
-affordability verdict on a "cc" listing, which adds the Nebenkosten on top of the rent it is given.
+both sides share when it looks for the same flat on two portals. The affordability verdict accounts
+for it too: a "cc" rent is already what you pay each month, so it is measured against your warm-rent
+ceiling with no Nebenkosten added on top, while an "hc" rent gets the surcharge as before.
 
 ## Bien'ici
 
