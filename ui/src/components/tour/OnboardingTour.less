@@ -1,0 +1,114 @@
+@import '../../tokens.less';
+
+// The card that carries the tour. Docked to a corner rather than anchored to what it explains:
+// the pages it visits reflow while their data arrives, and a popover pinned to a moving target
+// jumps around or ends up pointing at nothing. The highlight below does the pointing instead.
+.onboardingTour {
+  position: fixed;
+  right: @space-6;
+  bottom: @space-6;
+  // Below Semi's dialogs (1000), so a dialog opened mid-tour - the application letter, a filter
+  // sheet - covers the card instead of the card floating over its mask.
+  z-index: 999;
+  width: 380px;
+  max-width: calc(100vw - 2 * @space-6);
+  padding: @space-5;
+  border: 1px solid @color-border-bright;
+  border-radius: @radius-card;
+  background: @color-elevated;
+  box-shadow: @shadow-lg;
+  color: @color-text;
+  font-family: @font-ui;
+
+  &__progress {
+    height: 4px;
+    margin-bottom: @space-4;
+    overflow: hidden;
+    border-radius: @radius-pill;
+    background: @color-fill-2;
+  }
+
+  &__progressBar {
+    height: 100%;
+    border-radius: @radius-pill;
+    background: @color-accent;
+    transition: width 0.25s ease;
+  }
+
+  &__counter {
+    display: block;
+    margin-bottom: @space-1;
+    color: @color-muted;
+    font-size: @text-sm;
+  }
+
+  &__title {
+    margin: 0 0 @space-2;
+    font-size: @text-md;
+    font-weight: 600;
+  }
+
+  &__body {
+    margin: 0 0 @space-5;
+    color: @color-muted;
+    font-size: @text-base;
+    line-height: 1.55;
+    white-space: pre-line;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: @space-2;
+    align-items: center;
+  }
+
+  &__spacer {
+    flex: 1;
+  }
+
+  @media (max-width: 768px) {
+    right: @space-3;
+    bottom: @space-3;
+    left: @space-3;
+    width: auto;
+    max-width: none;
+    max-height: 45vh;
+    overflow-y: auto;
+  }
+}
+
+.onboardingTourPrompt {
+  &__body {
+    margin: 0;
+    color: @color-muted;
+    line-height: 1.55;
+    white-space: pre-line;
+  }
+}
+
+// The element the current step talks about. A class on the element itself rather than an overlay
+// drawn above it, so it follows the element through scrolling, reflow and resizing for free.
+.onboardingTour-target {
+  outline: 2px solid @color-info;
+  outline-offset: 4px;
+  border-radius: @radius-card;
+  box-shadow: 0 0 0 8px rgb(@color-info-rgb / 18%);
+  animation: onboarding-tour-pulse 1.8s ease-in-out infinite;
+  scroll-margin: 96px;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes onboarding-tour-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 6px rgb(@color-info-rgb / 22%);
+  }
+
+  50% {
+    box-shadow: 0 0 0 12px rgb(@color-info-rgb / 8%);
+  }
+}
