@@ -7,12 +7,7 @@
       "blurInfo": {
         "type": "disk",
         "radius": 50,
-        "bbox": [
-          2.305041649559292,
-          48.85410679396256,
-          2.3064069326739762,
-          48.85500511189842
-        ],
+        "bbox": [2.305041649559292, 48.85410679396256, 2.3064069326739762, 48.85500511189842],
         "position": {
           "lat": 48.85455595293049,
           "lon": 2.305724291116634
@@ -184,9 +179,7 @@
       "descriptionTextLength": 2169,
       "userRelativeData": {
         "importAccountId": "566ff1b69b2b0ad718a0cdff",
-        "accountIds": [
-          "immo-facile-2985"
-        ],
+        "accountIds": ["immo-facile-2985"],
         "searchAccountIds": [
           "immo-facile-2985",
           "contract-type-agency-excellence-package",
@@ -221,12 +214,7 @@
       "blurInfo": {
         "type": "disk",
         "radius": 50,
-        "bbox": [
-          2.2709887291664375,
-          48.8532656356636,
-          2.2723539876552623,
-          48.85416395359929
-        ],
+        "bbox": [2.2709887291664375, 48.8532656356636, 2.2723539876552623, 48.85416395359929],
         "position": {
           "lat": 48.85371479463144,
           "lon": 2.27167135841085
@@ -399,9 +387,7 @@
       "descriptionTextLength": 2248,
       "userRelativeData": {
         "importAccountId": "566ff1b69b2b0ad718a0cdff",
-        "accountIds": [
-          "immo-facile-2985"
-        ],
+        "accountIds": ["immo-facile-2985"],
         "searchAccountIds": [
           "immo-facile-2985",
           "contract-type-agency-excellence-package",
@@ -436,12 +422,7 @@
       "blurInfo": {
         "type": "disk",
         "radius": 50,
-        "bbox": [
-          2.2932947734264584,
-          48.85532292284564,
-          2.2946600837864635,
-          48.856221240781416
-        ],
+        "bbox": [2.2932947734264584, 48.85532292284564, 2.2946600837864635, 48.856221240781416],
         "position": {
           "lat": 48.85577208181353,
           "lon": 2.293977428606461
@@ -622,9 +603,7 @@
       "descriptionTextLength": 1898,
       "userRelativeData": {
         "importAccountId": "566ff1b69b2b0ad718a0cdff",
-        "accountIds": [
-          "immo-facile-2985"
-        ],
+        "accountIds": ["immo-facile-2985"],
         "searchAccountIds": [
           "immo-facile-2985",
           "contract-type-agency-excellence-package",
@@ -659,12 +638,7 @@
       "blurInfo": {
         "type": "disk",
         "radius": 50,
-        "bbox": [
-          2.3105613952416046,
-          48.84465977221673,
-          2.3119264132360557,
-          48.84555809015217
-        ],
+        "bbox": [2.3105613952416046, 48.84465977221673, 2.3119264132360557, 48.84555809015217],
         "position": {
           "lat": 48.84510893118445,
           "lon": 2.31124390423883
@@ -750,9 +724,7 @@
       "descriptionTextLength": 681,
       "userRelativeData": {
         "importAccountId": "56c4a7ceded53bce020682b9",
-        "accountIds": [
-          "dauchez-DAUCHEZ-DAUCHEZ"
-        ],
+        "accountIds": ["dauchez-DAUCHEZ-DAUCHEZ"],
         "searchAccountIds": [
           "dauchez-DAUCHEZ-DAUCHEZ",
           "dauchez-DAUCHEZ_L",
@@ -785,12 +757,7 @@
       "blurInfo": {
         "type": "disk",
         "radius": 50,
-        "bbox": [
-          2.3722661263302065,
-          48.893014260937875,
-          2.3736324668954163,
-          48.89391257887519
-        ],
+        "bbox": [2.3722661263302065, 48.893014260937875, 2.3736324668954163, 48.89391257887519],
         "position": {
           "lat": 48.89346341990653,
           "lon": 2.3729492966128114
@@ -907,9 +874,7 @@
       "descriptionTextLength": 938,
       "userRelativeData": {
         "importAccountId": "57c853c0b3fa3c9900e7e327",
-        "accountIds": [
-          "laforet-immo-facile-280503"
-        ],
+        "accountIds": ["laforet-immo-facile-280503"],
         "searchAccountIds": [
           "laforet-immo-facile-280503",
           "laforet-immo-facile-network-Laforet",

@@ -9,7 +9,7 @@ Your token would be included as a Bearer token in the `Authorization` header, wh
 
 Request Details:
 <details>
-Request Method: POST  
+Request Method: POST
 
 Headers:
 

@@ -139,6 +139,26 @@ describe('starting the tour', () => {
     expect(storedTourSetting('u1')).toMatchObject({ status: 'running', startedAt: 1_000_000, listingId });
   });
 
+  it('spreads the listings over two weeks, so the dashboard trend has a shape and a previous week', () => {
+    addUser('u1');
+    const now = Date.UTC(2026, 8, 28, 12);
+    const { jobId } = tour.startTour('u1', PROVIDERS, now);
+    const ages = db
+      .prepare(`SELECT created_at FROM listings WHERE job_id = ?`)
+      .all(jobId)
+      .map((row) => (now - row.created_at) / (24 * 60 * 60 * 1000));
+    expect(ages.every((age) => age >= 0 && age < 14)).toBe(true);
+    expect(ages.filter((age) => age < 7).length).toBeGreaterThan(ages.filter((age) => age >= 7).length);
+    expect(ages.some((age) => age >= 7)).toBe(true);
+    expect(jobRow(jobId).last_run_at).toBeLessThan(now);
+    expect(jobRow(jobId).last_run_at).toBeGreaterThan(now - 60 * 60 * 1000);
+  });
+
+  it('keeps the listing the detail step opens the newest of all', () => {
+    const [featured, ...others] = TOUR_LISTINGS;
+    expect(others.every((listing) => listing.publishedHoursAgo > featured.publishedHoursAgo)).toBe(true);
+  });
+
   it('opens the detail step on the first example listing, by its row id', () => {
     addUser('u1');
     const { listingId } = tour.startTour('u1', PROVIDERS);

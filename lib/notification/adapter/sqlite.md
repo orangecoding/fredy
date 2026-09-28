@@ -5,19 +5,7 @@ This adapter stores search results in an SQLite database. By default, the databa
 The table contains the following columns (all stored as `TEXT`):
 
 ```json
-[
-  "serviceName",
-  "jobKey",
-  "id",
-  "size",
-  "rooms",
-  "price",
-  "address",
-  "title",
-  "link",
-  "description",
-  "image"
-]
+["serviceName", "jobKey", "id", "size", "rooms", "price", "address", "title", "link", "description", "image"]
 ```
 
 ### Price changes

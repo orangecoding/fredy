@@ -561,9 +561,7 @@
           "has_elevator": true,
           "has_cellar": false,
           "has_heating": true,
-          "heating_type": [
-            "autonomo"
-          ],
+          "heating_type": ["autonomo"],
           "parkings": 1,
           "carparks": 1,
           "carparks_description": "Scoperto",
@@ -756,9 +754,7 @@
           "has_elevator": false,
           "has_cellar": false,
           "has_heating": true,
-          "heating_type": [
-            "autonomo"
-          ],
+          "heating_type": ["autonomo"],
           "parkings": 0,
           "carparks": 0,
           "private_garden": false,
@@ -975,9 +971,7 @@
           "has_elevator": false,
           "has_cellar": false,
           "has_heating": true,
-          "heating_type": [
-            "centralizzato"
-          ],
+          "heating_type": ["centralizzato"],
           "has_terraces": true,
           "parkings": 0,
           "carparks": 0,
@@ -1254,9 +1248,7 @@
           "has_elevator": true,
           "has_cellar": false,
           "has_heating": true,
-          "heating_type": [
-            "centralizzato"
-          ],
+          "heating_type": ["centralizzato"],
           "parkings": 0,
           "carparks": 0,
           "private_garden": true,
@@ -1793,9 +1785,7 @@
           "bedrooms_count": 0,
           "has_cellar": true,
           "has_heating": true,
-          "heating_type": [
-            "autonomo"
-          ],
+          "heating_type": ["autonomo"],
           "has_terraces": true,
           "parkings": 1,
           "carparks": 1,
@@ -2011,9 +2001,7 @@
           "has_elevator": false,
           "has_cellar": false,
           "has_heating": true,
-          "heating_type": [
-            "autonomo"
-          ],
+          "heating_type": ["autonomo"],
           "parkings": 0,
           "carparks": 0,
           "private_garden": false,
@@ -2291,9 +2279,7 @@
           "has_elevator": false,
           "has_cellar": false,
           "has_heating": true,
-          "heating_type": [
-            "autonomo"
-          ],
+          "heating_type": ["autonomo"],
           "parkings": 0,
           "carparks": 0,
           "private_garden": true,
@@ -2491,9 +2477,7 @@
           "has_elevator": true,
           "has_cellar": false,
           "has_heating": true,
-          "heating_type": [
-            "autonomo"
-          ],
+          "heating_type": ["autonomo"],
           "parkings": 0,
           "carparks": 0,
           "private_garden": false,
@@ -2771,9 +2755,7 @@
           "has_elevator": true,
           "has_cellar": false,
           "has_heating": true,
-          "heating_type": [
-            "centralizzato"
-          ],
+          "heating_type": ["centralizzato"],
           "has_terraces": true,
           "parkings": 0,
           "carparks": 0,
@@ -3018,9 +3000,7 @@
           "bedrooms_count": 0,
           "has_elevator": true,
           "has_heating": true,
-          "heating_type": [
-            "autonomo"
-          ],
+          "heating_type": ["autonomo"],
           "has_balconies": true,
           "parkings": 1,
           "carparks": 1,
@@ -3243,9 +3223,7 @@
           "bedrooms_count": 0,
           "has_elevator": true,
           "has_heating": true,
-          "heating_type": [
-            "centralizzato"
-          ],
+          "heating_type": ["centralizzato"],
           "parkings": 0,
           "carparks": 0,
           "private_garden": false,
@@ -3506,9 +3484,7 @@
           "has_elevator": true,
           "has_cellar": false,
           "has_heating": true,
-          "heating_type": [
-            "centralizzato"
-          ],
+          "heating_type": ["centralizzato"],
           "has_balconies": true,
           "parkings": 0,
           "carparks": 0,
@@ -4030,9 +4006,7 @@
           "has_elevator": true,
           "has_cellar": false,
           "has_heating": true,
-          "heating_type": [
-            "autonomo"
-          ],
+          "heating_type": ["autonomo"],
           "has_balconies": true,
           "has_terraces": true,
           "parkings": 0,
@@ -4539,9 +4513,7 @@
           "has_elevator": true,
           "has_cellar": false,
           "has_heating": true,
-          "heating_type": [
-            "autonomo"
-          ],
+          "heating_type": ["autonomo"],
           "parkings": 0,
           "carparks": 0,
           "private_garden": false,
@@ -4821,9 +4793,7 @@
           "has_elevator": true,
           "has_cellar": false,
           "has_heating": true,
-          "heating_type": [
-            "centralizzato"
-          ],
+          "heating_type": ["centralizzato"],
           "has_balconies": true,
           "parkings": 0,
           "carparks": 0,
@@ -5084,9 +5054,7 @@
           "has_elevator": true,
           "has_cellar": false,
           "has_heating": true,
-          "heating_type": [
-            "centralizzato"
-          ],
+          "heating_type": ["centralizzato"],
           "has_balconies": true,
           "has_terraces": true,
           "parkings": 0,
@@ -5353,9 +5321,7 @@
           "has_elevator": false,
           "has_cellar": false,
           "has_heating": true,
-          "heating_type": [
-            "centralizzato"
-          ],
+          "heating_type": ["centralizzato"],
           "parkings": 0,
           "carparks": 0,
           "private_garden": false,
@@ -5567,9 +5533,7 @@
           "bedrooms_count": 0,
           "has_elevator": false,
           "has_heating": true,
-          "heating_type": [
-            "autonomo"
-          ],
+          "heating_type": ["autonomo"],
           "parkings": 0,
           "carparks": 0,
           "private_garden": false,
@@ -5796,9 +5760,7 @@
           "bedrooms_count": 0,
           "has_elevator": true,
           "has_heating": true,
-          "heating_type": [
-            "centralizzato"
-          ],
+          "heating_type": ["centralizzato"],
           "has_balconies": true,
           "parkings": 0,
           "carparks": 0,
@@ -5996,9 +5958,7 @@
           "bedrooms_count": 0,
           "has_elevator": true,
           "has_heating": true,
-          "heating_type": [
-            "autonomo"
-          ],
+          "heating_type": ["autonomo"],
           "parkings": 0,
           "carparks": 0,
           "private_garden": false,
@@ -6236,9 +6196,7 @@
           "bedrooms_count": 0,
           "has_elevator": false,
           "has_heating": true,
-          "heating_type": [
-            "autonomo"
-          ],
+          "heating_type": ["autonomo"],
           "parkings": 0,
           "carparks": 0,
           "private_garden": false,
@@ -6505,9 +6463,7 @@
           "bedrooms_count": 0,
           "has_elevator": true,
           "has_heating": true,
-          "heating_type": [
-            "autonomo"
-          ],
+          "heating_type": ["autonomo"],
           "parkings": 0,
           "carparks": 0,
           "private_garden": false,
@@ -6714,9 +6670,7 @@
           "bedrooms_count": 0,
           "has_elevator": false,
           "has_heating": true,
-          "heating_type": [
-            "autonomo"
-          ],
+          "heating_type": ["autonomo"],
           "has_balconies": true,
           "parkings": 0,
           "carparks": 0,
@@ -6995,9 +6949,7 @@
           "bedrooms_count": 0,
           "has_elevator": true,
           "has_heating": true,
-          "heating_type": [
-            "autonomo"
-          ],
+          "heating_type": ["autonomo"],
           "has_balconies": true,
           "parkings": 0,
           "carparks": 0,
@@ -7222,9 +7174,7 @@
           "bedrooms_count": 0,
           "has_elevator": false,
           "has_heating": true,
-          "heating_type": [
-            "autonomo"
-          ],
+          "heating_type": ["autonomo"],
           "parkings": 0,
           "carparks": 0,
           "private_garden": false,
@@ -7463,9 +7413,7 @@
           "has_elevator": false,
           "has_cellar": false,
           "has_heating": true,
-          "heating_type": [
-            "autonomo"
-          ],
+          "heating_type": ["autonomo"],
           "parkings": 0,
           "carparks": 0,
           "private_garden": false,
@@ -7660,9 +7608,7 @@
           "has_elevator": true,
           "has_cellar": false,
           "has_heating": true,
-          "heating_type": [
-            "autonomo"
-          ],
+          "heating_type": ["autonomo"],
           "parkings": 0,
           "carparks": 0,
           "private_garden": false,
@@ -7932,9 +7878,7 @@
           "has_elevator": true,
           "has_cellar": false,
           "has_heating": true,
-          "heating_type": [
-            "centralizzato"
-          ],
+          "heating_type": ["centralizzato"],
           "parkings": 0,
           "carparks": 0,
           "private_garden": false,
@@ -8208,9 +8152,7 @@
           "has_elevator": false,
           "has_cellar": false,
           "has_heating": true,
-          "heating_type": [
-            "autonomo"
-          ],
+          "heating_type": ["autonomo"],
           "has_terraces": true,
           "parkings": 0,
           "carparks": 0,
@@ -8659,9 +8601,7 @@
           "has_elevator": false,
           "has_cellar": false,
           "has_heating": true,
-          "heating_type": [
-            "autonomo"
-          ],
+          "heating_type": ["autonomo"],
           "parkings": 0,
           "carparks": 0,
           "private_garden": false,
@@ -8884,9 +8824,7 @@
           "has_elevator": true,
           "has_cellar": false,
           "has_heating": true,
-          "heating_type": [
-            "centralizzato"
-          ],
+          "heating_type": ["centralizzato"],
           "parkings": 0,
           "carparks": 0,
           "private_garden": false,
@@ -9632,9 +9570,7 @@
           "bedrooms_count": 0,
           "has_elevator": false,
           "has_heating": true,
-          "heating_type": [
-            "autonomo"
-          ],
+          "heating_type": ["autonomo"],
           "parkings": 0,
           "carparks": 0,
           "private_garden": false,
@@ -10335,9 +10271,7 @@
           "has_elevator": false,
           "has_cellar": false,
           "has_heating": true,
-          "heating_type": [
-            "centralizzato"
-          ],
+          "heating_type": ["centralizzato"],
           "has_balconies": true,
           "parkings": 1,
           "carparks": 1,
@@ -10563,9 +10497,7 @@
           "bedrooms_count": 0,
           "has_elevator": true,
           "has_heating": true,
-          "heating_type": [
-            "autonomo"
-          ],
+          "heating_type": ["autonomo"],
           "parkings": 0,
           "carparks": 0,
           "private_garden": false,
@@ -10816,9 +10748,7 @@
           "has_elevator": true,
           "has_cellar": false,
           "has_heating": true,
-          "heating_type": [
-            "autonomo"
-          ],
+          "heating_type": ["autonomo"],
           "has_balconies": true,
           "parkings": 1,
           "carparks": 1,

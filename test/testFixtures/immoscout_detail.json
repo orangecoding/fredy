@@ -595,20 +595,12 @@
       "items": [
         {
           "id": "168961770",
-          "attributes": [
-            "1.050 €",
-            "57,19 m²",
-            "2 Zi."
-          ],
+          "attributes": ["1.050 €", "57,19 m²", "2 Zi."],
           "imageUrl": "https://pictures.immobilienscout24.de/listings/cc19f5fe-9939-4e0d-ab08-5204461b849f-2051538401.png/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/jpg/quality/50"
         },
         {
           "id": "168961143",
-          "attributes": [
-            "1.000 €",
-            "55,46 m²",
-            "2 Zi."
-          ],
+          "attributes": ["1.000 €", "55,46 m²", "2 Zi."],
           "imageUrl": "https://pictures.immobilienscout24.de/listings/0d7314a0-782b-44db-8091-f3955660ec29-2051535160.png/ORIG/legacy_thumbnail/%WIDTH%x%HEIGHT%/format/jpg/quality/50"
         }
       ],
