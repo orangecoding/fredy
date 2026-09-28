@@ -17,10 +17,12 @@ import {
   groupListingsByPosition,
 } from './mapUtils.js';
 import { Select, Switch, Toast, Typography } from '@douyinfe/semi-ui-19';
+import { IconChevronDown } from '@douyinfe/semi-icons';
 
 import _RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
 import './Map.less';
+import './Map.mobile.less';
 import { xhrDelete, errorMessage } from '../../services/xhr.js';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import ListingDeletionModal from '../../components/ListingDeletionModal.jsx';
@@ -661,112 +663,138 @@ export default function MapView() {
                  what the map is showing, so they read as one panel with a line between them rather
                  than as two identical boxes four pixels apart, neither of them with a heading. */
               <div className="map-panel">
-                {/* The fullscreen toggle rides on this heading rather than floating above the
-                    panel: it is a control over the map as a whole, and this is the line that names
-                    the map. */}
-                <div className="map-panel__groupTitle">
+                {/* The fold toggle: a plain checkbox driving CSS, not React state, so the panel
+                    starts folded on a phone and stays open everywhere else without a resize
+                    listener - see Map.mobile.less for the media query that pins it open above the
+                    breakpoint and the one that ties `:checked` to the body's visibility.
+                    Unchecked by default: nothing here reads the fold state back, it is view, not
+                    data, so there is nothing to initialise beyond the folded starting point. */}
+                <input
+                  type="checkbox"
+                  id="map-panel-fold"
+                  className="map-panel__fold-input"
+                  aria-label={t('map.foldToggle')}
+                />
+                <label htmlFor="map-panel-fold" className="map-panel__fold-label">
                   {t('map.groupMap')}
-                  {expandButton}
-                </div>
-                {controls}
+                  <IconChevronDown className="map-panel__fold-chevron" />
+                </label>
 
-                <div className="map-panel__divider" />
+                <div className="map-panel__body">
+                  {/* The fullscreen toggle rides on this heading rather than floating above the
+                      panel: it is a control over the map as a whole, and this is the line that
+                      names the map. The text repeats the fold label above once unfolded, so
+                      Map.mobile.less hides it below the fold breakpoint and leaves the button. */}
+                  <div className="map-panel__groupTitle">
+                    <span className="map-panel__groupTitle-text">{t('map.groupMap')}</span>
+                    {expandButton}
+                  </div>
+                  {controls}
 
-                <div className="map-panel__groupTitle">{t('map.groupListings')}</div>
+                  <div className="map-panel__divider" />
 
-                <div className="map-panel__row">
-                  <Text size="small" strong className="map-panel__label">
-                    {t('map.filterJobLabel')}
-                  </Text>
-                  <Select
-                    placeholder={t('map.filterJobPlaceholder')}
-                    showClear
-                    size="small"
-                    onChange={(val) => setJobId(val)}
-                    value={jobId}
-                    style={{ width: 160 }}
-                  >
-                    {jobs?.map((j) => (
-                      <Select.Option key={j.id} value={j.id}>
-                        {j.name}
-                      </Select.Option>
-                    ))}
-                  </Select>
-                </div>
+                  <div className="map-panel__groupTitle">{t('map.groupListings')}</div>
 
-                {/* Disabled rather than hidden, and it says why one line below. A control that
+                  <div className="map-panel__row">
+                    <Text size="small" strong className="map-panel__label">
+                      {t('map.filterJobLabel')}
+                    </Text>
+                    <Select
+                      placeholder={t('map.filterJobPlaceholder')}
+                      showClear
+                      size="small"
+                      onChange={(val) => setJobId(val)}
+                      value={jobId}
+                      style={{ width: 160 }}
+                    >
+                      {jobs?.map((j) => (
+                        <Select.Option key={j.id} value={j.id}>
+                          {j.name}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  </div>
+
+                  {/* Disabled rather than hidden, and it says why one line below. A control that
                     cannot work is the honest place for that sentence - it used to be a full-width
                     banner above the map, on every visit, for a fact that never changes. */}
-                <div className="map-panel__row">
-                  <Text size="small" strong className="map-panel__label">
-                    {t('map.filterDistanceLabel')}
-                  </Text>
-                  <Select
-                    placeholder={t('map.filterDistanceNone')}
-                    size="small"
-                    disabled={!hasHome}
-                    onChange={(val) => setDistanceFilter(val)}
-                    value={distanceFilter}
-                    style={{ width: 100 }}
-                  >
-                    <Select.Option value={0}>{t('map.filterDistanceNone')}</Select.Option>
-                    <Select.Option value={5}>5 km</Select.Option>
-                    <Select.Option value={10}>10 km</Select.Option>
-                    <Select.Option value={15}>15 km</Select.Option>
-                    <Select.Option value={20}>20 km</Select.Option>
-                    <Select.Option value={25}>25 km</Select.Option>
-                  </Select>
-                </div>
+                  <div className="map-panel__row">
+                    <Text size="small" strong className="map-panel__label">
+                      {t('map.filterDistanceLabel')}
+                    </Text>
+                    <Select
+                      placeholder={t('map.filterDistanceNone')}
+                      size="small"
+                      disabled={!hasHome}
+                      onChange={(val) => setDistanceFilter(val)}
+                      value={distanceFilter}
+                      style={{ width: 100 }}
+                    >
+                      <Select.Option value={0}>{t('map.filterDistanceNone')}</Select.Option>
+                      <Select.Option value={5}>5 km</Select.Option>
+                      <Select.Option value={10}>10 km</Select.Option>
+                      <Select.Option value={15}>15 km</Select.Option>
+                      <Select.Option value={20}>20 km</Select.Option>
+                      <Select.Option value={25}>25 km</Select.Option>
+                    </Select>
+                  </div>
 
-                {/* Locked rather than hidden, for the same reason as the ring above. Unlike the
+                  {/* Locked rather than hidden, for the same reason as the ring above. Unlike the
                     distance ring, which recolours pins, this one hides them: a commute ceiling is
                     asked as "show me only what I could live with". */}
-                <div className="map-panel__row">
-                  <Text size="small" strong className="map-panel__label">
-                    {t('map.filterCommuteLabel')}
-                  </Text>
-                  <Select
-                    placeholder={t('map.filterCommuteNone')}
-                    showClear
-                    size="small"
-                    disabled={!hasHome}
-                    onChange={(val) => setCommuteFilter(val ?? null)}
-                    value={commuteFilter}
-                    style={{ width: 150 }}
-                  >
-                    {COMMUTE_OPTIONS.map(({ mode, minutes }) =>
-                      minutes.map((max) => (
-                        <Select.Option key={`${mode}:${max}`} value={`${mode}:${max}`}>
-                          {t('listings.filterCommuteOption', { mode: t(`travelTime.mode.${mode}`), minutes: max })}
-                        </Select.Option>
-                      )),
-                    )}
-                  </Select>
-                </div>
+                  <div className="map-panel__row">
+                    <Text size="small" strong className="map-panel__label">
+                      {t('map.filterCommuteLabel')}
+                    </Text>
+                    <Select
+                      placeholder={t('map.filterCommuteNone')}
+                      showClear
+                      size="small"
+                      disabled={!hasHome}
+                      onChange={(val) => setCommuteFilter(val ?? null)}
+                      value={commuteFilter}
+                      style={{ width: 150 }}
+                    >
+                      {COMMUTE_OPTIONS.map(({ mode, minutes }) =>
+                        minutes.map((max) => (
+                          <Select.Option key={`${mode}:${max}`} value={`${mode}:${max}`}>
+                            {t('listings.filterCommuteOption', { mode: t(`travelTime.mode.${mode}`), minutes: max })}
+                          </Select.Option>
+                        )),
+                      )}
+                    </Select>
+                  </div>
 
-                <div className="map-panel__row">
-                  <Text size="small" strong className="map-panel__label">
-                    {t('map.filterPriceLabel')}
-                  </Text>
-                  <div className="map-view-container__price-slider">
-                    <div className="map__rangesliderLabels">
-                      <span>{formatEuroCompact(priceRange[0], locale)}</span>
-                      <span>{formatEuroCompact(priceRange[1] || getMaxPrice(), locale)}</span>
+                  <div className="map-panel__row">
+                    <Text size="small" strong className="map-panel__label">
+                      {t('map.filterPriceLabel')}
+                    </Text>
+                    <div className="map-view-container__price-slider">
+                      <div className="map__rangesliderLabels">
+                        <span>{formatEuroCompact(priceRange[0], locale)}</span>
+                        <span>{formatEuroCompact(priceRange[1] || getMaxPrice(), locale)}</span>
+                      </div>
+                      <RangeSlider
+                        min={0}
+                        max={getMaxPrice()}
+                        step={100}
+                        value={priceRange}
+                        onInput={handlePriceRange}
+                      />
                     </div>
-                    <RangeSlider min={0} max={getMaxPrice()} step={100} value={priceRange} onInput={handlePriceRange} />
                   </div>
+
+                  {!hasHome && (
+                    <div className="map-panel__hint">
+                      {t('map.noHomeAddressBefore')}
+                      <Link to="/settings/travel-time">{t('map.noHomeAddressLink')}</Link>
+                      {t('map.noHomeAddressAfter')}
+                    </div>
+                  )}
+
+                  <div className="map-panel__divider" />
+                  <MapLegend hasStacks={hasStacks} hasRing={distanceFilter > 0 && hasHome} hasHome={hasHome} />
                 </div>
-
-                {!hasHome && (
-                  <div className="map-panel__hint">
-                    {t('map.noHomeAddressBefore')}
-                    <Link to="/settings/travel-time">{t('map.noHomeAddressLink')}</Link>
-                    {t('map.noHomeAddressAfter')}
-                  </div>
-                )}
-
-                <div className="map-panel__divider" />
-                <MapLegend hasStacks={hasStacks} hasRing={distanceFilter > 0 && hasHome} hasHome={hasHome} />
               </div>
             )}
           />

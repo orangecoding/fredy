@@ -406,6 +406,7 @@
   "map.noHomeAddressLink": "kullanıcı ayarlarından",
   "map.noHomeAddressAfter": " uzaklık filtresini kullanmak için yapılandırın.",
   "map.groupMap": "Harita",
+  "map.foldToggle": "Harita filtrelerini göster veya gizle",
   "map.groupListings": "İlanlar",
   "map.searchPlaceholder": "Adres veya yer ara",
   "map.searchLabel": "Haritada adres arama",

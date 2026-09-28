@@ -437,6 +437,7 @@
   "map.noHomeAddressLink": "impostazioni utente",
   "map.noHomeAddressAfter": " per usare il filtro per distanza.",
   "map.groupMap": "Mappa",
+  "map.foldToggle": "Mostra o nascondi i filtri della mappa",
   "map.groupListings": "Annunci",
   "map.searchPlaceholder": "Cerca un indirizzo o un luogo",
   "map.searchLabel": "Ricerca di indirizzi sulla mappa",
