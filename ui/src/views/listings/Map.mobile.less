@@ -40,8 +40,13 @@
    * Bottom-left rather than the top-right dropdown the desktop panel is: at this width the panel
    * is nearly as wide as the map itself (`.map-shell__ui`'s `min(300px, calc(100% - 24px))`), and
    * anchored under the search box it landed in the same band as MapLibre's own zoom and compass
-   * controls, which the search pushes to that exact spot. Bottom-left keeps clear of both that
-   * band and the attribution control's "i", which lives in the opposite bottom corner.
+   * controls, which the search pushes to that exact spot.
+   *
+   * `bottom: 10px` matches MapLibre's own margin around its bottom-right attribution control, so
+   * the folded pill sits in the same row as the "i" rather than floating above it. That row is
+   * exactly where the attribution's *expanded* text reaches to before the map is first panned or
+   * zoomed - z-index settles which one wins, so see below for that rather than moving the pill to
+   * dodge it.
    *
    * Absolute against `.map-shell__ui` (stretched to the map's own bounds above), not fixed
    * against the viewport - the viewport runs under the app's own sidebar, and `fixed`'s
@@ -52,13 +57,13 @@
     left: 12px;
     right: 12px;
     top: auto;
-    /* Clears MapLibre's own attribution strip along the bottom edge. It only collapses to its "i"
-       icon once the map is panned or zoomed; until then - which on a page nobody has touched yet
-       is exactly the state a screenshot catches - it runs its full text at up to two lines, and
-       the offset has to clear that, not the icon it becomes afterwards. */
-    bottom: 116px;
+    bottom: 10px;
     width: auto;
     max-width: none;
+    /* MapLibre's own bottom-right corner (which the attribution sits in) carries `z-index: 2`;
+       `.map-shell__ui` already outranks it at `z-index: 10` (see Map.less), which is what
+       actually keeps the pill clickable when the two overlap. This is set high too so that stays
+       true regardless of where in `.map-shell__ui` a future change puts this panel. */
     z-index: 15;
   }
 
@@ -100,11 +105,12 @@
   .map-panel:has(.map-panel__fold-input:checked) {
     width: auto;
     /* Relative to `.map-shell__ui`'s own height, which now matches the map's, not the viewport's -
-       the two differ by the headline above the map and the app's own chrome around it. 116px is
+       the two differ by the headline above the map and the app's own chrome around it. 10px is
        the `bottom` offset above, already spent before this box's height is even measured; 100px
        leaves the search box and MapLibre's own zoom/compass controls reachable above it rather
-       than sliding the sheet in under them. */
-    max-height: calc(100% - 116px - 100px);
+       than sliding the sheet in under them. Open, the sheet reaches past the attribution control
+       same as it would past anything else the map draws under it. */
+    max-height: calc(100% - 10px - 100px);
   }
 
   .map-panel__fold-input:checked ~ .map-panel__body {
