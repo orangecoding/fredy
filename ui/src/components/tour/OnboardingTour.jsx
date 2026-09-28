@@ -18,10 +18,12 @@ import {
   declineTour,
   fetchTourState,
   finishTour,
+  resetTour,
   sendTourCancelBeacon,
   startTour,
 } from '../../services/tour/tourClient.js';
 import { useTourTarget } from './useTourTarget.js';
+import inDevelopment from '../../services/developmentMode.js';
 
 import './OnboardingTour.less';
 
@@ -208,6 +210,23 @@ export default function OnboardingTour({ isAdmin, blocked }) {
       .catch((error) => console.warn('Could not load the onboarding tour state.', error));
     return () => {
       unmounted = true;
+    };
+  }, []);
+
+  // Development only: `fredyTour.restart()` in the browser console forgets this account's answer,
+  // removes any example data and reloads, so the invitation shows up again. The reload is what
+  // clears `tourOfThisPage`, which would otherwise resume the old tour.
+  useEffect(() => {
+    if (!inDevelopment()) return undefined;
+    window.fredyTour = {
+      async restart() {
+        tourOfThisPage = null;
+        await resetTour();
+        window.location.reload();
+      },
+    };
+    return () => {
+      delete window.fredyTour;
     };
   }, []);
 

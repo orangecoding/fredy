@@ -19,6 +19,8 @@ let state;
 let settings;
 /** @type {{wasRunning: boolean, removed: boolean}} */
 let finishResult;
+/** @type {boolean} */
+let devMode;
 
 /**
  * Register the tour plugin against a fastify double, with the service replaced by a recorder.
@@ -28,7 +30,7 @@ let finishResult;
 async function loadRoutes() {
   vi.resetModules();
   vi.doMock(root + '/lib/services/storage/settingsStorage.js', () => ({ getSettings: async () => settings }));
-  vi.doMock(root + '/lib/utils.js', () => ({ getProviders: async () => ['providers'] }));
+  vi.doMock(root + '/lib/utils.js', () => ({ getProviders: async () => ['providers'], inDevMode: () => devMode }));
   vi.doMock(root + '/lib/services/tracking/Tracker.js', () => ({ trackPoi: async (poi) => tracked.push(poi) }));
   vi.doMock(root + '/lib/services/tour/tourService.js', () => ({
     TOUR_OUTCOMES: ['completed', 'cancelled'],
@@ -42,6 +44,7 @@ async function loadRoutes() {
       return { jobId: `tour-${userId}`, listingId: 'listing-1' };
     },
     declineTour: (userId) => calls.push(['declineTour', userId]),
+    resetTour: (userId) => calls.push(['resetTour', userId]),
     finishTour: (userId, outcome) => {
       calls.push(['finishTour', userId, outcome]);
       return finishResult;
@@ -93,6 +96,22 @@ beforeEach(() => {
   state = { status: null, offer: true };
   settings = { demoMode: false };
   finishResult = { wasRunning: true, removed: true };
+  devMode = false;
+});
+
+describe('POST /api/tour/reset', () => {
+  it('forgets the signed-in account answer in development', async () => {
+    devMode = true;
+    const { result } = await call('POST /reset');
+    expect(result).toEqual({ success: true });
+    expect(calls).toEqual([['resetTour', 'user-1']]);
+  });
+
+  it('does not exist in production', async () => {
+    const { status } = await call('POST /reset');
+    expect(status).toBe(404);
+    expect(calls).toEqual([]);
+  });
 });
 
 describe('GET /api/tour', () => {

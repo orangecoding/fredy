@@ -73,6 +73,15 @@ export async function finishTour(outcome) {
 }
 
 /**
+ * Put the account back to "never asked". Development only: the server answers 404 otherwise.
+ *
+ * @returns {Promise<void>}
+ */
+export async function resetTour() {
+  await xhrPost('/api/tour/reset');
+}
+
+/**
  * Cancel the tour from a page that is going away.
  *
  * An ordinary request started while the page unloads is cancelled with it, so this goes out as a

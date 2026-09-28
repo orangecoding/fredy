@@ -215,6 +215,17 @@ describe('ending the tour', () => {
   });
 });
 
+describe('resetting the tour', () => {
+  it('removes a running tour and makes the account new again', async () => {
+    addUser('u1');
+    tour.startTour('u1', PROVIDERS);
+    tour.resetTour('u1');
+    expect(jobRow(tour.tourJobId('u1'))).toBeUndefined();
+    expect(storedTourSetting('u1')).toBeNull();
+    expect((await tour.getTourState('u1')).offer).toBe(true);
+  });
+});
+
 describe('cleaning up abandoned tours', () => {
   it('removes a tour that outlived its time and keeps one still in progress', () => {
     addUser('old');
