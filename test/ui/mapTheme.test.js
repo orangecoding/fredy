@@ -232,7 +232,9 @@ describe('the page', () => {
 
   it('carries the fullscreen toggle on the first heading, not floating above the box', () => {
     expect(viewJsx).toMatch(/panels=\{\(controls, expandButton\) =>/);
-    expect(viewJsx).toMatch(/\{t\('map\.groupMap'\)\}\s*\{expandButton\}/);
+    // The text is wrapped in its own span so a phone can hide it without hiding the button next to
+    // it - see Map.mobile.less, which repeats it as the fold pill's own label below 430px.
+    expect(viewJsx).toMatch(/\{t\('map\.groupMap'\)\}<\/span>\s*\{expandButton\}/);
     // The map renders it itself only where no panel took it.
     expect(mapJsx).toMatch(/\{!controlsInPanels && expandButton\}/);
     // Smaller in there than on the map, and it needs two classes to beat Semi's own height.
