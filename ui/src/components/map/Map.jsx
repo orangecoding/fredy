@@ -301,6 +301,26 @@ export default function Map({
       cooperativeGestures,
     });
 
+    // MapLibre's own attribution control opens itself - a paragraph of text over the map, not the
+    // "i" it collapses to - until the map is first panned or zoomed. That visibility runs on its
+    // own `maplibregl-compact-show` class rather than the `<details>` element's native `open`
+    // state (maplibre-gl.css keys the attribution text's `display` off the class alone), so
+    // removing the class is what actually collapses it; the class is what `_toggleAttribution`
+    // re-adds on a click, so the "i" still opens and closes it same as before.
+    //
+    // Only below the width Map.mobile.less's own breakpoint uses: a map that size is small enough
+    // that the full text is the map, and wide desktop embeds keep the attribution they had. Added
+    // synchronously (`AttributionControl.onAdd` runs, and adds the class, inside the `Map`
+    // constructor above, before the style has even loaded) and again on `load` in case MapLibre
+    // re-adds it once the style is ready.
+    const collapseAttribution = () => {
+      const container = mapContainerRef.current;
+      if (!container || container.offsetWidth > 430) return;
+      container.querySelector('.maplibregl-ctrl-attrib')?.classList.remove('maplibregl-compact-show');
+    };
+    collapseAttribution();
+    mapRef.current.once('load', collapseAttribution);
+
     // Left, because the panels now live in the top right corner and a zoom button hiding behind
     // them helps nobody. Where drawing is enabled MapLibre simply stacks these below its tools.
     mapRef.current.addControl(
