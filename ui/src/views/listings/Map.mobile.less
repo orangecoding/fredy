@@ -24,11 +24,11 @@
 }
 
 @media (max-width: 430px) {
-  /* `.map-panel` positions itself against this box (see below), which on every other width holds
-     it to the shape a single dropdown needs. With the panel now absolute inside it, an empty
-     `.map-shell__ui` has nothing left to size itself by and collapses to zero height - stretching
-     it to the map's own bounds instead gives `.map-panel`'s `left`/`right`/`bottom` a frame the
-     size of the map to measure from. */
+  /* `.map-panel__fold-label` and `.map-panel__body` position themselves against this box (see
+     below), which on every other width holds the single dropdown box to the shape it needs.
+     Stretched to the map's own bounds here instead, so each of the two has the whole map to place
+     itself against rather than the collapsed, zero-size box an otherwise-empty `.map-shell__ui`
+     would leave them with once neither is `.map-panel`'s own in-flow child any more. */
   .map-shell__ui {
     inset: 0;
     width: auto;
@@ -36,41 +36,29 @@
     overflow: visible;
   }
 
-  /*
-   * Bottom-left rather than the top-right dropdown the desktop panel is: at this width the panel
-   * is nearly as wide as the map itself (`.map-shell__ui`'s `min(300px, calc(100% - 24px))`), and
-   * anchored under the search box it landed in the same band as MapLibre's own zoom and compass
-   * controls, which the search pushes to that exact spot.
-   *
-   * `bottom: 10px` matches MapLibre's own margin around its bottom-right attribution control, so
-   * the folded pill sits in the same row as the "i" rather than floating above it. That row is
-   * exactly where the attribution's *expanded* text reaches to before the map is first panned or
-   * zoomed - z-index settles which one wins, so see below for that rather than moving the pill to
-   * dodge it.
-   *
-   * Absolute against `.map-shell__ui` (stretched to the map's own bounds above), not fixed
-   * against the viewport - the viewport runs under the app's own sidebar, and `fixed`'s
-   * `left`/`right` measure from its edges, not the map's, which put the panel half behind it.
-   */
+  /* `.map-panel` drew the desktop dropdown's own box - background, border, blur, padding - and on
+     a phone that box was wrapping the pill too, a card behind a chip nobody asked for. `contents`
+     removes the box without removing what is inside it: the pill and the popup below still exist
+     and still respond to the checkbox, just no longer sharing one growing shape or one position.
+     Each now carries its own box straight against `.map-shell__ui` instead. */
   .map-panel {
-    position: absolute;
-    left: 12px;
-    right: 12px;
-    top: auto;
-    bottom: 10px;
-    width: auto;
-    max-width: none;
-    /* MapLibre's own bottom-right corner (which the attribution sits in) carries `z-index: 2`;
-       `.map-shell__ui` already outranks it at `z-index: 10` (see Map.less), which is what
-       actually keeps the pill clickable when the two overlap. This is set high too so that stays
-       true regardless of where in `.map-shell__ui` a future change puts this panel. */
-    z-index: 15;
+    display: contents;
   }
 
-  /* Folded: a compact pill sized to its own text, not the full-width bar the box is the rest of
-     the time - a bar that wide next to the left edge would have reached for the same corner the
-     search and the zoom controls already own. */
+  /* The pill: fixed to the map's bottom-left corner and never resized by the popup opening, unlike
+     the single box this used to be one growing piece of. Its own background, border and blur are
+     what `.map-panel` supplied before - moved here now that the box that grows is a separate
+     element. */
   .map-panel__fold-label {
+    position: absolute;
+    left: 12px;
+    /* Matches MapLibre's own margin around its bottom-right attribution control, so the pill sits
+       in the same row as the "i" on the opposite corner rather than floating above it. The two
+       overlap until the map is first panned or zoomed, since the attribution runs its full text
+       rather than collapsing to that icon until then; z-index below is what keeps the pill on top
+       and clickable through that, rather than moving to dodge it. */
+    bottom: 10px;
+    z-index: 15;
     display: inline-flex;
     width: fit-content;
     align-items: center;
@@ -78,6 +66,10 @@
     padding: 10px 16px;
     border-radius: 999px;
     cursor: pointer;
+    background: @color-map-panel;
+    border: 1px solid @color-border;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     box-shadow: @shadow-sm;
     font-size: 10.5px;
     font-weight: 600;
@@ -90,35 +82,41 @@
     transition: transform @transition-fast;
   }
 
-  /* Folded by default (the checkbox above starts unchecked). Everything below the label - the map
-     controls and every listing filter - is the part that used to cover the whole map on a phone. */
-  .map-panel__body {
-    display: none;
-  }
-
   .map-panel__fold-input:checked ~ .map-panel__fold-label .map-panel__fold-chevron {
     transform: rotate(180deg);
   }
 
-  /* Open: the pill grows into the popup rather than staying pinned to its own corner, so it reads
-     as one control changing shape rather than a second, different box appearing next to it. */
-  .map-panel:has(.map-panel__fold-input:checked) {
-    width: auto;
-    /* Relative to `.map-shell__ui`'s own height, which now matches the map's, not the viewport's -
-       the two differ by the headline above the map and the app's own chrome around it. 10px is
-       the `bottom` offset above, already spent before this box's height is even measured; 100px
-       leaves the search box and MapLibre's own zoom/compass controls reachable above it rather
-       than sliding the sheet in under them. Open, the sheet reaches past the attribution control
-       same as it would past anything else the map draws under it. */
-    max-height: calc(100% - 10px - 100px);
+  /* Closed by default (the checkbox above starts unchecked) and, unlike the pill, not part of the
+     page until then - the map controls and every listing filter are what used to cover the whole
+     map on a phone. */
+  .map-panel__body {
+    display: none;
   }
 
+  /* Open: its own floating box - background, border, blur, shadow, the same look `.map-panel`
+     drew before - anchored just above the pill rather than grown out of it, so the pill stays put
+     in its own corner while this appears and disappears above it. */
   .map-panel__fold-input:checked ~ .map-panel__body {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    margin-top: 12px;
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    /* Pill height (36px) + its own 10px margin + a little breathing room between the two boxes. */
+    bottom: 56px;
+    /* Leaves the search box and MapLibre's own zoom/compass controls reachable above it rather
+       than sliding the sheet in under them. */
+    max-height: calc(100% - 56px - 100px);
     overflow-y: auto;
+    padding: 14px 16px;
+    background: @color-map-panel;
+    border: 1px solid @color-border;
+    border-radius: @radius-card;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: @shadow-md;
+    z-index: 15;
   }
 
   /* The body's own "Map" heading would repeat the fold label word for word once open; only its
