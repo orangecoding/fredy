@@ -163,6 +163,7 @@ export default function Navigation({ isAdmin }) {
           key={child.key}
           type="button"
           className={`navigate-flyout__item${child.key === activeKey ? ' navigate-flyout__item--active' : ''}`}
+          data-tour={child.key}
           aria-current={child.key === activeKey ? 'page' : undefined}
           onClick={() => navigate(child.key)}
         >
@@ -223,6 +224,8 @@ export default function Navigation({ isAdmin }) {
             <button
               type="button"
               className={`navigate__item${isActive ? ' navigate__item--active' : ''}`}
+              // What the onboarding tour points at when it asks for a click here.
+              data-tour={node.key}
               // 'true' rather than 'page' on a group: it holds the current page, it is not it.
               aria-current={isActive ? (isGroup ? 'true' : 'page') : undefined}
               // Only while the children are a list under this entry. In the narrow rail they are a
@@ -302,6 +305,7 @@ export default function Navigation({ isAdmin }) {
                         key={child.key}
                         type="button"
                         className={`navigate__child${childIsActive ? ' navigate__child--active' : ''}`}
+                        data-tour={child.key}
                         aria-current={childIsActive ? 'page' : undefined}
                         onClick={() => navigate(child.key)}
                       >

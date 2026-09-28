@@ -1,0 +1,452 @@
+@import '../../tokens.less';
+
+// The tour sits above the whole app and below Semi's own dialogs (1000), so a dialog opened
+// mid-tour - the application letter, a filter sheet - still comes out on top.
+@tour-z: 999;
+
+// Blue is the tour's one marker, used sparingly: the ring, the progress and the badge. Everything
+// else is Fredy's own neutrals, one step lifted, so the tour reads as part of the app rather than
+// as something pasted over it.
+.onboardingTour {
+  position: fixed;
+  inset: 0;
+  z-index: @tour-z;
+  pointer-events: none;
+  font-family: @font-ui;
+  color: @color-text;
+
+  // One of four panels around the hole, or the only one when a step points at nothing. They take
+  // the clicks too, so the only thing that can be used mid-step is what the step is about.
+  &__scrim {
+    position: fixed;
+    pointer-events: auto;
+    background: @color-scrim;
+    backdrop-filter: blur(8px) saturate(0.6);
+    transition:
+      top 0.25s ease,
+      left 0.25s ease,
+      width 0.25s ease,
+      height 0.25s ease;
+  }
+
+  &__ring {
+    position: fixed;
+    pointer-events: auto;
+    box-sizing: border-box;
+    border: 2px solid @color-info;
+    border-radius: @radius-card;
+    box-shadow: 0 0 0 4px rgb(@color-info-rgb / 16%);
+    transition:
+      top 0.25s ease,
+      left 0.25s ease,
+      width 0.25s ease,
+      height 0.25s ease;
+  }
+
+  // An explanation that invites trying the element out: clicks go through, without the pulse that
+  // marks a click the tour is waiting for.
+  &__ring--open {
+    pointer-events: none;
+  }
+
+  // The element the user is asked to click. It pulses, and clicks go through to it.
+  &__ring--action {
+    pointer-events: none;
+    border-width: 3px;
+    animation: onboarding-tour-pulse 1.6s ease-in-out infinite;
+  }
+
+  // Says what mode the app is in, on every step: that this is the tour, that the data is not real,
+  // and how to get out.
+  &__pill {
+    position: fixed;
+    top: @space-5;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: @space-3;
+    height: 40px;
+    box-sizing: border-box;
+    padding: 0 @space-2 0 @space-4;
+    border: 1px solid @color-border-bright;
+    border-radius: @radius-pill;
+    background: @color-elevated;
+    box-shadow: @shadow-md;
+    font-size: @text-sm;
+    white-space: nowrap;
+    pointer-events: auto;
+  }
+
+  &__pillLabel {
+    font-weight: 600;
+  }
+
+  &__pillMuted {
+    color: @color-muted;
+  }
+
+  &__kbd {
+    display: inline-flex;
+    align-items: center;
+    gap: @space-1;
+    padding: @space-1 @space-2;
+    border-radius: @radius-pill;
+    background: @color-fill-1;
+    color: @color-muted;
+
+    kbd {
+      padding: 0 5px;
+      border: 1px solid @color-border-bright;
+      border-radius: 4px;
+      font-family: @font-mono;
+      font-size: @text-xs;
+    }
+  }
+
+  &__card {
+    position: fixed;
+    box-sizing: border-box;
+    width: 440px;
+    max-width: calc(100vw - 2 * @space-4);
+    padding: @space-6;
+    border: 1px solid @color-border-bright;
+    border-radius: 18px;
+    background: @color-elevated;
+    box-shadow: @shadow-lg;
+    display: flex;
+    flex-direction: column;
+    gap: @space-4;
+    pointer-events: auto;
+    transition:
+      top 0.25s ease,
+      left 0.25s ease;
+
+    &--center {
+      width: 520px;
+    }
+
+    // Phones get the card as a sheet from the bottom, where a thumb can reach it.
+    &--sheet {
+      top: auto !important;
+      right: 0;
+      bottom: 0;
+      left: 0 !important;
+      width: auto;
+      max-width: none;
+      max-height: 60vh;
+      overflow-y: auto;
+      padding: @space-3 @space-5 @space-6;
+      border-width: 1px 0 0;
+      border-radius: 22px 22px 0 0;
+      transition: none;
+    }
+  }
+
+  &__handle {
+    align-self: center;
+    width: 40px;
+    height: 4px;
+    border-radius: 2px;
+    background: @color-fill-strong;
+  }
+
+  // A square turned into a diamond, half of it tucked under the card, so it reads as a notch in the
+  // card's own border pointing at the hole.
+  &__arrow {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    background: @color-elevated;
+    border: 1px solid @color-border-bright;
+    transform: rotate(45deg);
+
+    &--bottom {
+      top: -8px;
+      border-right: none;
+      border-bottom: none;
+    }
+
+    &--top {
+      bottom: -8px;
+      border-left: none;
+      border-top: none;
+    }
+
+    &--right {
+      left: -8px;
+      border-top: none;
+      border-right: none;
+    }
+
+    &--left {
+      right: -8px;
+      border-bottom: none;
+      border-left: none;
+    }
+  }
+
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__counter {
+    color: @color-muted;
+    font-family: @font-mono;
+    font-size: @text-sm;
+  }
+
+  &__segments {
+    display: flex;
+    gap: 4px;
+  }
+
+  &__segment {
+    flex: 1;
+    height: 4px;
+    border-radius: 2px;
+    background: @color-fill-2;
+
+    &--done {
+      background: @color-info;
+    }
+
+    &--current {
+      background: @color-text;
+    }
+  }
+
+  &__title {
+    margin: 0;
+    font-size: @text-lg;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  &__body {
+    margin: 0;
+    color: @color-muted;
+    font-size: 15px;
+    line-height: 1.6;
+    white-space: pre-line;
+  }
+
+  &__check {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    border: 1px solid @color-border-bright;
+    border-radius: @radius-pill;
+    background: rgb(@color-info-rgb / 13%);
+    color: @color-info;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: @space-2;
+    padding-top: @space-1;
+  }
+
+  &__spacer {
+    flex: 1;
+  }
+
+  // The dialogs a tour starts and ends with: centred, over a scrim that blurs the whole app.
+  &__dialogLayer {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: @space-4;
+    pointer-events: auto;
+  }
+
+  &__dialog {
+    position: relative;
+    box-sizing: border-box;
+    width: 620px;
+    max-width: 100%;
+    max-height: calc(100vh - 2 * @space-4);
+    overflow-y: auto;
+    border: 1px solid @color-border-bright;
+    border-radius: 22px;
+    background: @color-elevated;
+    box-shadow: @shadow-lg;
+  }
+
+  &__dialogHead {
+    display: flex;
+    flex-direction: column;
+    gap: @space-6;
+    padding: @space-6 @space-8;
+    border-bottom: 1px solid @color-border-bright;
+    background: @color-surface;
+  }
+
+  // The route of the tour, one stop per page, so the question says what it is offering.
+  &__stops {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 13px;
+      right: 24px;
+      left: 24px;
+      height: 2px;
+      background: @color-border-bright;
+    }
+  }
+
+  &__stop {
+    position: relative;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    gap: @space-2;
+    min-width: 0;
+    color: @color-muted;
+    font-size: @text-sm;
+    text-align: center;
+  }
+
+  &__stopDot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    box-sizing: border-box;
+    border: 2px solid @color-info;
+    border-radius: @radius-pill;
+    background: @color-surface;
+    color: @color-text;
+    font-family: @font-mono;
+    font-size: @text-xs;
+  }
+
+  &__dialogBody {
+    display: flex;
+    flex-direction: column;
+    gap: @space-5;
+    padding: @space-6 @space-8 @space-8;
+  }
+
+  &__dialogTitle {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+}
+
+.onboardingTour__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  align-self: flex-start;
+  padding: 5px 11px;
+  border-radius: @radius-pill;
+  background: rgb(@color-info-rgb / 13%);
+  color: @color-info;
+  font-size: @text-sm;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+// "Your turn": filled rather than tinted, so an action step reads differently from an explanation
+// before a word of it is read.
+.onboardingTour__badge--action {
+  background: @color-info;
+  color: @color-base;
+}
+
+@keyframes onboarding-tour-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 4px rgb(@color-info-rgb / 25%);
+  }
+
+  50% {
+    box-shadow: 0 0 0 12px rgb(@color-info-rgb / 0%);
+  }
+}
+
+// Plain buttons rather than Semi's: the tour's primary action is deliberately not Fredy red, so it
+// cannot be mistaken for an action of the page underneath.
+.onboardingTour__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: @space-2;
+  min-height: 44px;
+  padding: 0 @space-4;
+  border: 1px solid @color-border-bright;
+  border-radius: @radius-btn;
+  background: transparent;
+  color: @color-text;
+  font: 500 @text-base @font-ui;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: @color-hover;
+  }
+
+  &:focus-visible {
+    outline: 2px solid @color-info;
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.6;
+  }
+
+  &--primary {
+    border-color: @color-text;
+    background: @color-text;
+    color: @color-base;
+    font-weight: 600;
+
+    &:hover:not(:disabled) {
+      background: @color-text;
+      opacity: 0.88;
+    }
+  }
+
+  &--quiet {
+    padding: 0 @space-2;
+    border-color: transparent;
+    color: @color-muted;
+  }
+
+  &--grow {
+    flex: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .onboardingTour__scrim,
+  .onboardingTour__ring,
+  .onboardingTour__card {
+    transition: none;
+  }
+
+  .onboardingTour__ring--action {
+    animation: none;
+  }
+}

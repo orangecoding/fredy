@@ -43,6 +43,12 @@ describe('dashboard attention', () => {
     ]);
   });
 
+  it('never flags the onboarding tour example job, which is paused and silent by design', () => {
+    const tourJob = healthyJob({ id: 'tour-u1', enabled: false, notificationAdapter: [], numberOfFoundListings: 0 });
+    expect(allJobsNeedingAttention([tourJob], LAST_RUN)).toEqual([]);
+    expect(countJobsNeedingAttention([tourJob, healthyJob({ id: 'j2', enabled: false })], LAST_RUN)).toBe(1);
+  });
+
   it('flags a job that has been switched off', () => {
     const jobs = [healthyJob({ enabled: false })];
     expect(findJobsNeedingAttention(jobs, LAST_RUN)[0].reason).toBe(ATTENTION_REASONS.PAUSED);
