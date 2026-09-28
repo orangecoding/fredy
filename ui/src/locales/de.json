@@ -1516,7 +1516,6 @@
   "tour.step.finish.title": "Alles bereit",
   "tour.step.finish.body": "Das war die Tour. Der Beispieljob und seine Inserate werden entfernt, sobald du diese Karte schließt.\n\nDer beste nächste Schritt ist dein eigener erster Job: Füge eine Such-URL deines Lieblingsportals ein, den Rest übernimmt Fredy.",
   "tour.prompt.duration": "Geführte Tour · ca. 3 Minuten",
-  "tour.prompt.exampleData": "Damit du etwas siehst, legt Fredy für die Dauer der Tour einen Beispieljob mit 8 erfundenen Inseraten an. Er sucht nie selbst und wird automatisch entfernt, auch wenn du den Browser schließt.",
   "tour.badge": "Geführte Tour",
   "tour.pill.label": "Tour",
   "tour.pill.example": "Beispieldaten aktiv",

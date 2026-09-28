@@ -396,21 +396,6 @@ export default function OnboardingTour({ isAdmin, blocked }) {
                 {t('tour.prompt.title')}
               </h2>
               <p className="onboardingTour__body">{t(isAdmin ? 'tour.prompt.bodyAdmin' : 'tour.prompt.body')}</p>
-              <p className="onboardingTour__note">
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  aria-hidden="true"
-                >
-                  <path d="M4 7h16M4 12h16M4 17h10" />
-                </svg>
-                {t('tour.prompt.exampleData')}
-              </p>
               <div className="onboardingTour__actions">
                 <button type="button" className="onboardingTour__button" onClick={decline} disabled={starting}>
                   {t('tour.prompt.decline')}
@@ -458,10 +443,13 @@ export default function OnboardingTour({ isAdmin, blocked }) {
         <div key={index} className="onboardingTour__scrim" style={panel} aria-hidden="true" />
       ))}
       {/* On an info step the ring also covers the element, so a click on it cannot navigate the
-          tour away mid-explanation. On an action step clicks pass through: that click is the step. */}
+          tour away mid-explanation - unless the step invites trying it out (the map, the filters).
+          On an action step clicks pass through: that click is the step. */}
       {hole != null && (
         <div
-          className={`onboardingTour__ring${isAction ? ' onboardingTour__ring--action' : ''}`}
+          className={`onboardingTour__ring${isAction ? ' onboardingTour__ring--action' : ''}${
+            !isAction && step.interactive ? ' onboardingTour__ring--open' : ''
+          }`}
           style={hole}
           aria-hidden="true"
         />

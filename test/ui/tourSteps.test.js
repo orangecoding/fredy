@@ -170,6 +170,12 @@ describe('onboarding tour steps', () => {
     }
   });
 
+  it('leaves only the steps usable that invite trying something out', () => {
+    const open = TOUR_STEPS.filter((step) => step.interactive).map((step) => step.id);
+    expect(open).toEqual(['listingsOverview', 'mapListings', 'mapFilters', 'finance', 'settings', 'admin']);
+    expect(TOUR_STEPS.filter((step) => step.interactive && step.type !== 'info')).toEqual([]);
+  });
+
   it('uses unique step ids', () => {
     expect(new Set(ids(TOUR_STEPS)).size).toBe(TOUR_STEPS.length);
   });

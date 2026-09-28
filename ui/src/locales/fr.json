@@ -1516,7 +1516,6 @@
   "tour.step.finish.title": "Tout est prêt",
   "tour.step.finish.body": "C'était la visite. La recherche d'exemple et ses annonces sont supprimées dès que vous fermez cette carte.\n\nLa meilleure étape suivante est votre propre première recherche : collez une URL de recherche de votre portail préféré, Fredy s'occupe du reste.",
   "tour.prompt.duration": "Visite guidée · environ 3 minutes",
-  "tour.prompt.exampleData": "Pour qu'il y ait quelque chose à voir, Fredy ajoute pendant la visite une recherche d'exemple avec 8 annonces fictives. Elle ne lance jamais de recherche et est supprimée automatiquement, même si vous fermez le navigateur.",
   "tour.badge": "Visite guidée",
   "tour.pill.label": "Visite",
   "tour.pill.example": "Données d'exemple actives",

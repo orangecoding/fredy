@@ -1477,7 +1477,6 @@
   "tour.step.finish.title": "Her şey hazır",
   "tour.step.finish.body": "Tur bu kadar. Örnek iş ve ilanları bu kartı kapattığın anda kaldırılır.\n\nEn iyi sonraki adım kendi ilk işin: favori portalından bir arama URL’si yapıştır, gerisini Fredy halleder.",
   "tour.prompt.duration": "Rehberli tur · yaklaşık 3 dakika",
-  "tour.prompt.exampleData": "Görecek bir şey olsun diye Fredy tur süresince 8 uydurma ilan içeren örnek bir iş ekler. Bu iş hiçbir zaman arama yapmaz ve tarayıcıyı kapatsan bile otomatik olarak kaldırılır.",
   "tour.badge": "Rehberli tur",
   "tour.pill.label": "Tur",
   "tour.pill.example": "Örnek veriler etkin",

@@ -1516,7 +1516,6 @@
   "tour.step.finish.title": "Tutto pronto",
   "tour.step.finish.body": "Questo era il tour. La ricerca di esempio e i suoi annunci vengono rimossi non appena chiudi questa scheda.\n\nIl miglior passo successivo è la tua prima ricerca: incolla un URL di ricerca del tuo portale preferito e Fredy si occupa del resto.",
   "tour.prompt.duration": "Tour guidato · circa 3 minuti",
-  "tour.prompt.exampleData": "Perché ci sia qualcosa da vedere, Fredy aggiunge per la durata del tour una ricerca di esempio con 8 annunci inventati. Non esegue mai ricerche e viene rimossa automaticamente, anche se chiudi il browser.",
   "tour.badge": "Tour guidato",
   "tour.pill.label": "Tour",
   "tour.pill.example": "Dati di esempio attivi",

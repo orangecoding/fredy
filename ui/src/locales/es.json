@@ -1516,7 +1516,6 @@
   "tour.step.finish.title": "Todo listo",
   "tour.step.finish.body": "Este ha sido el recorrido. La búsqueda de ejemplo y sus anuncios se eliminan en cuanto cierres esta tarjeta.\n\nEl mejor siguiente paso es tu propia primera búsqueda: pega una URL de búsqueda de tu portal favorito y Fredy se encarga del resto.",
   "tour.prompt.duration": "Recorrido guiado · unos 3 minutos",
-  "tour.prompt.exampleData": "Para que haya algo que ver, Fredy añade durante el recorrido una búsqueda de ejemplo con 8 anuncios inventados. Nunca busca por sí misma y se elimina automáticamente, incluso si cierras el navegador.",
   "tour.badge": "Recorrido guiado",
   "tour.pill.label": "Recorrido",
   "tour.pill.example": "Datos de ejemplo activos",

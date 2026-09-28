@@ -34,6 +34,9 @@
  * @property {string} [labelKey] Action steps: translation key of the control's visible label, for the
  *   step's copy.
  * @property {string} [groupKey] Action steps: translation key of the sidebar group the control sits in.
+ * @property {boolean} [interactive] Info steps: the element stays usable, because the step invites
+ *   trying it out (clicking a pin, switching a filter, typing into the household form). Every other
+ *   info step shields its element, so a stray click cannot take the tour off its page.
  * @property {boolean} [adminOnly] Only shown to administrators.
  * @property {boolean} [needsListing] Only shown when the tour has an example listing to open.
  */
@@ -84,7 +87,13 @@ export const TOUR_STEPS = Object.freeze(
       labelKey: 'nav.listingsOverview',
       groupKey: 'nav.listings',
     },
-    { id: 'listingsOverview', type: 'info', route: '/listings', targets: ['.listingsOverview__topbar'] },
+    {
+      id: 'listingsOverview',
+      type: 'info',
+      interactive: true,
+      route: '/listings',
+      targets: ['.listingsOverview__topbar'],
+    },
     {
       id: 'openListing',
       type: 'action',
@@ -120,8 +129,14 @@ export const TOUR_STEPS = Object.freeze(
       groupKey: 'nav.listings',
       needsListing: true,
     },
-    { id: 'mapListings', type: 'info', route: '/map', targets: ['.map-view-container__map-wrapper'] },
-    { id: 'mapFilters', type: 'info', route: '/map', targets: ['.map-panel'] },
+    {
+      id: 'mapListings',
+      type: 'info',
+      interactive: true,
+      route: '/map',
+      targets: ['.map-view-container__map-wrapper'],
+    },
+    { id: 'mapFilters', type: 'info', interactive: true, route: '/map', targets: ['.map-panel'] },
     {
       id: 'goFinance',
       type: 'action',
@@ -131,7 +146,7 @@ export const TOUR_STEPS = Object.freeze(
       labelKey: 'nav.finance',
       groupKey: 'nav.listings',
     },
-    { id: 'finance', type: 'info', route: '/finance', targets: ['.finance__household'] },
+    { id: 'finance', type: 'info', interactive: true, route: '/finance', targets: ['.finance__household'] },
     {
       id: 'goSettings',
       type: 'action',
@@ -143,6 +158,7 @@ export const TOUR_STEPS = Object.freeze(
     {
       id: 'settings',
       type: 'info',
+      interactive: true,
       route: '/settings/preferences',
       match: '/settings',
       targets: ['.settingsShell__tabbar'],
@@ -160,6 +176,7 @@ export const TOUR_STEPS = Object.freeze(
     {
       id: 'admin',
       type: 'info',
+      interactive: true,
       route: '/admin/system',
       match: '/admin',
       targets: ['.settingsShell__tabbar'],
