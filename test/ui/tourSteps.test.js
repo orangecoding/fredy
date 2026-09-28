@@ -8,7 +8,14 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-import { TOUR_STEPS, buildTourSteps, stepBodyKey, stepTitleKey } from '../../ui/src/services/tour/tourSteps.js';
+import {
+  TOUR_STEPS,
+  buildTourSteps,
+  isActionDone,
+  isOnStepPage,
+  stepBodyKey,
+  stepTitleKey,
+} from '../../ui/src/services/tour/tourSteps.js';
 import { LEGACY_REDIRECTS } from '../../ui/src/services/routes/legacyRedirects.js';
 
 const uiSrc = path.join(path.dirname(fileURLToPath(import.meta.url)), '../../ui/src');
@@ -37,19 +44,27 @@ function readSources(dir) {
 const ids = (steps) => steps.map((step) => step.id);
 
 describe('onboarding tour steps', () => {
-  it('walks an administrator through every page, the administration included', () => {
+  it('walks an administrator through every page, alternating explanations and clicks', () => {
     expect(ids(buildTourSteps({ isAdmin: true, listingId: 'abc' }))).toEqual([
       'welcome',
       'dashboard',
-      'jobCreate',
+      'goJobs',
       'jobsOverview',
+      'goNewJob',
+      'jobCreate',
+      'goListings',
       'listingsOverview',
-      'mapListings',
-      'mapFilters',
-      'finance',
+      'openListing',
       'listingDetail',
       'application',
+      'goMap',
+      'mapListings',
+      'mapFilters',
+      'goFinance',
+      'finance',
+      'goSettings',
       'settings',
+      'goAdmin',
       'admin',
       'finish',
     ]);
@@ -58,16 +73,54 @@ describe('onboarding tour steps', () => {
   it('gives everybody else the same tour without the administration', () => {
     const admin = ids(buildTourSteps({ isAdmin: true, listingId: 'abc' }));
     const user = ids(buildTourSteps({ isAdmin: false, listingId: 'abc' }));
-    expect(user).toEqual(admin.filter((id) => id !== 'admin'));
+    expect(user).toEqual(admin.filter((id) => id !== 'admin' && id !== 'goAdmin'));
   });
 
-  it('sends the detail steps to the example listing', () => {
-    const steps = buildTourSteps({ isAdmin: false, listingId: 'a b' });
-    const detail = steps.filter((step) => step.needsListing);
-    expect(detail.map((step) => step.route)).toEqual(['/listings/listing/a%20b', '/listings/listing/a%20b']);
+  it('never asks for a click on a page the user has not been led to', () => {
+    // Every action step starts where the step before it left the user.
+    for (const isAdmin of [true, false]) {
+      const steps = buildTourSteps({ isAdmin, listingId: 'abc' });
+      steps.forEach((step, index) => {
+        if (step.type !== 'action' || index === 0) return;
+        expect(isOnStepPage(step, steps[index - 1].route), step.id).toBe(true);
+      });
+    }
   });
 
-  it('leaves out the detail steps when there is no example listing to open', () => {
+  it('lands every action on the page the next step explains', () => {
+    const steps = buildTourSteps({ isAdmin: true, listingId: 'abc' });
+    steps.forEach((step, index) => {
+      if (step.type !== 'action') return;
+      const next = steps[index + 1];
+      expect(isActionDone(step, next.route), step.id).toBe(true);
+      expect(isOnStepPage(next, next.route), next.id).toBe(true);
+    });
+  });
+
+  it('counts an action as done only on the page it leads to', () => {
+    const goJobs = TOUR_STEPS.find((step) => step.id === 'goJobs');
+    const goSettings = TOUR_STEPS.find((step) => step.id === 'goSettings');
+    expect(isActionDone(goJobs, '/jobs')).toBe(true);
+    expect(isActionDone(goJobs, '/dashboard')).toBe(false);
+    expect(isActionDone(goJobs, '/jobsx')).toBe(false);
+    // The settings entry redirects to its first tab.
+    expect(isActionDone(goSettings, '/settings/preferences')).toBe(true);
+    expect(isActionDone(TOUR_STEPS[0], '/dashboard')).toBe(false);
+  });
+
+  it('points sidebar entries inside a closed group at the group first opened', () => {
+    const goMap = TOUR_STEPS.find((step) => step.id === 'goMap');
+    expect(goMap.targets).toEqual(['[data-tour="/map"]', '[data-tour="listings"]']);
+    expect(goMap.groupKey).toBe('nav.listings');
+  });
+
+  it('sends the listing steps to the example listing, but accepts any listing the user opened', () => {
+    const detail = buildTourSteps({ isAdmin: false, listingId: 'a b' }).find((step) => step.id === 'listingDetail');
+    expect(detail.route).toBe('/listings/listing/a%20b');
+    expect(isOnStepPage(detail, '/listings/listing/other')).toBe(true);
+  });
+
+  it('leaves out the listing steps when there is no example listing to open', () => {
     for (const listingId of [null, undefined, '']) {
       const steps = buildTourSteps({ isAdmin: false, listingId });
       expect(steps.some((step) => step.needsListing)).toBe(false);
@@ -77,8 +130,8 @@ describe('onboarding tour steps', () => {
 
   it('starts with the welcome and ends with the farewell, both of which point at nothing', () => {
     const steps = buildTourSteps({ isAdmin: true, listingId: 'abc' });
-    expect(steps[0]).toMatchObject({ id: 'welcome', target: null });
-    expect(steps.at(-1)).toMatchObject({ id: 'finish', target: null });
+    expect(steps[0]).toMatchObject({ id: 'welcome', targets: [] });
+    expect(steps.at(-1)).toMatchObject({ id: 'finish', targets: [] });
   });
 
   it('only visits routes the app actually has', () => {
@@ -86,25 +139,34 @@ describe('onboarding tour steps', () => {
     for (const step of TOUR_STEPS) {
       const [top] = step.route.split('/').filter(Boolean);
       expect(app, step.id).toMatch(new RegExp(`path="/?${top}`));
-      // A route that only exists as a legacy redirect would bounce the tour somewhere else.
       expect(Object.keys(LEGACY_REDIRECTS)).not.toContain(step.route);
     }
   });
 
-  // The targets are class names the pages already carry. Renaming one in a view would otherwise
-  // leave its step pointing at nothing, silently.
-  it('points at class names that still exist in the pages', () => {
+  // The targets are class names and data-tour attributes the pages carry. Renaming one in a view
+  // would otherwise leave its step pointing at nothing, silently.
+  it('points at class names and data-tour attributes that still exist in the pages', () => {
     const sources = readSources(uiSrc);
-    for (const step of TOUR_STEPS.filter((candidate) => candidate.target != null)) {
-      const className = step.target.replace(/^\./, '');
-      expect(sources.includes(className), `${step.id}: ${step.target}`).toBe(true);
+    for (const step of TOUR_STEPS) {
+      for (const target of step.targets) {
+        const tour = /^\[data-tour="(.+)"\]$/.exec(target);
+        if (tour != null) {
+          const literal = sources.includes(`data-tour="${tour[1]}"`);
+          const fromNav = sources.includes('data-tour={node.key}') || sources.includes('data-tour={child.key}');
+          expect(literal || fromNav, `${step.id}: ${target}`).toBe(true);
+        } else {
+          expect(sources.includes(target.replace(/^\./, '')), `${step.id}: ${target}`).toBe(true);
+        }
+      }
     }
   });
 
-  it('has a heading and an explanation for every step', () => {
+  it('has a heading and an explanation for every step, and a label for every control it names', () => {
     for (const step of TOUR_STEPS) {
       expect(english, step.id).toHaveProperty([stepTitleKey(step.id)]);
       expect(english, step.id).toHaveProperty([stepBodyKey(step.id)]);
+      if (step.labelKey) expect(english, step.id).toHaveProperty([step.labelKey]);
+      if (step.groupKey) expect(english, step.id).toHaveProperty([step.groupKey]);
     }
   });
 

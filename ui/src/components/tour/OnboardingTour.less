@@ -31,6 +31,7 @@
 
   &__ring {
     position: fixed;
+    pointer-events: auto;
     box-sizing: border-box;
     border: 2px solid @color-info;
     border-radius: @radius-card;
@@ -40,6 +41,13 @@
       left 0.25s ease,
       width 0.25s ease,
       height 0.25s ease;
+  }
+
+  // The element the user is asked to click. It pulses, and clicks go through to it.
+  &__ring--action {
+    pointer-events: none;
+    border-width: 3px;
+    animation: onboarding-tour-pulse 1.6s ease-in-out infinite;
   }
 
   // Says what mode the app is in, on every step: that this is the tour, that the data is not real,
@@ -386,6 +394,24 @@
   text-transform: uppercase;
 }
 
+// "Your turn": filled rather than tinted, so an action step reads differently from an explanation
+// before a word of it is read.
+.onboardingTour__badge--action {
+  background: @color-info;
+  color: @color-base;
+}
+
+@keyframes onboarding-tour-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 4px rgb(@color-info-rgb / 25%);
+  }
+
+  50% {
+    box-shadow: 0 0 0 12px rgb(@color-info-rgb / 0%);
+  }
+}
+
 // Plain buttons rather than Semi's: the tour's primary action is deliberately not Fredy red, so it
 // cannot be mistaken for an action of the page underneath.
 .onboardingTour__button {
@@ -444,5 +470,9 @@
   .onboardingTour__ring,
   .onboardingTour__card {
     transition: none;
+  }
+
+  .onboardingTour__ring--action {
+    animation: none;
   }
 }

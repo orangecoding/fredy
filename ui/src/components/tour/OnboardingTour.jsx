@@ -10,7 +10,13 @@ import { useLocation, useNavigate } from 'react-router';
 import { useActions } from '../../services/state/store';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
 import { errorMessage } from '../../services/xhr.js';
-import { buildTourSteps, stepBodyKey, stepTitleKey } from '../../services/tour/tourSteps.js';
+import {
+  buildTourSteps,
+  isActionDone,
+  isOnStepPage,
+  stepBodyKey,
+  stepTitleKey,
+} from '../../services/tour/tourSteps.js';
 import { placeCard, scrimPanels, spotlightRect } from '../../services/tour/tourPlacement.js';
 import {
   TOUR_OUTCOME,
@@ -42,6 +48,9 @@ const PHASE = Object.freeze({
 
 /** Below this width the card becomes a sheet from the bottom. Matches the app's phone breakpoint. */
 const PHONE_WIDTH = 768;
+
+/** Stable empty target list, so the target hook does not restart on every render of a step without one. */
+const NO_TARGETS = Object.freeze([]);
 
 /** What the card is assumed to measure until it has been rendered once. */
 const INITIAL_CARD_SIZE = Object.freeze({ width: 440, height: 280 });
@@ -105,6 +114,26 @@ function CompassIcon() {
 }
 
 /** @returns {React.ReactElement} */
+function PointerIcon() {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M9 11V5a2 2 0 0 1 4 0v5" />
+      <path d="M13 10a2 2 0 0 1 4 0v1a2 2 0 0 1 4 0v4a6 6 0 0 1-6 6h-2a6 6 0 0 1-5-2.7L5 14a2 2 0 0 1 3.2-2.4L9 13" />
+    </svg>
+  );
+}
+
+/** @returns {React.ReactElement} */
 function ArrowIcon() {
   return (
     <svg
@@ -163,11 +192,12 @@ export default function OnboardingTour({ isAdmin, blocked }) {
   const steps = useMemo(() => buildTourSteps({ isAdmin, listingId }), [isAdmin, listingId]);
   const step = steps[Math.min(stepIndex, steps.length - 1)];
   const isLast = stepIndex >= steps.length - 1;
-  const onStepRoute = step != null && location.pathname === step.route;
+  const onStepRoute = isOnStepPage(step, location.pathname);
+  const isAction = step?.type === 'action';
   const running = phase === PHASE.RUNNING || phase === PHASE.FINISHING;
   const phone = viewport.width <= PHONE_WIDTH;
 
-  const targetRect = useTourTarget(step?.target ?? null, phase === PHASE.RUNNING && onStepRoute);
+  const targetRect = useTourTarget(step?.targets ?? NO_TARGETS, phase === PHASE.RUNNING && onStepRoute);
 
   // The card is placed from its own size, which depends on the step's text. Measured after every
   // render and stored only when it changed, so this settles after one extra pass.
@@ -254,13 +284,21 @@ export default function OnboardingTour({ isAdmin, blocked }) {
   useEffect(() => {
     if (phase !== PHASE.RUNNING || step == null) return;
     tourOfThisPage = { listingId, stepIndex };
-    if (pathnameRef.current !== step.route) {
+    if (!isOnStepPage(step, pathnameRef.current)) {
       navigate(step.route);
     }
     // Keyboard users land on the way forward. Without preventScroll the focus would scroll the page
     // away from the element the step is about.
     primaryRef.current?.focus({ preventScroll: true });
   }, [phase, stepIndex, step?.route]);
+
+  // An action step is done the moment the app is on the page its control leads to, whether the user
+  // clicked the control, used the "show me" fallback, or found another way there. Keyed on the path
+  // alone: going back to an action step must not count the page it was left from as arriving.
+  useEffect(() => {
+    if (phase !== PHASE.RUNNING || !isActionDone(step, location.pathname)) return;
+    setStepIndex((index) => Math.min(steps.length - 1, index + 1));
+  }, [location.pathname]);
 
   // Closing or reloading the tab ends the tour. A beacon, because an ordinary request would be
   // cancelled together with the page it came from.
@@ -401,7 +439,8 @@ export default function OnboardingTour({ isAdmin, blocked }) {
   }
 
   const busy = phase === PHASE.FINISHING;
-  const hole = step.target != null && onStepRoute ? spotlightRect(targetRect, viewport) : null;
+  const hole = step.targets.length > 0 && onStepRoute ? spotlightRect(targetRect, viewport) : null;
+  const nextStep = steps[stepIndex + 1];
   const placement = placeCard(hole, cardSize, viewport);
   const sideways = placement.side === 'left' || placement.side === 'right';
   const cardClass = [
@@ -418,7 +457,15 @@ export default function OnboardingTour({ isAdmin, blocked }) {
       {scrimPanels(hole, viewport).map((panel, index) => (
         <div key={index} className="onboardingTour__scrim" style={panel} aria-hidden="true" />
       ))}
-      {hole != null && <div className="onboardingTour__ring" style={hole} aria-hidden="true" />}
+      {/* On an info step the ring also covers the element, so a click on it cannot navigate the
+          tour away mid-explanation. On an action step clicks pass through: that click is the step. */}
+      {hole != null && (
+        <div
+          className={`onboardingTour__ring${isAction ? ' onboardingTour__ring--action' : ''}`}
+          style={hole}
+          aria-hidden="true"
+        />
+      )}
 
       {!phone && (
         <div className="onboardingTour__pill">
@@ -466,9 +513,9 @@ export default function OnboardingTour({ isAdmin, blocked }) {
           </span>
         ) : (
           <div className="onboardingTour__head">
-            <span className="onboardingTour__badge">
-              <CompassIcon />
-              {t('tour.badge')}
+            <span className={`onboardingTour__badge${isAction ? ' onboardingTour__badge--action' : ''}`}>
+              {isAction ? <PointerIcon /> : <CompassIcon />}
+              {t(isAction ? 'tour.yourTurn' : 'tour.badge')}
             </span>
             <span className="onboardingTour__counter">
               {String(stepIndex + 1).padStart(2, '0')} / {String(steps.length).padStart(2, '0')}
@@ -502,7 +549,10 @@ export default function OnboardingTour({ isAdmin, blocked }) {
           {t(stepTitleKey(step.id))}
         </h2>
         <p className="onboardingTour__body" aria-live="polite">
-          {t(stepBodyKey(step.id))}
+          {t(stepBodyKey(step.id), {
+            target: step.labelKey ? t(step.labelKey) : '',
+            group: step.groupKey ? t(step.groupKey) : '',
+          })}
         </p>
 
         <div className="onboardingTour__actions">
@@ -548,16 +598,29 @@ export default function OnboardingTour({ isAdmin, blocked }) {
                   {t('tour.back')}
                 </button>
               )}
-              <button
-                ref={primaryRef}
-                type="button"
-                className="onboardingTour__button onboardingTour__button--primary"
-                disabled={busy}
-                onClick={() => setStepIndex((index) => Math.min(steps.length - 1, index + 1))}
-              >
-                {t('tour.next')}
-                <ArrowIcon />
-              </button>
+              {isAction ? (
+                // No "next" here: the click on the real control is the way on. This is the way out for
+                // anybody who cannot find it, and it goes to the same page the control would have.
+                <button
+                  type="button"
+                  className="onboardingTour__button"
+                  disabled={busy || nextStep == null}
+                  onClick={() => navigate(nextStep.route)}
+                >
+                  {t('tour.showMe')}
+                </button>
+              ) : (
+                <button
+                  ref={primaryRef}
+                  type="button"
+                  className="onboardingTour__button onboardingTour__button--primary"
+                  disabled={busy}
+                  onClick={() => setStepIndex((index) => Math.min(steps.length - 1, index + 1))}
+                >
+                  {t('tour.next')}
+                  <ArrowIcon />
+                </button>
+              )}
             </>
           )}
         </div>
