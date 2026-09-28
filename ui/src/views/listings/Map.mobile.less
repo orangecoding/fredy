@@ -24,26 +24,69 @@
 }
 
 @media (max-width: 430px) {
+  /* `.map-panel` positions itself against this box (see below), which on every other width holds
+     it to the shape a single dropdown needs. With the panel now absolute inside it, an empty
+     `.map-shell__ui` has nothing left to size itself by and collapses to zero height - stretching
+     it to the map's own bounds instead gives `.map-panel`'s `left`/`right`/`bottom` a frame the
+     size of the map to measure from. */
+  .map-shell__ui {
+    inset: 0;
+    width: auto;
+    max-height: none;
+    overflow: visible;
+  }
+
+  /*
+   * Bottom-left rather than the top-right dropdown the desktop panel is: at this width the panel
+   * is nearly as wide as the map itself (`.map-shell__ui`'s `min(300px, calc(100% - 24px))`), and
+   * anchored under the search box it landed in the same band as MapLibre's own zoom and compass
+   * controls, which the search pushes to that exact spot. Bottom-left keeps clear of both that
+   * band and the attribution control's "i", which lives in the opposite bottom corner.
+   *
+   * Absolute against `.map-shell__ui` (stretched to the map's own bounds above), not fixed
+   * against the viewport - the viewport runs under the app's own sidebar, and `fixed`'s
+   * `left`/`right` measure from its edges, not the map's, which put the panel half behind it.
+   */
+  .map-panel {
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    top: auto;
+    /* Clears MapLibre's own attribution strip along the bottom edge. It only collapses to its "i"
+       icon once the map is panned or zoomed; until then - which on a page nobody has touched yet
+       is exactly the state a screenshot catches - it runs its full text at up to two lines, and
+       the offset has to clear that, not the icon it becomes afterwards. */
+    bottom: 116px;
+    width: auto;
+    max-width: none;
+    z-index: 15;
+  }
+
+  /* Folded: a compact pill sized to its own text, not the full-width bar the box is the rest of
+     the time - a bar that wide next to the left edge would have reached for the same corner the
+     search and the zoom controls already own. */
   .map-panel__fold-label {
-    display: flex;
+    display: inline-flex;
+    width: fit-content;
     align-items: center;
-    justify-content: space-between;
     gap: @space-2;
+    padding: 10px 16px;
+    border-radius: 999px;
     cursor: pointer;
+    box-shadow: @shadow-sm;
     font-size: 10.5px;
     font-weight: 600;
     letter-spacing: 0.07em;
     text-transform: uppercase;
-    color: @color-faint;
+    color: @color-map-panel-text;
   }
 
   .map-panel__fold-chevron {
     transition: transform @transition-fast;
   }
 
-  /* Folded by default (the checkbox above starts checked; see Map.jsx). Everything below the
-     label - the map controls and every listing filter - is the part that used to cover the whole
-     map on a phone. */
+  /* Folded by default (the checkbox above starts unchecked). Everything below the label - the map
+     controls and every listing filter - is the part that used to cover the whole map on a phone. */
   .map-panel__body {
     display: none;
   }
@@ -52,14 +95,27 @@
     transform: rotate(180deg);
   }
 
+  /* Open: the pill grows into the popup rather than staying pinned to its own corner, so it reads
+     as one control changing shape rather than a second, different box appearing next to it. */
+  .map-panel:has(.map-panel__fold-input:checked) {
+    width: auto;
+    /* Relative to `.map-shell__ui`'s own height, which now matches the map's, not the viewport's -
+       the two differ by the headline above the map and the app's own chrome around it. 116px is
+       the `bottom` offset above, already spent before this box's height is even measured; 100px
+       leaves the search box and MapLibre's own zoom/compass controls reachable above it rather
+       than sliding the sheet in under them. */
+    max-height: calc(100% - 116px - 100px);
+  }
+
   .map-panel__fold-input:checked ~ .map-panel__body {
     display: flex;
     flex-direction: column;
     gap: 12px;
     margin-top: 12px;
+    overflow-y: auto;
   }
 
-  /* The unfolded body's own "Map" heading would repeat the fold label word for word; only its
+  /* The body's own "Map" heading would repeat the fold label word for word once open; only its
      fullscreen button still earns a row here. */
   .map-panel__body > .map-panel__groupTitle:first-child .map-panel__groupTitle-text {
     display: none;
