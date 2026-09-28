@@ -141,7 +141,12 @@
   "blurInfo": {
     "type": "disk",
     "radius": 50,
-    "bbox": [2.305041649559292, 48.85410679396256, 2.3064069326739762, 48.85500511189842],
+    "bbox": [
+      2.305041649559292,
+      48.85410679396256,
+      2.3064069326739762,
+      48.85500511189842
+    ],
     "position": {
       "lat": 48.85455595293049,
       "lon": 2.305724291116634
@@ -182,7 +187,9 @@
     "accountType": "agency",
     "agencyPageEnabled": true,
     "callTrackingEnabled": true,
-    "affiliation": ["fnaim"]
+    "affiliation": [
+      "fnaim"
+    ]
   },
   "addressKnown": true,
   "displayDistrictName": true,
@@ -191,7 +198,9 @@
   "descriptionTextLength": 2169,
   "userRelativeData": {
     "importAccountId": "566ff1b69b2b0ad718a0cdff",
-    "accountIds": ["immo-facile-2985"],
+    "accountIds": [
+      "immo-facile-2985"
+    ],
     "searchAccountIds": [],
     "isAdmin": false,
     "isAdModifier": false,

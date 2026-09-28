@@ -85,7 +85,12 @@
     },
     "hardFacts": {
       "title": "Appartement à louer",
-      "keyfacts": ["2 pièces", "1 chambre", "37 m²", "4ème étage"],
+      "keyfacts": [
+        "2 pièces",
+        "1 chambre",
+        "37 m²",
+        "4ème étage"
+      ],
       "facts": [
         {
           "type": "numberOfRooms",
@@ -273,7 +278,9 @@
       },
       "displayLinks": true,
       "address": "16 avenue du Maréchal Foch, 77500 Chelles",
-      "phoneNumbers": ["01 81 69 27 00"],
+      "phoneNumbers": [
+        "01 81 69 27 00"
+      ],
       "agencyStrip": {
         "agencyColor": "#107090",
         "fontColor": "#FFFFFF"
@@ -460,7 +467,12 @@
     },
     "hardFacts": {
       "title": "Appartement à louer",
-      "keyfacts": ["2 pièces", "2 chambres", "67 m²", "dès le 14/10/2026"],
+      "keyfacts": [
+        "2 pièces",
+        "2 chambres",
+        "67 m²",
+        "dès le 14/10/2026"
+      ],
       "facts": [
         {
           "type": "numberOfRooms",
@@ -623,11 +635,16 @@
       "isPrivateOwner": false,
       "profileUrl": "https://www.seloger.com/professionnels-immobilier/Qg1t3enM7EqTGUX1JbSsBh",
       "imprintUrl": null,
-      "agencyLegalInformations": ["SafeStays International", "<b>Siège:</b> 8 The Green, 19901 Dover"],
+      "agencyLegalInformations": [
+        "SafeStays International",
+        "<b>Siège:</b> 8 The Green, 19901 Dover"
+      ],
       "publisherType": "AGENCY",
       "displayLinks": true,
       "address": "8 The Green, 19901 Dover",
-      "phoneNumbers": ["+41798440029"],
+      "phoneNumbers": [
+        "+41798440029"
+      ],
       "agencyStrip": {
         "agencyColor": "#FFFFFF",
         "fontColor": "#000000"
@@ -784,7 +801,12 @@
     },
     "hardFacts": {
       "title": "Appartement à louer",
-      "keyfacts": ["4 pièces", "4 chambres", "100 m²", "4ème étage"],
+      "keyfacts": [
+        "4 pièces",
+        "4 chambres",
+        "100 m²",
+        "4ème étage"
+      ],
       "facts": [
         {
           "type": "numberOfRooms",
@@ -948,11 +970,16 @@
       "isPrivateOwner": false,
       "profileUrl": "https://www.seloger.com/professionnels-immobilier/Qg1t3enM7EqTGUX1JbSsBh",
       "imprintUrl": null,
-      "agencyLegalInformations": ["SafeStays International", "<b>Siège:</b> 8 The Green, 19901 Dover"],
+      "agencyLegalInformations": [
+        "SafeStays International",
+        "<b>Siège:</b> 8 The Green, 19901 Dover"
+      ],
       "publisherType": "AGENCY",
       "displayLinks": true,
       "address": "8 The Green, 19901 Dover",
-      "phoneNumbers": ["+41798440029"],
+      "phoneNumbers": [
+        "+41798440029"
+      ],
       "agencyStrip": {
         "agencyColor": "#FFFFFF",
         "fontColor": "#000000"
@@ -1108,7 +1135,11 @@
     },
     "hardFacts": {
       "title": "Appartement à louer",
-      "keyfacts": ["1 pièce", "30,3 m²", "dès le 30/09/2026"],
+      "keyfacts": [
+        "1 pièce",
+        "30,3 m²",
+        "dès le 30/09/2026"
+      ],
       "facts": [
         {
           "type": "numberOfRooms",
@@ -1264,11 +1295,16 @@
       "isPrivateOwner": false,
       "profileUrl": "https://www.seloger.com/professionnels-immobilier/Qg1t3enM7EqTGUX1JbSsBh",
       "imprintUrl": null,
-      "agencyLegalInformations": ["SafeStays International", "<b>Siège:</b> 8 The Green, 19901 Dover"],
+      "agencyLegalInformations": [
+        "SafeStays International",
+        "<b>Siège:</b> 8 The Green, 19901 Dover"
+      ],
       "publisherType": "AGENCY",
       "displayLinks": true,
       "address": "8 The Green, 19901 Dover",
-      "phoneNumbers": ["+41798440029"],
+      "phoneNumbers": [
+        "+41798440029"
+      ],
       "agencyStrip": {
         "agencyColor": "#FFFFFF",
         "fontColor": "#000000"
@@ -1445,7 +1481,12 @@
     },
     "hardFacts": {
       "title": "Appartement à louer",
-      "keyfacts": ["3 pièces", "2 chambres", "58 m²", "3ème étage"],
+      "keyfacts": [
+        "3 pièces",
+        "2 chambres",
+        "58 m²",
+        "3ème étage"
+      ],
       "facts": [
         {
           "type": "numberOfRooms",
@@ -1613,7 +1654,9 @@
       },
       "displayLinks": true,
       "address": "45 Rue Marx Dormoy, 75018 Paris",
-      "phoneNumbers": ["01 85 73 40 73"],
+      "phoneNumbers": [
+        "01 85 73 40 73"
+      ],
       "agencyStrip": {
         "agencyColor": "#303030",
         "fontColor": "#FFFFFF"

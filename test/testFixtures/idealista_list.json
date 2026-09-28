@@ -4565,7 +4565,11 @@
   "actualPage": 1,
   "itemsPerPage": 50,
   "numPaginations": 0,
-  "summary": ["Affitta case e appartamenti a Roma", "Tutti i prezzi", "Qualsiasi dimensione"],
+  "summary": [
+    "Affitta case e appartamenti a Roma",
+    "Tutti i prezzi",
+    "Qualsiasi dimensione"
+  ],
   "filter": {
     "locationName": "Roma"
   },

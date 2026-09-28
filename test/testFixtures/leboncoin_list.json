@@ -11,7 +11,9 @@
     "brand": "leboncoin",
     "ad_type": "offer",
     "url": "https://www.leboncoin.fr/ad/locations/3276619393",
-    "price": [1190],
+    "price": [
+      1190
+    ],
     "price_cents": 119000,
     "images": {
       "thumb_url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/d4/fc/28/d4fc283c7c587e60076c735422df513c5492dd73.jpg?rule=ad-thumb",
@@ -52,21 +54,27 @@
       {
         "key": "activity_sector",
         "value": "2",
-        "values": ["2"],
+        "values": [
+          "2"
+        ],
         "value_label": "2",
         "generic": false
       },
       {
         "key": "external_ad_id",
         "value": "ubiflow_551410913",
-        "values": ["ubiflow_551410913"],
+        "values": [
+          "ubiflow_551410913"
+        ],
         "value_label": "ubiflow_551410913",
         "generic": false
       },
       {
         "key": "real_estate_type",
         "value": "2",
-        "values": ["2"],
+        "values": [
+          "2"
+        ],
         "key_label": "Type de bien",
         "value_label": "Appartement",
         "generic": true
@@ -74,7 +82,9 @@
       {
         "key": "furnished",
         "value": "1",
-        "values": ["1"],
+        "values": [
+          "1"
+        ],
         "key_label": "Ce bien est :",
         "value_label": "Meublé",
         "generic": true
@@ -82,7 +92,9 @@
       {
         "key": "square",
         "value": "37",
-        "values": ["37"],
+        "values": [
+          "37"
+        ],
         "key_label": "Surface habitable",
         "value_label": "37 m²",
         "value_label_reader": "37 Mètres carrés",
@@ -91,7 +103,9 @@
       {
         "key": "rooms",
         "value": "2",
-        "values": ["2"],
+        "values": [
+          "2"
+        ],
         "key_label": "Nombre de pièces",
         "value_label": "2",
         "generic": true
@@ -99,7 +113,9 @@
       {
         "key": "bedrooms",
         "value": "1",
-        "values": ["1"],
+        "values": [
+          "1"
+        ],
         "key_label": "Nombre de chambres",
         "value_label": "1 ch.",
         "generic": true
@@ -107,7 +123,9 @@
       {
         "key": "nb_shower_room",
         "value": "1",
-        "values": ["1"],
+        "values": [
+          "1"
+        ],
         "key_label": "Nombre de salles d'eau",
         "value_label": "1",
         "generic": true
@@ -115,7 +133,9 @@
       {
         "key": "energy_rate",
         "value": "e",
-        "values": ["e"],
+        "values": [
+          "e"
+        ],
         "key_label": "Classe énergie",
         "value_label": "E",
         "generic": true
@@ -123,7 +143,9 @@
       {
         "key": "ges",
         "value": "e",
-        "values": ["e"],
+        "values": [
+          "e"
+        ],
         "key_label": "GES",
         "value_label": "E",
         "generic": true
@@ -131,17 +153,25 @@
       {
         "key": "specificities",
         "value": "",
-        "values": ["cellar"],
+        "values": [
+          "cellar"
+        ],
         "key_label": "Caractéristiques",
         "value_label": "Cave",
-        "values_label": ["Cave"],
-        "values_label_reader": [""],
+        "values_label": [
+          "Cave"
+        ],
+        "values_label_reader": [
+          ""
+        ],
         "generic": true
       },
       {
         "key": "heating_type",
         "value": "individual",
-        "values": ["individual"],
+        "values": [
+          "individual"
+        ],
         "key_label": "Type de chauffage",
         "value_label": "Individuel",
         "generic": true
@@ -149,7 +179,9 @@
       {
         "key": "floor_number",
         "value": "4",
-        "values": ["4"],
+        "values": [
+          "4"
+        ],
         "key_label": "Étage de votre bien",
         "value_label": "4",
         "generic": true
@@ -157,7 +189,9 @@
       {
         "key": "elevator",
         "value": "2",
-        "values": ["2"],
+        "values": [
+          "2"
+        ],
         "key_label": "Ascenseur",
         "value_label": "Non",
         "generic": true
@@ -165,7 +199,9 @@
       {
         "key": "available_date",
         "value": "25/09/2026",
-        "values": ["25/09/2026"],
+        "values": [
+          "25/09/2026"
+        ],
         "key_label": "Disponible à partir de",
         "value_label": "25/09/2026",
         "generic": true
@@ -173,7 +209,9 @@
       {
         "key": "monthly_charges",
         "value": "50",
-        "values": ["50"],
+        "values": [
+          "50"
+        ],
         "key_label": "Charges locatives",
         "value_label": "50 €",
         "value_label_reader": "50 Euro",
@@ -182,7 +220,9 @@
       {
         "key": "security_deposit",
         "value": "2280",
-        "values": ["2280"],
+        "values": [
+          "2280"
+        ],
         "key_label": "Dépôt de garantie",
         "value_label": "2280 €",
         "value_label_reader": "2280 Euro",
@@ -191,7 +231,9 @@
       {
         "key": "charges_included",
         "value": "1",
-        "values": ["1"],
+        "values": [
+          "1"
+        ],
         "key_label": "Charges incluses",
         "value_label": "Oui",
         "generic": true
@@ -199,7 +241,9 @@
       {
         "key": "inventory_fees",
         "value": "115",
-        "values": ["115"],
+        "values": [
+          "115"
+        ],
         "key_label": "Frais d'état des lieux",
         "value_label": "115 €",
         "value_label_reader": "115 Euro",
@@ -208,49 +252,63 @@
       {
         "key": "district_id",
         "value": "100510",
-        "values": ["100510"],
+        "values": [
+          "100510"
+        ],
         "value_label": "100510",
         "generic": false
       },
       {
         "key": "district_visibility",
         "value": "true",
-        "values": ["true"],
+        "values": [
+          "true"
+        ],
         "value_label": "true",
         "generic": false
       },
       {
         "key": "district_type_id",
         "value": "1",
-        "values": ["1"],
+        "values": [
+          "1"
+        ],
         "value_label": "1",
         "generic": false
       },
       {
         "key": "district_resolution_type",
         "value": "integration_flux",
-        "values": ["integration_flux"],
+        "values": [
+          "integration_flux"
+        ],
         "value_label": "integration_flux",
         "generic": false
       },
       {
         "key": "mandate_type",
         "value": "simple",
-        "values": ["simple"],
+        "values": [
+          "simple"
+        ],
         "value_label": "simple",
         "generic": false
       },
       {
         "key": "has_visibility_option",
         "value": "true",
-        "values": ["true"],
+        "values": [
+          "true"
+        ],
         "value_label": "true",
         "generic": false
       },
       {
         "key": "visibility_option_products",
         "value": "RE_VISIBILITY_FEATURE",
-        "values": ["RE_VISIBILITY_FEATURE"],
+        "values": [
+          "RE_VISIBILITY_FEATURE"
+        ],
         "value_label": "RE_VISIBILITY_FEATURE",
         "generic": false
       },
@@ -266,21 +324,27 @@
       {
         "key": "store_name",
         "value": "CPH Immobilier LOCATION Le Chesnay",
-        "values": ["CPH Immobilier LOCATION Le Chesnay"],
+        "values": [
+          "CPH Immobilier LOCATION Le Chesnay"
+        ],
         "value_label": "CPH Immobilier LOCATION Le Chesnay",
         "generic": false
       },
       {
         "key": "online_store_id",
         "value": "7156361",
-        "values": ["7156361"],
+        "values": [
+          "7156361"
+        ],
         "value_label": "7156361",
         "generic": false
       },
       {
         "key": "is_public_rent_control",
         "value": "false",
-        "values": ["false"],
+        "values": [
+          "false"
+        ],
         "key_label": "Bien soumis à l'encadrement des loyers",
         "value_label": "Non",
         "generic": false
@@ -288,7 +352,9 @@
       {
         "key": "annual_energy_budget_min",
         "value": "1170",
-        "values": ["1170"],
+        "values": [
+          "1170"
+        ],
         "key_label": "Montant annuel énergétique minimum",
         "value_label": "1170 €",
         "value_label_reader": "1170 Euro",
@@ -297,7 +363,9 @@
       {
         "key": "annual_energy_budget_max",
         "value": "1640",
-        "values": ["1640"],
+        "values": [
+          "1640"
+        ],
         "key_label": "Montant annuel énergétique maximum",
         "value_label": "1640 €",
         "value_label_reader": "1640 Euro",
@@ -306,7 +374,9 @@
       {
         "key": "custom_ref",
         "value": "56978",
-        "values": ["56978"],
+        "values": [
+          "56978"
+        ],
         "key_label": "Référence",
         "value_label": "56978",
         "generic": true
@@ -314,21 +384,27 @@
       {
         "key": "is_import",
         "value": "true",
-        "values": ["true"],
+        "values": [
+          "true"
+        ],
         "value_label": "true",
         "generic": false
       },
       {
         "key": "lease_type",
         "value": "rent",
-        "values": ["rent"],
+        "values": [
+          "rent"
+        ],
         "value_label": "rent",
         "generic": false
       },
       {
         "key": "rental_fees",
         "value": "573",
-        "values": ["573"],
+        "values": [
+          "573"
+        ],
         "key_label": "Honoraires",
         "value_label": "573",
         "generic": false
@@ -336,7 +412,9 @@
       {
         "key": "rent_excluding_charges",
         "value": "1140",
-        "values": ["1140"],
+        "values": [
+          "1140"
+        ],
         "key_label": "Loyer mensuel (hors charges)",
         "value_label": "1140",
         "generic": false
@@ -370,7 +448,10 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [2.3952026, 48.84286]
+          "coordinates": [
+            2.3952026,
+            48.84286
+          ]
         },
         "properties": null
       }
@@ -429,7 +510,9 @@
     "brand": "leboncoin",
     "ad_type": "offer",
     "url": "https://www.leboncoin.fr/ad/locations/3276618714",
-    "price": [1575],
+    "price": [
+      1575
+    ],
     "price_cents": 157500,
     "images": {
       "thumb_url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/8f/98/9c/8f989c833fccf4170243493f34e9c29fde65a5cf.jpg?rule=ad-thumb",
@@ -469,14 +552,18 @@
       {
         "key": "rating_score",
         "value": "1",
-        "values": ["1"],
+        "values": [
+          "1"
+        ],
         "value_label": "1",
         "generic": false
       },
       {
         "key": "rating_count",
         "value": "1",
-        "values": ["1"],
+        "values": [
+          "1"
+        ],
         "value_label": "1",
         "generic": false
       },
@@ -492,7 +579,9 @@
       {
         "key": "real_estate_type",
         "value": "2",
-        "values": ["2"],
+        "values": [
+          "2"
+        ],
         "key_label": "Type de bien",
         "value_label": "Appartement",
         "generic": true
@@ -500,7 +589,9 @@
       {
         "key": "furnished",
         "value": "1",
-        "values": ["1"],
+        "values": [
+          "1"
+        ],
         "key_label": "Ce bien est :",
         "value_label": "Meublé",
         "generic": true
@@ -508,7 +599,9 @@
       {
         "key": "square",
         "value": "38",
-        "values": ["38"],
+        "values": [
+          "38"
+        ],
         "key_label": "Surface habitable",
         "value_label": "38 m²",
         "value_label_reader": "38 Mètres carrés",
@@ -517,7 +610,9 @@
       {
         "key": "rooms",
         "value": "2",
-        "values": ["2"],
+        "values": [
+          "2"
+        ],
         "key_label": "Nombre de pièces",
         "value_label": "2",
         "generic": true
@@ -525,7 +620,9 @@
       {
         "key": "bedrooms",
         "value": "1",
-        "values": ["1"],
+        "values": [
+          "1"
+        ],
         "key_label": "Nombre de chambres",
         "value_label": "1 ch.",
         "generic": true
@@ -533,7 +630,9 @@
       {
         "key": "nb_bathrooms",
         "value": "1",
-        "values": ["1"],
+        "values": [
+          "1"
+        ],
         "key_label": "Nombre de salles de bain",
         "value_label": "1",
         "generic": true
@@ -541,7 +640,9 @@
       {
         "key": "energy_rate",
         "value": "d",
-        "values": ["d"],
+        "values": [
+          "d"
+        ],
         "key_label": "Classe énergie",
         "value_label": "D",
         "generic": true
@@ -549,7 +650,9 @@
       {
         "key": "ges",
         "value": "c",
-        "values": ["c"],
+        "values": [
+          "c"
+        ],
         "key_label": "GES",
         "value_label": "C",
         "generic": true
@@ -557,18 +660,35 @@
       {
         "key": "specificities",
         "value": "",
-        "values": ["old_builiding", "intercom", "equipped_kitchen", "separate_kitchen"],
+        "values": [
+          "old_builiding",
+          "intercom",
+          "equipped_kitchen",
+          "separate_kitchen"
+        ],
         "key_label": "Caractéristiques",
         "value_label": "Construction ancienne, Interphone, Cuisine équipée, Cuisine séparée",
         "value_label_reader": ", , , ",
-        "values_label": ["Construction ancienne", "Interphone", "Cuisine équipée", "Cuisine séparée"],
-        "values_label_reader": ["", "", "", ""],
+        "values_label": [
+          "Construction ancienne",
+          "Interphone",
+          "Cuisine équipée",
+          "Cuisine séparée"
+        ],
+        "values_label_reader": [
+          "",
+          "",
+          "",
+          ""
+        ],
         "generic": true
       },
       {
         "key": "heating_type",
         "value": "communal",
-        "values": ["communal"],
+        "values": [
+          "communal"
+        ],
         "key_label": "Type de chauffage",
         "value_label": "Collectif",
         "generic": true
@@ -576,7 +696,9 @@
       {
         "key": "heating_mode",
         "value": "gas",
-        "values": ["gas"],
+        "values": [
+          "gas"
+        ],
         "key_label": "Mode de chauffage",
         "value_label": "Gaz",
         "generic": true
@@ -584,7 +706,9 @@
       {
         "key": "floor_number",
         "value": "2",
-        "values": ["2"],
+        "values": [
+          "2"
+        ],
         "key_label": "Étage de votre bien",
         "value_label": "2",
         "generic": true
@@ -592,7 +716,9 @@
       {
         "key": "nb_floors_building",
         "value": "7",
-        "values": ["7"],
+        "values": [
+          "7"
+        ],
         "key_label": "Nombre d’étages dans l’immeuble",
         "value_label": "7",
         "generic": true
@@ -600,15 +726,21 @@
       {
         "key": "floor_property",
         "value": "",
-        "values": ["upper_floor"],
+        "values": [
+          "upper_floor"
+        ],
         "key_label": "Étage de l'appartement",
-        "values_label": ["Pas de rez-de-chaussée"],
+        "values_label": [
+          "Pas de rez-de-chaussée"
+        ],
         "generic": false
       },
       {
         "key": "elevator",
         "value": "1",
-        "values": ["1"],
+        "values": [
+          "1"
+        ],
         "key_label": "Ascenseur",
         "value_label": "Oui",
         "generic": true
@@ -616,7 +748,9 @@
       {
         "key": "orientation",
         "value": "north_west",
-        "values": ["north_west"],
+        "values": [
+          "north_west"
+        ],
         "key_label": "Exposition",
         "value_label": "Nord-Ouest",
         "generic": true
@@ -624,16 +758,22 @@
       {
         "key": "outside_access",
         "value": "",
-        "values": ["balcony"],
+        "values": [
+          "balcony"
+        ],
         "key_label": "Extérieur",
         "value_label": "Balcon",
-        "values_label": ["Balcon"],
+        "values_label": [
+          "Balcon"
+        ],
         "generic": true
       },
       {
         "key": "building_year",
         "value": "1930",
-        "values": ["1930"],
+        "values": [
+          "1930"
+        ],
         "key_label": "Année de construction",
         "value_label": "1930",
         "generic": true
@@ -641,7 +781,9 @@
       {
         "key": "available_date",
         "value": "01/2027",
-        "values": ["01/2027"],
+        "values": [
+          "01/2027"
+        ],
         "key_label": "Disponible à partir de",
         "value_label": "01/2027",
         "generic": true
@@ -649,7 +791,9 @@
       {
         "key": "monthly_charges",
         "value": "230",
-        "values": ["230"],
+        "values": [
+          "230"
+        ],
         "key_label": "Charges locatives",
         "value_label": "230 €",
         "value_label_reader": "230 Euro",
@@ -658,7 +802,9 @@
       {
         "key": "charges_included",
         "value": "1",
-        "values": ["1"],
+        "values": [
+          "1"
+        ],
         "key_label": "Charges incluses",
         "value_label": "Oui",
         "generic": true
@@ -691,35 +837,45 @@
       {
         "key": "district_id",
         "value": "3000145",
-        "values": ["3000145"],
+        "values": [
+          "3000145"
+        ],
         "value_label": "3000145",
         "generic": false
       },
       {
         "key": "district_visibility",
         "value": "true",
-        "values": ["true"],
+        "values": [
+          "true"
+        ],
         "value_label": "true",
         "generic": false
       },
       {
         "key": "district_type_id",
         "value": "9",
-        "values": ["9"],
+        "values": [
+          "9"
+        ],
         "value_label": "9",
         "generic": false
       },
       {
         "key": "district_resolution_type",
         "value": "integration",
-        "values": ["integration"],
+        "values": [
+          "integration"
+        ],
         "value_label": "integration",
         "generic": false
       },
       {
         "key": "is_public_rent_control",
         "value": "true",
-        "values": ["true"],
+        "values": [
+          "true"
+        ],
         "key_label": "Bien soumis à l'encadrement des loyers",
         "value_label": "Oui",
         "generic": false
@@ -727,7 +883,9 @@
       {
         "key": "rent_control_inflated_price",
         "value": "1345",
-        "values": ["1345"],
+        "values": [
+          "1345"
+        ],
         "key_label": "Loyer de référence majoré",
         "value_label": "1345 €",
         "generic": false
@@ -735,28 +893,36 @@
       {
         "key": "street_view_url",
         "value": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=48.838402,2.299830",
-        "values": ["https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=48.838402,2.299830"],
+        "values": [
+          "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=48.838402,2.299830"
+        ],
         "value_label": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=48.838402,2.299830",
         "generic": false
       },
       {
         "key": "is_import",
         "value": "false",
-        "values": ["false"],
+        "values": [
+          "false"
+        ],
         "value_label": "false",
         "generic": false
       },
       {
         "key": "lease_type",
         "value": "rent",
-        "values": ["rent"],
+        "values": [
+          "rent"
+        ],
         "value_label": "rent",
         "generic": false
       },
       {
         "key": "rent_excluding_charges",
         "value": "1345",
-        "values": ["1345"],
+        "values": [
+          "1345"
+        ],
         "key_label": "Loyer mensuel (hors charges)",
         "value_label": "1345",
         "generic": false
@@ -790,7 +956,10 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [2.29983, 48.8384]
+          "coordinates": [
+            2.29983,
+            48.8384
+          ]
         },
         "properties": null
       }
@@ -855,7 +1024,9 @@
     "brand": "leboncoin",
     "ad_type": "offer",
     "url": "https://www.leboncoin.fr/ad/locations/3276614321",
-    "price": [1295],
+    "price": [
+      1295
+    ],
     "price_cents": 129500,
     "images": {
       "thumb_url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/14/98/50/14985046a39d69ae8688d3b6a485d65fa3b051da.jpg?rule=ad-thumb",
@@ -944,21 +1115,27 @@
       {
         "key": "activity_sector",
         "value": "2",
-        "values": ["2"],
+        "values": [
+          "2"
+        ],
         "value_label": "2",
         "generic": false
       },
       {
         "key": "external_ad_id",
         "value": "ics_463316_LEP98230040-910",
-        "values": ["ics_463316_LEP98230040-910"],
+        "values": [
+          "ics_463316_LEP98230040-910"
+        ],
         "value_label": "ics_463316_LEP98230040-910",
         "generic": false
       },
       {
         "key": "real_estate_type",
         "value": "2",
-        "values": ["2"],
+        "values": [
+          "2"
+        ],
         "key_label": "Type de bien",
         "value_label": "Appartement",
         "generic": true
@@ -966,7 +1143,9 @@
       {
         "key": "furnished",
         "value": "2",
-        "values": ["2"],
+        "values": [
+          "2"
+        ],
         "key_label": "Ce bien est :",
         "value_label": "Non meublé",
         "generic": true
@@ -974,7 +1153,9 @@
       {
         "key": "square",
         "value": "43",
-        "values": ["43"],
+        "values": [
+          "43"
+        ],
         "key_label": "Surface habitable",
         "value_label": "43 m²",
         "value_label_reader": "43 Mètres carrés",
@@ -983,7 +1164,9 @@
       {
         "key": "rooms",
         "value": "3",
-        "values": ["3"],
+        "values": [
+          "3"
+        ],
         "key_label": "Nombre de pièces",
         "value_label": "3",
         "generic": true
@@ -991,7 +1174,9 @@
       {
         "key": "bedrooms",
         "value": "2",
-        "values": ["2"],
+        "values": [
+          "2"
+        ],
         "key_label": "Nombre de chambres",
         "value_label": "2 ch.",
         "generic": true
@@ -999,7 +1184,9 @@
       {
         "key": "nb_shower_room",
         "value": "1",
-        "values": ["1"],
+        "values": [
+          "1"
+        ],
         "key_label": "Nombre de salles d'eau",
         "value_label": "1",
         "generic": true
@@ -1007,7 +1194,9 @@
       {
         "key": "energy_rate",
         "value": "f",
-        "values": ["f"],
+        "values": [
+          "f"
+        ],
         "key_label": "Classe énergie",
         "value_label": "F",
         "generic": true
@@ -1015,7 +1204,9 @@
       {
         "key": "ges",
         "value": "c",
-        "values": ["c"],
+        "values": [
+          "c"
+        ],
         "key_label": "GES",
         "value_label": "C",
         "generic": true
@@ -1023,17 +1214,25 @@
       {
         "key": "specificities",
         "value": "",
-        "values": ["equipped_kitchen"],
+        "values": [
+          "equipped_kitchen"
+        ],
         "key_label": "Caractéristiques",
         "value_label": "Cuisine équipée",
-        "values_label": ["Cuisine équipée"],
-        "values_label_reader": [""],
+        "values_label": [
+          "Cuisine équipée"
+        ],
+        "values_label_reader": [
+          ""
+        ],
         "generic": true
       },
       {
         "key": "heating_type",
         "value": "individual",
-        "values": ["individual"],
+        "values": [
+          "individual"
+        ],
         "key_label": "Type de chauffage",
         "value_label": "Individuel",
         "generic": true
@@ -1041,7 +1240,9 @@
       {
         "key": "heating_mode",
         "value": "electric",
-        "values": ["electric"],
+        "values": [
+          "electric"
+        ],
         "key_label": "Mode de chauffage",
         "value_label": "Électrique",
         "generic": true
@@ -1049,7 +1250,9 @@
       {
         "key": "floor_number",
         "value": "1",
-        "values": ["1"],
+        "values": [
+          "1"
+        ],
         "key_label": "Étage de votre bien",
         "value_label": "1",
         "generic": true
@@ -1057,7 +1260,9 @@
       {
         "key": "elevator",
         "value": "1",
-        "values": ["1"],
+        "values": [
+          "1"
+        ],
         "key_label": "Ascenseur",
         "value_label": "Oui",
         "generic": true
@@ -1065,7 +1270,9 @@
       {
         "key": "orientation",
         "value": "east",
-        "values": ["east"],
+        "values": [
+          "east"
+        ],
         "key_label": "Exposition",
         "value_label": "Est",
         "generic": true
@@ -1073,7 +1280,9 @@
       {
         "key": "building_year",
         "value": "1948",
-        "values": ["1948"],
+        "values": [
+          "1948"
+        ],
         "key_label": "Année de construction",
         "value_label": "1948",
         "generic": true
@@ -1081,7 +1290,9 @@
       {
         "key": "available_date",
         "value": "08/2026",
-        "values": ["08/2026"],
+        "values": [
+          "08/2026"
+        ],
         "key_label": "Disponible à partir de",
         "value_label": "08/2026",
         "generic": true
@@ -1089,7 +1300,9 @@
       {
         "key": "global_condition",
         "value": "2",
-        "values": ["2"],
+        "values": [
+          "2"
+        ],
         "key_label": "État du bien",
         "value_label": "Bon état",
         "generic": true
@@ -1097,7 +1310,9 @@
       {
         "key": "monthly_charges",
         "value": "45",
-        "values": ["45"],
+        "values": [
+          "45"
+        ],
         "key_label": "Charges locatives",
         "value_label": "45 €",
         "value_label_reader": "45 Euro",
@@ -1106,7 +1321,9 @@
       {
         "key": "security_deposit",
         "value": "1250",
-        "values": ["1250"],
+        "values": [
+          "1250"
+        ],
         "key_label": "Dépôt de garantie",
         "value_label": "1250 €",
         "value_label_reader": "1250 Euro",
@@ -1115,7 +1332,9 @@
       {
         "key": "charges_included",
         "value": "1",
-        "values": ["1"],
+        "values": [
+          "1"
+        ],
         "key_label": "Charges incluses",
         "value_label": "Oui",
         "generic": true
@@ -1123,7 +1342,9 @@
       {
         "key": "inventory_fees",
         "value": "129",
-        "values": ["129"],
+        "values": [
+          "129"
+        ],
         "key_label": "Frais d'état des lieux",
         "value_label": "129 €",
         "value_label_reader": "129 Euro",
@@ -1132,42 +1353,54 @@
       {
         "key": "district_id",
         "value": "3000200",
-        "values": ["3000200"],
+        "values": [
+          "3000200"
+        ],
         "value_label": "3000200",
         "generic": false
       },
       {
         "key": "district_visibility",
         "value": "true",
-        "values": ["true"],
+        "values": [
+          "true"
+        ],
         "value_label": "true",
         "generic": false
       },
       {
         "key": "district_type_id",
         "value": "9",
-        "values": ["9"],
+        "values": [
+          "9"
+        ],
         "value_label": "9",
         "generic": false
       },
       {
         "key": "district_resolution_type",
         "value": "integration",
-        "values": ["integration"],
+        "values": [
+          "integration"
+        ],
         "value_label": "integration",
         "generic": false
       },
       {
         "key": "mandate_type",
         "value": "exclusive",
-        "values": ["exclusive"],
+        "values": [
+          "exclusive"
+        ],
         "value_label": "exclusive",
         "generic": false
       },
       {
         "key": "rent_control_inflated_price",
         "value": "1258",
-        "values": ["1258"],
+        "values": [
+          "1258"
+        ],
         "key_label": "Loyer de référence majoré",
         "value_label": "1258 €",
         "generic": false
@@ -1175,7 +1408,9 @@
       {
         "key": "custom_ref",
         "value": "LEP98230040-910",
-        "values": ["LEP98230040-910"],
+        "values": [
+          "LEP98230040-910"
+        ],
         "key_label": "Référence",
         "value_label": "LEP98230040-910",
         "generic": true
@@ -1183,21 +1418,27 @@
       {
         "key": "is_import",
         "value": "true",
-        "values": ["true"],
+        "values": [
+          "true"
+        ],
         "value_label": "true",
         "generic": false
       },
       {
         "key": "lease_type",
         "value": "rent",
-        "values": ["rent"],
+        "values": [
+          "rent"
+        ],
         "value_label": "rent",
         "generic": false
       },
       {
         "key": "rental_fees",
         "value": "646",
-        "values": ["646"],
+        "values": [
+          "646"
+        ],
         "key_label": "Honoraires",
         "value_label": "646",
         "generic": false
@@ -1205,7 +1446,9 @@
       {
         "key": "rent_excluding_charges",
         "value": "1250",
-        "values": ["1250"],
+        "values": [
+          "1250"
+        ],
         "key_label": "Loyer mensuel (hors charges)",
         "value_label": "1250",
         "generic": false
@@ -1239,7 +1482,10 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [2.3408492, 48.89037]
+          "coordinates": [
+            2.3408492,
+            48.89037
+          ]
         },
         "properties": null
       }
@@ -1279,7 +1525,9 @@
     "brand": "leboncoin",
     "ad_type": "offer",
     "url": "https://www.leboncoin.fr/ad/locations/3256896774",
-    "price": [2882],
+    "price": [
+      2882
+    ],
     "price_cents": 288200,
     "images": {
       "thumb_url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/d4/64/ab/d464ab5481809e22aa77582a0a8ce10775aee4d1.jpg?rule=ad-thumb",
@@ -1361,21 +1609,27 @@
       {
         "key": "activity_sector",
         "value": "2",
-        "values": ["2"],
+        "values": [
+          "2"
+        ],
         "value_label": "2",
         "generic": false
       },
       {
         "key": "external_ad_id",
         "value": "emeria_23000-43",
-        "values": ["emeria_23000-43"],
+        "values": [
+          "emeria_23000-43"
+        ],
         "value_label": "emeria_23000-43",
         "generic": false
       },
       {
         "key": "real_estate_type",
         "value": "2",
-        "values": ["2"],
+        "values": [
+          "2"
+        ],
         "key_label": "Type de bien",
         "value_label": "Appartement",
         "generic": true
@@ -1383,7 +1637,9 @@
       {
         "key": "furnished",
         "value": "2",
-        "values": ["2"],
+        "values": [
+          "2"
+        ],
         "key_label": "Ce bien est :",
         "value_label": "Non meublé",
         "generic": true
@@ -1391,7 +1647,9 @@
       {
         "key": "square",
         "value": "90",
-        "values": ["90"],
+        "values": [
+          "90"
+        ],
         "key_label": "Surface habitable",
         "value_label": "90 m²",
         "value_label_reader": "90 Mètres carrés",
@@ -1400,7 +1658,9 @@
       {
         "key": "rooms",
         "value": "5",
-        "values": ["5"],
+        "values": [
+          "5"
+        ],
         "key_label": "Nombre de pièces",
         "value_label": "5",
         "generic": true
@@ -1408,7 +1668,9 @@
       {
         "key": "bedrooms",
         "value": "4",
-        "values": ["4"],
+        "values": [
+          "4"
+        ],
         "key_label": "Nombre de chambres",
         "value_label": "4 ch.",
         "generic": true
@@ -1416,7 +1678,9 @@
       {
         "key": "nb_bathrooms",
         "value": "1",
-        "values": ["1"],
+        "values": [
+          "1"
+        ],
         "key_label": "Nombre de salles de bain",
         "value_label": "1",
         "generic": true
@@ -1424,7 +1688,9 @@
       {
         "key": "nb_shower_room",
         "value": "1",
-        "values": ["1"],
+        "values": [
+          "1"
+        ],
         "key_label": "Nombre de salles d'eau",
         "value_label": "1",
         "generic": true
@@ -1432,7 +1698,9 @@
       {
         "key": "energy_rate",
         "value": "c",
-        "values": ["c"],
+        "values": [
+          "c"
+        ],
         "key_label": "Classe énergie",
         "value_label": "C",
         "generic": true
@@ -1440,7 +1708,9 @@
       {
         "key": "ges",
         "value": "c",
-        "values": ["c"],
+        "values": [
+          "c"
+        ],
         "key_label": "GES",
         "value_label": "C",
         "generic": true
@@ -1448,17 +1718,25 @@
       {
         "key": "specificities",
         "value": "",
-        "values": ["second_bathroom"],
+        "values": [
+          "second_bathroom"
+        ],
         "key_label": "Caractéristiques",
         "value_label": "Plusieurs toilettes",
-        "values_label": ["Plusieurs toilettes"],
-        "values_label_reader": [""],
+        "values_label": [
+          "Plusieurs toilettes"
+        ],
+        "values_label_reader": [
+          ""
+        ],
         "generic": true
       },
       {
         "key": "heating_type",
         "value": "communal",
-        "values": ["communal"],
+        "values": [
+          "communal"
+        ],
         "key_label": "Type de chauffage",
         "value_label": "Collectif",
         "generic": true
@@ -1466,7 +1744,9 @@
       {
         "key": "floor_number",
         "value": "0",
-        "values": ["0"],
+        "values": [
+          "0"
+        ],
         "key_label": "Étage de votre bien",
         "value_label": "0",
         "generic": true
@@ -1474,7 +1754,9 @@
       {
         "key": "nb_floors_building",
         "value": "7",
-        "values": ["7"],
+        "values": [
+          "7"
+        ],
         "key_label": "Nombre d’étages dans l’immeuble",
         "value_label": "7",
         "generic": true
@@ -1482,15 +1764,21 @@
       {
         "key": "floor_property",
         "value": "",
-        "values": ["ground_floor"],
+        "values": [
+          "ground_floor"
+        ],
         "key_label": "Étage de l'appartement",
-        "values_label": ["Rez-de-chaussée"],
+        "values_label": [
+          "Rez-de-chaussée"
+        ],
         "generic": false
       },
       {
         "key": "elevator",
         "value": "1",
-        "values": ["1"],
+        "values": [
+          "1"
+        ],
         "key_label": "Ascenseur",
         "value_label": "Oui",
         "generic": true
@@ -1498,7 +1786,9 @@
       {
         "key": "available_date",
         "value": "02/07/2026",
-        "values": ["02/07/2026"],
+        "values": [
+          "02/07/2026"
+        ],
         "key_label": "Disponible à partir de",
         "value_label": "02/07/2026",
         "generic": true
@@ -1506,7 +1796,9 @@
       {
         "key": "global_condition",
         "value": "2",
-        "values": ["2"],
+        "values": [
+          "2"
+        ],
         "key_label": "État du bien",
         "value_label": "Bon état",
         "generic": true
@@ -1514,7 +1806,9 @@
       {
         "key": "monthly_charges",
         "value": "342",
-        "values": ["342"],
+        "values": [
+          "342"
+        ],
         "key_label": "Charges locatives",
         "value_label": "342 €",
         "value_label_reader": "342 Euro",
@@ -1523,7 +1817,9 @@
       {
         "key": "security_deposit",
         "value": "2540",
-        "values": ["2540"],
+        "values": [
+          "2540"
+        ],
         "key_label": "Dépôt de garantie",
         "value_label": "2540 €",
         "value_label_reader": "2540 Euro",
@@ -1532,7 +1828,9 @@
       {
         "key": "charges_included",
         "value": "1",
-        "values": ["1"],
+        "values": [
+          "1"
+        ],
         "key_label": "Charges incluses",
         "value_label": "Oui",
         "generic": true
@@ -1540,7 +1838,9 @@
       {
         "key": "inventory_fees",
         "value": "0",
-        "values": ["0"],
+        "values": [
+          "0"
+        ],
         "key_label": "Frais d'état des lieux",
         "value_label": "0 €",
         "value_label_reader": "0 Euro",
@@ -1549,42 +1849,54 @@
       {
         "key": "district_id",
         "value": "3000162",
-        "values": ["3000162"],
+        "values": [
+          "3000162"
+        ],
         "value_label": "3000162",
         "generic": false
       },
       {
         "key": "district_visibility",
         "value": "true",
-        "values": ["true"],
+        "values": [
+          "true"
+        ],
         "value_label": "true",
         "generic": false
       },
       {
         "key": "district_type_id",
         "value": "9",
-        "values": ["9"],
+        "values": [
+          "9"
+        ],
         "value_label": "9",
         "generic": false
       },
       {
         "key": "district_resolution_type",
         "value": "integration",
-        "values": ["integration"],
+        "values": [
+          "integration"
+        ],
         "value_label": "integration",
         "generic": false
       },
       {
         "key": "has_visibility_option",
         "value": "true",
-        "values": ["true"],
+        "values": [
+          "true"
+        ],
         "value_label": "true",
         "generic": false
       },
       {
         "key": "visibility_option_products",
         "value": "RE_SUPER_VISIBILITY_FEATURE",
-        "values": ["RE_SUPER_VISIBILITY_FEATURE"],
+        "values": [
+          "RE_SUPER_VISIBILITY_FEATURE"
+        ],
         "value_label": "RE_SUPER_VISIBILITY_FEATURE",
         "generic": false
       },
@@ -1600,21 +1912,27 @@
       {
         "key": "store_name",
         "value": "Esset Property Management- La Défense",
-        "values": ["Esset Property Management- La Défense"],
+        "values": [
+          "Esset Property Management- La Défense"
+        ],
         "value_label": "Esset Property Management- La Défense",
         "generic": false
       },
       {
         "key": "online_store_id",
         "value": "316703",
-        "values": ["316703"],
+        "values": [
+          "316703"
+        ],
         "value_label": "316703",
         "generic": false
       },
       {
         "key": "custom_ref",
         "value": "23000-43",
-        "values": ["23000-43"],
+        "values": [
+          "23000-43"
+        ],
         "key_label": "Référence",
         "value_label": "23000-43",
         "generic": true
@@ -1622,21 +1940,27 @@
       {
         "key": "is_import",
         "value": "true",
-        "values": ["true"],
+        "values": [
+          "true"
+        ],
         "value_label": "true",
         "generic": false
       },
       {
         "key": "lease_type",
         "value": "rent",
-        "values": ["rent"],
+        "values": [
+          "rent"
+        ],
         "value_label": "rent",
         "generic": false
       },
       {
         "key": "rental_fees",
         "value": "1363",
-        "values": ["1363"],
+        "values": [
+          "1363"
+        ],
         "key_label": "Honoraires",
         "value_label": "1363",
         "generic": false
@@ -1644,7 +1968,9 @@
       {
         "key": "rent_excluding_charges",
         "value": "2540",
-        "values": ["2540"],
+        "values": [
+          "2540"
+        ],
         "key_label": "Loyer mensuel (hors charges)",
         "value_label": "2540",
         "generic": false
@@ -1678,7 +2004,10 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [2.303255, 48.826237]
+          "coordinates": [
+            2.303255,
+            48.826237
+          ]
         },
         "properties": null
       }
@@ -1729,7 +2058,9 @@
     "brand": "leboncoin",
     "ad_type": "offer",
     "url": "https://www.leboncoin.fr/ad/locations/3233794736",
-    "price": [951],
+    "price": [
+      951
+    ],
     "price_cents": 95100,
     "images": {
       "thumb_url": "https://img.leboncoin.fr/api/v1/lbcpb1/images/67/30/5d/67305de3568f3911ed0fae8d62c39f92d4d098b3.jpg?rule=ad-thumb",
@@ -1818,21 +2149,27 @@
       {
         "key": "activity_sector",
         "value": "2",
-        "values": ["2"],
+        "values": [
+          "2"
+        ],
         "value_label": "2",
         "generic": false
       },
       {
         "key": "external_ad_id",
         "value": "nockee_146358_prop_ad_033mO7Kpq7gWUgPvZ7Hyr0",
-        "values": ["nockee_146358_prop_ad_033mO7Kpq7gWUgPvZ7Hyr0"],
+        "values": [
+          "nockee_146358_prop_ad_033mO7Kpq7gWUgPvZ7Hyr0"
+        ],
         "value_label": "nockee_146358_prop_ad_033mO7Kpq7gWUgPvZ7Hyr0",
         "generic": false
       },
       {
         "key": "real_estate_type",
         "value": "2",
-        "values": ["2"],
+        "values": [
+          "2"
+        ],
         "key_label": "Type de bien",
         "value_label": "Appartement",
         "generic": true
@@ -1840,7 +2177,9 @@
       {
         "key": "furnished",
         "value": "1",
-        "values": ["1"],
+        "values": [
+          "1"
+        ],
         "key_label": "Ce bien est :",
         "value_label": "Meublé",
         "generic": true
@@ -1848,7 +2187,9 @@
       {
         "key": "square",
         "value": "17",
-        "values": ["17"],
+        "values": [
+          "17"
+        ],
         "key_label": "Surface habitable",
         "value_label": "17 m²",
         "value_label_reader": "17 Mètres carrés",
@@ -1857,7 +2198,9 @@
       {
         "key": "rooms",
         "value": "1",
-        "values": ["1"],
+        "values": [
+          "1"
+        ],
         "key_label": "Nombre de pièces",
         "value_label": "1",
         "generic": true
@@ -1865,7 +2208,9 @@
       {
         "key": "nb_bathrooms",
         "value": "1",
-        "values": ["1"],
+        "values": [
+          "1"
+        ],
         "key_label": "Nombre de salles de bain",
         "value_label": "1",
         "generic": true
@@ -1873,7 +2218,9 @@
       {
         "key": "nb_shower_room",
         "value": "1",
-        "values": ["1"],
+        "values": [
+          "1"
+        ],
         "key_label": "Nombre de salles d'eau",
         "value_label": "1",
         "generic": true
@@ -1881,7 +2228,9 @@
       {
         "key": "energy_rate",
         "value": "c",
-        "values": ["c"],
+        "values": [
+          "c"
+        ],
         "key_label": "Classe énergie",
         "value_label": "C",
         "generic": true
@@ -1889,7 +2238,9 @@
       {
         "key": "ges",
         "value": "a",
-        "values": ["a"],
+        "values": [
+          "a"
+        ],
         "key_label": "GES",
         "value_label": "A",
         "generic": true
@@ -1897,17 +2248,25 @@
       {
         "key": "specificities",
         "value": "",
-        "values": ["separate_kitchen"],
+        "values": [
+          "separate_kitchen"
+        ],
         "key_label": "Caractéristiques",
         "value_label": "Cuisine séparée",
-        "values_label": ["Cuisine séparée"],
-        "values_label_reader": [""],
+        "values_label": [
+          "Cuisine séparée"
+        ],
+        "values_label_reader": [
+          ""
+        ],
         "generic": true
       },
       {
         "key": "heating_type",
         "value": "individual",
-        "values": ["individual"],
+        "values": [
+          "individual"
+        ],
         "key_label": "Type de chauffage",
         "value_label": "Individuel",
         "generic": true
@@ -1915,7 +2274,9 @@
       {
         "key": "heating_mode",
         "value": "electric",
-        "values": ["electric"],
+        "values": [
+          "electric"
+        ],
         "key_label": "Mode de chauffage",
         "value_label": "Électrique",
         "generic": true
@@ -1923,7 +2284,9 @@
       {
         "key": "floor_number",
         "value": "2",
-        "values": ["2"],
+        "values": [
+          "2"
+        ],
         "key_label": "Étage de votre bien",
         "value_label": "2",
         "generic": true
@@ -1931,7 +2294,9 @@
       {
         "key": "elevator",
         "value": "2",
-        "values": ["2"],
+        "values": [
+          "2"
+        ],
         "key_label": "Ascenseur",
         "value_label": "Non",
         "generic": true
@@ -1939,7 +2304,9 @@
       {
         "key": "available_date",
         "value": "07/2026",
-        "values": ["07/2026"],
+        "values": [
+          "07/2026"
+        ],
         "key_label": "Disponible à partir de",
         "value_label": "07/2026",
         "generic": true
@@ -1947,7 +2314,9 @@
       {
         "key": "monthly_charges",
         "value": "69",
-        "values": ["69"],
+        "values": [
+          "69"
+        ],
         "key_label": "Charges locatives",
         "value_label": "69 €",
         "value_label_reader": "69 Euro",
@@ -1956,7 +2325,9 @@
       {
         "key": "security_deposit",
         "value": "1764",
-        "values": ["1764"],
+        "values": [
+          "1764"
+        ],
         "key_label": "Dépôt de garantie",
         "value_label": "1764 €",
         "value_label_reader": "1764 Euro",
@@ -1965,7 +2336,9 @@
       {
         "key": "charges_included",
         "value": "1",
-        "values": ["1"],
+        "values": [
+          "1"
+        ],
         "key_label": "Charges incluses",
         "value_label": "Oui",
         "generic": true
@@ -1973,7 +2346,9 @@
       {
         "key": "inventory_fees",
         "value": "50",
-        "values": ["50"],
+        "values": [
+          "50"
+        ],
         "key_label": "Frais d'état des lieux",
         "value_label": "50 €",
         "value_label_reader": "50 Euro",
@@ -1982,42 +2357,54 @@
       {
         "key": "district_id",
         "value": "100523",
-        "values": ["100523"],
+        "values": [
+          "100523"
+        ],
         "value_label": "100523",
         "generic": false
       },
       {
         "key": "district_visibility",
         "value": "true",
-        "values": ["true"],
+        "values": [
+          "true"
+        ],
         "value_label": "true",
         "generic": false
       },
       {
         "key": "district_type_id",
         "value": "1",
-        "values": ["1"],
+        "values": [
+          "1"
+        ],
         "value_label": "1",
         "generic": false
       },
       {
         "key": "district_resolution_type",
         "value": "integration",
-        "values": ["integration"],
+        "values": [
+          "integration"
+        ],
         "value_label": "integration",
         "generic": false
       },
       {
         "key": "has_visibility_option",
         "value": "true",
-        "values": ["true"],
+        "values": [
+          "true"
+        ],
         "value_label": "true",
         "generic": false
       },
       {
         "key": "visibility_option_products",
         "value": "RE_VISIBILITY_FEATURE",
-        "values": ["RE_VISIBILITY_FEATURE"],
+        "values": [
+          "RE_VISIBILITY_FEATURE"
+        ],
         "value_label": "RE_VISIBILITY_FEATURE",
         "generic": false
       },
@@ -2033,21 +2420,27 @@
       {
         "key": "store_name",
         "value": "BEANSTOCK",
-        "values": ["BEANSTOCK"],
+        "values": [
+          "BEANSTOCK"
+        ],
         "value_label": "BEANSTOCK",
         "generic": false
       },
       {
         "key": "online_store_id",
         "value": "3117163",
-        "values": ["3117163"],
+        "values": [
+          "3117163"
+        ],
         "value_label": "3117163",
         "generic": false
       },
       {
         "key": "rent_supplement",
         "value": "168",
-        "values": ["168"],
+        "values": [
+          "168"
+        ],
         "key_label": "Complément de loyer",
         "value_label": "168 €",
         "generic": false
@@ -2055,7 +2448,9 @@
       {
         "key": "custom_ref",
         "value": "fa102eae79044255aa02",
-        "values": ["fa102eae79044255aa02"],
+        "values": [
+          "fa102eae79044255aa02"
+        ],
         "key_label": "Référence",
         "value_label": "fa102eae79044255aa02",
         "generic": true
@@ -2063,28 +2458,36 @@
       {
         "key": "virtual_tour",
         "value": "https://my.matterport.com/show?m=hgrb5v7EXvs",
-        "values": ["https://my.matterport.com/show?m=hgrb5v7EXvs"],
+        "values": [
+          "https://my.matterport.com/show?m=hgrb5v7EXvs"
+        ],
         "value_label": "https://my.matterport.com/show?m=hgrb5v7EXvs",
         "generic": false
       },
       {
         "key": "is_import",
         "value": "true",
-        "values": ["true"],
+        "values": [
+          "true"
+        ],
         "value_label": "true",
         "generic": false
       },
       {
         "key": "lease_type",
         "value": "rent",
-        "values": ["rent"],
+        "values": [
+          "rent"
+        ],
         "value_label": "rent",
         "generic": false
       },
       {
         "key": "rental_fees",
         "value": "252",
-        "values": ["252"],
+        "values": [
+          "252"
+        ],
         "key_label": "Honoraires",
         "value_label": "252",
         "generic": false
@@ -2092,7 +2495,9 @@
       {
         "key": "rent_excluding_charges",
         "value": "882",
-        "values": ["882"],
+        "values": [
+          "882"
+        ],
         "key_label": "Loyer mensuel (hors charges)",
         "value_label": "882",
         "generic": false
@@ -2126,7 +2531,10 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [2.3451533, 48.88254]
+          "coordinates": [
+            2.3451533,
+            48.88254
+          ]
         },
         "properties": null
       }
