@@ -36,6 +36,7 @@ import ListingLocationCard from './components/ListingLocationCard.jsx';
 import ListingWorkspace from './components/ListingWorkspace.jsx';
 import ListingDescriptionCard from './components/ListingDescriptionCard.jsx';
 import './ListingDetail.less';
+import './ListingDetail.mobile.less';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
 import { useFinanceProfile } from '../../hooks/useFinanceProfile.js';
 

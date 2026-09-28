@@ -1,0 +1,84 @@
+@import '../../tokens.less';
+
+/* Local override: keeps the listing detail view inside the viewport on phones (< 430px).
+   Kept in its own file, loaded after ListingDetail.less, so upstream merges stay trivial.
+   Everything is scoped to `.listing-detail` and to one media query. */
+@media (max-width: 430px) {
+  .listing-detail {
+    /* A flex item of `.app__content`; without `min-width: 0` it grows to its widest child. */
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: clip;
+
+    img,
+    picture,
+    video,
+    canvas,
+    svg,
+    .semi-image,
+    .semi-image-img {
+      max-width: 100%;
+    }
+
+    &__grid,
+    &__main,
+    &__rail,
+    &__grid > *,
+    .listing-card {
+      min-width: 0;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* The rail has a fixed 400px width on desktop; drop it so it can never exceed the screen. */
+    &__rail {
+      width: auto;
+      flex-basis: auto;
+    }
+
+    &__image {
+      width: 100%;
+      max-width: 100%;
+    }
+
+    /* Long words and URLs wrap instead of pushing the card wider. */
+    .listing-title__heading,
+    .listing-title__address,
+    .listing-title__address-link,
+    .listing-card,
+    .listing-card p,
+    .listing-card a,
+    .listing-card span,
+    .listing-description__body,
+    .listing-origin {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .listing-title {
+      padding-left: @space-4;
+      padding-right: @space-4;
+    }
+
+    .listing-title__heading {
+      max-width: 100%;
+      font-size: 24px;
+    }
+
+    .listing-title__address {
+      flex-basis: 100%;
+    }
+
+    /* Column layouts collapse to one column. */
+    .listing-keyfacts__tiles,
+    .listing-workspace__columns,
+    .listingFinance__facts {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .listing-card {
+      padding: @space-4;
+    }
+  }
+}
