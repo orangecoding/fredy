@@ -33,6 +33,7 @@ export const TOUR_STATUS_RUNNING = 'running';
  * @property {boolean} offer Whether to ask the user whether they want the tour.
  * @property {string|null} jobId Id of the example job while the tour runs.
  * @property {string|null} listingId Id of the example listing while the tour runs.
+ * @property {boolean} [canReset] Whether the backend runs in dev mode and offers the console restart.
  */
 
 /**

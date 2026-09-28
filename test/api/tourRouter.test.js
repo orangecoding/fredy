@@ -100,6 +100,11 @@ beforeEach(() => {
 });
 
 describe('POST /api/tour/reset', () => {
+  it('is announced to the browser only in development', async () => {
+    devMode = true;
+    expect((await call('GET /')).result.canReset).toBe(true);
+  });
+
   it('forgets the signed-in account answer in development', async () => {
     devMode = true;
     const { result } = await call('POST /reset');
@@ -117,7 +122,7 @@ describe('POST /api/tour/reset', () => {
 describe('GET /api/tour', () => {
   it('answers for the signed-in user', async () => {
     const { result } = await call('GET /');
-    expect(result).toEqual(state);
+    expect(result).toEqual({ ...state, canReset: false });
     expect(calls).toEqual([['getTourState', 'user-1']]);
   });
 });

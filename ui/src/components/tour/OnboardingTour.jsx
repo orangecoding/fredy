@@ -214,19 +214,40 @@ export default function OnboardingTour({ isAdmin, blocked }) {
   }, []);
 
   // Development only: `fredyTour.restart()` in the browser console forgets this account's answer,
-  // removes any example data and reloads, so the invitation shows up again. The reload is what
-  // clears `tourOfThisPage`, which would otherwise resume the old tour.
+  // removes any example data and reloads, so the invitation shows up again. Offered when either half
+  // runs in development: the Vite dev server, or a dev backend serving the built UI (whose own build
+  // says production, hence `canReset`). The reset itself is the backend's call and needs it in dev
+  // mode. The reload is what clears `tourOfThisPage`, which would otherwise resume the old tour.
   useEffect(() => {
-    if (!inDevelopment()) return undefined;
-    window.fredyTour = {
-      async restart() {
-        tourOfThisPage = null;
-        await resetTour();
-        window.location.reload();
-      },
+    const register = () => {
+      window.fredyTour = {
+        async restart() {
+          try {
+            await resetTour();
+          } catch (error) {
+            console.warn(
+              'The tour can only be reset while the backend runs in dev mode (yarn run start:backend:dev).',
+              error,
+            );
+            return;
+          }
+          tourOfThisPage = null;
+          window.location.reload();
+        },
+      };
     };
+    if (inDevelopment()) {
+      register();
+      return undefined;
+    }
+    let unmounted = false;
+    fetchTourState()
+      .then((state) => {
+        if (!unmounted && state?.canReset === true) register();
+      })
+      .catch(() => {});
     return () => {
-      delete window.fredyTour;
+      unmounted = true;
     };
   }, []);
 
