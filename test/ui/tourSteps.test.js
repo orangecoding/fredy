@@ -48,14 +48,22 @@ describe('onboarding tour steps', () => {
     expect(ids(buildTourSteps({ isAdmin: true, listingId: 'abc' }))).toEqual([
       'welcome',
       'dashboard',
+      'dashboardLatest',
+      'dashboardInsights',
       'goJobs',
       'jobsOverview',
       'goNewJob',
       'jobCreate',
+      'jobProviders',
+      'jobChannels',
+      'jobRefine',
       'goListings',
       'listingsOverview',
       'openListing',
       'listingDetail',
+      'listingTravelTime',
+      'listingTransit',
+      'listingConnectivity',
       'application',
       'goMap',
       'mapListings',
@@ -167,12 +175,21 @@ describe('onboarding tour steps', () => {
       expect(english, step.id).toHaveProperty([stepBodyKey(step.id)]);
       if (step.labelKey) expect(english, step.id).toHaveProperty([step.labelKey]);
       if (step.groupKey) expect(english, step.id).toHaveProperty([step.groupKey]);
+      for (const key of Object.values(step.vars ?? {})) expect(english, step.id).toHaveProperty([key]);
     }
   });
 
   it('leaves only the steps usable that invite trying something out', () => {
     const open = TOUR_STEPS.filter((step) => step.interactive).map((step) => step.id);
-    expect(open).toEqual(['listingsOverview', 'mapListings', 'mapFilters', 'finance', 'settings', 'admin']);
+    expect(open).toEqual([
+      'listingsOverview',
+      'listingTransit',
+      'mapListings',
+      'mapFilters',
+      'finance',
+      'settings',
+      'admin',
+    ]);
     expect(TOUR_STEPS.filter((step) => step.interactive && step.type !== 'info')).toEqual([]);
   });
 

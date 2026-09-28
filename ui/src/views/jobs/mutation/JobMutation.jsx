@@ -473,6 +473,7 @@ export default function JobMutator() {
         <div {...anchorProps('name')}>
           <SegmentPart
             name={t('jobs.mutation.sectionBasics')}
+            className="jobMutation__basics"
             Icon={IconPaperclip}
             helpText={t('jobs.mutation.basicsHelp')}
             helpMode="popover"
@@ -519,6 +520,7 @@ export default function JobMutator() {
         <div {...anchorProps('provider')}>
           <SegmentPart
             name={t('jobs.mutation.sectionProviders')}
+            className="jobMutation__providers"
             Icon={IconBriefcase}
             helpText={t('jobs.mutation.providersHelp')}
             helpMode="popover"
@@ -578,6 +580,7 @@ export default function JobMutator() {
           <SegmentPart
             Icon={IconBell}
             name={t('jobs.mutation.sectionNotifications')}
+            className="jobMutation__channels"
             helpText={t('jobs.mutation.notificationsHelp')}
             helpMode="popover"
             action={

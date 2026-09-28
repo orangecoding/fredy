@@ -540,6 +540,7 @@ export default function OnboardingTour({ isAdmin, blocked }) {
           {t(stepBodyKey(step.id), {
             target: step.labelKey ? t(step.labelKey) : '',
             group: step.groupKey ? t(step.groupKey) : '',
+            ...Object.fromEntries(Object.entries(step.vars ?? {}).map(([name, key]) => [name, t(key)])),
           })}
         </p>
 

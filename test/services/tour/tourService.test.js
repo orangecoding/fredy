@@ -291,6 +291,14 @@ describe('example data', () => {
     expect(new Set(TOUR_LISTINGS.map((listing) => listing.id)).size).toBe(TOUR_LISTINGS.length);
   });
 
+  it('gives every listing a picture the app ships itself', () => {
+    const publicDir = path.join(root, 'public');
+    for (const listing of TOUR_LISTINGS) {
+      expect(listing.image, listing.id).toMatch(/^\/tour\/[a-z0-9-]+\.svg$/);
+      expect(fs.existsSync(path.join(publicDir, listing.image)), listing.image).toBe(true);
+    }
+  });
+
   it('places every listing on the map', () => {
     for (const listing of TOUR_LISTINGS) {
       expect(Number.isFinite(listing.latitude) && Number.isFinite(listing.longitude)).toBe(true);

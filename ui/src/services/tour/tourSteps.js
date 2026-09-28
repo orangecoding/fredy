@@ -34,6 +34,8 @@
  * @property {string} [labelKey] Action steps: translation key of the control's visible label, for the
  *   step's copy.
  * @property {string} [groupKey] Action steps: translation key of the sidebar group the control sits in.
+ * @property {Record<string, string>} [vars] Translation keys of further labels the step's copy names,
+ *   by placeholder, so the copy says exactly what the page it points to is called.
  * @property {boolean} [interactive] Info steps: the element stays usable, because the step invites
  *   trying it out (clicking a pin, switching a filter, typing into the household form). Every other
  *   info step shields its element, so a stray click cannot take the tour off its page.
@@ -60,6 +62,8 @@ export const TOUR_STEPS = Object.freeze(
   [
     { id: 'welcome', type: 'info', route: '/dashboard', targets: [] },
     { id: 'dashboard', type: 'info', route: '/dashboard', targets: ['.dashboard__kpis'] },
+    { id: 'dashboardLatest', type: 'info', route: '/dashboard', targets: ['.dashboard__main'] },
+    { id: 'dashboardInsights', type: 'info', route: '/dashboard', targets: ['.dashboard__rail'] },
     {
       id: 'goJobs',
       type: 'action',
@@ -77,7 +81,10 @@ export const TOUR_STEPS = Object.freeze(
       expect: '/jobs/new',
       labelKey: 'jobs.newJob',
     },
-    { id: 'jobCreate', type: 'info', route: '/jobs/new', targets: ['.jobMutation__form'] },
+    { id: 'jobCreate', type: 'info', route: '/jobs/new', targets: ['.jobMutation__basics'] },
+    { id: 'jobProviders', type: 'info', route: '/jobs/new', targets: ['.jobMutation__providers'] },
+    { id: 'jobChannels', type: 'info', route: '/jobs/new', targets: ['.jobMutation__channels'] },
+    { id: 'jobRefine', type: 'info', route: '/jobs/new', targets: ['.jobMutation__refine'] },
     {
       id: 'goListings',
       type: 'action',
@@ -108,6 +115,35 @@ export const TOUR_STEPS = Object.freeze(
       route: `/listings/listing/${LISTING_PLACEHOLDER}`,
       match: '/listings/listing/',
       targets: ['.listing-detail__sec--keyfacts'],
+      needsListing: true,
+    },
+    {
+      id: 'listingTravelTime',
+      type: 'info',
+      route: `/listings/listing/${LISTING_PLACEHOLDER}`,
+      match: '/listings/listing/',
+      targets: ['.listing-detail__sec--location'],
+      vars: { section: 'nav.settings', tab: 'settings.tabTravelTime' },
+      needsListing: true,
+    },
+    {
+      id: 'listingTransit',
+      type: 'info',
+      interactive: true,
+      route: `/listings/listing/${LISTING_PLACEHOLDER}`,
+      match: '/listings/listing/',
+      targets: ['.listing-detail__sec--transit'],
+      needsListing: true,
+    },
+    {
+      // Only on screen once an administrator switched the enrichment on. Without it the step points
+      // at nothing and says where it is switched on, which is the more useful half anyway.
+      id: 'listingConnectivity',
+      type: 'info',
+      route: `/listings/listing/${LISTING_PLACEHOLDER}`,
+      match: '/listings/listing/',
+      targets: ['.listing-detail__sec--connectivity'],
+      vars: { section: 'nav.administration', tab: 'admin.tabConnectivity' },
       needsListing: true,
     },
     {

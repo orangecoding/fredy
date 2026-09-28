@@ -15,6 +15,9 @@ import { sameRect } from '../../services/tour/tourPlacement.js';
  */
 const MAX_SEARCH_FRAMES = 360;
 
+/** Space kept above an element the tour scrolls to, in px. */
+const SCROLL_MARGIN_TOP = 110;
+
 /**
  * Every element on the page that matches one of the selectors, in the selectors' order.
  *
@@ -93,7 +96,13 @@ export function useTourTarget(selectors, active) {
         // A tall element (the job form, the map) is shown from its top: centring it would scroll the
         // part the step talks about out of view.
         const tall = preferred.getBoundingClientRect().height > window.innerHeight * 0.6;
+        // Room above for the tour's status pill and for sticky bars such as the listing's action bar,
+        // which would otherwise cover the top edge of a tall element scrolled to the top. Set for the
+        // scroll only, and put back, so the page's own styling is left as it was.
+        const previousMargin = preferred.style.scrollMarginTop;
+        preferred.style.scrollMarginTop = `${SCROLL_MARGIN_TOP}px`;
         preferred.scrollIntoView?.({ block: tall ? 'start' : 'center', behavior: 'smooth' });
+        preferred.style.scrollMarginTop = previousMargin;
       }
       const next = unionBox(elements);
       if (!sameRect(last, next)) {
