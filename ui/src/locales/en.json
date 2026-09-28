@@ -1478,8 +1478,8 @@
   "listing.application.languageLabel": "Language of the letter",
   "listing.application.languageOverridden": "Your choice",
   "tour.prompt.title": "Welcome to Fredy",
-  "tour.prompt.body": "Would you like a short guided tour? It takes about three minutes and shows you the most important pages: the dashboard, jobs, listings, the map, financing and your settings.\n\nFor the tour, Fredy temporarily adds an example job with a few invented listings to your account. They are removed automatically as soon as the tour ends, even if you close the browser.",
-  "tour.prompt.bodyAdmin": "Would you like a short guided tour? It takes about three minutes and shows you the most important pages: the dashboard, jobs, listings, the map, financing, your settings and the administration.\n\nFor the tour, Fredy temporarily adds an example job with a few invented listings to your account. They are removed automatically as soon as the tour ends, even if you close the browser.",
+  "tour.prompt.body": "Would you like a short guided tour? It shows you the most important pages: the dashboard, jobs, listings, the map, financing and your settings. You can end it at any time.",
+  "tour.prompt.bodyAdmin": "Would you like a short guided tour? It shows you the most important pages: the dashboard, jobs, listings, the map, financing, your settings and the administration. You can end it at any time.",
   "tour.prompt.accept": "Yes, show me around",
   "tour.prompt.decline": "No, thanks",
   "tour.progress": "Step {{current}} of {{total}}",
@@ -1514,5 +1514,11 @@
   "tour.step.admin.title": "Administration",
   "tour.step.admin.body": "As an administrator you configure the instance itself: search interval and working hours, proxy, users, backups, connectivity and routing, and the debug log. These settings apply to everyone.",
   "tour.step.finish.title": "You are all set",
-  "tour.step.finish.body": "That was the tour. The example job and its listings are removed as soon as you close this card.\n\nThe best next step is your own first job: paste a search URL from your favourite portal, and Fredy takes it from there."
+  "tour.step.finish.body": "That was the tour. The example job and its listings are removed as soon as you close this card.\n\nThe best next step is your own first job: paste a search URL from your favourite portal, and Fredy takes it from there.",
+  "tour.prompt.duration": "Guided tour · about 3 minutes",
+  "tour.prompt.exampleData": "So there is something to see, Fredy adds an example job with 8 invented listings for the duration of the tour. It never searches and is removed automatically, even if you close the browser.",
+  "tour.badge": "Guided tour",
+  "tour.pill.label": "Tour",
+  "tour.pill.example": "Example data active",
+  "tour.pill.escape": "ends the tour"
 }

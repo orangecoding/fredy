@@ -3,6 +3,8 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
+import { isTourJobId } from '../tour/tourJob.js';
+
 /**
  * Jobs that are not doing what their owner thinks they are doing.
  *
@@ -50,6 +52,10 @@ export const ATTENTION_LIMIT = 4;
  * @returns {string|null}
  */
 function reasonFor(job, hasRunOnce) {
+  // The tour's example job is paused and has no channel by design, and it is gone again after the tour.
+  if (isTourJobId(job?.id)) {
+    return null;
+  }
   if ((job?.notificationAdapter?.length ?? 0) === 0) {
     return ATTENTION_REASONS.NO_CHANNEL;
   }

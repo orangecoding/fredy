@@ -1439,8 +1439,8 @@
   "listing.application.languageOverridden": "Senin seçimin",
   "listing.detail.attachmentsBusy": "Devam eden yükleme bitene kadar bekleyin.",
   "tour.prompt.title": "Fredy'ye hoş geldin",
-  "tour.prompt.body": "Kısa bir rehberli tur ister misin? Yaklaşık üç dakika sürer ve sana en önemli sayfaları gösterir: kontrol paneli, işler, ilanlar, harita, finansman ve ayarların.\n\nTur için Fredy hesabına geçici olarak birkaç uydurma ilan içeren örnek bir iş ekler. Tarayıcıyı kapatsan bile tur biter bitmez bunlar otomatik olarak kaldırılır.",
-  "tour.prompt.bodyAdmin": "Kısa bir rehberli tur ister misin? Yaklaşık üç dakika sürer ve sana en önemli sayfaları gösterir: kontrol paneli, işler, ilanlar, harita, finansman, ayarların ve yönetim.\n\nTur için Fredy hesabına geçici olarak birkaç uydurma ilan içeren örnek bir iş ekler. Tarayıcıyı kapatsan bile tur biter bitmez bunlar otomatik olarak kaldırılır.",
+  "tour.prompt.body": "Kısa bir rehberli tur ister misin? Sana en önemli sayfaları gösterir: kontrol paneli, işler, ilanlar, harita, finansman ve ayarların. Turu istediğin zaman bitirebilirsin.",
+  "tour.prompt.bodyAdmin": "Kısa bir rehberli tur ister misin? Sana en önemli sayfaları gösterir: kontrol paneli, işler, ilanlar, harita, finansman, ayarların ve yönetim. Turu istediğin zaman bitirebilirsin.",
   "tour.prompt.accept": "Evet, göster",
   "tour.prompt.decline": "Hayır, teşekkürler",
   "tour.progress": "Adım {{current}} / {{total}}",
@@ -1475,5 +1475,11 @@
   "tour.step.admin.title": "Yönetim",
   "tour.step.admin.body": "Yönetici olarak örneğin kendisini yapılandırırsın: arama aralığı ve çalışma saatleri, proxy, kullanıcılar, yedeklemeler, bağlantı ve rota hizmetleri ile hata ayıklama günlüğü. Bu ayarlar herkes için geçerlidir.",
   "tour.step.finish.title": "Her şey hazır",
-  "tour.step.finish.body": "Tur bu kadar. Örnek iş ve ilanları bu kartı kapattığın anda kaldırılır.\n\nEn iyi sonraki adım kendi ilk işin: favori portalından bir arama URL’si yapıştır, gerisini Fredy halleder."
+  "tour.step.finish.body": "Tur bu kadar. Örnek iş ve ilanları bu kartı kapattığın anda kaldırılır.\n\nEn iyi sonraki adım kendi ilk işin: favori portalından bir arama URL’si yapıştır, gerisini Fredy halleder.",
+  "tour.prompt.duration": "Rehberli tur · yaklaşık 3 dakika",
+  "tour.prompt.exampleData": "Görecek bir şey olsun diye Fredy tur süresince 8 uydurma ilan içeren örnek bir iş ekler. Bu iş hiçbir zaman arama yapmaz ve tarayıcıyı kapatsan bile otomatik olarak kaldırılır.",
+  "tour.badge": "Rehberli tur",
+  "tour.pill.label": "Tur",
+  "tour.pill.example": "Örnek veriler etkin",
+  "tour.pill.escape": "turu bitirir"
 }

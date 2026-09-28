@@ -1478,8 +1478,8 @@
   "listing.application.languageLabel": "Langue de la lettre",
   "listing.application.languageOverridden": "Votre choix",
   "tour.prompt.title": "Bienvenue sur Fredy",
-  "tour.prompt.body": "Souhaitez-vous une courte visite guidée ? Elle dure environ trois minutes et vous montre les pages les plus importantes : le tableau de bord, les recherches, les annonces, la carte, le financement et vos paramètres.\n\nPour la visite, Fredy ajoute temporairement à votre compte une recherche d'exemple avec quelques annonces fictives. Elles sont supprimées automatiquement dès la fin de la visite, même si vous fermez le navigateur.",
-  "tour.prompt.bodyAdmin": "Souhaitez-vous une courte visite guidée ? Elle dure environ trois minutes et vous montre les pages les plus importantes : le tableau de bord, les recherches, les annonces, la carte, le financement, vos paramètres et l'administration.\n\nPour la visite, Fredy ajoute temporairement à votre compte une recherche d'exemple avec quelques annonces fictives. Elles sont supprimées automatiquement dès la fin de la visite, même si vous fermez le navigateur.",
+  "tour.prompt.body": "Souhaitez-vous une courte visite guidée ? Elle vous montre les pages les plus importantes : le tableau de bord, les recherches, les annonces, la carte, le financement et vos paramètres. Vous pouvez l'arrêter à tout moment.",
+  "tour.prompt.bodyAdmin": "Souhaitez-vous une courte visite guidée ? Elle vous montre les pages les plus importantes : le tableau de bord, les recherches, les annonces, la carte, le financement, vos paramètres et l'administration. Vous pouvez l'arrêter à tout moment.",
   "tour.prompt.accept": "Oui, faites-moi visiter",
   "tour.prompt.decline": "Non, merci",
   "tour.progress": "Étape {{current}} sur {{total}}",
@@ -1514,5 +1514,11 @@
   "tour.step.admin.title": "Administration",
   "tour.step.admin.body": "En tant qu'administrateur, vous configurez l'instance elle-même : intervalle de recherche et horaires, proxy, utilisateurs, sauvegardes, connectivité et calcul d'itinéraires, ainsi que le journal de débogage. Ces paramètres s'appliquent à tout le monde.",
   "tour.step.finish.title": "Tout est prêt",
-  "tour.step.finish.body": "C'était la visite. La recherche d'exemple et ses annonces sont supprimées dès que vous fermez cette carte.\n\nLa meilleure étape suivante est votre propre première recherche : collez une URL de recherche de votre portail préféré, Fredy s'occupe du reste."
+  "tour.step.finish.body": "C'était la visite. La recherche d'exemple et ses annonces sont supprimées dès que vous fermez cette carte.\n\nLa meilleure étape suivante est votre propre première recherche : collez une URL de recherche de votre portail préféré, Fredy s'occupe du reste.",
+  "tour.prompt.duration": "Visite guidée · environ 3 minutes",
+  "tour.prompt.exampleData": "Pour qu'il y ait quelque chose à voir, Fredy ajoute pendant la visite une recherche d'exemple avec 8 annonces fictives. Elle ne lance jamais de recherche et est supprimée automatiquement, même si vous fermez le navigateur.",
+  "tour.badge": "Visite guidée",
+  "tour.pill.label": "Visite",
+  "tour.pill.example": "Données d'exemple actives",
+  "tour.pill.escape": "termine la visite"
 }

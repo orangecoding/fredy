@@ -1478,8 +1478,8 @@
   "listing.application.languageLabel": "Sprache des Schreibens",
   "listing.application.languageOverridden": "Von dir gewählt",
   "tour.prompt.title": "Willkommen bei Fredy",
-  "tour.prompt.body": "Möchtest du eine kurze geführte Tour? Sie dauert etwa drei Minuten und zeigt dir die wichtigsten Seiten: Dashboard, Jobs, Inserate, Karte, Finanzierung und deine Einstellungen.\n\nFür die Tour legt Fredy vorübergehend einen Beispieljob mit einigen erfundenen Inseraten in deinem Konto an. Sie werden automatisch entfernt, sobald die Tour endet, auch wenn du den Browser schließt.",
-  "tour.prompt.bodyAdmin": "Möchtest du eine kurze geführte Tour? Sie dauert etwa drei Minuten und zeigt dir die wichtigsten Seiten: Dashboard, Jobs, Inserate, Karte, Finanzierung, deine Einstellungen und die Administration.\n\nFür die Tour legt Fredy vorübergehend einen Beispieljob mit einigen erfundenen Inseraten in deinem Konto an. Sie werden automatisch entfernt, sobald die Tour endet, auch wenn du den Browser schließt.",
+  "tour.prompt.body": "Möchtest du eine kurze Tour? Sie zeigt dir die wichtigsten Seiten: Dashboard, Jobs, Inserate, Karte, Finanzierung und deine Einstellungen. Du kannst sie jederzeit beenden.",
+  "tour.prompt.bodyAdmin": "Möchtest du eine kurze Tour? Sie zeigt dir die wichtigsten Seiten: Dashboard, Jobs, Inserate, Karte, Finanzierung, deine Einstellungen und die Administration. Du kannst sie jederzeit beenden.",
   "tour.prompt.accept": "Ja, Tour starten",
   "tour.prompt.decline": "Nein, danke",
   "tour.progress": "Schritt {{current}} von {{total}}",
@@ -1514,5 +1514,11 @@
   "tour.step.admin.title": "Administration",
   "tour.step.admin.body": "Als Administrator konfigurierst du die Instanz selbst: Suchintervall und Arbeitszeiten, Proxy, Benutzer, Backups, Konnektivität und Routing sowie das Debug-Log. Diese Einstellungen gelten für alle.",
   "tour.step.finish.title": "Alles bereit",
-  "tour.step.finish.body": "Das war die Tour. Der Beispieljob und seine Inserate werden entfernt, sobald du diese Karte schließt.\n\nDer beste nächste Schritt ist dein eigener erster Job: Füge eine Such-URL deines Lieblingsportals ein, den Rest übernimmt Fredy."
+  "tour.step.finish.body": "Das war die Tour. Der Beispieljob und seine Inserate werden entfernt, sobald du diese Karte schließt.\n\nDer beste nächste Schritt ist dein eigener erster Job: Füge eine Such-URL deines Lieblingsportals ein, den Rest übernimmt Fredy.",
+  "tour.prompt.duration": "Geführte Tour · ca. 3 Minuten",
+  "tour.prompt.exampleData": "Damit du etwas siehst, legt Fredy für die Dauer der Tour einen Beispieljob mit 8 erfundenen Inseraten an. Er sucht nie selbst und wird automatisch entfernt, auch wenn du den Browser schließt.",
+  "tour.badge": "Geführte Tour",
+  "tour.pill.label": "Tour",
+  "tour.pill.example": "Beispieldaten aktiv",
+  "tour.pill.escape": "beendet die Tour"
 }

@@ -1478,8 +1478,8 @@
   "listing.application.languageLabel": "Idioma de la carta",
   "listing.application.languageOverridden": "Elegido por ti",
   "tour.prompt.title": "Bienvenido a Fredy",
-  "tour.prompt.body": "¿Quieres hacer un breve recorrido guiado? Dura unos tres minutos y te muestra las páginas más importantes: el panel, las búsquedas, los anuncios, el mapa, la financiación y tus ajustes.\n\nPara el recorrido, Fredy añade temporalmente a tu cuenta una búsqueda de ejemplo con algunos anuncios inventados. Se eliminan automáticamente en cuanto termina el recorrido, incluso si cierras el navegador.",
-  "tour.prompt.bodyAdmin": "¿Quieres hacer un breve recorrido guiado? Dura unos tres minutos y te muestra las páginas más importantes: el panel, las búsquedas, los anuncios, el mapa, la financiación, tus ajustes y la administración.\n\nPara el recorrido, Fredy añade temporalmente a tu cuenta una búsqueda de ejemplo con algunos anuncios inventados. Se eliminan automáticamente en cuanto termina el recorrido, incluso si cierras el navegador.",
+  "tour.prompt.body": "¿Quieres hacer un breve recorrido guiado? Te muestra las páginas más importantes: el panel, las búsquedas, los anuncios, el mapa, la financiación y tus ajustes. Puedes terminarlo en cualquier momento.",
+  "tour.prompt.bodyAdmin": "¿Quieres hacer un breve recorrido guiado? Te muestra las páginas más importantes: el panel, las búsquedas, los anuncios, el mapa, la financiación, tus ajustes y la administración. Puedes terminarlo en cualquier momento.",
   "tour.prompt.accept": "Sí, enséñame",
   "tour.prompt.decline": "No, gracias",
   "tour.progress": "Paso {{current}} de {{total}}",
@@ -1514,5 +1514,11 @@
   "tour.step.admin.title": "Administración",
   "tour.step.admin.body": "Como administrador configuras la propia instancia: intervalo de búsqueda y horario, proxy, usuarios, copias de seguridad, conectividad y rutas, y el registro de depuración. Estos ajustes se aplican a todos.",
   "tour.step.finish.title": "Todo listo",
-  "tour.step.finish.body": "Este ha sido el recorrido. La búsqueda de ejemplo y sus anuncios se eliminan en cuanto cierres esta tarjeta.\n\nEl mejor siguiente paso es tu propia primera búsqueda: pega una URL de búsqueda de tu portal favorito y Fredy se encarga del resto."
+  "tour.step.finish.body": "Este ha sido el recorrido. La búsqueda de ejemplo y sus anuncios se eliminan en cuanto cierres esta tarjeta.\n\nEl mejor siguiente paso es tu propia primera búsqueda: pega una URL de búsqueda de tu portal favorito y Fredy se encarga del resto.",
+  "tour.prompt.duration": "Recorrido guiado · unos 3 minutos",
+  "tour.prompt.exampleData": "Para que haya algo que ver, Fredy añade durante el recorrido una búsqueda de ejemplo con 8 anuncios inventados. Nunca busca por sí misma y se elimina automáticamente, incluso si cierras el navegador.",
+  "tour.badge": "Recorrido guiado",
+  "tour.pill.label": "Recorrido",
+  "tour.pill.example": "Datos de ejemplo activos",
+  "tour.pill.escape": "termina el recorrido"
 }
