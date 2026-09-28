@@ -159,6 +159,22 @@ describe('starting the tour', () => {
     expect(others.every((listing) => listing.publishedHoursAgo > featured.publishedHoursAgo)).toBe(true);
   });
 
+  it('fills in internet and mobile coverage, stamped fresh so the sweeper leaves it alone', () => {
+    addUser('u1');
+    const { jobId } = tour.startTour('u1', PROVIDERS, 1_000_000);
+    const rows = db
+      .prepare(
+        `SELECT connectivity, connectivity_max_down, connectivity_fiber, connectivity_mobile, connectivity_at FROM listings WHERE job_id = ?`,
+      )
+      .all(jobId);
+    expect(rows.every((row) => row.connectivity_at === 1_000_000 && row.connectivity_max_down > 0)).toBe(true);
+    expect(rows.some((row) => row.connectivity_fiber === 1)).toBe(true);
+    expect(rows.some((row) => row.connectivity_fiber === 0)).toBe(true);
+    const first = JSON.parse(rows[0].connectivity);
+    expect(first).toMatchObject({ source: 'de-bba', mobile: { bestTech: expect.any(String) } });
+    expect(rows.every((row) => row.connectivity_mobile > 0)).toBe(true);
+  });
+
   it('opens the detail step on the first example listing, by its row id', () => {
     addUser('u1');
     const { listingId } = tour.startTour('u1', PROVIDERS);
