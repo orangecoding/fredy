@@ -151,4 +151,17 @@
     font-weight: 600;
     color: @color-text;
   }
+
+  /* A narrow phone leaves the card about 160px inside. The price at 40px is wider than that, and
+     three tiles abreast get under 50px each - room for an ellipsis, not for a figure. The price
+     shrinks rather than wraps, because a number broken in two reads as two numbers. */
+  @media (max-width: 480px) {
+    &__amount {
+      font-size: 32px;
+    }
+
+    &__tiles {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
 }

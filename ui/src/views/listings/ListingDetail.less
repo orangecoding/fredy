@@ -13,6 +13,11 @@
    map: any of the three turns the ancestor into the containing block for `position: fixed`, and
    the map goes fullscreen by becoming exactly that. */
 .listing-detail {
+  /* The shell is a column flexbox, and the auto margins that centre the page in it switch off the
+     stretch. Without a width of its own the page is as wide as its longest unbreakable line - a
+     compound noun in the title, the price, a URL - and on a phone the shell clips the right edge
+     off. `min-width: 0` would not help: across a column, the width is the cross axis. */
+  width: 100%;
   max-width: @listing-detail-max;
   margin: 0 auto;
   padding-bottom: @space-12;

@@ -160,3 +160,47 @@ describe('listing detail layout', () => {
     expect(detail).not.toContain('<TravelTimes');
   });
 });
+
+describe('listing detail on a phone', () => {
+  it('sizes the page to the space beside the sidebar rather than to its longest line', () => {
+    // The shell is a column flexbox and the page centres itself in it with auto margins, which
+    // switch off the stretch: without a width of its own the page is exactly as wide as its longest
+    // unbreakable line - a compound noun in the title, the price, a URL - and the shell cuts the
+    // right edge off. `min-width: 0` does not help, because the width is the cross axis there.
+    const less = source('ListingDetail.less');
+    const start = less.search(/^\.listing-detail \{$/m);
+    // The rule's own declarations: everything before its first nested block, comments left out.
+    const page = less.slice(start, less.indexOf('&__', start)).replace(/\/\*[\s\S]*?\*\//g, '');
+    expect(start).toBeGreaterThan(-1);
+    expect(page).toMatch(/^\s+width: 100%;$/m);
+    expect(page).toMatch(/^\s+margin: 0 auto;$/m);
+  });
+
+  it('gives the address its own height back when the title block stacks', () => {
+    // Below 768px the row becomes a column, and the address's `flex: 1 1 24rem` - a width while the
+    // row is a row - turns into a 384px height with the address floating in the middle of it.
+    const title = source('components/ListingTitleBlock.less');
+    const stacked = title.slice(title.indexOf('@media (max-width: 768px)'));
+    expect(stacked).toMatch(/&__address \{\s*flex: 0 0 auto;/);
+  });
+
+  it('breaks a line too long for its card inside the card', () => {
+    // Once the page is held to the screen, an unbreakable line either breaks or runs out of its card
+    // and is clipped along with it. Only where such lines come from: the portal's title, its address
+    // and its prose. Figures are left alone on purpose - a price broken in two reads as two numbers.
+    const title = source('components/ListingTitleBlock.less');
+    expect(title).toMatch(/&__heading \{[^}]*overflow-wrap: anywhere;/);
+    expect(title).toMatch(/&__address-link \{[^}]*overflow-wrap: anywhere;/);
+    expect(source('components/ListingDescriptionCard.less')).toMatch(/&__body \{[^}]*overflow-wrap: anywhere;/);
+  });
+
+  it('shrinks the price and stacks the tiles on a narrow phone rather than cutting them off', () => {
+    // On a 320px phone the key-facts card has about 160px inside it. The 40px price is wider than
+    // that, and three tiles abreast get under 50px each, which is room for an ellipsis, not a figure.
+    const keyfacts = source('components/ListingKeyFacts.less');
+    const narrow = keyfacts.slice(keyfacts.indexOf('@media (max-width: 480px)'));
+    const priceSize = (text) => Number(text.match(/&__amount \{[^}]*font-size: (\d+)px;/)?.[1]);
+    expect(priceSize(narrow)).toBeLessThan(priceSize(keyfacts));
+    expect(narrow).toMatch(/&__tiles \{[^}]*grid-template-columns: minmax\(0, 1fr\);/);
+  });
+});

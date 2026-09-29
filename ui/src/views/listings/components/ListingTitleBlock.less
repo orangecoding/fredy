@@ -9,6 +9,8 @@
   &__heading {
     margin: 0;
     max-width: 34ch;
+    // A portal title can carry a word wider than a phone, a compound noun or a URL.
+    overflow-wrap: anywhere;
     font-family: @font-ui;
     font-size: 30px;
     font-weight: 600;
@@ -43,6 +45,7 @@
     color: @color-muted;
     text-decoration: none;
     font-size: @text-base;
+    overflow-wrap: anywhere;
     transition: color @transition-fast;
 
     &:visited {
@@ -136,6 +139,11 @@
     &__row {
       flex-direction: column;
       align-items: stretch;
+    }
+
+    // In a column the basis is a height, and 24rem of it left the address floating in a 384px gap.
+    &__address {
+      flex: 0 0 auto;
     }
 
     &__status {
