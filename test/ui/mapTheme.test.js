@@ -232,11 +232,27 @@ describe('the page', () => {
 
   it('carries the fullscreen toggle on the first heading, not floating above the box', () => {
     expect(viewJsx).toMatch(/panels=\{\(controls, expandButton\) =>/);
-    expect(viewJsx).toMatch(/\{t\('map\.groupMap'\)\}\s*\{expandButton\}/);
+    // The panel puts `headerExtra` on its heading row, folded or not - see mapFilterPanel.test.js.
+    expect(viewJsx).toMatch(
+      /<MapFilterPanel[\s\S]*?title=\{t\('map\.groupMap'\)\}[\s\S]*?headerExtra=\{expandButton\}/,
+    );
     // The map renders it itself only where no panel took it.
     expect(mapJsx).toMatch(/\{!controlsInPanels && expandButton\}/);
     // Smaller in there than on the map, and it needs two classes to beat Semi's own height.
     expect(mapLess).toMatch(/&__groupTitle \{[\s\S]*?\.map-shell__expand \{[\s\S]*?height: 24px/);
+  });
+
+  it('folds the panel away on a phone, where it would cover the whole map', () => {
+    // The same width below which the listing detail folds its cards, from the one place both read.
+    expect(viewJsx).toMatch(/foldable=\{screenWidth < PHONE_BREAKPOINT\}/);
+    expect(viewJsx).toMatch(/import \{ PHONE_BREAKPOINT, useScreenWidth \} from '\.\.\/\.\.\/hooks\/screenWidth\.js';/);
+  });
+
+  it('counts the filters a folded panel hides, so an emptier map explains itself', () => {
+    expect(viewJsx).toMatch(/activeCount=\{activeFilterCount\}/);
+    expect(viewJsx).toMatch(
+      /const activeFilterCount = countActiveMapFilters\(\{\s*jobId,\s*commute: commuteFilter,\s*priceMin: urlPriceMin,\s*priceMax: urlPriceMax,?\s*\}\);/,
+    );
   });
 
   it('says why a filter is locked instead of banning a strip across the map', () => {

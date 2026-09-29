@@ -437,6 +437,7 @@
   "map.noHomeAddressLink": "Benutzereinstellungen",
   "map.noHomeAddressAfter": ", um den Entfernungsfilter zu nutzen.",
   "map.groupMap": "Karte",
+  "map.activeFilterCount": "Aktive Filter: {{count}}",
   "map.groupListings": "Inserate",
   "map.searchPlaceholder": "Adresse oder Ort suchen",
   "map.searchLabel": "Adresssuche auf der Karte",

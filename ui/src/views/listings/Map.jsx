@@ -10,6 +10,7 @@ import maplibregl from '../../components/map/maplibre.js';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useActions, useSelector } from '../../services/state/store.js';
 import {
+  countActiveMapFilters,
   distanceMeters,
   generateCircleCoords,
   getBoundsFromCenter,
@@ -30,8 +31,10 @@ import { createListingPopupContent, escapeHtml } from './listingPopupContent.jsx
 // component with no props, which fails somewhere inside it rather than where it was written.
 import MapCanvas, { isDarkBasemap } from '../../components/map/Map.jsx';
 import MapLegend from '../../components/map/MapLegend.jsx';
+import MapFilterPanel from './components/MapFilterPanel.jsx';
 import { MARKER_COLORS } from '../../components/map/markerColors.js';
 import { useProviderCountries } from '../../hooks/useProviderCountries.js';
+import { PHONE_BREAKPOINT, useScreenWidth } from '../../hooks/screenWidth.js';
 import Headline from '../../components/headline/Headline.jsx';
 import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
 import { keepPopupInView, mountPopupNode } from '../../components/map/popupContent.jsx';
@@ -183,6 +186,16 @@ export default function MapView() {
   const urlPriceMin = searchParams.has('priceMin') ? Number(searchParams.get('priceMin')) : null;
   const urlPriceMax = searchParams.has('priceMax') ? Number(searchParams.get('priceMax')) : null;
   const [priceRange, setPriceRange] = useState([urlPriceMin ?? 0, urlPriceMax ?? 0]);
+
+  // Read from the address bar rather than from the controls, which the folded panel on a phone does
+  // not render: what is on in the URL is what is hiding pins.
+  const activeFilterCount = countActiveMapFilters({
+    jobId,
+    commute: commuteFilter,
+    priceMin: urlPriceMin,
+    priceMax: urlPriceMax,
+  });
+  const screenWidth = useScreenWidth();
 
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [listingToDelete, setListingToDelete] = useState(null);
@@ -659,15 +672,18 @@ export default function MapView() {
             panels={(controls, expandButton) => (
               /* One box, two named groups. The map's own rows and this view's filters all answer
                  what the map is showing, so they read as one panel with a line between them rather
-                 than as two identical boxes four pixels apart, neither of them with a heading. */
-              <div className="map-panel">
-                {/* The fullscreen toggle rides on this heading rather than floating above the
-                    panel: it is a control over the map as a whole, and this is the line that names
-                    the map. */}
-                <div className="map-panel__groupTitle">
-                  {t('map.groupMap')}
-                  {expandButton}
-                </div>
+                 than as two identical boxes four pixels apart, neither of them with a heading.
+
+                 The fullscreen toggle rides on the first heading rather than floating above the
+                 panel: it is a control over the map as a whole, and that is the line that names the
+                 map. On a phone the same heading folds the panel away, see MapFilterPanel. */
+              <MapFilterPanel
+                foldable={screenWidth < PHONE_BREAKPOINT}
+                title={t('map.groupMap')}
+                activeCount={activeFilterCount}
+                activeCountLabel={t('map.activeFilterCount', { count: activeFilterCount })}
+                headerExtra={expandButton}
+              >
                 {controls}
 
                 <div className="map-panel__divider" />
@@ -767,7 +783,7 @@ export default function MapView() {
 
                 <div className="map-panel__divider" />
                 <MapLegend hasStacks={hasStacks} hasRing={distanceFilter > 0 && hasHome} hasHome={hasHome} />
-              </div>
+              </MapFilterPanel>
             )}
           />
         </div>
