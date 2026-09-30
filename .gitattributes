@@ -1,1 +1,2 @@
 test/testFixtures/** linguist-vendored
+*.sh text eol=lf
