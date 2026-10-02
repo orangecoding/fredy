@@ -5,7 +5,7 @@
     "locale": "es-ES",
     "semiLocale": "es"
   },
-  "app.demoBanner": "Esta es una instancia de demostración de Fredy. Todos los cambios y ajustes se restablecen a diario.",
+  "app.demoBanner": "Esta es una instancia de demostración de Fredy. Todos los cambios y ajustes se restablecen cada hora.",
   "nav.dashboard": "Panel",
   "nav.jobs": "Búsquedas",
   "nav.listings": "Anuncios",
@@ -645,7 +645,7 @@
   "settings.analyticsHelp": "Datos de uso anónimos para mejorar Fredy: qué portales y qué tipos de canal de aviso se usan, el sistema operativo, la versión de Node y la arquitectura. Nunca tus canales ni sus credenciales.",
   "settings.analyticsEnable": "Activar las estadísticas",
   "settings.demoMode": "Modo demostración",
-  "settings.demoModeHelp": "En modo demostración, Fredy solo ejecuta la búsqueda de ejemplo incluida. Todo lo demás vuelve a los valores por defecto a medianoche.",
+  "settings.demoModeHelp": "En modo demostración, Fredy solo ejecuta la búsqueda de ejemplo incluida. Todo lo demás vuelve a los valores por defecto cada hora.",
   "settings.demoModeEnable": "Activar el modo demostración",
   "settings.proxyAuth": "Acceso gestionado por el proxy inverso",
   "settings.proxyAuthHelp": "Deja que un proxy inverso delante de Fredy se encargue del acceso: Pangolin, Authelia, Authentik, oauth2-proxy y similares, lo que se conoce como Forward Auth. El proxy comprueba quién llega y pasa el nombre de usuario en una cabecera; Fredy lo empareja con un usuario existente que se llame igual. No se crea ni se asciende a nadie. Desactivado por defecto.",

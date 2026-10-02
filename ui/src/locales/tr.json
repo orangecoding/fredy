@@ -5,7 +5,7 @@
     "locale": "tr-TR",
     "semiLocale": "tr_TR"
   },
-  "app.demoBanner": "Bu, Fredy'nin bir demo örneğidir. Tüm değişiklikler ve ayarlar her gün sıfırlanır.",
+  "app.demoBanner": "Bu, Fredy'nin bir demo örneğidir. Tüm değişiklikler ve ayarlar her saat sıfırlanır.",
   "nav.dashboard": "Kontrol Paneli",
   "nav.jobs": "İşler",
   "nav.listings": "İlanlar",
@@ -605,7 +605,7 @@
   "settings.analyticsHelp": "Fredy'yi iyileştirmeye yardımcı olan anonim kullanım verileri: hangi sağlayıcıların ve bildirim adaptör türlerinin kullanıldığı, işletim sistemi, Node sürümü ve mimari. Kanallarınız veya kimlik bilgileriniz asla gönderilmez.",
   "settings.analyticsEnable": "Analitiği etkinleştir",
   "settings.demoMode": "Demo Modu",
-  "settings.demoModeHelp": "Demo modunda Fredy yalnızca yerleşik Demo İşi'ni çalıştırır. Diğer her şey gece yarısında varsayılanlara sıfırlanır.",
+  "settings.demoModeHelp": "Demo modunda Fredy yalnızca yerleşik Demo İşi'ni çalıştırır. Diğer her şey her saat varsayılanlara sıfırlanır.",
   "settings.demoModeEnable": "Demo modunu etkinleştir",
   "settings.proxyAuth": "Girişi ters vekil sunucu üstlensin",
   "settings.proxyAuthHelp": "Fredy'nin önündeki bir ters vekil sunucunun girişi üstlenmesini sağlar - Pangolin, Authelia, Authentik, oauth2-proxy ve benzerleri, topluca Forward Auth. Vekil sunucu kimin geldiğini doğrular ve kullanıcı adını bir başlıkta iletir; Fredy bunu aynı addaki mevcut bir kullanıcıyla eşleştirir. Kimse oluşturulmaz veya yetkilendirilmez. Varsayılan olarak kapalı.",

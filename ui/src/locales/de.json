@@ -5,7 +5,7 @@
     "locale": "de-DE",
     "semiLocale": "de"
   },
-  "app.demoBanner": "Dies ist eine Demo-Instanz von Fredy. Alle Änderungen und Einstellungen werden um Mitternacht zurückgesetzt.",
+  "app.demoBanner": "Dies ist eine Demo-Instanz von Fredy. Alle Änderungen und Einstellungen werden stündlich zurückgesetzt.",
   "nav.dashboard": "Dashboard",
   "nav.jobs": "Jobs",
   "nav.listings": "Inserate",
@@ -645,7 +645,7 @@
   "settings.analyticsHelp": "Anonyme Nutzungsdaten zur Verbesserung von Fredy: welche Anbieter und Benachrichtigungs-Adaptertypen genutzt werden, Betriebssystem, Node-Version und Architektur. Niemals deine Kanäle oder deren Zugangsdaten.",
   "settings.analyticsEnable": "Analysen aktivieren",
   "settings.demoMode": "Demo-Modus",
-  "settings.demoModeHelp": "Im Demo-Modus führt Fredy ausschließlich den eingebauten Demo-Job aus. Alles andere wird um Mitternacht auf Standardwerte zurückgesetzt.",
+  "settings.demoModeHelp": "Im Demo-Modus führt Fredy ausschließlich den eingebauten Demo-Job aus. Alles andere wird stündlich auf Standardwerte zurückgesetzt.",
   "settings.demoModeEnable": "Demo-Modus aktivieren",
   "settings.proxyAuth": "Anmeldung durch den Reverse-Proxy",
   "settings.proxyAuthHelp": "Lässt einen vorgeschalteten Reverse-Proxy die Anmeldung übernehmen - Pangolin, Authelia, Authentik, oauth2-proxy und ähnliche, zusammen Forward Auth genannt. Der Proxy prüft, wer da kommt, und reicht den Benutzernamen in einer Kopfzeile weiter; Fredy ordnet ihn einem bestehenden Benutzer gleichen Namens zu. Es wird niemand angelegt oder befördert. Standardmäßig aus.",

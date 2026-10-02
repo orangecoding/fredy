@@ -5,7 +5,7 @@
     "locale": "en-US",
     "semiLocale": "en_US"
   },
-  "app.demoBanner": "This is a demo instance of Fredy. All changes and settings are reset daily.",
+  "app.demoBanner": "This is a demo instance of Fredy. All changes and settings are reset hourly.",
   "nav.dashboard": "Dashboard",
   "nav.jobs": "Jobs",
   "nav.listings": "Listings",
@@ -645,7 +645,7 @@
   "settings.analyticsHelp": "Anonymous usage data to help improve Fredy: which providers and notification adapter types are in use, OS, Node version, and architecture. Never your channels or their credentials.",
   "settings.analyticsEnable": "Enable analytics",
   "settings.demoMode": "Demo Mode",
-  "settings.demoModeHelp": "In demo mode, Fredy only runs the built-in Demo-Job. Everything else resets to defaults at midnight.",
+  "settings.demoModeHelp": "In demo mode, Fredy only runs the built-in Demo-Job. Everything else resets to defaults every hour.",
   "settings.demoModeEnable": "Enable demo mode",
   "settings.proxyAuth": "Sign-in handled by the reverse proxy",
   "settings.proxyAuthHelp": "Lets a reverse proxy in front of Fredy handle signing in - Pangolin, Authelia, Authentik, oauth2-proxy and the like, collectively Forward Auth. The proxy checks who is arriving and passes the username on in a header; Fredy matches it to an existing user of the same name. Nobody is created or promoted. Off by default.",

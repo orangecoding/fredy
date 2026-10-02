@@ -1,6 +1,6 @@
 {
   "name": "fredy",
-  "version": "29.2.0",
+  "version": "29.2.1",
   "description": "Fredy - [F]ind [R]eal [E]state [D]amn Eas[y] - Fredy keeps searching for new apartments, houses, and flats in Europe on platforms like ImmoScout24, Immowelt, Immonet, eBay Kleinanzeigen, and WG-Gesucht and instantly delivers the results to you via Slack, Telegram, Email, Discord or ntfy, so you can focus on the more important things in life ;)",
   "scripts": {
     "prepare": "husky",
@@ -68,7 +68,7 @@
     "@fastify/session": "^11.1.3",
     "@fastify/static": "^10.1.5",
     "@mapbox/mapbox-gl-draw": "^1.5.2",
-    "@modelcontextprotocol/sdk": "^1.30.1",
+    "@modelcontextprotocol/sdk": "^1.31.0",
     "@sendgrid/mail": "8.1.6",
     "@turf/boolean-point-in-polygon": "^7.4.0",
     "@vitejs/plugin-react": "6.1.1",
@@ -85,7 +85,7 @@
     "node-cron": "^4.6.0",
     "node-fetch": "3.3.2",
     "node-mailjet": "6.0.11",
-    "nodemailer": "^10.0.11",
+    "nodemailer": "^10.0.13",
     "p-throttle": "^8.1.1",
     "package-up": "^5.0.0",
     "puppeteer-core": "^25.12.0",
@@ -95,11 +95,11 @@
     "react-dom": "19.3.0",
     "react-range-slider-input": "^3.3.5",
     "react-router": "8.4.0",
-    "resend": "^6.30.0",
-    "sanitize-html": "^2.17.7",
+    "resend": "^6.32.0",
+    "sanitize-html": "^2.18.0",
     "semver": "^7.8.5",
     "slack": "11.0.2",
-    "vite": "8.3.1",
+    "vite": "8.3.2",
     "x-var": "^3.0.1",
     "zustand": "^5.0.15"
   },
@@ -110,8 +110,8 @@
     "less": "4.9.1",
     "lint-staged": "17.6.0",
     "nodemon": "^3.1.14",
-    "oxfmt": "^0.70.0",
-    "oxlint": "^1.85.0",
-    "vitest": "^5.0.2"
+    "oxfmt": "^0.71.0",
+    "oxlint": "^1.86.0",
+    "vitest": "^5.0.3"
   }
 }
