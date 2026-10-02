@@ -100,7 +100,7 @@ Fredy is in the [Unraid](https://unraid.net/) community store.
     Kleinanzeigen, WG-Gesucht, willhaben, Flatfox, idealista, Subito, leboncoin, SeLoger and
     [19 more](doc/providers.md)
 -   ⚡ **Instant notifications**: Slack, Telegram, Email (SMTP, SendGrid, Mailjet, Resend), ntfy,
-    Discord, Mattermost, Pushover, Apprise and more
+    Gotify, Discord, Mattermost, Pushover, Apprise and more
 -   🔄 **Deduplication across platforms**: the same flat advertised on ImmoScout, Immowelt and
     Kleinanzeigen reaches you once, matched on living space, rooms and location rather than on the
     headline, no two portals write that the same way
