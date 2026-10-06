@@ -59,6 +59,7 @@ import Headline from '../../components/headline/Headline.jsx';
 import IconEuro from '../../components/icons/IconEuro.jsx';
 import StatusControl from '../../components/listings/StatusControl.jsx';
 import ListingFinanceCard from './components/ListingFinanceCard.jsx';
+import ImmoBotScoreCard from '../../components/listings/ImmoBotScoreCard.jsx';
 import PriceHistoryChart from './components/PriceHistoryChart.jsx';
 import NearbyStops from '../../components/transit/NearbyStops.jsx';
 import ConnectivityCard from '../../components/connectivity/ConnectivityCard.jsx';
@@ -116,6 +117,23 @@ export default function ListingDetail() {
   const [pinDrop, setPinDrop] = useState(null);
   /** Whether a manual "try again" lookup is in flight, so the button can say so. */
   const [geocodeRetrying, setGeocodeRetrying] = useState(false);
+  /** While the exposé is being pulled ("enrich on click"), so the description can say so. */
+  const [detailsEnriching, setDetailsEnriching] = useState(false);
+  /** Set when the enrichment request itself failed, offering a retry. */
+  const [detailsFailed, setDetailsFailed] = useState(false);
+  /** What the last enrichment answered: 'ready' | 'unavailable' | 'unsupported' | null. */
+  const [detailsStatus, setDetailsStatus] = useState(null);
+  /** Auto-enrich runs once per opened listing; a retry re-arms it explicitly. */
+  const enrichAttemptedRef = useRef(false);
+  /**
+   * Which listing the in-flight enrichment belongs to.
+   *
+   * The enrich promise outlives renders: price history, travel times and the enriched listing
+   * itself all re-render this page while it is pending. A per-render `cancelled` flag would be
+   * set by the very first of those cleanups and wedge the spinner forever, so staleness is keyed
+   * on the listing instead - only a real navigate-away discards the answer.
+   */
+  const enrichListingRef = useRef(null);
   const [pickedCoords, setPickedCoords] = useState(null);
   const [pinSaving, setPinSaving] = useState(false);
   const [mapExpanded, setMapExpanded] = useState(false);
@@ -143,6 +161,10 @@ export default function ListingDetail() {
     async function fetchListing() {
       try {
         setLoading(true);
+        enrichAttemptedRef.current = false;
+        enrichListingRef.current = null;
+        setDetailsFailed(false);
+        setDetailsStatus(null);
         await actions.listingsData.getListing(listingId);
       } catch (e) {
         console.error('Failed to load listing details:', e);
@@ -154,6 +176,33 @@ export default function ListingDetail() {
     }
     fetchListing();
   }, [listingId]);
+
+  /**
+   * Pull the exposé on first open ("enrich on click").
+   *
+   * Scrape-time stays sparse, so the full description and the gallery only arrive when a human
+   * actually opens the listing. Runs once per opened listing: an `unavailable` answer keeps the
+   * sparse text without looping, and only a transport failure offers a retry.
+   */
+  useEffect(() => {
+    if (loading || !listing || listing.details_fetched === 1 || enrichAttemptedRef.current) {
+      return;
+    }
+    enrichAttemptedRef.current = true;
+    enrichListingRef.current = listingId;
+    setDetailsEnriching(true);
+    actions.listingsData
+      .enrichListing(listingId)
+      .then((result) => {
+        if (enrichListingRef.current === listingId && result?.status) setDetailsStatus(result.status);
+      })
+      .catch(() => {
+        if (enrichListingRef.current === listingId) setDetailsFailed(true);
+      })
+      .finally(() => {
+        if (enrichListingRef.current === listingId) setDetailsEnriching(false);
+      });
+  }, [loading, listing, listingId, actions]);
 
   useEffect(() => {
     setNotesDraft(listing?.notes ?? '');
@@ -362,6 +411,32 @@ export default function ListingDetail() {
       await actions.listingsData.setListingAddress(listingId, position);
       await actions.listingsData.getListing(listingId);
       Toast.success(t('listing.detail.toastAddressSaved'));
+      // Notify immo-bot backend to re-enrich with new coordinates
+      try {
+        await fetch('http://localhost:8000/api/listings/update-address', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            source_url: listing.link,
+            address: position.address,
+            latitude: position.latitude,
+            longitude: position.longitude,
+          }),
+        });
+        // Poll for updated scores — enrichment runs async in the backend
+        let attempts = 0;
+        const poll = setInterval(async () => {
+          attempts++;
+          try {
+            await actions.listingsData.getListing(listingId);
+          } catch {
+            // ignore
+          }
+          if (attempts >= 15) clearInterval(poll);
+        }, 1000);
+      } catch {
+        // Fire-and-forget: immo-bot re-enrichment is best-effort
+      }
     } catch (error) {
       Toast.error(errorMessage(error, t('listing.detail.toastAddressError')));
       throw error;
@@ -395,6 +470,25 @@ export default function ListingDetail() {
       Toast.error(errorMessage(error, t('listing.detail.toastGeoError')));
     } finally {
       setGeocodeRetrying(false);
+    }
+  };
+
+  /**
+   * Ask for the exposé again after the enrichment request itself failed.
+   *
+   * An `unavailable` answer is not a failure - the sparse listing simply stays - so this only
+   * appears when the request never got an answer at all.
+   */
+  const retryEnrichment = async () => {
+    setDetailsFailed(false);
+    setDetailsEnriching(true);
+    try {
+      const result = await actions.listingsData.enrichListing(listingId);
+      if (result?.status) setDetailsStatus(result.status);
+    } catch {
+      setDetailsFailed(true);
+    } finally {
+      setDetailsEnriching(false);
     }
   };
 
@@ -445,6 +539,15 @@ export default function ListingDetail() {
     rejected: 'listing.detail.statusRejected',
   };
   const statusLabel = listing.status?.status ? t(statusKeyMap[listing.status.status] ?? listing.status.status) : null;
+
+  /** Local gallery paths (`<listingId>/NN.<ext>`), or empty until the exposé delivers them. */
+  const galleryFiles = Array.isArray(listing.image_files) ? listing.image_files : [];
+  /**
+   * Whether the gallery is still on its way: not fetched, no verdict yet, and the request did
+   * not fail. False once enrichment answered (even with zero photos) so the strip settles
+   * instead of shimmering forever.
+   */
+  const galleryPending = listing.details_fetched !== 1 && detailsStatus == null && !detailsFailed;
 
   const data = [
     {
@@ -639,6 +742,43 @@ export default function ListingDetail() {
               />
             </div>
 
+            {/* Gallery pulled by "enrich on click", stored locally and served back per index.
+                The cover above is untouched: notifications keep sending the remote image.
+                Always rendered so the strip never pops the layout: pulse tiles while the exposé
+                is still coming, a quiet note when it came back with no photos. */}
+            <div className="listing-detail__gallery">
+              <Title heading={6} className="listing-detail__gallery-title">
+                {galleryFiles.length > 0
+                  ? t('listing.detail.galleryTitle', { count: galleryFiles.length })
+                  : t('listing.detail.photosTitle')}
+              </Title>
+              <div className="listing-detail__gallery-strip">
+                {galleryFiles.map((_, index) => (
+                  <Image
+                    key={index}
+                    src={`/api/listings/${listing.id}/images/${index}`}
+                    fallback={<img src={no_image} alt={t('listing.detail.noImageAlt')} />}
+                    className="listing-detail__gallery-image"
+                    width={120}
+                    height={90}
+                  />
+                ))}
+                {galleryPending &&
+                  Array.from({ length: 4 }, (_, index) => (
+                    <div
+                      key={`placeholder-${index}`}
+                      className="listing-detail__gallery-placeholder"
+                      aria-hidden="true"
+                    />
+                  ))}
+                {!galleryPending && galleryFiles.length === 0 && (
+                  <Text type="tertiary" size="small">
+                    {t('listing.detail.galleryEmpty')}
+                  </Text>
+                )}
+              </div>
+            </div>
+
             <div className="listing-detail__notes">
               <Title heading={4} className="listing-detail__notes-title">
                 {t('listing.detail.notesTitle')}
@@ -816,6 +956,9 @@ export default function ListingDetail() {
                   after the price - so it comes before the sales copy, not after it. */}
               <ListingFinanceCard listing={listing} />
 
+              {/* Immo-Bot scoring: investor/owner scores, BRW, CAGR, risk */}
+              <ImmoBotScoreCard listing={listing} />
+
               {/* Without the matching half of the profile there is nothing to compute, so offer
                   the way to create it instead of hiding the feature completely. */}
               {!(isRental ? rentComplete : buyComplete) && listing.price != null && (
@@ -846,10 +989,26 @@ export default function ListingDetail() {
               <Divider margin="1.5rem" />
               <Title heading={4} style={{ marginBottom: '1rem' }}>
                 {t('listing.detail.descriptionTitle')}
+                {/* The sparse text is already on screen; the spinner only says the full one is coming. */}
+                {detailsEnriching && <Spin size="small" style={{ marginLeft: '0.5rem' }} />}
               </Title>
               <Text type="secondary" style={{ whiteSpace: 'pre-wrap' }}>
                 {listing.description || t('listing.detail.noDescription')}
               </Text>
+              {/* A refused or timed-out exposé keeps the sparse text; say so and offer a retry.
+                  Unsupported stays silent: the flag is set, so a retry could never answer. */}
+              {(detailsFailed || detailsStatus === 'unavailable') && (
+                <div style={{ marginTop: '0.5rem' }}>
+                  {detailsStatus === 'unavailable' && (
+                    <Text type="tertiary" size="small" style={{ display: 'block', marginBottom: '0.5rem' }}>
+                      {t('listing.detail.detailsUnavailable')}
+                    </Text>
+                  )}
+                  <Button size="small" icon={<IconRefresh />} loading={detailsEnriching} onClick={retryEnrichment}>
+                    {t('listing.detail.detailsRetry')}
+                  </Button>
+                </div>
+              )}
 
               {Array.isArray(listing.distances) && listing.distances.length > 0 && (
                 <>

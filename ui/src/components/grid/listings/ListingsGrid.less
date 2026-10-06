@@ -107,6 +107,21 @@
     gap: 4px;
   }
 
+  &__size {
+    font-size: @text-base;
+    font-weight: 600;
+    color: @color-success;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 2px;
+
+    .semi-icon {
+      font-size: 13px;
+      color: @color-success;
+    }
+  }
+
   &__meta {
     font-size: @text-xs;
     color: @color-muted;
@@ -123,6 +138,31 @@
   &__provider {
     font-size: @text-xs;
     color: @color-faint;
+  }
+
+  &__scores {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    padding: 6px 0 2px;
+    font-size: @text-xs;
+
+    span {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1px;
+
+      strong {
+        font-size: @text-base;
+        font-weight: 700;
+      }
+
+      span:last-child {
+        color: @color-muted;
+        font-size: 10px;
+      }
+    }
   }
 
   &__actions {

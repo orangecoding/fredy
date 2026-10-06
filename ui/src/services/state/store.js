@@ -423,6 +423,23 @@ export const useFredyState = create(
               throw Exception;
             }
           },
+          /**
+           * Fetch a listing's exposé on first open ("enrich on click").
+           *
+           * Answers `{ status, listing }`: `ready` carries the enriched listing (which replaces
+           * the sparse one in the store), `unavailable` keeps the sparse listing and may be
+           * retried, `unsupported` means the provider offers no detail fetch. Throws on
+           * transport errors (403/404/500), same as `getListing`.
+           */
+          async enrichListing(listingId) {
+            const response = await xhrPost(`/api/listings/${listingId}/details`, {});
+            if (response.json?.listing) {
+              set((state) => ({
+                listingsData: { ...state.listingsData, currentListing: response.json.listing },
+              }));
+            }
+            return response.json;
+          },
           async getListingsForMap({ jobId, minPrice, maxPrice } = {}) {
             try {
               const qryString = queryString.stringify(

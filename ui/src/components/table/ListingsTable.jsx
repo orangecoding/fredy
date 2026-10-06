@@ -97,6 +97,28 @@ const ListingsTable = ({
             <CommuteBadge travelTimes={item.travelTimes} jobId={item.job_id} />
           </div>
 
+          <div className="listingsTable__row__scores">
+            <Tooltip
+              content={`Investor: ${item.investor_score?.toFixed(0) ?? 0} | Owner: ${item.owner_score?.toFixed(0) ?? 0}`}
+            >
+              <span
+                className="listingsTable__row__score-chip"
+                style={{
+                  color: item.investor_score
+                    ? (item.investor_score ?? 0) >= 60
+                      ? 'var(--f-success)'
+                      : (item.investor_score ?? 0) >= 40
+                        ? 'var(--f-warning)'
+                        : 'var(--f-error)'
+                    : 'var(--f-secondary)',
+                  borderColor: 'currentColor',
+                }}
+              >
+                {item.investor_score ? item.investor_score.toFixed(0) : '–'}
+              </span>
+            </Tooltip>
+          </div>
+
           <div className="listingsTable__row__meta">
             <IconBriefcase size="small" />
             {item.provider}

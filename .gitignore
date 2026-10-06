@@ -2,6 +2,7 @@ node_modules/
 ui/public/
 db/*.json
 db/*.db*
+conf/
 npm-debug.log
 .DS_Store
 .idea
@@ -9,3 +10,6 @@ npm-debug.log
 tools/release/config.json
 .agents
 graft/
+db/listing-images/
+db/fredy_db/
+db/enrichment-profile/

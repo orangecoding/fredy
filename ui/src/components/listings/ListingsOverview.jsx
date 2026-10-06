@@ -403,6 +403,8 @@ const ListingsOverview = () => {
           <Select.Option value="created_at">{t('listings.sortByDate')}</Select.Option>
           <Select.Option value="price">{t('listings.sortByPrice')}</Select.Option>
           <Select.Option value="provider">{t('listings.sortByProvider')}</Select.Option>
+          <Select.Option value="investor_score">Investor Score</Select.Option>
+          <Select.Option value="owner_score">Owner Score</Select.Option>
         </FilterSelect>
 
         <Tooltip

@@ -1,0 +1,209 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../tokens.less';
+
+.immoBotScore {
+  margin-top: @space-6;
+  padding-top: @space-5;
+  border-top: 1px solid @color-border;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: @space-3;
+    margin-bottom: @space-4;
+  }
+
+  &__title {
+    margin: 0 !important;
+  }
+
+  &__bars {
+    display: flex;
+    flex-direction: column;
+    gap: @space-3;
+    margin-bottom: @space-5;
+  }
+
+  &__bar-row {
+    display: flex;
+    align-items: center;
+    gap: @space-3;
+  }
+
+  &__bar-label {
+    width: 60px;
+    font-size: @text-sm;
+    color: @color-muted;
+    flex-shrink: 0;
+  }
+
+  &__bar-track {
+    flex: 1;
+    height: 8px;
+    background: @color-fill-subtle;
+    border-radius: @radius-chip;
+    overflow: hidden;
+  }
+
+  &__bar-fill {
+    height: 100%;
+    border-radius: @radius-chip;
+    transition: width @transition-fast;
+  }
+
+  &__bar-value {
+    width: 30px;
+    text-align: right;
+    font-family: @font-mono;
+    font-size: @text-sm;
+    color: @color-text;
+    flex-shrink: 0;
+  }
+
+  // Score breakdown section
+  &__breakdown {
+    margin-bottom: @space-5;
+  }
+
+  &__breakdown-title {
+    font-size: @text-sm;
+    color: @color-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: @space-3;
+  }
+
+  &__breakdown-toggle {
+    cursor: pointer;
+    padding: @space-2 0;
+    list-style: none;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    &::before {
+      content: '▸';
+      display: inline-block;
+      margin-right: @space-2;
+      transition: transform @transition-fast;
+    }
+  }
+
+  &[open] &__breakdown-toggle::before {
+    transform: rotate(90deg);
+  }
+
+  &__breakdown-section {
+    padding: @space-3 0;
+    display: flex;
+    flex-direction: column;
+    gap: @space-3;
+  }
+
+  &__breakdown-title {
+    font-size: @text-sm;
+    margin-bottom: @space-1;
+  }
+
+  // Individual component rows
+  &__component {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding-left: @space-3;
+    border-left: 2px solid @color-border;
+  }
+
+  &__component-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  &__component-label {
+    font-size: @text-sm;
+    color: @color-text;
+  }
+
+  &__component-score {
+    font-family: @font-mono;
+    font-size: @text-sm;
+    font-weight: 500;
+  }
+
+  &__component-track {
+    height: 4px;
+    background: @color-fill-subtle;
+    border-radius: @radius-chip;
+    overflow: hidden;
+  }
+
+  &__component-fill {
+    height: 100%;
+    border-radius: @radius-chip;
+    transition: width @transition-fast;
+  }
+
+  &__component-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  &__component-metric {
+    font-family: @font-mono;
+    font-size: @text-xs;
+  }
+
+  &__component-note {
+    font-size: @text-xs;
+    font-style: italic;
+  }
+
+  // Facts grid (BRW, Bezirk, Risk)
+  &__facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: @space-4;
+    margin: 0 0 @space-5;
+  }
+
+  &__fact {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-left: @space-3;
+    border-left: 2px solid @color-border;
+  }
+
+  &__fact-label {
+    font-size: @text-xs;
+    color: @color-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__fact-value {
+    margin: 0;
+    font-family: @font-mono;
+    font-size: @text-base;
+    color: @color-text;
+  }
+
+  &__fact-note {
+    margin: 0;
+    font-size: @text-xs;
+    color: @color-muted;
+    margin-top: 2px;
+  }
+
+  &__footnote {
+    display: block;
+  }
+}

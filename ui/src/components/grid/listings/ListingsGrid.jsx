@@ -13,6 +13,7 @@ import {
   IconStarStroked,
   IconEyeOpened,
   IconRefresh,
+  IconExpand,
 } from '@douyinfe/semi-icons';
 import no_image from '../../../assets/no_image.png';
 import { formatEuroPrice } from '../../../services/price/priceService.js';
@@ -102,6 +103,17 @@ const ListingsGrid = ({
                 />
               </div>
             )}
+            {item.size && (
+              <div className="listingsGrid__card__size">
+                <IconExpand size="small" />
+                <span>
+                  {item.size} m²
+                  {item.rooms != null
+                    ? ` · ${Number.isInteger(item.rooms) ? item.rooms : item.rooms.toFixed(1)} Zi.`
+                    : ''}
+                </span>
+              </div>
+            )}
             {item.address && (
               <div className="listingsGrid__card__meta">
                 <IconMapPin />
@@ -116,6 +128,55 @@ const ListingsGrid = ({
                 not something you read. The detail page shows the full picture. */}
             <CommuteBadge travelTimes={item.travelTimes} jobId={item.job_id} />
             <div className="listingsGrid__card__provider">{timeService.format(item.created_at, false, locale)}</div>
+            {(item.investor_score > 0 || item.owner_score > 0 || item.asset_risk_score > 0) && (
+              <div className="listingsGrid__card__scores">
+                <span>
+                  <strong
+                    style={{
+                      color:
+                        (item.investor_score ?? 0) >= 60
+                          ? 'var(--f-success)'
+                          : (item.investor_score ?? 0) >= 40
+                            ? 'var(--f-warning)'
+                            : 'var(--f-error)',
+                    }}
+                  >
+                    {item.investor_score?.toFixed(0) ?? '–'}
+                  </strong>
+                  <span>Investor</span>
+                </span>
+                <span>
+                  <strong
+                    style={{
+                      color:
+                        (item.owner_score ?? 0) >= 60
+                          ? 'var(--f-success)'
+                          : (item.owner_score ?? 0) >= 40
+                            ? 'var(--f-warning)'
+                            : 'var(--f-error)',
+                    }}
+                  >
+                    {item.owner_score?.toFixed(0) ?? '–'}
+                  </strong>
+                  <span>Owner</span>
+                </span>
+                <span>
+                  <strong
+                    style={{
+                      color:
+                        (item.asset_risk_score ?? 0) < 5
+                          ? 'var(--f-success)'
+                          : (item.asset_risk_score ?? 0) < 10
+                            ? 'var(--f-warning)'
+                            : 'var(--f-error)',
+                    }}
+                  >
+                    {item.asset_risk_score?.toFixed(0) ?? '–'}
+                  </strong>
+                  <span>Risiko</span>
+                </span>
+              </div>
+            )}
           </div>
 
           <div

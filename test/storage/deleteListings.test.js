@@ -69,7 +69,7 @@ describe('listingsStorage hard delete evicts the similarity cache', () => {
       listingsStorage.deleteListingsByJobId('job-1', true);
 
       expect(calls.query[0].sql).toMatch(
-        /SELECT job_id, provider, title, address, price, size, rooms, manually_deleted/,
+        /SELECT id, job_id, provider, title, address, price, size, rooms, manually_deleted/,
       );
       // A DELETE (not a soft-delete UPDATE) must run
       expect(calls.execute).toHaveLength(1);

@@ -80,6 +80,58 @@
     }
   }
 
+  &__gallery {
+    padding: 1rem 1.5rem 0;
+  }
+
+  &__gallery-title {
+    margin-bottom: 0.5rem;
+  }
+
+  &__gallery-strip {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    // Always reserved, even before the exposé answers: the strip must not pop the layout
+    // when the photos land.
+    min-height: 90px;
+    align-items: center;
+  }
+
+  &__gallery-image {
+    flex: 0 0 auto;
+
+    img,
+    .semi-image-img {
+      width: 120px !important;
+      height: 90px !important;
+      object-fit: cover !important;
+      border-radius: 4px;
+    }
+  }
+
+  // Shimmer tile holding the gallery's place while the exposé is still coming. Token colors
+  // only: this file may not carry literals (see themes.less).
+  &__gallery-placeholder {
+    flex: 0 0 auto;
+    width: 120px;
+    height: 90px;
+    border-radius: 4px;
+    background-color: var(--semi-color-fill-0);
+    animation: listing-detail-gallery-pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes listing-detail-gallery-pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.4;
+    }
+  }
+
   &__address-link {
     color: @color-muted;
     text-decoration: none;

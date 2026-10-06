@@ -26,7 +26,7 @@
 
   &__row {
     display: grid;
-    grid-template-columns: 56px 1fr 140px 200px 120px 110px auto;
+    grid-template-columns: 56px 1fr 140px 200px 70px 120px 110px auto;
     align-items: center;
     gap: @space-3;
     padding: 8px 12px;
@@ -153,10 +153,30 @@
       color: @color-faint;
     }
 
+    &__scores {
+      display: flex;
+      align-items: center;
+    }
+
+    &__score-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 1px @space-2;
+      border: 1px solid;
+      border-radius: @radius-chip;
+      font-size: @text-xs;
+      font-family: @font-mono;
+      line-height: 1.5;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+
     @media (max-width: 900px) {
       grid-template-columns: 56px 1fr 120px auto;
 
       .listingsTable__row__address,
+      .listingsTable__row__scores,
       .listingsTable__row__meta,
       .listingsTable__row__date {
         display: none;
