@@ -104,17 +104,18 @@ const ListingsTable = ({
               <span
                 className="listingsTable__row__score-chip"
                 style={{
-                  color: item.investor_score
-                    ? (item.investor_score ?? 0) >= 60
-                      ? 'var(--f-success)'
-                      : (item.investor_score ?? 0) >= 40
-                        ? 'var(--f-warning)'
-                        : 'var(--f-error)'
-                    : 'var(--f-secondary)',
+                  color:
+                    item.investor_score == null
+                      ? 'var(--f-secondary)'
+                      : (item.investor_score ?? 0) >= 60
+                        ? 'var(--f-success)'
+                        : (item.investor_score ?? 0) >= 40
+                          ? 'var(--f-warning)'
+                          : 'var(--f-error)',
                   borderColor: 'currentColor',
                 }}
               >
-                {item.investor_score ? item.investor_score.toFixed(0) : '–'}
+                {item.investor_score?.toFixed(0) ?? '–'}
               </span>
             </Tooltip>
           </div>

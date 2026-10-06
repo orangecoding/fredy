@@ -228,7 +228,11 @@ export default function ImmoBotScoreCard({ listing }) {
 
   // The block always renders: hiding it when nothing is scored yet made a stalled backend
   // look like a deleted feature. Unscored listings show zeros with the reason instead.
-  const scored = !(investorScore === 0 && ownerScore === 0 && brwValue === 0);
+  // A genuine zero is a verdict, not a missing score: an overpriced flat scores 0 on every
+  // axis. Only no-price listings can never score (yield and buy/rent divide by price), and
+  // only rows with neither scores nor Bodenrichtwert are still waiting for enrichment.
+  const hasPrice = price > 0;
+  const scored = hasPrice && !(investorScore === 0 && ownerScore === 0 && brwValue === 0);
 
   const risk = riskLevel(assetRisk);
   const cagrData = computeCagr(cagr);
@@ -250,7 +254,9 @@ export default function ImmoBotScoreCard({ listing }) {
 
       {!scored && (
         <Text type="tertiary" size="small" className="immoBotScore__pending">
-          Not scored yet — the scoring backend hasn&apos;t enriched this listing. Check back after the next run.
+          {!hasPrice
+            ? 'No score — this listing has no asking price, and scoring divides by price.'
+            : 'Not scored yet — the scoring backend hasn\u2019t enriched this listing. Check back after the next run.'}
         </Text>
       )}
 
