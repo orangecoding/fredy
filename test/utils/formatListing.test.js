@@ -4,7 +4,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { formatListing } from '../../lib/utils/formatListing.js';
+import { formatListing, formatPrice, formatPriceChange } from '../../lib/utils/formatListing.js';
 
 /**
  * Notification text used to be German whatever the user had set the interface to, because the
@@ -29,7 +29,7 @@ describe('formatListing', () => {
 
   it('formats price and size with their language-neutral units', () => {
     const formatted = formatListing(listing, 'de');
-    expect(formatted.price).toBe('1200 €');
+    expect(formatted.price).toBe('1.200 €');
     expect(formatted.size).toBe('74 m²');
   });
 
@@ -52,5 +52,46 @@ describe('formatListing', () => {
     const original = { ...listing };
     formatListing(listing, 'de');
     expect(listing).toEqual(original);
+  });
+});
+
+describe('formatPrice', () => {
+  it('groups thousands with dots so large prices stay readable', () => {
+    expect(formatPrice(1000000)).toBe('1.000.000 €');
+    expect(formatPrice(100000)).toBe('100.000 €');
+    expect(formatPrice(1200)).toBe('1.200 €');
+  });
+
+  it('leaves small prices alone', () => {
+    expect(formatPrice(800)).toBe('800 €');
+    expect(formatPrice(0)).toBe('0 €');
+  });
+
+  it('uses a decimal comma and keeps at most two decimals', () => {
+    expect(formatPrice(1234.5)).toBe('1.234,5 €');
+    expect(formatPrice(999.999)).toBe('1.000 €');
+  });
+
+  it('uses German grouping even when the interface is English', () => {
+    expect(formatListing({ id: 'l3', title: 'House', price: 450000 }, 'en').price).toBe('450.000 €');
+  });
+});
+
+describe('formatPriceChange', () => {
+  it('formats old and new price the same way as a new listing', () => {
+    const formatted = formatPriceChange(
+      {
+        listing: { id: 'l4', title: 'House', price: 475000 },
+        oldPrice: 499000,
+        newPrice: 475000,
+        changePercent: -4.81,
+        direction: 'down',
+      },
+      'de',
+    );
+    expect(formatted.oldPrice).toBe('499.000 €');
+    expect(formatted.newPrice).toBe('475.000 €');
+    expect(formatted.price).toBe('475.000 €');
+    expect(formatted.changePercent).toBe('-4.8 %');
   });
 });
