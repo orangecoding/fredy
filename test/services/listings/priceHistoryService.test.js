@@ -165,8 +165,8 @@ describe('services/listings/priceHistoryService', () => {
       await notifyPriceChanges([change('job1')]);
 
       expect(state.sent[0][1][0]).toMatchObject({
-        oldPrice: '1200 €',
-        newPrice: '1100 €',
+        oldPrice: '1.200 €',
+        newPrice: '1.100 €',
         changePercent: '-8.3 %',
         changeHeadline: 'Price reduced',
       });
