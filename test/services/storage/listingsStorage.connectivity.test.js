@@ -62,6 +62,10 @@ function addListing(id, overrides = {}) {
      VALUES (@id, @job_id, @provider, @latitude, @longitude, @is_active, @manually_deleted, @created_at,
              @connectivity, @connectivity_max_down, @connectivity_fiber, @connectivity_mobile, @connectivity_at)`,
   ).run(row);
+  // Production write-through (storeListings) registers every row in its primary job.
+  db.prepare(
+    `INSERT OR IGNORE INTO listing_jobs (listing_id, job_id, attached_at) VALUES (@id, @job_id, @created_at)`,
+  ).run(row);
 }
 
 describe('listingsStorage connectivity', () => {
@@ -93,6 +97,12 @@ describe('listingsStorage connectivity', () => {
         connectivity_at       INTEGER
       );
       CREATE TABLE jobs (id TEXT PRIMARY KEY, name TEXT, deal_type TEXT, user_id TEXT);
+      CREATE TABLE listing_jobs (
+        listing_id  TEXT NOT NULL,
+        job_id      TEXT NOT NULL,
+        attached_at INTEGER,
+        PRIMARY KEY (listing_id, job_id)
+      );
       CREATE TABLE watch_list (id TEXT PRIMARY KEY, listing_id TEXT, user_id TEXT);
       CREATE TABLE listing_travel_times (
         listing_id TEXT, label TEXT, transit_minutes INTEGER, car_minutes INTEGER,

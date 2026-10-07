@@ -45,6 +45,12 @@ describe('storeListings id propagation', () => {
         status TEXT,
         UNIQUE (job_id, hash)
       );
+      CREATE TABLE listing_jobs (
+        listing_id TEXT NOT NULL,
+        job_id TEXT NOT NULL,
+        attached_at INTEGER,
+        PRIMARY KEY (listing_id, job_id)
+      );
     `);
 
     vi.resetModules();
@@ -84,6 +90,12 @@ describe('storeListings id propagation', () => {
     listingsStorage.storeListings('job-1', 'immowelt', listings);
 
     expect(rowExists(listings[0].id)).toBe(true);
+    // Write-through: the primary job is recorded in the join table too.
+    expect(
+      db
+        .prepare('SELECT COUNT(*) AS c FROM listing_jobs WHERE listing_id = ? AND job_id = ?')
+        .get(listings[0].id, 'job-1').c,
+    ).toBe(1);
   });
 
   it('points a duplicate inside one batch at the row that was actually written', () => {

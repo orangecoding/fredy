@@ -1,0 +1,82 @@
+.listing-gallery {
+  padding: 1rem 1.5rem 0;
+}
+
+.listing-gallery__title {
+  margin-bottom: 0.5rem;
+}
+
+// Stage: the current photo with arrows overlaid on its left and right edges.
+.listing-gallery__stage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+  margin-bottom: 0.5rem;
+  border-radius: 4px;
+  background-color: var(--semi-color-fill-0);
+
+  .listing-gallery__stage-image,
+  .listing-gallery__stage-image img,
+  .listing-gallery__stage-image .semi-image-img {
+    max-width: 100% !important;
+    max-height: 420px !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain !important;
+    border-radius: 4px;
+    cursor: zoom-in;
+  }
+}
+
+// Arrows sit on the photo edges, above it, in both modes. Token colors only:
+// this file may not carry literals (see themes.less).
+.listing-gallery__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  border-radius: 50%;
+  background-color: var(--semi-color-bg-2);
+  box-shadow: var(--semi-shadow-elevated);
+
+  &--left {
+    left: 0.5rem;
+  }
+
+  &--right {
+    right: 0.5rem;
+  }
+
+  &--large {
+    transform: translateY(-50%) scale(1.4);
+  }
+}
+
+.listing-gallery__counter {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.5rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 10px;
+  font-size: 12px;
+  color: var(--semi-color-white);
+  background-color: var(--f-scrim);
+}
+
+// Fullscreen modal body: photo contained, arrows pinned to the viewport edges.
+.listing-gallery__fullscreen {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+}
+
+.listing-gallery__fullscreen-image {
+  max-width: 100%;
+  max-height: 78vh;
+  object-fit: contain;
+  border-radius: 4px;
+}

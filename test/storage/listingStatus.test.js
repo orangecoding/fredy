@@ -180,7 +180,10 @@ describe('listingsStorage.getAvailableProviders', () => {
     sqliteMock.__queryHandler = () => [{ provider: 'immoscout' }];
     const result = listingsStorage.getAvailableProviders({ jobId: 'job-1', userId: 'u1', isAdmin: true });
     expect(result).toEqual(['immoscout']);
-    expect(calls.query[0].sql).toMatch(/\(l\.job_id = @jobId\)/);
+    // Membership runs through the join table so rows attached to the job count too,
+    // whichever job found them first.
+    expect(calls.query[0].sql).toMatch(/FROM listing_jobs attached_filter/);
+    expect(calls.query[0].sql).toMatch(/attached_filter\.job_id = @jobId/);
     expect(calls.query[0].params.jobId).toBe('job-1');
   });
 });

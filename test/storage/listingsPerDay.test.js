@@ -46,10 +46,22 @@ describe('getListingsPerDayForJobIds', () => {
         created_at INTEGER,
         manually_deleted INTEGER DEFAULT 0
       );
+      CREATE TABLE listing_jobs (
+        listing_id TEXT NOT NULL,
+        job_id TEXT NOT NULL,
+        attached_at INTEGER,
+        PRIMARY KEY (listing_id, job_id)
+      );
     `);
     const insert = db.prepare(`INSERT INTO listings (id, job_id, created_at, manually_deleted) VALUES (?, ?, ?, ?)`);
+    const attach = db.prepare('INSERT OR IGNORE INTO listing_jobs (listing_id, job_id, attached_at) VALUES (?, ?, ?)');
     let seq = 0;
-    addListing = (jobId, createdAt, deleted = 0) => insert.run(`l${seq++}`, jobId, createdAt, deleted);
+    addListing = (jobId, createdAt, deleted = 0) => {
+      const id = `l${seq++}`;
+      insert.run(id, jobId, createdAt, deleted);
+      // Mirrors the production write-through: every row belongs to its job in the join table.
+      attach.run(id, jobId, Date.now());
+    };
 
     vi.resetModules();
     listingsStorage = await import('../../lib/services/storage/listingsStorage.js');

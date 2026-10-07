@@ -27,10 +27,18 @@ vi.mock('../../../lib/services/similarity-check/similarityCache.js', () => ({
   checkAndAddEntry: () => false,
 }));
 
-const addListing = (id, jobId, isActive) =>
-  db
-    .prepare(`INSERT INTO listings (id, job_id, is_active, manually_deleted) VALUES (?, ?, ?, 0)`)
-    .run(id, jobId, isActive);
+const addListing = (id, jobId, isActive) => {
+  db.prepare(`INSERT INTO listings (id, job_id, is_active, manually_deleted) VALUES (?, ?, ?, 0)`).run(
+    id,
+    jobId,
+    isActive,
+  );
+  db.prepare(`INSERT OR IGNORE INTO listing_jobs (listing_id, job_id, attached_at) VALUES (?, ?, ?)`).run(
+    id,
+    jobId,
+    Date.now(),
+  );
+};
 
 const remainingIds = () =>
   db
@@ -55,6 +63,12 @@ describe('listingsStorage.deleteInactiveListingsByJobId', () => {
         rooms            REAL,
         is_active        INTEGER,
         manually_deleted INTEGER DEFAULT 0
+      );
+      CREATE TABLE listing_jobs (
+        listing_id  TEXT NOT NULL,
+        job_id      TEXT NOT NULL,
+        attached_at INTEGER,
+        PRIMARY KEY (listing_id, job_id)
       );
     `);
     ({ deleteInactiveListingsByJobId } = await import('../../../lib/services/storage/listingsStorage.js'));

@@ -25,6 +25,12 @@ describe('getListingsKpisForJobIds', () => {
         is_active INTEGER,
         manually_deleted INTEGER DEFAULT 0
       );
+      CREATE TABLE listing_jobs (
+        listing_id TEXT NOT NULL,
+        job_id TEXT NOT NULL,
+        attached_at INTEGER,
+        PRIMARY KEY (listing_id, job_id)
+      );
     `);
 
     vi.resetModules();
@@ -43,10 +49,23 @@ describe('getListingsKpisForJobIds', () => {
   afterEach(() => db.close());
 
   let seq = 0;
-  const add = (price, { jobId = 'job-1', isActive = 1, deleted = 0 } = {}) =>
-    db
-      .prepare('INSERT INTO listings (id, job_id, price, is_active, manually_deleted) VALUES (?,?,?,?,?)')
-      .run(`l-${seq++}`, jobId, price, isActive, deleted);
+  const add = (price, { jobId = 'job-1', isActive = 1, deleted = 0 } = {}) => {
+    const id = `l-${seq++}`;
+    db.prepare('INSERT INTO listings (id, job_id, price, is_active, manually_deleted) VALUES (?,?,?,?,?)').run(
+      id,
+      jobId,
+      price,
+      isActive,
+      deleted,
+    );
+    // Mirrors the production write-through: every row belongs to its job in the join table.
+    // Prepared per call (not at describe scope) because `db` only exists inside beforeEach.
+    db.prepare('INSERT OR IGNORE INTO listing_jobs (listing_id, job_id, attached_at) VALUES (?, ?, ?)').run(
+      id,
+      jobId,
+      Date.now(),
+    );
+  };
 
   const kpis = (jobIds = ['job-1']) => listingsStorage.getListingsKpisForJobIds(jobIds);
 

@@ -34,6 +34,10 @@ describe('jobStorage notification adapter hydration', () => {
         deal_type TEXT, last_run_at INTEGER
       );
       CREATE TABLE listings (id TEXT PRIMARY KEY, job_id TEXT, is_active INTEGER, manually_deleted INTEGER);
+      CREATE TABLE listing_jobs (
+        listing_id TEXT NOT NULL, job_id TEXT NOT NULL, attached_at INTEGER,
+        PRIMARY KEY (listing_id, job_id)
+      );
       CREATE TABLE configured_adapter (
         id TEXT PRIMARY KEY, user_id TEXT NOT NULL, adapter_id TEXT NOT NULL, name TEXT NOT NULL,
         fields TEXT NOT NULL DEFAULT '{}', visibility TEXT NOT NULL DEFAULT 'private',

@@ -1,10 +1,9 @@
 services:
   fredy:
+    build: .
+    image: fredy-berlin
     container_name: fredy
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: ghcr.io/orangecoding/fredy
+    restart: unless-stopped
     environment:
       - NODE_ENV=production
     volumes:
@@ -12,7 +11,8 @@ services:
       - ./db:/db
     ports:
       - "9998:9998"
-    restart: unless-stopped
+    networks:
+      - fredy-net
     # Resource limits to prevent runaway memory usage from Chromium
     deploy:
       resources:
@@ -24,3 +24,6 @@ services:
       timeout: 10s
       retries: 3
       start_period: 30s
+
+networks:
+  fredy-net:

@@ -38,17 +38,21 @@ import './transit.less';
  * @param {string} [props.jobId] - The job this listing was found by, whose limits it is judged
  *   against. Without one the badge simply shows the times, which is what it did before limits
  *   existed.
+ * @param {string|null} [props.jobName] - The currently active job filter, by name. Wins over
+ *   `jobId` when it resolves to a visible job: a shared row carries several jobs, and the
+ *   page the user is looking at decides whose limits judge it.
  * @returns {React.ReactNode}
  */
-export default function CommuteBadge({ travelTimes, jobId }) {
+export default function CommuteBadge({ travelTimes, jobId, jobName = null }) {
   const t = useTranslation();
   const userSettings = useSelector((state) => state.userSettings.settings);
   const jobs = useSelector((state) => state.jobsData.jobs);
 
   const budgeted = useMemo(() => {
-    const job = (jobs ?? []).find((candidate) => candidate?.id === jobId);
+    const byName = jobName ? (jobs ?? []).find((candidate) => candidate?.name === jobName) : null;
+    const job = byName ?? (jobs ?? []).find((candidate) => candidate?.id === jobId);
     return addressesWithBudget(measuredPlaces(userSettings), job?.commuteFilter);
-  }, [jobs, jobId, userSettings]);
+  }, [jobs, jobId, jobName, userSettings]);
 
   const usable = Array.isArray(travelTimes) ? travelTimes.filter(hasAnyTime) : [];
   if (usable.length === 0) {

@@ -12,6 +12,23 @@ export const storeListings = (jobKey, providerId, listings) => {
 export const getKnownListingHashesForJobAndProvider = (jobKey, providerId) => {
   return db[providerId] || [];
 };
+/**
+ * Cross-job link matches. Empty by default: provider and pipeline suites exercise one job,
+ * so nothing is ever already known under another job unless a test says so.
+ */
+let linkMatches = [];
+export function setLinkMatches(rows) {
+  linkMatches = rows;
+}
+export const findListingsByLinks = (links, ownerUserId) => {
+  return linkMatches.filter((row) => links.includes(row.link));
+};
+/**
+ * Attachments are a no-op in the stand-in store: rows are per-test memory, shared by design.
+ */
+export const attachJobsToListing = (listingId, jobIds, attachedAt) => {
+  return 0;
+};
 
 export const getGeocoordinatesByAddress = (any) => {
   return null;

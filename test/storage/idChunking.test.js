@@ -37,12 +37,22 @@ describe('listing id batches larger than the SQLite parameter limit', () => {
         inactive_since INTEGER,
         active_check_failures INTEGER DEFAULT 0
       );
+      CREATE TABLE listing_jobs (
+        listing_id TEXT NOT NULL,
+        job_id TEXT NOT NULL,
+        attached_at INTEGER,
+        PRIMARY KEY (listing_id, job_id)
+      );
     `);
     const insert = db.prepare(
       'INSERT INTO listings (id, hash, job_id, title, address, price) VALUES (?, ?, ?, ?, ?, ?)',
     );
+    const attach = db.prepare('INSERT OR IGNORE INTO listing_jobs (listing_id, job_id, attached_at) VALUES (?, ?, ?)');
     db.transaction(() => {
-      for (let i = 0; i < BATCH; i++) insert.run(`id-${i}`, `hash-${i}`, 'job-1', `Flat ${i}`, `Street ${i}`, 1000 + i);
+      for (let i = 0; i < BATCH; i++) {
+        insert.run(`id-${i}`, `hash-${i}`, 'job-1', `Flat ${i}`, `Street ${i}`, 1000 + i);
+        attach.run(`id-${i}`, 'job-1', Date.now());
+      }
     })();
 
     vi.resetModules();

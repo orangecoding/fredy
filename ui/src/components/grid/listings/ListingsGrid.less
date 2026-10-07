@@ -146,6 +146,11 @@
     gap: 16px;
     padding: 6px 0 2px;
     font-size: @text-xs;
+    // Pinned to the body bottom like the actions bar below it: variable-length content
+    // above (title, price, address) would otherwise leave the scores at a different
+    // height on every card in a row. margin-top absorbs the slack; the body's gap keeps
+    // at least 4px distance to the content above.
+    margin-top: auto;
 
     span {
       display: flex;

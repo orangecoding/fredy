@@ -124,7 +124,9 @@ describe('queryListings affordabilityBand', () => {
     });
 
     const { sql, params } = pageQuery();
-    expect(sql).toContain('l.job_id = @jobId');
+    // Job membership runs through the join table so attached rows count too.
+    expect(sql).toContain('FROM listing_jobs attached_filter');
+    expect(sql).toContain('attached_filter.job_id = @jobId');
     expect(sql).toContain("json_extract(l.status, '$.status') = @statusValue");
     expect(sql).toContain('l.is_active = 1');
     expect(sql).toContain('@affMin_buy');

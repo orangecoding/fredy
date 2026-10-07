@@ -13,7 +13,6 @@ import {
   Card,
   Row,
   Col,
-  Image,
   Tag,
   Divider,
   Descriptions,
@@ -44,7 +43,6 @@ import {
 import maplibregl from '../../components/map/maplibre.js';
 import MapCanvas, { HOME_MARKER_COLOR } from '../../components/map/Map.jsx';
 import { useProviderCountries } from '../../hooks/useProviderCountries.js';
-import no_image from '../../assets/no_image.png';
 import * as timeService from '../../services/time/timeService.js';
 import { formatEuroPrice } from '../../services/price/priceService.js';
 import { getBoundsFromCoords } from './mapUtils.js';
@@ -59,12 +57,13 @@ import Headline from '../../components/headline/Headline.jsx';
 import IconEuro from '../../components/icons/IconEuro.jsx';
 import StatusControl from '../../components/listings/StatusControl.jsx';
 import ListingFinanceCard from './components/ListingFinanceCard.jsx';
-import ImmoBotScoreCard from '../../components/listings/ImmoBotScoreCard.jsx';
+import FredyScoreCard from '../../components/listings/FredyScoreCard.jsx';
 import PriceHistoryChart from './components/PriceHistoryChart.jsx';
 import NearbyStops from '../../components/transit/NearbyStops.jsx';
 import ConnectivityCard from '../../components/connectivity/ConnectivityCard.jsx';
 import TravelTimes from '../../components/transit/TravelTimes.jsx';
 import AddressEditor from './components/AddressEditor.jsx';
+import ListingGallery from './components/ListingGallery.jsx';
 import './ListingDetail.less';
 import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
 import { useFinanceProfile } from '../../hooks/useFinanceProfile.js';
@@ -411,32 +410,6 @@ export default function ListingDetail() {
       await actions.listingsData.setListingAddress(listingId, position);
       await actions.listingsData.getListing(listingId);
       Toast.success(t('listing.detail.toastAddressSaved'));
-      // Notify immo-bot backend to re-enrich with new coordinates
-      try {
-        await fetch('http://localhost:8000/api/listings/update-address', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            source_url: listing.link,
-            address: position.address,
-            latitude: position.latitude,
-            longitude: position.longitude,
-          }),
-        });
-        // Poll for updated scores — enrichment runs async in the backend
-        let attempts = 0;
-        const poll = setInterval(async () => {
-          attempts++;
-          try {
-            await actions.listingsData.getListing(listingId);
-          } catch {
-            // ignore
-          }
-          if (attempts >= 15) clearInterval(poll);
-        }, 1000);
-      } catch {
-        // Fire-and-forget: immo-bot re-enrichment is best-effort
-      }
     } catch (error) {
       Toast.error(errorMessage(error, t('listing.detail.toastAddressError')));
       throw error;
@@ -574,7 +547,12 @@ export default function ListingDetail() {
     },
     {
       key: t('listing.detail.fieldJob'),
-      value: listing.job_name,
+      // One row can surface under several jobs now; list them all, primary first.
+      value:
+        (listing.job_names ?? [])
+          .map((job) => job.name)
+          .filter(Boolean)
+          .join(', ') || listing.job_name,
       Icon: <IconBriefcase />,
       helpText: t('listing.detail.fieldJobHelp'),
     },
@@ -731,53 +709,15 @@ export default function ListingDetail() {
 
         <Row>
           <Col span={24} lg={12}>
-            <div
-              className={`listing-detail__image-container${!listing.image_url ? ' listing-detail__image-container--placeholder' : ''}`}
-            >
-              <Image
-                src={listing.image_url ?? no_image}
-                fallback={<img src={no_image} alt={t('listing.detail.noImageAlt')} />}
-                style={{ width: '100%', height: '100%' }}
-                preview={!!listing.image_url}
-              />
-            </div>
-
             {/* Gallery pulled by "enrich on click", stored locally and served back per index.
-                The cover above is untouched: notifications keep sending the remote image.
-                Always rendered so the strip never pops the layout: pulse tiles while the exposé
-                is still coming, a quiet note when it came back with no photos. */}
-            <div className="listing-detail__gallery">
-              <Title heading={6} className="listing-detail__gallery-title">
-                {galleryFiles.length > 0
-                  ? t('listing.detail.galleryTitle', { count: galleryFiles.length })
-                  : t('listing.detail.photosTitle')}
-              </Title>
-              <div className="listing-detail__gallery-strip">
-                {galleryFiles.map((_, index) => (
-                  <Image
-                    key={index}
-                    src={`/api/listings/${listing.id}/images/${index}`}
-                    fallback={<img src={no_image} alt={t('listing.detail.noImageAlt')} />}
-                    className="listing-detail__gallery-image"
-                    width={120}
-                    height={90}
-                  />
-                ))}
-                {galleryPending &&
-                  Array.from({ length: 4 }, (_, index) => (
-                    <div
-                      key={`placeholder-${index}`}
-                      className="listing-detail__gallery-placeholder"
-                      aria-hidden="true"
-                    />
-                  ))}
-                {!galleryPending && galleryFiles.length === 0 && (
-                  <Text type="tertiary" size="small">
-                    {t('listing.detail.galleryEmpty')}
-                  </Text>
-                )}
-              </div>
-            </div>
+                The stage always renders: before the exposé delivers photos it shows the remote
+                cover (same URL notifications send), so the surrounding layout never changes. */}
+            <ListingGallery
+              listingId={listing.id}
+              files={galleryFiles}
+              pending={galleryPending}
+              coverUrl={listing.image_url}
+            />
 
             <div className="listing-detail__notes">
               <Title heading={4} className="listing-detail__notes-title">
@@ -956,8 +896,8 @@ export default function ListingDetail() {
                   after the price - so it comes before the sales copy, not after it. */}
               <ListingFinanceCard listing={listing} />
 
-              {/* Immo-Bot scoring: investor/owner scores, BRW, CAGR, risk */}
-              <ImmoBotScoreCard listing={listing} />
+              {/* Fredy scoring: investor/owner scores, GREIX CAGR, risk */}
+              <FredyScoreCard listing={listing} />
 
               {/* Without the matching half of the profile there is nothing to compute, so offer
                   the way to create it instead of hiding the feature completely. */}

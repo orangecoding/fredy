@@ -16,6 +16,8 @@ import {
 import no_image from '../../assets/no_image.png';
 import { formatEuroPrice } from '../../services/price/priceService.js';
 import * as timeService from '../../services/time/timeService.js';
+import { isScoredListing } from '../../services/scores/scoreState.js';
+import ScoreChip, { scoreColorFor } from '../listings/ScoreChip.jsx';
 import StatusControl from '../listings/StatusControl.jsx';
 import ExternalListingLink from '../listings/ExternalListingLink.jsx';
 import AffordabilityChip from '../listings/AffordabilityChip.jsx';
@@ -26,7 +28,7 @@ import './ListingsTable.less';
 import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
 
 /**
- * @param {{ listings: object[], onWatch: Function, onNavigate: Function, onDelete: Function, onRestore?: Function, onReactivate?: Function, isHiddenView?: boolean, onStatusChange: Function }} props
+ * @param {{ listings: object[], onWatch: Function, onNavigate: Function, onDelete: Function, onRestore?: Function, onReactivate?: Function, isHiddenView?: boolean, onStatusChange: Function, activeJobName?: string|null }} props
  */
 const ListingsTable = ({
   listings,
@@ -37,6 +39,7 @@ const ListingsTable = ({
   onReactivate,
   isHiddenView = false,
   onStatusChange,
+  activeJobName = null,
 }) => {
   const t = useTranslation();
   const locale = useLocale();
@@ -94,28 +97,21 @@ const ListingsTable = ({
             )}
             {/* Under the address rather than in a column of its own: it is the same question, and a
                 column would be empty for every listing that has not been routed yet. */}
-            <CommuteBadge travelTimes={item.travelTimes} jobId={item.job_id} />
+            <CommuteBadge travelTimes={item.travelTimes} jobId={item.job_id} jobName={activeJobName} />
           </div>
 
           <div className="listingsTable__row__scores">
             <Tooltip
-              content={`Investor: ${item.investor_score?.toFixed(0) ?? 0} | Owner: ${item.owner_score?.toFixed(0) ?? 0}`}
+              content={`Investor: ${isScoredListing(item) ? (item.investor_score?.toFixed(0) ?? '–') : '–'} | Owner: ${isScoredListing(item) ? (item.owner_score?.toFixed(0) ?? '–') : '–'}`}
             >
               <span
                 className="listingsTable__row__score-chip"
                 style={{
-                  color:
-                    item.investor_score == null
-                      ? 'var(--f-secondary)'
-                      : (item.investor_score ?? 0) >= 60
-                        ? 'var(--f-success)'
-                        : (item.investor_score ?? 0) >= 40
-                          ? 'var(--f-warning)'
-                          : 'var(--f-error)',
+                  color: scoreColorFor(item.investor_score, isScoredListing(item)),
                   borderColor: 'currentColor',
                 }}
               >
-                {item.investor_score?.toFixed(0) ?? '–'}
+                <ScoreChip value={item.investor_score} assessed={isScoredListing(item)} />
               </span>
             </Tooltip>
           </div>

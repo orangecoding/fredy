@@ -529,6 +529,7 @@ const ListingsOverview = () => {
           onReactivate={handleReactivate}
           isHiddenView={isHiddenView}
           onStatusChange={handleStatusChange}
+          activeJobName={jobNameFilter}
         />
       ) : (
         <ListingsTable
@@ -540,6 +541,7 @@ const ListingsOverview = () => {
           onReactivate={handleReactivate}
           isHiddenView={isHiddenView}
           onStatusChange={handleStatusChange}
+          activeJobName={jobNameFilter}
         />
       )}
 

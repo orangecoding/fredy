@@ -26,7 +26,7 @@ import { initListingRetentionCron } from './lib/services/crons/listing-retention
 import { initPriceTrackingCron } from './lib/services/crons/price-tracking-cron.js';
 import { initTravelTimeCron } from './lib/services/crons/travel-time-cron.js';
 import { initConnectivityCron } from './lib/services/crons/connectivity-cron.js';
-import { initEnrichmentCatchupCron } from './lib/services/crons/enrichment-catchup-cron.js';
+import { initLocalEnrichmentCron } from './lib/services/crons/enrichment-cron.js';
 
 // Ensure the CloakBrowser stealth Chromium binary is present and complete before
 // jobs run.  ensureValidBinary() also detects and auto-heals partial extractions
@@ -129,9 +129,9 @@ initTravelTimeCron();
 // and nothing at all for an address sharing a cell with one already looked up, so a restart is not
 // a moment it needs holding back from.
 initConnectivityCron();
-// Runs on start too: a downtime leaves unscored rows behind, and the sends are cheap bounded
-// webhook POSTs - re-requesting what was missed is precisely what a restart is for.
-await initEnrichmentCatchupCron();
+// Runs on start as well, for the backlog reason: local lookups cost nothing but CPU,
+// and a fresh deploy lands on whatever the dead-backend era left unscored.
+await initLocalEnrichmentCron();
 
 logger.info(`Started Fredy successfully. Ui can be accessed via http://localhost:${settings.port}`);
 

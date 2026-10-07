@@ -14,13 +14,6 @@
   <a href="https://fredy-demo.orange-coding.net/" target="_blank">Demo</a>
 </p>
 
-<p align="center">
-  <img src="https://github.com/orangecoding/fredy/actions/workflows/test.yml/badge.svg" alt="Tests" />
-  <img src="https://github.com/orangecoding/fredy/actions/workflows/docker.yml/badge.svg" alt="Docker" />
-  <img src="https://github.com/orangecoding/fredy/actions/workflows/check_source.yml/badge.svg" alt="Source" />
-  <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fghcr-badge.elias.eu.org%2Fapi%2Forangecoding%2Ffredy%2Ffredy&query=%24.downloadCount&label=Docker%20Pulls" alt="Docker Pulls" />
-</p>
-
 
 # Fredy 🏡 - Your Self-Hosted Real Estate Finder for Europe
 
@@ -56,7 +49,7 @@ On top of the listing itself, Fredy answers two questions:
 [Reverse Proxy Sign-in](#-reverse-proxy-sign-in-forward-auth) · [Analytics](#analytics) · [Debug Information](#-debug-information) ·
 [Development](#-development) · [Architecture](#-architecture) ·
 [Contributing](#-contributing) · [Credits & Data](#-credits--data) ·
-[License](#-license) · [Support](#-support)
+[Fork Notes](#-fork-notes) · [License](#-license) · [Support](#-support)
 
 ------------------------------------------------------------------------
 
@@ -677,6 +670,41 @@ nothing from it; the underlying data is by [geosci.de](https://geosci.de/).
 
 ------------------------------------------------------------------------
 
+## 🍴 Fork Notes
+
+This is **fredy-berlin**, a fork of [Fredy](https://github.com/orangecoding/fredy) by
+Christian Kellner, kept under the same
+[Apache-2.0 + Commons Clause + Attribution and Naming Clause](LICENSE). Fredy stays the
+product name everywhere (UI, docs, container); only this section documents what diverged
+from upstream.
+
+**Scoring and enrichment** (`lib/services/enrichment/`, `lib/services/crons/enrichment-cron.js`):
+
+- Capital growth scores come from **GREIX house-price indices** (13 Berlin regions,
+  coordinate-matched by point-in-polygon, CAGR 2000–2025) instead of Bodenrichtwert land
+  values. New columns `greix_region` / `greix_cagr`; legacy BRW columns are frozen.
+- The local enrichment cron is **uncapped** (no per-run limit) and also scores **inactive**
+  listings. Full-rescore migrations `47.greix-cagr.js`, `48.enrichment-size-rescore.js`,
+  `49.full-reenrichment.js`.
+- Living space is read from `size` (stored rows never had `area`), so the cashflow and
+  buy-vs-rent legs actually score.
+
+**UI** (`ui/src/`):
+
+- `FredyScoreCard` on the listing detail page: unscored fields render as a grey `–`
+  (red is reserved for genuine verdicts), risk is shown as 0–20 points (high = good),
+  growth is labelled **Capital Growth** with the GREIX region.
+- Overview cards and table chips follow the same grey-`–` rule; the score block is pinned
+  to the card bottom so rows align.
+- Saving an edited address no longer POSTs to the removed `:8000` scoring backend.
+
+**Deployment**: run `docker compose up -d --build` from the repository root — it builds
+this code into the `fredy-berlin` image. The old `fredy/docker-compose.yml` (which pinned
+the upstream `ghcr.io/orangecoding/fredy` image) is deleted. Fork issues belong in this
+repo's tracker, not upstream's.
+
+------------------------------------------------------------------------
+
 ## 📄 License
 
 [Apache-2.0](LICENSE) with two additional conditions:
@@ -697,14 +725,3 @@ Because of these conditions Fredy is **source-available, not OSI open source**. 
   For bugs, attach a debug bundle, see [Debug Information](#-debug-information).
 - **An Immoscout search URL Fredy cannot map**: open an issue with the URL, it is usually a one
   line fix.
-
-------------------------------------------------------------------------
-
-## ⭐ Star History
-
-<a href="https://github.com/orangecoding/fredy/stargazers">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="doc/star-history/star-history-dark.svg">
-    <img alt="Fredy star history" src="doc/star-history/star-history-light.svg">
-  </picture>
-</a>

@@ -48,7 +48,7 @@ describe('listingsStorage enrichment catch-up selection', () => {
     listingsStorage = await import('../../lib/services/storage/listingsStorage.js');
   });
 
-  it('selects priced, unscored, under-retry rows past the cooldown', () => {
+  it('selects priced, unscored, under-retry rows past the cooldown, active or not', () => {
     sqliteMock.__queryHandler = () => [{ id: 'a', image_files: null, details_fetched: 0, risk_analysis: null }];
 
     const rows = listingsStorage.getUnenrichedListingsForCatchup('job-1', { now: 1_000_000 });
@@ -58,12 +58,26 @@ describe('listingsStorage enrichment catch-up selection', () => {
     const { sql, params } = calls.query[0];
     expect(sql).toContain('l.job_id = @jobId');
     expect(sql).toContain('l.price IS NOT NULL');
+    // No is_active filter: off-market rows keep scores for history and comparisons.
+    expect(sql).not.toContain('is_active');
     expect(sql).toContain('l.investor_score IS NULL OR l.investor_score = 0');
     expect(sql).toContain('enrichment_requests < @maxRequests');
     expect(sql).toContain('enrichment_requested_at IS NULL OR');
-    expect(params).toMatchObject({ jobId: 'job-1', limit: 20 });
+    // Uncapped by default: scoring is local CPU-only, so the whole backlog is selected.
+    expect(sql).not.toContain('LIMIT');
+    expect(params).not.toHaveProperty('limit');
     // 24h cooldown: requested_at must be older than now - 86400000.
     expect(params.retryAfter).toBe(1_000_000 - 24 * 60 * 60 * 1000);
+  });
+
+  it('still honors an explicit limit', () => {
+    sqliteMock.__queryHandler = () => [];
+
+    listingsStorage.getUnenrichedListingsForCatchup('job-1', { limit: 5, now: 1_000_000 });
+
+    const { sql, params } = calls.query[0];
+    expect(sql).toContain('LIMIT @limit');
+    expect(params).toMatchObject({ limit: 5 });
   });
 
   it('stamps time and bumps the counter, and no-ops on empty input', () => {

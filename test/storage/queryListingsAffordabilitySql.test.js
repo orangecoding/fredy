@@ -80,6 +80,14 @@ describe('queryListings affordability band against real SQLite', () => {
         manually_deleted INTEGER DEFAULT 0
       );
       CREATE TABLE watch_list (id TEXT PRIMARY KEY, listing_id TEXT, user_id TEXT);
+      -- The read path resolves job membership and job names through the join table, so it
+      -- has to exist even in suites that never assert on attachments.
+      CREATE TABLE listing_jobs (
+        listing_id TEXT NOT NULL,
+        job_id TEXT NOT NULL,
+        attached_at INTEGER,
+        PRIMARY KEY (listing_id, job_id)
+      );
       -- Empty, but it has to exist: every listing page reads the travel times of the rows it
       -- returned, so a query against a schema without this table fails before it can be asserted on.
       CREATE TABLE listing_travel_times (
@@ -108,11 +116,16 @@ describe('queryListings affordability band against real SQLite', () => {
     insertJob.run('job-rent', USER, 'Renting job', 'rent');
 
     const insertListing = db.prepare(`INSERT INTO listings (id, job_id, price, title) VALUES (?, ?, ?, ?)`);
+    const attachListing = db.prepare(
+      `INSERT OR IGNORE INTO listing_jobs (listing_id, job_id, attached_at) VALUES (?, ?, 0)`,
+    );
     for (const row of BUY_LISTINGS) {
       insertListing.run(row.id, 'job-buy', row.price, row.id);
+      attachListing.run(row.id, 'job-buy');
     }
     for (const row of RENT_LISTINGS) {
       insertListing.run(row.id, 'job-rent', row.price, row.id);
+      attachListing.run(row.id, 'job-rent');
     }
 
     vi.resetModules();
@@ -229,6 +242,14 @@ describe('queryListings affordability band against real SQLite', () => {
       'foreign-listing',
       'job-foreign',
       'Foreign listing',
+    );
+    db.prepare(`INSERT OR IGNORE INTO listing_jobs (listing_id, job_id, attached_at) VALUES (?, ?, 0)`).run(
+      'shared-listing',
+      'job-shared',
+    );
+    db.prepare(`INSERT OR IGNORE INTO listing_jobs (listing_id, job_id, attached_at) VALUES (?, ?, 0)`).run(
+      'foreign-listing',
+      'job-foreign',
     );
 
     expect(listingsStorage.getListingById('shared-listing', USER)?.id).toBe('shared-listing');

@@ -18,6 +18,8 @@ import {
 import no_image from '../../../assets/no_image.png';
 import { formatEuroPrice } from '../../../services/price/priceService.js';
 import * as timeService from '../../../services/time/timeService.js';
+import { isScoredListing, isRiskAssessed, riskPoints } from '../../../services/scores/scoreState.js';
+import ScoreChip from '../../listings/ScoreChip.jsx';
 import StatusControl from '../../listings/StatusControl.jsx';
 import ExternalListingLink from '../../listings/ExternalListingLink.jsx';
 import AffordabilityChip from '../../listings/AffordabilityChip.jsx';
@@ -28,7 +30,7 @@ import './ListingsGrid.less';
 import { useTranslation, useLocale } from '../../../services/i18n/i18n.jsx';
 
 /**
- * @param {{ listings: object[], onWatch: Function, onNavigate: Function, onDelete: Function, onRestore?: Function, onReactivate?: Function, isHiddenView?: boolean, onStatusChange: Function }} props
+ * @param {{ listings: object[], onWatch: Function, onNavigate: Function, onDelete: Function, onRestore?: Function, onReactivate?: Function, isHiddenView?: boolean, onStatusChange: Function, activeJobName?: string|null }} props
  */
 const ListingsGrid = ({
   listings,
@@ -39,6 +41,7 @@ const ListingsGrid = ({
   onReactivate,
   isHiddenView = false,
   onStatusChange,
+  activeJobName = null,
 }) => {
   const t = useTranslation();
   const locale = useLocale();
@@ -126,61 +129,28 @@ const ListingsGrid = ({
             </div>
             {/* Compact on purpose: on a card the commute is a number you scan past twenty others,
                 not something you read. The detail page shows the full picture. */}
-            <CommuteBadge travelTimes={item.travelTimes} jobId={item.job_id} />
+            <CommuteBadge travelTimes={item.travelTimes} jobId={item.job_id} jobName={activeJobName} />
             <div className="listingsGrid__card__provider">{timeService.format(item.created_at, false, locale)}</div>
-            {/* Always rendered, even unscored: a missing score reads '–' in the app's
-                secondary tone, never red - red is reserved for a genuine zero verdict. */}
+            {/* Always rendered, even unscored: a score that was never computed reads '–'
+                in the app's secondary tone, never a color - red is reserved for a genuine
+                zero verdict. The columns default to 0, so "computed" is a row-level call
+                (see isScoredListing), and risk shows points like the score card. */}
             <div className="listingsGrid__card__scores">
               <span>
-                <strong
-                  style={{
-                    color:
-                      item.investor_score == null
-                        ? 'var(--f-secondary)'
-                        : (item.investor_score ?? 0) >= 60
-                          ? 'var(--f-success)'
-                          : (item.investor_score ?? 0) >= 40
-                            ? 'var(--f-warning)'
-                            : 'var(--f-error)',
-                  }}
-                >
-                  {item.investor_score?.toFixed(0) ?? '–'}
-                </strong>
+                <ScoreChip value={item.investor_score} assessed={isScoredListing(item)} />
                 <span>Investor</span>
               </span>
               <span>
-                <strong
-                  style={{
-                    color:
-                      item.owner_score == null
-                        ? 'var(--f-secondary)'
-                        : (item.owner_score ?? 0) >= 60
-                          ? 'var(--f-success)'
-                          : (item.owner_score ?? 0) >= 40
-                            ? 'var(--f-warning)'
-                            : 'var(--f-error)',
-                  }}
-                >
-                  {item.owner_score?.toFixed(0) ?? '–'}
-                </strong>
+                <ScoreChip value={item.owner_score} assessed={isScoredListing(item)} />
                 <span>Owner</span>
               </span>
               <span>
-                <strong
-                  style={{
-                    color:
-                      item.asset_risk_score == null
-                        ? 'var(--f-secondary)'
-                        : (item.asset_risk_score ?? 0) < 5
-                          ? 'var(--f-success)'
-                          : (item.asset_risk_score ?? 0) < 10
-                            ? 'var(--f-warning)'
-                            : 'var(--f-error)',
-                  }}
-                >
-                  {item.asset_risk_score?.toFixed(0) ?? '–'}
-                </strong>
-                <span>Risiko</span>
+                <ScoreChip
+                  value={isRiskAssessed(item) ? riskPoints(item.asset_risk_score) : null}
+                  assessed={isRiskAssessed(item)}
+                  max={20}
+                />
+                <span>Risk</span>
               </span>
             </div>
           </div>

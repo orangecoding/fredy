@@ -5,7 +5,7 @@
 
 @import '../../tokens.less';
 
-.immoBotScore {
+.fredyScore {
   margin-top: @space-6;
   padding-top: @space-5;
   border-top: 1px solid @color-border;
@@ -164,43 +164,6 @@
   &__component-note {
     font-size: @text-xs;
     font-style: italic;
-  }
-
-  // Facts grid (BRW, Bezirk, Risk)
-  &__facts {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: @space-4;
-    margin: 0 0 @space-5;
-  }
-
-  &__fact {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    padding-left: @space-3;
-    border-left: 2px solid @color-border;
-  }
-
-  &__fact-label {
-    font-size: @text-xs;
-    color: @color-muted;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  &__fact-value {
-    margin: 0;
-    font-family: @font-mono;
-    font-size: @text-base;
-    color: @color-text;
-  }
-
-  &__fact-note {
-    margin: 0;
-    font-size: @text-xs;
-    color: @color-muted;
-    margin-top: 2px;
   }
 
   &__footnote {

@@ -54,6 +54,14 @@ describe('queryListings travel time filter against real SQLite', () => {
         manually_deleted INTEGER DEFAULT 0
       );
       CREATE TABLE watch_list (id TEXT PRIMARY KEY, listing_id TEXT, user_id TEXT);
+      -- The read path resolves job membership and job names through the join table, so it
+      -- has to exist even in suites that never assert on attachments.
+      CREATE TABLE listing_jobs (
+        listing_id TEXT NOT NULL,
+        job_id TEXT NOT NULL,
+        attached_at INTEGER,
+        PRIMARY KEY (listing_id, job_id)
+      );
       CREATE TABLE listing_travel_times (
         listing_id TEXT NOT NULL,
         label TEXT NOT NULL,
@@ -83,8 +91,12 @@ describe('queryListings travel time filter against real SQLite', () => {
     );
 
     const insertListing = db.prepare(`INSERT INTO listings (id, job_id, price, title) VALUES (?, 'job-1', 900, ?)`);
+    const attachListing = db.prepare(
+      `INSERT OR IGNORE INTO listing_jobs (listing_id, job_id, attached_at) VALUES (?, ?, 0)`,
+    );
     for (const id of ['near', 'far', 'car-only', 'unrouted']) {
       insertListing.run(id, id);
+      attachListing.run(id, 'job-1');
     }
 
     const insertTime = db.prepare(
@@ -276,10 +288,28 @@ describe('how far through the travel-time backlog a user is', () => {
         longitude REAL,
         travel_times_at INTEGER
       );
+      CREATE TABLE listing_jobs (
+        listing_id TEXT NOT NULL,
+        job_id TEXT NOT NULL,
+        attached_at INTEGER,
+        PRIMARY KEY (listing_id, job_id)
+      );
     `);
     db.prepare('INSERT INTO jobs VALUES (?, ?)').run('j1', USER);
     db.prepare('INSERT INTO jobs VALUES (?, ?)').run('j2', 'someone-else');
     const add = db.prepare('INSERT INTO listings VALUES (?, ?, ?, ?, ?, ?, ?)');
+    const attach = db.prepare('INSERT OR IGNORE INTO listing_jobs (listing_id, job_id, attached_at) VALUES (?, ?, 0)');
+    for (const [id, job] of [
+      ['done', 'j1'],
+      ['waiting', 'j1'],
+      ['also-waiting', 'j1'],
+      ['inactive', 'j1'],
+      ['deleted', 'j1'],
+      ['ungeocoded', 'j1'],
+      ['other-user', 'j2'],
+    ]) {
+      attach.run(id, job);
+    }
     add.run('done', 'j1', 1, 0, 52.5, 13.4, 1700000000);
     add.run('waiting', 'j1', 1, 0, 52.5, 13.4, null);
     add.run('also-waiting', 'j1', 1, 0, 52.5, 13.4, null);

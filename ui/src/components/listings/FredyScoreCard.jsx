@@ -3,9 +3,10 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { Typography, Tag } from '@douyinfe/semi-ui-19';
+import { Typography } from '@douyinfe/semi-ui-19';
 
-import './ImmoBotScoreCard.less';
+import { isScoredListing, isRiskAssessed, riskPoints } from '../../services/scores/scoreState.js';
+import './FredyScoreCard.less';
 
 const { Text, Title } = Typography;
 
@@ -19,18 +20,6 @@ function scoreColor(score) {
   if (score >= 60) return 'var(--f-success)';
   if (score >= 40) return 'var(--f-warning)';
   return 'var(--f-error)';
-}
-
-/**
- * Risk level label from the numeric asset_risk_score.
- *
- * @param {number} risk
- * @returns {{label: string, color: string}}
- */
-function riskLevel(risk) {
-  if (risk < 5) return { label: 'Low', color: 'var(--f-success)' };
-  if (risk < 10) return { label: 'Medium', color: 'var(--f-warning)' };
-  return { label: 'High', color: 'var(--f-error)' };
 }
 
 /**
@@ -86,20 +75,6 @@ function computeCagr(cagr) {
 }
 
 /**
- * Compute the risk sub-score out of 20.
- *
- * @param {number} assetRisk - Asset risk score (0-100).
- * @returns {number}
- */
-function computeRisk(assetRisk) {
-  if (!assetRisk || assetRisk === 0) return 0;
-  if (assetRisk < 5) return 15;
-  if (assetRisk < 10) return 10;
-  if (assetRisk < 20) return 5;
-  return 0;
-}
-
-/**
  * Generate a human-readable explanation for the cashflow sub-score.
  *
  * @param {number} yieldPct - Net rental yield as decimal.
@@ -135,15 +110,17 @@ function buyRentNote(ratio, hasData) {
  *
  * @param {number} cagrPct - CAGR as percentage.
  * @param {boolean} hasData - Whether we have CAGR data.
+ * @param {string} region - GREIX region the listing matched (may be empty).
  * @returns {string}
  */
-function cagrNote(cagrPct, hasData) {
-  if (!hasData) return 'No BRW history available';
-  if (cagrPct < 0) return `Declining area — ${cagrPct.toFixed(1)}% per year`;
-  if (cagrPct < 2) return 'Weak growth — below 2% per year';
-  if (cagrPct < 6) return 'Solid growth — in line with Berlin trend';
-  if (cagrPct < 10) return 'Strong growth — above average appreciation';
-  return 'Very strong growth — top-tier location';
+function cagrNote(cagrPct, hasData, region) {
+  const where = region ? ` in ${region.replace(/^Berlin \(|\)$/g, '')}` : '';
+  if (!hasData) return 'No GREIX price history for this location';
+  if (cagrPct < 0) return `Declining area${where} — ${cagrPct.toFixed(1)}% per year`;
+  if (cagrPct < 2) return `Weak growth${where} — below 2% per year`;
+  if (cagrPct < 6) return `Solid growth${where} — in line with Berlin trend`;
+  if (cagrPct < 10) return `Strong growth${where} — above average appreciation`;
+  return `Very strong growth${where} — top-tier location`;
 }
 
 /**
@@ -166,35 +143,35 @@ function riskNote(score, riskSummary) {
  *
  * @param {Object} props
  * @param {string} props.label - Component name.
- * @param {number} props.score - Achieved sub-score.
+ * @param {number|null|undefined} props.score - Achieved sub-score; null renders a grey dash.
  * @param {number} props.max - Maximum possible sub-score.
  * @param {string} props.note - Human-readable explanation.
  * @param {string} [props.metric] - Formatted metric value to display.
  * @param {string} [props.metricLabel] - Label for the metric value.
  */
 function BreakdownRow({ label, score, max, note, metric, metricLabel }) {
-  const pct = max > 0 ? (score / max) * 100 : 0;
+  // A leg without data is a grey dash, never a red zero: red is a genuine verdict.
+  const assessed = score != null;
+  const normalized = assessed && max > 0 ? (score / max) * 100 : 0;
+  const tone = assessed ? scoreColor(normalized) : 'var(--f-secondary)';
   return (
-    <div className="immoBotScore__component">
-      <div className="immoBotScore__component-header">
-        <Text className="immoBotScore__component-label">{label}</Text>
-        <Text className="immoBotScore__component-score" style={{ color: scoreColor((score / max) * 100) }}>
-          {score.toFixed(0)}/{max}
+    <div className="fredyScore__component">
+      <div className="fredyScore__component-header">
+        <Text className="fredyScore__component-label">{label}</Text>
+        <Text className="fredyScore__component-score" style={{ color: tone }}>
+          {assessed ? `${score.toFixed(0)}/${max}` : `–/${max}`}
         </Text>
       </div>
-      <div className="immoBotScore__component-track">
-        <div
-          className="immoBotScore__component-fill"
-          style={{ width: `${pct}%`, backgroundColor: scoreColor((score / max) * 100) }}
-        />
+      <div className="fredyScore__component-track">
+        <div className="fredyScore__component-fill" style={{ width: `${normalized}%`, backgroundColor: tone }} />
       </div>
-      <div className="immoBotScore__component-detail">
+      <div className="fredyScore__component-detail">
         {metric !== undefined && metricLabel && (
-          <Text type="tertiary" size="small" className="immoBotScore__component-metric">
+          <Text type="tertiary" size="small" className="fredyScore__component-metric">
             {metricLabel}: {metric}
           </Text>
         )}
-        <Text type="tertiary" size="small" className="immoBotScore__component-note">
+        <Text type="tertiary" size="small" className="fredyScore__component-note">
           {note}
         </Text>
       </div>
@@ -203,95 +180,109 @@ function BreakdownRow({ label, score, max, note, metric, metricLabel }) {
 }
 
 /**
- * Immo-Bot scoring card shown in the listing detail view.
+ * Fredy scoring card shown in the listing detail view.
  *
- * Displays investor/owner scores with a unified breakdown, BRW data, CAGR, bezirk,
- * and risk summary. Follows the ListingFinanceCard layout pattern.
+ * Displays investor/owner scores with a unified breakdown, GREIX growth data and risk
+ * summary. Follows the ListingFinanceCard layout pattern.
  *
  * @param {Object} props
  * @param {Object} props.listing - The listing object from Fredy's API.
  */
-export default function ImmoBotScoreCard({ listing }) {
+export default function FredyScoreCard({ listing }) {
   if (!listing) return null;
 
   const investorScore = listing.investor_score ?? 0;
   const ownerScore = listing.owner_score ?? 0;
   const assetRisk = listing.asset_risk_score ?? 0;
-  const brwValue = listing.brw_value ?? 0;
-  const brwOld = listing.brw_old ?? 0;
-  const cagr = listing.cagr ?? null;
-  const bezirk = listing.bezirk ?? '';
+  const cagr = listing.greix_cagr ?? null;
+  const greixRegion = listing.greix_region ?? '';
   const riskSummary = listing.risk_summary ?? '';
   const miete = listing.isochronen_miete ?? 0;
   const price = listing.price ?? 0;
   const area = listing.size ?? 0;
 
   // The block always renders: hiding it when nothing is scored yet made a stalled backend
-  // look like a deleted feature. Unscored listings show zeros with the reason instead.
+  // look like a deleted feature. Unscored listings show grey dashes with the reason instead -
+  // red is a genuine verdict, and a score that was never computed is not one.
   // A genuine zero is a verdict, not a missing score: an overpriced flat scores 0 on every
   // axis. Only no-price listings can never score (yield and buy/rent divide by price), and
-  // only rows with neither scores nor Bodenrichtwert are still waiting for enrichment.
+  // only rows with neither scores nor GREIX growth are still waiting for enrichment.
   const hasPrice = price > 0;
-  const scored = hasPrice && !(investorScore === 0 && ownerScore === 0 && brwValue === 0);
+  const scored = isScoredListing(listing);
 
-  const risk = riskLevel(assetRisk);
   const cagrData = computeCagr(cagr);
   const cashflowData = computeCashflow(miete, area, price);
   const buyRentData = computeBuyRent(miete, area, price);
-  const riskPts = computeRisk(assetRisk);
+  const riskAssessed = isRiskAssessed(listing);
+  const riskPts = riskAssessed ? riskPoints(assetRisk) : null;
 
   const hasMiete = miete > 0 && area > 0 && price > 0;
   const cagrPctStr = cagr !== null ? `${cagrData.pct.toFixed(1)}%` : 'N/A';
-  const brwChange = brwOld > 0 ? (((brwValue - brwOld) / brwOld) * 100).toFixed(1) : null;
 
   return (
-    <section className="immoBotScore">
-      <div className="immoBotScore__header">
-        <Title heading={4} className="immoBotScore__title">
-          Immo-Bot Scoring
+    <section className="fredyScore">
+      <div className="fredyScore__header">
+        <Title heading={4} className="fredyScore__title">
+          Fredy Scoring
         </Title>
       </div>
 
       {!scored && (
-        <Text type="tertiary" size="small" className="immoBotScore__pending">
+        <Text type="tertiary" size="small" className="fredyScore__pending">
           {!hasPrice
             ? 'No score — this listing has no asking price, and scoring divides by price.'
-            : 'Not scored yet — the scoring backend hasn\u2019t enriched this listing. Check back after the next run.'}
+            : 'Not scored yet — the hourly enrichment hasn\u2019t scored this listing. Check back after the next run.'}
         </Text>
       )}
 
-      <div className="immoBotScore__bars">
-        <div className="immoBotScore__bar-row">
-          <Text className="immoBotScore__bar-label">Investor</Text>
-          <div className="immoBotScore__bar-track">
+      <div className="fredyScore__bars">
+        <div className="fredyScore__bar-row">
+          <Text className="fredyScore__bar-label">Investor</Text>
+          <div className="fredyScore__bar-track">
             <div
-              className="immoBotScore__bar-fill"
-              style={{ width: `${Math.min(100, investorScore)}%`, backgroundColor: scoreColor(investorScore) }}
+              className="fredyScore__bar-fill"
+              style={{
+                width: `${scored ? Math.min(100, investorScore) : 0}%`,
+                backgroundColor: scored ? scoreColor(investorScore) : 'var(--f-secondary)',
+              }}
             />
           </div>
-          <Text className="immoBotScore__bar-value">{investorScore.toFixed(0)}</Text>
+          <Text
+            className="fredyScore__bar-value"
+            style={scored ? { color: scoreColor(investorScore) } : { color: 'var(--f-secondary)' }}
+          >
+            {scored ? investorScore.toFixed(0) : '–'}
+          </Text>
         </div>
-        <div className="immoBotScore__bar-row">
-          <Text className="immoBotScore__bar-label">Owner</Text>
-          <div className="immoBotScore__bar-track">
+        <div className="fredyScore__bar-row">
+          <Text className="fredyScore__bar-label">Owner</Text>
+          <div className="fredyScore__bar-track">
             <div
-              className="immoBotScore__bar-fill"
-              style={{ width: `${Math.min(100, ownerScore)}%`, backgroundColor: scoreColor(ownerScore) }}
+              className="fredyScore__bar-fill"
+              style={{
+                width: `${scored ? Math.min(100, ownerScore) : 0}%`,
+                backgroundColor: scored ? scoreColor(ownerScore) : 'var(--f-secondary)',
+              }}
             />
           </div>
-          <Text className="immoBotScore__bar-value">{ownerScore.toFixed(0)}</Text>
+          <Text
+            className="fredyScore__bar-value"
+            style={scored ? { color: scoreColor(ownerScore) } : { color: 'var(--f-secondary)' }}
+          >
+            {scored ? ownerScore.toFixed(0) : '–'}
+          </Text>
         </div>
       </div>
 
-      <div className="immoBotScore__breakdown">
-        <Text strong size="small" className="immoBotScore__breakdown-title">
+      <div className="fredyScore__breakdown">
+        <Text strong size="small" className="fredyScore__breakdown-title">
           Score breakdown
         </Text>
 
-        <div className="immoBotScore__breakdown-section">
+        <div className="fredyScore__breakdown-section">
           <BreakdownRow
             label="Cashflow (Investor)"
-            score={cashflowData.score}
+            score={hasMiete ? cashflowData.score : null}
             max={40}
             note={cashflowNote(cashflowData.yield, hasMiete)}
             metric={hasMiete ? `${(cashflowData.yield * 100).toFixed(1)}%` : undefined}
@@ -299,62 +290,25 @@ export default function ImmoBotScoreCard({ listing }) {
           />
           <BreakdownRow
             label="Buy vs. Rent (Owner)"
-            score={buyRentData.score}
+            score={hasMiete ? buyRentData.score : null}
             max={40}
             note={buyRentNote(buyRentData.ratio, hasMiete)}
             metric={hasMiete ? `${buyRentData.ratio.toFixed(1)}x` : undefined}
             metricLabel={hasMiete ? 'Price / Annual rent' : undefined}
           />
           <BreakdownRow
-            label="Kapitalzuwachs"
-            score={cagrData.score}
+            label="Capital Growth"
+            score={cagr !== null ? cagrData.score : null}
             max={40}
-            note={cagrNote(cagrData.pct, cagr !== null)}
-            metric={cagrPctStr}
-            metricLabel="CAGR (05-26)"
+            note={cagrNote(cagrData.pct, cagr !== null, greixRegion)}
+            metric={cagr !== null ? cagrPctStr : undefined}
+            metricLabel={cagr !== null ? 'GREIX CAGR 2000–2025' : undefined}
           />
-          <BreakdownRow label="Asset-Risiko" score={riskPts} max={20} note={riskNote(riskPts, riskSummary)} />
+          <BreakdownRow label="Asset Risk" score={riskPts} max={20} note={riskNote(riskPts ?? 0, riskSummary)} />
         </div>
       </div>
-
-      <dl className="immoBotScore__facts">
-        {brwValue > 0 && (
-          <div className="immoBotScore__fact">
-            <dt className="immoBotScore__fact-label">BRW aktuell</dt>
-            <dd className="immoBotScore__fact-value">{brwValue.toLocaleString('de-DE')} €/m²</dd>
-            {brwChange != null && (
-              <dd className="immoBotScore__fact-note">
-                {Number(brwChange) >= 0 ? '+' : ''}
-                {brwChange}% vs. Vorjahr
-              </dd>
-            )}
-          </div>
-        )}
-
-        {bezirk && (
-          <div className="immoBotScore__fact">
-            <dt className="immoBotScore__fact-label">Bezirk</dt>
-            <dd className="immoBotScore__fact-value">{bezirk}</dd>
-          </div>
-        )}
-
-        <div className="immoBotScore__fact">
-          <dt className="immoBotScore__fact-label">Risk</dt>
-          <dd className="immoBotScore__fact-value">
-            <Tag
-              style={{
-                color: risk.color,
-                backgroundColor: `color-mix(in srgb, ${risk.color} 12%, transparent)`,
-                borderColor: `color-mix(in srgb, ${risk.color} 40%, transparent)`,
-              }}
-            >
-              {risk.label}
-            </Tag>
-          </dd>
-        </div>
-      </dl>
     </section>
   );
 }
 
-ImmoBotScoreCard.displayName = 'ImmoBotScoreCard';
+FredyScoreCard.displayName = 'FredyScoreCard';

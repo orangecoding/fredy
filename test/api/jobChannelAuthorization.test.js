@@ -77,7 +77,15 @@ describe('POST /api/jobs channel authorisation', () => {
       );
       -- jobStorage.getJob()'s SELECT correlates a listing count against this table.
       CREATE TABLE listings (
+        id TEXT PRIMARY KEY,
         job_id TEXT, is_active INTEGER, manually_deleted INTEGER
+      );
+      -- the count now runs through the join table (attached rows count, not just primary).
+      CREATE TABLE listing_jobs (
+        listing_id TEXT NOT NULL,
+        job_id TEXT NOT NULL,
+        attached_at INTEGER,
+        PRIMARY KEY (listing_id, job_id)
       );
     `);
     storage = await import('../../lib/services/storage/configuredAdapterStorage.js');

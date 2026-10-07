@@ -139,7 +139,14 @@ function renderListingBody(listing, index, total, t, locale) {
     <div class="info">
       <span><strong>${t('map.popupPrice')}</strong> ${listing.price ? formatEuroPrice(listing.price, locale) : t('common.na')}</span>
       <span><strong>${t('map.popupAddress')}</strong> ${listing.address || t('common.na')}</span>
-      <span><strong>${t('map.popupJob')}</strong> ${listing.job_name || t('common.na')}</span>
+      <span><strong>${t('map.popupJob')}</strong> ${
+        (listing.job_names ?? [])
+          .map((job) => job.name)
+          .filter(Boolean)
+          .join(', ') ||
+        listing.job_name ||
+        t('common.na')
+      }</span>
       <span><strong>${t('map.popupProvider')}</strong> ${capitalizedProvider}</span>
       <span><strong>${t('map.popupSize')}</strong> ${listing.size != null ? `${listing.size} m²` : t('common.na')}</span>
       ${renderTravelTimes(listing, t)}
