@@ -1,0 +1,26 @@
+{
+  "paris-75000": {
+    "id": "AaA4_aA6mLxk3VI7Onbg",
+    "name": "Paris",
+    "type": "city",
+    "admin_level": "8",
+    "insee_code": "75056",
+    "insee_codes": [
+      "75056"
+    ],
+    "postalCodes": [
+      "75000"
+    ],
+    "boundingBox": {
+      "west": 2.22412201345571,
+      "south": 48.815575471872236,
+      "east": 2.469760219354261,
+      "north": 48.902155986785075
+    },
+    "zoneIds": [
+      "-7444"
+    ],
+    "population": 2243833,
+    "score": 0.004280753
+  }
+}

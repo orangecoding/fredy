@@ -150,7 +150,8 @@
  * @typedef {Object} RentThresholds
  * @property {number} affordableMaxRent Highest cold rent still inside the 35 % rule.
  * @property {number} stretchMaxRent Highest cold rent still inside the 40 % stretch bound.
- * @property {number} warmAffordable The same ceiling expressed as warm rent.
+ * @property {number} warmAffordable The same ceiling expressed as warm rent - the one a rent quoted
+ *   with the charges in it is held against.
  * @property {number} warmStretch
  * @property {number} nebenkostenPct The surcharge used to convert between the two.
  */
@@ -163,11 +164,14 @@
  * @property {string|null} title
  * @property {string|null} address
  * @property {'rent'} dealType
- * @property {number} price Cold rent as quoted by the provider.
- * @property {number} coldRent
+ * @property {number} price The rent as the provider quoted it: cold, or warm where `chargesIncluded`.
+ * @property {boolean} chargesIncluded Whether that quote has the running charges in it.
+ * @property {number|null} coldRent The quote itself when it is cold. On a warm quote, the quote minus
+ *   the charges the advert states, or null where it states none.
  * @property {number} warmRent
- * @property {number} nebenkosten
- * @property {number} nebenkostenPct The surcharge used, in percent.
+ * @property {number|null} nebenkosten The surcharge on a cold quote. On a warm quote, the charges the
+ *   advert states, or null where it states none.
+ * @property {number|null} nebenkostenPct The surcharge used, in percent; null on a warm quote, which gets none.
  * @property {number} monthlyPayment What actually leaves the account each month, i.e. the warm rent.
  * @property {number} remainingAfterRent Disposable income left once the warm rent is paid.
  * @property {number|null} rateShareOfNetIncome

@@ -169,22 +169,36 @@ export async function readFixture(url, options) {
 }
 
 /**
- * Immowelt's listings come from its search BFF, which can only be reached from inside a browser
- * that holds a DataDome cookie. Offline mode therefore replaces the whole transport module rather
- * than a `fetch` or the extractor, and serves the two fixtures it would have produced.
+ * Immowelt's and SeLoger's listings come from the search BFF they share, which can only be reached
+ * from inside a browser that holds a DataDome cookie. Offline mode therefore replaces the whole
+ * transport module rather than a `fetch` or the extractor, and serves the two fixtures it would
+ * have produced - the ones of whichever provider the site belongs to, since both run through the
+ * very same module.
  *
+ * @param {'immowelt'|'seloger'} [provider] the provider whose recording to serve
  * @returns {Promise<{classifieds: any[], detailHtml: string|null}>} the recorded BFF responses
  */
-export async function readImmoweltFixtures() {
+export async function readClassifiedFixtures(provider = 'immowelt') {
   const [rawClassifieds, detailHtml] = await Promise.all([
-    tryReadFile(path.join(FIXTURES_DIR, 'immowelt_classifieds.json')),
-    tryReadFile(path.join(FIXTURES_DIR, 'immowelt_detail.html')),
+    tryReadFile(path.join(FIXTURES_DIR, `${provider}_classifieds.json`)),
+    tryReadFile(path.join(FIXTURES_DIR, `${provider}_detail.html`)),
   ]);
 
   return {
     classifieds: rawClassifieds ? JSON.parse(rawClassifieds) : [],
     detailHtml,
   };
+}
+
+/**
+ * leboncoin's adverts come from its finder endpoint, asked from inside a browser page for the same
+ * reason immowelt's are, so offline mode replaces that transport module too.
+ *
+ * @returns {Promise<any[]>} the recorded adverts
+ */
+export async function readLeboncoinFixtures() {
+  const raw = await tryReadFile(path.join(FIXTURES_DIR, 'leboncoin_list.json'));
+  return raw ? JSON.parse(raw) : [];
 }
 
 /** Hosts whose providers request their pages themselves instead of going through the extractor. */
@@ -224,6 +238,9 @@ export function buildFetchMock() {
   let flatfoxListings = null;
   let betterhomesList = null;
   let betterhomesDetail = null;
+  let bieniciPlaces = null;
+  let bieniciList = null;
+  let bieniciDetail = null;
 
   return async (url, init) => {
     const urlStr = String(url);
@@ -362,6 +379,40 @@ export function buildFetchMock() {
           ? betterhomesDetail
           : { responseMessage: '', responseCode: 1000, responseData: null };
       return { ok: true, status: 200, json: () => Promise.resolve(body) };
+    }
+
+    // Bien'ici answers a search in two steps: the place lookup the url's slugs are resolved with,
+    // keyed by what was asked, then the adverts. An advert's own endpoint answers for the one it was
+    // recorded from and 404s for any other id, exactly as it does for an advert taken down - which
+    // is what makes the activity probe's "gone" answer reachable offline.
+    if (urlStr.startsWith('https://res.bienici.com/place.json')) {
+      if (bieniciPlaces == null) {
+        const raw = await tryReadFile(path.join(FIXTURES_DIR, 'bienici_places.json'));
+        bieniciPlaces = raw ? JSON.parse(raw) : {};
+      }
+      const asked = new URL(urlStr).searchParams.get('q') ?? '';
+      const place = bieniciPlaces[asked] ?? { name: 'Nulle Part', zoneIds: ['-1'] };
+      return { ok: true, status: 200, json: () => Promise.resolve(place) };
+    }
+
+    if (urlStr.startsWith('https://www.bienici.com/realEstateAds.json')) {
+      if (bieniciList == null) {
+        const raw = await tryReadFile(path.join(FIXTURES_DIR, 'bienici_list.json'));
+        bieniciList = raw ? JSON.parse(raw) : { total: 0, realEstateAds: [] };
+      }
+      return { ok: true, status: 200, json: () => Promise.resolve(bieniciList) };
+    }
+
+    if (urlStr.startsWith('https://www.bienici.com/realEstateAd.json')) {
+      if (bieniciDetail == null) {
+        const raw = await tryReadFile(path.join(FIXTURES_DIR, 'bienici_detail.json'));
+        bieniciDetail = raw ? JSON.parse(raw) : {};
+      }
+      const asked = new URL(urlStr).searchParams.get('id');
+      if (asked !== bieniciDetail.id) {
+        return { ok: false, status: 404, json: () => Promise.reject(new Error('Not Found')) };
+      }
+      return { ok: true, status: 200, json: () => Promise.resolve(bieniciDetail) };
     }
 
     // The one thing in a search request that says which national site it belongs to is its

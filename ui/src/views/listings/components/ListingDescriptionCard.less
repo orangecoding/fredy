@@ -71,6 +71,8 @@
     margin: 0;
     max-width: 78ch;
     white-space: pre-wrap;
+    // A pasted link is one word as far as line breaking is concerned.
+    overflow-wrap: anywhere;
     font-size: @text-base;
     line-height: 1.6;
     // Body copy, so @color-muted rather than @color-faint - the faint token is for hairlines and

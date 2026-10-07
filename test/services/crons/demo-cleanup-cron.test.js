@@ -40,13 +40,13 @@ describe('services/crons/demo-cleanup-cron', () => {
     state = { settings: { demoMode: true }, scheduled: [], cleanupRuns: 0 };
   });
 
-  it('schedules the demo cleanup at midnight when demo mode is on', async () => {
+  it('schedules the demo cleanup every hour when demo mode is on', async () => {
     const { initDemoCleanupCron } = await loadCron();
 
     await initDemoCleanupCron();
 
     expect(state.scheduled).toHaveLength(1);
-    expect(state.scheduled[0].expression).toBe('0 0 * * *');
+    expect(state.scheduled[0].expression).toBe('0 * * * *');
   });
 
   it('schedules the cleanup itself as the handler', async () => {

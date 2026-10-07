@@ -4,8 +4,15 @@
  */
 
 import { describe, it, expect } from 'vitest';
+import fs from 'fs';
+import path from 'path';
 
-import { buildObjectFacts, buildOriginFacts, providerName } from '../../ui/src/views/listings/listingFacts.js';
+import {
+  buildObjectFacts,
+  buildOriginFacts,
+  buildRentFacts,
+  providerName,
+} from '../../ui/src/views/listings/listingFacts.js';
 import { formatPricePerSqm } from '../../ui/src/services/listings/marketBenchmark.js';
 
 /**
@@ -154,6 +161,117 @@ describe('buildObjectFacts', () => {
     expect(facts.price.text).toBe('common.na');
     expect(facts.tiles).toHaveLength(3);
     expect(facts.affordability).toBeNull();
+  });
+
+  // "Base rent per month" over a French rent quoted charges comprises claims it is a cold rent,
+  // which is the very misreading the verdict beside it no longer makes.
+  it('says a rent quoted with the charges is a rent with the charges', () => {
+    expect(buildObjectFacts({ ...full, charges_included: 1 }, ctx).price.reference).toBe(
+      'listing.detail.rentPerMonthInclCharges',
+    );
+    expect(buildObjectFacts({ ...full, charges_included: 0 }, ctx).price.reference).toBe('listing.detail.rentPerMonth');
+    expect(buildObjectFacts({ ...full, charges_included: null }, ctx).price.reference).toBe(
+      'listing.detail.rentPerMonth',
+    );
+  });
+
+  it('explains a verdict on a rent quoted with the charges by the warm ceiling it was measured against', () => {
+    const scored = buildObjectFacts(
+      { ...full, charges_included: 1, affordabilityVerdict: 'affordable' },
+      {
+        ...ctx,
+        financeThresholds: { rent: { affordableMaxRent: 1120, warmAffordable: 1400 } },
+        formatEuro: (value) => `${value} EUR`,
+      },
+    );
+    expect(scored.affordability.helpText).toContain('listings.rentInclChargesAffordabilityTooltip.affordable');
+    expect(scored.affordability.helpText).toContain('1400 EUR');
+  });
+});
+
+describe('buildRentFacts', () => {
+  const english = JSON.parse(fs.readFileSync(path.resolve('ui/src/locales/en.json'), 'utf8'));
+  const rentCtx = { t, locale: 'de-DE', formatEuro: (value) => (value == null ? '–' : `${value} EUR`) };
+  const budget = { headroom: 1400 };
+  const shared = { rateShareOfNetIncome: 0.25, remainingAfterRent: 1300 };
+
+  const cold = {
+    ...shared,
+    chargesIncluded: false,
+    price: 1000,
+    coldRent: 1000,
+    warmRent: 1250,
+    nebenkosten: 250,
+    nebenkostenPct: 25,
+  };
+  const warmStated = {
+    ...shared,
+    chargesIncluded: true,
+    price: 1300,
+    coldRent: 1200,
+    warmRent: 1300,
+    nebenkosten: 100,
+    nebenkostenPct: null,
+  };
+  const warmUnstated = { ...warmStated, coldRent: null, nebenkosten: null };
+
+  const rows = (scored) =>
+    buildRentFacts(scored, budget, rentCtx).facts.map((fact) => [fact.label, fact.value, fact.note ?? null]);
+
+  it('reads a cold quote exactly as before: the listed cold rent, and Nebenkosten estimated on top', () => {
+    const { facts, footnote } = buildRentFacts(cold, budget, rentCtx);
+
+    expect(rows(cold)).toEqual([
+      ['listing.detail.rentWarm', '1250 EUR', null],
+      ['listing.detail.rentCold', '1000 EUR', null],
+      ['listing.detail.rentNebenkosten', '250 EUR', 'listing.detail.rentNebenkostenNote'],
+      ['listing.detail.rentShare', '25.0 %', null],
+      ['listing.detail.rentRemaining', '1300 EUR', null],
+      ['listing.detail.rentCeiling', '1400 EUR', null],
+    ]);
+    expect(facts.filter((fact) => fact.emphasis).map((fact) => fact.label)).toEqual(['listing.detail.rentWarm']);
+    expect(footnote).toBe('listing.detail.rentFootnote(pct=25)');
+  });
+
+  it('reads a warm quote as listed, with the charges the advert states and the cold rent they leave', () => {
+    expect(rows(warmStated).slice(0, 3)).toEqual([
+      ['listing.detail.rentWarmListed', '1300 EUR', null],
+      ['listing.detail.rentColdNet', '1200 EUR', null],
+      ['listing.detail.rentNebenkosten', '100 EUR', 'listing.detail.rentNebenkostenStated'],
+    ]);
+    expect(buildRentFacts(warmStated, budget, rentCtx).footnote).toBe('listing.detail.rentFootnoteInclCharges');
+  });
+
+  it('says the charges are in the rent where the advert does not state them, and invents no cold rent', () => {
+    const labels = rows(warmUnstated).map(([label]) => label);
+    expect(labels).not.toContain('listing.detail.rentCold');
+    expect(labels).not.toContain('listing.detail.rentColdNet');
+    expect(rows(warmUnstated).find(([label]) => label === 'listing.detail.rentNebenkosten')).toEqual([
+      'listing.detail.rentNebenkosten',
+      '–',
+      'listing.detail.rentNebenkostenIncluded',
+    ]);
+  });
+
+  it('gives every row a key of its own', () => {
+    for (const scored of [cold, warmStated, warmUnstated]) {
+      const ids = buildRentFacts(scored, budget, rentCtx).facts.map((fact) => fact.id);
+      expect(new Set(ids).size).toBe(ids.length);
+    }
+  });
+
+  // The echo translator makes every key visible here, including the ones picked by a condition that
+  // the locale suite cannot see in the source.
+  it('has every label, note and footnote in english', () => {
+    for (const scored of [cold, warmStated, warmUnstated]) {
+      const { facts, footnote } = buildRentFacts(scored, budget, rentCtx);
+      const keys = [...facts.flatMap((fact) => [fact.label, fact.note]), footnote]
+        .filter(Boolean)
+        .map((text) => text.replace(/\(.*$/, ''));
+      for (const key of keys) {
+        expect(english).toHaveProperty([key]);
+      }
+    }
   });
 });
 

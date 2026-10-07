@@ -33,11 +33,22 @@ fired on a large share of honest listings.
 
 ## Languages
 
-German, English, Italian, Spanish and Portuguese, which covers every country Fredy can search. The
-same four stories are told in each of them, so the phrase lists are translations of one another.
-Matching runs on normalised text (lowercased, umlauts folded, quotes stripped), and a `*` in a
-phrase spans up to three words so `Besichtigung ist leider nicht möglich` matches the same entry as
+German, English, Italian, Spanish, Portuguese and French, which covers every country Fredy can
+search. The same four stories are told in each of them, so the phrase lists are translations of one
+another; French also knows the prepaid vouchers French frauds ask to be paid in (Transcash, Neosurf,
+PCS coupons).
+Matching runs on normalised text (lowercased, umlauts folded, quotes and hyphens turned into
+spaces, so `crypto-monnaie` and `crypto monnaie` are one phrase), and a `*` in a phrase spans up to
+three words so `Besichtigung ist leider nicht möglich` matches the same entry as
 `Besichtigung nicht möglich`.
+
+A phrase the advert negates does not count. Honest adverts warn their readers in the very words of
+the fraud - `Keine Vorkasse`, `aucun virement avant la visite`, `nicht ohne Besichtigung` - so a
+phrase right after a negation word (`keine`, `no`, `aucun`, `pas de`, `nessun`, `nunca`, ...) is
+passed over. Only the word right before the phrase counts, never one across a comma, so
+`pas de problème, paiement avant la visite` still reads as the fraud it is. For the same reason
+there is no bare `sans visite`, `sin visita` or `sem visita`: honest adverts say those to rule the
+fraud out far more often than frauds say them at all.
 
 ## The price signal needs neighbours
 

@@ -26,6 +26,7 @@ import { initListingRetentionCron } from './lib/services/crons/listing-retention
 import { initPriceTrackingCron } from './lib/services/crons/price-tracking-cron.js';
 import { initTravelTimeCron } from './lib/services/crons/travel-time-cron.js';
 import { initConnectivityCron } from './lib/services/crons/connectivity-cron.js';
+import { initTourCleanupCron } from './lib/services/crons/tour-cleanup-cron.js';
 
 // Ensure the CloakBrowser stealth Chromium binary is present and complete before
 // jobs run.  ensureValidBinary() also detects and auto-heals partial extractions
@@ -118,6 +119,9 @@ await initDemoCleanupCron();
 await initSessionCleanupCron();
 await initMcpOAuthCleanupCron();
 await initListingRetentionCron();
+// Runs on start as well: an onboarding tour abandoned while the process was down left example
+// listings in somebody's account, and nothing but this sweep will ever take them away.
+initTourCleanupCron();
 // Schedules only. Unlike the others this one is never run on start: it renders a browser page per
 // listing, and a restart is the worst moment to begin doing that.
 initPriceTrackingCron();

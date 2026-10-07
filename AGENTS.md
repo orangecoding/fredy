@@ -79,7 +79,7 @@ scheduler (every N minutes) or manual trigger via POST /api/jobs/:id/run
   boxes from `ui/src/components/map/countryBounds.js`. Where no provider exists to ask - home
   addresses, the listings map, the listing detail - the answer is the union across the jobs the user
   can see, and where the job form is open it is the providers ticked in it
-- `config` - the **static** `ProviderConfig` template: `requiredFieldNames`, `crawlContainer`, `crawlFields`, `sortByDateParam`, `normalize()`, optional `getListings()`, `fetchDetails()`, `activeTester()`. `url` is `null` here and there is no bound `filter`.
+- `config` - the **static** `ProviderConfig` template: `requiredFieldNames`, `crawlContainer`, `crawlFields`, `sortByDateParam`, `normalize()`, optional `getListings()`, `fetchDetails()`, `activityProbe()`. `url` is `null` here and there is no bound `filter`. A portal whose pages only answer a browser session (DataDome answers node with 403 whether an advert is online or not - immowelt, SeLoger) declares `browserActivityProbe(link, browser)` and `priceTracking.browserProbe(listing, browser)` instead; the alive-checker and the price tracker start one browser per run for them, and only when a due listing needs it.
 - `createConfig(sourceConfig, blacklist)` - returns a **fresh** `ProviderConfig` per job run: the template plus this run's `url`, `enabled`, and a `filter` closed over this run's blacklist.
 
 Providers are **stateless**. Nothing run-specific may live at module scope: two jobs can execute

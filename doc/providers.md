@@ -7,7 +7,7 @@ platform into Fredy.
 > Always make sure the search results are sorted by **date**, so Fredy picks up the newest listings
 > first.
 
-## The 26 built-in providers
+## The 29 built-in providers
 
 **🇩🇪 Germany**
 
@@ -25,6 +25,7 @@ platform into Fredy.
 **🇨🇭 Switzerland** · Flatfox
 **🇪🇸 Spain · 🇮🇹 Italy · 🇵🇹 Portugal** · idealista
 **🇮🇹 Italy** · Subito · Tecnocasa · Tecnorete · Casa.it
+**🇫🇷 France** · leboncoin · SeLoger · Bien'ici
 
 If you run a portal Fredy does not cover yet, contributions are very welcome, see
 [CONTRIBUTING.md](../CONTRIBUTING.md).
@@ -118,6 +119,76 @@ portal itself shows are its town's centre, so they are only used for an advert w
 A rent is stored as the Nettomiete, like every other provider's, because the affordability check
 adds the Nebenkosten itself; the Bruttomiete is only the fallback for an advert that states no net
 figure.
+
+## leboncoin
+
+France's largest classifieds site, and the one with the most property adverts in the country -
+private landlords above all. Paste the address of a search from `leboncoin.fr`, which reads
+`https://www.leboncoin.fr/recherche?category=10&locations=...`. Every filter the site offers is
+passed on: Fredy translates the url into the request the site's own search page sends, following
+the site's own rules, so a filter Fredy has never heard of still reaches leboncoin. Towns with or
+without a postcode, departments, regions and a radius around a place are covered, and the other kinds
+of place the site writes into its urls (districts, map sections, drawn shapes) are passed on the way
+it writes them.
+
+leboncoin sits behind DataDome, and its result pages answer a browser that navigates to them with a
+captcha. Fredy therefore opens leboncoin's home page once per run and asks the search endpoint from
+inside it, the way the site does; that one navigation is all the browser costs. If a run still ends
+with `We have been detected as a bot`, see the proxy section below. A French residential IP suits
+leboncoin and SeLoger best; keep in mind that the proxy setting is shared by every browser-based
+provider.
+
+Two things leboncoin does not get: detail enrichment, because the search already answers with the
+full description, and **price tracking**, because the only place the current price could be read is
+the advert page, which is behind the same wall.
+
+## SeLoger
+
+SeLoger runs on the same platform as Immowelt - both belong to the AVIV group - so it is read the
+same way, through the search endpoint its own result page uses, from inside a browser session. Paste
+the address of a result page, which reads
+`https://www.seloger.com/classified-search?distributionTypes=...&locations=AD08FR...`. SeLoger's
+landing pages (`/recherche/location/appartement/...`), which spell their search in the path, are
+refused with a message saying so: run the search from SeLoger's search form instead.
+
+A filter Fredy cannot translate stops the job and names itself, rather than being dropped and
+widening your search, exactly as on Immowelt; the campaign tags a link picks up from an alert mail or
+an ad click (`xtor`, `at_medium`, `gclid`, ...) are ignored. SeLoger's results include the adverts of
+Belles Demeures, its luxury sister portal, and those link to `bellesdemeures.com`; their full
+description is not fetched and their price is not tracked, since that site is not SeLoger's.
+
+Whether a stored advert is still online, and what it costs today, is asked the same way the search
+is: from inside a browser session, since SeLoger - like Immowelt - answers any plain request with the
+DataDome wall, whether the advert is still there or not. The alive-checker and the price tracker
+start one browser per run for it, and only when a SeLoger or Immowelt listing is due.
+
+**Rents are stored the way the card states them.** SeLoger quotes each rent either *charges
+comprises* ("cc") or *hors charges* ("hc"), advert by advert, and its result cards give no charges
+figure to take a "cc" rent down to the one without them. So a SeLoger rent is sometimes with the
+charges and sometimes without, while leboncoin and Bien'ici store it without them wherever the
+advert states them. Fredy records which one each stored rent is, and compares rents on the basis
+both sides share when it looks for the same flat on two portals. The affordability verdict accounts
+for it too: a "cc" rent is already what you pay each month, so it is measured against your warm-rent
+ceiling with no Nebenkosten added on top, while an "hc" rent gets the surcharge as before.
+
+## Bien'ici
+
+The portal France's agency networks founded together. Its result page is filled from a public JSON
+endpoint, which is what Fredy asks as well, so this provider needs **no browser** and costs one
+request per run, plus one place lookup per place in the url once a day. Paste the address of a search from `bienici.com`, which reads
+`https://www.bienici.com/recherche/location/paris-75000/appartement?...`. Several places, several
+property types and room counts work, and so does every filter the site writes into the query string;
+one Fredy does not know stops the job and names itself instead of widening your search.
+
+Rents are stored without charges: Bien'ici quotes them *charges comprises* and states the charges
+next to them, so Fredy subtracts them, or takes the advertiser's own figure where one is given. On a
+rent-controlled advert that figure is the capped base rent, and the *complément de loyer* on top of
+it is added back, since the tenant pays it every month like the rest.
+
+Not supported: an area drawn on the map, a circle and a travel-time area. Bien'ici keeps those on its
+own servers and the url carries nothing but an id, so the job stops and says so - search the town
+and narrow it down with Fredy's own map area filter instead. A place Bien'ici no longer knows stops
+the job too, rather than being searched as whatever its place lookup guesses instead.
 
 ## Countries and the map
 

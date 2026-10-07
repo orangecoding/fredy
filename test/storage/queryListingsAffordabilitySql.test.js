@@ -5,6 +5,8 @@
 
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import Database from 'better-sqlite3';
+import { affordabilityBandFor } from '../../lib/services/finance/listingFilter.js';
+import { rentThresholds, verdictForRent } from '../../lib/services/finance/affordability.js';
 
 /**
  * The sibling suite (queryListingsAffordability.test.js) asserts which SQL text and parameters
@@ -68,6 +70,8 @@ describe('queryListings affordability band against real SQLite', () => {
         id TEXT PRIMARY KEY,
         job_id TEXT,
         price REAL,
+        charges_included INTEGER,
+        charges REAL,
         size REAL,
         title TEXT,
         address TEXT,
@@ -243,5 +247,111 @@ describe('queryListings affordability band against real SQLite', () => {
 
     expect(listingsStorage.getListingById('shared-listing', USER)?.id).toBe('shared-listing');
     expect(listingsStorage.getListingById('foreign-listing', USER)).toBeNull();
+  });
+
+  /*
+   * A rent quoted with the running charges in it is already warm, so it is held against the warm
+   * ceilings - 1400 affordable, 1600 stretch, for the household the cold windows above (1120, 1280)
+   * were taken from. Every other rent stays on the cold ones, including the rows whose portal never
+   * said, which is every row stored before the column existed.
+   */
+  describe('a rent quoted with the charges', () => {
+    const CHARGES_LISTINGS = [
+      { id: 'cc-cheap', price: 1300, chargesIncluded: 1 },
+      { id: 'cc-at-ceiling', price: 1400, chargesIncluded: 1 },
+      { id: 'cc-in-gap', price: 1400.5, chargesIncluded: 1 },
+      { id: 'cc-far', price: 1700, chargesIncluded: 1 },
+      { id: 'hc-1300', price: 1300, chargesIncluded: 0 },
+    ];
+
+    /** The household behind the literal windows, for the tests that derive the band themselves. */
+    const HOUSEHOLD = {
+      personA: { label: 'A', enabled: true, age: 34, primaryIncome: 4000, secondaryIncome: 0 },
+      livingCosts: 1400,
+      renting: { nebenkostenPct: 25 },
+    };
+
+    const split = (cold, withCharges) => ({ buy: null, rent: { ...cold, chargesIncluded: withCharges } });
+
+    beforeEach(() => {
+      const insert = db.prepare(
+        `INSERT INTO listings (id, job_id, price, charges_included, title) VALUES (?, 'job-rent', ?, ?, ?)`,
+      );
+      for (const row of CHARGES_LISTINGS) {
+        insert.run(row.id, row.price, row.chargesIncluded, row.id);
+      }
+    });
+
+    it('holds it against the warm window, and every other rent against the cold one', () => {
+      expect(idsFor(split({ minExclusive: 0, max: 1120 }, { minExclusive: 0, max: 1400 }))).toEqual([
+        'cc-at-ceiling',
+        'cc-cheap',
+        'rent-at-ceiling',
+        'rent-cheap',
+      ]);
+    });
+
+    it('finds the stretch band on either basis, with the fractional gap on both', () => {
+      expect(idsFor(split({ minExclusive: 1120, max: 1280 }, { minExclusive: 1400, max: 1600 }))).toEqual([
+        'cc-in-gap',
+        'rent-in-gap',
+        'rent-stretch',
+      ]);
+    });
+
+    it('finds the open-ended top band on either basis', () => {
+      expect(idsFor(split({ minExclusive: 1280, max: null }, { minExclusive: 1600, max: null }))).toEqual([
+        'cc-far',
+        'hc-1300',
+        'rent-far',
+      ]);
+    });
+
+    it('still judges every row of the deal type by a window that carries no split', () => {
+      expect(idsFor({ buy: null, rent: { minExclusive: 0, max: 1400 } })).toEqual([
+        'cc-at-ceiling',
+        'cc-cheap',
+        'hc-1300',
+        'rent-at-ceiling',
+        'rent-cheap',
+        'rent-in-gap',
+        'rent-stretch',
+      ]);
+    });
+
+    it('reports a total that matches the split rows, so pagination stays honest', () => {
+      const result = listingsStorage.queryListings({
+        userId: USER,
+        pageSize: 100,
+        affordabilityBand: split({ minExclusive: 0, max: 1120 }, { minExclusive: 0, max: 1400 }),
+      });
+      expect(result.totalNumber).toBe(4);
+    });
+
+    // The whole point of the split: a listing's chip and the filter that found it read the same
+    // yardstick. Derived here from a real profile rather than from literal windows, so a band and a
+    // verdict that drift apart fail no matter which of the two moved.
+    it('agrees with the verdict chip for every rent, band by band', () => {
+      const thresholds = rentThresholds(HOUSEHOLD);
+      const rents = db.prepare(`SELECT id, price, charges_included FROM listings WHERE job_id = 'job-rent'`).all();
+
+      for (const band of ['affordable', 'stretch', 'unaffordable']) {
+        const expected = rents
+          .filter(
+            (row) => verdictForRent(row.price, thresholds, { chargesIncluded: row.charges_included === 1 }) === band,
+          )
+          .map((row) => row.id)
+          .sort();
+        expect(idsFor(affordabilityBandFor(band, HOUSEHOLD)), band).toEqual(expected);
+      }
+    });
+
+    it('hands the rent basis to the UI with every row', () => {
+      const row = listingsStorage
+        .queryListings({ userId: USER, pageSize: 100 })
+        .result.find((r) => r.id === 'cc-cheap');
+      expect(row).toMatchObject({ charges_included: 1, charges: null });
+      expect(listingsStorage.getListingById('cc-cheap', USER)).toMatchObject({ charges_included: 1 });
+    });
   });
 });

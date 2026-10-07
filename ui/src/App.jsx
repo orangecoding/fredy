@@ -42,6 +42,8 @@ import Dashboard from './views/dashboard/Dashboard.jsx';
 import FinanceCalculator from './views/finance/FinanceCalculator.jsx';
 import ListingDetail from './views/listings/ListingDetail.jsx';
 import NewsModal from './components/news/NewsModal.jsx';
+import OnboardingTour from './components/tour/OnboardingTour.jsx';
+import inDevelopment from './services/developmentMode.js';
 import { I18nProvider, availableLanguages } from './services/i18n/i18n.jsx';
 import DebugLoggingBanner from './components/debug/DebugLoggingBanner.jsx';
 import DemoBanner from './components/demo/DemoBanner.jsx';
@@ -195,84 +197,93 @@ export default function FredyApp() {
             <Route path="*" element={<Navigate state={{ from: location }} to="/login" replace />} />
           </Routes>
         ) : (
-          // Keyed on the theme so everything below remounts when it changes. The stylesheets follow the
-          // body attribute on their own, but the charts paint onto a canvas from colours they read once
-          // per render, and a canvas keeps whatever it was last painted with until something redraws it.
-          <Layout className="app" key={theme}>
-            <Sider>
-              <Navigation isAdmin={isAdmin()} />
-            </Sider>
-            <Layout className="app__main">
-              <Content className="app__content">
-                <DebugLoggingBanner />
-                {settings.demoMode && <DemoBanner />}
-                {settings.analyticsEnabled === null && !settings.demoMode && <TrackingModal />}
-                {!settings.demoMode && <NewsModal />}
-                <Routes>
-                  <Route path="/403" element={<InsufficientPermission />} />
-                  <Route path="/jobs/new" element={<JobMutation />} />
-                  <Route path="/jobs/edit/:jobId" element={<JobMutation />} />
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/jobs" element={<Jobs />} />
-                  <Route path="/listings" element={<Listings />} />
-                  <Route path="/listings/listing/:listingId" element={<ListingDetail />} />
-                  <Route path="/map" element={<MapView />} />
-                  <Route path="/finance" element={<FinanceCalculator />} />
+          <>
+            {/* Outside the keyed layout below: the tour visits the settings, where the theme can be
+                switched, and a remount mid-tour would lose the step it was on. Never on a demo
+                instance, and not while the analytics question is still on screen. */}
+            {!settings.demoMode && (
+              <OnboardingTour isAdmin={isAdmin()} blocked={settings.analyticsEnabled === null && !inDevelopment()} />
+            )}
+            {/* Keyed on the theme so everything below remounts when it changes. The stylesheets follow
+                the body attribute on their own, but the charts paint onto a canvas from colours they
+                read once per render, and a canvas keeps whatever it was last painted with until
+                something redraws it. */}
+            <Layout className="app" key={theme}>
+              <Sider>
+                <Navigation isAdmin={isAdmin()} />
+              </Sider>
+              <Layout className="app__main">
+                <Content className="app__content">
+                  <DebugLoggingBanner />
+                  {settings.demoMode && <DemoBanner />}
+                  {settings.analyticsEnabled === null && !settings.demoMode && <TrackingModal />}
+                  {!settings.demoMode && <NewsModal />}
+                  <Routes>
+                    <Route path="/403" element={<InsufficientPermission />} />
+                    <Route path="/jobs/new" element={<JobMutation />} />
+                    <Route path="/jobs/edit/:jobId" element={<JobMutation />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/jobs" element={<Jobs />} />
+                    <Route path="/listings" element={<Listings />} />
+                    <Route path="/listings/listing/:listingId" element={<ListingDetail />} />
+                    <Route path="/map" element={<MapView />} />
+                    <Route path="/finance" element={<FinanceCalculator />} />
 
-                  {/* Settings that belong to whoever is signed in. No guard: they are theirs.
+                    {/* Settings that belong to whoever is signed in. No guard: they are theirs.
                       One entry in the sidebar, and the tabs below the heading are the only place
                       these pages are named. */}
-                  <Route path="/settings" element={<SettingsLayout />}>
-                    <Route index element={<Navigate to="/settings/preferences" replace />} />
-                    <Route path="preferences" element={<PreferencesPage />} />
-                    <Route path="travel-time" element={<TravelTimePage />} />
-                    <Route path="listings" element={<ListingDetailsPage />} />
-                    <Route path="application" element={<ApplicationPage />} />
-                    <Route path="notifications" element={<NotificationsPage />} />
-                    <Route path="connections" element={<ConnectionsPage />} />
-                  </Route>
+                    <Route path="/settings" element={<SettingsLayout />}>
+                      <Route index element={<Navigate to="/settings/preferences" replace />} />
+                      <Route path="preferences" element={<PreferencesPage />} />
+                      <Route path="travel-time" element={<TravelTimePage />} />
+                      <Route path="listings" element={<ListingDetailsPage />} />
+                      <Route path="application" element={<ApplicationPage />} />
+                      <Route path="notifications" element={<NotificationsPage />} />
+                      <Route path="connections" element={<ConnectionsPage />} />
+                    </Route>
 
-                  {/* Settings that belong to the instance. Guarded once, at the parent, so a new
+                    {/* Settings that belong to the instance. Guarded once, at the parent, so a new
                       page cannot be added without inheriting the check. */}
-                  <Route
-                    path="/admin"
-                    element={
-                      <PermissionAwareRoute currentUser={currentUser}>
-                        <AdminLayout />
-                      </PermissionAwareRoute>
-                    }
-                  >
-                    <Route index element={<Navigate to="/admin/system" replace />} />
-                    <Route path="system" element={<SystemPage />} />
-                    <Route path="execution" element={<ExecutionPage />} />
-                    <Route path="connectivity" element={<ConnectivityPage />} />
-                    <Route path="routing" element={<RoutingPage />} />
-                    <Route path="users" element={<Users />} />
-                    <Route path="users/new" element={<UserMutator />} />
-                    <Route path="users/edit/:userId" element={<UserMutator />} />
-                    <Route path="backup" element={<BackupPage />} />
-                    <Route path="debug" element={<DebugPage />} />
-                  </Route>
+                    <Route
+                      path="/admin"
+                      element={
+                        <PermissionAwareRoute currentUser={currentUser}>
+                          <AdminLayout />
+                        </PermissionAwareRoute>
+                      }
+                    >
+                      <Route index element={<Navigate to="/admin/system" replace />} />
+                      <Route path="system" element={<SystemPage />} />
+                      <Route path="execution" element={<ExecutionPage />} />
+                      <Route path="connectivity" element={<ConnectivityPage />} />
+                      <Route path="routing" element={<RoutingPage />} />
+                      <Route path="users" element={<Users />} />
+                      <Route path="users/new" element={<UserMutator />} />
+                      <Route path="users/edit/:userId" element={<UserMutator />} />
+                      <Route path="backup" element={<BackupPage />} />
+                      <Route path="debug" element={<DebugPage />} />
+                    </Route>
 
-                  {/* The addresses these things used to live at, kept so existing bookmarks and the
+                    {/* The addresses these things used to live at, kept so existing bookmarks and the
                       links in older notification emails still land somewhere sensible. The table
                       lives in legacyRedirects.js so a test can check every entry still resolves. */}
-                  {Object.entries(LEGACY_REDIRECTS).map(([from, to]) => (
-                    <Route key={from} path={from} element={<Navigate to={to} replace />} />
-                  ))}
-                  {/* Carries a parameter, so it needs a component rather than a table entry. */}
-                  <Route path="/users/edit/:userId" element={<LegacyUserEditRedirect />} />
+                    {Object.entries(LEGACY_REDIRECTS).map(([from, to]) => (
+                      <Route key={from} path={from} element={<Navigate to={to} replace />} />
+                    ))}
+                    {/* Carries a parameter, so it needs a component rather than a table entry. */}
+                    <Route path="/users/edit/:userId" element={<LegacyUserEditRedirect />} />
 
-                  <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                  {/* Catch-all: an authenticated user landing on an unknown path (e.g. still on
+                    <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                    {/* Catch-all: an authenticated user landing on an unknown path (e.g. still on
                       /login during the post-login transition) is sent to the dashboard instead
                       of matching no route. */}
-                  <Route path="*" element={<Navigate to="/dashboard" replace />} />
-                </Routes>
-              </Content>
-              <FredyFooter />
+                    <Route path="*" element={<Navigate to="/dashboard" replace />} />
+                  </Routes>
+                </Content>
+                <FredyFooter />
+              </Layout>
             </Layout>
-          </Layout>
+          </>
         )}
       </LocaleProvider>
     </I18nProvider>

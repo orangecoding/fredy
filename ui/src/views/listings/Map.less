@@ -23,6 +23,65 @@
   }
 }
 
+/*
+ * The panel folded on a phone (see MapFilterPanel.jsx): a chip in the panel's own corner instead of
+ * a column as wide as the map. Unfolded it is the ordinary panel again, which covers the map - but
+ * only once somebody has asked for it.
+ *
+ * Two classes, because `.map-panel` gets its width from the map component's stylesheet, and which
+ * of the two files the bundle puts last is not something to lean on.
+ */
+.map-panel.map-panel--folded {
+  width: auto;
+  padding: 6px 8px 6px 14px;
+}
+
+/*
+ * The heading, now a button: the same line of type, pressable. Nothing of the heading's look is
+ * kept away from it except its colour - `@color-faint` is a heading's grey, 2.3 to 1 on the dark
+ * panel, and on a phone this is the one control on the map that says where the filters went. The
+ * panel's label colour clears AA in both themes (5.8 and 6.5 to 1).
+ */
+.map-panel__foldToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: @space-1;
+  /* The line is 10.5px type; the finger it is pressed with is not. */
+  min-height: 32px;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: @color-map-panel-text;
+  cursor: pointer;
+
+  &:hover {
+    color: @color-map-panel-strong;
+  }
+
+  &:focus-visible {
+    outline: 2px solid @color-accent;
+    outline-offset: 2px;
+    border-radius: @radius-chip;
+  }
+}
+
+.map-panel__foldChevron {
+  transition: transform @transition-fast;
+
+  [aria-expanded='true'] > & {
+    transform: rotate(180deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .map-panel__foldChevron {
+    transition: none;
+  }
+}
+
 .map-container {
   width: 100%;
   height: 100%;

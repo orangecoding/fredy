@@ -4,7 +4,7 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import { IMMOWELT_HOSTS, SITES, requireSite, siteOf } from '../../../lib/services/immowelt/site.js';
+import { IMMOWELT_HOSTS, SITES, linkedSiteOf, requireSite, siteOf } from '../../../lib/services/immowelt/site.js';
 
 /**
  * Which site a url belongs to is the only thing that differs between immowelt.de and immowelt.at,
@@ -37,8 +37,8 @@ describe('#immowelt site', () => {
   });
 
   it('stops the run rather than guessing when a job url names no site', () => {
-    expect(() => requireSite('https://www.example.org/search')).toThrow(/immowelt\.de and immowelt\.at/);
-    expect(() => requireSite('https://www.immowelt.at/classified-search?x=1')).not.toThrow();
+    expect(() => requireSite('https://www.example.org/search', 'immowelt')).toThrow(/immowelt\.de and immowelt\.at/);
+    expect(() => requireSite('https://www.immowelt.at/classified-search?x=1', 'immowelt')).not.toThrow();
   });
 
   it('lists exactly the hosts it has a site for', () => {
@@ -46,5 +46,53 @@ describe('#immowelt site', () => {
     for (const host of IMMOWELT_HOSTS) {
       expect(new URL(SITES[host].origin).hostname).toBe(`www.${host}`);
     }
+  });
+});
+
+/**
+ * SeLoger is the same application a third time, and a provider of its own. The table serves both,
+ * so what has to hold is that each provider searches only its own sites - the shared BFF would
+ * answer the other's url without complaint.
+ */
+describe('#immowelt site, SeLoger', () => {
+  it('reads SeLoger off its urls, in French', () => {
+    const site = siteOf('https://www.seloger.com/classified-search?distributionTypes=Rent');
+    expect(site).toMatchObject({
+      provider: 'seloger',
+      country: 'fr',
+      language: 'fr',
+      origin: 'https://www.seloger.com',
+    });
+  });
+
+  it('finds the origin of a SeLoger exposé, which is what the shared exposé fetch needs', () => {
+    expect(siteOf('https://www.seloger.com/annonce/location/ile-de-france/paris-75/paris-75000/26ABC')?.origin).toBe(
+      'https://www.seloger.com',
+    );
+  });
+
+  it("lets each provider search its own sites and nobody else's", () => {
+    expect(() => requireSite('https://www.seloger.com/classified-search?x=1', 'seloger')).not.toThrow();
+    expect(() => requireSite('https://www.immowelt.de/classified-search?x=1', 'seloger')).toThrow(
+      /SeLoger serves seloger\.com and nothing else/,
+    );
+    expect(() => requireSite('https://www.seloger.com/classified-search?x=1', 'immowelt')).toThrow(
+      /Immowelt serves immowelt\.de and immowelt\.at/,
+    );
+  });
+
+  it("keeps its host out of immowelt's", () => {
+    expect(IMMOWELT_HOSTS).not.toContain('seloger.com');
+    expect(SITES['seloger.com'].origin).toBe('https://www.seloger.com');
+  });
+
+  // Belles Demeures' adverts come back among SeLoger's results with links to the sister site. Fredy
+  // asks there whether they are still online, and nothing else: it never searches that site.
+  it('knows the sister site for asking about an advert, never for searching it', () => {
+    const link = 'https://www.bellesdemeures.com/annonces/vente/appartement/paris-75/123456.htm';
+
+    expect(linkedSiteOf(link)).toMatchObject({ provider: 'seloger', origin: 'https://www.bellesdemeures.com' });
+    expect(siteOf(link)).toBeNull();
+    expect(() => requireSite('https://www.bellesdemeures.com/recherche?x=1', 'seloger')).toThrow(/SeLoger serves/);
   });
 });

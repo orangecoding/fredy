@@ -10,6 +10,7 @@ import { formatEuroPrice } from '../../../services/price/priceService.js';
 import * as timeService from '../../../services/time/timeService.js';
 import StatusControl from '../../listings/StatusControl.jsx';
 import AffordabilityChip from '../../listings/AffordabilityChip.jsx';
+import { rentIncludesCharges } from '../../../services/finance/rentBasis.js';
 import PriceChangeBadge from '../../listings/PriceChangeBadge.jsx';
 import PricePerSqmBadge from '../../listings/PricePerSqmBadge.jsx';
 import ScamBadge from '../../listings/ScamBadge.jsx';
@@ -87,7 +88,11 @@ const ListingsGrid = ({
                 {/* Next to the price rather than on a line of its own: it is the same figure said
                     a second way, and reading the two together is the whole point. */}
                 <PricePerSqmBadge listing={item} />
-                <AffordabilityChip verdict={item.affordabilityVerdict} dealType={item.dealType} />
+                <AffordabilityChip
+                  verdict={item.affordabilityVerdict}
+                  dealType={item.dealType}
+                  chargesIncluded={rentIncludesCharges(item)}
+                />
                 <PriceChangeBadge
                   price={item.price}
                   previousPrice={item.previous_price}

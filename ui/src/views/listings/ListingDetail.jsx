@@ -12,7 +12,7 @@ import { IconMaximize } from '@douyinfe/semi-icons';
 import maplibregl from '../../components/map/maplibre.js';
 import { MARKER_COLORS } from '../../components/map/markerColors.js';
 import { useProviderCountries } from '../../hooks/useProviderCountries.js';
-import { useScreenWidth } from '../../hooks/screenWidth.js';
+import { PHONE_BREAKPOINT, useScreenWidth } from '../../hooks/screenWidth.js';
 import no_image from '../../assets/no_image.png';
 import { getBoundsFromCoords } from './mapUtils.js';
 import { escapeHtml } from './listingPopupContent.jsx';
@@ -43,8 +43,6 @@ const { Text } = Typography;
 
 /** Above this the page is two columns; below it everything stacks into one. */
 const RAIL_BREAKPOINT = 1180;
-/** Below this the action bar moves to the bottom edge and the secondary cards fold shut. */
-const PHONE_BREAKPOINT = 768;
 
 /**
  * A card that folds itself shut on a phone and stays open everywhere else.

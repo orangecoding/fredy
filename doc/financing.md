@@ -14,6 +14,14 @@ Portals quote Kaltmiete, households pay warm. Set the Nebenkosten surcharge once
 the highest cold rent you can take on, what that comes to warm, and what is left over each month.
 The renting tab asks for nothing beyond that.
 
+Some portals quote a rent with the running charges already in it instead: a French rent *charges
+comprises*, an immowelt Warmmiete. Fredy records which kind each stored rent is, and the verdict
+accounts for it. A rent quoted with the charges is measured against your warm-rent ceiling as it
+stands, with no surcharge added on top, in the verdict chip, the affordability filter, the rent card
+and the `calculate_financing` answer alike; the rent card shows the charges the advert states
+instead of an estimate. Rents quoted without the charges, and those whose portal does not say, are
+judged exactly as before.
+
 ## Buying
 
 The buying tab models the purchase the way a European bank would, as an **Annuitätendarlehen**:

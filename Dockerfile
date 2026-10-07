@@ -53,6 +53,8 @@ RUN apt-get purge -y python3 make g++ \
   && rm -rf /var/lib/apt/lists/*
 
 COPY index.html vite.config.js ./
+# Static files Vite copies into the build as they are, such as the onboarding tour's pictures.
+COPY public ./public
 COPY ui ./ui
 COPY lib ./lib
 

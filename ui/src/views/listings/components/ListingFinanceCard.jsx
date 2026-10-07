@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router';
 import VerdictBanner from '../../finance/components/VerdictBanner.jsx';
 import ListingPayoffChart from '../../finance/charts/ListingPayoffChart.jsx';
 import { formatEuro } from '../../../components/cards/chartTheme.js';
+import { buildRentFacts } from '../listingFacts.js';
 import { useActions } from '../../../services/state/store.js';
 import { useTranslation, useLocale } from '../../../services/i18n/i18n.jsx';
 
@@ -157,20 +158,9 @@ export default function ListingFinanceCard({ listing }) {
  */
 function RentCard({ scored, budget, t, locale }) {
   const navigate = useNavigate();
-
-  const facts = [
-    [t('listing.detail.rentWarm'), formatEuro(scored.warmRent, locale), true],
-    [t('listing.detail.rentCold'), formatEuro(scored.coldRent, locale), false],
-    [
-      t('listing.detail.rentNebenkosten'),
-      formatEuro(scored.nebenkosten, locale),
-      false,
-      t('listing.detail.rentNebenkostenNote'),
-    ],
-    [t('listing.detail.rentShare'), `${((scored.rateShareOfNetIncome ?? 0) * 100).toFixed(1)} %`, false],
-    [t('listing.detail.rentRemaining'), formatEuro(scored.remainingAfterRent, locale), false],
-    [t('listing.detail.rentCeiling'), formatEuro(budget.headroom, locale), false],
-  ];
+  // How the rent was quoted decides the rows: a rent with the charges in it is the warm rent as
+  // listed, with the charges the advert states rather than an estimate on top.
+  const { facts, footnote } = buildRentFacts(scored, budget, { t, locale, formatEuro });
 
   return (
     <section className="listingFinance">
@@ -202,8 +192,8 @@ function RentCard({ scored, budget, t, locale }) {
       />
 
       <dl className="listingFinance__facts">
-        {facts.map(([label, value, emphasis, note]) => (
-          <div className={`listingFinance__fact${emphasis ? ' listingFinance__fact--emphasis' : ''}`} key={label}>
+        {facts.map(({ id, label, value, emphasis, note }) => (
+          <div className={`listingFinance__fact${emphasis ? ' listingFinance__fact--emphasis' : ''}`} key={id}>
             <dt className="listingFinance__fact-label">{label}</dt>
             <dd className="listingFinance__fact-value">{value}</dd>
             {note && <dd className="listingFinance__fact-note">{note}</dd>}
@@ -212,7 +202,7 @@ function RentCard({ scored, budget, t, locale }) {
       </dl>
 
       <Text type="tertiary" size="small" className="listingFinance__footnote">
-        {t('listing.detail.rentFootnote', { pct: String(Math.round(scored.nebenkostenPct ?? 0)) })}
+        {footnote}
       </Text>
     </section>
   );

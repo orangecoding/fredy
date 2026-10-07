@@ -219,6 +219,41 @@ describe('services/listings/priceTrackingService', () => {
     expect(state.recorded).toEqual([['a', 1100]]);
   });
 
+  // immowelt and SeLoger answer a freshly rendered exposé with the DataDome captcha; the price is
+  // read through the session the provider warms itself, in the run's one browser.
+  it('hands a browser probe the run browser, and renders no page for it', async () => {
+    const seen = [];
+    state.due = [listing('a', 'seloger'), listing('b', 'seloger')];
+    state.providers = [
+      {
+        metaInformation: { id: 'seloger' },
+        config: {
+          priceTracking: {
+            browserProbe: async (probed, browser) => {
+              seen.push([probed.id, browser]);
+              return 1190;
+            },
+          },
+        },
+      },
+    ];
+    const run = await loadService();
+
+    await run();
+
+    expect(state.launches).toBe(1);
+    expect(seen.sort()).toEqual([
+      ['a', { id: 'browser' }],
+      ['b', { id: 'browser' }],
+    ]);
+    expect(state.rendered).toHaveLength(0);
+    expect(state.recorded.sort()).toEqual([
+      ['a', 1190],
+      ['b', 1190],
+    ]);
+    expect(state.closes).toBe(1);
+  });
+
   it.each([
     ['tecnocasa', 170000],
     ['tecnorete', 499000],

@@ -6,6 +6,7 @@
 import { formatEuroPrice } from '../../services/price/priceService.js';
 import { formatDecimal } from '../../services/number/numberService.js';
 import { formatPricePerSqm, readMarketBenchmark } from '../../services/listings/marketBenchmark.js';
+import { rentIncludesCharges, verdictExplanation } from '../../services/finance/rentBasis.js';
 import * as timeService from '../../services/time/timeService.js';
 
 /**
@@ -72,8 +73,9 @@ export function buildObjectFacts(listing, ctx) {
     // A 40px euro sign is louder than the sum it belongs to, and every listing has the same one.
     ...splitPrice(row.price, locale, na),
     // Names what the number is, which the number alone cannot: the same "1.200 EUR" is a monthly
-    // rent on one listing and a purchase price on the next.
-    reference: row.price != null ? t(isRental ? 'listing.detail.rentPerMonth' : 'listing.detail.purchasePrice') : null,
+    // rent on one listing and a purchase price on the next, and a rent is quoted with the charges
+    // on some portals and without them on the rest.
+    reference: row.price != null ? t(priceReferenceKey(row, isRental)) : null,
     helpText: t('listing.detail.fieldPriceHelp'),
   };
 
@@ -106,7 +108,19 @@ export function buildObjectFacts(listing, ctx) {
     },
   ];
 
-  return { price, benchmark, tiles, affordability: buildAffordability(row, ctx, isRental) };
+  return { price, benchmark, tiles, affordability: buildAffordability(row, ctx) };
+}
+
+/**
+ * What kind of figure the listed price is.
+ *
+ * @param {Object} row
+ * @param {boolean} isRental
+ * @returns {string} A translation key.
+ */
+function priceReferenceKey(row, isRental) {
+  if (!isRental) return 'listing.detail.purchasePrice';
+  return rentIncludesCharges(row) ? 'listing.detail.rentPerMonthInclCharges' : 'listing.detail.rentPerMonth';
 }
 
 /**
@@ -150,25 +164,103 @@ function splitPrice(value, locale, fallback) {
  * Returns null rather than an empty chip when the profile has no matching half, because a missing
  * verdict is the absence of an opinion and not a neutral one.
  *
+ * The ceiling quoted is the one the server measured the verdict against, which for a rent quoted
+ * with the charges in it is the warm one.
+ *
  * @param {Object} row
  * @param {FactContext} ctx
- * @param {boolean} isRental
  * @returns {{verdict: string, label: string, helpText: string}|null}
  */
-function buildAffordability(row, ctx, isRental) {
+function buildAffordability(row, ctx) {
   const verdict = row.affordabilityVerdict ?? null;
   if (!verdict) return null;
 
   const { t, locale } = ctx;
-  const thresholds = ctx.financeThresholds;
-  const limit = isRental ? thresholds?.rent?.affordableMaxRent : thresholds?.buy?.affordableMaxPrice;
+  const { key, limit } = verdictExplanation(
+    verdict,
+    { dealType: row.dealType, chargesIncluded: rentIncludesCharges(row) },
+    ctx.financeThresholds,
+  );
 
   return {
     verdict,
     label: t(`finance.verdict.${verdict}`),
-    helpText: t(`listings.${isRental ? 'rentAffordabilityTooltip' : 'affordabilityTooltip'}.${verdict}`, {
-      price: limit != null && ctx.formatEuro != null ? ctx.formatEuro(limit, locale) : '',
-    }),
+    helpText: t(key, { price: limit != null && ctx.formatEuro != null ? ctx.formatEuro(limit, locale) : '' }),
+  };
+}
+
+/**
+ * The figures on the rent card: what leaves the account each month, and how that rent comes about.
+ *
+ * A rent quoted cold reads as it always has - the listed cold rent, and Nebenkosten estimated on top
+ * of it from the household's percentage. A rent quoted with the charges in it is the warm rent as
+ * listed, and its Nebenkosten are whatever the advert states; where it states nothing the card says
+ * so, rather than printing a cold rent it would have to invent.
+ *
+ * @param {import('../../types/finance.js').RentAffordability} scored As the listing finance route returns it.
+ * @param {{headroom: number}} budget
+ * @param {{t: (key: string, params?: Object) => string, locale: string, formatEuro: (value: number, locale: string) => string}} ctx
+ * @returns {{facts: Array<{id: string, label: string, value: string, emphasis: boolean, note?: string}>, footnote: string}}
+ */
+export function buildRentFacts(scored, budget, ctx) {
+  const { t, locale, formatEuro } = ctx;
+  const included = scored.chargesIncluded === true;
+
+  const facts = [
+    {
+      id: 'warm',
+      label: t(included ? 'listing.detail.rentWarmListed' : 'listing.detail.rentWarm'),
+      value: formatEuro(scored.warmRent, locale),
+      emphasis: true,
+    },
+  ];
+  if (!included || scored.coldRent != null) {
+    facts.push({
+      id: 'cold',
+      label: t(included ? 'listing.detail.rentColdNet' : 'listing.detail.rentCold'),
+      value: formatEuro(scored.coldRent, locale),
+      emphasis: false,
+    });
+  }
+  facts.push(
+    {
+      id: 'nebenkosten',
+      label: t('listing.detail.rentNebenkosten'),
+      value: formatEuro(scored.nebenkosten, locale),
+      emphasis: false,
+      note: t(
+        !included
+          ? 'listing.detail.rentNebenkostenNote'
+          : scored.nebenkosten == null
+            ? 'listing.detail.rentNebenkostenIncluded'
+            : 'listing.detail.rentNebenkostenStated',
+      ),
+    },
+    {
+      id: 'share',
+      label: t('listing.detail.rentShare'),
+      value: `${((scored.rateShareOfNetIncome ?? 0) * 100).toFixed(1)} %`,
+      emphasis: false,
+    },
+    {
+      id: 'remaining',
+      label: t('listing.detail.rentRemaining'),
+      value: formatEuro(scored.remainingAfterRent, locale),
+      emphasis: false,
+    },
+    {
+      id: 'ceiling',
+      label: t('listing.detail.rentCeiling'),
+      value: formatEuro(budget.headroom, locale),
+      emphasis: false,
+    },
+  );
+
+  return {
+    facts,
+    footnote: included
+      ? t('listing.detail.rentFootnoteInclCharges')
+      : t('listing.detail.rentFootnote', { pct: String(Math.round(scored.nebenkostenPct ?? 0)) }),
   };
 }
 

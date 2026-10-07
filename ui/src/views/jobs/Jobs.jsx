@@ -19,7 +19,13 @@ export default function Jobs() {
       <Headline
         text={t('jobs.title')}
         actions={
-          <Button type="primary" theme="solid" icon={<IconPlusCircle />} onClick={() => navigate('/jobs/new')}>
+          <Button
+            type="primary"
+            theme="solid"
+            icon={<IconPlusCircle />}
+            onClick={() => navigate('/jobs/new')}
+            data-tour="new-job"
+          >
             {t('jobs.newJob')}
           </Button>
         }

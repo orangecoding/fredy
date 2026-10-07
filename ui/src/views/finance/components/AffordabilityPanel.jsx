@@ -14,6 +14,7 @@ import AffordabilityScatter from '../charts/AffordabilityScatter.jsx';
 import { VERDICT_COLORS, formatEuro, withAlpha } from '../../../components/cards/chartTheme.js';
 import { useSelector, useActions } from '../../../services/state/store.js';
 import { useTranslation, useLocale } from '../../../services/i18n/i18n.jsx';
+import { listedPriceKey } from '../../../services/finance/rentBasis.js';
 
 import './AffordabilityPanel.less';
 
@@ -66,9 +67,7 @@ export default function AffordabilityPanel({ profile }) {
         render: (price, record) => (
           <div className="affordabilityPanel__stacked">
             <span className="affordabilityPanel__num">{formatEuro(price, locale)}</span>
-            <span className="affordabilityPanel__sub">
-              {t(record.dealType === 'rent' ? 'finance.table.priceIsColdRent' : 'finance.table.priceIsPurchase')}
-            </span>
+            <span className="affordabilityPanel__sub">{t(listedPriceKey(record))}</span>
           </div>
         ),
       },

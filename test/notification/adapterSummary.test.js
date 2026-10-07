@@ -113,6 +113,7 @@ describe('redactSecrets', () => {
 describe('shipped adapters declare their metadata', () => {
   const EXPECTED_SECRETS = {
     discord_webhook: ['webhookUrl'],
+    gotify: ['token'],
     http: ['authToken'],
     mailjet: ['apiPublicKey', 'apiPrivateKey'],
     mattermost: ['webhook'],
@@ -128,6 +129,7 @@ describe('shipped adapters declare their metadata', () => {
 
   const EXPECTED_TARGETS = {
     apprise: 'server',
+    gotify: 'server',
     http: 'endpointUrl',
     mailjet: 'receiver',
     mattermost: 'channel',

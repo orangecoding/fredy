@@ -10,7 +10,7 @@ vi.mock('../../../lib/services/logger.js', () => ({
   default: { warn: vi.fn(), error: vi.fn(), debug: vi.fn(), info: vi.fn() },
 }));
 
-const { searchClassifieds, fetchExposeHtml, releaseSession } =
+const { searchClassifieds, fetchExposeHtml, probeExpose, releaseSession } =
   await import('../../../lib/services/immowelt/immoweltBff.js');
 const { SITES } = await import('../../../lib/services/immowelt/site.js');
 
@@ -35,7 +35,8 @@ let gotos;
  * of which node has, so running them here exercises the real batching and error handling rather
  * than a reimplementation of it.
  *
- * @param {(url: string, init?: any) => {status: number, body: string}} handler answers one request
+ * @param {(url: string, init?: any) => {status: number, body: string, stream?: any}} handler answers one
+ *   request; `stream` becomes the response's `body` stream
  * @returns {any} something shaped enough like a puppeteer browser
  */
 function fakeBrowser(handler) {
@@ -50,8 +51,8 @@ function fakeBrowser(handler) {
       const original = globalThis.fetch;
       globalThis.fetch = async (url, init) => {
         requests.push(String(url));
-        const { status, body } = handler(String(url), init);
-        return { status, text: async () => body, json: async () => JSON.parse(body) };
+        const { status, body, stream } = handler(String(url), init);
+        return { status, body: stream, text: async () => body, json: async () => JSON.parse(body) };
       };
       try {
         return await fn(...args);
@@ -307,6 +308,81 @@ describe('#immowelt bff transport, per site', () => {
 
     expect(await fetchExposeHtml(browser, 'https://www.example.org/expose/abc')).toBeNull();
 
+    expect(requests).toEqual([]);
+    expect(gotos).toEqual([]);
+  });
+});
+
+// Whether an exposé is still online, asked the only way the platform answers it: from inside the
+// session, since a plain request from node meets the DataDome wall whatever the advert's state.
+// Measured in September 2026 on both immowelt.de and seloger.com: a live exposé answers 200, one
+// that has been taken down 410. A HEAD request would have been cheaper but answers 403 for a
+// taken-down exposé, which is the bot wall's answer too.
+describe('#immowelt bff transport, exposé probe', () => {
+  beforeEach(() => {
+    requests = [];
+    gotos = [];
+  });
+
+  it('reads an exposé that is still online as online', async () => {
+    const browser = fakeBrowser(() => ({ status: 200, body: '<html>expose</html>' }));
+
+    expect(await probeExpose(browser, 'https://www.seloger.com/annonce/location/x/paris-75000/2656V5QWWXYC')).toBe(1);
+    expect(gotos).toEqual(['https://www.seloger.com/']);
+  });
+
+  it('reads an exposé the platform no longer serves as gone', async () => {
+    const gone = (status) => fakeBrowser(() => ({ status, body: '<html>gone</html>' }));
+
+    expect(await probeExpose(gone(410), 'https://www.immowelt.de/expose/abc')).toBe(0);
+    expect(await probeExpose(gone(404), 'https://www.immowelt.de/expose/abc')).toBe(0);
+  });
+
+  // An exposé is some 600 KB of markup, and the status is all the probe wants of it.
+  it('does not download the exposé it only asks about', async () => {
+    const cancel = vi.fn(async () => {});
+    const browser = fakeBrowser(() => ({ status: 200, body: '<html>expose</html>', stream: { cancel } }));
+
+    await probeExpose(browser, 'https://www.immowelt.de/expose/abc');
+
+    expect(cancel).toHaveBeenCalled();
+  });
+
+  // A bot wall says nothing about the advert, and once DataDome has refused one request it refuses
+  // the rest: asking again is only a further strike against an address it has already flagged.
+  it('answers "no idea" for a refused probe, and asks that site nothing more this run', async () => {
+    const browser = fakeBrowser(() => ({ status: 403, body: 'blocked' }));
+
+    expect(await probeExpose(browser, 'https://www.immowelt.de/expose/abc')).toBe(-1);
+    expect(await probeExpose(browser, 'https://www.immowelt.de/expose/def')).toBe(-1);
+    expect(await fetchExposeHtml(browser, 'https://www.immowelt.de/expose/ghi')).toBeNull();
+
+    expect(requests).toEqual(['https://www.immowelt.de/expose/abc']);
+  });
+
+  it('answers "no idea" when the request itself fails', async () => {
+    const browser = fakeBrowser(() => {
+      throw new Error('net::ERR_CONNECTION_RESET');
+    });
+
+    expect(await probeExpose(browser, 'https://www.immowelt.de/expose/abc')).toBe(-1);
+  });
+
+  // SeLoger's results carry the adverts of Belles Demeures, its luxury sister portal, whose links
+  // go to the sister's own site - behind the same wall, and answering the same way.
+  it("asks about a Belles Demeures advert from a page on the sister site's own origin", async () => {
+    const browser = fakeBrowser(() => ({ status: 410, body: '<html>gone</html>' }));
+
+    expect(
+      await probeExpose(browser, 'https://www.bellesdemeures.com/annonces/vente/appartement/paris-75/123456.htm'),
+    ).toBe(0);
+    expect(gotos).toEqual(['https://www.bellesdemeures.com/']);
+  });
+
+  it('does not ask about a link on no site of the platform', async () => {
+    const browser = fakeBrowser(() => ({ status: 200, body: '<html>expose</html>' }));
+
+    expect(await probeExpose(browser, 'https://www.example.org/expose/abc')).toBe(-1);
     expect(requests).toEqual([]);
     expect(gotos).toEqual([]);
   });

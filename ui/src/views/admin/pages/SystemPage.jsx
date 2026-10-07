@@ -198,7 +198,7 @@ export default function SystemPage() {
       </SegmentPart>
 
       <div className="settingsShell__groupTitle">{t('admin.system.groupInstance')}</div>
-      {/* Both explanations, as both switches are here: that demo mode resets everything at midnight
+      {/* Both explanations, as both switches are here: that demo mode resets everything every hour
           is not said anywhere else. */}
       <SegmentPart
         name={t('admin.system.cardInstance')}

@@ -1,0 +1,1738 @@
+[
+  {
+    "brand": "seloger",
+    "id": "2656V5QWWXYC",
+    "status": "Published",
+    "hasAIEnrichment": true,
+    "metadata": {
+      "id": "2656V5QWWXYC",
+      "legacyId": "280673503",
+      "creationDate": "2026-09-25T18:24:00Z",
+      "updateDate": "2026-09-25T18:26:07.958Z",
+      "status": {
+        "status": true,
+        "enrichments": {
+          "contactSettings": false,
+          "geo": false,
+          "intermediary": false,
+          "media": false,
+          "onlineId": false
+        }
+      }
+    },
+    "location": {
+      "address": {
+        "country": "FRA",
+        "city": "Paris 12ème arrondissement",
+        "zipCode": "75012",
+        "district": "Vallée de Fécamp"
+      },
+      "isAddressPublished": true,
+      "transport": {
+        "closestLines": [
+          {
+            "type": "METRO",
+            "lines": [
+              {
+                "name": "6",
+                "color": "#71cc98"
+              },
+              {
+                "name": "8",
+                "color": "#dd9cdf"
+              }
+            ]
+          },
+          {
+            "type": "BUS",
+            "lines": [
+              {
+                "name": "24",
+                "color": "#a0006e"
+              },
+              {
+                "name": "29",
+                "color": "#82c8e6"
+              },
+              {
+                "name": "46",
+                "color": "#cec92a"
+              },
+              {
+                "name": "64",
+                "color": "#77c695"
+              },
+              {
+                "name": "71",
+                "color": "#5a230a"
+              },
+              {
+                "name": "77",
+                "color": "#006cb8"
+              },
+              {
+                "name": "87",
+                "color": "#62259d"
+              },
+              {
+                "name": "215",
+                "color": "#77c695"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "hardFacts": {
+      "title": "Appartement à louer",
+      "keyfacts": [
+        "2 pièces",
+        "1 chambre",
+        "37 m²",
+        "4ème étage"
+      ],
+      "facts": [
+        {
+          "type": "numberOfRooms",
+          "value": "2 pièces",
+          "splitValue": "2",
+          "label": "pièces"
+        },
+        {
+          "type": "numberOfBedrooms",
+          "value": "1 chambre",
+          "splitValue": "1",
+          "label": "chambre"
+        },
+        {
+          "type": "livingSpace",
+          "value": "37 m²",
+          "splitValue": "37",
+          "label": "m²"
+        },
+        {
+          "type": "numberOfFloors",
+          "value": "4ème étage",
+          "splitValue": "4ème",
+          "label": "étage"
+        }
+      ],
+      "price": {
+        "value": "1 190 €",
+        "formatted": "1 190 €/mois",
+        "modifiers": "/mois",
+        "unitPostfix": {
+          "unitTime": "/mois"
+        },
+        "additionalInformation": "charges comprises",
+        "addition": {
+          "value": "cc",
+          "priceLabelDesc": "charges comprises"
+        },
+        "financialLink": {
+          "href": "https://www.nextories.com/partner/landing/seloger?utm_source=seloger&utm_medium=lienprix-loc-1&utm_campaign=lienprix-seloger-location1",
+          "label": "Demander un financement",
+          "partnerName": "NEXTORIES_RESERVEZ"
+        },
+        "ariaLabel": "1190 €",
+        "chargesLabel": "cc"
+      }
+    },
+    "gallery": {
+      "images": [
+        {
+          "key": "aba690f4-93db-44bb-8d4c-0fc0c5f3ca79",
+          "url": "https://mms.seloger.com/a/b/a/6/aba690f4-93db-44bb-8d4c-0fc0c5f3ca79.jpg?ci_seal=2a18f5c437177ab206bbe1254cb8d02279094778",
+          "alt": "Appartement à louer 1 190 € 2 pièces 1 chambre 37 m² 4ème étage Vallée de Fécamp Paris 12ème arrondissement 75012",
+          "classification": {
+            "name": "LIVING_ROOM",
+            "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+          }
+        },
+        {
+          "key": "76272d39-6efd-4653-bbbc-c8a7edd6b20f",
+          "url": "https://mms.seloger.com/7/6/2/7/76272d39-6efd-4653-bbbc-c8a7edd6b20f.jpg?ci_seal=ba4832ae29bc6413c2acee109729bfada7e42ad7",
+          "classification": {
+            "name": "LIVING_ROOM",
+            "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+          }
+        },
+        {
+          "key": "ea704bf4-fada-4eab-9f33-af2ed802e5a3",
+          "url": "https://mms.seloger.com/e/a/7/0/ea704bf4-fada-4eab-9f33-af2ed802e5a3.jpg?ci_seal=ffcff74f80b803d7ede2acf651b8097d6f146f75",
+          "classification": {
+            "name": "CLOSET",
+            "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+          }
+        },
+        {
+          "key": "3a04535a-d462-45ff-b61f-867575597cf4",
+          "url": "https://mms.seloger.com/3/a/0/4/3a04535a-d462-45ff-b61f-867575597cf4.jpg?ci_seal=cac16a10dc2f35665d77ec4922f216374f7f697f",
+          "classification": {
+            "name": "BEDROOM",
+            "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+          }
+        },
+        {
+          "key": "09646ea9-a5cf-41ca-9106-a3ea60480614",
+          "url": "https://mms.seloger.com/0/9/6/4/09646ea9-a5cf-41ca-9106-a3ea60480614.jpg?ci_seal=5e2b0a7791ff25fc07a2a70bed94ccf2f4d4c927",
+          "classification": {
+            "name": "BEDROOM",
+            "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+          }
+        },
+        {
+          "key": "40d1fe28-b275-475b-b3ca-0ff3b4d5c4c5",
+          "url": "https://mms.seloger.com/4/0/d/1/40d1fe28-b275-475b-b3ca-0ff3b4d5c4c5.jpg?ci_seal=914e9cd328690907ad3f8adf6706dc35b546172f",
+          "classification": {
+            "name": "KITCHEN",
+            "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+          }
+        },
+        {
+          "key": "b0dc33a1-a93a-4c0b-b38b-29994a8c2cfd",
+          "url": "https://mms.seloger.com/b/0/d/c/b0dc33a1-a93a-4c0b-b38b-29994a8c2cfd.jpg?ci_seal=a1f70b6d7dc56e4478117eeda089b827bcf4c4d4",
+          "classification": {
+            "name": "KITCHEN",
+            "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+          }
+        },
+        {
+          "key": "900e854a-55c8-4d04-b6e7-95ae3920e0e3",
+          "url": "https://mms.seloger.com/9/0/0/e/900e854a-55c8-4d04-b6e7-95ae3920e0e3.jpg?ci_seal=83faf2e48cb712ac108730308f9e0ce84838b0f3",
+          "classification": {
+            "name": "BATHROOM",
+            "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+          }
+        }
+      ]
+    },
+    "tracking": {
+      "name": "classified",
+      "list_name": "classified_detail_similars_bottom",
+      "id": "2656V5QWWXYC",
+      "price": 1190,
+      "estate_type": "av_2",
+      "distribution_type": "1",
+      "country": "France",
+      "city": "Paris",
+      "region": "Ile-de-France",
+      "zip_code": "75012",
+      "legacy_id": "280673503",
+      "product_type": "standard",
+      "client_id": "RC-113329",
+      "energy_certificate": "E"
+    },
+    "legacyTracking": {
+      "client_id": "89550",
+      "client_type": "pro",
+      "distribution_type": "1",
+      "energy_letter": "E",
+      "estate_postalcode": "75012",
+      "estate_type": 1,
+      "id": "280673503",
+      "id_duo": 280673503,
+      "id_solo": 280673503,
+      "list_name": "detail",
+      "media": 0,
+      "nb_bedrooms": 1,
+      "nb_rooms": 2,
+      "parent_site": "SL",
+      "photos_nb": 8,
+      "position": 0,
+      "price": 1190,
+      "product_geolocation": "localisation_street",
+      "product_type": "estate",
+      "product_variant": "classified",
+      "space": 37
+    },
+    "provider": {
+      "intermediaryCard": {
+        "title": "IMMO DE France Paris Ile De France et CPH Immobilier",
+        "subtitle": "Proposé par une agence immobilière",
+        "display": true,
+        "logoUrl": "https://mms.seloger.com/c/d/c/0/cdc0ebf5-ffe8-4726-b882-f4eb329626da.jpg?ci_seal=78b6f6902b573f6c5910a86cd08aa1f4a62fd6f2",
+        "logoHref": "https://www.seloger.com/professionnels-immobilier/MKrBkzxr2s6dWiVnZa8TDh"
+      },
+      "contactCard": {
+        "title": "Agence Paris Xii",
+        "subtitle": "Votre contact",
+        "display": true,
+        "logoUrl": null
+      },
+      "website": "https://www.immodefrance-iledefrance.com/",
+      "isPrivateOwner": false,
+      "profileUrl": "https://www.seloger.com/professionnels-immobilier/MKrBkzxr2s6dWiVnZa8TDh",
+      "imprintUrl": null,
+      "agencyLegalInformations": [
+        "SAS, société par actions simplifiée IMMO DE France Paris Ile De France et CPH Immobilier",
+        "<b>Siège:</b> 67 69 BOULEVARD BESSIERES, 75017 PARIS 17EME",
+        "<b>RCS:</b> 529196412",
+        "<b>SIRET:</b> 52919641200173"
+      ],
+      "publisherType": "AGENCY",
+      "rating": {
+        "rating": 5,
+        "reviews": 2,
+        "link": "https://www.seloger.com/professionnels-immobilier/MKrBkzxr2s6dWiVnZa8TDh#?avisImmo=true"
+      },
+      "displayLinks": true,
+      "address": "16 avenue du Maréchal Foch, 77500 Chelles",
+      "phoneNumbers": [
+        "01 81 69 27 00"
+      ],
+      "agencyStrip": {
+        "agencyColor": "#107090",
+        "fontColor": "#FFFFFF"
+      }
+    },
+    "cardProvider": {
+      "title": "Agence Paris Xii",
+      "subtitle": "Votre contact",
+      "logoUrl": null,
+      "agencyStrip": {
+        "agencyColor": "#107090",
+        "fontColor": "#FFFFFF"
+      }
+    },
+    "energyClass": "E",
+    "mainDescription": {
+      "headline": "2 PIECES - RUE WATTIGNIES",
+      "description": "Appartement situé rue de Wattignies proche des métros 6 et 8 au 4ème étage comprenant: une entrée, un séjour, une cuisine séparée, une chambre avec rangement, une salle d'eau avec watercloset. Les informations sur les risques auxquels ce bien est exposé sont disponibles sur le site Géorisques : georisques. gouv. fr",
+      "metadata": {
+        "language": "fr"
+      }
+    },
+    "type": "PROFESSIONAL",
+    "url": "https://www.seloger.com/annonce/location/ile-de-france/paris-75/paris-75000/2656V5QWWXYC",
+    "portal": "seloger",
+    "rawData": {
+      "distributionType": "RENT",
+      "propertyType": "APARTMENT",
+      "geoIdHierarchy": [
+        {
+          "id": "AD09FR37",
+          "typeKey": "AD09"
+        },
+        {
+          "id": "AD08FR31096",
+          "typeKey": "AD08"
+        },
+        {
+          "id": "AD06FR76",
+          "typeKey": "AD06"
+        },
+        {
+          "id": "AD03FR2",
+          "typeKey": "AD03"
+        },
+        {
+          "id": "AD04FR5",
+          "typeKey": "AD04"
+        },
+        {
+          "id": "NBH2FR59",
+          "typeKey": "NBH2"
+        },
+        {
+          "id": "AD02FR1",
+          "typeKey": "AD02"
+        }
+      ],
+      "price": 1190,
+      "offererMarketingKey": "56978",
+      "providercity": "Chelles",
+      "providerzipcode": "77500",
+      "surface": {
+        "main": 37,
+        "plot": null
+      },
+      "nbroom": 2,
+      "nbbedroom": 1,
+      "contactLocationEnabled": false,
+      "propertyTypeLabel": "Appartement"
+    },
+    "tags": {
+      "isExclusive": false,
+      "has3DVisit": false,
+      "hasBrokerageFee": false,
+      "isNew": true
+    },
+    "display": "classified"
+  },
+  {
+    "brand": "seloger",
+    "id": "26Z3Q68E7H6C",
+    "status": "Published",
+    "hasAIEnrichment": false,
+    "metadata": {
+      "id": "26Z3Q68E7H6C",
+      "legacyId": "280673017",
+      "creationDate": "2026-09-25T16:03:00Z",
+      "updateDate": "2026-09-25T18:26:08.819Z",
+      "status": {
+        "status": true,
+        "enrichments": {
+          "contactSettings": false,
+          "geo": false,
+          "intermediary": false,
+          "media": false,
+          "onlineId": false
+        }
+      }
+    },
+    "location": {
+      "address": {
+        "country": "FRA",
+        "city": "Paris 16ème arrondissement",
+        "zipCode": "75016",
+        "district": "Chaillot"
+      },
+      "isAddressPublished": false,
+      "transport": {
+        "closestLines": [
+          {
+            "type": "METRO",
+            "lines": [
+              {
+                "name": "1",
+                "color": "#ffcd00"
+              },
+              {
+                "name": "2",
+                "color": "#003da5"
+              },
+              {
+                "name": "6",
+                "color": "#71cc98"
+              }
+            ]
+          },
+          {
+            "type": "RER",
+            "lines": [
+              {
+                "name": "A",
+                "color": "#E3051C"
+              }
+            ]
+          },
+          {
+            "type": "BUS",
+            "lines": [
+              {
+                "name": "1",
+                "color": "#008b5b"
+              },
+              {
+                "name": "2",
+                "color": "#0074ba"
+              },
+              {
+                "name": "22",
+                "color": "#00643c"
+              },
+              {
+                "name": "30",
+                "color": "#62259d"
+              },
+              {
+                "name": "31",
+                "color": "#ffbe02"
+              },
+              {
+                "name": "32",
+                "color": "#9c983a"
+              },
+              {
+                "name": "52",
+                "color": "#82c8e6"
+              },
+              {
+                "name": "73",
+                "color": "#5a230a"
+              },
+              {
+                "name": "92",
+                "color": "#ffbe02"
+              },
+              {
+                "name": "341",
+                "color": "#ffbe02"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "hardFacts": {
+      "title": "Appartement à louer",
+      "keyfacts": [
+        "2 pièces",
+        "2 chambres",
+        "67 m²",
+        "dès le 14/10/2026"
+      ],
+      "facts": [
+        {
+          "type": "numberOfRooms",
+          "value": "2 pièces",
+          "splitValue": "2",
+          "label": "pièces"
+        },
+        {
+          "type": "numberOfBedrooms",
+          "value": "2 chambres",
+          "splitValue": "2",
+          "label": "chambres"
+        },
+        {
+          "type": "livingSpace",
+          "value": "67 m²",
+          "splitValue": "67",
+          "label": "m²"
+        },
+        {
+          "type": "availability",
+          "value": "dès le 14/10/2026",
+          "splitValue": "dès",
+          "label": "le 14/10/2026"
+        }
+      ],
+      "price": {
+        "value": "2 345 €",
+        "formatted": "2 345 €/mois",
+        "modifiers": "/mois",
+        "unitPostfix": {
+          "unitTime": "/mois"
+        },
+        "additionalInformation": "hors charges",
+        "addition": {
+          "value": "hc",
+          "priceLabelDesc": "hors charges"
+        },
+        "financialLink": {
+          "href": "https://www.selogerneuf.com/projet-invest/projet/type-bien/?utm_source=seloger&utm_campaign=medicis&utm_content=lien_prix_pdd",
+          "label": "Demander un financement",
+          "partnerName": "MEDICIS"
+        },
+        "ariaLabel": "2345 €",
+        "chargesLabel": "hc"
+      }
+    },
+    "gallery": {
+      "images": [
+        {
+          "key": "a7b5d58f-48c4-470e-b312-c7873a76629e",
+          "url": "https://mms.seloger.com/a/7/b/5/a7b5d58f-48c4-470e-b312-c7873a76629e.jpg?ci_seal=5917bc1ace3f390256dac4dcb1b917b3182a79e9",
+          "alt": "Appartement à louer 2 345 € 2 pièces 2 chambres 67 m² dès le 14/10/2026 Chaillot Paris 16ème arrondissement 75016",
+          "classification": {
+            "name": "BATHROOM",
+            "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+          }
+        },
+        {
+          "key": "91ab9028-015e-4dec-848f-63616ee76b36",
+          "url": "https://mms.seloger.com/9/1/a/b/91ab9028-015e-4dec-848f-63616ee76b36.jpg?ci_seal=5d8753c3456a3ade04aa071798fa8489aaae40d3",
+          "classification": {
+            "name": "BEDROOM",
+            "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+          }
+        },
+        {
+          "key": "4f7e9f96-5231-4143-8c47-38924f43f094",
+          "url": "https://mms.seloger.com/4/f/7/e/4f7e9f96-5231-4143-8c47-38924f43f094.jpg?ci_seal=cd4be6adb38f62e30fa0c0862d5c1229f72df814",
+          "classification": {
+            "name": "HOME_OFFICE",
+            "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+          }
+        },
+        {
+          "key": "ff80315a-96c5-4dcb-a98b-be4ec99345e6",
+          "url": "https://mms.seloger.com/f/f/8/0/ff80315a-96c5-4dcb-a98b-be4ec99345e6.jpg?ci_seal=22960cc05997bc3c1f34480ea305ef9497efc451",
+          "classification": {
+            "name": "BATHROOM",
+            "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+          }
+        },
+        {
+          "key": "d8086457-e9ab-407f-a319-8a455852cbde",
+          "url": "https://mms.seloger.com/d/8/0/8/d8086457-e9ab-407f-a319-8a455852cbde.jpg?ci_seal=df0a306156e9c1567c8d2dfec132dd2a79ed3dbb",
+          "classification": {
+            "name": "BEDROOM",
+            "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+          }
+        },
+        {
+          "key": "029f5875-89e5-45e1-9936-5cb99d6938dc",
+          "url": "https://mms.seloger.com/0/2/9/f/029f5875-89e5-45e1-9936-5cb99d6938dc.jpg?ci_seal=e9c8c6e3ca06d6fbce670078ebdba4ea3ded1e27",
+          "classification": {
+            "name": "LIVING_ROOM",
+            "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+          }
+        },
+        {
+          "key": "1f9e2498-6a3e-4937-8469-83ea4139200e",
+          "url": "https://mms.seloger.com/1/f/9/e/1f9e2498-6a3e-4937-8469-83ea4139200e.jpg?ci_seal=c7969759930c64fec2e98447cd1d7fc39217f70f",
+          "classification": {
+            "name": "COURTYARD",
+            "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+          }
+        }
+      ]
+    },
+    "tracking": {
+      "name": "classified",
+      "list_name": "classified_detail_similars_bottom",
+      "id": "26Z3Q68E7H6C",
+      "price": 2345,
+      "estate_type": "av_2",
+      "distribution_type": "1",
+      "country": "France",
+      "city": "Paris",
+      "region": "Ile-de-France",
+      "zip_code": "75016",
+      "legacy_id": "280673017",
+      "product_type": "standard",
+      "client_id": "RC-1947494"
+    },
+    "legacyTracking": {
+      "client_id": "581160",
+      "client_type": "pro",
+      "distribution_type": "1",
+      "estate_postalcode": "75016",
+      "estate_type": 1,
+      "id": "280673017",
+      "id_duo": 280673017,
+      "id_solo": 280673017,
+      "list_name": "detail",
+      "media": 0,
+      "nb_bedrooms": 2,
+      "nb_rooms": 2,
+      "parent_site": "SL",
+      "photos_nb": 7,
+      "position": 0,
+      "price": 2345,
+      "product_geolocation": "localisation_city",
+      "product_type": "estate",
+      "product_variant": "classified",
+      "space": 67
+    },
+    "provider": {
+      "intermediaryCard": {
+        "title": "SafeStays International",
+        "subtitle": "Proposé par une agence immobilière",
+        "display": true,
+        "logoHref": "https://www.seloger.com/professionnels-immobilier/Qg1t3enM7EqTGUX1JbSsBh"
+      },
+      "contactCard": {
+        "title": null,
+        "subtitle": "Votre contact",
+        "display": false,
+        "logoUrl": null
+      },
+      "website": "https://safe-stays.com/",
+      "isPrivateOwner": false,
+      "profileUrl": "https://www.seloger.com/professionnels-immobilier/Qg1t3enM7EqTGUX1JbSsBh",
+      "imprintUrl": null,
+      "agencyLegalInformations": [
+        "SafeStays International",
+        "<b>Siège:</b> 8 The Green, 19901 Dover"
+      ],
+      "publisherType": "AGENCY",
+      "displayLinks": true,
+      "address": "8 The Green, 19901 Dover",
+      "phoneNumbers": [
+        "+41798440029"
+      ],
+      "agencyStrip": {
+        "agencyColor": "#FFFFFF",
+        "fontColor": "#000000"
+      }
+    },
+    "cardProvider": {
+      "title": null,
+      "subtitle": "Votre contact",
+      "logoUrl": null,
+      "agencyStrip": {
+        "agencyColor": "#FFFFFF",
+        "fontColor": "#000000"
+      }
+    },
+    "mainDescription": {
+      "headline": "Appartement 2 pièces",
+      "description": "Appartement de luxe",
+      "metadata": {
+        "language": "fr"
+      }
+    },
+    "type": "PROFESSIONAL",
+    "url": "https://www.seloger.com/annonce/location/ile-de-france/paris-75/paris-75000/26Z3Q68E7H6C",
+    "portal": "seloger",
+    "rawData": {
+      "distributionType": "RENT",
+      "propertyType": "APARTMENT",
+      "geoIdHierarchy": [
+        {
+          "id": "AD09FR41",
+          "typeKey": "AD09"
+        },
+        {
+          "id": "AD08FR31096",
+          "typeKey": "AD08"
+        },
+        {
+          "id": "AD06FR76",
+          "typeKey": "AD06"
+        },
+        {
+          "id": "AD03FR2",
+          "typeKey": "AD03"
+        },
+        {
+          "id": "AD04FR5",
+          "typeKey": "AD04"
+        },
+        {
+          "id": "NBH2FR89",
+          "typeKey": "NBH2"
+        },
+        {
+          "id": "AD02FR1",
+          "typeKey": "AD02"
+        }
+      ],
+      "price": 2345,
+      "offererMarketingKey": "Appartement de luxe",
+      "providercity": "Dover",
+      "providerzipcode": "19901",
+      "surface": {
+        "main": 67,
+        "plot": null
+      },
+      "nbroom": 2,
+      "nbbedroom": 2,
+      "contactLocationEnabled": false,
+      "propertyTypeLabel": "Appartement"
+    },
+    "tags": {
+      "isExclusive": false,
+      "has3DVisit": false,
+      "hasBrokerageFee": false,
+      "isNew": true
+    },
+    "display": "classified"
+  },
+  {
+    "brand": "seloger",
+    "id": "26FTK54BFUPR",
+    "status": "Published",
+    "hasAIEnrichment": false,
+    "metadata": {
+      "id": "26FTK54BFUPR",
+      "legacyId": "280673223",
+      "creationDate": "2026-09-25T16:11:00Z",
+      "updateDate": "2026-09-25T18:26:09.808Z",
+      "status": {
+        "status": true,
+        "enrichments": {
+          "contactSettings": false,
+          "geo": false,
+          "intermediary": false,
+          "media": false,
+          "onlineId": false
+        }
+      }
+    },
+    "location": {
+      "address": {
+        "country": "FRA",
+        "city": "Paris 16ème arrondissement",
+        "zipCode": "75016",
+        "district": "Chaillot"
+      },
+      "isAddressPublished": false,
+      "transport": {
+        "closestLines": [
+          {
+            "type": "METRO",
+            "lines": [
+              {
+                "name": "6",
+                "color": "#71cc98"
+              },
+              {
+                "name": "9",
+                "color": "#b5bd00"
+              }
+            ]
+          },
+          {
+            "type": "BUS",
+            "lines": [
+              {
+                "name": "22",
+                "color": "#00643c"
+              },
+              {
+                "name": "30",
+                "color": "#62259d"
+              },
+              {
+                "name": "32",
+                "color": "#9c983a"
+              },
+              {
+                "name": "63",
+                "color": "#cec92a"
+              },
+              {
+                "name": "72",
+                "color": "#ed1b2a"
+              },
+              {
+                "name": "82",
+                "color": "#f68f4b"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "hardFacts": {
+      "title": "Appartement à louer",
+      "keyfacts": [
+        "4 pièces",
+        "4 chambres",
+        "100 m²",
+        "4ème étage"
+      ],
+      "facts": [
+        {
+          "type": "numberOfRooms",
+          "value": "4 pièces",
+          "splitValue": "4",
+          "label": "pièces"
+        },
+        {
+          "type": "numberOfBedrooms",
+          "value": "4 chambres",
+          "splitValue": "4",
+          "label": "chambres"
+        },
+        {
+          "type": "livingSpace",
+          "value": "100 m²",
+          "splitValue": "100",
+          "label": "m²"
+        },
+        {
+          "type": "numberOfFloors",
+          "value": "4ème étage",
+          "splitValue": "4ème",
+          "label": "étage"
+        }
+      ],
+      "price": {
+        "value": "3 500 €",
+        "formatted": "3 500 €/mois",
+        "modifiers": "/mois",
+        "unitPostfix": {
+          "unitTime": "/mois"
+        },
+        "additionalInformation": "hors charges",
+        "addition": {
+          "value": "hc",
+          "priceLabelDesc": "hors charges"
+        },
+        "financialLink": {
+          "href": "https://www.nextories.com/partner/landing/seloger?utm_source=seloger&utm_medium=lienprix-loc-1&utm_campaign=lienprix-seloger-location1",
+          "label": "Demander un financement",
+          "partnerName": "NEXTORIES_RESERVEZ"
+        },
+        "ariaLabel": "3500 €",
+        "chargesLabel": "hc"
+      }
+    },
+    "gallery": {
+      "images": [
+        {
+          "key": "d4c44cb8-31d8-4813-ad91-f88e35339ede",
+          "url": "https://mms.seloger.com/d/4/c/4/d4c44cb8-31d8-4813-ad91-f88e35339ede.jpg?ci_seal=83dbd183b0fa5b276f3ab0bf92451182ba54ddd1",
+          "alt": "Appartement à louer 3 500 € 4 pièces 4 chambres 100 m² 4ème étage Chaillot Paris 16ème arrondissement 75016",
+          "classification": {
+            "name": "BATHROOM",
+            "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+          }
+        },
+        {
+          "key": "81a7438a-7614-423d-a5c8-a8d1a68003cb",
+          "url": "https://mms.seloger.com/8/1/a/7/81a7438a-7614-423d-a5c8-a8d1a68003cb.jpg?ci_seal=f820fb2dbab7bdefe5bed6c4270724c37292d777",
+          "classification": {
+            "name": "BEDROOM",
+            "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+          }
+        },
+        {
+          "key": "43467f9a-557f-43ce-852d-0109129f4732",
+          "url": "https://mms.seloger.com/4/3/4/6/43467f9a-557f-43ce-852d-0109129f4732.jpg?ci_seal=1685a0a1c17b842ae786d3248aef3a7f028c25ca",
+          "classification": {
+            "name": "LIVING_ROOM",
+            "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+          }
+        },
+        {
+          "key": "11d15622-4e3f-43b4-b64a-51efdc60eda9",
+          "url": "https://mms.seloger.com/1/1/d/1/11d15622-4e3f-43b4-b64a-51efdc60eda9.jpg?ci_seal=988a3a2c3dfeee5c0dfb4c237c64a3250127594a",
+          "classification": {
+            "name": "BATHROOM",
+            "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+          }
+        },
+        {
+          "key": "f31fc7b5-6853-4f58-a061-02a2f92ff745",
+          "url": "https://mms.seloger.com/f/3/1/f/f31fc7b5-6853-4f58-a061-02a2f92ff745.jpg?ci_seal=8523af1433d4aabce92d5e691f37e27a7302987e",
+          "classification": {
+            "name": "LIVING_ROOM",
+            "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+          }
+        },
+        {
+          "key": "eb17234a-ffbd-4565-a907-9b0c06f3cb5b",
+          "url": "https://mms.seloger.com/e/b/1/7/eb17234a-ffbd-4565-a907-9b0c06f3cb5b.jpg?ci_seal=ebde2c61e974966852276d5a3b13749d3ab9c8ca",
+          "classification": {
+            "name": "LIVING_ROOM",
+            "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+          }
+        },
+        {
+          "key": "2af7a4da-b5d8-444f-a2dc-9be72cab62b4",
+          "url": "https://mms.seloger.com/2/a/f/7/2af7a4da-b5d8-444f-a2dc-9be72cab62b4.jpg?ci_seal=e318ccb1e5b59b0a1bf0db3a280d14bd8c4cfbb2",
+          "classification": {
+            "name": "KITCHEN",
+            "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+          }
+        }
+      ]
+    },
+    "tracking": {
+      "name": "classified",
+      "list_name": "classified_detail_similars_bottom",
+      "id": "26FTK54BFUPR",
+      "price": 3500,
+      "estate_type": "av_2",
+      "distribution_type": "1",
+      "country": "France",
+      "city": "Paris",
+      "region": "Ile-de-France",
+      "zip_code": "75016",
+      "legacy_id": "280673223",
+      "product_type": "standard",
+      "client_id": "RC-1947494"
+    },
+    "legacyTracking": {
+      "client_id": "581160",
+      "client_type": "pro",
+      "distribution_type": "1",
+      "estate_postalcode": "75016",
+      "estate_type": 1,
+      "id": "280673223",
+      "id_duo": 280673223,
+      "id_solo": 280673223,
+      "list_name": "detail",
+      "media": 0,
+      "nb_bedrooms": 4,
+      "nb_rooms": 4,
+      "parent_site": "SL",
+      "photos_nb": 7,
+      "position": 0,
+      "price": 3500,
+      "product_geolocation": "localisation_city",
+      "product_type": "estate",
+      "product_variant": "classified",
+      "space": 100,
+      "year_of_construction": 2020
+    },
+    "provider": {
+      "intermediaryCard": {
+        "title": "SafeStays International",
+        "subtitle": "Proposé par une agence immobilière",
+        "display": true,
+        "logoHref": "https://www.seloger.com/professionnels-immobilier/Qg1t3enM7EqTGUX1JbSsBh"
+      },
+      "contactCard": {
+        "title": null,
+        "subtitle": "Votre contact",
+        "display": false,
+        "logoUrl": null
+      },
+      "website": "https://safe-stays.com/",
+      "isPrivateOwner": false,
+      "profileUrl": "https://www.seloger.com/professionnels-immobilier/Qg1t3enM7EqTGUX1JbSsBh",
+      "imprintUrl": null,
+      "agencyLegalInformations": [
+        "SafeStays International",
+        "<b>Siège:</b> 8 The Green, 19901 Dover"
+      ],
+      "publisherType": "AGENCY",
+      "displayLinks": true,
+      "address": "8 The Green, 19901 Dover",
+      "phoneNumbers": [
+        "+41798440029"
+      ],
+      "agencyStrip": {
+        "agencyColor": "#FFFFFF",
+        "fontColor": "#000000"
+      }
+    },
+    "cardProvider": {
+      "title": null,
+      "subtitle": "Votre contact",
+      "logoUrl": null,
+      "agencyStrip": {
+        "agencyColor": "#FFFFFF",
+        "fontColor": "#000000"
+      }
+    },
+    "mainDescription": {
+      "headline": "Appartement 4 pièces",
+      "description": "Appartement de luxe",
+      "metadata": {
+        "language": "fr"
+      }
+    },
+    "type": "PROFESSIONAL",
+    "url": "https://www.seloger.com/annonce/location/ile-de-france/paris-75/paris-75000/26FTK54BFUPR",
+    "portal": "seloger",
+    "rawData": {
+      "distributionType": "RENT",
+      "propertyType": "APARTMENT",
+      "geoIdHierarchy": [
+        {
+          "id": "AD09FR41",
+          "typeKey": "AD09"
+        },
+        {
+          "id": "AD08FR31096",
+          "typeKey": "AD08"
+        },
+        {
+          "id": "AD06FR76",
+          "typeKey": "AD06"
+        },
+        {
+          "id": "AD03FR2",
+          "typeKey": "AD03"
+        },
+        {
+          "id": "AD04FR5",
+          "typeKey": "AD04"
+        },
+        {
+          "id": "NBH2FR89",
+          "typeKey": "NBH2"
+        },
+        {
+          "id": "AD02FR1",
+          "typeKey": "AD02"
+        }
+      ],
+      "price": 3500,
+      "providercity": "Dover",
+      "providerzipcode": "19901",
+      "surface": {
+        "main": 100,
+        "plot": null
+      },
+      "nbroom": 4,
+      "nbbedroom": 4,
+      "contactLocationEnabled": false,
+      "propertyTypeLabel": "Appartement"
+    },
+    "tags": {
+      "isExclusive": false,
+      "has3DVisit": false,
+      "hasBrokerageFee": false,
+      "isNew": true
+    },
+    "display": "classified"
+  },
+  {
+    "brand": "seloger",
+    "id": "268TYPTRWGGK",
+    "status": "Published",
+    "hasAIEnrichment": false,
+    "metadata": {
+      "id": "268TYPTRWGGK",
+      "legacyId": "280670233",
+      "creationDate": "2026-09-25T15:31:00Z",
+      "updateDate": "2026-09-25T18:26:14.239Z",
+      "status": {
+        "status": true,
+        "enrichments": {
+          "contactSettings": false,
+          "geo": false,
+          "intermediary": false,
+          "media": false,
+          "onlineId": false
+        }
+      }
+    },
+    "location": {
+      "address": {
+        "country": "FRA",
+        "city": "Paris 17ème arrondissement",
+        "zipCode": "75017",
+        "district": "La Fourche-Guy Môquet"
+      },
+      "isAddressPublished": false,
+      "transport": {
+        "closestLines": [
+          {
+            "type": "METRO",
+            "lines": [
+              {
+                "name": "13",
+                "color": "#71c5e8"
+              }
+            ]
+          },
+          {
+            "type": "BUS",
+            "lines": [
+              {
+                "name": "21",
+                "color": "#77c695"
+              },
+              {
+                "name": "31",
+                "color": "#ffbe02"
+              },
+              {
+                "name": "54",
+                "color": "#82c8e6"
+              },
+              {
+                "name": "66",
+                "color": "#00643c"
+              },
+              {
+                "name": "74",
+                "color": "#cec92a"
+              },
+              {
+                "name": "81",
+                "color": "#f58f53"
+              },
+              {
+                "name": "95",
+                "color": "#62259d"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "hardFacts": {
+      "title": "Appartement à louer",
+      "keyfacts": [
+        "1 pièce",
+        "30,3 m²",
+        "dès le 30/09/2026"
+      ],
+      "facts": [
+        {
+          "type": "numberOfRooms",
+          "value": "1 pièce",
+          "splitValue": "1",
+          "label": "pièce"
+        },
+        {
+          "type": "livingSpace",
+          "value": "30,3 m²",
+          "splitValue": "30,3",
+          "label": "m²"
+        },
+        {
+          "type": "availability",
+          "value": "dès le 30/09/2026",
+          "splitValue": "dès",
+          "label": "le 30/09/2026"
+        }
+      ],
+      "price": {
+        "value": "1 500 €",
+        "formatted": "1 500 €/mois",
+        "modifiers": "/mois",
+        "unitPostfix": {
+          "unitTime": "/mois"
+        },
+        "additionalInformation": "hors charges",
+        "addition": {
+          "value": "hc",
+          "priceLabelDesc": "hors charges"
+        },
+        "financialLink": {
+          "href": "https://www.selogerneuf.com/projet-invest/projet/type-bien/?utm_source=seloger&utm_campaign=medicis&utm_content=lien_prix_pdd",
+          "label": "Demander un financement",
+          "partnerName": "MEDICIS"
+        },
+        "ariaLabel": "1500 €",
+        "chargesLabel": "hc"
+      }
+    },
+    "gallery": {
+      "images": [
+        {
+          "key": "597c2811-df7c-4028-8528-8dc4e97611b1",
+          "url": "https://mms.seloger.com/5/9/7/c/597c2811-df7c-4028-8528-8dc4e97611b1.jpg?ci_seal=36535746578f2f424a3f1515e2cc2bc51062155e",
+          "alt": "Appartement à louer 1 500 € 1 pièce 30,3 m² dès le 30/09/2026 La Fourche-Guy Môquet Paris 17ème arrondissement 75017",
+          "classification": {
+            "name": "LIVING_ROOM",
+            "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+          }
+        },
+        {
+          "key": "fc67d876-41ac-4c0e-9923-09b4a49e5bd4",
+          "url": "https://mms.seloger.com/f/c/6/7/fc67d876-41ac-4c0e-9923-09b4a49e5bd4.jpg?ci_seal=3e6d14806d2fae6bb8b584c2035c302d593e6b9c",
+          "classification": {
+            "name": "LIVING_ROOM",
+            "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+          }
+        },
+        {
+          "key": "316f953d-2e51-43f1-b948-a825818bad95",
+          "url": "https://mms.seloger.com/3/1/6/f/316f953d-2e51-43f1-b948-a825818bad95.jpg?ci_seal=7150b5bef442815c4945180db7c2cbf8cc2106c9",
+          "classification": {
+            "name": "LIVING_ROOM",
+            "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+          }
+        },
+        {
+          "key": "3133b923-d0e8-44fd-8754-6017951f3706",
+          "url": "https://mms.seloger.com/3/1/3/3/3133b923-d0e8-44fd-8754-6017951f3706.jpg?ci_seal=85c6f4166e6885626a191f455594352e5fb04024",
+          "classification": {
+            "name": "KITCHEN",
+            "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+          }
+        },
+        {
+          "key": "09453feb-4561-4e2f-be2a-055a0e780715",
+          "url": "https://mms.seloger.com/0/9/4/5/09453feb-4561-4e2f-be2a-055a0e780715.jpg?ci_seal=8fad000150fbc5aea841a2b21291f1e1ebc66211",
+          "classification": {
+            "name": "BATHROOM",
+            "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+          }
+        },
+        {
+          "key": "4104e204-92c1-46ca-a156-6b6dc67da035",
+          "url": "https://mms.seloger.com/4/1/0/4/4104e204-92c1-46ca-a156-6b6dc67da035.jpg?ci_seal=6257ca6f48bdcb7c9670c00718b26d73ad167a86",
+          "classification": {
+            "name": "BATHROOM",
+            "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+          }
+        },
+        {
+          "key": "7f23211e-fb37-467b-b795-60eda2204e1c",
+          "url": "https://mms.seloger.com/7/f/2/3/7f23211e-fb37-467b-b795-60eda2204e1c.jpg?ci_seal=c61949aab5cfe9da354c52979e63c8f096797927",
+          "classification": {
+            "name": "STAIRCASE",
+            "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+          }
+        }
+      ]
+    },
+    "tracking": {
+      "name": "classified",
+      "list_name": "classified_detail_similars_bottom",
+      "id": "268TYPTRWGGK",
+      "price": 1500,
+      "estate_type": "av_2",
+      "distribution_type": "1",
+      "country": "France",
+      "city": "Paris",
+      "region": "Ile-de-France",
+      "zip_code": "75017",
+      "legacy_id": "280670233",
+      "product_type": "standard",
+      "client_id": "RC-1947494"
+    },
+    "legacyTracking": {
+      "client_id": "581160",
+      "client_type": "pro",
+      "distribution_type": "1",
+      "estate_postalcode": "75017",
+      "estate_type": 1,
+      "id": "280670233",
+      "id_duo": 280670233,
+      "id_solo": 280670233,
+      "list_name": "detail",
+      "media": 0,
+      "nb_rooms": 1,
+      "parent_site": "SL",
+      "photos_nb": 7,
+      "position": 0,
+      "price": 1500,
+      "product_geolocation": "localisation_city",
+      "product_type": "estate",
+      "product_variant": "classified",
+      "space": 30.3
+    },
+    "provider": {
+      "intermediaryCard": {
+        "title": "SafeStays International",
+        "subtitle": "Proposé par une agence immobilière",
+        "display": true,
+        "logoHref": "https://www.seloger.com/professionnels-immobilier/Qg1t3enM7EqTGUX1JbSsBh"
+      },
+      "contactCard": {
+        "title": null,
+        "subtitle": "Votre contact",
+        "display": false,
+        "logoUrl": null
+      },
+      "website": "https://safe-stays.com/",
+      "isPrivateOwner": false,
+      "profileUrl": "https://www.seloger.com/professionnels-immobilier/Qg1t3enM7EqTGUX1JbSsBh",
+      "imprintUrl": null,
+      "agencyLegalInformations": [
+        "SafeStays International",
+        "<b>Siège:</b> 8 The Green, 19901 Dover"
+      ],
+      "publisherType": "AGENCY",
+      "displayLinks": true,
+      "address": "8 The Green, 19901 Dover",
+      "phoneNumbers": [
+        "+41798440029"
+      ],
+      "agencyStrip": {
+        "agencyColor": "#FFFFFF",
+        "fontColor": "#000000"
+      }
+    },
+    "cardProvider": {
+      "title": null,
+      "subtitle": "Votre contact",
+      "logoUrl": null,
+      "agencyStrip": {
+        "agencyColor": "#FFFFFF",
+        "fontColor": "#000000"
+      }
+    },
+    "mainDescription": {
+      "headline": "Appartement de luxe",
+      "description": "Appartement de luxe.",
+      "metadata": {
+        "language": "fr"
+      }
+    },
+    "type": "PROFESSIONAL",
+    "url": "https://www.seloger.com/annonce/location/ile-de-france/paris-75/paris-75000/268TYPTRWGGK",
+    "portal": "seloger",
+    "rawData": {
+      "distributionType": "RENT",
+      "propertyType": "APARTMENT",
+      "geoIdHierarchy": [
+        {
+          "id": "AD09FR42",
+          "typeKey": "AD09"
+        },
+        {
+          "id": "AD08FR31096",
+          "typeKey": "AD08"
+        },
+        {
+          "id": "AD06FR76",
+          "typeKey": "AD06"
+        },
+        {
+          "id": "AD03FR2",
+          "typeKey": "AD03"
+        },
+        {
+          "id": "AD04FR5",
+          "typeKey": "AD04"
+        },
+        {
+          "id": "NBH2FR94",
+          "typeKey": "NBH2"
+        },
+        {
+          "id": "AD02FR1",
+          "typeKey": "AD02"
+        }
+      ],
+      "price": 1500,
+      "offererMarketingKey": "280670233",
+      "providercity": "Dover",
+      "providerzipcode": "19901",
+      "surface": {
+        "main": 30.3,
+        "plot": null
+      },
+      "nbroom": 1,
+      "contactLocationEnabled": false,
+      "propertyTypeLabel": "Appartement"
+    },
+    "tags": {
+      "isExclusive": false,
+      "has3DVisit": false,
+      "hasBrokerageFee": false,
+      "isNew": true
+    },
+    "display": "classified"
+  },
+  {
+    "brand": "seloger",
+    "id": "26IB182I2ABA",
+    "status": "Published",
+    "hasAIEnrichment": true,
+    "metadata": {
+      "id": "26IB182I2ABA",
+      "legacyId": "280673071",
+      "creationDate": "2026-09-25T18:06:00Z",
+      "updateDate": "2026-09-25T18:11:07.698Z",
+      "status": {
+        "status": true,
+        "enrichments": {
+          "contactSettings": false,
+          "geo": false,
+          "intermediary": false,
+          "media": false,
+          "onlineId": false
+        }
+      }
+    },
+    "location": {
+      "address": {
+        "country": "FRA",
+        "city": "Paris 12ème arrondissement",
+        "zipCode": "75012",
+        "district": "Bel-Air"
+      },
+      "isAddressPublished": false,
+      "transport": {
+        "closestLines": [
+          {
+            "type": "METRO",
+            "lines": [
+              {
+                "name": "1",
+                "color": "#ffcd00"
+              },
+              {
+                "name": "6",
+                "color": "#71cc98"
+              }
+            ]
+          },
+          {
+            "type": "TRAM",
+            "lines": [
+              {
+                "name": "T3a",
+                "color": "#F68C59"
+              },
+              {
+                "name": "T3b",
+                "color": "#009641"
+              }
+            ]
+          },
+          {
+            "type": "BUS",
+            "lines": [
+              {
+                "name": "26",
+                "color": "#f68f4b"
+              },
+              {
+                "name": "29",
+                "color": "#82c8e6"
+              },
+              {
+                "name": "56",
+                "color": "#a0006e"
+              },
+              {
+                "name": "64",
+                "color": "#77c695"
+              },
+              {
+                "name": "71",
+                "color": "#5a230a"
+              },
+              {
+                "name": "86",
+                "color": "#ed1b2a"
+              },
+              {
+                "name": "215",
+                "color": "#77c695"
+              },
+              {
+                "name": "351",
+                "color": "#dc9609"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "hardFacts": {
+      "title": "Appartement à louer",
+      "keyfacts": [
+        "3 pièces",
+        "2 chambres",
+        "58 m²",
+        "3ème étage"
+      ],
+      "facts": [
+        {
+          "type": "numberOfRooms",
+          "value": "3 pièces",
+          "splitValue": "3",
+          "label": "pièces"
+        },
+        {
+          "type": "numberOfBedrooms",
+          "value": "2 chambres",
+          "splitValue": "2",
+          "label": "chambres"
+        },
+        {
+          "type": "livingSpace",
+          "value": "58 m²",
+          "splitValue": "58",
+          "label": "m²"
+        },
+        {
+          "type": "numberOfFloors",
+          "value": "3ème étage",
+          "splitValue": "3ème",
+          "label": "étage"
+        }
+      ],
+      "price": {
+        "value": "1 492 €",
+        "formatted": "1 492 €/mois",
+        "modifiers": "/mois",
+        "unitPostfix": {
+          "unitTime": "/mois"
+        },
+        "additionalInformation": "charges comprises",
+        "addition": {
+          "value": "cc",
+          "priceLabelDesc": "charges comprises"
+        },
+        "financialLink": {
+          "href": "https://www.selogerneuf.com/projet-invest/projet/type-bien/?utm_source=seloger&utm_campaign=medicis&utm_content=lien_prix_pdd",
+          "label": "Demander un financement",
+          "partnerName": "MEDICIS"
+        },
+        "ariaLabel": "1492 €",
+        "chargesLabel": "cc"
+      }
+    },
+    "gallery": {
+      "images": [
+        {
+          "key": "37d6cc74-693f-49c7-a5a0-047d5c5d1b62",
+          "url": "https://mms.seloger.com/3/7/d/6/37d6cc74-693f-49c7-a5a0-047d5c5d1b62.jpg?ci_seal=c70471a8884861d6490501eabd163401b2590942",
+          "alt": "Appartement à louer 1 492 € 3 pièces 2 chambres 58 m² 3ème étage Bel-Air Paris 12ème arrondissement 75012",
+          "classification": {
+            "name": "EMPTY_ROOM",
+            "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+          }
+        },
+        {
+          "key": "5017ea63-2289-4c54-8673-cfb6c5b5f7f7",
+          "url": "https://mms.seloger.com/5/0/1/7/5017ea63-2289-4c54-8673-cfb6c5b5f7f7.jpg?ci_seal=9761465569b9cae08cac92d6fef971a9ada4dfb0",
+          "classification": {
+            "name": "EMPTY_ROOM",
+            "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+          }
+        },
+        {
+          "key": "76ee4a79-d4e2-4040-82b1-946dca450675",
+          "url": "https://mms.seloger.com/7/6/e/e/76ee4a79-d4e2-4040-82b1-946dca450675.jpg?ci_seal=9e334edae0607e1abb9003e344d51cf243360801",
+          "classification": {
+            "name": "LIVING_ROOM",
+            "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+          }
+        },
+        {
+          "key": "45737f0b-7a4f-48a3-815f-ede4aad47fb5",
+          "url": "https://mms.seloger.com/4/5/7/3/45737f0b-7a4f-48a3-815f-ede4aad47fb5.jpg?ci_seal=d6dc7b0bc18f01f8a8ed83e66cb5e7d5146637fa",
+          "classification": {
+            "name": "HALLWAY",
+            "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+          }
+        },
+        {
+          "key": "6cc1819d-dfe3-43ec-bc01-e3c70d7d492d",
+          "url": "https://mms.seloger.com/6/c/c/1/6cc1819d-dfe3-43ec-bc01-e3c70d7d492d.jpg?ci_seal=9f97f6ddb672ec23432899a88beac596bcbf88e5",
+          "classification": {
+            "name": "KITCHEN",
+            "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+          }
+        },
+        {
+          "key": "1aac96c8-d96d-438a-8793-5e874e4ef05a",
+          "url": "https://mms.seloger.com/1/a/a/c/1aac96c8-d96d-438a-8793-5e874e4ef05a.jpg?ci_seal=60c67097446707a551c4d795c33a87190a36c457",
+          "classification": {
+            "name": "BATHROOM",
+            "version": "scene-classification-sagemaker-endpoint-live-1-3-10"
+          }
+        }
+      ]
+    },
+    "tracking": {
+      "name": "classified",
+      "list_name": "classified_detail_similars_bottom",
+      "id": "26IB182I2ABA",
+      "price": 1492,
+      "estate_type": "av_2",
+      "distribution_type": "1",
+      "country": "France",
+      "city": "Paris",
+      "region": "Ile-de-France",
+      "zip_code": "75012",
+      "legacy_id": "280673071",
+      "product_type": "standard",
+      "client_id": "RC-115677"
+    },
+    "legacyTracking": {
+      "client_id": "88260",
+      "client_type": "pro",
+      "distribution_type": "1",
+      "estate_postalcode": "75012",
+      "estate_type": 1,
+      "id": "280673071",
+      "id_duo": 280673071,
+      "id_solo": 280673071,
+      "list_name": "detail",
+      "media": 0,
+      "nb_bedrooms": 2,
+      "nb_rooms": 3,
+      "parent_site": "SL",
+      "photos_nb": 6,
+      "position": 0,
+      "price": 1492,
+      "product_geolocation": "localisation_city",
+      "product_type": "estate",
+      "product_variant": "classified",
+      "space": 58
+    },
+    "provider": {
+      "intermediaryCard": {
+        "display": false,
+        "title": "PROCITY IMMOBILIER",
+        "subtitle": "Proposé par une agence immobilière"
+      },
+      "contactCard": {
+        "title": null,
+        "subtitle": "Votre contact",
+        "display": false,
+        "logoUrl": null
+      },
+      "isPrivateOwner": false,
+      "profileUrl": "https://www.seloger.com/professionnels-immobilier/UG1yFqUrMcczUYodD5jjF1",
+      "imprintUrl": null,
+      "feeUrl": "https://www.meilleursagents.com:443/my/realtor/page",
+      "agencyLegalInformations": [
+        "Société à responsabilité limitée (sans autre indication) SARL 45 RUE MARX DORMOY",
+        "<b>Siège:</b> 45 RUE MARX DORMOY, 75018 PARIS",
+        "<b>RCS:</b> 821613049",
+        "<b>SIRET:</b> 82161304900013"
+      ],
+      "publisherType": "AGENCY",
+      "rating": {
+        "rating": 4,
+        "reviews": 5,
+        "link": "https://www.seloger.com/professionnels-immobilier/UG1yFqUrMcczUYodD5jjF1#?avisImmo=true"
+      },
+      "displayLinks": true,
+      "address": "45 Rue Marx Dormoy, 75018 Paris",
+      "phoneNumbers": [
+        "01 85 73 40 73"
+      ],
+      "agencyStrip": {
+        "agencyColor": "#303030",
+        "fontColor": "#FFFFFF"
+      }
+    },
+    "cardProvider": {
+      "title": null,
+      "subtitle": "Votre contact",
+      "logoUrl": null,
+      "agencyStrip": {
+        "agencyColor": "#303030",
+        "fontColor": "#FFFFFF"
+      }
+    },
+    "mainDescription": {
+      "headline": "3 pièces - Picpus",
+      "description": "Présence d'une assurance GLI. PRENEZ RENDEZ-VOUS 24/7 EXCLUSIVEMENT PAR INTERNET. Merci de remplir le champ \"Contacter l'agence\". Nous vous enverrons un mail et sms au nom de PROCITY IMMOBILIER où vous pouvez directement réserver un créneau de visite en ligne M° Picpus. Avenue Saint Mandé. Dans un bel immeuble ancien, au 3ème étage avec ascenseur sur cour, appartement de 57,2m2 Carrez comprenant : une entrée, un séjour, deux chambres, une cuisine séparée et aménagée, une salle de bain, WC sépar...",
+      "metadata": {
+        "language": "fr"
+      }
+    },
+    "type": "PROFESSIONAL",
+    "url": "https://www.seloger.com/annonce/location/ile-de-france/paris-75/paris-75000/26IB182I2ABA",
+    "portal": "seloger",
+    "rawData": {
+      "distributionType": "RENT",
+      "propertyType": "APARTMENT",
+      "geoIdHierarchy": [
+        {
+          "id": "AD09FR37",
+          "typeKey": "AD09"
+        },
+        {
+          "id": "AD08FR31096",
+          "typeKey": "AD08"
+        },
+        {
+          "id": "AD06FR76",
+          "typeKey": "AD06"
+        },
+        {
+          "id": "AD03FR2",
+          "typeKey": "AD03"
+        },
+        {
+          "id": "AD04FR5",
+          "typeKey": "AD04"
+        },
+        {
+          "id": "NBH2FR10401",
+          "typeKey": "NBH2"
+        },
+        {
+          "id": "AD02FR1",
+          "typeKey": "AD02"
+        }
+      ],
+      "price": 1492,
+      "offererMarketingKey": "15714",
+      "providercity": "Paris",
+      "providerzipcode": "75018",
+      "surface": {
+        "main": 58,
+        "plot": null
+      },
+      "nbroom": 3,
+      "nbbedroom": 2,
+      "contactLocationEnabled": false,
+      "propertyTypeLabel": "Appartement"
+    },
+    "tags": {
+      "isExclusive": false,
+      "has3DVisit": false,
+      "hasBrokerageFee": false,
+      "isNew": true
+    },
+    "display": "classified"
+  }
+]

@@ -21,6 +21,7 @@ import { PLACE_CATEGORIES } from '../../ui/src/services/travelTime/placeCategori
 import { SCAM_SIGNALS } from '../../ui/src/services/listings/scamSignals.js';
 import { PLACEHOLDERS, FLAG_PLACEHOLDERS } from '../../lib/services/application/placeholders.js';
 import { TEMPLATE_LANGUAGES } from '../../lib/services/application/templates/index.js';
+import { TOUR_STEPS, stepBodyKey, stepTitleKey } from '../../ui/src/services/tour/tourSteps.js';
 
 const localeDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '../../ui/src/locales');
 const donateComponent = fs.readFileSync(path.join(localeDir, '../components/donate/Donate.jsx'), 'utf-8');
@@ -163,6 +164,11 @@ const COMPUTED_KEYS = [
   // The job form's readiness bar names each missing requirement by a key built from the list, and
   // a fifth requirement without one would print the raw key into the bar.
   ...JOB_REQUIREMENTS.map((requirement) => `jobs.mutation.requirement.${requirement.key}`),
+  // The onboarding tour names each step's copy by the step id, and picks one of two invitations by
+  // role. A missing one would print the raw key onto the tour card.
+  ...TOUR_STEPS.flatMap((step) => [stepTitleKey(step.id), stepBodyKey(step.id)]),
+  'tour.prompt.body',
+  'tour.prompt.bodyAdmin',
   // `relativeTime` builds its key from the direction and the unit, one day included.
   ...['In', 'Ago'].flatMap((direction) =>
     ['Minutes', 'Hours', 'Day', 'Days'].map((unit) => `dashboard.time${direction}${unit}`),

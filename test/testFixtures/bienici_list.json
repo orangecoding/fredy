@@ -1,0 +1,943 @@
+{
+  "total": 5,
+  "from": 0,
+  "perPage": 5,
+  "realEstateAds": [
+    {
+      "blurInfo": {
+        "type": "disk",
+        "radius": 50,
+        "bbox": [
+          2.305041649559292,
+          48.85410679396256,
+          2.3064069326739762,
+          48.85500511189842
+        ],
+        "position": {
+          "lat": 48.85455595293049,
+          "lon": 2.305724291116634
+        },
+        "centroid": {
+          "lat": 48.85455595293049,
+          "lon": 2.305724291116634
+        }
+      },
+      "city": "Paris 7e",
+      "postalCode": "75007",
+      "chargingStations": {
+        "providers": []
+      },
+      "hasGeorisquesMention": true,
+      "id": "immo-facile-61560394",
+      "adType": "rent",
+      "propertyType": "flat",
+      "reference": "BOSQUET-EM-09-03",
+      "description": "*Uniquement  bail  code civil (société ou résidence secondaire)* LOYER TOUT COMPRIS (électricité + internet). AVENUE BOSQUET, à quelques mètres de la PLACE JOFFRE et du CHAMP DE MARS, Paris Seine vous propose ce MAGNIFIQUE 2 PIÈCES MEUBLÉ de situé au 4ÈME ÉTAGE avec ascenseur dans un immeuble avec gardienne.<br>L'appartement  vous séduira par ses attributs anciens (Parquet point de Hongrie, moulures, cheminée)  parfaitement combinés avec les équipements du confort moderne (spacieux placards/penderies modernes, CHAMBRE CLIMATISÉE, électroménagers de qualité..).<br>Il se compose d'une entrée, d'un séjour, d'une belle chambre, d'une salle d'eau avec WC, d'un deuxième WC d'invités, d'une cuisine complète et d'un dégagement  équipé de vastes rangements.<br>Provision pour charges incluant chauffage, eau chaude, électricité, internet.<br>*HONORAIRES DE LOCATION: 2.450 € TTC car bail code civil.<br>*Civil Code lease only (company or secondary residence)* ALL-INCLUSIVE RENT (electricity and internet). AVENUE BOSQUET, a few meters from PLACE JOFFRE and the CHAMP DE MARS, Paris Seine offers this MAGNIFICENT FURNISHED 1-BEDROOM APARTMENT located on the 4TH FLOOR with elevator in a building with a concierge. The apartment will charm you with its period features (herringbone parquet flooring, moldings, fireplace) perfectly combined with modern comforts (spacious modern closets/wardrobes, AIR-CONDITIONED BEDROOM, quality appliances, etc.). It comprises an entrance hall, a living room, a lovely bedroom, a shower room with toilet, a second guest toilet, a fully equipped kitchen, and a hallway with ample storage. <br>Provision for charges including heating, hot water, electricity, and internet. <br>*LEASING FEES: EUR2,450 including VAT as it is a Civil Code lease.<br>Le Groupe PARIS SEINE, c'est 5 Agences au Coeur de Paris !!<br>Agence Champ de Mars - 38 av. de La Motte-Picquet - Paris 7<br>Agence Saint-Honoré - 49 rue Saint-Roch - PARIS 1<br>Agence Cherche-Midi - 59 rue du Cherche-Midi - PARIS 6<br>Agence Sèvres/Vaneau - 85 rue de Sèvres - PARIS 6<br>Agence Rennes/Saint-Germain - 83 rue de Rennes - PARIS 6<br>(ACHAT - VENTE - LOCATION - GESTION - SUCCESSION - ÉVALUATION OFFERTE SOUS 24 H).",
+      "title": "**BOSQUET ANGLE PLACE JOFFRE** 2 PIÈCES MEUBLÉ**CLIMATISÉ**EXCELLENT ÉTAT**ÉTAGE ÉLEVÉ**LOYER TOUT INCLUS****",
+      "publicationDate": "2026-09-25T17:51:32.054Z",
+      "modificationDate": "2026-09-25T17:51:32.054Z",
+      "newProperty": false,
+      "accountType": "agency",
+      "isBienIciExclusive": false,
+      "photoWatermarkAlias": "c77170dd-9f7c-4fc0-8fb4-d7b9b41a6da8",
+      "accountDisplayName": "PARIS SEINE IMMOBILIER",
+      "price": 2450,
+      "agencyRentalFee": 2450,
+      "surfaceArea": 46.15,
+      "roomsQuantity": 2,
+      "bedroomsQuantity": 1,
+      "charges": 285,
+      "floor": 4,
+      "floorQuantity": 7,
+      "isFurnished": true,
+      "showerRoomsQuantity": 1,
+      "toiletQuantity": 2,
+      "hasElevator": true,
+      "hasDoorCode": true,
+      "hasIntercom": true,
+      "hasCaretaker": true,
+      "hasAirConditioning": true,
+      "hasFirePlace": true,
+      "photos": [
+        {
+          "title": "Photo n°1",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/3/9/4/61560394a.jpg?DATEMAJ=25/09/2026-17:59:00",
+          "photo": "immo-facile-61560394_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_9_4_61560394a.jpg_DATEMAJ_25_09_2026-17_59_00",
+          "url": "https://file.bienici.com/photo/immo-facile-61560394_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_9_4_61560394a.jpg_DATEMAJ_25_09_2026-17_59_00"
+        },
+        {
+          "title": "Photo n°2",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/3/9/4/61560394b.jpg?DATEMAJ=25/09/2026-17:59:00",
+          "photo": "immo-facile-61560394_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_9_4_61560394b.jpg_DATEMAJ_25_09_2026-17_59_00",
+          "url": "https://file.bienici.com/photo/immo-facile-61560394_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_9_4_61560394b.jpg_DATEMAJ_25_09_2026-17_59_00"
+        },
+        {
+          "title": "Photo n°3",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/3/9/4/61560394c.jpg?DATEMAJ=25/09/2026-17:59:01",
+          "photo": "immo-facile-61560394_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_9_4_61560394c.jpg_DATEMAJ_25_09_2026-17_59_01",
+          "url": "https://file.bienici.com/photo/immo-facile-61560394_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_9_4_61560394c.jpg_DATEMAJ_25_09_2026-17_59_01"
+        },
+        {
+          "title": "Photo n°4",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/3/9/4/61560394d.jpg?DATEMAJ=25/09/2026-17:59:01",
+          "photo": "immo-facile-61560394_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_9_4_61560394d.jpg_DATEMAJ_25_09_2026-17_59_01",
+          "url": "https://file.bienici.com/photo/immo-facile-61560394_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_9_4_61560394d.jpg_DATEMAJ_25_09_2026-17_59_01"
+        },
+        {
+          "title": "Photo n°5",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/3/9/4/61560394e.jpg?DATEMAJ=25/09/2026-17:59:01",
+          "photo": "immo-facile-61560394_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_9_4_61560394e.jpg_DATEMAJ_25_09_2026-17_59_01",
+          "url": "https://file.bienici.com/photo/immo-facile-61560394_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_9_4_61560394e.jpg_DATEMAJ_25_09_2026-17_59_01"
+        },
+        {
+          "title": "Photo n°6",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/3/9/4/61560394f.jpg?DATEMAJ=25/09/2026-17:59:01",
+          "photo": "immo-facile-61560394_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_9_4_61560394f.jpg_DATEMAJ_25_09_2026-17_59_01",
+          "url": "https://file.bienici.com/photo/immo-facile-61560394_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_9_4_61560394f.jpg_DATEMAJ_25_09_2026-17_59_01"
+        },
+        {
+          "title": "Photo n°7",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/3/9/4/61560394g.jpg?DATEMAJ=25/09/2026-17:59:01",
+          "photo": "immo-facile-61560394_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_9_4_61560394g.jpg_DATEMAJ_25_09_2026-17_59_01",
+          "url": "https://file.bienici.com/photo/immo-facile-61560394_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_9_4_61560394g.jpg_DATEMAJ_25_09_2026-17_59_01"
+        },
+        {
+          "title": "Photo n°8",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/3/9/4/61560394h.jpg?DATEMAJ=25/09/2026-17:59:02",
+          "photo": "immo-facile-61560394_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_9_4_61560394h.jpg_DATEMAJ_25_09_2026-17_59_02",
+          "url": "https://file.bienici.com/photo/immo-facile-61560394_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_9_4_61560394h.jpg_DATEMAJ_25_09_2026-17_59_02"
+        },
+        {
+          "title": "Photo n°9",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/3/9/4/61560394i.jpg?DATEMAJ=25/09/2026-17:59:02",
+          "photo": "immo-facile-61560394_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_9_4_61560394i.jpg_DATEMAJ_25_09_2026-17_59_02",
+          "url": "https://file.bienici.com/photo/immo-facile-61560394_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_9_4_61560394i.jpg_DATEMAJ_25_09_2026-17_59_02"
+        },
+        {
+          "title": "Photo n°10",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/3/9/4/61560394j.jpg?DATEMAJ=25/09/2026-17:59:02",
+          "photo": "immo-facile-61560394_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_9_4_61560394j.jpg_DATEMAJ_25_09_2026-17_59_02",
+          "url": "https://file.bienici.com/photo/immo-facile-61560394_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_9_4_61560394j.jpg_DATEMAJ_25_09_2026-17_59_02"
+        },
+        {
+          "title": "Photo n°11",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/3/9/4/61560394k.jpg?DATEMAJ=25/09/2026-17:59:02",
+          "photo": "immo-facile-61560394_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_9_4_61560394k.jpg_DATEMAJ_25_09_2026-17_59_02",
+          "url": "https://file.bienici.com/photo/immo-facile-61560394_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_9_4_61560394k.jpg_DATEMAJ_25_09_2026-17_59_02"
+        },
+        {
+          "title": "Photo n°12",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/3/9/4/61560394l.jpg?DATEMAJ=25/09/2026-17:59:02",
+          "photo": "immo-facile-61560394_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_9_4_61560394l.jpg_DATEMAJ_25_09_2026-17_59_02",
+          "url": "https://file.bienici.com/photo/immo-facile-61560394_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_9_4_61560394l.jpg_DATEMAJ_25_09_2026-17_59_02"
+        },
+        {
+          "title": "Photo n°13",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/3/9/4/61560394m.jpg?DATEMAJ=25/09/2026-17:59:03",
+          "photo": "immo-facile-61560394_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_9_4_61560394m.jpg_DATEMAJ_25_09_2026-17_59_03",
+          "url": "https://file.bienici.com/photo/immo-facile-61560394_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_9_4_61560394m.jpg_DATEMAJ_25_09_2026-17_59_03"
+        }
+      ],
+      "safetyDeposit": 4330,
+      "isRecent": false,
+      "energyValue": 269,
+      "greenhouseGazValue": 10,
+      "chargesMethod": "advance",
+      "rentExtra": 0,
+      "inventoryOfFixturesFees": 0,
+      "agencyFeeUrl": "https://media.immo-facile.com/segments/immo/catalog/images/manufacturers_bareme/2985.pdf",
+      "energyPerformanceDiagnosticDate": "2023-01-04",
+      "useJuly2021EnergyPerformanceDiagnostic": true,
+      "minEnergyConsumption": 940,
+      "maxEnergyConsumption": 1310,
+      "energySimulationReferenceDate": "2021-01-01",
+      "energyClassification": "E",
+      "greenhouseGazClassification": "B",
+      "isSubjectToRentControl": false,
+      "adCreatedByPro": true,
+      "heating": "individuel",
+      "district": {
+        "id_polygone": 100535,
+        "id_type": 1,
+        "name": "Paris 7e Arrondissement - Champ de Mars",
+        "libelle": "Champ de Mars",
+        "cp": "75007",
+        "code_insee": "75107",
+        "id": 100535,
+        "insee_code": "75107",
+        "postal_code": "75007",
+        "type_id": 1
+      },
+      "status": {
+        "onTheMarket": true,
+        "closedByUser": false,
+        "autoImported": true,
+        "isLeading": false,
+        "highlighted": false,
+        "is3dHighlighted": false
+      },
+      "departmentCode": "75",
+      "addressKnown": true,
+      "displayDistrictName": true,
+      "pricePerSquareMeter": 53.08775731310943,
+      "postalCodeForSearchFilters": "75007",
+      "descriptionTextLength": 2169,
+      "userRelativeData": {
+        "importAccountId": "566ff1b69b2b0ad718a0cdff",
+        "accountIds": [
+          "immo-facile-2985"
+        ],
+        "searchAccountIds": [
+          "immo-facile-2985",
+          "contract-type-agency-excellence-package",
+          "contract-type-agency-performance-package",
+          "contract-type-agency-efficiency-package",
+          "566ff1b69b2b0ad718a0cdff"
+        ],
+        "isAdmin": false,
+        "isAdModifier": false,
+        "canSetAsFeatured": false,
+        "canSeeExactPosition": false,
+        "canSeeAddress": false,
+        "canSeeStats": false,
+        "canOpenAdDetail": true,
+        "canSeeRealDates": false,
+        "canSeePublicationCertificateHtml": false,
+        "canSeePublicationCertificatePdf": false
+      },
+      "priceHasDecreased": false,
+      "transactionType": "rent",
+      "adTypeFR": "location",
+      "with3dModel": false,
+      "endOfPromotedAsExclusive": 0,
+      "opticalFiberStatus": "deploye",
+      "nothingBehindForm": false,
+      "highlightMailContact": false,
+      "customerId": "paris-seine-immobilier-agence-cherche-midi",
+      "displayInsuranceEstimation": true,
+      "phoneDisplays": []
+    },
+    {
+      "blurInfo": {
+        "type": "disk",
+        "radius": 50,
+        "bbox": [
+          2.2709887291664375,
+          48.8532656356636,
+          2.2723539876552623,
+          48.85416395359929
+        ],
+        "position": {
+          "lat": 48.85371479463144,
+          "lon": 2.27167135841085
+        },
+        "centroid": {
+          "lat": 48.85371479463144,
+          "lon": 2.27167135841085
+        }
+      },
+      "city": "Paris 16e",
+      "postalCode": "75016",
+      "chargingStations": {
+        "providers": []
+      },
+      "hasGeorisquesMention": true,
+      "id": "immo-facile-61560183",
+      "adType": "rent",
+      "propertyType": "flat",
+      "reference": "ASSOMPTION-EM-09-03",
+      "description": "*BAIL CODE CIVIL UNIQUEMENT**Location meublée IDÉAL PIED-À-TERRE** Rue de l'Assomption, à proximité du Métro RANELAGH, Paris Seine Immobilier vous propose ce MAGNIFIQUE 2 PIÈCES à la DÉCORATION CONTEMPORAINE ,situé au 6ÈME ÉTAGE par ascenseur dans un immeuble avec GARDIENNE.  L'appartement, au CALME sur une COUR ARBORÉE, vous séduira par son IMPRENABLE VUE TOUR EIFFEL et l'ABSENCE DE VIS-À-VIS. LUMINEUX , il se compose d'une entrée avec placards et coin buanderie, d'un séjour avec belle cuisine ouverte avec îlot , d'un chambres dont 2 murs sont occupés par des placards toute hauteur, d'une salle d'eau et d'un WC séparé. <br>Appartement sonorisé (séjour, chambre et salle de bains) offrant des équipements haut de gamme.<br>Une cave en sous-sol.<br>LOYER INCLUANT CHAUFFAGE, EAU CHAUDE, ÉLETRICITÉ ET INTERNET.<br>*DISPONIBLE DE SUITE*<br>*HONORAIRES DE LOCATION: 2.750 € TTC car bail code civil.<br>*CIVIL CODE LEASE ONLY**Furnished rental IDEAL PIED-À-TERRE** Rue de l'Assomption, near the Ranelagh Metro station, Paris Seine Immobilier offers this MAGNIFICENT 1-BEDROOM APARTMENT with CONTEMPORARY DECOR, located on the 6th FLOOR with elevator in a building with a concierge. The apartment, QUIET and overlooking a TREE-LINED COURTYARD, will charm you with its BREATHTAKING VIEW OF THE EIFFEL TOWER and NO OVERLOOKING NEIGHBORS. BRIGHT, it comprises an entrance hall with closets and a laundry area, a living room with a beautiful open-plan kitchen with an island, a bedroom with two walls lined with floor-to-ceiling closets, a shower room, and a separate toilet. The apartment is equipped with soundproofing (living room, bedroom, and bathroom) and high-end amenities. A cellar is included. <br>RENT INCLUDES HEATING, HOT WATER, ELECTRICITY AND INTERNET. <br>*AVAILABLE IMMEDIATELY* <br>*LEASING FEES: EUR2,750 including VAT as per civil code lease.<br>Le Groupe PARIS SEINE, c'est 5 Agences au Coeur de Paris !!<br>Agence Champ de Mars - 38 av. de La Motte-Picquet - Paris 7<br>Agence Saint-Honoré - 49 rue Saint-Roch - PARIS 1<br>Agence Cherche-Midi - 59 rue du Cherche-Midi - PARIS 6<br>Agence Sèvres/Vaneau - 85 rue de Sèvres - PARIS 6<br>Agence Rennes/Saint-Germain - 83 rue de Rennes - PARIS 6<br>(ACHAT - VENTE - LOCATION - GESTION - SUCCESSION - ÉVALUATION OFFERTE SOUS 24 H).",
+      "title": "**MOZART/RANELAGH**LUXUEUX 2 PIÈCES MEUBLÉ**ÉTAGE ÉLEVÉ**SUPERBE VUE TOUR EIFFEL**LUMINEUX ET CALME** IDÉAL PIED-À-TERRE**",
+      "publicationDate": "2026-09-25T17:51:32.054Z",
+      "modificationDate": "2026-09-25T17:51:32.054Z",
+      "newProperty": false,
+      "yearOfConstruction": 1933,
+      "accountType": "agency",
+      "isBienIciExclusive": false,
+      "photoWatermarkAlias": "c77170dd-9f7c-4fc0-8fb4-d7b9b41a6da8",
+      "accountDisplayName": "PARIS SEINE IMMOBILIER",
+      "price": 2750,
+      "agencyRentalFee": 2750,
+      "surfaceArea": 43.19,
+      "roomsQuantity": 2,
+      "bedroomsQuantity": 1,
+      "charges": 330,
+      "floor": 6,
+      "floorQuantity": 9,
+      "isFurnished": true,
+      "showerRoomsQuantity": 1,
+      "toiletQuantity": 1,
+      "hasElevator": true,
+      "hasCellar": true,
+      "hasDoorCode": true,
+      "hasIntercom": true,
+      "hasCaretaker": true,
+      "isCalm": true,
+      "hasFirePlace": false,
+      "photos": [
+        {
+          "title": "Photo n°1",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/1/8/3/61560183a.jpg?DATEMAJ=25/09/2026-17:17:16",
+          "photo": "immo-facile-61560183_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_1_8_3_61560183a.jpg_DATEMAJ_25_09_2026-17_17_16",
+          "url": "https://file.bienici.com/photo/immo-facile-61560183_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_1_8_3_61560183a.jpg_DATEMAJ_25_09_2026-17_17_16"
+        },
+        {
+          "title": "Photo n°2",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/1/8/3/61560183b.jpg?DATEMAJ=25/09/2026-17:17:16",
+          "photo": "immo-facile-61560183_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_1_8_3_61560183b.jpg_DATEMAJ_25_09_2026-17_17_16",
+          "url": "https://file.bienici.com/photo/immo-facile-61560183_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_1_8_3_61560183b.jpg_DATEMAJ_25_09_2026-17_17_16"
+        },
+        {
+          "title": "Photo n°3",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/1/8/3/61560183c.jpg?DATEMAJ=25/09/2026-17:17:17",
+          "photo": "immo-facile-61560183_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_1_8_3_61560183c.jpg_DATEMAJ_25_09_2026-17_17_17",
+          "url": "https://file.bienici.com/photo/immo-facile-61560183_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_1_8_3_61560183c.jpg_DATEMAJ_25_09_2026-17_17_17"
+        },
+        {
+          "title": "Photo n°4",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/1/8/3/61560183d.jpg?DATEMAJ=25/09/2026-17:17:17",
+          "photo": "immo-facile-61560183_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_1_8_3_61560183d.jpg_DATEMAJ_25_09_2026-17_17_17",
+          "url": "https://file.bienici.com/photo/immo-facile-61560183_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_1_8_3_61560183d.jpg_DATEMAJ_25_09_2026-17_17_17"
+        },
+        {
+          "title": "Photo n°5",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/1/8/3/61560183e.jpg?DATEMAJ=25/09/2026-17:17:17",
+          "photo": "immo-facile-61560183_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_1_8_3_61560183e.jpg_DATEMAJ_25_09_2026-17_17_17",
+          "url": "https://file.bienici.com/photo/immo-facile-61560183_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_1_8_3_61560183e.jpg_DATEMAJ_25_09_2026-17_17_17"
+        },
+        {
+          "title": "Photo n°6",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/1/8/3/61560183f.jpg?DATEMAJ=25/09/2026-17:17:17",
+          "photo": "immo-facile-61560183_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_1_8_3_61560183f.jpg_DATEMAJ_25_09_2026-17_17_17",
+          "url": "https://file.bienici.com/photo/immo-facile-61560183_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_1_8_3_61560183f.jpg_DATEMAJ_25_09_2026-17_17_17"
+        },
+        {
+          "title": "Photo n°7",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/1/8/3/61560183g.jpg?DATEMAJ=25/09/2026-17:17:17",
+          "photo": "immo-facile-61560183_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_1_8_3_61560183g.jpg_DATEMAJ_25_09_2026-17_17_17",
+          "url": "https://file.bienici.com/photo/immo-facile-61560183_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_1_8_3_61560183g.jpg_DATEMAJ_25_09_2026-17_17_17"
+        },
+        {
+          "title": "Photo n°8",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/1/8/3/61560183h.jpg?DATEMAJ=25/09/2026-17:17:18",
+          "photo": "immo-facile-61560183_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_1_8_3_61560183h.jpg_DATEMAJ_25_09_2026-17_17_18",
+          "url": "https://file.bienici.com/photo/immo-facile-61560183_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_1_8_3_61560183h.jpg_DATEMAJ_25_09_2026-17_17_18"
+        },
+        {
+          "title": "Photo n°9",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/1/8/3/61560183i.jpg?DATEMAJ=25/09/2026-17:17:18",
+          "photo": "immo-facile-61560183_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_1_8_3_61560183i.jpg_DATEMAJ_25_09_2026-17_17_18",
+          "url": "https://file.bienici.com/photo/immo-facile-61560183_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_1_8_3_61560183i.jpg_DATEMAJ_25_09_2026-17_17_18"
+        },
+        {
+          "title": "Photo n°10",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/1/8/3/61560183j.jpg?DATEMAJ=25/09/2026-17:17:18",
+          "photo": "immo-facile-61560183_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_1_8_3_61560183j.jpg_DATEMAJ_25_09_2026-17_17_18",
+          "url": "https://file.bienici.com/photo/immo-facile-61560183_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_1_8_3_61560183j.jpg_DATEMAJ_25_09_2026-17_17_18"
+        },
+        {
+          "title": "Photo n°11",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/1/8/3/61560183k.jpg?DATEMAJ=25/09/2026-17:17:18",
+          "photo": "immo-facile-61560183_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_1_8_3_61560183k.jpg_DATEMAJ_25_09_2026-17_17_18",
+          "url": "https://file.bienici.com/photo/immo-facile-61560183_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_1_8_3_61560183k.jpg_DATEMAJ_25_09_2026-17_17_18"
+        },
+        {
+          "title": "Photo n°12",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/1/8/3/61560183l.jpg?DATEMAJ=25/09/2026-17:17:18",
+          "photo": "immo-facile-61560183_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_1_8_3_61560183l.jpg_DATEMAJ_25_09_2026-17_17_18",
+          "url": "https://file.bienici.com/photo/immo-facile-61560183_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_1_8_3_61560183l.jpg_DATEMAJ_25_09_2026-17_17_18"
+        },
+        {
+          "title": "Photo n°13",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/1/8/3/61560183m.jpg?DATEMAJ=25/09/2026-17:17:19",
+          "photo": "immo-facile-61560183_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_1_8_3_61560183m.jpg_DATEMAJ_25_09_2026-17_17_19",
+          "url": "https://file.bienici.com/photo/immo-facile-61560183_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_1_8_3_61560183m.jpg_DATEMAJ_25_09_2026-17_17_19"
+        }
+      ],
+      "safetyDeposit": 4840,
+      "greenhouseGazValue": 84,
+      "chargesMethod": "advance",
+      "rentExtra": 0,
+      "inventoryOfFixturesFees": 0,
+      "agencyFeeUrl": "https://media.immo-facile.com/segments/immo/catalog/images/manufacturers_bareme/2985.pdf",
+      "energyPerformanceDiagnosticDate": "2025-12-05",
+      "useJuly2021EnergyPerformanceDiagnostic": true,
+      "minEnergyConsumption": 1310,
+      "maxEnergyConsumption": 1830,
+      "epdFinalEnergyConsumption": 386,
+      "energyClassification": "F",
+      "greenhouseGazClassification": "F",
+      "isSubjectToRentControl": false,
+      "exposition": "Est",
+      "adCreatedByPro": true,
+      "heating": "collectif",
+      "district": {
+        "id_polygone": 100479,
+        "id_type": 1,
+        "name": "Paris 16e Arrondissement - Auteuil-Nord - Jasmin - Mirabeau",
+        "libelle": "Auteuil-Nord - Jasmin - Mirabeau",
+        "cp": "75016",
+        "code_insee": "75116",
+        "id": 100479,
+        "insee_code": "75116",
+        "postal_code": "75016",
+        "type_id": 1
+      },
+      "status": {
+        "onTheMarket": true,
+        "closedByUser": false,
+        "autoImported": true,
+        "isLeading": false,
+        "highlighted": false,
+        "is3dHighlighted": false
+      },
+      "departmentCode": "75",
+      "addressKnown": true,
+      "displayDistrictName": true,
+      "pricePerSquareMeter": 63.67214633016902,
+      "postalCodeForSearchFilters": "75016",
+      "descriptionTextLength": 2248,
+      "userRelativeData": {
+        "importAccountId": "566ff1b69b2b0ad718a0cdff",
+        "accountIds": [
+          "immo-facile-2985"
+        ],
+        "searchAccountIds": [
+          "immo-facile-2985",
+          "contract-type-agency-excellence-package",
+          "contract-type-agency-performance-package",
+          "contract-type-agency-efficiency-package",
+          "566ff1b69b2b0ad718a0cdff"
+        ],
+        "isAdmin": false,
+        "isAdModifier": false,
+        "canSetAsFeatured": false,
+        "canSeeExactPosition": false,
+        "canSeeAddress": false,
+        "canSeeStats": false,
+        "canOpenAdDetail": true,
+        "canSeeRealDates": false,
+        "canSeePublicationCertificateHtml": false,
+        "canSeePublicationCertificatePdf": false
+      },
+      "priceHasDecreased": false,
+      "transactionType": "rent",
+      "adTypeFR": "location",
+      "with3dModel": false,
+      "endOfPromotedAsExclusive": 0,
+      "opticalFiberStatus": "deploye",
+      "nothingBehindForm": false,
+      "highlightMailContact": false,
+      "customerId": "paris-seine-immobilier-agence-cherche-midi",
+      "displayInsuranceEstimation": true,
+      "phoneDisplays": []
+    },
+    {
+      "blurInfo": {
+        "type": "disk",
+        "radius": 50,
+        "bbox": [
+          2.2932947734264584,
+          48.85532292284564,
+          2.2946600837864635,
+          48.856221240781416
+        ],
+        "position": {
+          "lat": 48.85577208181353,
+          "lon": 2.293977428606461
+        },
+        "centroid": {
+          "lat": 48.85577208181353,
+          "lon": 2.293977428606461
+        }
+      },
+      "city": "Paris 7e",
+      "postalCode": "75007",
+      "chargingStations": {
+        "providers": []
+      },
+      "hasGeorisquesMention": true,
+      "id": "immo-facile-61560389",
+      "adType": "rent",
+      "propertyType": "flat",
+      "reference": "Gal-LAMBERT-EM-09-02",
+      "description": "*LOCATION VIDE* Dans un BEL IMMEUBLE GARDIENNÉ sur une CONTRE-ALLÉE DU CHAMP DE MARS, Paris Seine Immobilier vous propose cet EXCEPTIONNEL 5 PIÈCES doté d'une MAGNIFIQUE RECEPTION de plus de 50m² avec VUE TOUR EIFFEL et 3 BELLES CHAMBRES EN SUITE.<br>L'appartement a été entièrement RENOVÉ tout en préservant ses attributs ancien. PARQUET, MOULURES et CHEMINÉE.<br>Il se compose d'une entrée, d'une lumineuse réception de 50 m², de trois chambres en suite (2 avec salle d'eau et 1 avec salle de bains) , d'une cuisine aménagée et de 2 WC.<br>Chauffage et eau chaude collectifs inclus dans la provision pour charges.<br>*DISPONIBLE DE SUITE*<br>*HONORAIRES DE LOCATION: 2.028,17 € TTC sauf bail code<br>civil (voir notre barème).<br>*UNFURNISHED APARTMENT* In a BEAUTIFUL, SECURE BUILDING on a side street off the Champ de Mars, Paris Seine Immobilier presents this EXCEPTIONAL 5-ROOM APARTMENT featuring a MAGNIFICENT RECEPTION ROOM of over 50 sq m with EIFFEL TOWER VIEWS and 3 BEAUTIFUL EN-SUITE BEDROOMS. The apartment has been completely RENOVATED while preserving its original features: PARQUET FLOORS, MOLDINGS, and a FIREPLACE. It comprises an entrance hall, a bright 50 sq m reception room, three en-suite bedrooms (2 with shower rooms and 1 with a bathroom), a fitted kitchen, and 2 WCs. Central heating and hot water are included in the service charges. *AVAILABLE IMMEDIATELY* *LEASING FEES: EUR2,028.17 including VAT, except for leases governed by the French Civil Code (see our fee schedule).<br>Le Groupe PARIS SEINE, c'est 5 Agences au Coeur de Paris !!<br>Agence Champ de Mars - 38 av. de La Motte-Picquet - Paris 7<br>Agence Saint-Honoré - 49 rue Saint-Roch - PARIS 1<br>Agence Cherche-Midi - 59 rue du Cherche-Midi - PARIS 6<br>Agence Sèvres/Vaneau - 85 rue de Sèvres - PARIS 6<br>Agence Rennes/Saint-Germain - 83 rue de Rennes - PARIS 6<br>(ACHAT - VENTE - LOCATION - GESTION - SUCCESSION - ÉVALUATION OFFERTE SOUS 24 H).",
+      "title": "**AUX PIEDS DE LA TOUR EIFFEL**EXCEPTIONNEL 5 PIÈCES** FAMILIAL ET DE RECEPTION**ENTIEREMENT RÉNOVÉ**",
+      "publicationDate": "2026-09-25T17:51:32.054Z",
+      "modificationDate": "2026-09-25T17:51:32.054Z",
+      "newProperty": false,
+      "yearOfConstruction": 1912,
+      "accountType": "agency",
+      "isBienIciExclusive": false,
+      "photoWatermarkAlias": "c77170dd-9f7c-4fc0-8fb4-d7b9b41a6da8",
+      "accountDisplayName": "PARIS SEINE IMMOBILIER",
+      "price": 6000,
+      "agencyRentalFee": 2026.17,
+      "surfaceArea": 134.05,
+      "roomsQuantity": 5,
+      "bedroomsQuantity": 3,
+      "charges": 500,
+      "floor": 1,
+      "floorQuantity": 7,
+      "isFurnished": false,
+      "bathroomsQuantity": 1,
+      "showerRoomsQuantity": 2,
+      "toiletQuantity": 2,
+      "hasElevator": true,
+      "hasDoorCode": true,
+      "hasIntercom": true,
+      "hasCaretaker": true,
+      "isCalm": true,
+      "hasFirePlace": false,
+      "photos": [
+        {
+          "title": "Photo n°1",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/3/8/9/61560389a.jpg?DATEMAJ=25/09/2026-17:58:02",
+          "photo": "immo-facile-61560389_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_8_9_61560389a.jpg_DATEMAJ_25_09_2026-17_58_02",
+          "url": "https://file.bienici.com/photo/immo-facile-61560389_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_8_9_61560389a.jpg_DATEMAJ_25_09_2026-17_58_02"
+        },
+        {
+          "title": "Photo n°2",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/3/8/9/61560389b.jpg?DATEMAJ=25/09/2026-17:58:03",
+          "photo": "immo-facile-61560389_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_8_9_61560389b.jpg_DATEMAJ_25_09_2026-17_58_03",
+          "url": "https://file.bienici.com/photo/immo-facile-61560389_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_8_9_61560389b.jpg_DATEMAJ_25_09_2026-17_58_03"
+        },
+        {
+          "title": "Photo n°3",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/3/8/9/61560389c.jpg?DATEMAJ=25/09/2026-17:58:03",
+          "photo": "immo-facile-61560389_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_8_9_61560389c.jpg_DATEMAJ_25_09_2026-17_58_03",
+          "url": "https://file.bienici.com/photo/immo-facile-61560389_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_8_9_61560389c.jpg_DATEMAJ_25_09_2026-17_58_03"
+        },
+        {
+          "title": "Photo n°4",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/3/8/9/61560389d.jpg?DATEMAJ=25/09/2026-17:58:03",
+          "photo": "immo-facile-61560389_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_8_9_61560389d.jpg_DATEMAJ_25_09_2026-17_58_03",
+          "url": "https://file.bienici.com/photo/immo-facile-61560389_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_8_9_61560389d.jpg_DATEMAJ_25_09_2026-17_58_03"
+        },
+        {
+          "title": "Photo n°5",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/3/8/9/61560389e.jpg?DATEMAJ=25/09/2026-17:58:03",
+          "photo": "immo-facile-61560389_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_8_9_61560389e.jpg_DATEMAJ_25_09_2026-17_58_03",
+          "url": "https://file.bienici.com/photo/immo-facile-61560389_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_8_9_61560389e.jpg_DATEMAJ_25_09_2026-17_58_03"
+        },
+        {
+          "title": "Photo n°6",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/3/8/9/61560389f.jpg?DATEMAJ=25/09/2026-17:58:03",
+          "photo": "immo-facile-61560389_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_8_9_61560389f.jpg_DATEMAJ_25_09_2026-17_58_03",
+          "url": "https://file.bienici.com/photo/immo-facile-61560389_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_8_9_61560389f.jpg_DATEMAJ_25_09_2026-17_58_03"
+        },
+        {
+          "title": "Photo n°7",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/3/8/9/61560389g.jpg?DATEMAJ=25/09/2026-17:58:04",
+          "photo": "immo-facile-61560389_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_8_9_61560389g.jpg_DATEMAJ_25_09_2026-17_58_04",
+          "url": "https://file.bienici.com/photo/immo-facile-61560389_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_8_9_61560389g.jpg_DATEMAJ_25_09_2026-17_58_04"
+        },
+        {
+          "title": "Photo n°8",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/3/8/9/61560389h.jpg?DATEMAJ=25/09/2026-17:58:04",
+          "photo": "immo-facile-61560389_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_8_9_61560389h.jpg_DATEMAJ_25_09_2026-17_58_04",
+          "url": "https://file.bienici.com/photo/immo-facile-61560389_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_8_9_61560389h.jpg_DATEMAJ_25_09_2026-17_58_04"
+        },
+        {
+          "title": "Photo n°9",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/3/8/9/61560389i.jpg?DATEMAJ=25/09/2026-17:58:04",
+          "photo": "immo-facile-61560389_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_8_9_61560389i.jpg_DATEMAJ_25_09_2026-17_58_04",
+          "url": "https://file.bienici.com/photo/immo-facile-61560389_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_8_9_61560389i.jpg_DATEMAJ_25_09_2026-17_58_04"
+        },
+        {
+          "title": "Photo n°10",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/3/8/9/61560389j.jpg?DATEMAJ=25/09/2026-17:58:04",
+          "photo": "immo-facile-61560389_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_8_9_61560389j.jpg_DATEMAJ_25_09_2026-17_58_04",
+          "url": "https://file.bienici.com/photo/immo-facile-61560389_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_8_9_61560389j.jpg_DATEMAJ_25_09_2026-17_58_04"
+        },
+        {
+          "title": "Photo n°11",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/3/8/9/61560389k.jpg?DATEMAJ=25/09/2026-17:58:04",
+          "photo": "immo-facile-61560389_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_8_9_61560389k.jpg_DATEMAJ_25_09_2026-17_58_04",
+          "url": "https://file.bienici.com/photo/immo-facile-61560389_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_8_9_61560389k.jpg_DATEMAJ_25_09_2026-17_58_04"
+        },
+        {
+          "title": "Photo n°12",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/3/8/9/61560389l.jpg?DATEMAJ=25/09/2026-17:58:04",
+          "photo": "immo-facile-61560389_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_8_9_61560389l.jpg_DATEMAJ_25_09_2026-17_58_04",
+          "url": "https://file.bienici.com/photo/immo-facile-61560389_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_8_9_61560389l.jpg_DATEMAJ_25_09_2026-17_58_04"
+        },
+        {
+          "title": "Photo n°13",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/3/8/9/61560389m.jpg?DATEMAJ=25/09/2026-17:58:05",
+          "photo": "immo-facile-61560389_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_8_9_61560389m.jpg_DATEMAJ_25_09_2026-17_58_05",
+          "url": "https://file.bienici.com/photo/immo-facile-61560389_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_8_9_61560389m.jpg_DATEMAJ_25_09_2026-17_58_05"
+        },
+        {
+          "title": "Photo n°14",
+          "url_photo": "https://media.immo-facile.com/office8/parisseine_cherchemidi/catalog/images/pr_p/6/1/5/6/0/3/8/9/61560389n.jpg?DATEMAJ=25/09/2026-17:58:05",
+          "photo": "immo-facile-61560389_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_8_9_61560389n.jpg_DATEMAJ_25_09_2026-17_58_05",
+          "url": "https://file.bienici.com/photo/immo-facile-61560389_media.immo-facile.com_office8_parisseine_cherchemidi_catalog_images_pr_p_6_1_5_6_0_3_8_9_61560389n.jpg_DATEMAJ_25_09_2026-17_58_05"
+        }
+      ],
+      "safetyDeposit": 5500,
+      "isRecent": false,
+      "energyValue": 240,
+      "greenhouseGazValue": 40,
+      "chargesMethod": "advance",
+      "rentExtra": 433,
+      "inventoryOfFixturesFees": 406.17,
+      "agencyFeeUrl": "https://media.immo-facile.com/segments/immo/catalog/images/manufacturers_bareme/2985.pdf",
+      "energyPerformanceDiagnosticDate": "2026-05-22",
+      "useJuly2021EnergyPerformanceDiagnostic": true,
+      "minEnergyConsumption": 3140,
+      "maxEnergyConsumption": 4320,
+      "energyClassification": "E",
+      "greenhouseGazClassification": "D",
+      "rentWithoutCharges": 5067,
+      "maxReferenceRent": 5067,
+      "isSubjectToRentControl": true,
+      "adCreatedByPro": true,
+      "heating": "collectif",
+      "district": {
+        "id_polygone": 100535,
+        "id_type": 1,
+        "name": "Paris 7e Arrondissement - Champ de Mars",
+        "libelle": "Champ de Mars",
+        "cp": "75007",
+        "code_insee": "75107",
+        "id": 100535,
+        "insee_code": "75107",
+        "postal_code": "75007",
+        "type_id": 1
+      },
+      "status": {
+        "onTheMarket": true,
+        "closedByUser": false,
+        "autoImported": true,
+        "isLeading": false,
+        "highlighted": false,
+        "is3dHighlighted": false
+      },
+      "departmentCode": "75",
+      "addressKnown": true,
+      "displayDistrictName": true,
+      "pricePerSquareMeter": 44.75941812756434,
+      "postalCodeForSearchFilters": "75007",
+      "descriptionTextLength": 1898,
+      "userRelativeData": {
+        "importAccountId": "566ff1b69b2b0ad718a0cdff",
+        "accountIds": [
+          "immo-facile-2985"
+        ],
+        "searchAccountIds": [
+          "immo-facile-2985",
+          "contract-type-agency-excellence-package",
+          "contract-type-agency-performance-package",
+          "contract-type-agency-efficiency-package",
+          "566ff1b69b2b0ad718a0cdff"
+        ],
+        "isAdmin": false,
+        "isAdModifier": false,
+        "canSetAsFeatured": false,
+        "canSeeExactPosition": false,
+        "canSeeAddress": false,
+        "canSeeStats": false,
+        "canOpenAdDetail": true,
+        "canSeeRealDates": false,
+        "canSeePublicationCertificateHtml": false,
+        "canSeePublicationCertificatePdf": false
+      },
+      "priceHasDecreased": false,
+      "transactionType": "rent",
+      "adTypeFR": "location",
+      "with3dModel": false,
+      "endOfPromotedAsExclusive": 0,
+      "opticalFiberStatus": "deploye",
+      "nothingBehindForm": false,
+      "highlightMailContact": false,
+      "customerId": "paris-seine-immobilier-agence-cherche-midi",
+      "displayInsuranceEstimation": true,
+      "phoneDisplays": []
+    },
+    {
+      "blurInfo": {
+        "type": "disk",
+        "radius": 50,
+        "bbox": [
+          2.3105613952416046,
+          48.84465977221673,
+          2.3119264132360557,
+          48.84555809015217
+        ],
+        "position": {
+          "lat": 48.84510893118445,
+          "lon": 2.31124390423883
+        },
+        "centroid": {
+          "lat": 48.84510893118445,
+          "lon": 2.31124390423883
+        }
+      },
+      "city": "Paris 15e",
+      "postalCode": "75015",
+      "chargingStations": {
+        "providers": []
+      },
+      "hasGeorisquesMention": true,
+      "id": "dauchez-39339",
+      "adType": "rent",
+      "propertyType": "flat",
+      "reference": "DAUCHEZ39339",
+      "description": "BOULEVARD PASTEUR, à proximité immédiate du métro SEVRES LECOURBE (ligne 6), appartement de 3 pièces situé au rez-de-chaussée, composé d'une entrée, séjour donnant sur le jardin privatif, cuisine, 2 chambres, salle de bains et de WC. Une cave complète ce bien.  Chauffage collectif.   Zone soumise à l'encadrement des loyers :         - loyer de base : 2014€ HC  - loyer de référence majoré : 2214€ HC.  - complément de loyer : 210€ (jardin privatif)  (Si bail code civil, conditions exclues des champs d'application de la loi du 6 juillet 1989).  “Les informations sur les risques auxquels ce bien est exposé sont disponibles sur le site Géorisques http://www.georisques.gouv.fr”.",
+      "title": "Appartement 3 pièces 75015",
+      "publicationDate": "2026-09-25T17:36:55.944Z",
+      "modificationDate": "2026-09-25T17:36:55.944Z",
+      "newProperty": false,
+      "accountType": "agency",
+      "isBienIciExclusive": false,
+      "price": 2554,
+      "agencyRentalFee": 1031.32,
+      "surfaceArea": 68.1,
+      "roomsQuantity": 3,
+      "bedroomsQuantity": 2,
+      "charges": 330,
+      "floor": 0,
+      "isFurnished": false,
+      "hasCellar": true,
+      "isDuplex": false,
+      "photos": [
+        {
+          "photo": "dauchez_39339-1-20260924162030.jpg",
+          "title": "20260128_111029",
+          "url": "https://file.bienici.com/photo/dauchez_39339-1-20260924162030.jpg"
+        },
+        {
+          "photo": "dauchez_39339-2-20260924162039.jpg",
+          "title": "Logo DAUCHEZ",
+          "url": "https://file.bienici.com/photo/dauchez_39339-2-20260924162039.jpg"
+        }
+      ],
+      "safetyDeposit": 2224,
+      "energyValue": 178,
+      "energyClassification": "C",
+      "greenhouseGazValue": 35,
+      "greenhouseGazClassification": "D",
+      "chargesMethod": "advance",
+      "rentExtra": 210,
+      "inventoryOfFixturesFees": 206.75,
+      "adCreatedByPro": true,
+      "district": {
+        "id_polygone": 100481,
+        "id_type": 1,
+        "name": "Paris 15e Arrondissement - Cambronne - Garibaldi",
+        "libelle": "Cambronne - Garibaldi",
+        "cp": "75015",
+        "code_insee": "75115",
+        "id": 100481,
+        "insee_code": "75115",
+        "postal_code": "75015",
+        "type_id": 1
+      },
+      "status": {
+        "onTheMarket": true,
+        "closedByUser": false,
+        "autoImported": true,
+        "isLeading": false,
+        "highlighted": false,
+        "is3dHighlighted": false
+      },
+      "departmentCode": "75",
+      "addressKnown": true,
+      "displayDistrictName": true,
+      "pricePerSquareMeter": 37.503671071953015,
+      "postalCodeForSearchFilters": "75015",
+      "descriptionTextLength": 681,
+      "userRelativeData": {
+        "importAccountId": "56c4a7ceded53bce020682b9",
+        "accountIds": [
+          "dauchez-DAUCHEZ-DAUCHEZ"
+        ],
+        "searchAccountIds": [
+          "dauchez-DAUCHEZ-DAUCHEZ",
+          "dauchez-DAUCHEZ_L",
+          "unis",
+          "56c4a7ceded53bce020682b9",
+          "contract-type-agency-package"
+        ],
+        "isAdmin": false,
+        "isAdModifier": false,
+        "canSetAsFeatured": false,
+        "canSeeExactPosition": false,
+        "canSeeAddress": false,
+        "canSeeStats": false,
+        "canOpenAdDetail": true,
+        "canSeeRealDates": false,
+        "canSeePublicationCertificateHtml": false,
+        "canSeePublicationCertificatePdf": false
+      },
+      "priceHasDecreased": false,
+      "transactionType": "rent",
+      "adTypeFR": "location",
+      "with3dModel": false,
+      "endOfPromotedAsExclusive": 0,
+      "nothingBehindForm": false,
+      "highlightMailContact": false,
+      "displayInsuranceEstimation": true,
+      "phoneDisplays": []
+    },
+    {
+      "blurInfo": {
+        "type": "disk",
+        "radius": 50,
+        "bbox": [
+          2.3722661263302065,
+          48.893014260937875,
+          2.3736324668954163,
+          48.89391257887519
+        ],
+        "position": {
+          "lat": 48.89346341990653,
+          "lon": 2.3729492966128114
+        },
+        "centroid": {
+          "lat": 48.89346341990653,
+          "lon": 2.3729492966128114
+        }
+      },
+      "city": "Paris 19e",
+      "postalCode": "75019",
+      "chargingStations": {
+        "providers": []
+      },
+      "hasGeorisquesMention": true,
+      "id": "laforet-immo-facile-52948933",
+      "adType": "rent",
+      "propertyType": "flat",
+      "reference": "5027",
+      "description": "Découvrez en exclusivité ce charmant studio dans le 19e arrondissement de Paris, quartier Crimée / Rosa Parks , entre la sérénité des berges du canal de l'Ourcq et l'activité culturelle du Centquatre, à quelques minutes de la ligne 7 et du RER E.<br>Le studio est meublé, situé au 2eme étage , il se compose d'un grand séjour avec une cuisine ouverte aménagée et toute équipée (four, frigo, congélo, plaque) et d'une salle de bains avec WC. Le lit est escamotable et vous permet d'économiser une grande surface en journée.<br>l'appartement est équipé d'une machine à laver, d'un matelas et d'une literie, ainsi que d'une télévision. Le chauffage est individuel, au gaz.<br>Notre agence Laforêt Marx Dormoy, proche du marché de l'Olive, spécialisée dans la vente et la location, est heureuse de vous accueillir tous les jours du lundi au vendredi pour toute demande concernant ce bien à l'adresse <span class=\"importDescriptionDecorator\" data-type=\"email\">paris18marxdormoy@laforet.com</span> ou au <span class=\"importDescriptionDecorator\" data-type=\"phone\">01.55.26.93.93</span>.",
+      "title": "LOCATION Studio meublé - Rue Labois-Rouillon - 26,5m²",
+      "publicationDate": "2026-09-25T17:30:42.621Z",
+      "modificationDate": "2026-09-25T17:30:42.621Z",
+      "newProperty": false,
+      "accountType": "agency",
+      "isBienIciExclusive": false,
+      "price": 980,
+      "agencyRentalFee": 400.9,
+      "surfaceArea": 26.5,
+      "roomsQuantity": 1,
+      "bedroomsQuantity": 1,
+      "charges": 80,
+      "floor": 2,
+      "floorQuantity": 4,
+      "hasFirePlace": false,
+      "photos": [
+        {
+          "title": "Photo n°1",
+          "url_photo": "https://media.immo-facile.com/office9/laforet_paris18mairie/catalog/images/pr_p/5/2/9/4/8/9/3/3/52948933a.jpg?DATEMAJ=25/09/2026-17:04:21",
+          "photo": "laforet-immo-facile-52948933_media.immo-facile.com_office9_laforet_paris18mairie_catalog_images_pr_p_5_2_9_4_8_9_3_3_52948933a.jpg_DATEMAJ_25_09_2026-17_04_21",
+          "url": "https://file.bienici.com/photo/laforet-immo-facile-52948933_media.immo-facile.com_office9_laforet_paris18mairie_catalog_images_pr_p_5_2_9_4_8_9_3_3_52948933a.jpg_DATEMAJ_25_09_2026-17_04_21"
+        },
+        {
+          "title": "Photo n°2",
+          "url_photo": "https://media.immo-facile.com/office9/laforet_paris18mairie/catalog/images/pr_p/5/2/9/4/8/9/3/3/52948933b.jpg?DATEMAJ=25/09/2026-15:38:52",
+          "photo": "laforet-immo-facile-52948933_media.immo-facile.com_office9_laforet_paris18mairie_catalog_images_pr_p_5_2_9_4_8_9_3_3_52948933b.jpg_DATEMAJ_25_09_2026-15_38_52",
+          "url": "https://file.bienici.com/photo/laforet-immo-facile-52948933_media.immo-facile.com_office9_laforet_paris18mairie_catalog_images_pr_p_5_2_9_4_8_9_3_3_52948933b.jpg_DATEMAJ_25_09_2026-15_38_52"
+        },
+        {
+          "title": "Photo n°3",
+          "url_photo": "https://media.immo-facile.com/office9/laforet_paris18mairie/catalog/images/pr_p/5/2/9/4/8/9/3/3/52948933c.jpg?DATEMAJ=25/09/2026-15:38:52",
+          "photo": "laforet-immo-facile-52948933_media.immo-facile.com_office9_laforet_paris18mairie_catalog_images_pr_p_5_2_9_4_8_9_3_3_52948933c.jpg_DATEMAJ_25_09_2026-15_38_52",
+          "url": "https://file.bienici.com/photo/laforet-immo-facile-52948933_media.immo-facile.com_office9_laforet_paris18mairie_catalog_images_pr_p_5_2_9_4_8_9_3_3_52948933c.jpg_DATEMAJ_25_09_2026-15_38_52"
+        },
+        {
+          "title": "Photo n°4",
+          "url_photo": "https://media.immo-facile.com/office9/laforet_paris18mairie/catalog/images/pr_p/5/2/9/4/8/9/3/3/52948933d.jpg?DATEMAJ=25/09/2026-17:04:39",
+          "photo": "laforet-immo-facile-52948933_media.immo-facile.com_office9_laforet_paris18mairie_catalog_images_pr_p_5_2_9_4_8_9_3_3_52948933d.jpg_DATEMAJ_25_09_2026-17_04_39",
+          "url": "https://file.bienici.com/photo/laforet-immo-facile-52948933_media.immo-facile.com_office9_laforet_paris18mairie_catalog_images_pr_p_5_2_9_4_8_9_3_3_52948933d.jpg_DATEMAJ_25_09_2026-17_04_39"
+        },
+        {
+          "title": "Photo n°5",
+          "url_photo": "https://media.immo-facile.com/office9/laforet_paris18mairie/catalog/images/pr_p/5/2/9/4/8/9/3/3/52948933e.jpg?DATEMAJ=25/09/2026-17:04:45",
+          "photo": "laforet-immo-facile-52948933_media.immo-facile.com_office9_laforet_paris18mairie_catalog_images_pr_p_5_2_9_4_8_9_3_3_52948933e.jpg_DATEMAJ_25_09_2026-17_04_45",
+          "url": "https://file.bienici.com/photo/laforet-immo-facile-52948933_media.immo-facile.com_office9_laforet_paris18mairie_catalog_images_pr_p_5_2_9_4_8_9_3_3_52948933e.jpg_DATEMAJ_25_09_2026-17_04_45"
+        },
+        {
+          "title": "Photo n°6",
+          "url_photo": "https://media.immo-facile.com/office9/laforet_paris18mairie/catalog/images/pr_p/5/2/9/4/8/9/3/3/52948933f.jpg?DATEMAJ=25/09/2026-15:38:52",
+          "photo": "laforet-immo-facile-52948933_media.immo-facile.com_office9_laforet_paris18mairie_catalog_images_pr_p_5_2_9_4_8_9_3_3_52948933f.jpg_DATEMAJ_25_09_2026-15_38_52",
+          "url": "https://file.bienici.com/photo/laforet-immo-facile-52948933_media.immo-facile.com_office9_laforet_paris18mairie_catalog_images_pr_p_5_2_9_4_8_9_3_3_52948933f.jpg_DATEMAJ_25_09_2026-15_38_52"
+        }
+      ],
+      "safetyDeposit": 1800,
+      "energyValue": 120,
+      "greenhouseGazValue": 23,
+      "rentExtra": 0,
+      "inventoryOfFixturesFees": 80.3,
+      "agencyFeeUrl": "https://media.immo-facile.com/segments/immo/catalog/images/manufacturers_bareme/280503.pdf",
+      "energyPerformanceDiagnosticDate": "2026-09-23",
+      "useJuly2021EnergyPerformanceDiagnostic": true,
+      "minEnergyConsumption": 370,
+      "maxEnergyConsumption": 530,
+      "epdFinalEnergyConsumption": 110,
+      "energyClassification": "C",
+      "greenhouseGazClassification": "C",
+      "isSubjectToRentControl": false,
+      "adCreatedByPro": true,
+      "district": {
+        "id_polygone": 100457,
+        "id_type": 1,
+        "name": "Paris 19e Arrondissement - Flandre - Aubervilliers",
+        "libelle": "Flandre - Aubervilliers",
+        "cp": "75019",
+        "code_insee": "75119",
+        "id": 100457,
+        "insee_code": "75119",
+        "postal_code": "75019",
+        "type_id": 1
+      },
+      "status": {
+        "onTheMarket": true,
+        "closedByUser": false,
+        "autoImported": true,
+        "isLeading": false,
+        "highlighted": false,
+        "is3dHighlighted": false
+      },
+      "departmentCode": "75",
+      "addressKnown": true,
+      "displayDistrictName": true,
+      "pricePerSquareMeter": 36.9811320754717,
+      "postalCodeForSearchFilters": "75019",
+      "descriptionTextLength": 938,
+      "userRelativeData": {
+        "importAccountId": "57c853c0b3fa3c9900e7e327",
+        "accountIds": [
+          "laforet-immo-facile-280503"
+        ],
+        "searchAccountIds": [
+          "laforet-immo-facile-280503",
+          "laforet-immo-facile-network-Laforet",
+          "contract-type-agency-package",
+          "57c853c0b3fa3c9900e7e327"
+        ],
+        "isAdmin": false,
+        "isAdModifier": false,
+        "canSetAsFeatured": false,
+        "canSeeExactPosition": false,
+        "canSeeAddress": false,
+        "canSeeStats": false,
+        "canOpenAdDetail": true,
+        "canSeeRealDates": false,
+        "canSeePublicationCertificateHtml": false,
+        "canSeePublicationCertificatePdf": false
+      },
+      "priceHasDecreased": false,
+      "transactionType": "rent",
+      "adTypeFR": "location",
+      "with3dModel": false,
+      "endOfPromotedAsExclusive": 0,
+      "opticalFiberStatus": "deploye",
+      "nothingBehindForm": false,
+      "highlightMailContact": false,
+      "customerId": "laforet-paris-18-marx-dormoy-1710951920087",
+      "displayInsuranceEstimation": true,
+      "phoneDisplays": []
+    }
+  ]
+}

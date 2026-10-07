@@ -77,6 +77,9 @@ describe('services/jobs/jobExecutionService', () => {
       DEMO_JOB_ID: 'demo-job',
       isDemoJob: (jobId) => jobId === 'demo-job',
     }));
+    vi.doMock(root + '/lib/services/tour/tourService.js', () => ({
+      isTourJob: (jobId) => typeof jobId === 'string' && jobId.startsWith('tour-'),
+    }));
     vi.doMock(root + '/lib/services/jobs/run-state.js', () => ({
       isRunning: () => false,
       markRunning: (id) => {
@@ -209,6 +212,42 @@ describe('services/jobs/jobExecutionService', () => {
     expect(calls.launchBrowser).toEqual([['https://api.example/', {}]]);
     expect(calls.pipeline.map(({ browser }) => browser)).toEqual([state.browser, state.browser, state.browser]);
     expect(calls.closeBrowser).toEqual([state.browser]);
+  });
+
+  describe('onboarding tour', () => {
+    const tourJob = {
+      id: 'tour-u1',
+      enabled: true,
+      userId: 'u1',
+      provider: [],
+      blacklist: [],
+      notificationAdapter: [],
+    };
+
+    it('never runs the example job on a run-all, even when somebody switched it on', async () => {
+      const realJob = { ...tourJob, id: 'j1' };
+      state.jobsList = [tourJob, realJob];
+      state.jobsById = Object.fromEntries(state.jobsList.map((job) => [job.id, job]));
+      state.users = [{ id: 'admin', isAdmin: true }];
+
+      await initService();
+      bus.emit('jobs:runAll', { userId: 'admin' });
+      await vi.waitFor(() => expect(calls.markFinished).toEqual(['j1']));
+
+      expect(calls.markRunning).toEqual(['j1']);
+    });
+
+    it('refuses a manual run of the example job, which ignores the enabled flag otherwise', async () => {
+      state.jobsList = [tourJob];
+      state.jobsById = { [tourJob.id]: tourJob };
+
+      await initService();
+      bus.emit('jobs:runOne', { jobId: tourJob.id });
+      await new Promise((resolve) => setTimeout(resolve, 20));
+
+      expect(calls.markRunning).toEqual([]);
+      expect(calls.lastRunUpdates).toEqual([]);
+    });
   });
 
   describe('demo mode', () => {

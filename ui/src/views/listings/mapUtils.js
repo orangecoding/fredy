@@ -3,6 +3,8 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
+import { parseCommuteFilter } from '../../components/transit/travelTimeFormat.js';
+
 /**
  * Calculates the great-circle distance between two points on a sphere using the Haversine formula.
  *
@@ -168,4 +170,30 @@ export const getBoundsFromCoords = (coords, padding = 0.1) => {
     [minLng - lngDiff * padding, minLat - latDiff * padding],
     [maxLng + lngDiff * padding, maxLat + latDiff * padding],
   ];
+};
+
+/**
+ * How many of the map's filters are hiding pins right now.
+ *
+ * What the folded panel on a phone shows on its heading, for the reason `FilterButton` gives: a
+ * filter left on behind a closed panel otherwise explains an emptier map with nothing on screen to
+ * say so. The filters live in the address bar and survive the trip to a listing and back, so the
+ * panel folding shut on the way back is exactly when this matters.
+ *
+ * Counted is what `filterListings` and the job selection actually apply, and nothing else. The
+ * distance ring recolours pins rather than hiding them, so it is not a filter in this sense. A
+ * commute value the parser rejects hides nothing and does not count, and the price range is one
+ * filter whichever of its two ends is set.
+ *
+ * @param {Object} filters
+ * @param {string|null} filters.jobId
+ * @param {string|null} filters.commute - The `commute` URL value, e.g. `transit:30`.
+ * @param {number|null} filters.priceMin - The `priceMin` URL value, null when absent.
+ * @param {number|null} filters.priceMax - The `priceMax` URL value, null when absent.
+ * @returns {number}
+ */
+export const countActiveMapFilters = ({ jobId, commute, priceMin, priceMax }) => {
+  const bounded = (value) => Number.isFinite(value) && value > 0;
+  const active = [jobId != null, parseCommuteFilter(commute) != null, bounded(priceMin) || bounded(priceMax)];
+  return active.filter(Boolean).length;
 };

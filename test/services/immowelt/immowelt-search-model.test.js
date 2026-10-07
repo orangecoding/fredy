@@ -204,6 +204,46 @@ describe('#immowelt search model', () => {
 
 // The values in here are what immowelt itself put in the url and sent to `/serp-bff/search` for a
 // search area drawn on the map at Dresden.
+// SeLoger runs on the same platform and spells its searches in the same model, down to the
+// place ids, which carry their country inside them.
+describe('#immowelt search model, on SeLoger', () => {
+  const SELOGER = 'https://www.seloger.com/classified-search';
+
+  it("translates a SeLoger search, with the portal list SeLoger's model carries", () => {
+    const { criteria } = convertSearchUrlToRequest(
+      `${SELOGER}?distributionTypes=Rent&estateTypes=Apartment&locations=AD08FR31096&portals=SL&priceMax=1500`,
+    );
+
+    expect(criteria).toEqual({
+      portals: ['SL'],
+      distributionTypes: ['Rent'],
+      estateTypes: ['Apartment'],
+      location: { placeIds: ['AD08FR31096'] },
+      priceMax: 1500,
+    });
+  });
+
+  // SeLoger's alert mails and partner links carry AT Internet's tags, and an ad click Google's or
+  // Microsoft's. None of them narrows the search, and each one used to stop the job as an
+  // untranslatable filter.
+  it('ignores the campaign tags a SeLoger link picks up', () => {
+    const { criteria } = convertSearchUrlToRequest(
+      `${SELOGER}?distributionTypes=Rent&locations=AD08FR31096&xtor=EPR-123&at_medium=email&gclid=x&fbclid=y&msclkid=z`,
+    );
+
+    expect(criteria).toEqual({ distributionTypes: ['Rent'], location: { placeIds: ['AD08FR31096'] } });
+  });
+
+  // A SeLoger user told their "Immowelt search url" is broken would conclude they pasted the
+  // wrong thing. The url says which portal it is from, so no caller can forget to say it.
+  it('names the portal the url is from in what it refuses', () => {
+    expect(() => convertSearchUrlToRequest(`${SELOGER}?distributionTypes=Rent`)).toThrow(
+      /^SeLoger search url carries no 'locations'/,
+    );
+    expect(() => convertSearchUrlToRequest(`${BASE}?distributionTypes=Rent`)).toThrow(/^Immowelt search url/);
+  });
+});
+
 describe('#immowelt search model, map searches', () => {
   const DRAWN = 'eyJkcmF3aW5ncyI6WyJhaHt2SG1geHJBP2l2SWpgQz8_aHZJa2BDPyJdfQ';
   const POLYLINE = 'ah{vHm`xrA?ivIj`C??hvIk`C?';

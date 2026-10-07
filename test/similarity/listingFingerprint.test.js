@@ -323,3 +323,95 @@ describe('listingFingerprint', () => {
     });
   });
 });
+
+/**
+ * The French portals quote a rent per advert either charges comprises or hors charges, and the
+ * providers store what each one states: leboncoin and Bien'ici the rent without the charges where
+ * the advert gives them, SeLoger the headline its card shows. Compared as bare numbers, the same
+ * flat on two of them was two flats.
+ */
+describe('isLikelyDuplicate, rents with and without the charges', () => {
+  // The recorded flat near rue de Wattignies, Paris 12e: 1 190 € charges comprises, 50 € of it
+  // charges, on leboncoin and on SeLoger at once.
+  const leboncoin = {
+    jobId: 'job-fr',
+    provider: 'leboncoin',
+    title: 'Appartement 2 pièces 37 m²',
+    address: 'Nation - Picpus, 75012 Paris',
+    price: 1140,
+    chargesIncluded: false,
+    charges: 50,
+    size: 37,
+    rooms: 2,
+    description: null,
+  };
+  const seloger = {
+    jobId: 'job-fr',
+    provider: 'seloger',
+    title: 'Appartement à louer',
+    address: '75012 Vallée de Fécamp, Paris',
+    price: 1190,
+    chargesIncluded: true,
+    size: 37,
+    rooms: 2,
+    description: null,
+  };
+
+  it('compares the two rents on the basis both portals know', () => {
+    expect(duplicateOf(leboncoin, seloger)).toBe(true);
+  });
+
+  it('keeps apart two flats whose rents differ on that basis', () => {
+    expect(duplicateOf(leboncoin, { ...seloger, price: 1290 })).toBe(false);
+  });
+
+  it('compares the rents without the charges where both sides know those', () => {
+    const bienici = { ...seloger, provider: 'bienici', price: 1190, charges: 45 };
+    expect(duplicateOf({ ...leboncoin, charges: 5, price: 1145 }, bienici)).toBe(true);
+  });
+
+  // A rent whose basis nobody stated is compared as the bare number it always was.
+  it('leaves a rent of unknown basis to the bare comparison', () => {
+    const unknown = { ...seloger, chargesIncluded: undefined };
+    expect(duplicateOf(leboncoin, unknown)).toBe(false);
+    expect(duplicateOf(leboncoin, { ...unknown, price: 1140 })).toBe(true);
+  });
+});
+
+/**
+ * Every language's listing headlines carry the same few filler words - the property type, "bright",
+ * "quiet", "with", "near the centre". The German ones were always noise to the title check; left in
+ * for the other languages, they let two different flats that share a postcode, a size and a room
+ * count vouch for each other through words that say nothing about either.
+ */
+describe('isLikelyDuplicate, headlines in the other languages', () => {
+  const pair = (provider, title, other) => [
+    { jobId: 'job-x', provider, title, address: '75011 Paris', price: 850, size: 20, rooms: 1, description: null },
+    {
+      jobId: 'job-x',
+      provider: `${provider}-other`,
+      title: other,
+      address: '75011 Paris',
+      price: 990,
+      size: 20,
+      rooms: 1,
+      description: null,
+    },
+  ];
+
+  it.each([
+    ['french', 'Studio meublé proche métro', 'Studio meublé proche gare'],
+    ['french', 'Appartement lumineux avec balcon', 'Appartement calme avec balcon'],
+    ['italian', 'Bilocale arredato con balcone', 'Bilocale luminoso con balcone'],
+    ['spanish', 'Piso luminoso con terraza', 'Piso reformado con terraza'],
+    ['portuguese', 'Apartamento mobilado com varanda', 'Apartamento remodelado com varanda'],
+  ])('does not take the filler of %s headlines for the same flat', (_, first, second) => {
+    expect(duplicateOf(...pair('a', first, second))).toBe(false);
+  });
+
+  it('still reads a distinctive shared headline as the same flat', () => {
+    expect(
+      duplicateOf(...pair('a', 'Studio rue Oberkampf vue Sacré-Cœur', 'Studio vue Sacré-Cœur, rue Oberkampf')),
+    ).toBe(true);
+  });
+});
