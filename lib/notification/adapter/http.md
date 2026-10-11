@@ -42,6 +42,17 @@ Body:
 
 </details>
 
+### Picture galleries
+
+Where the provider already has a listing's pictures (from the search result, or from the detail page when "provider details" is enabled), the entry also carries them as `images`, floor plans first and at most 20; otherwise the field is left out.
+
+```json
+"images": [
+  { "url": "https://<target-url>.com/listings/123456789-plan.jpg", "caption": "Grundriss", "floorPlan": true },
+  { "url": "https://<target-url>.com/listings/123456789-2.jpg", "caption": "Wohnzimmer" }
+]
+```
+
 ### Price changes
 
 When price tracking is enabled (Settings > Price tracking, off by default), price changes are POSTed to the same endpoint under an `event: "priceChange"` discriminator, with the entries under `priceChanges` rather than `listings`. Each entry carries `oldPrice`, `newPrice`, `changePercent` and `direction` alongside the usual listing fields. A receiver written before this existed keeps parsing `listings` exactly as before.
