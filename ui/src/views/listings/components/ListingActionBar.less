@@ -106,7 +106,14 @@
     background: @color-border;
   }
 
+  // Blue rather than the red accent: red is what deleting looks like, and applying is not a warning.
+  // Semi colours the button through --semi-color-primary, so the variable is redirected here.
   &__primary {
+    --semi-color-primary: @color-info;
+    --semi-color-primary-hover: color-mix(in oklab, @color-info 85%, black);
+    --semi-color-primary-active: color-mix(in oklab, @color-info 85%, black);
+    --semi-color-primary-light-active: rgb(@color-info-rgb / 22%);
+
     padding: 0 @space-5 !important;
     font-weight: 600 !important;
   }
