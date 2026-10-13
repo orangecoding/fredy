@@ -25,15 +25,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     fonts-ipafont-gothic fonts-wqy-zenhei fonts-tlwg-loma-otf \
     python3 make g++ \
   && rm -rf /var/lib/apt/lists/* \
-  && mkdir -p /db /conf /fredy
+  && mkdir -p /db /conf /fredy /home/node/.config /home/node/.cache \
+  && chown -R node:node /fredy /db /conf /home/node
 
 WORKDIR /fredy
+
 
 ENV NODE_ENV=production \
     IS_DOCKER=true \
     CLOAKBROWSER_SUPPRESS_FONT_WARNING=1
 
-COPY package.json yarn.lock ./
+COPY --chown=node:node package.json yarn.lock ./
+
+USER node
 
 # Install dependencies and purge build tools (only needed to compile better-sqlite3)
 RUN yarn config set network-timeout 600000 \
@@ -47,23 +51,31 @@ RUN node -e "const D = require('better-sqlite3'); new D(':memory:').close()"
 # Pre-download the CloakBrowser stealth Chromium binary (supports x86_64 and arm64)
 RUN node -e "import('cloakbrowser').then(({ensureBinary}) => ensureBinary())"
 
+USER root
+
 # Purge build tools now that native modules are compiled
 RUN apt-get purge -y python3 make g++ \
   && apt-get autoremove -y \
   && rm -rf /var/lib/apt/lists/*
 
-COPY index.html vite.config.js ./
+COPY --chown=node:node index.html vite.config.js ./
 # Static files Vite copies into the build as they are, such as the onboarding tour's pictures.
-COPY public ./public
-COPY ui ./ui
-COPY lib ./lib
+COPY --chown=node:node public ./public
+COPY --chown=node:node ui ./ui
+COPY --chown=node:node lib ./lib
 
+USER node
 RUN yarn build:frontend
 
-COPY index.js ./
+COPY --chown=node:node index.js ./
 
+
+USER root
 RUN ln -s /db /fredy/db \
   && ln -s /conf /fredy/conf
+
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod 755 /usr/local/bin/docker-entrypoint.sh
 
 EXPOSE 9998
 VOLUME /db
@@ -72,14 +84,6 @@ VOLUME /conf
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
   CMD curl -f http://localhost:9998/ || exit 1
 
-# Run node under tini instead of as pid 1.
-#
-# Chromium spawns helper processes (crashpad handler, gpu, and - because of --no-zygote - one
-# process per renderer). Whenever the browser process dies before them, e.g. when a page crashes
-# it or Puppeteer has to kill it, those helpers are reparented to pid 1. libuv only waits for the
-# pids node itself spawned, so a node running as pid 1 never reaps them and every failed scrape
-# left two more `[chrome] <defunct>` entries behind until the container hit the pid limit.
-# tini reaps whatever it inherits and forwards signals (-g: to the whole process group), so
-# shutdown keeps working as before.
-ENTRYPOINT ["/usr/bin/tini", "-g", "--"]
+
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["node", "index.js"]

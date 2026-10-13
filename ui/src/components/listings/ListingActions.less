@@ -16,6 +16,17 @@
     border-radius: @radius-chip !important;
   }
 
+  // Blau statt Akzentrot: Rot ist die Farbe von Loeschen, und die Bewerbung ist keine Warnung.
+  // Semi faerbt den Knopf ueber --semi-color-primary, also wird die Variable hier umgebogen.
+  &__apply {
+    --semi-color-primary: @color-info;
+    --semi-color-primary-hover: color-mix(in oklab, @color-info 85%, black);
+    --semi-color-primary-active: color-mix(in oklab, @color-info 85%, black);
+    --semi-color-primary-light-default: rgb(@color-info-rgb / 12%);
+    --semi-color-primary-light-hover: rgb(@color-info-rgb / 18%);
+    --semi-color-primary-light-active: rgb(@color-info-rgb / 22%);
+  }
+
   // Die Kachel hat Platz fuer das Wort, und die Bewerbung ist die Aktion, wegen der man ein
   // Inserat ueberhaupt aufmacht. Outline statt solid: zwanzig gefuellte Knoepfe in einem Raster
   // sind kein hervorgehobener Knopf mehr, sondern eine Tapete.
