@@ -249,6 +249,29 @@ describe('refetchListingDetails', () => {
 
     expect(Object.keys(result.fields)).toEqual(['description']);
   });
+
+  it('hands back the gallery the detail page carried, leaving the fields to say what changed', async () => {
+    const images = [{ url: 'https://pics.test/1.jpg' }, { url: 'https://pics.test/plan.jpg', floorPlan: true }];
+    state.providers = [providerModule('testportal', async (listing) => ({ ...listing, images }))];
+
+    const result = await refetchListingDetails(row);
+
+    // Whether the gallery is new is for storage to say; the text did not change.
+    expect(result.status).toBe('unchanged');
+    expect(result.images).toEqual(images);
+  });
+
+  it('hands back no gallery for a page without one, or one that failed', async () => {
+    state.providers = [providerModule('testportal', async (listing) => listing)];
+    expect((await refetchListingDetails(row)).images).toEqual([]);
+
+    state.providers = [
+      providerModule('testportal', async () => {
+        throw new Error('blocked');
+      }),
+    ];
+    expect((await refetchListingDetails(row)).images).toEqual([]);
+  });
 });
 
 describe('refetchListingDetailsOnce', () => {

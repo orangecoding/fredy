@@ -27,6 +27,7 @@ function source(relative) {
 
 const actionBar = source('components/ListingActionBar.jsx');
 const detail = source('ListingDetail.jsx');
+const pictures = source('components/ListingPictures.jsx');
 const workspace = source('components/ListingWorkspace.jsx');
 
 describe('listing detail action hierarchy', () => {
@@ -61,8 +62,13 @@ describe('listing detail action hierarchy', () => {
       expect(at, control).toBeGreaterThan(-1);
       expect(actionBar.slice(at - 300, at + 300), control).toContain('aria-label');
     }
-    const expand = detail.indexOf('listing-detail__image-expand');
-    expect(detail.slice(expand, expand + 300)).toContain('aria-label');
+    const expand = pictures.indexOf('listing-detail__image-expand');
+    expect(expand).toBeGreaterThan(-1);
+    expect(pictures.slice(expand, expand + 300)).toContain('aria-label');
+    // The gallery's thumbnails are pictures and nothing else, so each says which one it shows.
+    const thumb = pictures.indexOf('listingPictures__thumb');
+    expect(thumb).toBeGreaterThan(-1);
+    expect(pictures.slice(thumb, thumb + 300)).toContain('aria-label');
   });
 
   it('states the watch button as a toggle rather than only colouring it', () => {

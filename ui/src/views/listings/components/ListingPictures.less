@@ -1,0 +1,97 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../../tokens.less';
+
+/* The large picture keeps its `listing-detail__image` styles in ListingDetail.less; only what the
+   gallery adds around it lives here. */
+.listingPictures {
+  /* Sits on a photograph, like the expand button opposite it, so its scrim is one of the literals
+     the palette does not own. */
+  &__count {
+    position: absolute;
+    left: @space-3;
+    bottom: @space-3;
+    z-index: 2;
+    padding: 2px @space-2;
+    border-radius: @radius-pill;
+    font-size: @text-sm;
+    font-variant-numeric: tabular-nums;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.6);
+    pointer-events: none;
+  }
+
+  &__strip {
+    display: flex;
+    gap: @space-2;
+    margin-top: @space-2;
+    padding-bottom: @space-1;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  &__thumb {
+    position: relative;
+    flex: 0 0 auto;
+    width: 88px;
+    height: 66px;
+    padding: 0;
+    overflow: hidden;
+    border: 2px solid transparent;
+    border-radius: @radius-chip;
+    background: @color-fill-subtle;
+    cursor: pointer;
+    scroll-snap-align: start;
+    opacity: 0.75;
+    transition:
+      opacity @transition-fast,
+      border-color @transition-fast;
+
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    &:hover,
+    &:focus-visible {
+      opacity: 1;
+    }
+
+    &:focus-visible {
+      outline: 2px solid @color-accent;
+      outline-offset: 1px;
+    }
+
+    &--active {
+      opacity: 1;
+      border-color: @color-accent;
+    }
+
+    @media (max-width: 768px) {
+      width: 72px;
+      height: 54px;
+    }
+  }
+
+  &__badge {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 1px @space-1;
+    font-size: @text-xs;
+    line-height: 1.4;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.6);
+  }
+}

@@ -48,6 +48,10 @@ RUN yarn config set network-timeout 600000 \
 # sqlite binding can't be dlopen'd on this base image's glibc
 RUN node -e "const D = require('better-sqlite3'); new D(':memory:').close()"
 
+# Same for sharp, which shrinks the listing pictures Fredy keeps. Fredy would still start without
+# it, but would then keep pictures only as the portal serves them, and none above 512 KB.
+RUN node -e "require('sharp')"
+
 # Pre-download the CloakBrowser stealth Chromium binary (supports x86_64 and arm64)
 RUN node -e "import('cloakbrowser').then(({ensureBinary}) => ensureBinary())"
 

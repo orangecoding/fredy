@@ -6,6 +6,7 @@
 import { Link } from 'react-router';
 import { IconBriefcase, IconMapPin, IconPaperclip } from '@douyinfe/semi-icons';
 import no_image from '../../../assets/no_image.png';
+import { listingPictureSrc } from '../../../services/listings/listingPictures.js';
 import { formatEuroPrice } from '../../../services/price/priceService.js';
 import * as timeService from '../../../services/time/timeService.js';
 import StatusControl from '../../listings/StatusControl.jsx';
@@ -58,7 +59,7 @@ const ListingsGrid = ({
             {/* Decorative: the title says the same thing one line below, and alt={item.title} made
                 a screen reader read every headline twice. */}
             <img
-              src={item.image_url || no_image}
+              src={listingPictureSrc(item) ?? no_image}
               alt=""
               onError={(e) => {
                 e.target.src = no_image;

@@ -40,7 +40,7 @@ describe('map popups built from strings', () => {
 
   it('escapes the image URL and the formatted numbers of the listing popup', () => {
     const popup = read('ui/src/views/listings/listingPopupContent.jsx');
-    expect(popup).toMatch(/src="\$\{escapeHtml\(listing\.image_url/);
+    expect(popup).toMatch(/src="\$\{escapeHtml\(listingPictureSrc\(listing\)/);
     expect(popup).toMatch(/escapeHtml\(formatEuroPrice\(/);
     expect(popup).toMatch(/escapeHtml\(formatDecimal\(/);
     expect(popup).not.toMatch(/src="\$\{listing\.image_url\}"/);

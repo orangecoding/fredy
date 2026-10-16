@@ -28,6 +28,10 @@ vi.mock('../lib/services/sse/sse-broker.js', () => ({
   },
 }));
 vi.mock('../lib/notification/notify.js', () => ({ send }));
+// Keeping a listing's first picture downloads it in the background, after the pipeline has already
+// returned. A provider suite has no database to keep it in and must not leave work running past its
+// own end, so the queue only records what it was handed.
+vi.mock('../lib/services/listings/previewCaptureQueue.js', () => ({ enqueuePreviewCapture: vi.fn() }));
 
 vi.mock('../lib/services/extractor/puppeteerExtractor.js', async (importOriginal) => {
   if (process.env.TEST_MODE !== 'offline') {

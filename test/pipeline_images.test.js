@@ -57,4 +57,31 @@ describe('listing images', () => {
     expect(without).not.toHaveProperty('images');
     expect(without.imageUrl).toBe('http://example.com/none.jpg');
   });
+
+  it('queue the first picture of every listing that survived the filters to be kept', async () => {
+    const Fredy = await mockFredy();
+    // Mocked in test/utils.js: the download would otherwise run past the end of the test.
+    const { enqueuePreviewCapture } = await import('../lib/services/listings/previewCaptureQueue.js');
+    vi.mocked(enqueuePreviewCapture).mockClear();
+
+    await new Fredy(
+      {
+        url: 'http://example.com',
+        getListings: () => Promise.resolve([listing('kept'), { ...listing('blank'), image: null }]),
+        normalize: (l) => l,
+        filter: () => true,
+        crawlFields: { id: 'id', title: 'title', address: 'address', price: 'price' },
+        requiredFieldNames: ['id', 'title', 'address', 'price'],
+      },
+      { id: 'job-previews', notificationAdapter: null, specFilter: null, spatialFilter: null },
+      'images',
+      { checkAndAddEntry: () => false },
+      undefined,
+    ).execute();
+
+    expect(vi.mocked(enqueuePreviewCapture).mock.calls).toEqual([
+      ['kept', 'http://example.com/kept.jpg'],
+      ['blank', null],
+    ]);
+  });
 });

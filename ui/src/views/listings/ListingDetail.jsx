@@ -6,14 +6,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useSelector, useActions } from '../../services/state/store.js';
-import { Banner, Button, Image, Space, Spin, Toast, Typography } from '@douyinfe/semi-ui-19';
-import { IconMaximize } from '@douyinfe/semi-icons';
+import { Banner, Button, Space, Spin, Toast, Typography } from '@douyinfe/semi-ui-19';
 
 import maplibregl from '../../components/map/maplibre.js';
 import { MARKER_COLORS } from '../../components/map/markerColors.js';
 import { useProviderCountries } from '../../hooks/useProviderCountries.js';
 import { PHONE_BREAKPOINT, useScreenWidth } from '../../hooks/screenWidth.js';
-import no_image from '../../assets/no_image.png';
 import { getBoundsFromCoords } from './mapUtils.js';
 import { escapeHtml } from './listingPopupContent.jsx';
 import { applyRouteLayers, buildRouteData, placeTargets } from './detailMapLayers.js';
@@ -25,6 +23,7 @@ import ApplicationModal from './components/ApplicationModal.jsx';
 
 import IconEuro from '../../components/icons/IconEuro.jsx';
 import ScamPanel from './components/ScamPanel.jsx';
+import ListingPictures from './components/ListingPictures.jsx';
 import ListingFinanceCard from './components/ListingFinanceCard.jsx';
 import NearbyStops from '../../components/transit/NearbyStops.jsx';
 import ConnectivityCard from '../../components/connectivity/ConnectivityCard.jsx';
@@ -109,7 +108,6 @@ export default function ListingDetail() {
   const [loading, setLoading] = useState(true);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [applicationVisible, setApplicationVisible] = useState(false);
-  const [imagePreview, setImagePreview] = useState(false);
   const [notesDraft, setNotesDraft] = useState('');
   const [notesSaving, setNotesSaving] = useState(false);
   const [priceHistory, setPriceHistory] = useState([]);
@@ -525,35 +523,7 @@ export default function ListingDetail() {
 
       <div className="listing-detail__grid">
         <div className="listing-detail__main">
-          <section className="listing-detail__media listing-detail__sec--media">
-            <div className={`listing-detail__image${!listing.image_url ? ' listing-detail__image--placeholder' : ''}`}>
-              <Image
-                src={listing.image_url ?? no_image}
-                fallback={<img src={no_image} alt={t('listing.detail.noImageAlt')} />}
-                alt={listing.title || t('listing.detail.defaultTitle')}
-                style={{ width: '100%', height: '100%' }}
-                preview={listing.image_url ? { visible: imagePreview, onVisibleChange: setImagePreview } : false}
-              />
-              {/* A plain button rather than a Semi one: it sits on a photograph, so its colours
-                  are the scrim's and not the theme's, and fighting a component's own palette with
-                  `!important` to get there is the worse trade. */}
-              {listing.image_url && (
-                <button
-                  type="button"
-                  className="listing-detail__image-expand"
-                  aria-label={t('listing.detail.expandImage')}
-                  onClick={() => setImagePreview(true)}
-                >
-                  <IconMaximize aria-hidden="true" />
-                </button>
-              )}
-            </div>
-            {!listing.image_url && (
-              <Text type="tertiary" size="small" className="listing-detail__image-note">
-                {t('listing.detail.noImageAlt')}
-              </Text>
-            )}
-          </section>
+          <ListingPictures listing={listing} />
 
           <div className="listing-detail__sec--description">
             <PhoneCollapse

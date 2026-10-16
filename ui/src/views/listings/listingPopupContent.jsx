@@ -6,6 +6,7 @@
 import { renderToString } from 'react-dom/server';
 import { IconChevronLeft, IconChevronRight } from '@douyinfe/semi-icons';
 import no_image from '../../assets/no_image.png';
+import { listingPictureSrc } from '../../services/listings/listingPictures.js';
 import { availableModes, formatMinutes, hasAnyTime } from '../../components/transit/travelTimeFormat.js';
 import { formatEuroPrice } from '../../services/price/priceService.js';
 import { formatDecimal } from '../../services/number/numberService.js';
@@ -201,7 +202,7 @@ function renderListingBody(listing, index, total, t, locale) {
   return `
     ${pager}
     <img
-      src="${escapeHtml(listing.image_url || no_image)}"
+      src="${escapeHtml(listingPictureSrc(listing) ?? no_image)}"
       onerror="this.onerror=null;this.src='${no_image}'"
     />
     <a class="map-popup-content__title" href="#/listings/listing/${encodeURIComponent(listing.id)}">${escapeHtml(listing.title)}</a>

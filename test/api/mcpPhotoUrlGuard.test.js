@@ -11,12 +11,16 @@ vi.mock('../../lib/services/storage/listingsStorage.js', () => ({
   queryListings: vi.fn(() => ({ totalNumber: 0, page: 1, result: [] })),
   getListingById: vi.fn(),
 }));
+vi.mock('../../lib/services/storage/listingMediaStorage.js', () => ({
+  getListingPicture: vi.fn(() => null),
+}));
 vi.mock('../../lib/mcp/mcpAuthentication.js', () => ({
   authenticateToolCall: vi.fn(() => ({ user: { id: 'u1', isAdmin: false } })),
   checkJobAccess: vi.fn(() => true),
 }));
 
 import { getListingById } from '../../lib/services/storage/listingsStorage.js';
+import { getListingPicture } from '../../lib/services/storage/listingMediaStorage.js';
 import { createMcpServer } from '../../lib/mcp/mcpAdapter.js';
 
 async function callTool(name, args) {
@@ -72,6 +76,40 @@ describe('get_photo_for_listing URL guard', () => {
 
     expect(fetchSpy).toHaveBeenCalledWith('https://pic.example.com/flat.png', expect.any(Object));
     expect(result.content[0]).toMatchObject({ type: 'image', mimeType: 'image/png' });
+    fetchSpy.mockRestore();
+  });
+});
+
+/*
+ * A picture Fredy already keeps is handed over as it is: no request, and still there after the
+ * portal has taken the advert down - which is when somebody asks a model about it.
+ */
+describe('get_photo_for_listing with a kept picture', () => {
+  it('answers from the database without fetching', async () => {
+    const fetchSpy = vi.spyOn(globalThis, 'fetch');
+    const webp = Buffer.from('RIFF\0\0\0\0WEBPVP8 ');
+    getListingById.mockReturnValue({ id: 'l1', title: 'Nice flat', image_url: 'https://pic.example.com/gone.jpg' });
+    getListingPicture.mockReturnValueOnce({ content: webp, mimeType: 'image/webp', imageUrl: null, failedAt: null });
+
+    const result = await callTool('get_photo_for_listing', { listingId: 'l1' });
+
+    expect(result.content[0]).toEqual({ type: 'image', mimeType: 'image/webp', data: webp.toString('base64') });
+    expect(fetchSpy).not.toHaveBeenCalled();
+    fetchSpy.mockRestore();
+  });
+
+  it('follows no redirect onto a private address', async () => {
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
+      ok: false,
+      status: 302,
+      headers: { get: (name) => (name === 'location' ? 'http://192.168.1.1/admin' : null) },
+    });
+    getListingById.mockReturnValue({ id: 'l1', title: 'Nice flat', image_url: 'https://pic.example.com/flat.png' });
+
+    const text = textOf(await callTool('get_photo_for_listing', { listingId: 'l1' }));
+
+    expect(text).toContain('Refusing to fetch this image');
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
     fetchSpy.mockRestore();
   });
 });
