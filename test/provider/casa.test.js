@@ -144,6 +144,29 @@ describe.each(searchShapes)('#casa provider testsuite() - $shape', ({ shape, sou
   });
 });
 
+describe('the photo an advert is shown with', () => {
+  /** Media items as both sources carry them: photos by path, everything else as a full url. */
+  const video = { uri: 'https://st3v.idealista.it/06/0b/fd/hd_847481925.mp4', type: 'videostream' };
+  const tour = { uri: 'https://floorfy.com/tour/123', type: 'floorfy' };
+  const photo = { uri: '/listing/0/a9/2c/e7/848505573.jpg', type: 'photo' };
+
+  const advert = (items) => provider.config.normalize({ listing_id: 1, media: { items } });
+  const entry = (items) => provider.config.normalize({ id: 1, media: { items } });
+
+  it('skips the videos and tours a gallery can lead with', () => {
+    // A video's uri is a full url on another host, and gluing the cdn in front of it gave
+    // `images-1.casa.it/800x600https://…mp4`.
+    const expected = 'https://images-1.casa.it/800x600/listing/0/a9/2c/e7/848505573.jpg';
+    expect(advert([video, tour, photo]).image).toBe(expected);
+    expect(entry([video, tour, photo]).image).toBe(expected);
+  });
+
+  it('has no image for an advert that carries no photo', () => {
+    expect(advert([video, tour]).image).toBeNull();
+    expect(entry([video]).image).toBeNull();
+  });
+});
+
 describe('the result pages casa.it spreads a search over', () => {
   /** A store carrying one advert, in whichever half the search shape fills. */
   const store = (half, totalPages) =>

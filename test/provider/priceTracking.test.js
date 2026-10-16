@@ -30,11 +30,11 @@ const EXPECTED_DETAIL_PRICE = {
   deutscheWohnen: 692,
   engelVoelkers: 24900000,
   imaxx: 526000,
-  immobilienDe: 395,
+  immobilienDe: 1092,
   kleinanzeigen: 195000,
   schwarzesbrett: 700,
   sparkasse: 410000,
-  wgGesucht: 590,
+  wgGesucht: 620,
 };
 
 /**

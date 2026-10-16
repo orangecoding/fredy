@@ -79,7 +79,7 @@ describe('listing images', () => {
 
   it('takes the immobilien.de gallery from the search page', () => {
     const [listing] = immobilienDe.parseListings(fixture('immobilienDe.html')).map(immobilienDe.config.normalize);
-    expect(listing.images).toHaveLength(7);
+    expect(listing.images).toHaveLength(13);
     expect(listing.images[0].url).toBe(listing.image);
   });
 

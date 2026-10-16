@@ -22,7 +22,7 @@ const testProviderConfig = JSON.parse(readFileSync(TEST_PROVIDER_PATH, 'utf-8'))
  * Providers whose list page fixture is html based and whose detail page fixture is derived from it.
  * These are exactly the selector shapes that used to break the fixture downloader:
  *  - kleinanzeigen: attribute containing a dash (`.aditem@data-href`)
- *  - wgGesucht: selector that only resolves correctly when scoped to the crawl container (`a@href`)
+ *  - wgGesucht: an attribute of the crawl container itself (`@href`), since each card is the link
  *
  * Immowelt and immobilien.de used to be here too. Neither reads its listings out of the markup any
  * more - immowelt asks its search BFF, immobilien.de reads the payload its Next.js pages ship - so
