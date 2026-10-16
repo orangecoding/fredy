@@ -41,15 +41,22 @@ describe('place categories', () => {
   it('looks for bus stops by the stop pole rather than by platform', () => {
     // `public_transport=platform` alone also matches tram and railway platforms, and German bus
     // stops carry `highway=bus_stop` whether or not they also carry the newer scheme.
-    expect(PLACE_CATEGORIES.busStop.tags).toEqual([['highway', 'bus_stop']]);
+    expect(PLACE_CATEGORIES.busStop.tags).toEqual([{ highway: 'bus_stop' }]);
   });
 
   it('counts an unstaffed halt as a train station', () => {
     // Most S-Bahn and regional stops are `railway=halt`; asking only for `station` would answer
     // "the nearest train station" with the Hauptbahnhof across town.
-    expect(PLACE_CATEGORIES.trainStation.tags).toEqual([
-      ['railway', 'station'],
-      ['railway', 'halt'],
+    expect(PLACE_CATEGORIES.trainStation.tags).toEqual([{ railway: 'station' }, { railway: 'halt' }]);
+  });
+
+  it('looks for the swimming facility rather than the water in it', () => {
+    // `leisure=swimming_pool` is the basin, garden pools included, so the nearest one would often be
+    // a private back yard. A public pool, indoor or outdoor, is the sports centre around it.
+    expect(isPlaceCategory('swimmingPool')).toBe(true);
+    expect(PLACE_CATEGORIES.swimmingPool.tags).toEqual([
+      { leisure: 'sports_centre', sport: 'swimming' },
+      { leisure: 'sports_hall', sport: 'swimming' },
     ]);
   });
 });

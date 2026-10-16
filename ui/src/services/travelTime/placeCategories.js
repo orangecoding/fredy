@@ -25,6 +25,7 @@ export const PLACE_CATEGORIES = Object.freeze([
   { id: 'kindergarten', icon: '🧸' },
   { id: 'school', icon: '🏫' },
   { id: 'gym', icon: '🏋️' },
+  { id: 'swimmingPool', icon: '🏊' },
   { id: 'park', icon: '🌳' },
   { id: 'restaurant', icon: '🍽️' },
   { id: 'postOffice', icon: '📮' },

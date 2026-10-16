@@ -11,8 +11,8 @@ morning is not the journey at midnight. The day is always the next working day, 
 measured against the same timetable.
 
 Besides your own addresses you can add a **place type** (supermarket, bakery, pharmacy, doctor,
-nursery, school, gym, park, restaurant, post office, bus stop, train station), and every listing is
-measured to the nearest one Fredy can find in OpenStreetMap.
+nursery, school, gym, swimming pool, park, restaurant, post office, bus stop, train station), and
+every listing is measured to the nearest one Fredy can find in OpenStreetMap.
 
 Travel times then show up wherever the distance already did: on listing cards and in the table, in
 the map popup, in your notifications, and on the listing detail page.

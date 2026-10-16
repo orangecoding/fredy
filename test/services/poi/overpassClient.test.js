@@ -127,6 +127,17 @@ describe('the query', () => {
     expect(body).toContain('leisure"="fitness_centre');
     expect(body).toContain('amenity"="gym');
   });
+
+  it('asks for every tag of an entry on the same element', async () => {
+    responses = [answer(200, { elements: [] })];
+    await client.findPlaces({ category: 'swimmingPool', lat: 52.5, lng: 13.4, radiusMeters: 1000 });
+
+    // Two clauses would be every sports centre plus everything with a swimming tag, which is
+    // neither: the pool is the sports centre that is about swimming.
+    expect(queryOf(requests[0].body)).toContain(
+      'nwr["leisure"="sports_centre"]["sport"="swimming"](around:1000,52.5,13.4);',
+    );
+  });
 });
 
 describe('the answer', () => {
