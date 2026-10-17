@@ -225,6 +225,47 @@ describe('services/demo/demoService', () => {
     });
   });
 
+  describe('seedDemoProviderDetails', () => {
+    it('lets every demo provider load its detail pages', async () => {
+      const { seedDemoProviderDetails } = await loadService();
+
+      await seedDemoProviderDetails([
+        provider('immoscout', 'Immoscout'),
+        provider('kleinanzeigen', 'Kleinanzeigen'),
+        provider('noDemoUrl', 'Not in the demo'),
+      ]);
+
+      expect(state.userSettings['u-demo'].provider_details).toEqual(['immoscout', 'kleinanzeigen']);
+    });
+
+    it('overwrites whatever was stored before', async () => {
+      state.userSettings['u-demo'] = { provider_details: [] };
+      const { seedDemoProviderDetails } = await loadService();
+
+      await seedDemoProviderDetails([provider('immoscout', 'Immoscout')]);
+
+      expect(state.userSettings['u-demo'].provider_details).toEqual(['immoscout']);
+    });
+
+    it('does nothing when demo mode is off', async () => {
+      state.settings.demoMode = false;
+      const { seedDemoProviderDetails } = await loadService();
+
+      await seedDemoProviderDetails([provider('immoscout', 'Immoscout')]);
+
+      expect(state.userSettings['u-demo']).toBeUndefined();
+    });
+
+    it('does nothing when there is no demo user', async () => {
+      state.users = [];
+      const { seedDemoProviderDetails } = await loadService();
+
+      await seedDemoProviderDetails([provider('immoscout', 'Immoscout')]);
+
+      expect(state.userSettings['u-demo']).toBeUndefined();
+    });
+  });
+
   describe('seedDemoHomeAddress', () => {
     it('seeds the Düsseldorf address with its hardcoded coordinates', async () => {
       const { seedDemoHomeAddress } = await loadService();
@@ -304,6 +345,7 @@ describe('services/demo/demoService', () => {
       await seedDemo([provider('immoscout', 'Immoscout')]);
 
       expect(state.jobs[DEMO_JOB_ID]).toBeDefined();
+      expect(state.userSettings['u-demo'].provider_details).toEqual(['immoscout']);
       expect(state.userSettings['u-demo'].finance_profile).toBeDefined();
       expect(state.userSettings['u-demo'].home_addresses).toBeDefined();
       expect(state.userSettings['u-demo'].theme).toBeUndefined();
