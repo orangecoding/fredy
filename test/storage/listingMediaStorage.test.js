@@ -92,6 +92,47 @@ describe('listing media storage', () => {
       ]);
     });
 
+    it('leaves out the first picture even when the detail page asks for another size of it', () => {
+      const search =
+        'https://pictures.immobilienscout24.de/listings/ba3969a3-72d1-4094-b026-ec9476786b82-2063887398.jpg/ORIG/resize/800x600>/format/webp/quality/80';
+      const expose = (id) =>
+        `https://pictures.immobilienscout24.de/listings/${id}.jpg/ORIG/resize/1500x1000/format/webp/quality/80`;
+      addListing('l1', search);
+
+      media.storeListingGallery(
+        'l1',
+        [{ url: expose('ba3969a3-72d1-4094-b026-ec9476786b82-2063887398') }, { url: expose('second') }],
+        search,
+      );
+
+      expect(media.getListingGallery('l1', search)).toEqual([{ url: expose('second') }]);
+    });
+
+    it('reads a gallery stored with the first picture still in it without that picture', () => {
+      addListing('l1', 'https://cdn.expose.vonovia.de/DeuWo-1.jpg?width=324&crop=4:3');
+      db.prepare(`INSERT INTO listing_media (listing_id, gallery, created_at) VALUES ('l1', ?, 1)`).run(
+        media.encodeGallery([
+          { url: 'https://cdn.expose.vonovia.de/DeuWo-1.jpg?width=960' },
+          { url: 'https://cdn.expose.vonovia.de/DeuWo-2.jpg?width=960' },
+        ]),
+      );
+
+      expect(media.getListingGallery('l1', 'https://cdn.expose.vonovia.de/DeuWo-1.jpg?width=324&crop=4:3')).toEqual([
+        { url: 'https://cdn.expose.vonovia.de/DeuWo-2.jpg?width=960' },
+      ]);
+      // A refetch rewrites it without the duplicate, so storage stops carrying it too.
+      expect(
+        media.storeListingGallery(
+          'l1',
+          [
+            { url: 'https://cdn.expose.vonovia.de/DeuWo-1.jpg?width=960' },
+            { url: 'https://cdn.expose.vonovia.de/DeuWo-2.jpg?width=960' },
+          ],
+          'https://cdn.expose.vonovia.de/DeuWo-1.jpg?width=324&crop=4:3',
+        ),
+      ).toBe(false);
+    });
+
     it('stores the urls in a fraction of their JSON', () => {
       addListing('l1');
       const images = gallery(16);
