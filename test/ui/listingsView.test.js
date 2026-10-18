@@ -233,3 +233,15 @@ describe('contrast', () => {
     expect(code(tableLess)).not.toMatch(/&__amount\s*\{[^}]*@color-success/);
   });
 });
+
+describe('the overview reloads on every value it sends', () => {
+  // The hand-kept dependency list missed the connectivity filters: the chips changed, the listings
+  // did not, and a bulk delete then used a query the page had never been loaded with.
+  it('keys the load on the request it sends rather than on a list of filters', () => {
+    const overview = fs.readFileSync(path.join(root, 'ui/src/components/listings/ListingsOverview.jsx'), 'utf-8');
+    expect(overview).toMatch(
+      /const requestKey = JSON\.stringify\(\{ \.\.\.listingsQuery, page, sortField, sortDir \}\);/,
+    );
+    expect(overview).toMatch(/\}, \[requestKey\]\);/);
+  });
+});

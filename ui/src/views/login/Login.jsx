@@ -8,7 +8,7 @@ import React, { useEffect, useId } from 'react';
 import cityBackground from '../../assets/city_background.jpg';
 import Logo from '../../components/logo/Logo';
 import { xhrPost } from '../../services/xhr';
-import { useLocation, useNavigate } from 'react-router';
+import { useLocation } from 'react-router';
 import { useActions, useSelector } from '../../services/state/store';
 import { Input, Button, Banner } from '@douyinfe/semi-ui-19';
 
@@ -26,7 +26,6 @@ export default function Login() {
   const [pending, setPending] = React.useState(false);
   const { capsLockOn, trackCapsLock, clearCapsLock } = useCapsLock();
   const demoMode = useSelector((state) => state.demoMode.demoMode || false);
-  const navigate = useNavigate();
   const location = useLocation();
   const usernameId = useId();
   const passwordId = useId();
@@ -63,7 +62,6 @@ export default function Login() {
       return;
     }
 
-    await actions.user.getCurrentUser();
     const returnTo = new URLSearchParams(location.search).get('returnTo');
     // OAuth passes a server-relative authorization URL. Restrict this hand-off so the login
     // screen cannot be used as an open redirect.
@@ -71,7 +69,14 @@ export default function Login() {
       window.location.assign(returnTo);
       return;
     }
-    navigate(location.state?.from?.pathname || '/dashboard');
+    // With its query, so a session that ran out on a filtered page comes back to the same filters.
+    const from = location.state?.from;
+    const target = from?.pathname ? `${from.pathname}${from.search ?? ''}` : '/dashboard';
+    // A full start rather than a route change: after a session ran out the store still holds the
+    // previous account's jobs, listings and figures, and the pages would render them until each
+    // answer for the new account came in.
+    window.location.hash = target;
+    window.location.reload();
   };
 
   /** @param {React.KeyboardEvent} e */

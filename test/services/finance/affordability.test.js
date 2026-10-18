@@ -206,6 +206,17 @@ describe('debtFreeAges', () => {
 });
 
 describe('scoreListing', () => {
+  // With a fixed monthly payment the rate is the same at every price; a loan whose rate never covers
+  // its interest used to come out as affordable as any other.
+  it('calls a loan that never pays off unaffordable, even at a fixed payment the budget allows', () => {
+    const fixed = profile({
+      financing: { ...profile().financing, scenarios: [{ id: 'fixed', annualRate: 3.8, monthlyPayment: 1500 }] },
+    });
+    const huge = scoreListing({ price: 2000000 }, fixed);
+    expect(huge.neverPaysOff).toBe(true);
+    expect(huge.verdict).toBe('unaffordable');
+  });
+
   it('scores a listing end to end', () => {
     const result = scoreListing({ id: 'l1', price: 350000, title: 'Haus' }, profile());
 

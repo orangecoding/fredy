@@ -6,6 +6,7 @@
 import { useEffect, useMemo } from 'react';
 import { useSelector } from '../services/state/store';
 import { usesBrowserAdapter } from '../services/notifications/browserAdapter.js';
+import heartIcon from '../assets/heart.png';
 
 /**
  * Deliver browser notifications for jobs that are configured to send them.
@@ -47,7 +48,8 @@ export function useBrowserNotifications() {
         if (data && 'Notification' in window && Notification.permission === 'granted') {
           const notification = new Notification(data.title, {
             body: data.body,
-            icon: data.image || '/ui/src/assets/heart.png',
+            // Imported, so the build serves it: the source path only existed on the dev server.
+            icon: data.image || heartIcon,
           });
           notification.onclick = () => {
             window.focus();

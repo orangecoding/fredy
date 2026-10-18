@@ -98,20 +98,9 @@ const ListingsOverview = () => {
   // One piece of state for every filter. Each control here changes two params at once (its own,
   // plus the page reset), and separate per-key setters would race each other into the URL.
   const { values, setValue, setValues } = useUrlState(sp, LISTINGS_URL_STATE);
-  const {
-    page,
-    sort: sortField,
-    dir: sortDir,
-    q: freeTextFilter,
-    watch: watchListFilter,
-    job: jobNameFilter,
-    active: activityFilter,
-    provider: providerFilter,
-    status: statusFilter,
-    afford: affordabilityFilter,
-    commute: commuteFilter,
-    hidden: hiddenOnly,
-  } = values;
+  // The filters themselves reach the request through `toListingsQuery(values)` below; only what this
+  // component reads on its own is named here.
+  const { page, sort: sortField, dir: sortDir, q: freeTextFilter, hidden: hiddenOnly } = values;
   const setPage = (value) => setValue('page', value);
   const setSortField = (value) => setValue('sort', value);
   const setSortDir = (value) => setValue('dir', value);
@@ -157,23 +146,14 @@ const ListingsOverview = () => {
     });
   };
 
+  // Keyed on the request itself rather than on a hand-kept list of filters: the list missed the four
+  // connectivity filters, so setting one changed the chips but not the listings, and a bulk delete
+  // then went out with a query the visible page had never been loaded with.
+  const requestKey = JSON.stringify({ ...listingsQuery, page, sortField, sortDir });
   useEffect(() => {
     loadData();
     setNewAvailableCount(0);
-  }, [
-    page,
-    sortField,
-    sortDir,
-    freeTextFilter,
-    providerFilter,
-    activityFilter,
-    jobNameFilter,
-    watchListFilter,
-    statusFilter,
-    affordabilityFilter,
-    commuteFilter,
-    hiddenOnly,
-  ]);
+  }, [requestKey]);
 
   const loadDataRef = useRef(loadData);
   useEffect(() => {

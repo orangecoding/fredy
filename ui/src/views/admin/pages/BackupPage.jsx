@@ -95,6 +95,10 @@ export default function BackupPage() {
         // restored the same archive a second time.
         setRestoreModalVisible(false);
         Toast.success(t('settings.backupRestoreCompleted'));
+        // Every form and every list on screen still holds the data from before the restore, and a
+        // save from any of them would write it back over what was just restored. A reload starts
+        // the app on the restored data, the way saving the system page already does.
+        setTimeout(() => location.reload(), 1500);
       } catch (e) {
         console.error(e);
         Toast.error(e?.message || t('settings.backupRestoreError'));
