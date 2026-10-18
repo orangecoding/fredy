@@ -141,7 +141,9 @@ export default function JobMutator() {
     return () => clearTimeout(timer);
   }, [highlighted]);
 
-  const draftId = params.jobId ?? null;
+  // A clone keeps its draft apart from a new job's: sharing the "new" key, cloning one job brought
+  // back the half-typed new job, and an abandoned clone came back at the next "new job".
+  const draftId = params.jobId ?? (cloneFromId ? `clone:${cloneFromId}` : null);
   const [draftRestored, setDraftRestored] = useState(false);
   /** Whether the restore attempt has run. Until it has, nothing may be written back over it. */
   const draftChecked = useRef(false);

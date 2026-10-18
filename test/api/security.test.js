@@ -193,6 +193,17 @@ describe('authHook', () => {
     expect(Date.now() - session.createdAt).toBeLessThan(1000);
   });
 
+  // The debug banner polls every 15 seconds; counting that as activity kept an unattended tab
+  // signed in for good.
+  it('leaves the session alone on a route that opts out, such as a background poll', async () => {
+    getUser.mockReturnValue({ id: 'user-1', isAdmin: false });
+    const session = sessionAgedHours(1.5);
+    const before = session.createdAt;
+    await authHook({ session, routeOptions: { config: { touchSession: false } } }, makeReply());
+
+    expect(session.createdAt).toBe(before);
+  });
+
   it('does not extend the session of a rejected request', async () => {
     const session = expiredSession();
     const before = session.createdAt;

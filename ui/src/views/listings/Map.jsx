@@ -247,8 +247,11 @@ export default function MapView() {
     const min = priceRange[0];
     const max = priceRange[1] && priceRange[1] > 0 ? priceRange[1] : getMaxPrice();
 
+    // A listing without a price ("on request") only drops out once a price limit is set; without
+    // one it has nothing to fail, and hiding it always left it off the map with no filter active.
+    const priceLimited = urlPriceMin != null || urlPriceMax != null;
     return listings
-      .filter((listing) => listing.price && listing.price >= min && listing.price <= max)
+      .filter((listing) => (listing.price ? listing.price >= min && listing.price <= max : !priceLimited))
       .filter(withinCommute);
   };
 
