@@ -41,6 +41,7 @@ import { relativeTime } from '../../../services/time/relativeTime.js';
 import './JobGrid.less';
 import { useTranslation } from '../../../services/i18n/i18n.jsx';
 import { jobSetupLine, providerNameMap } from '../../../services/jobs/jobSetupLine.js';
+import { subscribeJobEvents } from '../../../services/sse/jobEvents.js';
 
 /**
  * The page's filters, sort and pagination live in the URL rather than in component state.
@@ -92,7 +93,6 @@ const JobGrid = () => {
   const activeFilterCount = countActiveFilters(filterValues);
 
   const pendingJobIdRef = useRef(null);
-  const evtSourceRef = useRef(null);
 
   const loadData = () => {
     actions.jobsData.getJobsData({
@@ -127,10 +127,6 @@ const JobGrid = () => {
 
   // SSE connection for live job status updates
   useEffect(() => {
-    // establish SSE connection
-    const src = new EventSource('/api/jobs/events');
-    evtSourceRef.current = src;
-
     const onJobStatus = (e) => {
       try {
         const data = JSON.parse(e.data || '{}');
@@ -153,19 +149,9 @@ const JobGrid = () => {
       }
     };
 
-    src.addEventListener('jobStatus', onJobStatus);
-    src.onerror = () => {
-      // Let browser auto-reconnect
-    };
-
+    const unsubscribe = subscribeJobEvents('jobStatus', onJobStatus);
     return () => {
-      try {
-        src.removeEventListener('jobStatus', onJobStatus);
-        src.close();
-      } catch {
-        //noop
-      }
-      evtSourceRef.current = null;
+      unsubscribe();
       pendingJobIdRef.current = null;
     };
   }, [actions.jobsData]);

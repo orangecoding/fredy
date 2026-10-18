@@ -44,7 +44,15 @@ export default function TravelTimes({ listingId, travelTimes, compact = false, r
   const onLoadedRef = useRef(onLoaded);
   onLoadedRef.current = onLoaded;
 
+  // Keyed on what the times say rather than on the array: the detail page reloads the listing after
+  // every action (watch, status, note), which hands over a new array with the same times, and each
+  // one sent another request to the router.
+  const travelTimesRef = useRef(travelTimes);
+  travelTimesRef.current = travelTimes;
+  const travelTimesKey = travelTimes == null ? null : JSON.stringify(travelTimes);
+
   useEffect(() => {
+    const travelTimes = travelTimesRef.current;
     // Handed the entries by the parent and not asked to improve on them, so there is nothing to
     // fetch. That is the listings overview and the map, where asking again per rendered card would
     // undo the whole point of shipping the times with the page.
@@ -76,7 +84,7 @@ export default function TravelTimes({ listingId, travelTimes, compact = false, r
     return () => {
       requestRef.current++;
     };
-  }, [listingId, travelTimes, refine]);
+  }, [listingId, travelTimesKey, refine]);
 
   if (failed) {
     return (

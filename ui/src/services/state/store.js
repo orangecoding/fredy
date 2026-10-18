@@ -353,8 +353,13 @@ export const useFredyState = create(
            * Drops the cached current user so the app falls back to the login screen. Triggered when a
            * request returns 401 (expired session) so the UI recovers instead of staying stuck.
            */
+          // Everything the account loaded goes, not just who it was: a session that ran out left the
+          // jobs, listings, figures and addresses of the previous account in the store, and the next
+          // account to sign in on that tab saw them until its own answers came in. What the login
+          // screen itself needs (demo mode, providers, instance settings) stays.
           async resetCurrentUser() {
-            set((state) => ({ user: { ...state.user, currentUser: {} } }));
+            const { demoMode: _demoMode, provider: _provider, generalSettings: _general, ...accountData } = initial;
+            set(() => ({ ...accountData, user: { ...initial.user, currentUser: {} } }));
           },
         },
         demoMode: {

@@ -37,6 +37,7 @@ import { useFinanceProfile } from '../../hooks/useFinanceProfile.js';
 import { useScrollRestoration } from '../../hooks/useScrollRestoration.js';
 import { formatEuro } from '../cards/chartTheme.js';
 import { affordabilityFilterHelp } from '../../services/finance/rentBasis.js';
+import { subscribeJobEvents } from '../../services/sse/jobEvents.js';
 
 /**
  * Listings fetched per page. Large enough that the grid fills a desktop screen without paging,
@@ -162,8 +163,6 @@ const ListingsOverview = () => {
 
   // SSE connection for live listings updates
   useEffect(() => {
-    const src = new EventSource('/api/jobs/events');
-
     const onNewListings = (e) => {
       try {
         const data = JSON.parse(e.data || '{}');
@@ -175,19 +174,7 @@ const ListingsOverview = () => {
       }
     };
 
-    src.addEventListener('listings:new', onNewListings);
-    src.onerror = () => {
-      // Let browser auto-reconnect
-    };
-
-    return () => {
-      try {
-        src.removeEventListener('listings:new', onNewListings);
-        src.close();
-      } catch {
-        // noop
-      }
-    };
+    return subscribeJobEvents('listings:new', onNewListings);
   }, [t]);
 
   const handleFilterChange = useMemo(
