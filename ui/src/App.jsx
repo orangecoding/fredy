@@ -3,7 +3,7 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import React, { useEffect } from 'react';
+import React, { Suspense, lazy, useEffect } from 'react';
 
 import InsufficientPermission from './components/permission/InsufficientPermission';
 import PermissionAwareRoute from './components/permission/PermissionAwareRoute';
@@ -21,7 +21,6 @@ import ConnectivityPage from './views/admin/pages/ConnectivityPage';
 import RoutingPage from './views/admin/pages/RoutingPage.jsx';
 import BackupPage from './views/admin/pages/BackupPage';
 import DebugPage from './views/admin/pages/DebugPage';
-import JobMutation from './views/jobs/mutation/JobMutation';
 import UserMutator from './views/user/mutation/UserMutator';
 import { useActions, useSelector } from './services/state/store';
 import { useBrowserNotifications } from './hooks/useBrowserNotifications';
@@ -34,13 +33,11 @@ import './App.less';
 import TrackingModal from './components/tracking/TrackingModal.jsx';
 import { LocaleProvider } from '@douyinfe/semi-ui-19';
 import Listings from './views/listings/Listings.jsx';
-import MapView from './views/listings/Map.jsx';
 import Navigation from './components/navigation/Navigation.jsx';
 import { Layout } from '@douyinfe/semi-ui-19';
 import FredyFooter from './components/footer/FredyFooter.jsx';
 import Dashboard from './views/dashboard/Dashboard.jsx';
 import FinanceCalculator from './views/finance/FinanceCalculator.jsx';
-import ListingDetail from './views/listings/ListingDetail.jsx';
 import NewsModal from './components/news/NewsModal.jsx';
 import OnboardingTour from './components/tour/OnboardingTour.jsx';
 import inDevelopment from './services/developmentMode.js';
@@ -49,6 +46,12 @@ import DebugLoggingBanner from './components/debug/DebugLoggingBanner.jsx';
 import DemoBanner from './components/demo/DemoBanner.jsx';
 import { LEGACY_REDIRECTS } from './services/routes/legacyRedirects.js';
 import { applyTheme, normalizeTheme } from './services/theme/theme.js';
+
+// The three pages that draw a map load on first visit: MapLibre alone is about a megabyte, and the
+// login screen and every other page were waiting for it on a cold start.
+const MapView = lazy(() => import('./views/listings/Map.jsx'));
+const JobMutation = lazy(() => import('./views/jobs/mutation/JobMutation'));
+const ListingDetail = lazy(() => import('./views/listings/ListingDetail.jsx'));
 
 const semiLocaleModules = import.meta.glob('/node_modules/@douyinfe/semi-ui-19/lib/es/locale/source/*.js', {
   eager: true,
@@ -220,13 +223,41 @@ export default function FredyApp() {
                   {!settings.demoMode && <NewsModal />}
                   <Routes>
                     <Route path="/403" element={<InsufficientPermission />} />
-                    <Route path="/jobs/new" element={<JobMutation />} />
-                    <Route path="/jobs/edit/:jobId" element={<JobMutation />} />
+                    <Route
+                      path="/jobs/new"
+                      element={
+                        <Suspense fallback={null}>
+                          <JobMutation />
+                        </Suspense>
+                      }
+                    />
+                    <Route
+                      path="/jobs/edit/:jobId"
+                      element={
+                        <Suspense fallback={null}>
+                          <JobMutation />
+                        </Suspense>
+                      }
+                    />
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/jobs" element={<Jobs />} />
                     <Route path="/listings" element={<Listings />} />
-                    <Route path="/listings/listing/:listingId" element={<ListingDetail />} />
-                    <Route path="/map" element={<MapView />} />
+                    <Route
+                      path="/listings/listing/:listingId"
+                      element={
+                        <Suspense fallback={null}>
+                          <ListingDetail />
+                        </Suspense>
+                      }
+                    />
+                    <Route
+                      path="/map"
+                      element={
+                        <Suspense fallback={null}>
+                          <MapView />
+                        </Suspense>
+                      }
+                    />
                     <Route path="/finance" element={<FinanceCalculator />} />
 
                     {/* Settings that belong to whoever is signed in. No guard: they are theirs.
