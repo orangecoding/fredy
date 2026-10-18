@@ -780,7 +780,7 @@ export default function Map({
   const expandButton = showExpandButton ? (
     <Button
       className="map-shell__expand"
-      theme="solid"
+      theme="borderless"
       type="tertiary"
       icon={isExpanded ? <IconShrinkScreenStroked /> : <IconFullScreenStroked />}
       aria-label={isExpanded ? t('map.collapse') : t('map.expand')}

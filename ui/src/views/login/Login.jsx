@@ -13,7 +13,7 @@ import { useActions, useSelector } from '../../services/state/store';
 import { Input, Button, Banner } from '@douyinfe/semi-ui-19';
 
 import './login.less';
-import { IconUser, IconLock, IconAlertTriangle } from '@douyinfe/semi-icons';
+import { IconWarning } from '../../components/icons/StrokeIcons.jsx';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
 import { useCapsLock } from '../../hooks/useCapsLock.js';
 
@@ -83,80 +83,77 @@ export default function Login() {
 
   return (
     <div className="login">
-      <div className="login__bgImage" style={{ backgroundImage: `url("${cityBackground}")` }} />
-      <div className="login__glow" />
-      <div className="login__loginWrapper">
-        <div className="login__scanLine" aria-hidden="true" />
-        <div className="login__logoWrapper">
-          <Logo width={250} white />
+      <div className="login__panel">
+        <div className="login__content">
+          <div className="login__logo">
+            <Logo width={200} white />
+          </div>
+
+          {demoMode && (
+            <Banner fullMode={true} type="info" bordered closeIcon={null} description={t('login.demoBanner')} />
+          )}
+
+          <form className="login__form" onSubmit={(e) => e.preventDefault()}>
+            {error && <Banner type="danger" closeIcon={null} description={error} />}
+            <div className="login__field">
+              <label className="login__label" htmlFor={usernameId}>
+                {t('login.usernameLabel')}
+              </label>
+              <Input
+                id={usernameId}
+                size="large"
+                value={username}
+                autoComplete="username"
+                showClear
+                autoFocus
+                onChange={(value) => setUserName(value)}
+                onKeyUp={trackCapsLock}
+                onKeyPress={submitOnEnter}
+              />
+            </div>
+
+            <div className="login__field">
+              <label className="login__label" htmlFor={passwordId}>
+                {t('login.passwordLabel')}
+              </label>
+              <Input
+                id={passwordId}
+                size="large"
+                mode="password"
+                value={password}
+                autoComplete="current-password"
+                aria-describedby={capsLockOn ? capsLockHintId : undefined}
+                onChange={(value) => setPassword(value)}
+                onKeyUp={trackCapsLock}
+                onBlur={clearCapsLock}
+                onKeyPress={submitOnEnter}
+              />
+              {capsLockOn && (
+                <div className="login__capsHint" id={capsLockHintId} role="status">
+                  <IconWarning />
+                  {t('login.capsLockHint')}
+                </div>
+              )}
+            </div>
+
+            <Button
+              block
+              size="large"
+              type="primary"
+              theme="solid"
+              onClick={tryLogin}
+              loading={pending}
+              className="login__submit"
+            >
+              {pending ? t('login.loginButtonPending') : t('login.loginButton')}
+            </Button>
+          </form>
         </div>
+      </div>
 
-        {demoMode && (
-          <Banner
-            fullMode={true}
-            type="info"
-            bordered
-            closeIcon={null}
-            description={t('login.demoBanner')}
-            style={{ marginBottom: '1.5rem' }}
-          />
-        )}
-
-        <form onSubmit={(e) => e.preventDefault()}>
-          {error && <Banner type="danger" closeIcon={null} description={error} style={{ marginBottom: '1rem' }} />}
-          <div className="login__inputGroup login__inputGroup--first">
-            <label className="login__label" htmlFor={usernameId}>
-              {t('login.usernameLabel')}
-            </label>
-            <Input
-              id={usernameId}
-              size="large"
-              prefix={<IconUser />}
-              value={username}
-              showClear
-              autoFocus
-              onChange={(value) => setUserName(value)}
-              onKeyUp={trackCapsLock}
-              onKeyPress={submitOnEnter}
-            />
-          </div>
-
-          <div className="login__inputGroup login__inputGroup--second">
-            <label className="login__label" htmlFor={passwordId}>
-              {t('login.passwordLabel')}
-            </label>
-            <Input
-              id={passwordId}
-              size="large"
-              mode="password"
-              prefix={<IconLock />}
-              value={password}
-              aria-describedby={capsLockOn ? capsLockHintId : undefined}
-              onChange={(value) => setPassword(value)}
-              onKeyUp={trackCapsLock}
-              onBlur={clearCapsLock}
-              onKeyPress={submitOnEnter}
-            />
-            {capsLockOn && (
-              <div className="login__capsHint" id={capsLockHintId} role="status">
-                <IconAlertTriangle size="small" />
-                {t('login.capsLockHint')}
-              </div>
-            )}
-          </div>
-
-          <Button
-            block
-            type="primary"
-            onClick={tryLogin}
-            theme="solid"
-            loading={pending}
-            className="login__submit"
-            style={{ marginTop: '1rem' }}
-          >
-            {pending ? t('login.loginButtonPending') : t('login.loginButton')}
-          </Button>
-        </form>
+      {/* Decorative: the screen means the same without it, and below the split it is not drawn. */}
+      <div className="login__photo" aria-hidden="true">
+        <img src={cityBackground} alt="" />
       </div>
     </div>
   );

@@ -20,22 +20,24 @@ import './Headline.less';
  * @param {React.ReactNode} [props.badge] Rendered inline after the title, for a short statement
  *   about the page itself - whose settings these are, for instance. Not for actions: those are
  *   right-aligned and go in `actions`.
+ * @param {React.ReactNode} [props.overline] A short line above the title that sets it in context,
+ *   such as today's date over a heading that counts today's results.
  * @returns {React.ReactElement}
  */
-export default function Headline({ text, subtitle, actions, badge = null } = {}) {
+export default function Headline({ text, subtitle, actions, badge = null, overline = null } = {}) {
   return (
     <div className="page-heading">
       <div className="page-heading__row">
-        <div>
+        <div className="page-heading__text">
+          {overline && <span className="page-heading__overline">{overline}</span>}
           <div className="page-heading__titleRow">
             <h1 className="page-heading__title">{text}</h1>
             {badge}
           </div>
           {subtitle && <p className="page-heading__subtitle">{subtitle}</p>}
         </div>
-        {actions && <div>{actions}</div>}
+        {actions && <div className="page-heading__actions">{actions}</div>}
       </div>
-      <div className="page-heading__line" />
     </div>
   );
 }

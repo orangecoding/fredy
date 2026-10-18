@@ -5,44 +5,34 @@
 
 @import '../../tokens.less';
 
+/* The price per square metre and how it compares with the area. Words, not chips: the figure
+   muted, the comparison green when it is cheaper, red when it is dearer, muted when it is in line. */
 .pricePerSqmBadge {
   display: inline-flex;
-  align-items: center;
-  gap: @space-1;
-  font-size: @text-xs;
+  align-items: baseline;
+  gap: @space-2;
+  font-size: @text-sm;
   line-height: 1.5;
   white-space: nowrap;
-  vertical-align: middle;
-  font-weight: 400;
-  font-variant-numeric: tabular-nums;
+  vertical-align: baseline;
 
   &__value {
     color: @color-muted;
   }
 
   &__deviation {
-    padding: 1px @space-2;
-    border-radius: @radius-chip;
-
-    // Dieselbe Regel wie im Preisänderungs-Badge: die Fläche trägt die Richtung, die Schrift
-    // bleibt lesbar. Unter dem Median ist die Richtung, auf die ein Suchender hofft, also liest
-    // sie sich als die gute; darüber als die teure.
-    color: @color-text;
+    font-weight: @weight-medium;
 
     &--below {
-      background: @color-success-dim;
+      color: @color-success;
     }
 
     &--above {
-      background: @color-error-dim;
+      color: @color-error;
     }
 
-    // Keine Farbe für einen gewöhnlichen Angebotspreis. Jedes zweite Inserat neutralgrau
-    // anzustreichen machte die zwei, die nicht gewöhnlich sind, schwerer zu finden, und dafür
-    // allein ist das Badge da.
     &--inline {
       color: @color-muted;
-      background: @color-elevated;
     }
   }
 }

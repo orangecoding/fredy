@@ -4,8 +4,9 @@
  */
 
 import { Button, Dropdown, Tooltip } from '@douyinfe/semi-ui-19';
-import { IconCopy, IconDelete, IconDescend2, IconEdit, IconMore, IconPlayCircle } from '@douyinfe/semi-icons';
+import { IconDeleteStroked, IconDescend2, IconEditStroked } from '@douyinfe/semi-icons';
 
+import { IconCopy, IconMore, IconPlay } from '../icons/StrokeIcons.jsx';
 import './JobActions.less';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
 
@@ -36,11 +37,11 @@ const JobActions = ({ job, density, onRun, onEdit, onClone, onDeleteListings, on
    * control and its least legible one; below they are words, and a line keeps them off the end of
    * the harmless half.
    */
-  const cloneIsHidden = density === 'row';
+  const isRow = density === 'row';
 
   const overflow = (
     <Dropdown.Menu className="jobActions__menu">
-      {cloneIsHidden && (
+      {isRow && (
         <>
           <Dropdown.Item icon={<IconCopy />} disabled={job.isOnlyShared} onClick={() => onClone(job.id)}>
             {t('jobs.popoverCloneJob')}
@@ -58,7 +59,7 @@ const JobActions = ({ job, density, onRun, onEdit, onClone, onDeleteListings, on
         {t('jobs.popoverDeleteListings')}
       </Dropdown.Item>
       <Dropdown.Item
-        icon={<IconDelete />}
+        icon={<IconDeleteStroked />}
         type="danger"
         disabled={job.isOnlyShared}
         onClick={() => onDeleteJob(job.id)}
@@ -70,17 +71,22 @@ const JobActions = ({ job, density, onRun, onEdit, onClone, onDeleteListings, on
 
   return (
     <div className={`jobActions jobActions--${density}`}>
+      {/* The card has room to say "Run" as well as draw it, and it is the one thing a card is opened
+          for most; outlined, because the page's red button is "New job". The row is the dense
+          view and draws all of its actions as quiet icons. Neither colours the icon: a green play
+          mark read as a status, which the dot already is. */}
       <Tooltip content={t('jobs.popoverRunJob')}>
         <Button
-          className="jobActions__run"
+          className={isRow ? 'jobActions__icon' : 'jobActions__run'}
           type="tertiary"
-          theme="outline"
-          icon={<IconPlayCircle />}
+          theme={isRow ? 'borderless' : 'outline'}
+          size="small"
+          icon={<IconPlay />}
           aria-label={t('jobs.actionRun')}
           disabled={job.isOnlyShared || job.running}
           onClick={() => onRun(job.id)}
         >
-          {t('jobs.actionRun')}
+          {isRow ? null : t('jobs.actionRun')}
         </Button>
       </Tooltip>
 
@@ -89,19 +95,21 @@ const JobActions = ({ job, density, onRun, onEdit, onClone, onDeleteListings, on
           className="jobActions__icon"
           type="tertiary"
           theme="borderless"
-          icon={<IconEdit />}
+          size="small"
+          icon={<IconEditStroked />}
           aria-label={t('jobs.popoverEditJob')}
           disabled={job.isOnlyShared}
           onClick={() => onEdit(job.id)}
         />
       </Tooltip>
 
-      {!cloneIsHidden && (
+      {!isRow && (
         <Tooltip content={t('jobs.popoverCloneJob')}>
           <Button
             className="jobActions__icon"
             type="tertiary"
             theme="borderless"
+            size="small"
             icon={<IconCopy />}
             aria-label={t('jobs.popoverCloneJob')}
             disabled={job.isOnlyShared}
@@ -110,11 +118,12 @@ const JobActions = ({ job, density, onRun, onEdit, onClone, onDeleteListings, on
         </Tooltip>
       )}
 
-      <Dropdown trigger="click" position="bottomRight" clickToHide className="jobActions__menuPopup" render={overflow}>
+      <Dropdown trigger="click" position="bottomRight" clickToHide render={overflow}>
         <Button
           className="jobActions__icon"
           type="tertiary"
           theme="borderless"
+          size="small"
           icon={<IconMore />}
           aria-label={t('jobs.moreActions')}
         />

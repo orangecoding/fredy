@@ -168,7 +168,7 @@ function renderTravelTimes(listing, t) {
     return `${escapeHtml(entry.label)}: ${modes}`;
   });
 
-  return `<span><strong>${t('travelTime.title')}</strong> ${lines.join('<br/>')}</span>`;
+  return `<div class="map-popup-content__times"><span>${t('travelTime.title')}</span><span>${lines.join('<br/>')}</span></div>`;
 }
 
 /**
@@ -199,24 +199,30 @@ function renderListingBody(listing, index, total, t, locale) {
         </div>`
       : '';
 
+  // Laid out like a listing card: the photograph, the price in the UI face with the living space
+  // muted beside it, the title, the address. Only the two facts that are Fredy's own bookkeeping
+  // keep a label, because a search's name and a portal's are not self-explanatory on their own.
+  const price = listing.price ? escapeHtml(formatEuroPrice(listing.price, locale)) : t('common.na');
+  const size = listing.size != null ? `${escapeHtml(formatDecimal(listing.size, locale))} m²` : '';
+
   return `
     ${pager}
     <img
       src="${escapeHtml(listingPictureSrc(listing) ?? no_image)}"
+      alt=""
       onerror="this.onerror=null;this.src='${no_image}'"
     />
+    <div class="map-popup-content__price">
+      <span class="map-popup-content__amount">${price}</span>
+      ${size ? `<span class="map-popup-content__size">${size}</span>` : ''}
+    </div>
     <a class="map-popup-content__title" href="#/listings/listing/${encodeURIComponent(listing.id)}">${escapeHtml(listing.title)}</a>
+    <div class="map-popup-content__meta">${escapeHtml(listing.address || t('common.na'))}</div>
     <div class="map-popup-content__facts">
-      <span>${t('map.popupPrice')}</span>
-      <span class="map-popup-content__num">${listing.price ? escapeHtml(formatEuroPrice(listing.price, locale)) : t('common.na')}</span>
-      <span>${t('map.popupAddress')}</span>
-      <span>${escapeHtml(listing.address || t('common.na'))}</span>
       <span>${t('map.popupJob')}</span>
       <span>${escapeHtml(listing.job_name || t('common.na'))}</span>
       <span>${t('map.popupProvider')}</span>
       <span>${escapeHtml(capitalizedProvider)}</span>
-      <span>${t('map.popupSize')}</span>
-      <span class="map-popup-content__num">${listing.size != null ? `${escapeHtml(formatDecimal(listing.size, locale))} m²` : t('common.na')}</span>
     </div>
     ${renderTravelTimes(listing, t)}
     <div class="map-popup-content__actions"></div>`;

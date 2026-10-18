@@ -8,22 +8,13 @@
 .finance {
   padding-bottom: @space-8;
 
-  /* The one line the page opens with. It carries the margin the intro container used to, now
-     that the rule and the caveat no longer stand under it. */
-  &__intro-lead {
-    display: block;
-    max-width: 70ch;
-    margin-bottom: @space-5;
-    color: @color-muted;
-    line-height: 1.6;
-  }
-
-  /* The estimate/no-advice caveat. It has to be present and readable - @color-faint measured
+  /* The estimate/no-advice caveat. It has to be present and readable - the faint grey measured
      2,47:1 and was not - but it is not what the user came for, so it sits at the foot of the page
      rather than above the first field. */
   &__disclaimer {
     display: block;
-    margin-top: @space-6;
+    max-width: 72ch;
+    margin-top: @space-8;
     padding-top: @space-4;
     border-top: 1px solid @color-border;
     color: @color-muted;
@@ -31,15 +22,26 @@
     line-height: 1.5;
   }
 
-  /* Semi lays its grid out with floated columns. Floats of unequal height snag on each other,
-     so one card with a two-line description drags the next row out of alignment and leaves
-     holes. Flex ignores the float and stretches every card in a row to the tallest, which is
-     what makes a KPI grid read as a grid. */
+  /* A question and its answer read at the width of a settings page. Full width, the name of a
+     figure sat on the left edge of a wide monitor and its field on the right, a metre apart. */
+  &__household,
+  &__narrow {
+    max-width: 860px;
+  }
+
+  &__household {
+    margin-bottom: @space-8;
+  }
+
+  /* Semi lays its grid out with floated columns. Floats of unequal height snag on each other, so
+     a figure with a two-line description drags the next row out of alignment and leaves holes. Flex
+     ignores the float and stretches both figures to the taller one, which is what makes them read
+     as a pair. */
   &__kpi-row {
     display: flex;
     flex-wrap: wrap;
     align-items: stretch;
-    margin-bottom: @space-4;
+    margin-bottom: @space-5;
 
     > .semi-col {
       float: none;
@@ -51,7 +53,7 @@
   /* Same reason as `__kpi-row` above: Semi lays its grid out with floated columns, and the two
      columns here are a form on the left and an answer on the right, which are never the same
      height. `align-items: flex-start` rather than `stretch`, because stretching the shorter
-     input column would pull the cards inside it apart. */
+     input column would pull the sections inside it apart. */
   &__split {
     display: flex;
     flex-wrap: wrap;
@@ -63,10 +65,21 @@
     }
   }
 
+  /* The answer column opens on a hairline and the same air as a section header, so it starts on
+     the line the form beside it starts on. */
+  &__answer {
+    padding: @space-6 0 @space-2;
+    border-top: 1px solid @color-border;
+
+    &:empty {
+      display: none;
+    }
+  }
+
   /* The charts that justify the answer rather than give it. Collapsed by default and rendered
      flush, so it reads as one more section of the tab and not as a widget bolted on. */
   &__more {
-    margin-top: @space-4;
+    margin-top: @space-6;
     border-top: 1px solid @color-border;
 
     .semi-collapse-item {
@@ -74,10 +87,17 @@
     }
 
     .semi-collapse-header {
-      padding-left: 0;
-      padding-right: 0;
-      color: @color-muted;
+      margin: 0;
+      padding: @space-4 0;
+      border-radius: 0;
+      color: @color-text;
       font-size: @text-base;
+      font-weight: @weight-medium;
+
+      &:hover,
+      &:active {
+        background: transparent;
+      }
     }
 
     .semi-collapse-content {
@@ -85,13 +105,13 @@
     }
   }
 
-  /* Only Delete stands here now; Save moved into the sticky bar at the foot of the page. One
-     borderless button against the left edge, set off from the tab above it by a rule, so that the
-     one destructive action on the tab is findable without being loud. */
+  /* Only Delete stands here; Save is in the sticky bar at the foot of the page. One borderless
+     button against the left edge, set off from the tab above it by a rule, so that the one
+     destructive action on the tab is findable without being loud. */
   &__delete-row {
     display: flex;
     align-items: center;
-    margin-top: @space-5;
+    margin-top: @space-6;
     padding-top: @space-4;
     border-top: 1px solid @color-border;
 
@@ -103,37 +123,37 @@
     }
   }
 
-  &__household {
-    margin-bottom: @space-6;
-  }
-
   /* The optional half of the household. Collapsed by default, with a line saying what is inside,
-     so it does not have to be opened to find out. */
+     so it does not have to be opened to find out. A row between two hairlines rather than a box:
+     it is the rest of the section above, not a widget of its own. */
   &__householdMore {
-    margin-top: @space-3;
+    margin-top: @space-4;
+    border-top: 1px solid @color-border;
+    border-bottom: 1px solid @color-border;
 
     .semi-collapse-item {
       border-bottom: none;
     }
 
     .semi-collapse-header {
-      padding: @space-3 @space-4;
-      border: 1px solid @color-border;
-      border-radius: @radius-card;
-      background: @color-fill-subtle;
+      margin: 0;
+      padding: @space-3 0;
+      border-radius: 0;
+      background: transparent;
       cursor: pointer;
-      transition:
-        background @transition-fast,
-        border-color @transition-fast;
 
-      &:hover {
-        border-color: @color-border-bright;
-        background: @color-fill-1;
+      &:hover,
+      &:active {
+        background: transparent;
+      }
+
+      &:hover .finance__foldToggle {
+        color: @color-text;
       }
     }
 
     .semi-collapse-content {
-      padding: @space-4 0 0;
+      padding: 0 0 @space-4;
     }
   }
 
@@ -152,46 +172,27 @@
 
   &__foldTitle {
     color: @color-text;
-    font-weight: 600;
+    font-size: @text-base;
+    font-weight: @weight-medium;
   }
 
   &__foldSummary {
     color: @color-muted;
     font-size: @text-sm;
+    font-weight: 400;
   }
 
   &__foldToggle {
     margin-left: auto;
     color: @color-muted;
     font-size: @text-sm;
+    font-weight: 400;
     white-space: nowrap;
+    transition: color @transition-fast;
   }
 
-  /* Renting and buying sit in two tabs side by side. The accent - blue for renting, green for
-     buying, matching the chips - only marks the tab you are on. Colouring both at all times
-     turned the tab bar into two highlighters shouting at each other while saying nothing about
-     where you are. */
   &__tabs {
-    margin-bottom: @space-6;
-  }
-
-  &__tab {
-    display: inline-flex;
-    align-items: center;
-    gap: @space-2;
-    color: @color-muted;
-  }
-
-  .semi-tabs-tab-active &__tab {
-    font-weight: 500;
-
-    &--rent {
-      color: @color-blue-text;
-    }
-
-    &--buy {
-      color: @color-green-text;
-    }
+    margin-bottom: @space-8;
   }
 
   /* Two tabs have to stay legible on a phone: split the width evenly and let the label shrink
@@ -203,17 +204,13 @@
       padding-left: @space-2;
       padding-right: @space-2;
       text-align: center;
-    }
-
-    &__tab {
       justify-content: center;
-      font-size: @text-base;
     }
   }
 
   &__tab-lead {
     display: block;
-    margin: @space-2 0 @space-5;
+    margin: @space-4 0 @space-2;
     max-width: 70ch;
   }
 }

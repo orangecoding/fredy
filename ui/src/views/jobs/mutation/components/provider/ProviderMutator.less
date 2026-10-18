@@ -51,7 +51,7 @@
     display: block;
     margin-bottom: @space-2;
     font-size: @text-base;
-    font-weight: 600;
+    font-weight: @weight-strong;
     color: @color-text;
   }
 
@@ -70,17 +70,18 @@
     min-height: @space-6;
   }
 
+  /* A link in prose: the text colour, underlined, with its icon muted. Red is the dialog's Add. */
   &__openLink {
     display: inline-flex;
     align-items: center;
     gap: @space-1;
-    color: @color-accent;
+    color: @color-text;
     font-size: @text-sm;
-    text-decoration: none;
+    text-decoration: underline;
+    text-underline-offset: 3px;
 
-    &:hover,
-    &:focus-visible {
-      text-decoration: underline;
+    svg {
+      color: @color-muted;
     }
   }
 

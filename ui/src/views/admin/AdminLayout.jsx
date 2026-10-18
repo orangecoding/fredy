@@ -3,15 +3,7 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import {
-  IconAlertTriangle,
-  IconFolder,
-  IconGlobe,
-  IconMapPin,
-  IconRefresh,
-  IconSignal,
-  IconUserGroup,
-} from '@douyinfe/semi-icons';
+import { IconAlertTriangle } from '@douyinfe/semi-icons';
 
 import ScopeBadge from '../../components/scopeBadge/ScopeBadge.jsx';
 import SettingsShell from '../../components/settingsShell/SettingsShell.jsx';
@@ -40,24 +32,22 @@ export default function AdminLayout() {
   // unsaved while Routing is on screen, and a closed tab must still ask about it.
   useUnsavedWarning(admin.systemDirty || admin.executionDirty || admin.connectivityDirty || admin.routingDirty);
 
+  // Words only, like the settings strip. The one icon left is a state rather than a picture: the
+  // debug tab turns red while capture is running, read from the same global flag the app-wide
+  // banner uses, so the label needs no status of its own. Off, there is nothing to show.
   const tabs = [
-    { path: '/admin/system', label: t('admin.tabSystem'), icon: <IconSignal size="small" /> },
-    { path: '/admin/execution', label: t('admin.tabExecution'), icon: <IconRefresh size="small" /> },
-    { path: '/admin/routing', label: t('admin.tabRouting'), icon: <IconMapPin size="small" /> },
-    { path: '/admin/connectivity', label: t('admin.tabConnectivity'), icon: <IconGlobe size="small" /> },
-    { path: '/admin/users', label: t('admin.tabUsers'), icon: <IconUserGroup size="small" /> },
-    { path: '/admin/backup', label: t('admin.tabBackup'), icon: <IconFolder size="small" /> },
+    { path: '/admin/system', label: t('admin.tabSystem') },
+    { path: '/admin/execution', label: t('admin.tabExecution') },
+    { path: '/admin/routing', label: t('admin.tabRouting') },
+    { path: '/admin/connectivity', label: t('admin.tabConnectivity') },
+    { path: '/admin/users', label: t('admin.tabUsers') },
+    { path: '/admin/backup', label: t('admin.tabBackup') },
     {
       path: '/admin/debug',
       label: t('admin.tabDebug'),
-      // Red while capture is running, read from the same global flag the app-wide banner uses so
-      // the label needs no status of its own.
-      icon: (
-        <IconAlertTriangle
-          size="small"
-          className={settings?.debug_logging_enabled ? 'settingsShell__tabIcon--alert' : undefined}
-        />
-      ),
+      icon: settings?.debug_logging_enabled ? (
+        <IconAlertTriangle size="small" className="settingsShell__tabIcon--alert" />
+      ) : undefined,
     },
   ];
 

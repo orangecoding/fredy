@@ -1,67 +1,67 @@
 @import '../../tokens.less';
 
-// Wrapper span used as the Dropdown's positioning anchor so the menu opens
-// directly below the visible button rather than the implicit wrapper of the
-// hover tooltip (which can have a different bounding box).
 .status-btn__anchor {
   display: inline-block;
   line-height: 0;
 }
 
-// StatusControl shared base. Matches dimensions and border treatment
-// of the surrounding Watched / Open listing / Delete buttons in the
-// detail view, and shrinks via the --compact modifier for table rows
-// and grid cards.
-.status-btn {
-  color: @color-muted !important;
-  border: 1px solid @color-border-bright !important;
-  border-radius: @radius-btn !important;
-  background: transparent !important;
-  transition:
-    color @transition-fast,
-    border-color @transition-fast,
-    background @transition-fast;
+/* The listing's status as a pill. Unset it is outlined in the text colour; set, it carries a dot in
+   the status's colour and a faint tint of it, so the state is told by the word and the dot rather
+   than by colour alone. */
+.status-btn.semi-button {
+  height: @control-md;
+  padding: 0 @space-3;
+  border: 1px solid @color-border-bright;
+  border-radius: @radius-pill;
+  background: transparent;
+  color: @color-text;
+  font-size: @text-sm;
+  font-weight: @weight-medium;
 
   &:hover {
-    color: @color-text !important;
-    background: @color-fill-1 !important;
+    background: @color-fill-1;
+    color: @color-text;
   }
 
-  &--compact {
-    height: 24px !important;
-    padding: 0 8px !important;
-    font-size: @text-sm !important;
-    border-radius: @radius-chip !important;
+  .semi-icon {
+    font-size: 12px;
+    color: @color-muted;
+  }
 
-    .semi-icon {
-      font-size: 12px !important;
+  &.status-btn--compact {
+    height: @control-sm;
+    padding: 0 10px;
+  }
+
+  &.status-btn--applied,
+  &.status-btn--rejected,
+  &.status-btn--accepted {
+    &::before {
+      content: '';
+      flex: none;
+      width: 7px;
+      height: 7px;
+      margin-right: 6px;
+      border-radius: @radius-pill;
+      background: var(--status-dot);
     }
   }
 
-  &--applied {
-    color: @color-info !important;
-    border-color: rgb(@color-info-rgb / 40%) !important;
-    background: rgb(@color-info-rgb / 8%) !important;
-    &:hover {
-      background: rgb(@color-info-rgb / 14%) !important;
-    }
+  &.status-btn--applied {
+    --status-dot: @color-info;
+    border-color: rgb(@color-info-rgb / 40%);
+    background: rgb(@color-info-rgb / 12%);
   }
 
-  &--rejected {
-    color: @color-error !important;
-    border-color: rgb(@color-error-rgb / 40%) !important;
-    background: rgb(@color-error-rgb / 8%) !important;
-    &:hover {
-      background: rgb(@color-error-rgb / 14%) !important;
-    }
+  &.status-btn--rejected {
+    --status-dot: @color-error;
+    border-color: rgb(@color-error-rgb / 40%);
+    background: rgb(@color-error-rgb / 12%);
   }
 
-  &--accepted {
-    color: @color-success !important;
-    border-color: rgb(@color-success-rgb / 40%) !important;
-    background: rgb(@color-success-rgb / 8%) !important;
-    &:hover {
-      background: rgb(@color-success-rgb / 14%) !important;
-    }
+  &.status-btn--accepted {
+    --status-dot: @color-success;
+    border-color: rgb(@color-success-rgb / 40%);
+    background: rgb(@color-success-rgb / 12%);
   }
 }

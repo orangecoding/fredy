@@ -108,6 +108,7 @@ export default function ListingLocationCard({
         {hasCoordinates && (
           <div className="listing-location__picker">
             <RadioGroup
+              className="listing-segmented"
               type="button"
               value={routeMode}
               onChange={(event) => onRouteModeChange(event.target.value)}
@@ -119,9 +120,11 @@ export default function ListingLocationCard({
                   {/* The reason, on the button itself - disabled with no explanation is what makes
                       an interface feel broken rather than honest. On the label rather than on the
                       Radio, because Semi forwards only data-* attributes to the element it
-                      renders and a title passed to it would quietly go nowhere. */}
+                      renders and a title passed to it would quietly go nowhere. Words only: the
+                      mode's emoji is a picture in colour, and a segmented control is not the place
+                      for one. */}
                   <span title={answered.has(mode.key) ? undefined : t('listing.detail.routeUnmeasured')}>
-                    <span aria-hidden="true">{mode.icon}</span> {t(mode.labelKey)}
+                    {t(mode.labelKey)}
                   </span>
                 </Radio>
               ))}

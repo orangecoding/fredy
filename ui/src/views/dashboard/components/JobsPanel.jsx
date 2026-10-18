@@ -3,24 +3,19 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { IconAlertTriangle } from '@douyinfe/semi-icons';
+import { ATTENTION_REASONS } from '../../../services/dashboard/attention.js';
+import { jobSetupLine } from '../../../services/jobs/jobSetupLine.js';
 
-import { relativeTime } from '../../../services/time/relativeTime.js';
-
-/** Seven bars of six, with three between them, is exactly the sixty the stylesheet reserves. */
-const SPARK_BAR_W = 6;
-const SPARK_GAP = 3;
+/** Sparkline geometry: seven points across the width, the busiest day touching the top. */
+const SPARK_W = 72;
 const SPARK_H = 24;
-/** The tallest a bar may draw, leaving the baseline visible under a full day. */
-const SPARK_MAX_BAR = 22;
-/** A day with nothing still draws, so seven empty days read as a flat line and not as no chart. */
-const SPARK_MIN_BAR = 2;
+const SPARK_PAD = 2;
 
 /** Seven days of nothing, for a job the activity payload does not mention. */
 const NO_ACTIVITY = { perDay: [0, 0, 0, 0, 0, 0, 0], total: 0 };
 
 /**
- * One job's last seven days, as seven bars.
+ * One job's last seven days, as a line.
  *
  * Scaled against that job's own busiest day rather than against the other jobs: the question a
  * reader has here is "is this one still working", not "which of these two found more", and a
@@ -28,29 +23,33 @@ const NO_ACTIVITY = { perDay: [0, 0, 0, 0, 0, 0, 0], total: 0 };
  *
  * @param {Object} props
  * @param {number[]} props.perDay Oldest first, seven entries.
+ * @param {boolean} [props.quiet] Draw it in the faint tone, for a job that is switched off.
  * @returns {React.ReactElement}
  */
-function JobSpark({ perDay }) {
-  const max = Math.max(1, ...perDay);
+function JobSpark({ perDay, quiet = false }) {
+  const days = perDay.length > 1 ? perDay : NO_ACTIVITY.perDay;
+  const max = Math.max(1, ...days);
+  const step = SPARK_W / (days.length - 1);
+  const points = days
+    .map((count, index) => {
+      const y = SPARK_H - SPARK_PAD - (count / max) * (SPARK_H - SPARK_PAD * 2);
+      return `${Math.round(index * step * 10) / 10},${Math.round(y * 10) / 10}`;
+    })
+    .join(' ');
   return (
-    <svg className="dashboard__jobSpark" viewBox="0 0 60 24" aria-hidden="true">
-      <g fill="currentColor">
-        {perDay.map((count, index) => {
-          const height = Math.max(SPARK_MIN_BAR, Math.round((count / max) * SPARK_MAX_BAR));
-          return (
-            <rect
-              // The series is a fixed seven-day window, so the position is the identity: there is
-              // nothing to reorder and no id to key on.
-              key={index}
-              x={index * (SPARK_BAR_W + SPARK_GAP)}
-              y={SPARK_H - height}
-              width={SPARK_BAR_W}
-              height={height}
-              rx="2"
-            />
-          );
-        })}
-      </g>
+    <svg
+      className={`dashboard__jobSpark${quiet ? ' dashboard__jobSpark--quiet' : ''}`}
+      viewBox={`0 0 ${SPARK_W} ${SPARK_H}`}
+      aria-hidden="true"
+    >
+      <polyline
+        points={points}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
@@ -58,22 +57,22 @@ function JobSpark({ perDay }) {
 JobSpark.displayName = 'JobSpark';
 
 /**
- * Every search the user has, with what each of them actually did this week.
+ * Every search the user has, with what each of them did this week.
  *
- * This replaces a tile that read "Jobs 2". The count was the whole of what the dashboard said
- * about the searches, which is the one thing a reader already knows: what they cannot see is
- * which of those searches is still finding anything, and which one has been quietly returning
- * nothing since its portal URL stopped working.
+ * The count is listings found in the last seven days; the line beside it shows how those days were
+ * spread. A job that wants attention says why in amber instead of its setup line, so the reason is
+ * in the place a reader's eye already is.
  *
  * @param {Object} props
  * @param {Array<Object>} props.jobs
  * @param {Record<string, {perDay: number[], total: number}>} props.jobActivity Keyed by job id.
- * @param {Array<{id: string}>} props.attention Every job that wants looking at, from
- *   `allJobsNeedingAttention` (not the capped list the attention card shows).
- * @param {boolean} [props.loaded=true] Whether `jobActivity` has arrived. Until it has, a row cannot
- *   say "nothing found" without that being a guess.
+ * @param {Array<{id: string, reason: string}>} props.attention Every job that wants looking at,
+ *   from `allJobsNeedingAttention`.
+ * @param {Record<string, string>} [props.providerNames] Provider id to the portal's name.
+ * @param {boolean} [props.loaded=true] Whether `jobActivity` has arrived. Until it has, a count
+ *   cannot say "nothing found" without that being a guess.
  * @param {(key: string, params?: Object) => string} props.t
- * @param {() => void} props.onManage Opens the jobs page.
+ * @param {() => void} props.onCreate Opens the form for a new job.
  * @param {(job: Object) => void} props.onOpenJob Opens one job; handed the whole job so the caller
  *   can tell one that is only shared with this user.
  * @returns {React.ReactElement}
@@ -82,49 +81,63 @@ export default function JobsPanel({
   jobs = [],
   jobActivity = {},
   attention = [],
+  providerNames = {},
   loaded = true,
   t,
-  onManage,
+  onCreate,
   onOpenJob,
 }) {
   const rows = Array.isArray(jobs) ? jobs : [];
-  const flagged = new Set((Array.isArray(attention) ? attention : []).map((entry) => entry.id));
+  const reasons = new Map((Array.isArray(attention) ? attention : []).map((entry) => [entry.id, entry.reason]));
+  // Spelled out rather than built from the reason, so every key stays visible to the locale check.
+  const reasonLabels = {
+    [ATTENTION_REASONS.NO_CHANNEL]: t('dashboard.jobReasonNoChannel'),
+    [ATTENTION_REASONS.PAUSED]: t('dashboard.jobReasonPaused'),
+    [ATTENTION_REASONS.NOTHING_FOUND]: t('dashboard.jobReasonNothingFound'),
+  };
 
   return (
-    <div className="dashboard__card">
-      <div className="dashboard__cardHead">
-        <h2 className="dashboard__cardLabel">{t('dashboard.sectionJobs')}</h2>
+    <section className="dashboard__section dashboard__jobsSection" aria-labelledby="dashboard-jobs">
+      <div className="dashboard__sectionHead">
+        <h2 id="dashboard-jobs" className="dashboard__sectionTitle">
+          {t('dashboard.sectionJobs')}
+        </h2>
         <span className="dashboard__spacer" />
-        <span className="dashboard__count">{rows.length}</span>
+        <button type="button" className="dashboard__link" onClick={onCreate}>
+          {t('dashboard.newJob')}
+        </button>
       </div>
       <div className="dashboard__jobs">
         {rows.map((job) => {
           const activity = jobActivity?.[job.id] ?? NO_ACTIVITY;
-          const time = relativeTime(job.lastRunAt, t) ?? '---';
-          const noHits = loaded && activity.total === 0;
+          const reason = reasons.get(job.id);
+          const paused = job.enabled === false;
+          const state = paused ? 'paused' : reason != null ? 'attention' : 'ok';
           return (
             <button type="button" className="dashboard__jobRow" key={job.id} onClick={() => onOpenJob(job)}>
-              <div className="dashboard__jobText">
-                <span className="dashboard__jobName">
-                  {job.name}
-                  {flagged.has(job.id) && <IconAlertTriangle className="dashboard__jobWarning" />}
+              <span className={`dashboard__jobDot dashboard__jobDot--${state}`} aria-hidden="true" />
+              <span className="dashboard__jobText">
+                <span className={`dashboard__jobName${paused ? ' dashboard__jobName--paused' : ''}`}>{job.name}</span>
+                {reason != null && !paused ? (
+                  <span className="dashboard__jobMeta dashboard__jobMeta--attention">{reasonLabels[reason]}</span>
+                ) : (
+                  <span className="dashboard__jobMeta">
+                    {paused ? t('dashboard.jobReasonPaused') : jobSetupLine(job, providerNames)}
+                  </span>
+                )}
+              </span>
+              <JobSpark perDay={activity.perDay} quiet={paused} />
+              <span className="dashboard__jobCount">
+                <span className={`dashboard__jobTotal${paused ? ' dashboard__jobTotal--quiet' : ''}`}>
+                  {loaded ? activity.total : '---'}
                 </span>
-                <span className="dashboard__jobMeta">
-                  {noHits ? t('dashboard.jobNoHits', { time }) : t('dashboard.jobLastRun', { time })}
-                </span>
-              </div>
-              <JobSpark perDay={activity.perDay} />
-              <span className={`dashboard__jobCount${noHits ? ' dashboard__jobCount--zero' : ''}`}>
-                {loaded ? activity.total : '---'}
+                <span className="dashboard__jobWindow">{t('dashboard.jobWindow')}</span>
               </span>
             </button>
           );
         })}
       </div>
-      <button type="button" className="dashboard__link" onClick={onManage}>
-        {t('dashboard.jobsManage')}
-      </button>
-    </div>
+    </section>
   );
 }
 

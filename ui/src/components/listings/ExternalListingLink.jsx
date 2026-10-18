@@ -4,7 +4,7 @@
  */
 
 import { Tooltip } from '@douyinfe/semi-ui-19';
-import { IconLink } from '@douyinfe/semi-icons';
+import { IconExternal } from '../icons/StrokeIcons.jsx';
 
 import './ExternalListingLink.less';
 
@@ -39,7 +39,7 @@ const ExternalListingLink = ({ href, label, className }) => {
         aria-label={label}
         onClick={(e) => e.stopPropagation()}
       >
-        <IconLink />
+        <IconExternal />
       </a>
     </Tooltip>
   );

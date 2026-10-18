@@ -75,7 +75,7 @@ export default function ListingDescriptionCard({ listing, onRefetch, refetching,
           <Button
             className="listing-description__refetch"
             icon={<IconRefresh />}
-            theme="borderless"
+            theme="outline"
             size="small"
             loading={refetching}
             disabled={refetching || exhausted}

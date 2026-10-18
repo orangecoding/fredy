@@ -48,10 +48,14 @@ export default function DebugLoggingBanner() {
 
   if (!active) return null;
   return (
-    <>
-      <Banner fullMode={true} type="danger" bordered closeIcon={null} description={t('app.debugLoggingBanner')} />
-      <br />
-    </>
+    <Banner
+      className="appBanner"
+      fullMode={true}
+      type="danger"
+      bordered
+      closeIcon={null}
+      description={t('app.debugLoggingBanner')}
+    />
   );
 }
 

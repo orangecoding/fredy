@@ -1,46 +1,89 @@
+@import '../../tokens.less';
+
+@visibility-w: 150px;
+
+/* The table itself is Index.less's: hairline rows, no zebra, no filled header. What is here is the
+   cells. This file used to import nothing and colour with Semi's own variables, which put it
+   outside every theme check the project has. */
 .notificationChannelTable {
-  margin-bottom: 1rem;
+  margin-bottom: @space-4;
+
+  /* The table shares the settings column with the forms around it, so it is set to fit 860px:
+     headings, counts and the four tools stay on one line, and only a long channel name wraps. */
+  .semi-table-thead > tr > th,
+  &__usage {
+    white-space: nowrap;
+  }
 
   &__tools {
     display: flex;
-    gap: 0.5rem;
+    align-items: center;
+    gap: @space-1;
     justify-content: flex-end;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
   }
 
-  /* Destinations are chat ids, channel names and mail addresses. A monospaced face keeps a column
-     of them scannable and stops a long webhook host from reading as prose. */
+  /* Round and muted until pointed at, like the tools on a job or a listing card. */
+  &__icon.semi-button {
+    border-radius: @radius-pill;
+  }
+
+  &__type {
+    color: @color-muted;
+  }
+
+  /* Destinations are chat ids, channel names, mail addresses and webhook hosts - identifiers, which
+     is what the mono face is for. It keeps a column of them scannable and stops a long webhook host
+     from reading as prose. */
   &__destination {
-    font-family: var(--semi-font-family-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-    font-size: 13px;
-    color: var(--semi-color-text-1);
-    word-break: break-all;
+    font-family: @font-mono;
+    font-size: @text-xs;
+    color: @color-muted;
+    /* Broken only where nothing else fits: a chat id split after twelve of its fourteen digits
+       read as two numbers. */
+    overflow-wrap: anywhere;
+
+    /* In the table column on one line, cut at a width that holds a chat id or a channel name; a
+       long webhook host ends in an ellipsis and is read in full from the tooltip. */
+    &--cell {
+      display: inline-block;
+      max-width: 18ch;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+  }
+
+  &__visibility {
+    width: @visibility-w;
   }
 
   /* Below 700px every column collapses into this one cell. */
   &__stack {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: @space-2;
   }
 
   &__stackHead {
     display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    align-items: baseline;
+    gap: @space-2;
     flex-wrap: wrap;
   }
 
   &__stackName {
-    font-weight: 600;
+    font-weight: @weight-medium;
+    color: @color-text;
   }
 
   &__stackMeta {
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
-    font-size: 12px;
-    color: var(--semi-color-text-2);
+    gap: @space-1;
+    font-size: @text-sm;
+    color: @color-muted;
   }
 
   /* The stacked cell already carries the labels in its own layout, so the single remaining column
@@ -50,8 +93,13 @@
       display: none;
     }
 
-    .notificationChannelTable__tools {
+    &__tools {
       justify-content: flex-start;
+      flex-wrap: wrap;
+    }
+
+    &__visibility {
+      width: 100%;
     }
   }
 }

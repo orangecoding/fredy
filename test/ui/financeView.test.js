@@ -229,6 +229,51 @@ describe('the closing-cost rates are folded, the price is not', () => {
   });
 });
 
+/*
+ * Exposé spec. The old page set every figure in the mono face, coloured the housing budget, the
+ * loan amount and the emphasised ceilings in the accent, boxed the verdict in a tint of its colour,
+ * filled the primary debt curve with a gradient, and set the step numbers in green capitals.
+ */
+describe('the figures are figures, not highlights', () => {
+  const STYLED = [
+    ...LESS_FILES,
+    ['AffordabilityPanel', read('ui/src/views/finance/components/AffordabilityPanel.less')],
+    ['MilestoneTimeline', read('ui/src/views/finance/components/MilestoneTimeline.less')],
+    ['VerdictBanner', read('ui/src/views/finance/components/VerdictBanner.less')],
+  ];
+
+  it.each(STYLED)('%s sets no figure in mono, asks for no tabular digits and spends no accent', (_name, source) => {
+    expect(source).not.toMatch(/@font-mono|tabular-nums/);
+    expect(source).not.toMatch(/@color-accent/);
+    expect(source).not.toMatch(/text-transform:\s*uppercase/);
+  });
+
+  it('puts the verdict colour on the verdict word only, not on a box around it', () => {
+    const verdict = read('ui/src/views/finance/components/VerdictBanner.jsx');
+    expect(verdict).toMatch(/verdictBanner__word/);
+    expect(verdict).not.toMatch(/withAlpha|backgroundColor|borderColor/);
+  });
+
+  it('draws the charts without gradients and without the accent', () => {
+    for (const chart of [
+      'DebtTrajectoryChart',
+      'ListingPayoffChart',
+      'InterestPrincipalChart',
+      'BudgetChart',
+      'CostBreakdownChart',
+    ]) {
+      const source = read(`ui/src/views/finance/charts/${chart}.jsx`);
+      expect(source, chart).not.toMatch(/makeAreaGradient|CHART_COLORS\.ACCENT|chartPalette|toUpperCase/);
+    }
+  });
+
+  it('numbers the steps in sentence case and the muted colour', () => {
+    const block = formsLess.match(/\.financeStep \{[\s\S]*?\n\}/)[0];
+    expect(block).toMatch(/color: @color-muted/);
+    expect(block).not.toMatch(/letter-spacing|@color-success/);
+  });
+});
+
 describe('the numbers themselves were not touched', () => {
   it('leaves the finance core alone', () => {
     // A guard, not an assertion about behaviour: this plan is a UI plan, and the one thing it must

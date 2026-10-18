@@ -3,8 +3,9 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { Button, Dropdown, Tooltip } from '@douyinfe/semi-ui-19';
-import { IconCopy, IconDelete, IconMore, IconRefresh } from '@douyinfe/semi-icons';
+import { Dropdown, Tooltip } from '@douyinfe/semi-ui-19';
+import { IconDelete, IconRefresh } from '@douyinfe/semi-icons';
+import { IconCopy, IconMore } from '../icons/StrokeIcons.jsx';
 
 import ExternalListingLink from './ExternalListingLink.jsx';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
@@ -29,7 +30,7 @@ import './ListingActions.less';
  *
  * @param {Object} props
  * @param {Object} props.listing A row as the listings API returns it.
- * @param {'card'|'row'} props.density Whether the application button carries its word.
+ * @param {'card'|'row'} props.density Where the group sits: under a card or at the end of a table row.
  * @param {boolean} [props.isHiddenView=false] The soft-deleted view.
  * @param {(listing: Object) => void} [props.onApplication]
  * @param {(id: string) => void} [props.onReactivate]
@@ -75,36 +76,27 @@ export default function ListingActions({
 
   return (
     <div className={`listingActions listingActions--${density}`} role="group" aria-label={t('listings.actionsLabel')}>
+      {/* Not in the hidden view: the row is soft-deleted there, and writing to an agent about a
+          listing you have just thrown away is noise. An icon with its name on hover, the same as
+          the two beside it: a labelled button in every card was the loudest thing in the grid. */}
+      {!isHiddenView && (
+        <Tooltip content={t('listings.tooltipApplication')}>
+          <button
+            type="button"
+            className="listingActions__button"
+            aria-label={t('listings.tooltipApplication')}
+            onClick={() => onApplication?.(listing)}
+          >
+            <IconCopy />
+          </button>
+        </Tooltip>
+      )}
+
       <ExternalListingLink
         href={listing.link}
         label={t('listings.tooltipOriginalListing')}
-        className="listingActions__open"
+        className="listingActions__button"
       />
-
-      {/* Not in the hidden view: the row is soft-deleted there, and writing to an agent about a
-          listing you have just thrown away is noise. */}
-      {!isHiddenView &&
-        (density === 'card' ? (
-          <Button
-            className="listingActions__apply"
-            theme="outline"
-            size="small"
-            icon={<IconCopy />}
-            onClick={() => onApplication?.(listing)}
-          >
-            {t('listings.tooltipApplication')}
-          </Button>
-        ) : (
-          <Tooltip content={t('listings.tooltipApplication')}>
-            <Button
-              className="listingActions__apply"
-              size="small"
-              icon={<IconCopy />}
-              aria-label={t('listings.tooltipApplication')}
-              onClick={() => onApplication?.(listing)}
-            />
-          </Tooltip>
-        ))}
 
       {/* clickToHide, because Semi's Dropdown does not close itself: without it the menu stayed
           open on top of the deletion dialog it had just opened, and the only way out was a click
@@ -117,12 +109,9 @@ export default function ListingActions({
         render={overflow}
         stopPropagation
       >
-        <Button
-          className="listingActions__more"
-          size="small"
-          icon={<IconMore />}
-          aria-label={t('listings.moreActions')}
-        />
+        <button type="button" className="listingActions__button" aria-label={t('listings.moreActions')}>
+          <IconMore />
+        </button>
       </Dropdown>
     </div>
   );

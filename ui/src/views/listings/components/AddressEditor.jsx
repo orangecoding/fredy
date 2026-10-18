@@ -184,6 +184,7 @@ export default function AddressEditor({ isManual = false, onSave, onPickOnMap })
       <Button
         size="small"
         theme="borderless"
+        type="tertiary"
         icon={<IconEdit />}
         aria-label={t('listing.detail.editAddress')}
         className="addressEditor__trigger"

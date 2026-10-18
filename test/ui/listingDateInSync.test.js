@@ -23,10 +23,17 @@ const read = (relative) => readFileSync(fileURLToPath(new URL(relative, import.m
 
 const DATE_EXPRESSION = 'timeService.format(item.published_at ?? item.created_at, false, locale)';
 
+/** The field both views read, whichever way they print it. */
+const DATE_FIELD = 'item.published_at ?? item.created_at';
+
 describe('the listing date the table and the grid render', () => {
-  it('is the same expression in both views', () => {
+  it('is the same field in both views', () => {
     expect(read('../../ui/src/components/table/ListingsTable.jsx')).toContain(DATE_EXPRESSION);
-    expect(read('../../ui/src/components/grid/listings/ListingsGrid.jsx')).toContain(DATE_EXPRESSION);
+    // The grid prints it as an age on the photo, with the exact date on hover.
+    const grid = read('../../ui/src/components/grid/listings/ListingsGrid.jsx');
+    expect(grid).toContain(`const listedAt = ${DATE_FIELD};`);
+    expect(grid).toContain('relativeTime(listedAt, t)');
+    expect(grid).toContain('timeService.format(listedAt, true, locale)');
   });
 
   it('is the field the list is sorted by out of the box', () => {

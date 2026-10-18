@@ -116,10 +116,10 @@ describe('onboarding tour steps', () => {
     expect(isActionDone(TOUR_STEPS[0], '/dashboard')).toBe(false);
   });
 
-  it('points sidebar entries inside a closed group at the group first opened', () => {
+  it('points sidebar steps straight at the entry, since none of them is folded into a group', () => {
     const goMap = TOUR_STEPS.find((step) => step.id === 'goMap');
-    expect(goMap.targets).toEqual(['[data-tour="/map"]', '[data-tour="listings"]']);
-    expect(goMap.groupKey).toBe('nav.listings');
+    expect(goMap.targets).toEqual(['[data-tour="/map"]']);
+    expect(goMap.labelKey).toBe('nav.map');
   });
 
   it('sends the listing steps to the example listing, but accepts any listing the user opened', () => {
@@ -174,7 +174,6 @@ describe('onboarding tour steps', () => {
       expect(english, step.id).toHaveProperty([stepTitleKey(step.id)]);
       expect(english, step.id).toHaveProperty([stepBodyKey(step.id)]);
       if (step.labelKey) expect(english, step.id).toHaveProperty([step.labelKey]);
-      if (step.groupKey) expect(english, step.id).toHaveProperty([step.groupKey]);
       for (const key of Object.values(step.vars ?? {})) expect(english, step.id).toHaveProperty([key]);
     }
   });

@@ -1,6 +1,21 @@
 @import '../../../tokens.less';
 
 .listing-keyfacts {
+  /* In the outline, not on the screen: the standard clip, so a screen reader still announces the
+     chapter while the price stays the first thing beside the photograph. Two classes, so it holds
+     against the chapter heading's own rule whichever stylesheet the bundle puts last. */
+  .listing-card__label&__title {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
   &__price {
     display: flex;
     align-items: baseline;
@@ -8,129 +23,143 @@
     gap: @space-1 @space-2;
   }
 
-  /* The one figure on the page that is allowed to shout. The weight and the tabular figures carry
-     it - there is no second typeface here, and it does not need one. */
+  /* The one figure on the page that is allowed to be large. In the UI face like every other figure:
+     size and weight carry it, and it does not need a second typeface. */
   &__amount {
-    font-size: 40px;
-    font-weight: 700;
-    line-height: 1.05;
-    letter-spacing: -0.025em;
-    font-variant-numeric: tabular-nums;
+    font-size: @text-display;
+    font-weight: @weight-strong;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
     color: @color-text;
   }
 
-  // Reading size, not headline size. Every listing carries the same symbol, so setting it as large
-  // as the sum would spend the page's loudest type on its least informative character.
+  // A step down from the digits. Every listing carries the same symbol, so setting it as large as
+  // the sum would spend the page's loudest type on its least informative character.
   &__currency {
-    font-size: @text-lg;
-    font-weight: 600;
+    font-size: @text-xl;
+    font-weight: @weight-strong;
     color: @color-text;
   }
 
   &__reference {
+    margin-left: @space-1;
     font-size: @text-base;
     color: @color-muted;
   }
 
-  /* The market verdict. Green is this page's word for "an advantage", never for "a status", which
-     is why nothing neutral on the page borrows it. */
-  &__market {
-    display: inline-flex;
+  &__verdicts {
+    display: flex;
     align-items: center;
-    gap: @space-1;
-    margin-top: @space-3;
-    padding: @space-1 @space-3;
-    border: 1px solid;
-    border-radius: @radius-chip;
+    flex-wrap: wrap;
+    gap: @space-2 @space-3;
+    margin-top: @space-2;
+  }
+
+  /* The market verdict, as coloured words. Green is this page's word for "an advantage", never for
+     "a status", which is why nothing neutral on the page borrows it. The dotted line says there is
+     an explanation behind it. */
+  &__market {
     font-size: @text-base;
-    font-weight: 500;
-    font-variant-numeric: tabular-nums;
+    font-weight: @weight-medium;
     cursor: help;
+    text-decoration: underline dotted;
+    text-decoration-color: @color-border-bright;
+    text-underline-offset: 4px;
 
     &--below {
-      background: @color-success-dim;
-      border-color: rgb(@color-success-rgb / 45%);
       color: @color-success;
     }
 
     &--above {
-      background: @color-error-dim;
-      border-color: rgb(@color-error-rgb / 45%);
       color: @color-error;
     }
 
     // No colour for an ordinary asking price. Painting every second listing would make the two that
-    // are not ordinary harder to spot, which is the only thing this pill is for.
+    // are not ordinary harder to spot, which is the only thing this line is for.
     &--inline {
-      background: @color-hover;
-      border-color: @color-border-bright;
       color: @color-muted;
     }
   }
 
+  /* The affordability verdict, as a pill: a faint tint of the verdict's colour with an edge of it,
+     and the word in the text colour. */
   &__affordability {
-    display: inline-block;
-    margin-top: @space-2;
-    padding: @space-1 @space-3;
+    display: inline-flex;
+    align-items: center;
+    height: 24px;
+    padding: 0 @space-3;
     border: 1px solid;
-    border-radius: @radius-chip;
+    border-radius: @radius-pill;
     font-size: @text-sm;
+    font-weight: @weight-medium;
+    color: @color-text;
     white-space: nowrap;
+    cursor: help;
+
+    &--affordable {
+      background: rgb(@color-success-rgb / 12%);
+      border-color: rgb(@color-success-rgb / 40%);
+    }
+
+    &--stretch {
+      background: rgb(@color-warning-rgb / 12%);
+      border-color: rgb(@color-warning-rgb / 40%);
+    }
+
+    &--unaffordable {
+      background: rgb(@color-error-rgb / 12%);
+      border-color: rgb(@color-error-rgb / 40%);
+    }
   }
 
+  /* Label over value, three abreast, divided by hairlines rather than set in boxes - the same row
+     the dashboard draws its figures in. */
   &__tiles {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: @space-2;
-    margin-top: @space-5;
-    padding-top: @space-5;
+    margin: @space-6 0 0;
     border-top: 1px solid @color-border;
+    border-bottom: 1px solid @color-border;
   }
 
-  // The recess inside a card: the same step the app uses for a hovered row, which is why it reads
-  // as "set into this card" rather than as a card of its own.
   &__tile {
     display: flex;
     flex-direction: column;
     gap: @space-1;
     min-width: 0;
-    padding: @space-3 @space-3 @space-4;
-    border-radius: @radius-chip;
-    background: @color-hover;
-  }
+    padding: @space-4 @space-4 @space-4 0;
 
-  &__tile-icon {
-    color: @color-faint;
-    font-size: @text-base;
-    line-height: 1;
-    margin-bottom: @space-1;
-  }
-
-  &__tile-value {
-    font-size: @text-lg;
-    font-weight: 600;
-    line-height: 1.2;
-    font-variant-numeric: tabular-nums;
-    color: @color-text;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    & + & {
+      padding-left: @space-4;
+      border-left: 1px solid @color-border;
+    }
   }
 
   &__tile-label {
     display: flex;
     align-items: center;
     gap: @space-1;
+    min-width: 0;
     font-size: @text-sm;
     color: @color-muted;
-    min-width: 0;
+  }
+
+  &__tile-value {
+    margin: 0;
+    font-size: @text-lg;
+    font-weight: @weight-strong;
+    line-height: 1.25;
+    color: @color-text;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   /* The anchor the old `cursor: help` never was. It is visible, it is the same size as the label it
      sits next to, and the tooltip carries an aria-label so the sentence exists without a pointer. */
   &__help {
     flex: 0 0 auto;
-    font-size: @text-sm;
+    font-size: @text-xs;
     color: @color-faint;
     cursor: help;
 
@@ -140,28 +169,40 @@
   }
 
   &__history {
-    margin-top: @space-5;
-    padding-top: @space-5;
-    border-top: 1px solid @color-border;
+    margin-top: @space-6;
   }
 
   &__history-title {
     margin: 0 0 @space-3;
-    font-size: @text-base;
-    font-weight: 600;
-    color: @color-text;
+    font-size: @text-sm;
+    font-weight: 400;
+    color: @color-muted;
   }
 
-  /* A narrow phone leaves the card about 160px inside. The price at 40px is wider than that, and
-     three tiles abreast get under 50px each - room for an ellipsis, not for a figure. The price
-     shrinks rather than wraps, because a number broken in two reads as two numbers. */
+  /* A narrow phone leaves the column about 290px. Three figures abreast get under 100px each -
+     room for an ellipsis, not for a price per square metre - so they stack into rows of label and
+     value. The price shrinks rather than wraps, because a number broken in two reads as two
+     numbers. */
   @media (max-width: 480px) {
     &__amount {
-      font-size: 32px;
+      font-size: @text-2xl;
     }
 
     &__tiles {
       grid-template-columns: minmax(0, 1fr);
+    }
+
+    &__tile {
+      flex-direction: row;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: @space-3 0;
+
+      & + & {
+        padding-left: 0;
+        border-left: 0;
+        border-top: 1px solid @color-border;
+      }
     }
   }
 }

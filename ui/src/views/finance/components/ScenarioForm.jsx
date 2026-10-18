@@ -8,14 +8,17 @@ import { IconDelete, IconPlus } from '@douyinfe/semi-icons';
 
 import { SegmentPart } from '../../../components/segment/SegmentPart.jsx';
 import { NumberField } from './ProfileForm.jsx';
-import { chartPalette } from '../../../components/cards/chartTheme.js';
+import { SCENARIO_COLOR_COUNT, scenarioColors } from '../charts/scenarioColors.js';
 import { DEFAULT_TILGUNG, DEFAULT_ZINSBINDUNG_YEARS } from '../../../services/finance/constants.js';
 import { useTranslation } from '../../../services/i18n/i18n.jsx';
 
 import './FinanceForms.less';
 
-/** Nobody needs more lines on one chart than the palette has colours. */
-const MAX_SCENARIOS = 6;
+/**
+ * How many scenarios one chart compares. One more than the ramp has greys: the sixth takes the first
+ * grey again and the trajectory chart draws it dashed, which keeps the limit people already had.
+ */
+const MAX_SCENARIOS = SCENARIO_COLOR_COUNT + 1;
 
 /**
  * The loan scenarios to compare.
@@ -72,7 +75,7 @@ export default function ScenarioForm({ scenarios, computed = [], onChange }) {
   };
 
   const remove = (index) => onChange(scenarios.filter((_, i) => i !== index));
-  const palette = chartPalette();
+  const palette = scenarioColors();
 
   return (
     <SegmentPart name={t('finance.form.scenariosTitle')} helpText={t('finance.form.scenariosHelp')} helpMode="popover">

@@ -147,9 +147,10 @@ describe('the table is a table', () => {
 
   it('gives the action column a fixed width, so the columns stop wandering', () => {
     // `auto` made the last column as wide as its content, and a row with one button more shifted
-    // every other column of that row against every other row.
+    // every other column of that row against every other row. 140px since the Exposé redesign:
+    // four of the cards' round 32px buttons and three 4px gaps, where it was four 28px squares.
     expect(code(tableLess)).not.toMatch(/@listing-columns:[^;]*\bauto\b/);
-    expect(tableLess).toMatch(/@listing-columns:[^;]*124px;/);
+    expect(tableLess).toMatch(/@listing-columns:[^;]*140px;/);
   });
 
   it('hides the same columns in the header as in the row', () => {

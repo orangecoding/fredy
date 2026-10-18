@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { Button, Col, Collapse, Popconfirm, Row, Tabs, Toast, Typography } from '@douyinfe/semi-ui-19';
-import { IconHome, IconKey, IconDelete } from '@douyinfe/semi-icons';
+import { IconDelete } from '@douyinfe/semi-icons';
 import { useSearchParams } from 'react-router';
 
 import Headline from '../../components/headline/Headline.jsx';
@@ -298,13 +298,11 @@ export default function FinanceCalculator() {
 
   return (
     <div className="finance">
-      <Headline text={t('finance.title')} />
-
-      {/* One line, and the caveat at the foot of the page. The rule that produces every verdict
-          here used to stand third, above the first field, with an accent rule down its side - the
-          answer to "why this number?" printed before there was a number. It now lives behind the
-          mark on the household card, which is the card that applies it. */}
-      <Text className="finance__intro-lead">{t('finance.intro')}</Text>
+      {/* One line under the title, and the caveat at the foot of the page. The rule that produces
+          every verdict here used to stand third, above the first field, with an accent rule down its
+          side - the answer to "why this number?" printed before there was a number. It now lives
+          behind the mark on the household section, which is the section that applies it. */}
+      <Headline text={t('finance.title')} subtitle={t('finance.intro')} />
 
       {/* Shared by both tabs: one household, one income, one set of living costs. It sits above
           the tabs because deleting a tab must never take the income with it, and because the user
@@ -349,46 +347,34 @@ export default function FinanceCalculator() {
 
       {/* Renting and buying answer the same budget question but are otherwise nothing alike, so
           they get a tab each. Each tab saves and deletes on its own, and only the matching tab's
-          data applies to a job of that type. */}
+          data applies to a job of that type. The tabs are words, like every other tab strip: the
+          house and key icons and a colour per tab said "rent" and "buy" a second and a third time. */}
       <Tabs type="line" activeKey={activeTab} onChange={setActiveTab} keepDOM={false} className="finance__tabs">
-        <TabPane
-          itemKey="rent"
-          tab={
-            <span className="finance__tab finance__tab--rent">
-              <IconHome />
-              {t('finance.area.rentTitle')}
-            </span>
-          }
-        >
-          <Text type="tertiary" size="small" className="finance__tab-lead">
-            {t('finance.area.rentLead')}
-          </Text>
+        <TabPane itemKey="rent" tab={t('finance.area.rentTitle')}>
+          {/* One question and its answer, so the same reading width as the household above. */}
+          <div className="finance__narrow">
+            <Text type="tertiary" size="small" className="finance__tab-lead">
+              {t('finance.area.rentLead')}
+            </Text>
 
-          <RentPanel
-            profile={draft}
-            budget={draftSummary?.budget ?? null}
-            thresholds={draftSummary?.thresholds?.rent ?? null}
-            onChange={patchRenting}
-          />
+            <RentPanel
+              profile={draft}
+              budget={draftSummary?.budget ?? null}
+              thresholds={draftSummary?.thresholds?.rent ?? null}
+              onChange={patchRenting}
+            />
 
-          <SectionDelete
-            section="rent"
-            saved={rentSaved}
-            deleting={deleting === 'rent'}
-            onDelete={() => deleteSection('rent')}
-            t={t}
-          />
+            <SectionDelete
+              section="rent"
+              saved={rentSaved}
+              deleting={deleting === 'rent'}
+              onDelete={() => deleteSection('rent')}
+              t={t}
+            />
+          </div>
         </TabPane>
 
-        <TabPane
-          itemKey="buy"
-          tab={
-            <span className="finance__tab finance__tab--buy">
-              <IconKey />
-              {t('finance.area.buyTitle')}
-            </span>
-          }
-        >
+        <TabPane itemKey="buy" tab={t('finance.area.buyTitle')}>
           <Text type="tertiary" size="small" className="finance__tab-lead">
             {t('finance.area.buyLead')}
           </Text>
@@ -396,7 +382,7 @@ export default function FinanceCalculator() {
           {/* Inputs on the left, the answer on the right. The charts that justify the answer
               rather than give it live in the disclosure below, so the default view is one
               screen of figures instead of five charts the user has to triage. */}
-          <Row gutter={[16, 16]} className="finance__split">
+          <Row gutter={[40, 0]} className="finance__split">
             <Col xs={24} lg={10} xl={9}>
               <PropertyForm
                 financing={draft.financing ?? EMPTY_DRAFT.financing}
@@ -413,7 +399,11 @@ export default function FinanceCalculator() {
             </Col>
 
             <Col xs={24} lg={14} xl={15}>
-              <ResultSummary result={result} />
+              {/* Opens on a hairline like the sections in the column beside it, so the two columns
+                  start on one line. Empty until the first calculation lands, and then not drawn. */}
+              <div className="finance__answer">
+                <ResultSummary result={result} />
+              </div>
 
               <SegmentPart name={t('finance.section.trajectory')} helpText={t('finance.section.trajectoryHelp')}>
                 <DebtTrajectoryChart
@@ -431,7 +421,7 @@ export default function FinanceCalculator() {
           {/* keepDOM={false}: closed, these three chart.js canvases are never created at all. */}
           <Collapse className="finance__more" keepDOM={false}>
             <Collapse.Panel itemKey="detail" header={t('finance.section.moreDetail')}>
-              <Row gutter={[16, 16]}>
+              <Row gutter={[40, 0]}>
                 <Col xs={24} lg={12}>
                   <SegmentPart name={t('finance.section.split')} helpText={t('finance.section.splitHelp')}>
                     <InterestPrincipalChart scenario={primary} />

@@ -1,13 +1,21 @@
 @import '../../tokens.less';
 
+/* The filters that are on and have no quick chip of their own, each removable. Same pill as the
+   quick chips, filled, because each of these is on. */
 .activeFilterChips {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: @space-2;
-  margin-bottom: @space-3;
 
-  &__chip {
+  &__chip.semi-tag {
     max-width: 22rem;
+    height: @control-sm;
+    padding: 0 @space-2 0 @space-3;
+    border: 1px solid @color-border-bright;
+    border-radius: @radius-pill;
+    background: @color-solid;
+    color: @color-text;
+    font-size: @text-sm;
   }
 }

@@ -17,7 +17,7 @@ import { useTranslation, useLocale } from '../../../services/i18n/i18n.jsx';
 
 import './ListingFinanceCard.less';
 
-const { Text, Title } = Typography;
+const { Text } = Typography;
 
 /**
  * What this particular property costs the household every month.
@@ -98,11 +98,9 @@ export default function ListingFinanceCard({ listing }) {
   return (
     <section className="listingFinance">
       <div className="listingFinance__header">
-        {/* Same heading level as "Details" and "Description" - it is a section of the page,
-            not a widget bolted onto one. */}
-        <Title heading={4} className="listingFinance__title">
-          {t('listing.detail.financeTitle')}
-        </Title>
+        {/* Same heading level as every other chapter - it is a section of the page, not a widget
+            bolted onto one. */}
+        <h2 className="listingFinance__title">{t('listing.detail.financeTitle')}</h2>
         <Button
           theme="borderless"
           size="small"
@@ -165,9 +163,7 @@ function RentCard({ scored, budget, t, locale }) {
   return (
     <section className="listingFinance">
       <div className="listingFinance__header">
-        <Title heading={4} className="listingFinance__title">
-          {t('listing.detail.rentTitle')}
-        </Title>
+        <h2 className="listingFinance__title">{t('listing.detail.rentTitle')}</h2>
         <Button
           theme="borderless"
           size="small"

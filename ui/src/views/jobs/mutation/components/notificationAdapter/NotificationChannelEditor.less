@@ -40,14 +40,14 @@
     }
   }
 
+  /* A heading in sentence case, the size of the text it introduces. It was a letter-spaced capital
+     label, the one shouting line in a quiet form. */
   &__groupTitle {
     display: block;
     margin-bottom: @space-3;
-    font-size: @text-xs;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: @color-muted;
+    font-size: @text-base;
+    font-weight: @weight-strong;
+    color: @color-text;
   }
 
   &__field {
@@ -58,12 +58,14 @@
     }
   }
 
+  /* The app's field label: sentence case, small, muted, so the values and the fields carry the
+     weight of the form and the labels only name them. */
   &__label {
     display: block;
     margin-bottom: @space-1;
-    font-weight: 600;
-    font-size: @text-base;
-    color: @color-text;
+    font-weight: @weight-medium;
+    font-size: @text-sm;
+    color: @color-muted;
   }
 
   &__value {

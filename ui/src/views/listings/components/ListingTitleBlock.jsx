@@ -69,7 +69,7 @@ export default function ListingTitleBlock({ listing, wide, onSaveAddress, onPick
           {wide && <span className="listing-title__status-caption">{t('listings.status.statusLabel')}</span>}
           {wide ? (
             <RadioGroup
-              className="listing-title__segment"
+              className="listing-segmented listing-title__segment"
               type="button"
               value={status ?? NO_STATUS}
               onChange={(event) => {

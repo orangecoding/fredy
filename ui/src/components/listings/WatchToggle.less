@@ -5,55 +5,53 @@
 
 @import '../../tokens.less';
 
+/* A star, outlined when off and filled when on. In the text colour, not red: being on the watch
+   list is a state somebody chose, and red is kept for the one action a page is about. */
 .watchToggle {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0;
-  cursor: pointer;
   flex-shrink: 0;
-  color: @color-accent;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+  font-size: 17px;
   transition:
     background @transition-fast,
-    border-color @transition-fast;
+    color @transition-fast;
 
-  .semi-icon {
-    font-size: 14px;
-  }
-
-  &:focus-visible {
-    outline: 2px solid @color-accent;
-    outline-offset: 2px;
-  }
-
-  // Auf dem Foto der Kachel. Dieselbe deckende Flaeche wie der Betrugschip daneben, damit die
-  // Overlays wie eine Familie aussehen statt wie drei verschiedene Grautoene. Die Tokens der
-  // Kartenoverlays schlagen mit dem Theme um, eine feste Tönung täte das nicht.
+  /* On the photograph: the map-panel surface, which stays legible over any picture and turns with
+     the theme. */
   &--overlay {
     position: absolute;
     top: @space-2;
     right: @space-2;
-    width: 28px;
-    height: 28px;
+    width: @control-md;
+    height: @control-md;
     border-radius: @radius-pill;
     background: @color-map-panel;
-    border: 1px solid @color-map-panel-border;
-
-    &:hover {
-      border-color: @color-accent;
-    }
+    color: @color-map-panel-strong;
   }
 
-  // In der Aktionsgruppe der Tabellenzeile, in der Grösse der Knöpfe daneben.
+  /* In the table row's action group, the size of the buttons beside it. */
   &--inline {
-    width: 28px;
-    height: 28px;
-    border-radius: @radius-chip;
+    width: @control-sm;
+    height: @control-sm;
+    border-radius: @radius-pill;
     background: transparent;
-    border: 1px solid @color-border-bright;
+    color: @color-muted;
 
     &:hover {
       background: @color-fill-1;
+      color: @color-text;
     }
+  }
+
+  &--on {
+    color: @color-text;
+  }
+
+  &--overlay&--on {
+    color: @color-map-panel-strong;
   }
 }

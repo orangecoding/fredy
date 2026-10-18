@@ -6,10 +6,9 @@
 @import '../../../tokens.less';
 
 .attachmentsCard {
-  // Same gutter as the notes block above and the map below, which carry the column's rhythm:
-  // `padding: 1.5rem` and `padding: 0 1.5rem 1.5rem`. The notes block's own bottom padding is the
-  // gap above this one, so there is no top padding here either.
-  padding: 0 1.5rem 1.5rem;
+  // No gutter of its own: it sits in a column of the workspace chapter, beside the notes, and its
+  // left edge has to be theirs.
+  padding: 0;
 
   &__title {
     margin: 0 0 @space-1 0;
@@ -17,8 +16,7 @@
 
   &__hint {
     display: block;
-    // 1rem under the heading block, matching `__notes-title` and `__map-title`.
-    margin-bottom: 1rem;
+    margin-bottom: @space-4;
   }
 
   // Wraps the list, because that is what a file is dropped onto - the box showing what is already
@@ -28,8 +26,9 @@
     border-radius: @radius-card;
   }
 
+  // While a file is held over it: the edge in the text colour, the way everything picked is marked.
   &__dropzone--active {
-    outline: 2px dashed @color-accent;
+    outline: 2px dashed @color-text;
     outline-offset: 2px;
   }
 
@@ -69,16 +68,16 @@
     display: block;
   }
 
+  // One row per document, divided by hairlines like every list in the chapter.
   &__item {
     display: flex;
     align-items: center;
     gap: @space-2;
-    padding: @space-2;
-    border-radius: @radius-card;
-    border: 1px solid var(--semi-color-border);
+    padding: @space-2 0;
+    border-bottom: 1px solid @color-border;
 
-    & + & {
-      margin-top: @space-2;
+    &:first-child {
+      border-top: 1px solid @color-border;
     }
   }
 
@@ -94,6 +93,7 @@
 
     &:hover .attachmentsCard__name {
       text-decoration: underline;
+      text-underline-offset: 3px;
     }
   }
 
@@ -101,9 +101,9 @@
     width: 48px;
     height: 48px;
     flex: 0 0 48px;
-    border-radius: @radius-input;
+    border-radius: @radius-chip;
     object-fit: cover;
-    background: var(--semi-color-fill-0);
+    background: @color-fill-subtle;
     // A file the browser cannot decode falls back to its alt text, which is the filename and is
     // routinely longer than the box. Without this it spills across the row.
     overflow: hidden;
@@ -113,7 +113,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--semi-color-text-2);
+    color: @color-muted;
     font-size: 20px;
   }
 
@@ -128,6 +128,11 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  &__delete.semi-button {
+    flex: none;
+    border-radius: @radius-pill;
   }
 
   &__capacity {

@@ -4,7 +4,7 @@
  */
 
 import { Tooltip } from '@douyinfe/semi-ui-19';
-import { IconStar, IconStarStroked } from '@douyinfe/semi-icons';
+import { IconStar } from '../icons/StrokeIcons.jsx';
 
 import './WatchToggle.less';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
@@ -41,7 +41,7 @@ export default function WatchToggle({ listing, onWatch, variant = 'inline' }) {
         aria-label={label}
         aria-pressed={watched}
       >
-        {watched ? <IconStar /> : <IconStarStroked />}
+        <IconStar filled={watched} />
       </button>
     </Tooltip>
   );

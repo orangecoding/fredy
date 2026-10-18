@@ -28,12 +28,10 @@
  * @property {string} [match] Path prefix that also counts as being on the step's page, for a step
  *   whose page has variants (any listing, any settings tab).
  * @property {string[]} targets CSS selectors of the element the step is about, first match wins. Empty
- *   for a step that explains rather than points. Several, so a sidebar entry inside a closed group
- *   falls back to the group itself, and the spotlight moves on to the entry once it is opened.
+ *   for a step that explains rather than points.
  * @property {string} [expect] Action steps: path prefix of the page the click leads to.
  * @property {string} [labelKey] Action steps: translation key of the control's visible label, for the
  *   step's copy.
- * @property {string} [groupKey] Action steps: translation key of the sidebar group the control sits in.
  * @property {Record<string, string>} [vars] Translation keys of further labels the step's copy names,
  *   by placeholder, so the copy says exactly what the page it points to is called.
  * @property {boolean} [interactive] Info steps: the element stays usable, because the step invites
@@ -46,9 +44,8 @@
 /** Placeholder in a route that is replaced by the example listing's id. */
 const LISTING_PLACEHOLDER = ':listingId';
 
-/** Selectors of the sidebar entry for a route, and of the group holding it while that is closed. */
-const navTarget = (key, group = null) =>
-  group == null ? [`[data-tour="${key}"]`] : [`[data-tour="${key}"]`, `[data-tour="${group}"]`];
+/** Selector of the sidebar entry for a route. Every entry sits at the top level, none is folded. */
+const navTarget = (key) => [`[data-tour="${key}"]`];
 
 /**
  * The whole tour, in order, before it is narrowed to one account.
@@ -62,8 +59,8 @@ export const TOUR_STEPS = Object.freeze(
   [
     { id: 'welcome', type: 'info', route: '/dashboard', targets: [] },
     { id: 'dashboard', type: 'info', route: '/dashboard', targets: ['.dashboard__kpis'] },
-    { id: 'dashboardLatest', type: 'info', route: '/dashboard', targets: ['.dashboard__main'] },
-    { id: 'dashboardInsights', type: 'info', route: '/dashboard', targets: ['.dashboard__rail'] },
+    { id: 'dashboardLatest', type: 'info', route: '/dashboard', targets: ['.dashboard__latest'] },
+    { id: 'dashboardInsights', type: 'info', route: '/dashboard', targets: ['.dashboard__columns'] },
     {
       id: 'goJobs',
       type: 'action',
@@ -89,10 +86,9 @@ export const TOUR_STEPS = Object.freeze(
       id: 'goListings',
       type: 'action',
       route: '/jobs/new',
-      targets: navTarget('/listings', 'listings'),
+      targets: navTarget('/listings'),
       expect: '/listings',
-      labelKey: 'nav.listingsOverview',
-      groupKey: 'nav.listings',
+      labelKey: 'nav.listings',
     },
     {
       id: 'listingsOverview',
@@ -159,10 +155,9 @@ export const TOUR_STEPS = Object.freeze(
       type: 'action',
       route: `/listings/listing/${LISTING_PLACEHOLDER}`,
       match: '/listings/listing/',
-      targets: navTarget('/map', 'listings'),
+      targets: navTarget('/map'),
       expect: '/map',
-      labelKey: 'nav.mapView',
-      groupKey: 'nav.listings',
+      labelKey: 'nav.map',
       needsListing: true,
     },
     {
@@ -177,10 +172,9 @@ export const TOUR_STEPS = Object.freeze(
       id: 'goFinance',
       type: 'action',
       route: '/map',
-      targets: navTarget('/finance', 'listings'),
+      targets: navTarget('/finance'),
       expect: '/finance',
       labelKey: 'nav.finance',
-      groupKey: 'nav.listings',
     },
     { id: 'finance', type: 'info', interactive: true, route: '/finance', targets: ['.finance__household'] },
     {

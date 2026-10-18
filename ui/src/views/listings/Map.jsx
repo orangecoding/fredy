@@ -691,7 +691,7 @@ export default function MapView() {
                 <div className="map-panel__groupTitle">{t('map.groupListings')}</div>
 
                 <div className="map-panel__row">
-                  <Text size="small" strong className="map-panel__label">
+                  <Text size="small" className="map-panel__label">
                     {t('map.filterJobLabel')}
                   </Text>
                   <Select
@@ -714,7 +714,7 @@ export default function MapView() {
                     cannot work is the honest place for that sentence - it used to be a full-width
                     banner above the map, on every visit, for a fact that never changes. */}
                 <div className="map-panel__row">
-                  <Text size="small" strong className="map-panel__label">
+                  <Text size="small" className="map-panel__label">
                     {t('map.filterDistanceLabel')}
                   </Text>
                   <Select
@@ -738,7 +738,7 @@ export default function MapView() {
                     distance ring, which recolours pins, this one hides them: a commute ceiling is
                     asked as "show me only what I could live with". */}
                 <div className="map-panel__row">
-                  <Text size="small" strong className="map-panel__label">
+                  <Text size="small" className="map-panel__label">
                     {t('map.filterCommuteLabel')}
                   </Text>
                   <Select
@@ -761,7 +761,7 @@ export default function MapView() {
                 </div>
 
                 <div className="map-panel__row">
-                  <Text size="small" strong className="map-panel__label">
+                  <Text size="small" className="map-panel__label">
                     {t('map.filterPriceLabel')}
                   </Text>
                   <div className="map-view-container__price-slider">

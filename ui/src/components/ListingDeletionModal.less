@@ -1,0 +1,62 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../tokens.less';
+
+@deletion-width: 500px;
+
+/* Two choices told apart by their label and one line each; the hard delete's consequence in amber
+   so it is read before the button is pressed. */
+.listingDeletion.semi-modal {
+  max-width: @deletion-width;
+}
+
+.listingDeletion {
+  &__message {
+    margin: 0 0 @space-5;
+    color: @color-text;
+    line-height: 1.6;
+  }
+
+  &__options.semi-radioGroup {
+    display: flex;
+    flex-direction: column;
+    gap: @space-4;
+    width: 100%;
+  }
+
+  &__option.semi-radio {
+    align-items: flex-start;
+    width: 100%;
+
+    .semi-radio-addon {
+      display: flex;
+      flex-direction: column;
+      gap: @space-1;
+      padding-left: @space-2;
+    }
+  }
+
+  &__label {
+    font-weight: @weight-strong;
+    color: @color-text;
+  }
+
+  &__description {
+    font-size: @text-sm;
+    line-height: 1.5;
+    color: @color-muted;
+  }
+
+  &__consequence {
+    font-size: @text-sm;
+    line-height: 1.5;
+    color: @color-warning;
+  }
+
+  &__remember.semi-checkbox {
+    margin-top: @space-5;
+  }
+}

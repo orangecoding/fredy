@@ -11,7 +11,7 @@ import {
   formatEuro,
   formatEuroCompact,
   registerFinanceCharts,
-  withAlpha,
+  shareRamp,
 } from '../../../components/cards/chartTheme.js';
 import { useTranslation, useLocale } from '../../../services/i18n/i18n.jsx';
 
@@ -88,12 +88,17 @@ export default function BudgetChart({ budget, monthlyRate = 0, rateLabel, height
   // zero, so only a stack that starts with exactly what the rule measures - the mortgage plus
   // any existing debt - puts the marker in a meaningful place. Leading with living costs would
   // push the mortgage block past the line even for a household well inside the rule.
+  //
+  // Steps of the greyscale ramp, brightest for the housing cost the chart is about and darkest
+  // for what is left over. The one hue is the overspend, because that is a verdict: the money is
+  // not there.
+  const ramp = shareRamp();
   const segments = [
-    [t('finance.budget.existingDebt'), budget.existingDebtRate, withAlpha(CHART_COLORS.PURPLE, 0.85)],
-    [rateLabel ?? t('finance.budget.mortgageRate'), monthlyRate, withAlpha(CHART_COLORS.ACCENT, 0.9)],
-    [t('finance.budget.livingCosts'), budget.livingCosts, withAlpha(CHART_COLORS.MUTED, 0.75)],
-    [t('finance.budget.buffer'), buffer, withAlpha(CHART_COLORS.SUCCESS, 0.5)],
-    [t('finance.budget.overspend'), overspend, withAlpha(CHART_COLORS.ERROR, 0.9)],
+    [t('finance.budget.existingDebt'), budget.existingDebtRate, ramp[1]],
+    [rateLabel ?? t('finance.budget.mortgageRate'), monthlyRate, ramp[0]],
+    [t('finance.budget.livingCosts'), budget.livingCosts, ramp[2]],
+    [t('finance.budget.buffer'), buffer, ramp[3]],
+    [t('finance.budget.overspend'), overspend, CHART_COLORS.ERROR],
   ].filter(([, value]) => value > 0);
 
   const data = {
@@ -136,7 +141,7 @@ export default function BudgetChart({ budget, monthlyRate = 0, rateLabel, height
         border: { display: false },
         ticks: {
           color: CHART_COLORS.MUTED,
-          font: { family: CHART_COLORS.FONT_MONO, size: 11 },
+          font: { family: CHART_COLORS.FONT_UI, size: 11 },
           callback: (value) => formatEuroCompact(value, locale),
         },
       },

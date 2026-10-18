@@ -200,12 +200,23 @@ describe('listing detail on a phone', () => {
     expect(source('components/ListingDescriptionCard.less')).toMatch(/&__body \{[^}]*overflow-wrap: anywhere;/);
   });
 
-  it('shrinks the price and stacks the tiles on a narrow phone rather than cutting them off', () => {
-    // On a 320px phone the key-facts card has about 160px inside it. The 40px price is wider than
-    // that, and three tiles abreast get under 50px each, which is room for an ellipsis, not a figure.
+  it('shrinks the price and stacks the figures on a narrow phone rather than cutting them off', () => {
+    // On a 320px phone the column has about 290px. The display-size price is wider than a third of
+    // that, and three figures abreast get under 100px each, which is room for an ellipsis, not a
+    // price per square metre. The Exposé redesign sets type from the scale in tokens.less rather
+    // than in pixels, so the sizes are read through it.
+    const scale = Object.fromEntries(
+      [
+        ...fs.readFileSync(path.join(detailDir, '../../tokens.less'), 'utf-8').matchAll(/^(@text-[\w-]+): (\d+)px;/gm),
+      ].map(([, name, px]) => [name, Number(px)]),
+    );
     const keyfacts = source('components/ListingKeyFacts.less');
     const narrow = keyfacts.slice(keyfacts.indexOf('@media (max-width: 480px)'));
-    const priceSize = (text) => Number(text.match(/&__amount \{[^}]*font-size: (\d+)px;/)?.[1]);
+    const priceSize = (text) => {
+      const size = text.match(/&__amount \{[^}]*font-size: ([@\w-]+);/)?.[1];
+      return size?.startsWith('@') ? scale[size] : Number.parseInt(size, 10);
+    };
+    expect(priceSize(keyfacts)).toBeGreaterThan(0);
     expect(priceSize(narrow)).toBeLessThan(priceSize(keyfacts));
     expect(narrow).toMatch(/&__tiles \{[^}]*grid-template-columns: minmax\(0, 1fr\);/);
   });

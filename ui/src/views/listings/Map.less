@@ -5,12 +5,27 @@
 
 @import '../../tokens.less';
 
+/*
+ * The map, full bleed: from under the page heading to the edges of the content area, with the
+ * panels floating on it. A card with a frame round it would put a second edge inside the page's
+ * own, and the map is the whole page here.
+ *
+ * The negative margins give back the content area's padding (App.less: @space-10 at the sides and
+ * @space-14 at the bottom, @space-4 and @space-10 on a phone). They have to move with it.
+ */
 .map-view-container {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  flex: 1 1 auto;
+  min-height: 420px;
+  margin: 0 -@space-10 -@space-14;
   padding: 0;
   box-sizing: border-box;
+  border-top: 1px solid @color-border;
+
+  @media (max-width: 768px) {
+    margin: 0 -@space-4 -@space-10;
+  }
 
   &__map-wrapper {
     position: relative;
@@ -19,7 +34,13 @@
   }
 
   &__price-slider {
-    width: 140px;
+    width: 148px;
+  }
+
+  // Full bleed: no frame and no rounding of its own, the page's edges are the map's.
+  .map-container {
+    border: 0;
+    border-radius: 0;
   }
 }
 
@@ -33,42 +54,39 @@
  */
 .map-panel.map-panel--folded {
   width: auto;
-  padding: 6px 8px 6px 14px;
+  padding: @space-1 @space-2 @space-1 @space-4;
+  border-radius: @radius-pill;
 }
 
 /*
- * The heading, now a button: the same line of type, pressable. Nothing of the heading's look is
- * kept away from it except its colour - `@color-faint` is a heading's grey, 2.3 to 1 on the dark
- * panel, and on a phone this is the one control on the map that says where the filters went. The
- * panel's label colour clears AA in both themes (5.8 and 6.5 to 1).
+ * The heading, now a button: the same line of type, pressable. In the text colour, because on a
+ * phone this is the one control on the map that says where the filters went.
  */
 .map-panel__foldToggle {
   display: inline-flex;
   align-items: center;
-  gap: @space-1;
-  /* The line is 10.5px type; the finger it is pressed with is not. */
-  min-height: 32px;
+  gap: @space-2;
+  min-height: @control-sm;
   padding: 0;
   border: none;
   background: none;
   font: inherit;
-  letter-spacing: inherit;
-  text-transform: inherit;
-  color: @color-map-panel-text;
+  color: @color-text;
   cursor: pointer;
 
   &:hover {
-    color: @color-map-panel-strong;
+    color: @color-text;
   }
 
   &:focus-visible {
-    outline: 2px solid @color-accent;
+    outline: 2px solid @color-info;
     outline-offset: 2px;
     border-radius: @radius-chip;
   }
 }
 
 .map-panel__foldChevron {
+  color: @color-muted;
   transition: transform @transition-fast;
 
   [aria-expanded='true'] > & {
@@ -82,20 +100,13 @@
   }
 }
 
-.map-container {
-  width: 100%;
-  height: 100%;
-  border-radius: 8px;
-  overflow: hidden;
-  border: 1px solid @color-map-panel-border;
-}
-
 .map-popup-content {
   // Wide enough for the address and the stop names to stay on one line on a desktop; the media
   // query below takes it back to the old width where the screen cannot spare it.
-  width: 340px;
+  width: 320px;
   max-width: 100%;
   color: @color-text;
+  font-family: @font-ui;
 
   // The popup sends focus here when it opens, so that its contents are one Tab away rather than a
   // few hundred markers away. No ring for it: this is the box, not a control, and the things a
@@ -104,12 +115,14 @@
     outline: none;
   }
 
+  // The photograph leads, as on a listing card.
   img {
+    display: block;
     width: 100%;
-    height: 150px;
+    height: 168px;
     object-fit: cover;
-    border-radius: 4px;
-    margin-bottom: 0.5rem;
+    border-radius: @radius-chip;
+    margin-bottom: @space-3;
   }
 
   /*
@@ -127,14 +140,13 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 8px;
+    gap: @space-2;
     padding-right: 32px;
-    margin-bottom: 0.5rem;
+    margin-bottom: @space-2;
   }
 
   &__pagerLabel {
-    font-size: 0.8rem;
-    font-variant-numeric: tabular-nums;
+    font-size: @text-sm;
     color: @color-muted;
   }
 
@@ -142,18 +154,39 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 26px;
-    height: 26px;
+    width: 28px;
+    height: 28px;
     padding: 0;
-    border: 1px solid @color-border;
-    border-radius: 6px;
-    background: @color-elevated;
-    color: @color-text;
+    border: 0;
+    border-radius: @radius-pill;
+    background: transparent;
+    color: @color-muted;
     cursor: pointer;
 
     &:hover {
       background: @color-fill-1;
+      color: @color-text;
     }
+  }
+
+  // The price as the cards set it: the UI face, large, the living space muted beside it.
+  &__price {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: @space-1 @space-2;
+  }
+
+  &__amount {
+    font-size: @text-lg;
+    font-weight: @weight-strong;
+    letter-spacing: -0.01em;
+    color: @color-text;
+  }
+
+  &__size {
+    font-size: @text-sm;
+    color: @color-muted;
   }
 
   &__title {
@@ -161,9 +194,9 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    margin: @space-2 0 0;
-    font-size: 14.5px;
-    font-weight: 600;
+    margin: @space-1 0 0;
+    font-size: @text-base;
+    font-weight: @weight-medium;
     line-height: 1.35;
     color: @color-text;
     text-decoration: none;
@@ -171,6 +204,7 @@
     &:hover {
       color: @color-text;
       text-decoration: underline;
+      text-underline-offset: 3px;
     }
 
     /*
@@ -191,11 +225,24 @@
     }
   }
 
-  &__facts {
-    margin-top: @space-2;
+  &__meta {
+    margin-top: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: @text-sm;
+    color: @color-muted;
+  }
+
+  // Fredy's own bookkeeping, as label and value, under a hairline.
+  &__facts,
+  &__times {
     display: grid;
-    grid-template-columns: 62px 1fr;
-    gap: 3px @space-2;
+    grid-template-columns: 72px minmax(0, 1fr);
+    gap: @space-1 @space-2;
+    margin-top: @space-3;
+    padding-top: @space-3;
+    border-top: 1px solid @color-border;
     font-size: @text-sm;
     color: @color-text;
 
@@ -204,9 +251,10 @@
     }
   }
 
-  &__num {
-    font-family: @font-mono;
-    font-variant-numeric: tabular-nums;
+  &__times {
+    margin-top: @space-2;
+    padding-top: 0;
+    border-top: 0;
   }
 
   &__actions {
@@ -214,18 +262,20 @@
   }
 
   &__transit {
-    margin-top: 0.6rem;
-    padding-top: 0.5rem;
+    margin-top: @space-3;
+    padding-top: @space-3;
     border-top: 1px solid @color-border;
 
     strong {
       display: block;
-      margin-bottom: 0.3rem;
+      margin-bottom: @space-1;
+      font-size: @text-sm;
+      font-weight: @weight-strong;
     }
   }
 
   /* The stop popup carries nothing but the board, so it needs neither the image sizing nor the
-     250px cap the listing popup brings. */
+     width the listing popup brings. */
   &--transit {
     max-width: 280px;
   }
@@ -236,7 +286,8 @@
   cursor: pointer;
 }
 
-/* How many listings share this pin. */
+/* How many listings share this pin. In the text colour on the page colour, inverted, so it reads on
+   any pin and any basemap without borrowing the red that is kept for the page's action. */
 .map-marker-badge {
   position: absolute;
   top: -4px;
@@ -245,29 +296,31 @@
   height: 16px;
   padding: 0 3px;
   box-sizing: border-box;
-  border-radius: 8px;
-  background: @color-accent;
-  color: #fff;
+  border-radius: @radius-pill;
+  background: @color-text;
+  color: @color-base;
+  font-family: @font-ui;
   font-size: 10px;
-  font-weight: 600;
+  font-weight: @weight-strong;
   line-height: 16px;
   text-align: center;
   pointer-events: none;
 }
 
-/* A phone cannot spare 340px, and MapLibre's own max-width is set per popup in JS. */
+/* A phone cannot spare 320px, and MapLibre's own max-width is set per popup in JS. */
 @media (max-width: 600px) {
   .map-popup-content {
     width: 240px;
   }
 }
 
-/* Override MapLibre default popup styles */
+/* MapLibre's popup, as the app's floating surface: a hairline and the shadow kept for what floats. */
 .maplibregl-popup-content {
   background-color: @color-surface !important;
   color: @color-text !important;
-  border-radius: 8px !important;
-  box-shadow: @shadow-lg !important;
+  border: 1px solid @color-border;
+  border-radius: @radius-card !important;
+  box-shadow: @shadow-md !important;
   /* A listing popup with image, details and nearby stops easily outgrows the map. Capping it and
      scrolling inside keeps the whole popup reachable; keepPopupInView() then pans the map so it
      is fully on screen. */
@@ -314,28 +367,29 @@
     color: @color-muted;
     display: flex;
     justify-content: space-between;
-    margin-bottom: 0.3rem;
-    font-size: 0.7rem;
+    margin-bottom: @space-1;
+    font-size: @text-xs;
   }
 }
 
+/* The price range, in the text colour: a value somebody set, not the page's action. */
 .range-slider .range-slider__thumb {
   position: absolute;
   z-index: 3;
   top: 50%;
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  background: @color-accent;
+  background: @color-text;
 }
 
 .range-slider .range-slider__range {
-  background: @color-accent;
+  background: @color-text;
 }
 
 .range-slider {
   background: @color-fill-strong;
-  border-radius: 4px;
+  border-radius: @radius-pill;
   height: 4px !important;
 }

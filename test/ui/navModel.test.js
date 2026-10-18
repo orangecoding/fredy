@@ -38,14 +38,21 @@ describe('navModel', () => {
   it('offers seven destinations to an admin and six to everyone else', () => {
     expect(routeKeysOf(navTreeFor(true))).toEqual([
       '/dashboard',
-      '/jobs',
       '/listings',
       '/map',
+      '/jobs',
       '/finance',
       '/settings',
       '/admin',
     ]);
     expect(routeKeysOf(navTreeFor(false))).toHaveLength(6);
+  });
+
+  it('keeps every destination at the top level, one click away', () => {
+    for (const node of NAV_TREE) {
+      expect(node.key.startsWith('/')).toBe(true);
+      expect(node.children).toBeUndefined();
+    }
   });
 
   it('translates every label it shows', () => {

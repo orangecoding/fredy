@@ -42,6 +42,11 @@
 /**
  * The sidebar, in order.
  *
+ * Flat: every place is one click away and named once. The listings, the map and the financing
+ * used to sit folded under a "Listings" group, which cost a click to reach two of the three pages
+ * people use most and named the overview twice ("Listings", then "Overview"). The order is the
+ * order of the daily work: what came in, where it is, which searches find it, what it would cost.
+ *
  * Settings and Administration are single destinations rather than groups: each is one page that
  * carries its own sections, so a submenu here would name the same places twice - once in the
  * sidebar and again inside the page.
@@ -50,19 +55,10 @@
  */
 export const NAV_TREE = [
   { key: '/dashboard', labelKey: 'nav.dashboard', section: 'work' },
+  { key: '/listings', labelKey: 'nav.listings', section: 'work' },
+  { key: '/map', labelKey: 'nav.map', section: 'work' },
   { key: '/jobs', labelKey: 'nav.jobs', section: 'work' },
-  {
-    key: 'listings',
-    labelKey: 'nav.listings',
-    section: 'work',
-    children: [
-      { key: '/listings', labelKey: 'nav.listingsOverview' },
-      { key: '/map', labelKey: 'nav.mapView' },
-      // Financing sits here rather than at the top level: it is a way of judging listings, not a
-      // peer of the search itself.
-      { key: '/finance', labelKey: 'nav.finance' },
-    ],
-  },
+  { key: '/finance', labelKey: 'nav.finance', section: 'work' },
   { key: '/settings', labelKey: 'nav.settings', section: 'personal' },
   { key: '/admin', labelKey: 'nav.administration', section: 'instance', adminOnly: true },
 ];

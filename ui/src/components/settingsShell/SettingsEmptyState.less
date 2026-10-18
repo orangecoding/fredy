@@ -5,29 +5,26 @@
 
 @import '../../tokens.less';
 
+/* Centred, quiet, and one button. The icon is a plain muted mark rather than a medallion: it says
+   what the section is about, the title and the button say what to do. */
 .settingsEmptyState {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: @space-6 @space-4;
+  padding: @space-8 @space-4;
 
   &__icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
-    border-radius: @radius-pill;
-    background: @color-elevated;
-    border: 1px solid @color-border;
     color: @color-muted;
   }
 
   &__title {
     margin-top: @space-3;
-    font-size: @text-base;
-    font-weight: 600;
+    font-size: @text-md;
+    font-weight: @weight-strong;
     color: @color-text;
   }
 
@@ -40,6 +37,6 @@
   }
 
   &__action {
-    margin-top: @space-4;
+    margin-top: @space-5;
   }
 }

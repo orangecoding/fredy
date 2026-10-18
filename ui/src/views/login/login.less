@@ -1,158 +1,87 @@
 @import '../../tokens.less';
 
-@keyframes login-card-in {
-  from {
-    opacity: 0;
-    transform: translateY(18px) scale(0.985);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
+/* Constants that are only true for this screen. */
+@login-form-w: 480px;
+@login-field-w: 360px;
+@login-split: 900px;
 
-@keyframes login-rise-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-@keyframes login-scan {
-  0% {
-    transform: translateX(-120%);
-  }
-  100% {
-    transform: translateX(360%);
-  }
-}
-
+/* Two halves: the form on the page's own black, the city photograph beside it, sharp and
+   unretouched, because the photograph is what carries the colour here. Below the split there is
+   only the form; a photo squeezed above it would push the fields under the fold on a phone. */
 .login {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: grid;
+  grid-template-columns: @login-form-w minmax(0, 1fr);
   width: 100%;
-  height: 100%;
-  overflow: hidden;
-  position: relative;
-  background-color: @color-base;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: @color-base;
 
-  &__bgImage {
-    background-size: cover;
-    background-position: center;
-    filter: blur(10px) brightness(0.5);
-    -webkit-filter: blur(10px) brightness(0.5);
-    position: absolute;
-    top: -20px;
-    left: -20px;
-    right: -20px;
-    bottom: -20px;
-    z-index: 0;
+  @media (max-width: @login-split) {
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  // Vignette plus a warm accent glow behind the card, so the card reads as lit
-  &__glow {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    background:
-      radial-gradient(58% 55% at 50% 46%, @color-accent-glow 0%, transparent 62%),
-      radial-gradient(115% 95% at 50% 50%, transparent 28%, rgba(0, 0, 0, 0.55) 72%, rgba(0, 0, 0, 0.82) 100%);
-  }
-
-  &__loginWrapper {
-    position: relative;
-    z-index: 1;
-    background: rgb(@color-surface-rgb / 82%);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid @color-border;
-    border-radius: 14px;
-    padding: @space-8;
-    width: 90%;
-    max-width: 480px;
+  &__panel {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    overflow: hidden;
-    box-shadow: @shadow-lg;
-    animation: login-card-in 0.45s ease-out both;
-  }
-
-  // Signature: an accent hairline that sweeps the top edge while Fredy waits
-  &__scanLine {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, @color-accent-glow, transparent);
-    overflow: hidden;
-
-    &::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 1px;
-      width: 38%;
-      background: linear-gradient(90deg, transparent, @color-accent, transparent);
-      animation: login-scan 4.4s ease-in-out infinite;
-    }
-  }
-
-  &__logoWrapper {
-    margin-bottom: @space-8;
-    display: flex;
     justify-content: center;
-    width: 100%;
-    animation: login-rise-in 0.4s ease-out 0.1s both;
+    padding: @space-12;
+    border-right: 1px solid @color-border;
 
-    .logo {
-      position: static !important;
-      max-width: 100%;
-      height: auto;
+    @media (max-width: @login-split) {
+      align-items: center;
+      padding: @space-12 @space-5;
+      border-right: none;
     }
   }
 
-  form {
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: @space-8;
     width: 100%;
+    max-width: @login-field-w;
+  }
+
+  &__logo .logo {
+    display: block;
+    position: static !important;
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* The image sits absolutely in its cell so its own height never stretches the row. */
+  &__photo {
+    position: relative;
+    overflow: hidden;
+
+    img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    @media (max-width: @login-split) {
+      display: none;
+    }
+  }
+
+  &__form {
     display: flex;
     flex-direction: column;
     gap: @space-5;
   }
 
-  &__inputGroup {
-    width: 100%;
-    animation: login-rise-in 0.4s ease-out both;
-
-    &--first {
-      animation-delay: 0.16s;
-    }
-
-    &--second {
-      animation-delay: 0.22s;
-    }
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: @space-2;
   }
 
   &__label {
-    display: block;
-    margin: 0 0 @space-2 2px;
-    font-family: @font-mono;
-    font-size: @text-xs;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: @color-faint;
-    transition: color @transition-fast;
-  }
-
-  &__inputGroup:focus-within &__label {
+    font-size: @text-sm;
+    font-weight: @weight-medium;
     color: @color-muted;
   }
 
@@ -160,75 +89,16 @@
     display: flex;
     align-items: center;
     gap: @space-2;
-    margin: @space-2 0 0 2px;
-    font-family: @font-mono;
-    font-size: @text-xs;
-    letter-spacing: 0.04em;
+    font-size: @text-sm;
     color: @color-warning;
   }
 
-  // Semi kills focus rings globally (Index.less), the login brings the accent one back
-  .semi-input-wrapper {
-    border-radius: @radius-input;
-    transition:
-      border-color @transition-fast,
-      box-shadow @transition-fast;
+  &__capsHint svg {
+    flex: none;
+    font-size: 15px;
   }
 
-  .semi-input-wrapper-focus {
-    border-color: rgb(@color-accent-rgb / 55%) !important;
-    box-shadow: 0 0 0 3px @color-accent-glow !important;
-  }
-
-  &__submit {
-    animation: login-rise-in 0.4s ease-out 0.28s both;
-    transition:
-      transform @transition-fast,
-      box-shadow @transition-fast;
-
-    &:hover:not(:disabled) {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 18px -6px rgb(@color-accent-rgb / 65%);
-    }
-
-    &:active:not(:disabled) {
-      transform: translateY(0);
-      box-shadow: none;
-    }
-
-    &:focus-visible {
-      box-shadow: 0 0 0 3px @color-accent-glow !important;
-    }
-  }
-
-  // Mobile responsiveness
-  @media (max-width: 480px) {
-    &__loginWrapper {
-      padding: @space-6 @space-5;
-      width: 95%;
-      background: rgb(@color-surface-rgb / 92%);
-    }
-
-    &__logoWrapper {
-      margin-bottom: @space-6;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    &__loginWrapper,
-    &__logoWrapper,
-    &__inputGroup,
-    &__submit {
-      animation: none;
-    }
-
-    &__scanLine::after {
-      animation: none;
-      width: 100%;
-    }
-
-    &__submit:hover:not(:disabled) {
-      transform: none;
-    }
+  &__submit.semi-button {
+    margin-top: @space-2;
   }
 }

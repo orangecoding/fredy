@@ -72,7 +72,8 @@ export default function UserTable({ user = [], onUserRemoval, onUserEdit } = {})
           render: (value, record) => (
             <div className="userTable__user">
               <span className="userTable__name">{value}</span>
-              {record.isAdmin && <span className="userTable__admin">{t('users.tableAdminBadge')}</span>}
+              {/* The role as a pill, in the words the sidebar uses for it. */}
+              {record.isAdmin && <span className="userTable__admin">{t('nav.roleAdmin')}</span>}
               {revealedTokens[record.id] && (
                 <span className="userTable__token">
                   <code>{revealedTokens[record.id]}</code>
@@ -103,7 +104,9 @@ export default function UserTable({ user = [], onUserRemoval, onUserEdit } = {})
            * The same hierarchy as every other table here. The loudest element of this one used to
            * be Edit - a filled primary button on every row - with Remove next to it as a quieter
            * hand-built danger button, so the most harmless action shouted and the irreversible one
-           * did not. Edit is an icon now, and removing takes a word in a menu.
+           * did not. Edit is an icon now, and removing takes a word in a menu. Both are borderless,
+           * muted until hovered: a column of outlined boxes down the right edge was the most drawn
+           * thing in a table of four names.
            */
           title: t('users.tableColumnActions'),
           dataIndex: 'tools',
@@ -112,6 +115,7 @@ export default function UserTable({ user = [], onUserRemoval, onUserEdit } = {})
               <Tooltip content={t('users.editUser')}>
                 <Button
                   size="small"
+                  theme="borderless"
                   icon={<IconEdit />}
                   aria-label={t('users.editUser')}
                   onClick={() => onUserEdit(record.id)}
@@ -133,7 +137,7 @@ export default function UserTable({ user = [], onUserRemoval, onUserEdit } = {})
                   </Dropdown.Menu>
                 }
               >
-                <Button size="small" icon={<IconMore />} aria-label={t('listings.moreActions')} />
+                <Button size="small" theme="borderless" icon={<IconMore />} aria-label={t('listings.moreActions')} />
               </Dropdown>
             </div>
           ),

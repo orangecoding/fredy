@@ -5,7 +5,7 @@
 
 import { useMemo, useState } from 'react';
 import { SideSheet, Tooltip } from '@douyinfe/semi-ui-19';
-import { IconBell } from '@douyinfe/semi-icons';
+import { IconBell } from '../icons/StrokeIcons.jsx';
 
 import newsConfig from '../../assets/news/news.json';
 import { allReleases, selectUnseenReleases } from '../../services/news/newsSelection.js';
@@ -50,18 +50,20 @@ export default function NewsHistory({ collapsed }) {
     return Number.isNaN(date.getTime()) ? null : date.toLocaleDateString(locale, { dateStyle: 'long' });
   };
 
-  // A bell in the account row rather than a labelled block of its own above the support button.
-  // The name it used to carry in full is now the tooltip and the aria-label, which is what it was
-  // doing for the icon rail already.
+  // A row among the sidebar's quiet utilities, labelled like the entries above it. In the rail the
+  // label is gone and the tooltip names it instead.
   const trigger = (
     <button
       type="button"
-      className="navigate__accountAction"
+      className="navigate__utility"
       onClick={() => setVisible(true)}
-      aria-label={t('nav.news')}
+      aria-label={collapsed ? t('nav.news') : undefined}
     >
-      <IconBell size="default" />
-      {hasUnread && <span className="navigate__badge" />}
+      <span className="navigate__utilityIcon">
+        <IconBell />
+      </span>
+      {!collapsed && <span>{t('nav.news')}</span>}
+      {hasUnread && <span className="navigate__badge" aria-hidden="true" />}
     </button>
   );
 

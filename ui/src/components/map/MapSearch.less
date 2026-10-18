@@ -8,10 +8,11 @@
 /*
  * The address box that floats on the map.
  *
- * Dressed as the panel below it rather than as a plain input: the same translucent surface, border
- * and radius, so the corner reads as one stack of map furniture instead of a form control that
- * happened to land on a map. Semi draws the border on `.semi-input-wrapper`, which is why the
- * colours are set there and not on the root.
+ * Dressed as the panels beside it rather than as a plain input: the same map-panel surface, hairline
+ * and radius, so the corner reads as one set of map furniture instead of a form control that
+ * happened to land on a map. No blur and no shadow, like the panels. Semi draws the border on
+ * `.semi-input-wrapper`, which is why the colours are set there and not on the root; two classes
+ * and `!important`, because the global field rules carry it too.
  */
 .mapSearch {
   width: 100%;
@@ -22,24 +23,18 @@
   }
 
   .semi-input-wrapper {
-    /*
-     * The height of the expand button beside it, so the top row is flush.
-     *
-     * 32 and not the 36 `.map-shell__expand` asks for: Semi's own `.semi-button { height: 32px }`
-     * is a single class like ours and its stylesheet loads later, so it wins and that button has
-     * always been 32 on screen. Matching what is there beats matching what the other rule says.
-     */
-    height: 32px;
-    background: @color-map-panel;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid @color-border;
-    border-radius: @radius-card;
-    box-shadow: @shadow-sm;
+    // The height of the expand button, so a map with both has a flush top row.
+    height: @control-md;
+    background: @color-map-panel !important;
+    border: 1px solid @color-map-panel-border !important;
+    border-radius: @radius-card !important;
 
-    &:hover,
+    &:hover {
+      border-color: @color-border-bright !important;
+    }
+
     &.semi-input-wrapper-focus {
-      border-color: @color-border-bright;
+      border-color: @color-muted !important;
     }
   }
 
@@ -55,8 +50,7 @@
 }
 
 /*
- * The suggestion list. Semi's own panel is opaque and carries its palette, which next to the
- * translucent boxes on the map looks like it belongs to a different application.
+ * The suggestion list, as every menu in the app is drawn: a raised surface with a hairline.
  *
  * An address runs long - "Musterstraße 12, 40210 Düsseldorf, Nordrhein-Westfalen" - and Semi caps
  * an option at the trigger's width and clips it. The panel is allowed to grow instead, up to a
@@ -64,8 +58,8 @@
  */
 .mapSearch__dropdown {
   .semi-autocomplete-option-list {
-    background: @color-surface;
-    border: 1px solid @color-border;
+    background: @color-elevated;
+    border: 1px solid @color-border-bright;
     border-radius: @radius-card;
     max-width: min(420px, calc(100vw - 24px));
   }

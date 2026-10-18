@@ -19,7 +19,8 @@ import './HouseholdHeadline.less';
  * default and sits behind the fold below.
  *
  * The readout is the payoff for answering: two numbers in, one number out, before any tab is
- * chosen. It is a CSS bar rather than a chart - `BudgetChart` says the same thing in detail
+ * chosen. The figure is set large in the interface face and the text colour - the answer, not a
+ * highlight. It is a CSS bar rather than a chart - `BudgetChart` says the same thing in detail
  * further down, and a second canvas up here would be the same answer twice.
  *
  * @param {Object} props
@@ -94,10 +95,19 @@ export default function HouseholdHeadline({ profile, budget, housingBudget, onCh
                 style={{ width: `${livingPct}%` }}
               />
             </div>
+            {/* Each name carries the swatch of its part of the bar, so the three widths can be
+                read without counting from the left. */}
             <div className="householdHeadline__legend">
-              <span>{t('finance.form.legendRule')}</span>
-              <span>{t('finance.form.legendLiving')}</span>
-              <span>{t('finance.form.legendBuffer')}</span>
+              {[
+                ['rule', 'finance.form.legendRule'],
+                ['living', 'finance.form.legendLiving'],
+                ['buffer', 'finance.form.legendBuffer'],
+              ].map(([part, key]) => (
+                <span className="householdHeadline__legendItem" key={part}>
+                  <span className={`householdHeadline__key householdHeadline__key--${part}`} aria-hidden="true" />
+                  {t(key)}
+                </span>
+              ))}
             </div>
           </>
         ) : (

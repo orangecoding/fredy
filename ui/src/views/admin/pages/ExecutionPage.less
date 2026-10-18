@@ -6,28 +6,27 @@
 @import '../../../tokens.less';
 
 .executionPage {
-  /* Eine Zeile des Satzes, den die Karte beschreibt: "Alle 60 Minuten", "Zwischen 08:00 und
-     20:00". Die Bedienelemente stehen in der Zeile, nicht unter einer Ueberschrift. */
+  /* One line of the sentence the section describes: "Every 60 minutes", "Between 08:00 and 20:00".
+     The controls stand in the line, not under a heading. */
   &__line {
     display: flex;
     align-items: center;
     gap: @space-3;
-    min-height: 34px;
+    min-height: @control-md;
+    padding: @space-1 0;
     flex-wrap: wrap;
   }
 
-  /* Der Anfang des Satzes. Eine feste Spalte, damit "Alle", "Zwischen" und "Zeitzone"
-     untereinander buendig stehen und die Felder daneben eine Kante bilden.
-     82px: das Artboard setzt 62px bei einer Bedienelementhoehe von 24px, die echte Oberflaeche
-     misst 32px - dieselbe Spalte auf denselben Massstab gebracht. */
+  /* The start of the sentence. A fixed column, so "Every", "Between" and "Time zone" line up and
+     the fields beside them form one edge. */
   &__caption {
-    width: 82px;
+    width: 88px;
     flex: none;
     font-size: @text-sm;
     color: @color-muted;
   }
 
-  /* Das "und" zwischen den beiden Uhrzeiten ist keine Spalte, sondern ein Wort. */
+  /* The "and" between the two times is a word, not a column. */
   &__caption--inline {
     width: auto;
   }
@@ -40,13 +39,13 @@
     min-width: 224px;
   }
 
-  /* Was die vier Regler darueber zusammen bedeuten. Dieselbe Behandlung wie die Zusammenfassung
-     eines Fahrzeit-Eintrags: die Schiene sagt, dass der Satz aus den Bedienelementen folgt und
-     nicht ein weiteres Feld ist. */
+  /* What the four controls above mean together. The same treatment as the summary of a travel time
+     entry: the hairline on the left says the sentence follows from the controls and is not another
+     field. */
   &__summary {
     margin-top: @space-3;
     padding-left: @space-3;
-    border-left: 2px solid rgb(@color-accent-rgb / 45%);
+    border-left: 1px solid @color-border-bright;
     font-size: @text-sm;
     line-height: 1.5;
     color: @color-text;

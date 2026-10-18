@@ -1,43 +1,63 @@
 @import '../../tokens.less';
 
-.segmentParts {
-  background: @color-fill-subtle !important;
-  border: 1px solid @color-border !important;
-  border-radius: @radius-card !important;
-  margin-bottom: @space-4;
+/* One section of a form or a settings page. A hairline above, the title and its help, then the
+   controls: a page of these reads as one document with chapters rather than as a stack of boxes
+   that all ask for the same attention. The icon a caller hands in is not drawn; a section is
+   named by its title. */
+.segmentParts.semi-card {
+  background: transparent;
+  border: 0;
+  border-top: 1px solid @color-border;
+  border-radius: 0;
+  margin: 0;
+  overflow: visible;
 
-  // Semi Card header
   .semi-card-header {
-    border-bottom: 1px solid @color-border !important;
-    padding: 16px 20px !important;
+    border-bottom: 0;
+    padding: @space-6 0 @space-4;
   }
 
   .semi-card-header-wrapper {
-    padding: 0 !important;
+    padding: 0;
+
+    // Semi sets the action beside the title and lets the title shrink, so on a phone a button with
+    // a long label left the title and its help a column a word wide. Below the title there instead.
+    @media (max-width: 560px) {
+      flex-direction: column-reverse;
+      align-items: flex-start;
+      gap: @space-3;
+    }
+  }
+
+  .semi-card-meta-avatar {
+    display: none;
   }
 
   .semi-card-meta-title {
-    font-weight: 700 !important;
-    color: @color-text !important;
-    font-size: @text-base !important;
+    font-weight: @weight-strong;
+    color: @color-text;
+    font-size: @text-md;
+    letter-spacing: -0.005em;
   }
 
   .semi-card-meta-description {
-    color: @color-muted !important;
-    font-size: @text-sm !important;
-    margin-top: 2px;
+    color: @color-muted;
+    font-size: @text-sm;
+    line-height: 1.5;
+    margin-top: @space-1;
+    max-width: 68ch;
   }
 
   // helpMode="popover": the explanation sits behind a mark beside the title instead of under it.
-  &__title {
+  .segmentParts__title {
     display: inline-flex;
     align-items: center;
     gap: @space-2;
   }
 
-  &__helpMark {
+  .segmentParts__helpMark {
     display: inline-flex;
-    color: @color-muted;
+    color: @color-faint;
     cursor: help;
     transition: color @transition-fast;
 
@@ -47,71 +67,36 @@
     }
   }
 
-  &__help {
-    max-width: 22rem;
-    padding: @space-2 @space-3;
-    color: @color-text;
-    font-size: @text-sm;
-    font-weight: 400;
-    line-height: 1.6;
-  }
-
   .semi-card-body {
-    padding: 16px 20px !important;
+    padding: 0 0 @space-7;
   }
 
-  // Semi input focus - subtle, not accent
-  .semi-input-wrapper:focus-within,
-  .semi-select:focus-within {
-    border-color: @color-border-bright !important;
-    box-shadow: none !important;
-  }
-
-  // Icon in card header
-  .semi-card-meta-avatar {
-    color: @color-accent !important;
-    display: flex;
-    align-items: center;
-  }
-
-  // Inputs inside segment cards
-  .semi-input,
-  .semi-input-number-wrapper {
-    background: @color-input-bg !important;
-    border: 1px solid @color-input-border !important;
-    border-radius: @radius-input !important;
-  }
-
-  // TagInput
-  .semi-tagInput-wrapper {
-    background: transparent !important;
-    border: 1px solid @color-input-border !important;
-    border-radius: @radius-input !important;
-    min-height: 38px;
-    outline: none !important;
-    &:focus-within {
-      border-color: @color-border-bright !important;
-      box-shadow: none !important;
-    }
-  }
-  .semi-tagInput {
-    background: transparent !important;
-  }
-  // Tag chips inside TagInput
+  // TagInput chips
   .semi-tag {
-    background: @color-elevated !important;
-    border: 1px solid @color-border-bright !important;
-    color: @color-text !important;
-    border-radius: @radius-chip !important;
-    font-size: @text-sm !important;
-    height: 24px !important;
-    line-height: 22px !important;
+    background: @color-solid;
+    border: 0;
+    color: @color-text;
+    border-radius: @radius-chip;
+    font-size: @text-sm;
+    height: 24px;
+    line-height: 24px;
   }
+
   .semi-tag-close {
-    color: @color-muted !important;
+    color: @color-muted;
+
     &:hover {
-      color: @color-text !important;
-      background: transparent !important;
+      color: @color-text;
+      background: transparent;
     }
   }
+}
+
+.segmentParts__help {
+  max-width: 22rem;
+  padding: @space-2 @space-3;
+  color: @color-text;
+  font-size: @text-sm;
+  font-weight: 400;
+  line-height: 1.6;
 }

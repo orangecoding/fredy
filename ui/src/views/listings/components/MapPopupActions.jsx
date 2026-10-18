@@ -4,8 +4,9 @@
  */
 
 import { Button, Dropdown } from '@douyinfe/semi-ui-19';
-import { IconDelete, IconEyeOpened, IconLink, IconMore } from '@douyinfe/semi-icons';
+import { IconDelete } from '@douyinfe/semi-icons';
 
+import { IconExternal, IconMore } from '../../../components/icons/StrokeIcons.jsx';
 import { useTranslation } from '../../../services/i18n/i18n.jsx';
 
 import './MapPopupActions.less';
@@ -22,7 +23,9 @@ import './MapPopupActions.less';
  * markup can only reach globals. Nothing installs anything on `window` after this.
  *
  * Three actions, one colour. There used to be three filled 32px blocks, two of them red: the left
- * one opened the advert on the portal, the right one deleted the listing.
+ * one opened the advert on the portal, the right one deleted the listing. Now one outlined button
+ * says where the popup leads, and the two tools beside it are the round muted icons the listing
+ * cards use.
  *
  * Navigation arrives as a prop rather than from the router's own hook: `mountPopupNode` creates a
  * React root of its own, outside the router, where that hook would throw.
@@ -46,13 +49,7 @@ export default function MapPopupActions({ listing, onDelete, onNavigate }) {
 
   return (
     <div className="mapPopupActions">
-      <Button
-        className="mapPopupActions__details"
-        theme="outline"
-        size="small"
-        icon={<IconEyeOpened />}
-        onClick={() => onNavigate(listing.id)}
-      >
+      <Button className="mapPopupActions__details" theme="outline" size="small" onClick={() => onNavigate(listing.id)}>
         {t('map.popupViewDetails')}
       </Button>
 
@@ -65,7 +62,7 @@ export default function MapPopupActions({ listing, onDelete, onNavigate }) {
           aria-label={t('listings.tooltipOriginalListing')}
           title={t('listings.tooltipOriginalListing')}
         >
-          <IconLink />
+          <IconExternal />
         </a>
       )}
 
@@ -76,6 +73,8 @@ export default function MapPopupActions({ listing, onDelete, onNavigate }) {
       <Dropdown trigger="click" position="bottomRight" clickToHide render={overflow} stopPropagation>
         <Button
           className="mapPopupActions__more"
+          theme="borderless"
+          type="tertiary"
           size="small"
           icon={<IconMore />}
           aria-label={t('listings.moreActions')}

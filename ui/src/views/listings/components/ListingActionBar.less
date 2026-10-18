@@ -12,8 +12,8 @@
   display: flex;
   align-items: center;
   gap: @space-2;
-  height: 76px;
-  padding: 0 @space-8;
+  height: 64px;
+  padding: 0;
   background: @color-base;
   border-bottom: 1px solid @color-border;
 
@@ -21,12 +21,11 @@
     flex: 1 1 auto;
   }
 
-  // 40px rather than Semi's 32, and the same for every control in the row including the anchor, so
-  // the bar reads as one row of equals rather than as a button next to a link.
+  // One height for every control in the row including the anchor, so the bar reads as one row of
+  // equals rather than as a button next to a link.
   .semi-button,
   &__open {
-    height: 40px;
-    border-radius: @radius-btn !important;
+    height: @control-md;
   }
 
   &__back {
@@ -39,56 +38,61 @@
     }
   }
 
-  // The two icon-only controls: square, hairline, quiet. They are the tertiary tier - reachable,
-  // but never competing with the one thing the page wants you to do.
+  // The two icon-only controls: round, borderless, muted until pointed at. They are the tertiary
+  // tier - reachable, but never competing with the one thing the page wants you to do.
   &__watch,
   &__more {
-    width: 40px;
+    width: @control-md;
+    border-radius: @radius-pill !important;
     color: @color-muted !important;
-    border: 1px solid @color-border !important;
-    background: @color-surface !important;
+    background: transparent !important;
+    font-size: @text-lg;
 
     &:hover {
       color: @color-text !important;
       background: @color-fill-1 !important;
-      border-color: @color-border-bright !important;
     }
   }
 
+  // Watched: the star filled in the text colour. Being on the watch list is a state somebody chose,
+  // and red is kept for the action the page is about.
   &__watch--active {
-    color: @color-accent !important;
-    border-color: rgb(@color-accent-rgb / 40%) !important;
-    background: rgb(@color-accent-rgb / 10%) !important;
+    color: @color-text !important;
   }
 
   /* Still an anchor rather than a button, because it leaves the app and the browser's own
-     middle-click and "open in new tab" have to keep working. */
+     middle-click and "open in new tab" have to keep working. Drawn as the outlined secondary every
+     other button of that rank is. */
   &__open {
     display: inline-flex;
     align-items: center;
     gap: @space-2;
     padding: 0 @space-4;
     max-width: 22rem;
-    border: 1px solid @color-border;
-    background: @color-surface;
-    color: @color-muted;
+    border: 1px solid @color-border-bright;
+    border-radius: @radius-btn;
+    background: transparent;
+    color: @color-text;
     font-size: @text-base;
     font-family: @font-ui;
-    font-weight: 500;
+    font-weight: @weight-medium;
     text-decoration: none;
     transition:
-      color @transition-fast,
-      border-color @transition-fast,
-      background @transition-fast;
+      background @transition-fast,
+      border-color @transition-fast;
 
     &:visited {
-      color: @color-muted;
+      color: @color-text;
     }
 
     &:hover {
       color: @color-text;
       background: @color-fill-1;
-      border-color: @color-border-bright;
+    }
+
+    svg {
+      flex: none;
+      color: @color-muted;
     }
   }
 
@@ -101,26 +105,17 @@
   // Says that what follows is of a different order, which a gap alone does not.
   &__divider {
     width: 1px;
-    height: 24px;
+    height: @space-6;
     margin: 0 @space-2;
     background: @color-border;
   }
 
-  // Blue rather than the red accent: red is what deleting looks like, and applying is not a warning.
-  // Semi colours the button through --semi-color-primary, so the variable is redirected here.
+  // The solid red primary comes from the global button rules. Only its padding is the bar's own.
   &__primary {
-    --semi-color-primary: @color-info;
-    --semi-color-primary-hover: color-mix(in oklab, @color-info 85%, black);
-    --semi-color-primary-active: color-mix(in oklab, @color-info 85%, black);
-    --semi-color-primary-light-active: rgb(@color-info-rgb / 22%);
-
     padding: 0 @space-5 !important;
-    font-weight: 600 !important;
   }
 
   @media (max-width: 1180px) {
-    padding: 0 @space-4;
-
     &__open {
       max-width: 14rem;
     }
@@ -137,7 +132,6 @@
     padding: @space-3 @space-4 calc(@space-3 + env(safe-area-inset-bottom));
     border-top: 1px solid @color-border;
     border-bottom: 0;
-    box-shadow: @shadow-lg;
 
     &__back,
     &__spacer,
@@ -147,14 +141,19 @@
     }
 
     &__open {
-      width: 44px;
+      width: @control-lg;
       justify-content: center;
       padding: 0;
     }
 
     .semi-button,
     &__open {
-      height: 44px;
+      height: @control-lg;
+    }
+
+    &__watch,
+    &__more {
+      width: @control-lg;
     }
 
     &__primary {

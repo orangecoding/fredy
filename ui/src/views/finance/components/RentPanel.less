@@ -6,20 +6,21 @@
 @import '../../../tokens.less';
 
 .rentPanel {
-  /* The input and the ceilings it moves are one card, separated by a rule rather than by a
-     card boundary - the numbers below are the answer to the field above, not a second topic. */
+  /* The input and the ceilings it moves are one section, separated by a rule rather than by a
+     section boundary - the numbers below are the answer to the field above, not a second topic.
+     The figures stand side by side like the dashboard's: a caption over a figure, no tiles. */
   &__facts {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: @space-4;
-    margin: @space-5 0;
+    gap: @space-5 @space-6;
+    margin: @space-4 0 @space-6;
     padding-top: @space-5;
     border-top: 1px solid @color-border;
   }
 
   &__empty {
     display: block;
-    margin-top: @space-5;
+    margin-top: @space-4;
     padding-top: @space-5;
     border-top: 1px solid @color-border;
   }
@@ -27,27 +28,25 @@
   &__fact {
     display: flex;
     flex-direction: column;
-    gap: 2px;
-    padding-left: @space-3;
-    border-left: 2px solid @color-border;
-
-    &--emphasis {
-      border-left-color: @color-accent;
-    }
+    gap: @space-1;
+    min-width: 0;
   }
 
   /* The caption itself is a FieldLabel, so the type treatment comes from .financeField__label -
-     the same one every input on this page uses. */
+     the same one every input on this page uses. The figure is in the interface face like every
+     other figure; the two ceilings a listing is actually held against are set a step larger and
+     heavier, which is all the emphasis they need. */
   &__fact-value {
     margin: 0;
-    // Same mono face as every other figure in the finance area.
-    font-family: @font-mono;
-    font-size: @text-base;
+    font-size: @text-md;
+    font-weight: @weight-medium;
     color: @color-text;
+    white-space: nowrap;
   }
 
   &__fact--emphasis &__fact-value {
-    font-size: @text-md;
-    color: @color-accent;
+    font-size: @text-xl;
+    font-weight: @weight-strong;
+    letter-spacing: -0.01em;
   }
 }

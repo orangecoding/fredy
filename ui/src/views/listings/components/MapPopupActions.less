@@ -5,37 +5,35 @@
 
 @import '../../../tokens.less';
 
+/* One outlined button that says where the popup leads, and two round muted icons beside it: the
+   same tools, in the same register, as under every listing card. */
 .mapPopupActions {
   display: flex;
   align-items: center;
-  gap: @space-2;
+  gap: @space-1;
 
-  &__details {
+  &__details.semi-button {
     flex: 1 1 auto;
     min-width: 0;
-    height: 30px !important;
-    padding: 0 @space-3 !important;
-    border-radius: @radius-chip !important;
-    font-size: @text-sm !important;
+    margin-right: @space-1;
   }
 
   &__open,
-  &__more {
-    display: inline-flex !important;
+  &__more.semi-button {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    // The 30px of the measurement table is the box, border included. Semi's Button already says so
-    // for itself; the bare anchor next to it does not and came out 32px, two pixels taller than the
-    // button it sits beside.
+    // The box, border included, so the bare anchor and Semi's button come out the same size.
     box-sizing: border-box;
-    width: 30px !important;
-    height: 30px !important;
-    padding: 0 !important;
+    width: @control-sm;
+    height: @control-sm;
+    padding: 0;
     flex: none;
-    border: 1px solid @color-border-bright;
-    border-radius: @radius-chip !important;
+    border: 0;
+    border-radius: @radius-pill;
     background: transparent;
     color: @color-muted;
+    font-size: @text-md;
 
     &:hover {
       color: @color-text;

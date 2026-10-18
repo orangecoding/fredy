@@ -3,8 +3,10 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { Badge, Button } from '@douyinfe/semi-ui-19';
-import { IconFilter } from '@douyinfe/semi-icons';
+import { Button } from '@douyinfe/semi-ui-19';
+
+import { IconSliders } from '../icons/StrokeIcons.jsx';
+import './FilterButton.less';
 
 import { useTranslation } from '../../services/i18n/i18n.jsx';
 
@@ -23,16 +25,12 @@ export default function FilterButton({ activeCount, onClick }) {
   const t = useTranslation();
 
   return (
-    <Badge count={activeCount > 0 ? activeCount : null} type="primary">
-      <Button
-        icon={<IconFilter />}
-        theme={activeCount > 0 ? 'light' : 'borderless'}
-        onClick={onClick}
-        aria-label={t('listings.filtersButton')}
-      >
-        {t('listings.filtersButton')}
-      </Button>
-    </Badge>
+    <Button className="filterButton" size="large" icon={<IconSliders />} onClick={onClick}>
+      {t('listings.filtersButton')}
+      {/* The count inside the button rather than a badge on its corner, which read as a
+          notification rather than as how many filters are on. */}
+      {activeCount > 0 && <span className="filterButton__count">{activeCount}</span>}
+    </Button>
   );
 }
 

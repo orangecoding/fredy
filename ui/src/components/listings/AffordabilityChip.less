@@ -5,13 +5,15 @@
 
 @import '../../tokens.less';
 
+/* The affordability verdict, as a small pill in the verdict's colour. */
 .affordabilityChip {
   display: inline-block;
-  padding: 1px @space-2;
+  padding: 0 @space-2;
   border: 1px solid;
-  border-radius: @radius-chip;
+  border-radius: @radius-pill;
   font-size: @text-xs;
-  line-height: 1.5;
+  font-weight: @weight-medium;
+  line-height: 1.6;
   white-space: nowrap;
   vertical-align: middle;
 }

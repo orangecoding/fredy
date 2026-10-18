@@ -1,6 +1,18 @@
 @import '../../../tokens.less';
 
+@form-measure: 960px;
+@label-column: 11rem;
+@deal-type-w: 14rem;
+@share-w: 18rem;
+@spec-min: 150px;
+
+/* The whole page, heading included, as one column at a reading measure. The sections are chapters
+   of one document separated by hairlines (SegmentPart draws those); a page-wide column left the
+   deal type stranded a foot from its label and every hairline twice as long as anything under it. */
 .jobMutation {
+  width: 100%;
+  max-width: @form-measure;
+
   &__specFilter {
     display: flex;
     gap: @space-4;
@@ -12,11 +24,11 @@
     flex-direction: column;
     gap: @space-2;
     flex: 1;
-    min-width: 150px;
+    min-width: @spec-min;
   }
 
   &__specFilterLabel {
-    font-weight: 500;
+    font-weight: @weight-medium;
     font-size: @text-sm;
     color: @color-muted;
   }
@@ -30,9 +42,20 @@
   min-width: 18rem;
 }
 
-/* Leaves the page, so it is quieter than anything that changes it. */
-.jobMutation__back {
+/* Leaves the page, so it is quieter than anything that changes it. Drawn without a button's padding
+   so its text lines up with the column: flush right beside the title on a wide page, flush left
+   under it on a phone, where the heading wraps and the button used to start 16px in. Pointing at
+   it brings it to the text colour instead of laying a fill behind it. Scoped to the page heading so
+   it outweighs Index.less's borderless button without !important. */
+.jobMutation .page-heading .jobMutation__back.semi-button {
+  padding: 0;
   color: @color-muted;
+
+  &:hover,
+  &:active {
+    background: transparent;
+    color: @color-text;
+  }
 }
 
 .jobMutation__draftNotice {
@@ -54,77 +77,126 @@
   font-size: @text-sm;
 }
 
-/* One column, full width. The cards carry their own internal measure; capping the form itself
-   left a band of empty page down the right of every section. */
 .jobMutation__form {
   width: 100%;
 }
 
-/* The fold that holds everything optional. */
+/* The fold that holds everything optional, drawn as one more chapter of the document: a hairline
+   above, the title, what is set, and which way the next click goes. It used to be a filled, bordered
+   box among unboxed sections, which made the one optional part of the form the most prominent. */
 .jobMutation__refine {
-  margin-bottom: @space-4;
+  .semi-collapse-item {
+    border: 0;
+  }
 
-  /* Reads as a control rather than a caption: the pointer and the lift on hover are the whole of
-     what tells someone the filters are one click away. The accent used to do that job three times
-     over - border, hover border and an uppercase pill - for a section that is optional. */
+  /* Reads as a control rather than a caption: the pointer, the line saying what a click does and
+     the chevron are what tell someone the filters are one click away. The accent used to do that
+     job three times over - border, hover border and an uppercase pill - for a section that is
+     optional. */
   .semi-collapse-header {
-    padding: @space-3 @space-4;
-    border: 1px solid @color-border;
-    border-radius: @radius-card;
-    background: @color-fill-subtle;
+    align-items: flex-start;
+    margin: 0;
+    padding: @space-6 0 @space-4;
+    border-top: 1px solid @color-border;
+    border-radius: 0;
+    background: transparent;
+    font-family: @font-ui;
+    font-weight: 400;
     cursor: pointer;
-    transition:
-      background @transition-fast,
-      border-color @transition-fast;
 
-    &:hover {
-      border-color: @color-border-bright;
-      background: @color-fill-1;
+    &:hover,
+    &:active {
+      background: transparent;
+    }
+
+    &:hover .jobMutation__refineToggle {
+      color: @color-text;
     }
   }
 
-  /* Semi indents panel content by default, which stepped the refinement cards in from the ones
-     above them and made the column look ragged. */
+  /* On the first row, beside "click to filter", rather than centred against both rows. */
+  .semi-collapse-header-icon {
+    flex: none;
+    margin-top: @space-1;
+    color: @color-muted;
+  }
+
+  .semi-collapse-item-active .semi-collapsible-wrapper {
+    border-top: 0;
+  }
+
+  /* Semi indents panel content and caps its height; the sections inside are full chapters of the
+     form, so neither applies. */
   .semi-collapse-content {
-    padding: @space-4 0 0;
+    max-height: none;
+    overflow: visible;
+    padding: 0;
   }
 
   .semi-collapse-content > div {
     padding: 0;
   }
+
+  /* One level down from the chapters around the fold, so the four filters read as parts of it. */
+  .segmentParts.semi-card {
+    .semi-card-header {
+      padding: @space-5 0 @space-3;
+    }
+
+    .semi-card-meta-title {
+      font-size: @text-base;
+    }
+  }
 }
 
 .jobMutation__refineHeader {
   display: flex;
+  flex-direction: column;
+  gap: @space-1;
+  flex: 1;
+  min-width: 0;
+  padding-right: @space-3;
+}
+
+/* The first row never wraps: a long summary breaks inside its own column, so "click to filter" stays
+   at the end of the row next to the chevron. */
+.jobMutation__refineLine {
+  display: flex;
   align-items: baseline;
-  gap: @space-2;
-  flex-wrap: wrap;
+  gap: @space-3;
+  min-width: 0;
 }
 
 .jobMutation__refineTitle {
+  flex: none;
   color: @color-text;
-  font-weight: 700;
+  font-size: @text-md;
+  font-weight: @weight-strong;
+  letter-spacing: -0.005em;
 }
 
 /* What is inside, so the section answers "anything in here?" while still closed. */
 .jobMutation__refineSummary {
+  flex: 0 1 auto;
+  min-width: 0;
   color: @color-muted;
   font-size: @text-sm;
 }
 
-/* Which way the next click goes, which a chevron on its own does not say. In the body colour and
-   at body size: it is a label on a header, not a badge. */
+/* Which way the next click goes, which a chevron on its own does not say. Muted until the header is
+   pointed at: it is a label on a header, not a badge. */
 .jobMutation__refineToggle {
+  flex: none;
   margin-left: auto;
   color: @color-muted;
   font-size: @text-sm;
   white-space: nowrap;
+  transition: color @transition-fast;
 }
 
-/* Its own line under the title: the summary says what is set, this says what could be, and the two
-   read as one sentence if they share a row. */
+/* Its own row under the title, the full width of the header: the summary says what is set, this
+   says what could be, and the two read as one sentence if they share a row. */
 .jobMutation__refineHint {
-  flex-basis: 100%;
   color: @color-muted;
   font-size: @text-sm;
   line-height: 1.5;
@@ -135,11 +207,8 @@
 
    With one difference, and this is it: `AdminField` puts the control at the far end of the row,
    which is right in the administration, where a column of right-aligned numbers is a column you
-   compare down. The artboard draws the same thing here because its card is 372px wide, so "far
-   end" and "next to the label" are the same place. This card is as wide as the page. At 1900px
-   that rule strands the deal type against the right edge with a foot of empty card between it and
-   the label naming it. A label column instead: every control starts at the same x, and the one
-   that grows grows from there. */
+   compare down. Here a label column instead: every control starts at the same x, and the one that
+   grows grows from there. */
 .jobMutation__rows {
   .adminField {
     justify-content: flex-start;
@@ -148,7 +217,7 @@
 
   .adminField__label {
     flex: none;
-    width: 11rem;
+    width: @label-column;
   }
 }
 
@@ -160,21 +229,24 @@
 /* Two options of four words each. Given a width rather than left to the row: a select sized by its
    content is as wide as whichever option is longest, so it would change width on being answered. */
 .jobMutation__dealType {
-  width: 14rem;
+  width: @deal-type-w;
   max-width: 100%;
 }
 
 /* A multi-select grows with what is in it, so the same applies with more room for the names. */
 .jobMutation__shareWith {
-  width: 18rem;
+  width: @share-w;
   max-width: 100%;
 }
 
-/* Under the label column's width there is no column left: the label goes above what it names. */
+/* Under the label column's width there is no column left: the label goes above what it names, and
+   every field takes the whole width of the phone. `stretch` rather than `flex-start`: in a column
+   the latter shrinks the control to its content, which left the name field 245px wide on a 390px
+   screen. The deal type keeps its own width - two short options, deliberately a short select. */
 @media (max-width: 700px) {
   .jobMutation__rows {
     .adminField {
-      align-items: flex-start;
+      align-items: stretch;
       flex-direction: column;
       gap: @space-2;
     }
@@ -183,15 +255,39 @@
       width: auto;
     }
   }
+
+  .jobMutation__shareWith {
+    width: 100%;
+  }
+
+  .jobMutation__specFilter {
+    flex-direction: column;
+  }
 }
 
-/* Navigation away from the form, inside the sentence that offers it. Semi's button is a block in
-   its own right, so it is pulled back into the line of text around it. */
-.jobMutation__manageLink {
-  height: auto !important;
-  padding: 0 !important;
-  font-size: inherit !important;
+/* The chevron already says which way the click goes, and on a phone the phrase pushed the first row
+   of the fold header onto two. */
+@media (max-width: 560px) {
+  .jobMutation__refineToggle {
+    display: none;
+  }
+}
+
+/* Navigation away from the form, inside the sentence that offers it: a link in prose, so the text
+   colour, underlined. Semi's button is a block in its own right, so it is pulled back into the line
+   of text around it; the page class outweighs Index.less's small-button size without !important. */
+.jobMutation .jobMutation__manageLink.semi-button {
+  height: auto;
+  padding: 0;
+  font-size: inherit;
   vertical-align: baseline;
+  color: @color-text;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+
+  &:hover {
+    background: transparent;
+  }
 }
 
 /* Numbered, because drawing a polygon is a sequence of clicks and the order is the whole of it. */
@@ -215,16 +311,37 @@
   }
 }
 
-/* The four sections the readiness bar can jump to. `scroll-margin-top` keeps the card clear of the
-   sticky header instead of landing under it. */
+/* The four sections the readiness bar can jump to. `scroll-margin-top` keeps the section clear of
+   the sticky header instead of landing under it. */
 .jobMutation__anchor {
   scroll-margin-top: @space-12;
 }
 
-/* Two seconds of outline after a jump. Without it the page moves and nothing says which of the six
-   cards now on screen was the one meant. */
-.jobMutation__anchor--highlight .semi-card {
-  outline: 2px solid @color-warning;
-  outline-offset: 2px;
+/* Two seconds of a drawn edge after a jump. Without it the page moves and nothing says which of the
+   sections now on screen was the one meant. Amber, because the section is unfinished rather than
+   wrong; offset, because the section itself has no box to draw it on. */
+.jobMutation__anchor--highlight .segmentParts {
+  outline: 1px solid @color-warning;
+  outline-offset: @space-2;
   border-radius: @radius-card;
+}
+
+/* The save bar flat on the page, under a hairline, rather than a raised box with a shadow floating
+   over the last section: the form is one document, and what closes it is a rule and two buttons.
+   Still sticky, so the Save - and the list of what is missing - stays in reach on a long form. */
+.jobMutation .settingsSaveBar {
+  bottom: 0;
+  margin-top: 0;
+  padding: @space-3 0;
+  border: 0;
+  border-top: 1px solid @color-border;
+  border-radius: 0;
+  background: @color-base;
+  box-shadow: none;
+
+  /* Under the readiness list the buttons start a line of their own; at its end, where a form's
+     buttons are looked for, rather than under the first word of the list. */
+  .settingsSaveBar__actions {
+    margin-left: auto;
+  }
 }

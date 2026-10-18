@@ -250,7 +250,7 @@ export default function ListingDetail() {
       new maplibregl.Marker({ color: MARKER_COLORS.listing })
         .setLngLat([listing.longitude, listing.latitude])
         .setPopup(
-          new maplibregl.Popup({ offset: 25 }).setHTML(
+          new maplibregl.Popup({ offset: 25, className: 'listing-detail-popup' }).setHTML(
             `<h4>${t('listing.detail.mapPopupListingLocation')}</h4><p>${escapeHtml(listing.address ?? '')}</p>`,
           ),
         )
@@ -262,7 +262,7 @@ export default function ListingDetail() {
         new maplibregl.Marker({ color: MARKER_COLORS.home })
           .setLngLat([home.coords.lng, home.coords.lat])
           .setPopup(
-            new maplibregl.Popup({ offset: 25 }).setHTML(
+            new maplibregl.Popup({ offset: 25, className: 'listing-detail-popup' }).setHTML(
               `<h4>${escapeHtml(home.label || t('listing.detail.mapPopupHomeAddress'))}</h4><p>${escapeHtml(home.address ?? '')}</p>`,
             ),
           )

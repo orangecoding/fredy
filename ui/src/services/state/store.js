@@ -404,8 +404,9 @@ export const useFredyState = create(
                 { skipNull: true, skipEmptyString: true },
               );
               const response = await xhrGet(`/api/listings/table?${qryString}`);
+              // `loaded` tells the count of the first answer from the zero the store starts with.
               set((state) => ({
-                listingsData: { ...state.listingsData, ...response.json },
+                listingsData: { ...state.listingsData, ...response.json, loaded: true },
               }));
             } catch (Exception) {
               console.error('Error while trying to get resource for api/listings. Error:', Exception);
@@ -818,6 +819,7 @@ export const useFredyState = create(
         notificationAdapter: [],
         notificationChannels: { channels: [], loaded: false },
         listingsData: {
+          loaded: false,
           totalNumber: 0,
           page: 1,
           result: [],

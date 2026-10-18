@@ -16,16 +16,23 @@
     overflow-y: auto;
     overflow-x: hidden;
     position: relative;
-    padding: @space-6;
+    padding: @space-9 @space-10 @space-14;
     background-color: transparent;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
 
     @media (max-width: 768px) {
-      padding: @space-3;
+      padding: @space-5 @space-4 @space-10;
     }
   }
+}
+
+/* The instance-wide notices (demo, debug logging) above whichever page is open. They used to be
+   spaced by a line break, which put a different gap under them on every page. */
+.appBanner.semi-banner {
+  flex: none;
+  margin-bottom: @space-6;
 }
 
 /* An expanded map covers the viewport, so the page underneath must stop scrolling. The scroll

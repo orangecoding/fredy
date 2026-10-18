@@ -18,10 +18,14 @@ import { useTranslation } from '../../services/i18n/i18n.jsx';
 export default function DemoBanner() {
   const t = useTranslation();
   return (
-    <>
-      <Banner fullMode={true} type="info" bordered closeIcon={null} description={t('app.demoBanner')} />
-      <br />
-    </>
+    <Banner
+      className="appBanner"
+      fullMode={true}
+      type="info"
+      bordered
+      closeIcon={null}
+      description={t('app.demoBanner')}
+    />
   );
 }
 

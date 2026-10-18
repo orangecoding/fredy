@@ -1,39 +1,22 @@
 @import '../../tokens.less';
 
-// Mirrors a borderless, icon-only Semi Button of size "small" (24px high,
-// 4px horizontal padding, fill-0 on hover) so the anchor is visually
-// indistinguishable from the sibling action buttons.
+/* A link that opens the ad on the portal. Shaped by whoever places it (`className`); on its own it
+   is a muted icon that brightens when pointed at. */
 .externalListingLink {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  box-sizing: border-box;
-  height: 24px;
-  padding: 2px 4px;
-  border: 0 transparent solid;
-  border-radius: var(--semi-border-radius-small);
-  background-color: transparent;
-  color: @color-accent;
+  color: @color-muted;
+  font-size: 16px;
   cursor: pointer;
   user-select: none;
   vertical-align: middle;
-  transition: background-color @transition-fast;
+  transition:
+    background-color @transition-fast,
+    color @transition-fast;
 
   &:hover,
-  &:focus,
-  &:active {
-    color: @color-accent;
-  }
-
-  &:hover {
-    background-color: var(--semi-color-fill-0);
-  }
-
-  &:active {
-    background-color: var(--semi-color-fill-1);
-  }
-
-  .semi-icon {
-    font-size: 16px;
+  &:focus-visible {
+    color: @color-text;
   }
 }

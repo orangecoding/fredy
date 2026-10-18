@@ -339,7 +339,16 @@ export default function AttachmentsCard({ listingId }) {
                   content={t('listing.detail.attachmentsDeleteConfirm')}
                   onConfirm={() => handleDelete(attachment.id)}
                 >
-                  <Button icon={<IconDelete />} theme="borderless" type="danger" disabled={busy} />
+                  {/* A quiet round icon like every row action in the app; the red waits for the
+                      confirmation, which is where the decision is actually taken. */}
+                  <Button
+                    className="attachmentsCard__delete"
+                    icon={<IconDelete />}
+                    theme="borderless"
+                    type="tertiary"
+                    disabled={busy}
+                    aria-label={t('listing.detail.attachmentsDeleteTitle')}
+                  />
                 </Popconfirm>
               </li>
             ))}
@@ -372,14 +381,7 @@ export default function AttachmentsCard({ listingId }) {
         style={{ display: 'none' }}
         onChange={handlePicked}
       />
-      <Button
-        icon={<IconUpload />}
-        onClick={openPicker}
-        loading={busy}
-        disabled={busy || atCapacity}
-        theme="light"
-        type="primary"
-      >
+      <Button icon={<IconUpload />} onClick={openPicker} loading={busy} disabled={busy || atCapacity} theme="outline">
         {t('listing.detail.attachmentsUpload')}
       </Button>
       {atCapacity && (

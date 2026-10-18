@@ -23,15 +23,11 @@
     display: none;
   }
 
-  /* Die Karte, die die Datenbank ersetzt, traegt die Farbe der Gefahr an ihrem Rand statt in einem
-     Knopf. Ein roter Knopf neben einem grauen sagt "eine dieser Aktionen ist heikel"; ein roter
-     Rahmen um eine eigene Karte sagt, welche. */
-  &__danger {
-    border-color: rgb(@color-error-rgb / 30%) !important;
-
-    .semi-card-header {
-      border-bottom-color: rgb(@color-error-rgb / 20%) !important;
-    }
+  /* The section that replaces the database carries the colour of danger on the hairline above it
+     and on its mark, rather than in a button. A red button next to a grey one says "one of these is
+     delicate"; a red rule over a section of its own says which. */
+  &__danger.segmentParts.semi-card {
+    border-top-color: rgb(@color-error-rgb / 45%);
   }
 
   &__dangerTitle {
@@ -51,7 +47,7 @@
   }
 
   &__bannerTitle {
-    font-weight: 600;
+    font-weight: @weight-strong;
     font-size: @text-base;
   }
 }

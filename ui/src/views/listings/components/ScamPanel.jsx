@@ -13,7 +13,7 @@ import { useTranslation } from '../../../services/i18n/i18n.jsx';
 
 import './ScamPanel.less';
 
-const { Text, Title } = Typography;
+const { Text } = Typography;
 
 /**
  * Why Fredy thinks this listing might be a fraud, and the two buttons that overrule it.
@@ -70,10 +70,10 @@ export default function ScamPanel({ listing, onChange }) {
   return (
     <section className={`scamPanel${verdict.suspicious ? '' : ' scamPanel--dismissed'}`}>
       <div className="scamPanel__header">
-        <IconAlertTriangle className="scamPanel__icon" />
-        <Title heading={5} className="scamPanel__title">
+        <IconAlertTriangle className="scamPanel__icon" aria-hidden="true" />
+        <h2 className="scamPanel__title">
           {verdict.suspicious ? t('listing.detail.scamTitle') : t('listing.detail.scamTitleDismissed')}
-        </Title>
+        </h2>
       </div>
 
       {verdict.signals.length > 0 ? (
@@ -101,11 +101,15 @@ export default function ScamPanel({ listing, onChange }) {
         {t('listing.detail.scamDisclaimer')}
       </Text>
 
+      {/* A toggle pair. The verdict that is on is marked the way every picked state is - outlined
+          in the text colour on a raised step - and stated with aria-pressed, rather than filled in
+          red: the one solid red button on this page is the application letter. */}
       <div className="scamPanel__actions">
         <Button
           size="small"
-          theme={isScam ? 'solid' : 'borderless'}
-          type="danger"
+          theme="outline"
+          className={`scamPanel__choice${isScam ? ' scamPanel__choice--on' : ''}`}
+          aria-pressed={isScam}
           loading={saving}
           icon={<IconAlertTriangle />}
           onClick={() => decide(SCAM_OVERRIDES.SCAM)}
@@ -114,8 +118,9 @@ export default function ScamPanel({ listing, onChange }) {
         </Button>
         <Button
           size="small"
-          theme={isSafe ? 'solid' : 'borderless'}
-          type="tertiary"
+          theme="outline"
+          className={`scamPanel__choice${isSafe ? ' scamPanel__choice--on' : ''}`}
+          aria-pressed={isSafe}
           loading={saving}
           icon={<IconTickCircle />}
           onClick={() => decide(SCAM_OVERRIDES.SAFE)}

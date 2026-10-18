@@ -5,11 +5,13 @@
 
 @import '../../../../../tokens.less';
 
+/* A disclosure inside the editor, drawn as a hairline box on the dialog's own surface: it is a
+   self-contained piece of reference material, so it gets an edge, but no fill and no colour of
+   its own. */
 .notificationHelp {
   margin: @space-4 0 @space-5;
   border: 1px solid @color-border;
   border-radius: @radius-card;
-  background: @color-elevated;
   overflow: hidden;
 
   &__summary {
@@ -31,27 +33,26 @@
       background: @color-fill-subtle;
     }
 
-    /* Keyboard users get the same ring the rest of the app uses, on the row itself. */
+    /* The app's one focus ring, inset so the rounded edge does not clip it. */
     &:focus-visible {
-      outline: 2px solid @color-accent;
+      outline: 2px solid @color-info;
       outline-offset: -2px;
     }
   }
 
-  /* Accent marks the thing you can act on, the same signal every other control in Fredy uses.
-     Grey on a grey card read as disabled, which is exactly what this is not. */
+  /* Muted like every icon in the app. The row is a control because of its chevron, its pointer and
+     its hover, not because its icon is red. */
   &__icon {
     flex: none;
     font-size: @text-md;
-    color: @color-accent;
+    color: @color-muted;
   }
 
-  /* Full text contrast, at the size of a field label: this sits in the same scan column as the
-     Token and Chat ID labels below it, and belongs to the same reading level. */
+  /* Full text contrast, at the size of a field label's value: this is the thing to press. */
   &__label {
     flex: 1;
     font-size: @text-base;
-    font-weight: 500;
+    font-weight: @weight-medium;
     color: @color-text;
   }
 
@@ -70,13 +71,11 @@
   }
 
   /* Reference material, not a wall to scroll the dialog past: the guide gets its own scroll area
-     so a long adapter README cannot push the Save button out of reach. The accent rule down the
-     left ties the open guide back to the adapter it documents. */
+     so a long adapter README cannot push the Save button out of reach. */
   &__body {
     max-height: 40vh;
     overflow-y: auto;
     padding: @space-4;
-    border-left: 2px solid @color-accent-dim;
     font-size: @text-sm;
     line-height: 1.65;
     color: @color-muted;
@@ -96,7 +95,7 @@
        panel, not a document. */
     .semi-markdownRender-component-header {
       margin: @space-4 0 @space-2;
-      font-weight: 600;
+      font-weight: @weight-strong;
       color: @color-text;
 
       &.semi-typography-h1,
@@ -117,9 +116,12 @@
       margin-top: 0;
     }
 
+    /* Links in prose: the text colour, underlined. */
     a,
     a.semi-typography {
-      color: @color-accent;
+      color: @color-text;
+      text-decoration: underline;
+      text-underline-offset: 3px;
     }
 
     /* Bot tokens and curl one-liners must wrap instead of widening the dialog. */

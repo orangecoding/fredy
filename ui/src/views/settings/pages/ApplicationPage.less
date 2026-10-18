@@ -10,19 +10,73 @@
     display: grid;
     // Two columns where there is room, one on a phone. The fields are short and pairing them keeps
     // the profile from reading as an endless form.
-    /* min(): never wider than the card. A fixed minimum wider than the card on a phone overflowed
-       it, and the card clips what overflows. */
+    /* min(): never wider than the section. A fixed minimum wider than the column on a phone
+       overflowed it. */
     grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
     gap: @space-3;
   }
 
+  /* The name inside each field is a caption, not a second box: muted, in the regular weight, and
+     sitting on the field's own background. Semi sets it in 600, which made eleven field names the
+     heaviest type on the page. */
+  .semi-input-prefix-text,
+  .semi-input-inset-label {
+    margin: 0 @space-2 0 @space-3;
+    font-size: @text-sm;
+    font-weight: 400;
+    color: @color-muted;
+  }
+
+  /* One question per row, its answer on the right, a hairline between two of them - the shape of
+     every settings row. */
   &__flag {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     gap: @space-2;
+    padding: @space-2 0;
+
+    & + & {
+      border-top: 1px solid @color-border;
+    }
+  }
+
+  &__grid + &__flag {
     margin-top: @space-3;
+  }
+
+  /* The two segmented controls on this page - not stated / yes / no, and renting / buying. The
+     chosen segment is the text colour with a 1px edge in it, the others are muted words; the
+     accent this used to borrow belongs to the one action a page is about. */
+  .semi-radioGroup-buttonRadio {
+    padding: 2px;
+    background: transparent;
+    border: 1px solid @color-border;
+    border-radius: @radius-btn;
+  }
+
+  .semi-radio-buttonRadioGroup {
+    padding: 0;
+  }
+
+  .semi-radio-addon-buttonRadio {
+    border: 1px solid transparent;
+    border-radius: @radius-chip;
+    color: @color-muted;
+    font-weight: @weight-medium;
+    font-size: @text-sm;
+  }
+
+  .semi-radio-addon-buttonRadio-hover {
+    background: transparent;
+    color: @color-text;
+  }
+
+  .semi-radio-addon-buttonRadio-checked {
+    background: @color-elevated;
+    border-color: @color-text;
+    color: @color-text;
   }
 
   &__templateControls {
@@ -30,7 +84,7 @@
     flex-wrap: wrap;
     align-items: center;
     gap: @space-3;
-    margin-bottom: @space-3;
+    margin-bottom: @space-4;
   }
 
   &__placeholders {
@@ -53,23 +107,28 @@
     gap: @space-1;
   }
 
+  &__chips .semi-tag {
+    cursor: pointer;
+    border-radius: @radius-pill;
+  }
+
   &__warning {
     margin-top: @space-3;
   }
 
   &__extra {
-    margin-top: @space-3;
+    margin-top: @space-4;
   }
 
-  /* Editor und Vorschau nebeneinander, solange Platz ist. Man schreibt einen Brief und sieht ihn;
-     untereinander lagen dreissig Chips und eine Kartengrenze dazwischen. Unter etwa 700 Pixeln
-     stapeln sie, wo zwei Spalten zwei zu schmale Spalten waeren. */
+  /* Editor and preview side by side while there is room. You write a letter and see it; stacked,
+     thirty chips and a section edge stood between the two. Below about 700 pixels they stack,
+     where two columns would be two columns too narrow. */
   &__split {
     display: grid;
-    /* min(): on a phone the card is narrower than 320px, and a column that may not shrink below it
-       was clipped at the card's edge - the right side of the letter editor could not be reached. */
+    /* min(): on a phone the column is narrower than 320px, and a column that may not shrink below
+       it was clipped - the right side of the letter editor could not be reached. */
     grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
-    gap: @space-3;
+    gap: @space-4;
   }
 
   &__pane {
@@ -80,18 +139,17 @@
   }
 
   &__paneTitle {
-    font-size: @text-xs;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: @color-faint;
+    font-size: @text-sm;
+    color: @color-muted;
   }
 
+  /* The letter as it will be sent - a box, because it is a document of its own rather than a part
+     of this page. */
   &__preview {
     margin: 0;
-    padding: @space-3;
+    padding: @space-3 @space-4;
     border: 1px solid @color-border;
-    border-radius: @radius-chip;
+    border-radius: @radius-card;
     background: @color-surface;
     // The preview is the letter, so it wraps like prose rather than scrolling sideways like code.
     white-space: pre-wrap;
@@ -101,9 +159,5 @@
     line-height: 1.55;
     flex: 1;
     overflow: auto;
-  }
-
-  &__chips .semi-tag {
-    cursor: pointer;
   }
 }

@@ -5,34 +5,27 @@
 
 @import '../../tokens.less';
 
+/* A pill with a hairline beside the heading. Muted, icon included: four words next to a 32px title
+   must not be louder than the title, and whose settings these are is not a state that needs a
+   colour of its own. */
 .scopeBadge {
   display: inline-flex;
   align-items: center;
   gap: @space-2;
-  height: 22px;
-  padding: 0 @space-2;
-  border-radius: @radius-chip;
-  background: @color-elevated;
+  height: 24px;
+  padding: 0 @space-3;
+  border-radius: @radius-pill;
   border: 1px solid @color-border-bright;
-  color: @color-text;
+  color: @color-muted;
   font-size: @text-xs;
-  font-weight: 500;
+  font-weight: @weight-medium;
   line-height: 1;
   white-space: nowrap;
   vertical-align: middle;
 
-  // Nur das Icon traegt Farbe. Die Schrift bleibt Textfarbe, damit vier Woerter neben einer
-  // Ueberschrift nicht lauter sind als die Ueberschrift.
   .semi-icon {
-    font-size: 11px;
+    font-size: 12px;
     flex: none;
-  }
-
-  &--user .semi-icon {
-    color: @color-info;
-  }
-
-  &--instance .semi-icon {
-    color: @color-warning;
+    color: @color-muted;
   }
 }

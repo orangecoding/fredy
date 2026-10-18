@@ -4,10 +4,10 @@
  */
 
 import { useState, useEffect } from 'react';
-import { Modal, Radio, RadioGroup, Typography, Checkbox } from '@douyinfe/semi-ui-19';
+import { Modal, Radio, RadioGroup, Checkbox } from '@douyinfe/semi-ui-19';
 import { useTranslation } from '../services/i18n/i18n.jsx';
 
-const { Text } = Typography;
+import './ListingDeletionModal.less';
 
 const ListingDeletionModal = ({
   visible,
@@ -51,35 +51,32 @@ const ListingDeletionModal = ({
       onCancel={onCancel}
       okText={t('listing.deletion.confirm')}
       cancelText={t('listing.deletion.cancel')}
-      style={{ maxWidth: '500px' }}
+      className="listingDeletion"
     >
-      <div style={{ marginBottom: 16 }}>
-        <Text>{resolvedMessage}</Text>
-      </div>
+      <p className="listingDeletion__message">{resolvedMessage}</p>
       {showOptions && (
         <>
-          <RadioGroup value={deleteType} onChange={(e) => setDeleteType(e.target.value)} style={{ width: '100%' }}>
-            <Radio value="soft" style={{ alignItems: 'flex-start', width: '100%' }}>
-              <div style={{ marginLeft: 8 }}>
-                <Text strong>{t('listing.deletion.softLabel')}</Text>
-                <br />
-                <Text type="secondary">{t('listing.deletion.softDescription')}</Text>
-              </div>
+          <RadioGroup
+            className="listingDeletion__options"
+            value={deleteType}
+            onChange={(e) => setDeleteType(e.target.value)}
+          >
+            <Radio value="soft" className="listingDeletion__option">
+              <span className="listingDeletion__label">{t('listing.deletion.softLabel')}</span>
+              <span className="listingDeletion__description">{t('listing.deletion.softDescription')}</span>
             </Radio>
-            <Radio value="hard" style={{ marginTop: 16, alignItems: 'flex-start', width: '100%' }}>
-              <div style={{ marginLeft: 8 }}>
-                <Text strong>{t('listing.deletion.hardLabel')}</Text>
-                <br />
-                <Text type="secondary">
-                  {t('listing.deletion.hardDescription')}
-                  <br />
-                  <Text type="warning">{t('listing.deletion.hardConsequence')}</Text>
-                </Text>
-              </div>
+            <Radio value="hard" className="listingDeletion__option">
+              <span className="listingDeletion__label">{t('listing.deletion.hardLabel')}</span>
+              <span className="listingDeletion__description">{t('listing.deletion.hardDescription')}</span>
+              <span className="listingDeletion__consequence">{t('listing.deletion.hardConsequence')}</span>
             </Radio>
           </RadioGroup>
           {showRemember && (
-            <Checkbox checked={remember} onChange={(e) => setRemember(e.target.checked)} style={{ marginTop: 16 }}>
+            <Checkbox
+              className="listingDeletion__remember"
+              checked={remember}
+              onChange={(e) => setRemember(e.target.checked)}
+            >
               {t('listing.deletion.rememberChoice')}
             </Checkbox>
           )}

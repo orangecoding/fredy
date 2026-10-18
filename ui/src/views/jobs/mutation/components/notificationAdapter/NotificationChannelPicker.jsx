@@ -5,7 +5,7 @@
 
 import { useEffect } from 'react';
 import { Button, Modal } from '@douyinfe/semi-ui-19';
-import { IconBell, IconPlusCircle } from '@douyinfe/semi-icons';
+import { IconBell, IconPlus } from '@douyinfe/semi-icons';
 import { useNavigate } from 'react-router';
 
 import NotificationChannelTable from '../../../../../components/table/NotificationChannelTable';
@@ -82,7 +82,7 @@ export default function NotificationChannelPicker({
       title={nothingExists ? t('notification.channels.emptyTitle') : t('notification.channels.pickerAllAddedTitle')}
       description={nothingExists ? t('notification.channels.emptyText') : t('notification.channels.pickerAllAddedLead')}
       action={
-        <Button type="primary" icon={<IconPlusCircle />} onClick={leaveForSettings}>
+        <Button type="primary" icon={<IconPlus />} onClick={leaveForSettings}>
           {nothingExists ? t('notification.channels.emptyAction') : t('notification.channels.pickerAllAddedLink')}
         </Button>
       }

@@ -6,7 +6,7 @@
 import { useState, useEffect } from 'react';
 
 import { Banner, Modal, Select, Input } from '@douyinfe/semi-ui-19';
-import { IconExternalOpen } from '@douyinfe/semi-icons';
+import { IconExternal } from '../../../../../components/icons/StrokeIcons.jsx';
 import { transform } from '../../../../../services/transformer/providerTransformer';
 import { useSelector } from '../../../../../services/state/store';
 import { validateProviderUrl } from '../../../../../services/jobs/providerUrl.js';
@@ -186,7 +186,7 @@ export default function ProviderMutator({
                 target="_blank"
                 rel="noreferrer noopener"
               >
-                <IconExternalOpen />
+                <IconExternal />
                 {t('provider.openInNewTab', { name: selectedProvider.name })}
               </a>
             )}

@@ -17,8 +17,7 @@
 
   &__version {
     margin-left: auto;
-    color: @color-faint;
-    font-family: @font-mono;
+    color: @color-muted;
     font-size: @text-xs;
     font-weight: 400;
   }
@@ -37,7 +36,9 @@
     }
 
     a {
-      color: @color-accent;
+      color: @color-text;
+      text-decoration: underline;
+      text-underline-offset: 3px;
     }
 
     b,
@@ -85,13 +86,13 @@
 
   &__releaseVersion {
     margin: 0;
-    font-family: @font-mono;
     font-size: @text-md;
+    font-weight: @weight-strong;
     color: @color-text;
   }
 
   &__releaseDate {
-    color: @color-faint;
+    color: @color-muted;
     font-size: @text-sm;
   }
 

@@ -5,26 +5,22 @@
 
 @import '../../tokens.less';
 
+/* A price move, as coloured words beside the price rather than a filled chip: green when it fell,
+   red when it rose. The arrow in the label carries the direction for anyone who cannot tell the
+   two colours apart. */
 .priceChangeBadge {
   display: inline-block;
-  padding: 1px @space-2;
-  border-radius: @radius-chip;
-  font-size: @text-xs;
+  font-size: @text-sm;
+  font-weight: @weight-medium;
   line-height: 1.5;
   white-space: nowrap;
   vertical-align: middle;
-  font-variant-numeric: tabular-nums;
-
-  // Die Fläche trägt den Farbton, die Schrift bleibt Textfarbe. Farbige Schrift auf der eigenen
-  // -dim-Fläche reisst bei 11px in je einem Theme AA: Grün kommt im hellen Theme auf 4,21 zu 1,
-  // Rot im dunklen auf 3,26 zu 1. Mit @color-text sind es 12,18 und 9,57.
-  color: @color-text;
 
   &--down {
-    background: @color-success-dim;
+    color: @color-success;
   }
 
   &--up {
-    background: @color-error-dim;
+    color: @color-error;
   }
 }

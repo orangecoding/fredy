@@ -5,9 +5,9 @@
     display: flex;
     flex-direction: column;
     gap: @space-2;
-    padding-bottom: @space-4;
-    margin-bottom: @space-4;
-    border-bottom: 1px solid @color-border-bright;
+    padding-bottom: @space-5;
+    margin-bottom: @space-5;
+    border-bottom: 1px solid @color-border;
 
     &:last-of-type {
       border-bottom: none;
@@ -15,13 +15,13 @@
     }
   }
 
+  // A heading in sentence case and the text colour, the size of a section title in a form. A
+  // muted, letter-spaced capital line read as a caption rather than as the name of the group.
   &__groupTitle {
     margin: 0;
-    color: @color-muted;
-    font-size: @text-sm;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+    color: @color-text;
+    font-size: @text-base;
+    font-weight: @weight-strong;
   }
 
   // The help text that used to live in a hover tooltip over a cramped row. There is room for it

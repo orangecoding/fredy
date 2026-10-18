@@ -1,62 +1,144 @@
 @import '../../tokens.less';
 
+/* Search, filters, sort and view on one row; the quick filters under it; then the removable chips
+   of whatever else is on. The rule under the block separates the controls from the listings. */
 .listingsOverview {
+  &__toolbar {
+    display: flex;
+    flex-direction: column;
+    gap: @space-3;
+    margin-bottom: @space-7;
+    padding-bottom: @space-5;
+    border-bottom: 1px solid @color-border;
+  }
+
   &__topbar {
     display: flex;
-    align-items: center;
-    gap: @space-3;
-    margin-bottom: @space-4;
     flex-wrap: wrap;
+    align-items: center;
+    gap: @space-2;
 
+    /* FilterSelect's wrapper, which carries the tooltip. */
     &__tooltipWrap {
       display: inline-flex;
       align-items: center;
+    }
+  }
 
-      > * {
-        width: 100%;
-      }
+  &__search {
+    display: flex;
+    flex: 1 1 320px;
+    min-width: 0;
+
+    > .semi-input-wrapper {
+      width: 100%;
+    }
+  }
+
+  &__sort {
+    flex-shrink: 0;
+
+    .semi-select {
+      min-width: 220px;
     }
 
-    &__search {
-      min-width: 200px;
-      flex: 1;
+    .semi-select-prefix {
+      white-space: nowrap;
+      color: @color-muted;
+    }
+  }
+
+  /* Two options, drawn as one segmented control. */
+  &__viewToggle {
+    display: inline-flex;
+    flex: none;
+    gap: 2px;
+    padding: 3px;
+    border: 1px solid @color-border;
+    border-radius: @radius-btn;
+  }
+
+  &__viewOption {
+    height: @control-md;
+    padding: 0 @space-4;
+    border: none;
+    border-radius: 5px;
+    background: transparent;
+    color: @color-muted;
+    font-family: @font-ui;
+    font-size: @text-sm;
+    font-weight: @weight-medium;
+    cursor: pointer;
+    transition:
+      background @transition-fast,
+      color @transition-fast;
+
+    &:hover {
+      color: @color-text;
     }
 
-    &__view-toggle {
-      display: flex;
-      gap: 2px;
-      flex-shrink: 0;
+    &--on,
+    &--on:hover {
+      background: @color-border;
+      color: @color-text;
+    }
+  }
+
+  &__quick {
+    display: flex;
+    flex-wrap: wrap;
+    gap: @space-2;
+  }
+
+  /* A quick filter: an outlined pill, filled in the text colour while it is on. */
+  &__chip {
+    height: @control-sm;
+    padding: 0 @space-4;
+    border: 1px solid @color-border-bright;
+    border-radius: @radius-pill;
+    background: transparent;
+    color: @color-text;
+    font-family: @font-ui;
+    font-size: @text-sm;
+    font-weight: @weight-medium;
+    cursor: pointer;
+    transition:
+      background @transition-fast,
+      border-color @transition-fast,
+      color @transition-fast;
+
+    &:hover {
+      background: @color-fill-1;
     }
 
-    &__sort {
-      flex-shrink: 0;
-
-      .semi-select-prefix {
-        white-space: nowrap;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .listingsOverview__topbar__search {
-        width: 100%;
-        flex: unset;
-      }
-
-      .semi-radio-group {
-        flex: 1;
-      }
-
-      .semi-select {
-        flex: 1;
-        min-width: 100px;
-        width: auto !important;
-      }
+    &--on,
+    &--on:hover {
+      border-color: @color-text;
+      background: @color-text;
+      color: @color-base;
     }
   }
 
   &__pagination {
-    margin-top: @space-4;
     display: flex;
     justify-content: center;
+    margin-top: @space-8;
+    padding-top: @space-5;
+    border-top: 1px solid @color-border;
+  }
+
+  @media (max-width: 768px) {
+    &__search {
+      flex-basis: 100%;
+    }
+
+    &__sort {
+      flex: 1 1 auto;
+
+      .semi-select {
+        width: 100%;
+        min-width: 0;
+      }
+    }
   }
 }

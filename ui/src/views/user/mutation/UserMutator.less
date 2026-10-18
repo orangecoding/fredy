@@ -13,7 +13,7 @@
   margin-bottom: @space-4;
 }
 
-/* Semis Title brings a margin of its own, which sat under a heading that is already spaced by the
+/* Semi's Title brings a margin of its own, which sat under a heading that is already spaced by the
    header row around it. */
 .userMutator__title {
   margin: 0;
@@ -32,11 +32,11 @@
   flex-direction: column;
 }
 
-/* Beschriftung ueber das Bedienelement, sobald die Zeile zu schmal fuer beides nebeneinander wird.
-   `AdminField` haelt sein Bedienelement auf `flex: none`, also gibt auf einem Telefon die
-   Beschriftung nach: "Benutzername" stand als "Benutzernam" halb unter dem Eingabefeld. Hier
-   eingegrenzt statt in `AdminField.less`, weil diese Regel dort jede Verwaltungsseite mitnaehme -
-   deren Felder sind Zahlen und Schalter und passen nebeneinander, dieses sind vier Textfelder. */
+/* The name above the control once the row is too narrow for both side by side. `AdminField` keeps
+   its control at `flex: none`, so on a phone the name gave way: "Benutzername" stood half under the
+   field as "Benutzernam". Scoped here rather than in `AdminField.less`, because there it would take
+   every admin page along - their fields are figures and switches and fit side by side, these are
+   four text fields. */
 @media (max-width: 560px) {
   .userMutator .adminField {
     flex-direction: column;
@@ -59,15 +59,13 @@
   color: @color-error;
 }
 
-/* The same shape as the login screen's hint, so the warning reads the same in both places. */
+/* A sentence, set like one: the interface face in the warning colour, with the mark beside it. */
 .userMutator__capsHint {
   display: flex;
   align-items: center;
   gap: @space-2;
   margin: @space-3 0 0;
-  font-family: @font-mono;
-  font-size: @text-xs;
-  letter-spacing: 0.04em;
+  font-size: @text-sm;
   color: @color-warning;
 }
 

@@ -62,7 +62,7 @@ const INITIAL_CARD_SIZE = Object.freeze({ width: 440, height: 280 });
  * @returns {string[]} Translation keys.
  */
 function routeStops(isAdmin) {
-  const stops = ['nav.dashboard', 'nav.jobs', 'nav.listings', 'nav.mapView', 'nav.finance', 'nav.settings'];
+  const stops = ['nav.dashboard', 'nav.jobs', 'nav.listings', 'nav.map', 'nav.finance', 'nav.settings'];
   return isAdmin ? [...stops, 'nav.administration'] : stops;
 }
 
@@ -539,7 +539,6 @@ export default function OnboardingTour({ isAdmin, blocked }) {
         <p className="onboardingTour__body" aria-live="polite">
           {t(stepBodyKey(step.id), {
             target: step.labelKey ? t(step.labelKey) : '',
-            group: step.groupKey ? t(step.groupKey) : '',
             ...Object.fromEntries(Object.entries(step.vars ?? {}).map(([name, key]) => [name, t(key)])),
           })}
         </p>
