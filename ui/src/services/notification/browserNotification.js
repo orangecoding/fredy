@@ -3,6 +3,13 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+// Imported, so the build serves it: the source path only existed on the dev server.
+import heartIcon from '../../assets/heart.png';
+
 /**
  * Triggers a test browser notification, requesting permission if needed.
  *
@@ -15,7 +22,7 @@ export function triggerTestNotification(t, onSuccess, onError) {
     if (Notification.permission === 'granted') {
       const notification = new Notification('Test Call from Fredy', {
         body: 'Everything works perfectly! Real-time listings will appear here.',
-        icon: '/ui/src/assets/heart.png',
+        icon: heartIcon,
       });
       notification.onclick = () => {
         window.focus();
@@ -28,7 +35,7 @@ export function triggerTestNotification(t, onSuccess, onError) {
         if (permission === 'granted') {
           const notification = new Notification('Test Call from Fredy', {
             body: 'Everything works perfectly! Real-time listings will appear here.',
-            icon: '/ui/src/assets/heart.png',
+            icon: heartIcon,
           });
           notification.onclick = () => {
             window.focus();

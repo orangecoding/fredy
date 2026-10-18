@@ -97,6 +97,20 @@ const loadingTracker = (config) => (set, get, api) => {
 };
 
 // Create the Zustand store with slices and actions
+/**
+ * The newest request of each list, by name. A page, filter or job switched quickly can send two
+ * requests whose answers arrive in the wrong order (a slow mobile link, a proxy); without this the
+ * older answer was written last, and the list showed page 2 under a pagination that said page 3.
+ * @type {Record<string, number>}
+ */
+const latestTicket = {};
+
+/** @param {string} key @returns {number} */
+const nextTicket = (key) => (latestTicket[key] = (latestTicket[key] ?? 0) + 1);
+
+/** @param {string} key @param {number} ticket @returns {boolean} */
+const isLatest = (key, ticket) => latestTicket[key] === ticket;
+
 export const useFredyState = create(
   logger(
     loadingTracker((set) => {
@@ -279,7 +293,9 @@ export const useFredyState = create(
                 sortdir,
                 ...filter,
               });
+              const ticket = nextTicket('jobsData');
               const response = await xhrGet(`/api/jobs/data?${qryString}`);
+              if (!isLatest('jobsData', ticket)) return;
               set((state) => ({
                 jobsData: { ...state.jobsData, ...response.json },
               }));
@@ -403,7 +419,9 @@ export const useFredyState = create(
                 },
                 { skipNull: true, skipEmptyString: true },
               );
+              const ticket = nextTicket('listingsTable');
               const response = await xhrGet(`/api/listings/table?${qryString}`);
+              if (!isLatest('listingsTable', ticket)) return;
               // `loaded` tells the count of the first answer from the zero the store starts with.
               set((state) => ({
                 listingsData: { ...state.listingsData, ...response.json, loaded: true },
@@ -434,7 +452,9 @@ export const useFredyState = create(
                 },
                 { skipNull: true, skipEmptyString: true },
               );
+              const ticket = nextTicket('listingsMap');
               const response = await xhrGet(`/api/listings/map?${qryString}`);
+              if (!isLatest('listingsMap', ticket)) return;
               set((state) => ({
                 listingsData: {
                   ...state.listingsData,

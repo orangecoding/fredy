@@ -545,7 +545,8 @@ export default function MapView() {
       }).setDOMContent(element);
 
       // The stop list is only worth a request once the popup is actually opened, and it is the
-      // same for the whole group, so it is mounted once and survives paging.
+      // same for the whole group, so it is mounted once per opening and survives paging.
+      let unmountTransit = null;
       popup.on('open', () => {
         refit();
         setOpenListingRef.current(currentId());
@@ -557,20 +558,28 @@ export default function MapView() {
           element.focus({ preventScroll: true });
         }
 
-        if (!transitMount || transitMount.dataset.mounted === 'true') return;
-        transitMount.dataset.mounted = 'true';
+        if (!transitMount || unmountTransit != null) return;
 
-        const unmount = mountPopupNode(
+        unmountTransit = mountPopupNode(
           transitMount,
           <NearbyStops lat={lat} lng={lng} limit={3} departureLimit={5} />,
           language,
         );
-        popupRoots.current.push(unmount);
+        popupRoots.current.push(unmountTransit);
       });
 
       // Only this group's own popup may clear the param, and only when a person closed it: a
       // filter change removes the marker and MapLibre reports that as a close too.
       popup.on('close', () => {
+        // The departure board polls every minute while it is mounted. Left mounted in a closed
+        // popup, ten popups opened and closed again meant ten invisible boards polling for as long
+        // as the map stayed open. It mounts again on the next open.
+        if (unmountTransit != null) {
+          const unmount = unmountTransit;
+          unmountTransit = null;
+          popupRoots.current = popupRoots.current.filter((entry) => entry !== unmount);
+          unmount();
+        }
         if (isTearingDownRef.current || !holdsOpenListing()) return;
         setOpenListingRef.current(null);
       });
