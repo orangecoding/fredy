@@ -56,7 +56,7 @@ describe('login hardening', () => {
     routes = {};
     await plugin({
       get: (path, handler) => (routes[`GET ${path}`] = handler),
-      post: (path, handler) => (routes[`POST ${path}`] = handler),
+      post: (path, optionsOrHandler, handler) => (routes[`POST ${path}`] = handler ?? optionsOrHandler),
     });
 
     state.users.push({ id: 'u1', username: 'alice', password: await hasher.hash('correct horse') });
@@ -159,5 +159,21 @@ describe('login hardening', () => {
       expect(state.rehashed).toHaveLength(1);
       expect(state.rehashed[0].passwordHash.startsWith('scrypt$')).toBe(true);
     });
+  });
+});
+
+describe('the attempt counter stays small', () => {
+  // Attempts with ever new user names grew the counter without bound for a whole window.
+  it('drops the oldest key once it holds as many as it may', async () => {
+    const { createWindowLimiter } = await import('../../lib/api/rateLimiter.js');
+    const limiter = createWindowLimiter(60_000, 3);
+    limiter.hit('a', 1);
+    limiter.hit('a', 1);
+    expect(limiter.hit('a', 1)).toBe(true);
+    limiter.hit('b', 1);
+    limiter.hit('c', 1);
+    limiter.hit('d', 1);
+    // 'a' was the oldest and is gone, so it starts a fresh window.
+    expect(limiter.hit('a', 1)).toBe(false);
   });
 });
