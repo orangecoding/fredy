@@ -105,17 +105,24 @@
     /* min(): below about 400px the column is narrower than a card, and a card that may not shrink
        lost its right edge - and the menu with both deletes - to the page's clipping. */
     grid-template-columns: repeat(auto-fill, minmax(~'min(@{job-card-min}, 100%)', 1fr));
-    gap: @space-8 @space-6;
-    align-items: start;
+    gap: @space-5;
+    align-items: stretch;
   }
 
-  /* No box. A card is its text, then a hairline, then its controls - the listing card without the
-     photograph - and the grid's gutters are what separate one job from the next. */
+  /* A box, unlike the listing card. A listing card is held together by its photograph; a job card
+     is only text and controls, and without an edge of its own the footers of two neighbours ran
+     into one line of switches and buttons that belonged to nobody in particular. Flat: surface,
+     hairline, radius, no shadow. */
   &__card {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     gap: @space-4;
     min-width: 0;
+    padding: @space-4 @space-4 @space-3;
+    border: 1px solid @color-border;
+    border-radius: @radius-card;
+    background: @color-surface;
 
     &__body {
       display: flex;

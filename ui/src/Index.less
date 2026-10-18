@@ -152,18 +152,20 @@ button:focus:not(:focus-visible),
   }
 }
 
+// On the field colour rather than transparent: a toolbar puts a search field, a select and a button
+// side by side, and on the light page a see-through button read as a grey one between white fields.
 .semi-button-light:not(.semi-button-disabled),
 .semi-button-outline:not(.semi-button-disabled) {
-  background-color: transparent;
+  background-color: @color-input-bg;
   border: 1px solid @color-border-bright;
   color: @color-text;
 
   &:hover {
-    background-color: @color-fill-1;
+    background-color: @color-hover;
   }
 
   &:active {
-    background-color: @color-fill-2;
+    background-color: @color-solid;
   }
 }
 
