@@ -55,7 +55,9 @@ describe('Navigate.less', () => {
   it('gives a selected entry one signal, and it is not red', () => {
     const active = less.match(/&--active,\s*&--active:hover\s*\{[\s\S]*?\n {4}\}/);
     expect(active).not.toBeNull();
-    expect(active[0]).toMatch(/background:\s*@color-elevated/);
+    // Its own token: elevated in the dark theme, a grey step below white in the light one, where an
+    // elevated (white) row on the off-white page read as a card rather than as a selection.
+    expect(active[0]).toMatch(/background:\s*@color-selected/);
     expect(active[0]).not.toMatch(/border|@color-accent/);
   });
 

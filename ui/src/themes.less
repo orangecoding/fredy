@@ -36,6 +36,8 @@
   --f-surface: #181816;
   --f-surface-rgb: 24 24 22;
   --f-elevated: #1f1f1c;
+  // A selected row in a list: the sidebar's current page. The elevated step in this theme.
+  --f-selected: #1f1f1c;
   // A hovered row, the current navigation entry, the fill behind chips and code.
   --f-hover: #1c1c1a;
   --f-solid: #2a2a27;
@@ -120,94 +122,97 @@
   // blocks unchanged.
   --f-preview-dark-bg: #11110f;
   --f-preview-dark-line: #363632;
-  --f-preview-light-bg: #f2efea;
-  --f-preview-light-line: #d6cec4;
+  --f-preview-light-bg: #f6f6f4;
+  --f-preview-light-line: #d7d5d0;
 }
 
 body[theme-mode='light'] {
-  // Warm paper rather than white. A pure #fff page leaves nothing to raise a field above.
-  --f-base: #f2efea;
-  --f-surface: #fbf9f6;
-  --f-surface-rgb: 251 249 246;
+  // An off-white page with white surfaces: fields and cards stand on it by a hair, the way they do
+  // on the dark page, without the sepia cast a paper tone gives every photograph next to it.
+  --f-base: #f6f6f4;
+  --f-surface: #ffffff;
+  --f-surface-rgb: 255 255 255;
   --f-elevated: #ffffff;
-  // Inverted from dark on purpose: on paper a surface comes forward by getting darker, not lighter.
-  --f-hover: #ece7e0;
-  --f-solid: #e4ded6;
-  --f-border: #e3ddd5;
-  --f-border-bright: #c9c1b7;
+  // On white a selected row cannot rise further, so it sinks: a light grey step instead.
+  --f-selected: #e9e8e4;
+  // Inverted from dark on purpose: on a light page a hovered row comes forward by getting darker.
+  --f-hover: #eeeeeb;
+  --f-solid: #e6e5e1;
+  --f-border: #e4e3df;
+  --f-border-bright: #cfcdc8;
 
-  // Darker than the dark-theme accent: the same red falls below AA under white text on paper.
-  // Same hue, one notch of lightness: 5.66:1 here.
-  --f-accent: #b0442f;
-  --f-accent-rgb: 176 68 47;
-  --f-accent-dim: #953a28;
+  // Darker than the dark-theme accent: the same red falls below AA under white text on a light
+  // page. Same hue, one notch of lightness: white on it is 5.53:1.
+  --f-accent: #b83f32;
+  --f-accent-rgb: 184 63 50;
+  --f-accent-dim: #9c3529;
 
-  // On paper the accent carries as text on its own: 4.93:1 on the base, 5.38:1 on the surface.
-  --f-accent-text: #b0442f;
+  // On a light page the accent carries as text on its own: 5.11:1 on the base, 5.53:1 on white.
+  --f-accent-text: #b83f32;
 
-  --f-text: #1d1916;
-  --f-muted: #645d56;
-  --f-faint: #958c83;
+  --f-text: #191815;
+  --f-muted: #5e5b56;
+  --f-faint: #8e8a84;
 
-  // Darkened for contrast on paper. `-dim` is a fill rather than a foreground in both themes, so it
+  // Darkened for contrast on a light page, each above 4.8:1 on the base. `-dim` is a fill rather than a foreground in both themes, so it
   // inverts from a deep shade to a light tint instead of following its own hue down.
-  --f-success: #2e7a5a;
-  --f-success-rgb: 46 122 90;
-  --f-success-dim: #ddebe2;
-  --f-success-active: #26684c;
-  --f-error: #ae3b41;
-  --f-error-rgb: 174 59 65;
-  --f-error-dim: #f6dedc;
-  --f-warning: #96690f;
-  --f-warning-rgb: 150 105 15;
-  --f-info: #3a6ea5;
-  --f-info-rgb: 58 110 165;
+  --f-success: #2d7656;
+  --f-success-rgb: 45 118 86;
+  --f-success-dim: #dcebe3;
+  --f-success-active: #25654a;
+  --f-error: #b23a3a;
+  --f-error-rgb: 178 58 58;
+  --f-error-dim: #f5dddb;
+  --f-warning: #8f6410;
+  --f-warning-rgb: 143 100 16;
+  --f-info: #2f6aa3;
+  --f-info-rgb: 47 106 163;
 
-  --f-fill-subtle: rgb(38 28 22 / 3%);
-  --f-fill-1: rgb(38 28 22 / 5%);
-  --f-fill-2: rgb(38 28 22 / 7%);
-  --f-fill-strong: rgb(38 28 22 / 11%);
+  --f-fill-subtle: rgb(25 24 21 / 3%);
+  --f-fill-1: rgb(25 24 21 / 5%);
+  --f-fill-2: rgb(25 24 21 / 7%);
+  --f-fill-strong: rgb(25 24 21 / 11%);
 
   --f-input-bg: #ffffff;
-  --f-input-border: #d9d2c9;
+  --f-input-border: #d6d4cf;
 
-  --f-scrim: rgb(29 25 22 / 45%);
-  --f-shadow-sm: 0 2px 8px rgb(29 25 22 / 10%);
-  --f-shadow-md: 0 8px 24px -8px rgb(29 25 22 / 16%);
-  --f-shadow-lg: 0 18px 44px -12px rgb(29 25 22 / 22%);
+  --f-scrim: rgb(25 24 21 / 40%);
+  --f-shadow-sm: 0 1px 3px rgb(25 24 21 / 8%);
+  --f-shadow-md: 0 8px 24px -8px rgb(25 24 21 / 14%);
+  --f-shadow-lg: 0 18px 44px -12px rgb(25 24 21 / 20%);
 
-  --f-blue-text: #3c6a9a;
-  --f-blue-border: #c6d4e3;
-  --f-blue-bg: rgb(60 106 154 / 7%);
-  --f-orange-text: #9a5d26;
-  --f-orange-text-rgb: 154 93 38;
-  --f-orange-border: #e8d3b9;
-  --f-orange-bg: rgb(154 93 38 / 7%);
-  --f-green-text: #2e7a5a;
-  --f-green-border: #c6dcd0;
-  --f-green-bg: rgb(46 122 90 / 7%);
-  --f-purple-text: #655898;
-  --f-purple-text-rgb: 101 88 152;
-  --f-purple-border: #d3cce2;
-  --f-purple-bg: rgb(101 88 152 / 7%);
-  --f-gray-text: #645d56;
-  --f-gray-border: #d8d2c9;
-  --f-gray-bg: rgb(100 93 86 / 7%);
+  --f-blue-text: #2f6aa3;
+  --f-blue-border: #c9d6e4;
+  --f-blue-bg: rgb(47 106 163 / 7%);
+  --f-orange-text: #97592a;
+  --f-orange-text-rgb: 151 89 42;
+  --f-orange-border: #e7d4c0;
+  --f-orange-bg: rgb(151 89 42 / 7%);
+  --f-green-text: #2d7656;
+  --f-green-border: #c7dbcf;
+  --f-green-bg: rgb(45 118 86 / 7%);
+  --f-purple-text: #5f5498;
+  --f-purple-text-rgb: 95 84 152;
+  --f-purple-border: #d4cfe3;
+  --f-purple-bg: rgb(95 84 152 / 7%);
+  --f-gray-text: #5e5b56;
+  --f-gray-border: #d6d4cf;
+  --f-gray-bg: rgb(94 91 86 / 6%);
 
   // Darkest first on paper, mirroring the dark ramp's brightest first.
-  --f-chart-1: #2b2925;
-  --f-chart-2: #5f5a53;
-  --f-chart-3: #8d877f;
-  --f-chart-4: #b5aea5;
-  --f-chart-5: #d6d0c7;
+  --f-chart-1: #2a2925;
+  --f-chart-2: #5c5a55;
+  --f-chart-3: #8b8882;
+  --f-chart-4: #b4b1ab;
+  --f-chart-5: #d7d5d0;
 
   --f-map-panel: rgb(255 255 255 / 95%);
-  --f-map-panel-border: #ddd6cd;
-  --f-map-panel-text: #645d56;
-  --f-map-panel-strong: #1d1916;
+  --f-map-panel-border: #e0ded9;
+  --f-map-panel-text: #5e5b56;
+  --f-map-panel-strong: #191815;
 
   --f-preview-dark-bg: #11110f;
   --f-preview-dark-line: #363632;
-  --f-preview-light-bg: #f2efea;
-  --f-preview-light-line: #d6cec4;
+  --f-preview-light-bg: #f6f6f4;
+  --f-preview-light-line: #d7d5d0;
 }
