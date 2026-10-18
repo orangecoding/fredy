@@ -7,7 +7,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Image, ImagePreview, Typography } from '@douyinfe/semi-ui-19';
 import { IconMaximize } from '@douyinfe/semi-icons';
 
-import no_image from '../../../assets/no_image.png';
+import ListingPhoto from '../../../components/listings/ListingPhoto.jsx';
 import { galleryPictures } from '../../../services/listings/listingPictures.js';
 import { useTranslation } from '../../../services/i18n/i18n.jsx';
 
@@ -46,15 +46,22 @@ export default function ListingPictures({ listing }) {
   return (
     <section className="listing-detail__media listing-detail__sec--media">
       <div className={`listing-detail__image${current == null ? ' listing-detail__image--placeholder' : ''}`}>
-        <Image
-          key={current?.src ?? 'none'}
-          src={current?.src ?? no_image}
-          fallback={<img src={no_image} alt={t('listing.detail.noImageAlt')} />}
-          alt={current?.caption || listing.title || t('listing.detail.defaultTitle')}
-          style={{ width: '100%', height: '100%' }}
-          preview={false}
-          onClick={current == null ? undefined : () => setViewerOpen(true)}
-        />
+        {/* Without a picture, or with one that fails to load, the drawn house every other listing
+            view falls back to. The old bitmap said "No image available" in English on a near-white
+            card, whatever the language and the theme. */}
+        {current == null ? (
+          <ListingPhoto src={null} className="listingPictures__placeholder" />
+        ) : (
+          <Image
+            key={current.src}
+            src={current.src}
+            fallback={<ListingPhoto src={null} className="listingPictures__placeholder" />}
+            alt={current.caption || listing.title || t('listing.detail.defaultTitle')}
+            style={{ width: '100%', height: '100%' }}
+            preview={false}
+            onClick={() => setViewerOpen(true)}
+          />
+        )}
         {/* A plain button rather than a Semi one: it sits on a photograph, so its colours
             are the scrim's and not the theme's, and fighting a component's own palette with
             `!important` to get there is the worse trade. */}
@@ -91,15 +98,7 @@ export default function ListingPictures({ listing }) {
               aria-pressed={index === active}
               onClick={() => setActive(index)}
             >
-              <img
-                src={picture.src}
-                alt=""
-                loading="lazy"
-                onError={(event) => {
-                  event.currentTarget.onerror = null;
-                  event.currentTarget.src = no_image;
-                }}
-              />
+              <ListingPhoto src={picture.src} className="listingPictures__thumbPhoto" />
               {picture.floorPlan && <span className="listingPictures__badge">{t('listing.detail.floorPlan')}</span>}
             </button>
           ))}

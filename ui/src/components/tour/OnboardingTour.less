@@ -139,6 +139,15 @@
       border-radius: 12px 12px 0 0;
       transition: none;
     }
+
+    // The ringed element sits where the sheet would dock (the listing's action bar on a phone), so
+    // the sheet comes down from the top edge instead.
+    &--sheetTop {
+      top: 0 !important;
+      bottom: auto;
+      border-width: 0 0 1px;
+      border-radius: 0 0 12px 12px;
+    }
   }
 
   &__handle {

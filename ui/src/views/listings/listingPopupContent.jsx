@@ -5,7 +5,6 @@
 
 import { renderToString } from 'react-dom/server';
 import { IconChevronLeft, IconChevronRight } from '@douyinfe/semi-icons';
-import no_image from '../../assets/no_image.png';
 import { listingPictureSrc } from '../../services/listings/listingPictures.js';
 import { availableModes, formatMinutes, hasAnyTime } from '../../components/transit/travelTimeFormat.js';
 import { formatEuroPrice } from '../../services/price/priceService.js';
@@ -205,13 +204,14 @@ function renderListingBody(listing, index, total, t, locale) {
   const price = listing.price ? escapeHtml(formatEuroPrice(listing.price, locale)) : t('common.na');
   const size = listing.size != null ? `${escapeHtml(formatDecimal(listing.size, locale))} m²` : '';
 
+  // No picture, or one that fails to load, leaves the popup without one rather than showing the old
+  // English "No image available" bitmap: the price and the title already say which listing it is.
+  const picture = listingPictureSrc(listing);
+  const photo = picture ? `<img src="${escapeHtml(picture)}" alt="" onerror="this.onerror=null;this.remove()" />` : '';
+
   return `
     ${pager}
-    <img
-      src="${escapeHtml(listingPictureSrc(listing) ?? no_image)}"
-      alt=""
-      onerror="this.onerror=null;this.src='${no_image}'"
-    />
+    ${photo}
     <div class="map-popup-content__price">
       <span class="map-popup-content__amount">${price}</span>
       ${size ? `<span class="map-popup-content__size">${size}</span>` : ''}

@@ -189,3 +189,19 @@ export function sameRect(a, b) {
     Math.round(a.height) === Math.round(b.height)
   );
 }
+
+/**
+ * Whether the phone sheet has to dock at the top instead of the bottom.
+ *
+ * The sheet takes up to the lower 60 % of the screen. An element that lives down there - the
+ * listing page's action bar is fixed to the bottom edge on a phone - would be covered by the very
+ * card that points at it, so the sheet moves up whenever the ringed element starts in the lower part
+ * of the screen.
+ *
+ * @param {{top: number, height: number}|null} hole From `spotlightRect`.
+ * @param {{height: number}} viewport
+ * @returns {boolean}
+ */
+export function sheetAtTop(hole, viewport) {
+  return hole != null && hole.top >= viewport.height * 0.55;
+}
