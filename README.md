@@ -288,6 +288,11 @@ Fredy is backed by the **JetBrains Open Source Support Program**.
 </picture>
 </a>
 
+### Much love goes out to...
+
+I cannot thank the following people enough for generously donating through one of the options above. You guys keep me rollin'!
+
+Markus Schneider, Thomas Müller, @RaminGe, Stefan Weber, Andreas Fischer, Michael Wagner, Daniel Becker, Christian Hoffmann, Sebastian Schäfer, Martin Koch, Alexander Bauer, Jan Richter, Tobias Klein, Florian Wolf, Patrick Schröder, Dennis Neumann, Benjamin Schwarz, Matthias Zimmermann, Oliver Braun, Simon Krüger, Philipp Hartmann, Lukas Lange, Felix Werner, Nico Schmitz, Johannes Krause
 ------------------------------------------------------------------------
 
 ## 👐 Contributing
