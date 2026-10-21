@@ -140,6 +140,7 @@
   "jobs.mutation.editTitle": "İşi Düzenle",
   "jobs.mutation.createTitle": "Yeni İş Oluştur",
   "jobs.mutation.back": "Geri",
+  "jobs.mutation.missingText": "Silinmiş ya da artık seninle paylaşılmıyor.",
   "jobs.mutation.save": "Kaydet",
   "jobs.mutation.saveJob": "İşi kaydet",
   "jobs.mutation.stillOpen": "Hâlâ eksik:",

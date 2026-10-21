@@ -377,14 +377,24 @@ describe('the view state survives a trip to a detail page and back', () => {
     // The open id is read through a ref on purpose: as a dependency it would tear down the popup
     // that had just been opened.
     expect(viewJsx).toMatch(/openListingIdRef/);
-    const deps = viewJsx.match(/\}, \[listings, priceRange, homeAddresses, distanceFilter, commuteFilter, isDark\]\);/);
+    const deps = viewJsx.match(
+      /\}, \[listings, filterRange, homeAddresses, distanceFilter, commuteFilter, isDark\]\);/,
+    );
     expect(deps, 'the marker effect keeps its dependency list').not.toBeNull();
   });
 
   it('keeps a price floor that arrived without a ceiling', () => {
     // `?priceMin=300000` alone used to be reset to zero here, because the listings-loaded effect
     // rewrote both ends whenever priceMax happened to be absent.
-    expect(viewJsx).toMatch(/setPriceRange\(\[urlPriceMin \?\? 0, getMaxPrice\(\)\]\)/);
+    expect(viewJsx).toMatch(/const range = \[urlPriceMin \?\? 0, getMaxPrice\(\)\];/);
+  });
+
+  it('filters the pins once the price slider rests, not on every pixel of a drag', () => {
+    // Each change of the filtered range rebuilds every marker and its popup; the slider reports a
+    // drag dozens of times a second.
+    expect(viewJsx).toMatch(/onInput=\{handlePriceRange\}/);
+    expect(viewJsx).toMatch(/setTimeout\(\(\) => commitPriceRange\(val, maxPrice\), PRICE_COMMIT_DELAY_MS\)/);
+    expect(viewJsx).not.toMatch(/\}, \[listings, priceRange, homeAddresses/);
   });
 });
 

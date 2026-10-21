@@ -91,9 +91,7 @@ describe('the save bar is the one the rest of the app uses', () => {
     expect(form).toMatch(/dirty=\{dirty\}/);
     // A stored job compares against what is stored; one that is not stored yet (new, or a clone)
     // is unsaved as soon as it holds anything, so a clone saved as it came still gets its Save.
-    expect(form).toMatch(
-      /const dirty = params\.jobId == null \? hasContent\(current\) : isJobDirty\(current, baseline\);/,
-    );
+    expect(form).toMatch(/const dirty = isEdit \? isJobDirty\(current, baseline\) : hasContent\(current\);/);
     // Renders nothing while clean - the whole point of the bar arriving rather than sitting there
     // greyed out.
     expect(bar2).toMatch(/if \(!dirty\) \{\s*\n\s*return null;/);

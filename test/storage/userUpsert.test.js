@@ -5,6 +5,8 @@
 
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import Database from 'better-sqlite3';
+import { up as createSessions } from '../../lib/services/storage/migrations/sql/26.sessions.js';
+import { up as addSessionUserId } from '../../lib/services/storage/migrations/sql/50.session-user-id.js';
 
 /**
  * The storage half of the edit-user flow, against a real database.
@@ -31,6 +33,8 @@ describe('userStorage.upsertUser', () => {
       );
       CREATE UNIQUE INDEX idx_users_username ON users (username);
     `);
+    createSessions(db);
+    addSessionUserId(db);
 
     vi.resetModules();
     vi.doMock('../../lib/services/storage/SqliteConnection.js', () => ({
@@ -71,5 +75,46 @@ describe('userStorage.upsertUser', () => {
 
     expect(await hasher.verify('another', row(id).password)).toBe(true);
     expect(await hasher.verify('secret', row(id).password)).toBe(false);
+  });
+
+  describe('sessions', () => {
+    const sessionsLeft = () =>
+      db
+        .prepare('SELECT sid FROM sessions ORDER BY sid')
+        .all()
+        .map((r) => r.sid);
+    const signIn = (sid, userId) =>
+      db.prepare(`INSERT INTO sessions (sid, data, expires_at, user_id) VALUES (?, '{}', 1, ?)`).run(sid, userId);
+
+    let id;
+    beforeEach(async () => {
+      await userStorage.upsertUser({ username: 'kim', password: 'secret', isAdmin: false });
+      id = idOf('kim');
+      signIn('kim-laptop', id);
+      signIn('kim-phone', id);
+      signIn('admin-laptop', 'admin');
+    });
+
+    it('ends every session of the user when an admin gives them a new password', async () => {
+      // The compromised-account case: whoever holds the old session must be out with the old password.
+      await userStorage.upsertUser({ userId: id, username: 'kim', password: 'new', isAdmin: false });
+      expect(sessionsLeft()).toEqual(['admin-laptop']);
+    });
+
+    it('keeps the session the change was made from', async () => {
+      await userStorage.upsertUser({
+        userId: id,
+        username: 'kim',
+        password: 'new',
+        isAdmin: false,
+        keepSessionId: 'kim-laptop',
+      });
+      expect(sessionsLeft()).toEqual(['admin-laptop', 'kim-laptop']);
+    });
+
+    it('leaves the sessions alone when the password stays', async () => {
+      await userStorage.upsertUser({ userId: id, username: 'kim', password: '', isAdmin: true });
+      expect(sessionsLeft()).toEqual(['admin-laptop', 'kim-laptop', 'kim-phone']);
+    });
   });
 });

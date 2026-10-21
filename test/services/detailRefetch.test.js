@@ -202,6 +202,30 @@ describe('refetchListingDetails', () => {
     expect(state.closed).toBe(1);
   });
 
+  it('starts no browser for a provider that reads its details from an API', async () => {
+    // The launch was memoized as lazy and then awaited unconditionally, so the usual immoscout
+    // press of the button still paid for a Chromium start.
+    let handed = 'unset';
+    state.providers = [
+      {
+        ...providerModule('testportal', null),
+        config: {
+          needsBrowser: false,
+          fetchDetails: async (listing, browser) => {
+            handed = browser;
+            return { ...listing, description: 'From the API' };
+          },
+        },
+      },
+    ];
+
+    const result = await refetchListingDetails(row);
+
+    expect(result.status).toBe('updated');
+    expect(handed).toBeUndefined();
+    expect(state.launched).toBe(0);
+  });
+
   it('leaves an address the user placed by hand alone', async () => {
     // The portal's string is what they were correcting. Writing it back would undo the correction
     // on the next press of the button.

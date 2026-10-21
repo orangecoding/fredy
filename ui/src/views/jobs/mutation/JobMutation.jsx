@@ -27,6 +27,7 @@ import { Input, Switch, Button, TagInput, Toast, Select, Banner, Collapse } from
 import './JobMutation.less';
 import { SegmentPart } from '../../../components/segment/SegmentPart';
 import { loadDraft, saveDraft, clearDraft, hasContent } from '../../../services/jobs/jobDraft.js';
+import { resolveJobFormSource } from '../../../services/jobs/jobFormSource.js';
 import { missingRequirements } from '../../../services/jobs/jobValidation.js';
 import { summariseJobRefinements } from '../../../services/jobs/jobSummary.js';
 import { withReturnTo } from '../../../services/routes/returnTo.js';
@@ -54,7 +55,69 @@ function withManageLink(sentence, link) {
   return [before, link, after];
 }
 
-export default function JobMutator() {
+/**
+ * The job form's route: fetches the job list before the form mounts when a job is to be edited or
+ * cloned, and refuses to open for one that does not exist.
+ *
+ * The form reads its starting values once, at mount, from `jobsData.jobs`. That list is only
+ * reloaded at start-up, on the dashboard and after a few actions, while the job list page shows a
+ * fresh page of its own, so a job created since (over MCP, in another tab) was listed but unknown
+ * here: "Edit" opened an empty create form whose save stored a duplicate, and a job changed in
+ * another tab was saved back with its old values.
+ *
+ * @returns {React.ReactNode}
+ */
+export default function JobMutation() {
+  const t = useTranslation();
+  const params = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const actions = useActions();
+  const jobs = useSelector((state) => state.jobsData.jobs);
+  const jobId = params.jobId ?? null;
+  const cloneFrom = location.state?.cloneFrom ?? null;
+  const sourceId = jobId ?? cloneFrom;
+  /** The source id the list was last fetched for. The form waits until it matches. */
+  const [fetchedFor, setFetchedFor] = useState(null);
+
+  useEffect(() => {
+    if (sourceId == null) return undefined;
+    let current = true;
+    actions.jobsData.getJobs().finally(() => {
+      if (current) setFetchedFor(sourceId);
+    });
+    return () => {
+      current = false;
+    };
+  }, [actions, sourceId]);
+
+  if (sourceId != null && fetchedFor !== sourceId) return null;
+
+  const source = resolveJobFormSource({ jobs, jobId, cloneFrom });
+  if (source.missing) {
+    return (
+      <SettingsEmptyState
+        icon={<IconBriefcase size="large" />}
+        title={t('jobs.toastNotFound')}
+        description={t('jobs.mutation.missingText')}
+        action={
+          <Button icon={<IconArrowLeft />} onClick={() => navigate('/jobs')}>
+            {t('jobs.mutation.back')}
+          </Button>
+        }
+      />
+    );
+  }
+  // Keyed on what it edits: every default below is read at mount, so moving from one job's form to
+  // another's within the same route has to start a new form rather than keep the last one's state.
+  return <JobMutator key={`${source.mode}:${sourceId ?? ''}`} source={source} />;
+}
+
+/**
+ * @param {{source: import('../../../services/jobs/jobFormSource.js').JobFormSource}} props
+ * @returns {React.ReactNode}
+ */
+function JobMutator({ source }) {
   const t = useTranslation();
   const locale = useLocale();
 
@@ -64,20 +127,14 @@ export default function JobMutator() {
     { key: 'minRooms', translation: t('jobs.mutation.filterMinRooms') },
   ];
 
-  const jobs = useSelector((state) => state.jobsData.jobs);
   const shareableUserList = useSelector((state) => state.jobsData.shareableUserList);
   const allChannels = useSelector((state) => state.notificationChannels.channels);
-  const params = useParams();
   const location = useLocation();
-
-  const cloneFromId = location.state?.cloneFrom;
-  const jobToClone = cloneFromId ? jobs.find((job) => job.id === cloneFromId) : null;
-  const jobToBeEdit = params.jobId == null ? null : jobs.find((job) => job.id === params.jobId);
-
-  const sourceJob = jobToBeEdit || jobToClone;
+  const sourceJob = source.job;
+  const isEdit = source.mode === 'edit';
 
   const defaultBlacklist = sourceJob?.blacklist || [];
-  const defaultName = jobToClone ? `Copy of - ${sourceJob?.name}` : sourceJob?.name || null;
+  const defaultName = source.mode === 'clone' ? `Copy of - ${sourceJob?.name}` : sourceJob?.name || null;
   const defaultProviderData = sourceJob?.provider || [];
   // The job stores references, and a read hands back the hydrated adapter shape carrying the
   // channel id. Ids are what this form keeps: they are here at mount like every other default
@@ -141,9 +198,7 @@ export default function JobMutator() {
     return () => clearTimeout(timer);
   }, [highlighted]);
 
-  // A clone keeps its draft apart from a new job's: sharing the "new" key, cloning one job brought
-  // back the half-typed new job, and an abandoned clone came back at the next "new job".
-  const draftId = params.jobId ?? (cloneFromId ? `clone:${cloneFromId}` : null);
+  const draftId = source.draftId;
   const [draftRestored, setDraftRestored] = useState(false);
   /** Whether the restore attempt has run. Until it has, nothing may be written back over it. */
   const draftChecked = useRef(false);
@@ -305,7 +360,7 @@ export default function JobMutator() {
   // Only a stored job has something to compare against. A job that is not stored yet - a new one,
   // or a clone - is unsaved as soon as it holds anything: compared against its own starting point,
   // a clone saved as it came never showed the bar that holds the only Save button.
-  const dirty = params.jobId == null ? hasContent(current) : isJobDirty(current, baseline);
+  const dirty = isEdit ? isJobDirty(current, baseline) : hasContent(current);
 
   // Covers a reload, a closed tab and a typed address. An in-app navigation is not covered - see
   // the hook for why - which is the other half of why the bar is sticky.
@@ -370,7 +425,7 @@ export default function JobMutator() {
         commuteFilter,
         dealType,
         enabled,
-        jobId: jobToBeEdit?.id || null,
+        jobId: isEdit ? sourceJob.id : null,
       });
       await actions.jobsData.getJobs();
       // Only once the save actually landed. Clearing before would throw the draft away on a
@@ -431,7 +486,7 @@ export default function JobMutator() {
       )}
 
       <Headline
-        text={jobToBeEdit ? t('jobs.mutation.editTitle') : t('jobs.mutation.createTitle')}
+        text={isEdit ? t('jobs.mutation.editTitle') : t('jobs.mutation.createTitle')}
         actions={
           <Button icon={<IconArrowLeft />} onClick={leaveForm} theme="borderless" className="jobMutation__back">
             {t('jobs.mutation.back')}

@@ -8,7 +8,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-import { applyTheme, currentTheme, normalizeTheme, DEFAULT_THEME, THEMES } from '../../ui/src/services/theme/theme.js';
+import { applyTheme, normalizeTheme, DEFAULT_THEME, THEMES } from '../../ui/src/services/theme/theme.js';
 
 const uiSrc = path.join(path.dirname(fileURLToPath(import.meta.url)), '../../ui/src');
 
@@ -56,11 +56,9 @@ describe('theme preference', () => {
   it('paints the document by setting the attribute Semi UI and themes.less both read', () => {
     expect(applyTheme('light')).toBe('light');
     expect(browser.attributes['theme-mode']).toBe('light');
-    expect(currentTheme()).toBe('light');
 
     applyTheme('dark');
     expect(browser.attributes['theme-mode']).toBe('dark');
-    expect(currentTheme()).toBe('dark');
   });
 
   it('never paints a theme it has no palette for', () => {
@@ -71,6 +69,13 @@ describe('theme preference', () => {
   it('is shipped on the body by index.html, so a cold load paints the default once', () => {
     const html = fs.readFileSync(path.join(uiSrc, '../../index.html'), 'utf-8');
     expect(html).toContain(`<body theme-mode="${DEFAULT_THEME}">`);
+  });
+
+  it('switches without remounting the page it is switched from', () => {
+    // The layout was keyed on the theme, so picking a tile remounted the preferences page and
+    // dropped the deletion setting the user had changed but not saved yet.
+    const app = fs.readFileSync(path.join(uiSrc, 'App.jsx'), 'utf-8');
+    expect(app).not.toMatch(/key=\{theme\}/);
   });
 
   it('keeps no copy of the preference, which belongs to the settings table alone', () => {

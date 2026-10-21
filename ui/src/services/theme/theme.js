@@ -45,19 +45,6 @@ export function normalizeTheme(value) {
 }
 
 /**
- * The theme the document is painted in right now.
- *
- * For the handful of places that pick an asset rather than a colour - a wordmark has a light and a
- * dark cut, and no custom property can swap a PNG. Everything that can be expressed as a colour
- * should use the tokens instead and let CSS do the switching.
- *
- * @returns {Theme}
- */
-export function currentTheme() {
-  return normalizeTheme(document.body.getAttribute('theme-mode'));
-}
-
-/**
  * Paint the document in a theme.
  *
  * @param {unknown} theme Anything; unknown values fall back to {@link DEFAULT_THEME}.

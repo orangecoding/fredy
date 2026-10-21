@@ -12,6 +12,10 @@ export const storeListings = (jobKey, providerId, listings) => {
 export const getKnownListingHashesForJobAndProvider = (jobKey, providerId) => {
   return db[providerId] || [];
 };
+/** Nothing here is stored under a link, so no fixture run is ever mistaken for a price change. */
+export const getListingsByLinkForJobAndProvider = () => [];
+export const setListingHash = () => undefined;
+export const markListingsPriceChecked = () => undefined;
 
 /**
  * Forget every stored listing.

@@ -140,6 +140,7 @@
   "jobs.mutation.editTitle": "Suchauftrag bearbeiten",
   "jobs.mutation.createTitle": "Neuen Suchauftrag erstellen",
   "jobs.mutation.back": "Zurück",
+  "jobs.mutation.missingText": "Er wurde gelöscht oder ist nicht mehr mit dir geteilt.",
   "jobs.mutation.save": "Speichern",
   "jobs.mutation.saveJob": "Suchauftrag speichern",
   "jobs.mutation.stillOpen": "Noch offen:",

@@ -140,6 +140,7 @@
   "jobs.mutation.editTitle": "Edit Job",
   "jobs.mutation.createTitle": "Create new Job",
   "jobs.mutation.back": "Back",
+  "jobs.mutation.missingText": "It has been deleted, or it is no longer shared with you.",
   "jobs.mutation.save": "Save",
   "jobs.mutation.saveJob": "Save job",
   "jobs.mutation.stillOpen": "Still open:",

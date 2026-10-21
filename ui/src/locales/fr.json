@@ -140,6 +140,7 @@
   "jobs.mutation.editTitle": "Modifier la recherche",
   "jobs.mutation.createTitle": "Créer une nouvelle recherche",
   "jobs.mutation.back": "Retour",
+  "jobs.mutation.missingText": "Elle a été supprimée ou n'est plus partagée avec vous.",
   "jobs.mutation.save": "Enregistrer",
   "jobs.mutation.saveJob": "Enregistrer la recherche",
   "jobs.mutation.stillOpen": "Reste à faire :",

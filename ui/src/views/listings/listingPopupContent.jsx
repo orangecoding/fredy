@@ -41,9 +41,9 @@ import MapPopupActions from './components/MapPopupActions.jsx';
  * @param {(id: string) => void} [params.onPageChange] - Called after the popup switched to another
  * listing, with its id. That changes the popup's height, and it changes which listing the address
  * bar has to name.
- * @returns {{element: HTMLElement, transitMount: HTMLElement, unmount: () => void,
+ * @returns {{element: HTMLElement, transitMount: HTMLElement, activate: () => void, unmount: () => void,
  * currentId: () => string}} The popup content, the empty node the nearby stops are to be rendered
- * into, the teardown of the action bar, and which listing is on screen right now.
+ * into, the mount and the teardown of the action bar, and which listing is on screen right now.
  */
 export function createListingPopupContent({
   listings,
@@ -88,6 +88,21 @@ export function createListingPopupContent({
   // So the previous root has to be unmounted before the next one is created, or every page turn
   // leaks one.
   let unmountActions = null;
+  // Mounted on the first open, not here. The map builds the content of every pin up front and
+  // again on each filter change, and a React root per pin for popups nobody opened was most of the
+  // cost of rebuilding a map with a few hundred listings.
+  let active = false;
+
+  const mountActions = () => {
+    const actions = body.querySelector('.map-popup-content__actions');
+    if (actions) {
+      unmountActions = mountPopupNode(
+        actions,
+        <MapPopupActions listing={listings[index]} onDelete={onDelete} onNavigate={onNavigate} />,
+        language,
+      );
+    }
+  };
 
   const render = () => {
     unmountActions?.();
@@ -103,14 +118,7 @@ export function createListingPopupContent({
     body.querySelector('.js-popup-prev')?.addEventListener('click', () => step(-1));
     body.querySelector('.js-popup-next')?.addEventListener('click', () => step(1));
 
-    const actions = body.querySelector('.map-popup-content__actions');
-    if (actions) {
-      unmountActions = mountPopupNode(
-        actions,
-        <MapPopupActions listing={listings[index]} onDelete={onDelete} onNavigate={onNavigate} />,
-        language,
-      );
-    }
+    if (active) mountActions();
   };
 
   render();
@@ -118,6 +126,12 @@ export function createListingPopupContent({
   return {
     element,
     transitMount: transit.querySelector('.map-popup-content__transit-mount'),
+    /** Mounts the action bar. Called when the popup opens; a second call does nothing. */
+    activate: () => {
+      if (active) return;
+      active = true;
+      mountActions();
+    },
     /** Tears the action bar down with its popup. The caller already collects these. */
     unmount: () => unmountActions?.(),
     /** Which listing is on screen, for the caller to put in the address bar when it opens. */

@@ -13,7 +13,14 @@ vi.mock('../../lib/services/storage/userStorage.js', () => ({
 vi.mock('../../lib/services/storage/settingsStorage.js', () => ({ getSettings: vi.fn(async () => ({})) }));
 
 import { getUser } from '../../lib/services/storage/userStorage.js';
-import { isUnauthorized, isAdmin, authHook, adminHook, touchSession } from '../../lib/api/security.js';
+import {
+  isUnauthorized,
+  isAdmin,
+  authHook,
+  adminHook,
+  touchSession,
+  SESSION_TOUCH_INTERVAL_MS,
+} from '../../lib/api/security.js';
 
 const SESSION_MAX_AGE = 2 * 60 * 60 * 1000; // the default applied when sessionTTL is unset
 
@@ -141,6 +148,23 @@ describe('touchSession', () => {
 
   it('does nothing when there is no session', () => {
     expect(() => touchSession({})).not.toThrow();
+  });
+
+  it('leaves a timestamp younger than a minute alone, so the session is not rewritten per request', () => {
+    const now = Date.now();
+    const session = { currentUser: 'user-1', createdAt: now - SESSION_TOUCH_INTERVAL_MS + 1 };
+    const before = session.createdAt;
+    touchSession({ session }, now);
+
+    expect(session.createdAt).toBe(before);
+  });
+
+  it('moves a timestamp that is a minute old', () => {
+    const now = Date.now();
+    const session = { currentUser: 'user-1', createdAt: now - SESSION_TOUCH_INTERVAL_MS };
+    touchSession({ session }, now);
+
+    expect(session.createdAt).toBe(now);
   });
 });
 

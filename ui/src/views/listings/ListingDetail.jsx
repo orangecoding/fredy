@@ -134,9 +134,24 @@ export default function ListingDetail() {
   // to comes from this listing's own travel times, which is where the sweep recorded it.
   const homeAddresses = useMemo(() => [...savedAddresses, ...placeTargets(routeTimes)], [savedAddresses, routeTimes]);
 
+  // Keyed on what the times say, as TravelTimes does: every action on this page (watch, status,
+  // note) reloads the listing and hands over a new array with the same times. Reset on that, the
+  // route TravelTimes had refined was thrown away and the map redrawn without it.
+  const listingTravelTimesKey = JSON.stringify(listing?.travelTimes ?? []);
   useEffect(() => {
     setRouteTimes(listing?.travelTimes ?? []);
-  }, [listing?.id, listing?.travelTimes]);
+  }, [listing?.id, listingTravelTimesKey]);
+
+  // What the map draws of the listing, by value. The reload after every action is a new object,
+  // and the map effect below used to redraw every marker and move the camera back to the overview
+  // for it, from wherever the user had zoomed to.
+  const mapListing = useMemo(
+    () =>
+      listing == null
+        ? null
+        : { id: listing.id, latitude: listing.latitude, longitude: listing.longitude, address: listing.address },
+    [listing?.id, listing?.latitude, listing?.longitude, listing?.address],
+  );
 
   useEffect(() => {
     document.querySelector('.app__content')?.scrollTo({ top: 0 });
@@ -239,7 +254,8 @@ export default function ListingDetail() {
   // between them. The map itself is no longer created or destroyed here, so this only ever adds and
   // removes its own markers.
   useEffect(() => {
-    if (!mapReady || !map.current || !listing || !hasGeo) return undefined;
+    if (!mapReady || !map.current || !mapListing || !hasGeo) return undefined;
+    const listing = mapListing;
 
     const mapInstance = map.current;
     const markers = [];
@@ -294,7 +310,7 @@ export default function ListingDetail() {
       markers.forEach((marker) => marker.remove());
       mapInstance.off('styledata', drawRoute);
     };
-  }, [mapReady, listing, homeAddresses, routeTimes, routeMode, hasGeo, t]);
+  }, [mapReady, mapListing, homeAddresses, routeTimes, routeMode, hasGeo, t]);
 
   const confirmDeletion = async (hardDelete, remember) => {
     try {

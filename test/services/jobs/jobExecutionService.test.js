@@ -214,6 +214,49 @@ describe('services/jobs/jobExecutionService', () => {
     expect(calls.closeBrowser).toEqual([state.browser]);
   });
 
+  it('starts no browser for providers that declare they need none, and one for the first that does', async () => {
+    // An ImmoScout-only job cold started Chromium every five minutes, and a Chromium that would not
+    // start failed every provider of the job, the API ones included.
+    const provider = (id, config) => ({
+      metaInformation: { id },
+      createConfig: vi.fn(() => ({ ...config })),
+    });
+    state.providers = [
+      provider('api-provider', { url: 'https://api.example/', getListings: vi.fn(), needsBrowser: false }),
+      provider('browser-provider', { url: 'https://browser.example/', getListings: vi.fn() }),
+    ];
+    state.jobsById.j1 = {
+      id: 'j1',
+      enabled: true,
+      userId: 'u1',
+      provider: state.providers.map(({ metaInformation }) => ({ id: metaInformation.id })),
+    };
+
+    await initService();
+    bus.emit('jobs:runOne', { jobId: 'j1' });
+    await vi.waitFor(() => expect(calls.markFinished).toEqual(['j1']));
+
+    expect(calls.launchBrowser).toEqual([['https://browser.example/', {}]]);
+    expect(calls.pipeline.map(({ browser }) => browser)).toEqual([undefined, state.browser]);
+  });
+
+  it('starts no browser at all for a job of API-only providers', async () => {
+    state.providers = [
+      {
+        metaInformation: { id: 'api-provider' },
+        createConfig: vi.fn(() => ({ url: 'https://api.example/', getListings: vi.fn(), needsBrowser: false })),
+      },
+    ];
+    state.jobsById.j1 = { id: 'j1', enabled: true, userId: 'u1', provider: [{ id: 'api-provider' }] };
+
+    await initService();
+    bus.emit('jobs:runOne', { jobId: 'j1' });
+    await vi.waitFor(() => expect(calls.markFinished).toEqual(['j1']));
+
+    expect(calls.launchBrowser).toEqual([]);
+    expect(calls.closeBrowser).toEqual([]);
+  });
+
   describe('onboarding tour', () => {
     const tourJob = {
       id: 'tour-u1',

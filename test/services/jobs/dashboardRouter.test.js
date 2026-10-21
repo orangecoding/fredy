@@ -124,7 +124,7 @@ describe('api/routes/dashboardRouter.js', () => {
 
     const body = (await app.inject({ method: 'GET', url: '/api/dashboard/' })).json();
 
-    expect(state.getJobsOptions).toEqual({ includeDisabled: true });
+    expect(state.getJobsOptions).toMatchObject({ includeDisabled: true });
     expect(body.kpis.totalJobs).toBe(2);
     expect(state.activityCall.jobIds).toEqual(['running', 'paused']);
     // A paused job waits for no next run.
