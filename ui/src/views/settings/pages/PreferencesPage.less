@@ -11,7 +11,9 @@
     gap: @space-3;
   }
 
-  // Zeigt, was sie anbietet. Ein Themenwaehler, der sein Thema nicht zeigt, laesst einen raten.
+  // Shows what it offers: a theme picker that does not show its theme leaves you guessing.
+  // Selected is the text colour - a 1px edge and the elevated step behind it - never the accent,
+  // which is kept for the one action a page is about.
   &__theme {
     flex: 1;
     box-sizing: border-box;
@@ -29,14 +31,10 @@
       border-color: @color-border-bright;
     }
 
-    &:focus-visible {
-      outline: 2px solid @color-accent;
-      outline-offset: 2px;
-    }
-
-    &--on {
-      border-color: @color-accent;
-      background: rgb(@color-accent-rgb / 7%);
+    &--on,
+    &--on:hover {
+      border-color: @color-text;
+      background: @color-elevated;
     }
 
     &[disabled] {
@@ -108,19 +106,27 @@
     gap: @space-2;
     margin-top: @space-2;
     font-size: @text-sm;
+    font-weight: @weight-medium;
     color: @color-text;
+
+    .semi-icon {
+      color: @color-muted;
+    }
   }
 
+  // A settings row: the name on the left, the control on the right, a hairline above it.
   &__language {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: @space-3;
-    margin-top: @space-4;
+    margin-top: @space-5;
+    padding-top: @space-4;
+    border-top: 1px solid @color-border;
   }
 
   &__languageLabel {
-    color: @color-muted !important;
+    color: @color-text !important;
     font-size: @text-sm !important;
   }
 
@@ -131,32 +137,44 @@
     width: 100%;
   }
 
-  // Das Radio selbst wird zum waehlbaren Feld, statt einen handgebauten Zweizeiler zu umschliessen.
+  // The radio itself becomes the selectable card, instead of wrapping a hand-built two-liner.
+  // Selected the same way as a theme tile: a text-coloured edge on the elevated step.
   &__mode {
     box-sizing: border-box;
     width: 100%;
     margin: 0 !important;
-    padding: @space-3;
+    padding: @space-3 @space-4;
     border: 1px solid @color-border;
     border-radius: @radius-card;
     align-items: flex-start !important;
+    transition:
+      border-color @transition-fast,
+      background @transition-fast;
 
-    &.semi-radio-checked {
-      border-color: @color-accent;
-      background: rgb(@color-accent-rgb / 7%);
+    &:hover {
+      border-color: @color-border-bright;
     }
 
+    &.semi-radio-checked {
+      border-color: @color-text;
+      background: @color-elevated;
+    }
+
+    // Left-aligned like every other line of text on the page. Semi centres a radio's addon when it
+    // wraps, which set the name and its description in the middle of a card 860px wide.
     .semi-radio-addon {
       display: flex;
       flex-direction: column;
+      align-items: flex-start;
       gap: @space-1;
       padding-right: 0;
+      text-align: left;
     }
   }
 
   &__modeName {
     font-size: @text-base;
-    font-weight: 600;
+    font-weight: @weight-medium;
     color: @color-text;
   }
 
@@ -166,8 +184,8 @@
     color: @color-muted;
   }
 
-  // Die wichtigste Zeile der Seite, auf derselben Ebene wie die Beschreibung statt eine darunter.
-  // Bernstein traegt nur das Zeichen, die Schrift bleibt gedaempfte Textfarbe.
+  // The most important line on the page, on the same level as the description rather than one
+  // below it. Amber carries only the mark; the words stay in the muted text colour.
   &__modeWarning {
     display: flex;
     align-items: flex-start;
@@ -184,8 +202,8 @@
   }
 
   &__skipPrompt {
-    margin-top: @space-3;
-    padding-top: @space-3;
+    margin-top: @space-4;
+    padding-top: @space-4;
     border-top: 1px solid @color-border;
   }
 }

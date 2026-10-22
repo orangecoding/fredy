@@ -5,87 +5,98 @@
 
 @import '../../tokens.less';
 
+/* Copy the application, open the ad, the menu. Opening and the menu are round icons, muted until
+   pointed at, because the listing is the content and these are tools for it. On a card the
+   application is a button with its name across the card's own row, outlined rather than filled:
+   twenty filled buttons in a grid are no longer a button that stands out but a wallpaper. */
 .listingActions {
   display: flex;
   align-items: center;
+  gap: @space-1;
 
-  &__open,
-  &__apply,
-  &__more {
-    flex-shrink: 0;
-    border-radius: @radius-chip !important;
-  }
-
-  // Blau statt Akzentrot: Rot ist die Farbe von Loeschen, und die Bewerbung ist keine Warnung.
-  // Semi faerbt den Knopf ueber --semi-color-primary, also wird die Variable hier umgebogen.
-  &__apply {
-    --semi-color-primary: @color-info;
-    --semi-color-primary-hover: color-mix(in oklab, @color-info 85%, black);
-    --semi-color-primary-active: color-mix(in oklab, @color-info 85%, black);
-    --semi-color-primary-light-default: rgb(@color-info-rgb / 12%);
-    --semi-color-primary-light-hover: rgb(@color-info-rgb / 18%);
-    --semi-color-primary-light-active: rgb(@color-info-rgb / 22%);
-  }
-
-  // Die Kachel hat Platz fuer das Wort, und die Bewerbung ist die Aktion, wegen der man ein
-  // Inserat ueberhaupt aufmacht. Outline statt solid: zwanzig gefuellte Knoepfe in einem Raster
-  // sind kein hervorgehobener Knopf mehr, sondern eine Tapete.
-  &--card {
-    gap: @space-2;
-    width: 100%;
-
-    .listingActions__open,
-    .listingActions__more {
-      width: 30px !important;
-      height: 30px !important;
-      padding: 0 !important;
-    }
-
-    .listingActions__apply {
-      flex: 1 1 auto;
-      min-width: 0;
-      height: 30px !important;
-      padding: 0 @space-3 !important;
-      font-size: @text-sm !important;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-    }
-  }
-
-  // In der Zeile bleibt vom Wort der Hinweis beim Zeigen. Drei Knoepfe zu 28px plus zwei Gaps,
-  // zusammen mit dem Stern davor genau die 124px der Aktionsspalte.
   &--row {
-    gap: @space-1;
     justify-content: flex-end;
+  }
 
-    .listingActions__open,
-    .listingActions__apply,
-    .listingActions__more {
-      width: 28px !important;
-      height: 28px !important;
-      padding: 0 !important;
+  &--card {
+    flex: 1 1 100%;
+    gap: @space-2;
+  }
+
+  &__apply {
+    display: inline-flex;
+    flex: 1 1 auto;
+    align-items: center;
+    justify-content: center;
+    gap: @space-2;
+    min-width: 0;
+    height: @control-sm;
+    padding: 0 @space-3;
+    border: 1px solid @color-border-bright;
+    border-radius: @radius-pill;
+    background: transparent;
+    color: @color-text;
+    font-family: inherit;
+    font-size: @text-sm;
+    font-weight: @weight-medium;
+    cursor: pointer;
+    transition:
+      background @transition-fast,
+      border-color @transition-fast;
+
+    svg {
+      flex: none;
+      font-size: 15px;
+    }
+
+    &:hover {
+      background: @color-fill-1;
+      border-color: @color-muted;
+    }
+  }
+
+  &__applyLabel {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: @control-sm;
+    height: @control-sm;
+    padding: 0;
+    border: none;
+    border-radius: @radius-pill;
+    background: transparent;
+    color: @color-muted;
+    font-size: 16px;
+    cursor: pointer;
+    transition:
+      background @transition-fast,
+      color @transition-fast;
+
+    &:hover {
+      background: @color-fill-1;
+      color: @color-text;
     }
   }
 }
 
-/* Semis Standardfläche für das Menü ist var(--semi-color-bg-3), ein flaches Grau, das dem Theme
-   der Anwendung nicht folgt - im hellen Theme steht es als Fremdkörper über Karte und Zeile.
-   Dieselben Tokens wie die Kartenfläche daneben, damit das Menü dazugehört.
-   Steht ausserhalb von .listingActions, weil Semi das Menü in ein Portal am Ende des Body rendert
-   und es damit kein Nachfahre der Aktionsgruppe mehr ist. */
+/* Semi renders the menu in a portal at the end of the body, so it is styled here rather than as a
+   descendant of the group. The className lands on the same node as `semi-dropdown-wrapper`. */
 .listingActions__menuPopup {
-  /* On the element itself: Semi puts the Dropdown's className on the same node as
-     `semi-dropdown-wrapper`, so a descendant selector never matched and the panel kept Semi's grey. */
   &.semi-dropdown-wrapper {
-    background: @color-surface;
-    border: 1px solid @color-border;
+    background: @color-elevated;
+    border: 1px solid @color-border-bright;
     border-radius: @radius-card;
   }
 
-  /* Semi deckelt einen Eintrag bei 280px. "Wieder als verfügbar markieren" brach dadurch auf zwei
-     Zeilen; das Menü ist die eine Stelle, an der diese Aktionen ausgeschrieben statt als Icon
-     gezeichnet sind, also bleibt der Satz einzeilig und das Feld wächst mit. */
+  /* The menu is the one place these actions are written out rather than drawn as icons, so a long
+     one stays on one line and the menu grows with it. */
   .semi-dropdown-item {
     max-width: none;
     white-space: nowrap;

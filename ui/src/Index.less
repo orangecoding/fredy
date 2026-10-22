@@ -1,17 +1,21 @@
 @import './themes.less';
 @import './tokens.less';
 
-/* A flat background, deliberately. There used to be a radial accent glow bleeding down from the
-   top here; against the warm near-black it read as a smudge rather than as light, and it put a
-   colour behind every page that only one of them had asked for. */
+/* A flat background, deliberately. Structure on a page comes from hairlines and from the narrow
+   steps between base, surface and hover, never from a glow or a gradient. */
 body,
 html {
   margin: 0;
   height: 100%;
   width: 100%;
   font-family: @font-ui;
+  font-size: @text-base;
+  line-height: 1.45;
   background-color: @color-base;
+  color: @color-text;
   color-scheme: dark;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body[theme-mode='light'] {
@@ -20,21 +24,33 @@ body[theme-mode='light'] {
 
 // Semi UI theme overrides
 //
-// Semi ships both themes itself and picks between them on `body[theme-mode=dark]`; these only
-// restate the handful of colours where Fredy's palette differs from its defaults. The right-hand
-// sides are custom properties rather than compiled hexes, so one block covers both themes.
+// Semi ships both themes itself and picks between them on `body[theme-mode=dark]`; these restate
+// the colours where Fredy's palette differs from its defaults. The right-hand sides are custom
+// properties rather than compiled hexes, so one block covers both themes.
+//
+// Semi's "primary" is the colour of everything selected: checked boxes, the active tab, the current
+// page of a pagination, a chosen option. That is the text colour here, not the accent. Red is kept
+// for the one action a page is about, which is why the solid primary button is coloured explicitly
+// further down instead of inheriting it.
 body {
   --semi-color-bg-0: @color-base !important;
   --semi-color-bg-1: @color-surface !important;
   --semi-color-bg-2: @color-elevated !important;
   --semi-color-bg-3: @color-border !important;
   --semi-color-border: @color-border !important;
-  --semi-color-primary: @color-accent !important;
-  --semi-color-primary-hover: @color-accent-dim !important;
-  --semi-color-primary-active: @color-accent-dim !important;
-  --semi-color-primary-light-default: rgb(@color-accent-rgb / 12%) !important;
-  --semi-color-primary-light-hover: rgb(@color-accent-rgb / 18%) !important;
-  --semi-color-primary-light-active: rgb(@color-accent-rgb / 22%) !important;
+  --semi-color-primary: @color-text !important;
+  --semi-color-primary-hover: @color-muted !important;
+  --semi-color-primary-active: @color-muted !important;
+  --semi-color-primary-light-default: @color-fill-1 !important;
+  --semi-color-primary-light-hover: @color-fill-2 !important;
+  --semi-color-primary-light-active: @color-fill-strong !important;
+  --semi-color-focus-border: @color-muted !important;
+  --semi-color-link: @color-text !important;
+  --semi-color-link-hover: @color-text !important;
+  --semi-color-danger: @color-error !important;
+  --semi-color-warning: @color-warning !important;
+  --semi-color-success: @color-success !important;
+  --semi-color-info: @color-info !important;
   --semi-color-text-0: @color-text !important;
   --semi-color-text-1: @color-text !important;
   --semi-color-text-2: @color-muted !important;
@@ -42,90 +58,514 @@ body {
   --semi-color-fill-0: @color-fill-subtle !important;
   --semi-color-fill-1: @color-fill-1 !important;
   --semi-color-fill-2: @color-fill-2 !important;
+  --semi-border-radius-small: @radius-chip !important;
+  --semi-border-radius-medium: @radius-btn !important;
+  --semi-border-radius-large: @radius-card !important;
   --semi-font-family: @font-ui !important;
 }
 
-// Semi table row overrides
-.semi-table-row-head {
-  background-color: @color-fill-1 !important;
+// Focus
+//
+// One visible ring for keyboard focus, in the info blue, on everything. Semi draws its own rings
+// in the primary colour, which is the text colour now and would read as a white box; those are
+// switched off and replaced by this one. Mouse clicks show nothing, because `:focus-visible` only
+// matches keyboard focus.
+//
+// Semi's own rings are drawn per component (`.semi-button.semi-button-primary:focus-visible`, the
+// `-focus` classes on switches, checkboxes and radios) in its light-active fill, an 11 % wash here,
+// and every one of them out-ranks a bare `:focus-visible`. The flag is what lets one rule hold.
+:focus-visible,
+[class*='semi-']:focus-visible,
+.semi-avatar-focus,
+.semi-checkbox-focus,
+.semi-radio-focus,
+.semi-rating-focus,
+.semi-switch-focus {
+  outline: 2px solid @color-info !important;
+  outline-offset: 2px;
 }
-.semi-table-row-head .semi-table-row-cell {
-  background-color: @color-fill-1 !important;
+
+button:focus:not(:focus-visible),
+.semi-button:focus:not(:focus-visible),
+.semi-input-wrapper:focus-within,
+.semi-select:focus-within,
+[tabindex]:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none !important;
+}
+
+// A text field matches `:focus-visible` on every focus, the mouse included, so the ring would sit
+// around a field someone just clicked into. Its own edge already turns from the input border to the
+// muted tone on focus, which is the signal fields give everywhere else.
+.semi-input:focus-visible,
+.semi-input-textarea:focus-visible,
+.semi-input-number input:focus-visible {
+  outline: none !important;
+}
+
+// Buttons
+//
+// Three kinds and nothing else: the solid red primary for the action a page is about, an outlined
+// secondary for everything else that is a button, and a borderless one for quiet actions inside a
+// row. A field and the button next to it share one height.
+.semi-button {
+  height: @control-md;
+  padding: 0 @space-4;
+  border-radius: @radius-btn;
+  font-family: @font-ui;
+  font-weight: @weight-medium;
+  font-size: @text-base;
+  box-shadow: none !important;
+  transition:
+    background-color @transition-fast,
+    border-color @transition-fast,
+    color @transition-fast;
+
+  &.semi-button-size-small {
+    height: @control-sm;
+    padding: 0 @space-3;
+    font-size: @text-sm;
+  }
+
+  &.semi-button-size-large {
+    height: @control-lg;
+    padding: 0 @space-5;
+  }
+
+  &.semi-button-with-icon-only {
+    width: @control-md;
+    padding: 0;
+
+    &.semi-button-size-small {
+      width: @control-sm;
+    }
+  }
+}
+
+.semi-button-primary.semi-button-solid:not(.semi-button-disabled) {
+  background-color: @color-accent;
+  color: #fff;
+
+  &:hover,
+  &:active {
+    background-color: @color-accent-dim;
+  }
+}
+
+// On the field colour rather than transparent: a toolbar puts a search field, a select and a button
+// side by side, and on the light page a see-through button read as a grey one between white fields.
+.semi-button-light:not(.semi-button-disabled),
+.semi-button-outline:not(.semi-button-disabled) {
+  background-color: @color-input-bg;
+  border: 1px solid @color-border-bright;
+  color: @color-text;
+
+  &:hover {
+    background-color: @color-hover;
+  }
+
+  &:active {
+    background-color: @color-solid;
+  }
+}
+
+.semi-button-borderless:not(.semi-button-disabled) {
+  color: @color-muted;
+
+  &.semi-button-primary {
+    color: @color-text;
+  }
+
+  &:hover {
+    background-color: @color-fill-1;
+    color: @color-text;
+  }
+}
+
+.semi-button-danger.semi-button-solid:not(.semi-button-disabled) {
+  background-color: @color-error;
+  color: @color-base;
+}
+
+.semi-button-danger.semi-button-light:not(.semi-button-disabled),
+.semi-button-danger.semi-button-borderless:not(.semi-button-disabled),
+.semi-button-danger.semi-button-outline:not(.semi-button-disabled) {
+  color: @color-error;
+}
+
+.semi-button-tertiary.semi-button-solid:not(.semi-button-disabled),
+.semi-button-secondary.semi-button-solid:not(.semi-button-disabled) {
+  background-color: @color-solid;
+  color: @color-text;
+
+  &:hover {
+    background-color: @color-fill-strong;
+  }
+}
+
+.semi-button-disabled {
+  opacity: 0.5;
+}
+
+// Fields
+//
+// A field is one step above the page with a drawn edge, so it reads as something to type into in
+// both themes. Hover sharpens the edge, focus sharpens it further; neither adds a glow.
+.semi-input-wrapper,
+.semi-input-textarea-wrapper,
+.semi-input-number .semi-input-wrapper,
+.semi-select,
+.semi-datepicker .semi-input-wrapper,
+.semi-tagInput,
+.semi-cascader,
+.semi-autocomplete .semi-input-wrapper {
+  background-color: @color-input-bg !important;
+  border: 1px solid @color-input-border !important;
+  border-radius: @radius-input !important;
+  box-shadow: none !important;
+  transition: border-color @transition-fast;
+
+  &:hover {
+    border-color: @color-faint !important;
+  }
+}
+
+.semi-input-wrapper-focus,
+.semi-input-textarea-wrapper-focus,
+.semi-select-focus,
+.semi-select-open,
+.semi-tagInput-focus,
+.semi-cascader-focus {
+  border-color: @color-muted !important;
+}
+
+.semi-input-wrapper-error,
+.semi-select-error {
+  border-color: @color-error !important;
+}
+
+// No steppers on number fields, anywhere. Semi draws them as a second box beside the field, which
+// made every number input two boxes; the figures here are typed, the arrow keys still step them, and
+// `min`/`max` still hold the limits. The admin pages had already dropped them for the same reason.
+.semi-input-number-suffix-btns {
+  display: none;
+}
+
+.semi-input-wrapper-default {
+  height: @control-md;
+  line-height: @control-md - 2px;
+}
+
+.semi-input-default {
+  height: @control-md - 2px;
+  line-height: @control-md - 2px;
+}
+
+.semi-select:not(.semi-select-multiple) {
+  height: @control-md;
+
+  .semi-select-selection {
+    height: @control-md - 2px;
+    line-height: @control-md - 2px;
+  }
+}
+
+.semi-select-multiple {
+  min-height: @control-md;
+}
+
+.semi-input-wrapper-large,
+.semi-select.semi-select-large {
+  height: @control-lg;
+  line-height: @control-lg - 2px;
+
+  .semi-input-large,
+  .semi-select-selection {
+    height: @control-lg - 2px;
+    line-height: @control-lg - 2px;
+    font-size: @text-base;
+  }
+}
+
+// `.semi-select.semi-select-small` rather than the bare size class: the rule that gives every
+// single select the medium height above carries two classes, and a small one has to out-rank it.
+.semi-input-wrapper-small,
+.semi-select.semi-select-small {
+  height: @control-sm;
+  line-height: @control-sm - 2px;
+
+  .semi-input-small,
+  .semi-select-selection {
+    height: @control-sm - 2px;
+    line-height: @control-sm - 2px;
+  }
+}
+
+.semi-input,
+.semi-input-textarea,
+.semi-select-selection-text {
+  color: @color-text;
+  font-size: @text-base;
+}
+
+.semi-input::placeholder,
+.semi-input-textarea::placeholder,
+.semi-select-selection-placeholder {
+  color: @color-faint !important;
+}
+
+// Popovers, menus, option lists
+.semi-popover-wrapper,
+.semi-dropdown-wrapper,
+.semi-select-option-list,
+.semi-popover .semi-select-option-list,
+.semi-datepicker-panel,
+.semi-cascader-option-lists {
+  background-color: @color-elevated !important;
+  border: 1px solid @color-border-bright;
+  border-radius: @radius-card !important;
+  box-shadow: @shadow-md !important;
+}
+
+.semi-popover-wrapper .semi-popover-icon-arrow {
+  color: @color-elevated !important;
+}
+
+.semi-select-option {
+  border-radius: @radius-chip;
+  color: @color-text;
+
+  &-focused {
+    background-color: @color-fill-1 !important;
+  }
+
+  &-selected {
+    font-weight: @weight-medium;
+    background-color: @color-fill-2 !important;
+  }
+}
+
+.semi-dropdown-item {
+  color: @color-text;
+
+  &:hover,
+  &-active {
+    background-color: @color-fill-1 !important;
+  }
+}
+
+// Selection controls: selected is the text colour, the mark on it the page colour.
+.semi-checkbox-checked .semi-checkbox-inner-display,
+.semi-checkbox-indeterminate .semi-checkbox-inner-display {
+  background-color: @color-text !important;
+  border-color: @color-text !important;
+  color: @color-base !important;
+}
+
+.semi-checkbox-inner-display {
+  border-radius: 4px;
+  border-color: @color-faint;
+}
+
+.semi-radio-inner-checked .semi-radio-inner-display {
+  background-color: @color-text !important;
+  border-color: @color-text !important;
+}
+
+.semi-radio-inner-checked .semi-radio-inner-display .semi-icon {
+  color: @color-base !important;
+}
+
+.semi-switch {
+  background-color: @color-solid;
+  border: 0;
+}
+
+.semi-switch-checked {
+  background-color: @color-text !important;
+
+  .semi-switch-knob {
+    background-color: @color-base !important;
+  }
+}
+
+// Tabs: muted labels, the current one in the text colour over a 2px rule. No red, and no icons
+// except one that reports a state (the debug tab while capture is running).
+.semi-tabs-bar-line.semi-tabs-bar-top {
+  border-bottom: 1px solid @color-border;
+}
+
+.semi-tabs-bar-line .semi-tabs-tab {
+  color: @color-muted;
+  font-size: @text-base;
+  font-weight: @weight-medium;
+  transition: color @transition-fast;
+
+  &:hover {
+    color: @color-text;
+  }
+
+  &.semi-tabs-tab-active {
+    color: @color-text !important;
+  }
+
+  .semi-icon:not(.settingsShell__tabIcon--alert) {
+    display: none;
+  }
+}
+
+.semi-tabs-bar-line .semi-tabs-ink-bar {
+  background-color: @color-text !important;
+  height: 2px;
+}
+
+// On a phone six or seven tabs broke into three ragged rows, each with its own rule under it. One
+// row that scrolls sideways keeps them a strip, the way every mobile tab bar reads.
+@media (max-width: 768px) {
+  .semi-tabs-bar-line.semi-tabs-bar-top {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  // Two classes only, so a page that shares the width out between its tabs (finance) still can.
+  .semi-tabs-bar-top .semi-tabs-tab {
+    flex: none;
+  }
+}
+
+// Tables: no zebra, no filled header, no capitals. A hairline under every row is the structure.
+.semi-table-wrapper,
+.semi-table-container,
+.semi-table {
+  background: transparent !important;
+}
+
+.semi-table-thead > .semi-table-row > .semi-table-row-head {
+  background-color: transparent !important;
+  border-bottom: 1px solid @color-border !important;
   color: @color-muted !important;
   font-size: @text-xs;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  font-weight: @weight-medium;
+  text-transform: none;
+  letter-spacing: 0;
 }
-.semi-table-row-cell {
-  background-color: @color-surface !important;
+
+.semi-table-tbody > .semi-table-row > .semi-table-row-cell {
+  background-color: transparent !important;
+  border-bottom: 1px solid @color-border !important;
 }
-.semi-table-tbody .semi-table-row:nth-child(even) .semi-table-row-cell {
-  background-color: @color-base !important;
+
+.semi-table-tbody > .semi-table-row:hover > .semi-table-row-cell {
+  background-color: @color-fill-subtle !important;
 }
-.semi-table-tbody .semi-table-row:hover .semi-table-row-cell {
-  background-color: @color-hover !important;
+
+// Tags and pagination
+.semi-tag {
+  border-radius: @radius-chip;
+  font-weight: @weight-medium;
+}
+
+.semi-tag-grey-light,
+.semi-tag-white-light {
+  background-color: @color-solid !important;
+  color: @color-text !important;
+}
+
+.semi-page-item {
+  border-radius: @radius-pill;
+  color: @color-text;
+
+  &:hover {
+    background-color: @color-fill-1;
+  }
+
+  &-active,
+  &-active:hover {
+    background-color: @color-text !important;
+    color: @color-base !important;
+  }
+}
+
+// Cards: the plain Semi card is a surface with a hairline, flat.
+.semi-card {
+  background-color: @color-surface;
+  border: 1px solid @color-border;
+  border-radius: @radius-card;
+  box-shadow: none !important;
+}
+
+.semi-banner {
+  border-radius: @radius-card;
+}
+
+.semi-typography-link,
+.semi-typography a {
+  color: @color-text !important;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 // Scrollbar
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: @color-surface;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
   background: @color-border-bright;
-  border-radius: 3px;
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: @color-muted;
+  background: @color-faint;
 }
 
 .semi-icon:not(.semi-tabs-bar .semi-tabs-tab .semi-icon):not(.semi-checkbox .semi-icon) {
   vertical-align: middle;
 }
 
-// Suppress focus outlines - Semi uses --semi-color-primary (our red) for all rings
-button:focus,
-button:focus-visible,
-.semi-button:focus,
-.semi-button:focus-visible,
-.semi-input-wrapper:focus-within,
-.semi-select:focus-within,
-[tabindex]:focus {
-  outline: none !important;
-  box-shadow: none !important;
-}
-
-.semi-input-wrapper-focus {
-  border-color: @color-border-bright !important;
-  box-shadow: none !important;
-}
-
-// Semi Toast overrides
+// Toasts
 .semi-toast-content {
   background-color: @color-elevated !important;
   border: 1px solid @color-border-bright !important;
+  border-radius: @radius-card !important;
   box-shadow: @shadow-md !important;
+  color: @color-text;
 }
 
-// Semi Modal overrides
+// Modals: a surface with a hairline over a plain scrim. No accent edge, no blur.
 .semi-modal-content {
   background: @color-surface !important;
   border: 1px solid @color-border !important;
-  border-top: 3px solid @color-accent !important;
-  border-radius: 14px !important;
+  border-radius: 12px !important;
+  box-shadow: @shadow-lg !important;
 }
 
 .semi-modal-header {
   background: transparent !important;
   border-bottom: 1px solid @color-border !important;
-  border-radius: 14px 14px 0 0 !important;
-  padding: 20px 24px 16px !important;
+  border-radius: 12px 12px 0 0 !important;
+  padding: @space-5 @space-6 @space-4 !important;
+  margin: 0 !important;
+}
+
+.semi-modal-title {
+  font-size: @text-lg !important;
+  font-weight: @weight-strong !important;
 }
 
 .semi-modal-mask {
   background: @color-scrim !important;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+}
+
+.semi-sidesheet-inner {
+  background: @color-surface !important;
+  border-left: 1px solid @color-border;
 }

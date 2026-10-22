@@ -3,9 +3,9 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { Tag, Tooltip, Switch } from '@douyinfe/semi-ui-19';
-import { IconAlertTriangle } from '@douyinfe/semi-icons';
+import { Tooltip, Switch } from '@douyinfe/semi-ui-19';
 
+import { IconWarning } from '../icons/StrokeIcons.jsx';
 import JobActions from '../jobs/JobActions.jsx';
 import { relativeTime } from '../../services/time/relativeTime.js';
 import './JobsTable.less';
@@ -43,21 +43,22 @@ const JobsTable = ({ jobs, onRun, onEdit, onClone, onDeleteListings, onDeleteJob
 
       {jobs.map((job) => (
         <div key={job.id} className={`jobsTable__row${!job.enabled ? ' jobsTable__row--inactive' : ''}`}>
-          <span className={`jobsTable__row__dot${job.enabled ? ' jobsTable__row__dot--active' : ''}`} />
+          <span
+            className={`jobsTable__row__dot${job.enabled ? ' jobsTable__row__dot--active' : ''}`}
+            aria-hidden="true"
+          />
 
           {/* The chip and the warning ride inline with the name, and only the name gives way to a
               long one: the running state and the reason Run, Edit and the switch are disabled are
               the two things this row must not lose to an ellipsis. */}
           <div className="jobsTable__row__name" title={job.name}>
             <span className="jobsTable__row__nameText">{job.name}</span>
-            {job.running && (
-              <Tag color="green" variant="light" size="small">
-                {t('jobs.cardRunning')}
-              </Tag>
-            )}
+            {job.running && <span className="jobsTable__running">{t('jobs.cardRunning')}</span>}
             {job.isOnlyShared && (
               <Tooltip content={t('jobs.tableSharedTooltip')}>
-                <IconAlertTriangle style={{ color: 'rgba(var(--semi-yellow-7), 1)' }} />
+                <span className="jobsTable__shared" role="img" tabIndex={0} aria-label={t('jobs.tableSharedTooltip')}>
+                  <IconWarning />
+                </span>
               </Tooltip>
             )}
           </div>

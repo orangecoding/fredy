@@ -3,8 +3,16 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { Button, Empty, Select, Table, Tag, Tooltip } from '@douyinfe/semi-ui-19';
-import { IconCopy, IconDelete, IconEdit, IconSend, IconMinusCircle, IconPlus } from '@douyinfe/semi-icons';
+import { Button, Empty, Select, Table, Tooltip } from '@douyinfe/semi-ui-19';
+import {
+  IconDeleteStroked,
+  IconEditStroked,
+  IconMinusCircleStroked,
+  IconPlus,
+  IconSendStroked,
+} from '@douyinfe/semi-icons';
+
+import { IconCopy } from '../icons/StrokeIcons.jsx';
 
 import { useScreenWidth } from '../../hooks/screenWidth.js';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
@@ -79,7 +87,7 @@ export default function NotificationChannelTable({
     canManageVisibility && record.canEdit ? (
       <Select
         value={visibility}
-        style={{ width: isNarrow ? '100%' : 150 }}
+        className="notificationChannelTable__visibility"
         onChange={(value) => onVisibilityChange?.(record, value)}
         optionList={visibilityOptions}
       />
@@ -87,31 +95,70 @@ export default function NotificationChannelTable({
       visibilityLabel(visibility)
     );
 
+  /*
+   * Quiet round icons, each named for a screen reader as well as in its tooltip. They used to be four
+   * different weights - a borderless send, an outlined edit, a borderless copy, a red delete - for
+   * four actions of the same rank. Only deleting a channel from the instance stays red, because it is
+   * the one that cannot be taken back; "Add" in the picker is outlined, since a red button per row
+   * is a page of primary actions.
+   */
   const toolsCell = (record) => (
     <div className="notificationChannelTable__tools">
       {actions.includes('add') && (
-        <Button theme="solid" type="primary" icon={<IconPlus />} onClick={() => onAdd?.(record)}>
+        <Button theme="outline" type="tertiary" size="small" icon={<IconPlus />} onClick={() => onAdd?.(record)}>
           {t('notification.channels.add')}
         </Button>
       )}
       {actions.includes('test') && (
         <Tooltip content={t('notification.channels.actionTest')}>
-          <Button type="tertiary" theme="borderless" icon={<IconSend />} onClick={() => onTest?.(record)} />
+          <Button
+            className="notificationChannelTable__icon"
+            type="tertiary"
+            theme="borderless"
+            size="small"
+            icon={<IconSendStroked />}
+            aria-label={t('notification.channels.actionTest')}
+            onClick={() => onTest?.(record)}
+          />
         </Tooltip>
       )}
       {actions.includes('edit') && record.canEdit && (
         <Tooltip content={t('notification.channels.actionEdit')}>
-          <Button type="secondary" icon={<IconEdit />} onClick={() => onEdit?.(record)} />
+          <Button
+            className="notificationChannelTable__icon"
+            type="tertiary"
+            theme="borderless"
+            size="small"
+            icon={<IconEditStroked />}
+            aria-label={t('notification.channels.actionEdit')}
+            onClick={() => onEdit?.(record)}
+          />
         </Tooltip>
       )}
       {actions.includes('clone') && (
         <Tooltip content={t('notification.channels.actionClone')}>
-          <Button type="tertiary" theme="borderless" icon={<IconCopy />} onClick={() => onClone?.(record)} />
+          <Button
+            className="notificationChannelTable__icon"
+            type="tertiary"
+            theme="borderless"
+            size="small"
+            icon={<IconCopy />}
+            aria-label={t('notification.channels.actionClone')}
+            onClick={() => onClone?.(record)}
+          />
         </Tooltip>
       )}
       {actions.includes('detach') && (
         <Tooltip content={t('notification.channels.actionDetach')}>
-          <Button type="danger" theme="borderless" icon={<IconMinusCircle />} onClick={() => onDetach?.(record)} />
+          <Button
+            className="notificationChannelTable__icon"
+            type="tertiary"
+            theme="borderless"
+            size="small"
+            icon={<IconMinusCircleStroked />}
+            aria-label={t('notification.channels.actionDetach')}
+            onClick={() => onDetach?.(record)}
+          />
         </Tooltip>
       )}
       {actions.includes('delete') && record.canEdit && (
@@ -124,8 +171,12 @@ export default function NotificationChannelTable({
               so the explanation for why Delete is greyed out would never appear. */}
           <span>
             <Button
+              className="notificationChannelTable__icon"
               type="danger"
-              icon={<IconDelete />}
+              theme="borderless"
+              size="small"
+              icon={<IconDeleteStroked />}
+              aria-label={t('notification.channels.actionDelete')}
               disabled={record.usedByJobs > 0}
               onClick={() => onDelete?.(record)}
             />
@@ -143,9 +194,7 @@ export default function NotificationChannelTable({
         <div className="notificationChannelTable__stack">
           <div className="notificationChannelTable__stackHead">
             <span className="notificationChannelTable__stackName">{name}</span>
-            <Tag color="grey" size="small">
-              {record.adapterName}
-            </Tag>
+            <span className="notificationChannelTable__type">{record.adapterName}</span>
           </div>
           <div className="notificationChannelTable__destination">{record.destination ?? '-'}</div>
           {(showVisibility || showUsage) && (
@@ -165,12 +214,20 @@ export default function NotificationChannelTable({
     {
       title: t('notification.channels.columnType'),
       dataIndex: 'adapterName',
-      render: (adapterName) => <Tag color="grey">{adapterName}</Tag>,
+      // The service's name as plain words. A grey chip around it made the type look like a status.
+      render: (adapterName) => <span className="notificationChannelTable__type">{adapterName}</span>,
     },
     {
       title: t('notification.channels.columnDestination'),
       dataIndex: 'destination',
-      render: (destination) => <span className="notificationChannelTable__destination">{destination ?? '-'}</span>,
+      render: (destination) => (
+        <span
+          className="notificationChannelTable__destination notificationChannelTable__destination--cell"
+          title={destination ?? undefined}
+        >
+          {destination ?? '-'}
+        </span>
+      ),
     },
   ];
 
@@ -186,7 +243,7 @@ export default function NotificationChannelTable({
     wideColumns.push({
       title: t('notification.channels.columnUsage'),
       dataIndex: 'usedByJobs',
-      render: (usedByJobs) => usageLabel(usedByJobs ?? 0),
+      render: (usedByJobs) => <span className="notificationChannelTable__usage">{usageLabel(usedByJobs ?? 0)}</span>,
     });
   }
 

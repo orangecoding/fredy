@@ -4,8 +4,6 @@
  */
 
 import { Col, Row } from '@douyinfe/semi-ui-19';
-import { IconTickCircle } from '@douyinfe/semi-icons';
-import IconEuro from '../../../components/icons/IconEuro.jsx';
 
 import KpiCard from '../../../components/cards/KpiCard.jsx';
 import VerdictBanner from './VerdictBanner.jsx';
@@ -99,18 +97,14 @@ export default function ResultSummary({ result }) {
         <Col xs={24} sm={12}>
           <KpiCard
             title={t('finance.kpi.monthlyRate')}
-            color="orange"
             value={hasLoan ? formatEuro(primary.monthlyPayment, locale) : noData}
-            icon={<IconEuro />}
             description={t('finance.kpi.monthlyRateDesc', { tilgung: String(primary.tilgung) })}
           />
         </Col>
         <Col xs={24} sm={12}>
           <KpiCard
             title={t('finance.kpi.maxPrice')}
-            color="green"
             value={hasIncome ? formatEuro(result.recommendation.maxAffordablePrice, locale) : noData}
-            icon={<IconTickCircle />}
             description={t('finance.kpi.maxPriceDesc')}
           />
         </Col>

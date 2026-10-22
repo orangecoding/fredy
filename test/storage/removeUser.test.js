@@ -5,6 +5,8 @@
 
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import Database from 'better-sqlite3';
+import { up as createSessions } from '../../lib/services/storage/migrations/sql/26.sessions.js';
+import { up as addSessionUserId } from '../../lib/services/storage/migrations/sql/50.session-user-id.js';
 
 /*
  * A real SQLite database rather than a recording double, because what is under test is what the
@@ -58,8 +60,13 @@ beforeEach(() => {
     );
   `);
 
+  createSessions(db);
+  addSessionUserId(db);
+
   db.exec(`
     INSERT INTO users (id, username, password) VALUES ('alice', 'alice', 'x'), ('bob', 'bob', 'x');
+    INSERT INTO sessions (sid, data, expires_at, user_id)
+      VALUES ('alice-laptop', '{}', 1, 'alice'), ('alice-phone', '{}', 1, 'alice'), ('bob-laptop', '{}', 1, 'bob');
     INSERT INTO jobs (id, user_id, name, shared_with_user)
       VALUES ('job-alice', 'alice', 'Alice''s search', '["bob"]'),
              ('job-bob', 'bob', 'Bob''s search', '["alice","carol"]'),
@@ -102,6 +109,11 @@ describe('removeUser', () => {
     removeUser('alice');
     expect(db.prepare(`SELECT COUNT(*) AS count FROM settings WHERE user_id IS NULL`).get().count).toBe(1);
     expect(db.prepare(`SELECT COUNT(*) AS count FROM settings WHERE user_id = 'bob'`).get().count).toBe(1);
+  });
+
+  it('ends every session they are signed in with and no other', () => {
+    removeUser('alice');
+    expect(db.prepare(`SELECT sid FROM sessions`).all()).toEqual([{ sid: 'bob-laptop' }]);
   });
 
   it('drops them from the share list of jobs they were given access to', () => {

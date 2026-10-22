@@ -13,6 +13,7 @@ import {
   netIncomeOf,
   recommendRate,
   scoreListing,
+  priceThresholds,
   verdictForPrice,
 } from '../../../lib/services/finance/affordability.js';
 import { calculateFinancing } from '../../../lib/services/finance/financing.js';
@@ -206,6 +207,31 @@ describe('debtFreeAges', () => {
 });
 
 describe('scoreListing', () => {
+  // With a fixed monthly payment the rate is the same at every price; a loan whose rate never covers
+  // its interest used to come out as affordable as any other.
+  it('calls a loan that never pays off unaffordable, even at a fixed payment the budget allows', () => {
+    const fixed = profile({
+      financing: { ...profile().financing, scenarios: [{ id: 'fixed', annualRate: 3.8, monthlyPayment: 1500 }] },
+    });
+    const huge = scoreListing({ price: 2000000 }, fixed);
+    expect(huge.neverPaysOff).toBe(true);
+    expect(huge.verdict).toBe('unaffordable');
+  });
+
+  // The fixed payment is the same number for every listing; the verdict has to come from the price,
+  // the way the chip in the listings overview reads it, or the scan and the chips disagree.
+  it('judges a fixed payment by the price ceilings, in step with verdictForPrice', () => {
+    const fixed = profile({
+      financing: { ...profile().financing, scenarios: [{ id: 'fixed', annualRate: 3.8, monthlyPayment: 1500 }] },
+    });
+    const thresholds = priceThresholds(fixed);
+    for (const price of [250000, 500000, 700000]) {
+      const scored = scoreListing({ price }, fixed);
+      if (scored.neverPaysOff) continue;
+      expect(scored.verdict, String(price)).toBe(verdictForPrice(price, thresholds));
+    }
+  });
+
   it('scores a listing end to end', () => {
     const result = scoreListing({ id: 'l1', price: 350000, title: 'Haus' }, profile());
 

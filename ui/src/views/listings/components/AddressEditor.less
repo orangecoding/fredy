@@ -21,6 +21,8 @@
 
   &__title {
     margin: 0 !important;
+    font-size: @text-md !important;
+    font-weight: @weight-strong !important;
   }
 
   &__hint {
@@ -28,14 +30,16 @@
     line-height: 1.5;
   }
 
+  // Not found: a faint tint of the warning colour with an edge of it, the way the page draws every
+  // notice that is a box of its own.
   &__notFound {
     display: flex;
     flex-direction: column;
     gap: @space-2;
     padding: @space-3;
-    border: 1px solid var(--semi-color-warning-light-active);
+    border: 1px solid rgb(@color-warning-rgb / 40%);
     border-radius: @radius-card;
-    background: var(--semi-color-warning-light-default);
+    background: rgb(@color-warning-rgb / 8%);
   }
 
   &__actions {
@@ -44,7 +48,7 @@
     justify-content: space-between;
     gap: @space-3;
     padding-top: @space-3;
-    border-top: 1px solid var(--semi-color-border);
+    border-top: 1px solid @color-border;
   }
 
   &__buttons {
@@ -54,8 +58,10 @@
     margin-left: auto;
   }
 
-  /* The address is a link; the pencil sits next to it and should not push the line around. */
-  &__trigger {
+  /* The address is a link; the pencil sits next to it, round and muted like every icon control,
+     and should not push the line around. */
+  &__trigger.semi-button {
     flex: none;
+    border-radius: @radius-pill;
   }
 }

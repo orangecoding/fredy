@@ -36,11 +36,11 @@ export default function ConnectivityPage() {
   return (
     <div className="settingsShell__page">
       {/*
-        Der Schalter steht im Kartenkopf, weil er ueber die ganze Karte entscheidet und nicht ueber
-        eine Zeile darin. Als Erstes im Rumpf zu stehen und alles darunter zu dimmen, sagte dasselbe
-        umstaendlicher - und brauchte dafuer eine Schiene, die die Karte gegen sich selbst einrueckt.
-        Die Hilfe der Quellen haengt an der Kartenhilfe, weil sie genau das erklaert, was die Karte
-        tut; von den drei Ebenen Hilfe bleiben damit die der Karte und die je Quelle.
+        The switch sits in the section header, because it decides about the whole section rather
+        than about one row in it. Standing first in the body and dimming everything below said the
+        same thing more laboriously - and needed a rail that indented the section against itself.
+        The sources' help hangs off the section's, because it explains exactly what the section
+        does; of three levels of help, the section's and each source's remain.
       */}
       <SegmentPart
         name={t('settings.connectivity')}
@@ -54,10 +54,9 @@ export default function ConnectivityPage() {
           />
         }
       >
-        {/* Ein `<label>` ohne `htmlFor` und ohne Bedienelement darin ist fuer eine
-            Bildschirmleseanwendung schlechter als gar keines. Hier steht deshalb ein Gruppentitel,
-            und die Beschriftung traegt jede Quelle selbst. */}
-        <div className="settingsShell__groupTitle">{t('settings.connectivitySources')}</div>
+        {/* A `<label>` without `htmlFor` and without a control inside is worse than none for a
+            screen reader. So this is a caption over the rows, and each source labels itself. */}
+        <div className="connectivityPage__sourcesTitle">{t('settings.connectivitySources')}</div>
         {CONNECTIVITY_SOURCES.map((id) => (
           <AdminField
             key={id}
@@ -75,9 +74,8 @@ export default function ConnectivityPage() {
           </AdminField>
         ))}
 
-        {/* Nur eine Linie, kein zweiter Gruppentitel: dass unter den Quellen das Budget steht,
-            sagen die beiden Zeilen selbst - eine Ueberschrift darueber waere die dritte Ebene,
-            die diese Karte gerade losgeworden ist. */}
+        {/* A hairline, not a second caption: that the budget follows the sources, the two rows
+            say themselves - a heading above them would be the third level this section just lost. */}
         <div className="connectivityPage__budget">
           <AdminField
             label={t('settings.connectivityLimit')}

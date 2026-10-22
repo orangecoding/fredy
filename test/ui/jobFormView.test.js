@@ -91,9 +91,7 @@ describe('the save bar is the one the rest of the app uses', () => {
     expect(form).toMatch(/dirty=\{dirty\}/);
     // A stored job compares against what is stored; one that is not stored yet (new, or a clone)
     // is unsaved as soon as it holds anything, so a clone saved as it came still gets its Save.
-    expect(form).toMatch(
-      /const dirty = params\.jobId == null \? hasContent\(current\) : isJobDirty\(current, baseline\);/,
-    );
+    expect(form).toMatch(/const dirty = isEdit \? isJobDirty\(current, baseline\) : hasContent\(current\);/);
     // Renders nothing while clean - the whole point of the bar arriving rather than sitting there
     // greyed out.
     expect(bar2).toMatch(/if \(!dirty\) \{\s*\n\s*return null;/);
@@ -256,6 +254,65 @@ describe('the fold invites once, not three times', () => {
     expect(block).not.toBeNull();
     expect(block[0]).toMatch(/cursor: pointer/);
     expect(block[0]).not.toMatch(/@color-accent/);
+  });
+});
+
+describe('the form is one calm document (Exposé)', () => {
+  it('keeps the page at a reading measure instead of the width of the window', () => {
+    expect(form).toMatch(/<div className="jobMutation">/);
+    expect(formLess).toMatch(/@form-measure: 960px;/);
+    expect(formLess).toMatch(/\.jobMutation \{[\s\S]*?max-width: @form-measure;/);
+  });
+
+  it('draws the fold as one more hairline chapter, not a filled box', () => {
+    const block = formLess.match(/\.semi-collapse-header \{[\s\S]*?\n {2}\}/);
+    expect(block).not.toBeNull();
+    expect(block[0]).toMatch(/border-top: 1px solid @color-border/);
+    expect(block[0]).toMatch(/background: transparent/);
+    expect(block[0]).not.toMatch(/border-radius: @radius-card|@color-fill/);
+  });
+
+  it('closes the form with a flat bar under a hairline rather than a floating box', () => {
+    const block = formLess.match(/\.jobMutation \.settingsSaveBar \{[\s\S]*?\n\}/);
+    expect(block).not.toBeNull();
+    expect(block[0]).toMatch(/border-top: 1px solid @color-border/);
+    expect(block[0]).toMatch(/box-shadow: none/);
+  });
+
+  it('keeps the fold hint on a row of its own under the title', () => {
+    // As one wrapping row the hint landed between "click to filter" and the chevron on a wide page.
+    expect(form).toMatch(
+      /jobMutation__refineLine">[\s\S]*?jobMutation__refineToggle[\s\S]*?<\/span>\s*<\/span>\s*<span className="jobMutation__refineHint">/,
+    );
+  });
+
+  it('gives every field the whole width of a phone', () => {
+    // `flex-start` in a column shrank the name field to its content, 245px on a 390px screen.
+    const phone = formLess.match(/@media \(max-width: 700px\) \{[\s\S]*?\n\}/);
+    expect(phone).not.toBeNull();
+    expect(phone[0]).toMatch(/align-items: stretch/);
+    expect(phone[0]).not.toMatch(/align-items: flex-start/);
+  });
+
+  it('no longer draws the icons the sections used to carry', () => {
+    // SegmentPart stopped drawing them; handing them in was decoration nobody saw.
+    expect(form).not.toMatch(/\sIcon=\{/);
+  });
+
+  it.each([
+    ...ALL_LESS,
+    [
+      'NotificationHelpDisplay',
+      read('ui/src/views/jobs/mutation/components/notificationAdapter/NotificationHelpDisplay.less'),
+    ],
+  ])('%s has no capitals, no tabular figures and no accent', (_name, source) => {
+    expect(source).not.toMatch(/text-transform:\s*uppercase/);
+    expect(source).not.toMatch(/tabular-nums/);
+    expect(source).not.toMatch(/@color-accent/);
+  });
+
+  it('keeps the jump links reachable by keyboard with the app’s own focus ring', () => {
+    expect(barLess).toMatch(/&:focus-visible \{[\s\S]*?outline: 2px solid @color-info/);
   });
 });
 

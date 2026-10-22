@@ -42,6 +42,14 @@
 /**
  * The sidebar, in order.
  *
+ * Flat: every place is one click away and named once. The listings, the map and the financing
+ * used to sit folded under a "Listings" group, which cost a click to reach two of the three pages
+ * people use most and named the overview twice ("Listings", then "Overview"). The searches come
+ * straight after the overview, because they are what everything below them is found by.
+ *
+ * Whose settings Settings and Administration are is said by the badge beside each page's heading,
+ * not by the sidebar.
+ *
  * Settings and Administration are single destinations rather than groups: each is one page that
  * carries its own sections, so a submenu here would name the same places twice - once in the
  * sidebar and again inside the page.
@@ -51,18 +59,9 @@
 export const NAV_TREE = [
   { key: '/dashboard', labelKey: 'nav.dashboard', section: 'work' },
   { key: '/jobs', labelKey: 'nav.jobs', section: 'work' },
-  {
-    key: 'listings',
-    labelKey: 'nav.listings',
-    section: 'work',
-    children: [
-      { key: '/listings', labelKey: 'nav.listingsOverview' },
-      { key: '/map', labelKey: 'nav.mapView' },
-      // Financing sits here rather than at the top level: it is a way of judging listings, not a
-      // peer of the search itself.
-      { key: '/finance', labelKey: 'nav.finance' },
-    ],
-  },
+  { key: '/listings', labelKey: 'nav.listings', section: 'work' },
+  { key: '/map', labelKey: 'nav.map', section: 'work' },
+  { key: '/finance', labelKey: 'nav.finance', section: 'work' },
   { key: '/settings', labelKey: 'nav.settings', section: 'personal' },
   { key: '/admin', labelKey: 'nav.administration', section: 'instance', adminOnly: true },
 ];
@@ -87,43 +86,6 @@ export function navTreeFor(isAdmin) {
  */
 export function startsSection(tree, index) {
   return index > 0 && tree[index].section !== tree[index - 1].section;
-}
-
-/**
- * Which scope a section belongs to, if it is one worth naming.
- *
- * `work` has none: it is the top of the list, and announcing a scope over the first three entries
- * would be naming the obvious. The other two exist precisely to be named - the rule between them
- * says that something changes, but not what.
- *
- * The value is the scope a `ScopeBadge` takes rather than a translation key of its own, so the
- * sidebar says whose settings these are with the same chip the two pages carry beside their
- * heading. Two spellings of one statement is how the sidebar and the page start disagreeing.
- *
- * @type {Readonly<Record<NavSection, 'user'|'instance'|null>>}
- */
-const SECTION_SCOPES = Object.freeze({
-  work: null,
-  personal: 'user',
-  instance: 'instance',
-});
-
-/**
- * The scope this entry announces, or null.
- *
- * Gated on `startsSection` because the entry that opens a section is the one the answer is about:
- * it is the first thing a reader meets after the rule, and it is where they are deciding whether
- * this is the half of the sidebar they want.
- *
- * @param {NavNode[]} tree
- * @param {number} index
- * @returns {'user'|'instance'|null}
- */
-export function sectionScope(tree, index) {
-  if (!startsSection(tree, index)) {
-    return null;
-  }
-  return SECTION_SCOPES[tree[index].section] ?? null;
 }
 
 /**

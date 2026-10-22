@@ -46,34 +46,31 @@ function token(name, fallback) {
   return value === '' ? fallback : value;
 }
 
-const FONT_UI = "'Outfit', system-ui, sans-serif";
-const FONT_MONO = "'JetBrains Mono', monospace";
+// One face for labels and figures alike, the same as the interface around the chart.
+const FONT_UI = "'Schibsted Grotesk', system-ui, sans-serif";
 
 /**
- * Series colours, accent first so the primary scenario is always Fredy red and every other
- * scenario reads as a comparison against it.
- *
- * A function rather than a constant: the colours belong to whichever theme is on screen when the
- * chart draws, and an array captured at import time would be the wrong one after a switch.
+ * The greyscale ramp for shares, brightest first in the dark theme and darkest first in the light
+ * one. Steps differ in lightness rather than hue, so neighbours stay apart for every kind of colour
+ * vision, and none of them competes with the accent.
  *
  * @returns {string[]}
  */
-export function chartPalette() {
+export function shareRamp() {
   return [
-    CHART_COLORS.ACCENT,
-    CHART_COLORS.BLUE,
-    CHART_COLORS.GREEN,
-    CHART_COLORS.WARNING,
-    CHART_COLORS.PURPLE,
-    CHART_COLORS.ORANGE,
+    token('--f-chart-1', '#d6d1c9'),
+    token('--f-chart-2', '#a29d95'),
+    token('--f-chart-3', '#77736c'),
+    token('--f-chart-4', '#55524c'),
+    token('--f-chart-5', '#3e3d39'),
   ];
 }
 
 /**
  * Verdict colours, shared by the charts, the listing chips and the detail card.
  *
- * Getters rather than values, for the reason given on {@link chartPalette}: every read has to see
- * the theme that is on screen now. Call sites are unaffected - `VERDICT_COLORS.affordable` still
+ * Getters rather than values: the colours belong to whichever theme is on screen when the chart
+ * draws, and every read has to see the theme that is on screen now. Call sites are unaffected - `VERDICT_COLORS.affordable` still
  * reads as a plain property.
  *
  * @type {{affordable: string, stretch: string, unaffordable: string}}
@@ -92,11 +89,11 @@ export const VERDICT_COLORS = {
 
 /**
  * The chart surface - axes, gridlines, tooltip and label colours - plus the named hues a chart
- * reaches for when it needs to tell several series apart, and the two font stacks.
+ * reaches for when it needs to tell several series apart, and the font stack.
  *
  * Getters, for the same reason as {@link VERDICT_COLORS}.
  *
- * @type {Record<'ACCENT'|'GRID'|'GRID_BRIGHT'|'MUTED'|'TEXT'|'ELEVATED'|'BLUE'|'GREEN'|'PURPLE'|'ORANGE'|'WARNING'|'SUCCESS'|'ERROR'|'FONT_UI'|'FONT_MONO', string>}
+ * @type {Record<'ACCENT'|'GRID'|'GRID_BRIGHT'|'MUTED'|'TEXT'|'ELEVATED'|'BLUE'|'GREEN'|'PURPLE'|'ORANGE'|'WARNING'|'SUCCESS'|'ERROR'|'FONT_UI', string>}
  */
 export const CHART_COLORS = {
   get ACCENT() {
@@ -139,7 +136,6 @@ export const CHART_COLORS = {
     return token('--f-error', '#d4707c');
   },
   FONT_UI,
-  FONT_MONO,
 };
 
 let registered = false;
@@ -244,7 +240,7 @@ export function baseChartOptions({ locale = 'de-DE', legend = false } = {}) {
         padding: 10,
         cornerRadius: 6,
         displayColors: true,
-        titleFont: { family: FONT_MONO, size: 12 },
+        titleFont: { family: FONT_UI, size: 12, weight: '600' },
         bodyFont: { family: FONT_UI, size: 12 },
       },
     },
@@ -259,34 +255,12 @@ export function baseChartOptions({ locale = 'de-DE', legend = false } = {}) {
         border: { display: false },
         ticks: {
           color: CHART_COLORS.MUTED,
-          font: { family: FONT_MONO, size: 11 },
+          font: { family: FONT_UI, size: 11 },
           callback: (value) => formatEuroCompact(value, locale),
         },
       },
     },
   };
-}
-
-/**
- * Vertical gradient from a colour down to transparent, for filled area charts.
- *
- * Chart.js hands the scriptable option a context whose chartArea is undefined on the very
- * first render pass, so this returns a flat fallback until the layout is known.
- *
- * @param {CanvasRenderingContext2D} ctx
- * @param {{top: number, bottom: number}|undefined} chartArea
- * @param {string} hex Base colour.
- * @param {number} [opacity=0.32] Opacity at the top of the gradient.
- * @returns {CanvasGradient|string}
- */
-export function makeAreaGradient(ctx, chartArea, hex, opacity = 0.32) {
-  if (!chartArea) {
-    return withAlpha(hex, opacity / 2);
-  }
-  const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-  gradient.addColorStop(0, withAlpha(hex, opacity));
-  gradient.addColorStop(1, withAlpha(hex, 0));
-  return gradient;
 }
 
 /**

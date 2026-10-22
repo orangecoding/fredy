@@ -4,7 +4,7 @@
  */
 
 import { Empty, Table, Button, Tooltip, Typography } from '@douyinfe/semi-ui-19';
-import { IconDelete, IconEdit } from '@douyinfe/semi-icons';
+import { IconDeleteStroked, IconEditStroked } from '@douyinfe/semi-icons';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
 
 import './ProviderTable.less';
@@ -42,18 +42,22 @@ export default function ProviderTable({ providerData = [], onRemove, onEdit } = 
             <div className="providerTable__actions">
               <Tooltip content={t('provider.tableEdit')}>
                 <Button
+                  size="small"
                   theme="borderless"
                   type="tertiary"
-                  icon={<IconEdit />}
+                  icon={<IconEditStroked />}
                   aria-label={t('provider.tableEdit')}
                   onClick={() => onEdit(record)}
                 />
               </Tooltip>
+              {/* Muted like its neighbour rather than red: it takes a provider off a form that is not
+                  saved yet, which Discard undoes. Red is for what cannot be taken back. */}
               <Tooltip content={t('provider.tableRemove')}>
                 <Button
+                  size="small"
                   theme="borderless"
-                  type="danger"
-                  icon={<IconDelete />}
+                  type="tertiary"
+                  icon={<IconDeleteStroked />}
                   aria-label={t('provider.tableRemove')}
                   onClick={() => onRemove(record.url)}
                 />

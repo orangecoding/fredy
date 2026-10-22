@@ -18,6 +18,8 @@ import {
   filterConfiguredProviders,
   toListingsQuery,
   MOBILE_OPERATOR_KEY,
+  QUICK_FILTERS,
+  quickFilterKeys,
 } from '../../ui/src/services/listings/listingFilters.js';
 
 /** The URL state as the page opens it. @returns {Object} */
@@ -118,6 +120,52 @@ describe('listingFilters', () => {
       const values = { ...defaults(), ...showPatch('hidden') };
       expect(countActiveFilters(values)).toBe(1);
       expect(isActiveFilter('active', values)).toBe(false);
+    });
+  });
+
+  describe('the quick filters', () => {
+    const quick = (id) => QUICK_FILTERS.find((filter) => filter.id === id);
+
+    it('lights the activity chip the page opens with', () => {
+      expect(quick('active').isOn(defaults())).toBe(true);
+      expect(quick('inactive').isOn(defaults())).toBe(false);
+    });
+
+    it('switches a lit chip off back to neutral and resets the page', () => {
+      const patch = quick('active').toggle(defaults());
+      expect(patch).toMatchObject({ hidden: false, active: null, page: 1 });
+      expect(quick('active').isOn({ ...defaults(), ...patch })).toBe(false);
+    });
+
+    it('lets two chips on one key replace each other rather than combine', () => {
+      const values = { ...defaults(), ...quick('inactive').toggle(defaults()) };
+      expect(quick('inactive').isOn(values)).toBe(true);
+      expect(quick('active').isOn(values)).toBe(false);
+
+      const applied = { ...values, ...quick('applied').toggle(values) };
+      const none = { ...applied, ...quick('noStatus').toggle(applied) };
+      expect(quick('applied').isOn(none)).toBe(false);
+      expect(quick('noStatus').isOn(none)).toBe(true);
+    });
+
+    it('lights nothing for activity while the hidden view is on', () => {
+      const hidden = { ...defaults(), ...showPatch('hidden') };
+      expect(quick('active').isOn(hidden)).toBe(false);
+      expect(quick('inactive').isOn(hidden)).toBe(false);
+    });
+
+    it('names only lit chips as covered, so the removable row can leave them out', () => {
+      expect([...quickFilterKeys(defaults())]).toEqual(['active']);
+      const watched = { ...defaults(), watch: true, status: 'applied' };
+      expect(quickFilterKeys(watched)).toEqual(new Set(['active', 'watch', 'status']));
+      // "Not watched" has no chip of its own, so it stays in the removable row.
+      expect(quickFilterKeys({ ...defaults(), watch: false }).has('watch')).toBe(false);
+    });
+
+    it('offers only filters the drawer already has', () => {
+      for (const filter of QUICK_FILTERS) {
+        expect(FILTER_KEYS).toContain(filter.key);
+      }
     });
   });
 

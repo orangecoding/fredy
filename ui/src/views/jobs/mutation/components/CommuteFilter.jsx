@@ -142,7 +142,6 @@ export default function CommuteFilter({ value, onChange }) {
             </span>
           </div>
           <InputNumber
-            size="small"
             className="commuteFilter__minutes"
             min={1}
             max={240}
@@ -171,7 +170,6 @@ export default function CommuteFilter({ value, onChange }) {
           {t('jobs.mutation.commuteActionLabel')}
         </span>
         <Select
-          size="small"
           className="commuteFilter__actionSelect"
           aria-labelledby={actionLabelId}
           value={action}

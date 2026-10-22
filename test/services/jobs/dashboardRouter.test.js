@@ -124,7 +124,7 @@ describe('api/routes/dashboardRouter.js', () => {
 
     const body = (await app.inject({ method: 'GET', url: '/api/dashboard/' })).json();
 
-    expect(state.getJobsOptions).toEqual({ includeDisabled: true });
+    expect(state.getJobsOptions).toMatchObject({ includeDisabled: true });
     expect(body.kpis.totalJobs).toBe(2);
     expect(state.activityCall.jobIds).toEqual(['running', 'paused']);
     // A paused job waits for no next run.
@@ -159,7 +159,7 @@ describe('api/routes/dashboardRouter.js', () => {
     expect(body.jobActivity).toEqual(state.jobActivity);
     // Both panels read through the same job scope as every other figure on the page, which is the
     // only thing keeping another user's findings off this one's dashboard.
-    expect(state.latestCall).toEqual({ jobIds: ['a'], limit: 8 });
+    expect(state.latestCall).toEqual({ jobIds: ['a'], limit: 4 });
     expect(state.activityCall).toEqual({ jobIds: ['a'], days: 7 });
   });
 });

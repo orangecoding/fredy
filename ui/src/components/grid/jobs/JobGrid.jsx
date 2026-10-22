@@ -16,14 +16,8 @@ import {
   RadioGroup,
   Tooltip,
 } from '@douyinfe/semi-ui-19';
-import {
-  IconAlertTriangle,
-  IconSearch,
-  IconArrowUp,
-  IconArrowDown,
-  IconGridView,
-  IconList,
-} from '@douyinfe/semi-icons';
+import { IconSearch, IconArrowUp, IconArrowDown } from '@douyinfe/semi-icons';
+import { IconWarning } from '../../icons/StrokeIcons.jsx';
 import { useNavigate, useSearchParams } from 'react-router';
 import ListingDeletionModal from '../../ListingDeletionModal.jsx';
 import FilterButton from '../../filters/FilterButton.jsx';
@@ -46,6 +40,8 @@ import { relativeTime } from '../../../services/time/relativeTime.js';
 
 import './JobGrid.less';
 import { useTranslation } from '../../../services/i18n/i18n.jsx';
+import { jobSetupLine, providerNameMap } from '../../../services/jobs/jobSetupLine.js';
+import { subscribeJobEvents } from '../../../services/sse/jobEvents.js';
 
 /**
  * The page's filters, sort and pagination live in the URL rather than in component state.
@@ -69,6 +65,8 @@ const JOBS_URL_STATE = {
 const JobGrid = () => {
   const t = useTranslation();
   const jobsData = useSelector((state) => state.jobsData);
+  const providers = useSelector((state) => state.provider);
+  const providerNames = useMemo(() => providerNameMap(providers), [providers]);
   const actions = useActions();
   const navigate = useNavigate();
   const sp = useSearchParams();
@@ -95,7 +93,6 @@ const JobGrid = () => {
   const activeFilterCount = countActiveFilters(filterValues);
 
   const pendingJobIdRef = useRef(null);
-  const evtSourceRef = useRef(null);
 
   const loadData = () => {
     actions.jobsData.getJobsData({
@@ -130,10 +127,6 @@ const JobGrid = () => {
 
   // SSE connection for live job status updates
   useEffect(() => {
-    // establish SSE connection
-    const src = new EventSource('/api/jobs/events');
-    evtSourceRef.current = src;
-
     const onJobStatus = (e) => {
       try {
         const data = JSON.parse(e.data || '{}');
@@ -156,19 +149,9 @@ const JobGrid = () => {
       }
     };
 
-    src.addEventListener('jobStatus', onJobStatus);
-    src.onerror = () => {
-      // Let browser auto-reconnect
-    };
-
+    const unsubscribe = subscribeJobEvents('jobStatus', onJobStatus);
     return () => {
-      try {
-        src.removeEventListener('jobStatus', onJobStatus);
-        src.close();
-      } catch {
-        //noop
-      }
-      evtSourceRef.current = null;
+      unsubscribe();
       pendingJobIdRef.current = null;
     };
   }, [actions.jobsData]);
@@ -279,62 +262,72 @@ const JobGrid = () => {
 
   return (
     <div className="jobGrid">
-      <div className="jobGrid__topbar">
-        <Input
-          className="jobGrid__topbar__search"
-          prefix={<IconSearch />}
-          showClear
-          placeholder={t('jobs.searchPlaceholder')}
-          defaultValue={freeTextFilter ?? ''}
-          onChange={handleFilterChange}
-        />
+      {/* The same toolbar the listings page has, control for control: search, filters, sort, and
+          the view as one segmented control. The view used to be two icon buttons, the chosen one
+          filled in the accent, which made "grid" the reddest thing on a page whose one action is
+          "New job". */}
+      <div className="jobGrid__toolbar">
+        <div className="jobGrid__topbar">
+          <Input
+            className="jobGrid__topbar__search"
+            size="large"
+            prefix={<IconSearch />}
+            showClear
+            placeholder={t('jobs.searchPlaceholder')}
+            defaultValue={freeTextFilter ?? ''}
+            onChange={handleFilterChange}
+          />
 
-        <Select
-          prefix={t('jobs.sortPrefix')}
-          style={{ width: 200 }}
-          value={sortField}
-          onChange={(val) => setValue('sort', val)}
-        >
-          <Select.Option value="name">{t('jobs.sortByName')}</Select.Option>
-          <Select.Option value="numberOfFoundListings">{t('jobs.sortByListings')}</Select.Option>
-          <Select.Option value="enabled">{t('jobs.sortByStatus')}</Select.Option>
-        </Select>
+          <FilterButton activeCount={activeFilterCount} onClick={() => setFiltersOpen(true)} />
 
-        <Button
-          icon={sortDir === 'asc' ? <IconArrowUp /> : <IconArrowDown />}
-          onClick={() => setValue('dir', sortDir === 'asc' ? 'desc' : 'asc')}
-          title={sortDir === 'asc' ? t('jobs.sortAscending') : t('jobs.sortDescending')}
-        />
+          <Select
+            className="jobGrid__sort"
+            size="large"
+            prefix={t('jobs.sortPrefix')}
+            value={sortField}
+            onChange={(val) => setValue('sort', val)}
+          >
+            <Select.Option value="name">{t('jobs.sortByName')}</Select.Option>
+            <Select.Option value="numberOfFoundListings">{t('jobs.sortByListings')}</Select.Option>
+            <Select.Option value="enabled">{t('jobs.sortByStatus')}</Select.Option>
+          </Select>
 
-        <FilterButton activeCount={activeFilterCount} onClick={() => setFiltersOpen(true)} />
-
-        <div className="jobGrid__topbar__view-toggle">
-          <Tooltip content={t('jobs.tooltipGridView')}>
+          <Tooltip content={sortDir === 'asc' ? t('jobs.sortAscending') : t('jobs.sortDescending')}>
             <Button
-              icon={<IconGridView />}
-              theme={viewMode === 'grid' ? 'solid' : 'borderless'}
-              onClick={() => switchViewMode('grid')}
-              aria-label={t('common.ariaGridView')}
+              className="jobGrid__sortDir"
+              size="large"
+              icon={sortDir === 'asc' ? <IconArrowUp /> : <IconArrowDown />}
+              onClick={() => setValue('dir', sortDir === 'asc' ? 'desc' : 'asc')}
+              aria-label={sortDir === 'asc' ? t('jobs.sortAscending') : t('jobs.sortDescending')}
+            />
+          </Tooltip>
+
+          <div className="jobGrid__viewToggle" role="group" aria-label={t('listings.viewLabel')}>
+            <button
+              type="button"
+              className={`jobGrid__viewOption${viewMode === 'grid' ? ' jobGrid__viewOption--on' : ''}`}
               aria-pressed={viewMode === 'grid'}
-            />
-          </Tooltip>
-          <Tooltip content={t('jobs.tooltipTableView')}>
-            <Button
-              icon={<IconList />}
-              theme={viewMode === 'table' ? 'solid' : 'borderless'}
-              onClick={() => switchViewMode('table')}
-              aria-label={t('common.ariaTableView')}
+              onClick={() => switchViewMode('grid')}
+            >
+              {t('listings.viewGrid')}
+            </button>
+            <button
+              type="button"
+              className={`jobGrid__viewOption${viewMode === 'table' ? ' jobGrid__viewOption--on' : ''}`}
               aria-pressed={viewMode === 'table'}
-            />
-          </Tooltip>
+              onClick={() => switchViewMode('table')}
+            >
+              {t('listings.viewTable')}
+            </button>
+          </div>
         </div>
-      </div>
 
-      <ActiveFilterChips
-        chips={describeActiveFilters(filterValues, { t })}
-        onRemove={(key) => setValues(clearFilter(key))}
-        onClearAll={() => setValues(clearAllFilters())}
-      />
+        <ActiveFilterChips
+          chips={describeActiveFilters(filterValues, { t })}
+          onRemove={(key) => setValues(clearFilter(key))}
+          onClearAll={() => setValues(clearAllFilters())}
+        />
+      </div>
 
       <FilterDrawer
         visible={filtersOpen}
@@ -370,75 +363,81 @@ const JobGrid = () => {
 
       {viewMode === 'grid' ? (
         <div className="jobGrid__grid">
-          {(jobsData?.result || []).map((job) => (
-            <div key={job.id} className="jobGrid__card">
-              <div className="jobGrid__card__header">
-                <span className={`jobGrid__card__dot${job.enabled ? ' jobGrid__card__dot--active' : ''}`} />
-                <span className="jobGrid__card__name" title={job.name}>
-                  {job.name}
-                </span>
-                {job.running && <span className="jobGrid__card__running">{t('jobs.cardRunning')}</span>}
-                {job.isOnlyShared && (
-                  <Tooltip content={t('jobs.cardSharedReadOnly')}>
-                    <IconAlertTriangle style={{ color: 'rgba(var(--semi-yellow-7), 1)' }} />
-                  </Tooltip>
-                )}
-              </div>
-
-              {/* "When did this last run, and did it find anything" is the reason to open this
-                    page at all, and until now the answer was on no card. */}
-              <div className="jobGrid__card__lastRun">
-                {job.lastRunAt
-                  ? t('jobs.cardLastRun', { time: relativeTime(job.lastRunAt, t) })
-                  : t('jobs.lastRunNever')}
-              </div>
-
-              <div className="jobGrid__card__stats">
-                <div className="jobGrid__card__stat">
-                  <div className="jobGrid__card__statNumber">{job.numberOfFoundListings || 0}</div>
-                  <div className="jobGrid__card__statLabel" title={t('jobs.cardListings')}>
-                    {t('jobs.cardListings')}
+          {(jobsData?.result || []).map((job) => {
+            const setup = jobSetupLine(job, providerNames);
+            return (
+              <article key={job.id} className={`jobGrid__card${job.enabled ? '' : ' jobGrid__card--paused'}`}>
+                {/* Read the way the dashboard reads a job: the state as a dot, the name, what it
+                    searches and where it reports, and the one figure that says whether it is
+                    working. Three tinted tiles used to carry the listings, providers and channels as
+                    numbers of equal weight; two of them only ever meant "open the job to see which". */}
+                <div className="jobGrid__card__body">
+                  <div className="jobGrid__card__text">
+                    <div className="jobGrid__card__header">
+                      <span
+                        className={`jobGrid__card__dot${job.enabled ? ' jobGrid__card__dot--active' : ''}`}
+                        aria-hidden="true"
+                      />
+                      <span className="jobGrid__card__name" title={job.name}>
+                        {job.name}
+                      </span>
+                      {job.running && <span className="jobGrid__card__running">{t('jobs.cardRunning')}</span>}
+                      {job.isOnlyShared && (
+                        <Tooltip content={t('jobs.cardSharedReadOnly')}>
+                          <span
+                            className="jobGrid__card__shared"
+                            role="img"
+                            tabIndex={0}
+                            aria-label={t('jobs.cardSharedReadOnly')}
+                          >
+                            <IconWarning />
+                          </span>
+                        </Tooltip>
+                      )}
+                    </div>
+                    {setup && (
+                      <span className="jobGrid__card__setup" title={setup}>
+                        {setup}
+                      </span>
+                    )}
+                    {/* "When did this last run, and did it find anything" is the reason to open
+                        this page at all, and until now the answer was on no card. */}
+                    <span className="jobGrid__card__lastRun">
+                      {job.lastRunAt
+                        ? t('jobs.cardLastRun', { time: relativeTime(job.lastRunAt, t) })
+                        : t('jobs.lastRunNever')}
+                    </span>
+                  </div>
+                  <div className="jobGrid__card__count">
+                    <span className="jobGrid__card__countValue">{job.numberOfFoundListings || 0}</span>
+                    <span className="jobGrid__card__countLabel">{t('jobs.cardListings')}</span>
                   </div>
                 </div>
-                <div className="jobGrid__card__stat">
-                  <div className="jobGrid__card__statNumber">{job.provider?.length || 0}</div>
-                  <div className="jobGrid__card__statLabel" title={t('jobs.cardProviders')}>
-                    {t('jobs.cardProviders')}
-                  </div>
-                </div>
-                <div className="jobGrid__card__stat">
-                  <div className="jobGrid__card__statNumber">{job.notificationAdapter?.length || 0}</div>
-                  <div className="jobGrid__card__statLabel" title={t('jobs.cardChannels')}>
-                    {t('jobs.cardChannels')}
-                  </div>
-                </div>
-              </div>
 
-              <div className="jobGrid__card__divider" />
-
-              {/* The dot in the header is the readout, this is the control. The word "Active"
+                {/* The dot in the header is the readout, this is the control. The word "Active"
                     that used to sit beside it was a third way of saying the same thing, so the
                     switch carries its name in an aria-label instead of in print. */}
-              <div className="jobGrid__card__footer">
-                <Switch
-                  onChange={(checked) => onJobStatusChanged(job.id, checked)}
-                  checked={job.enabled}
-                  disabled={job.isOnlyShared}
-                  size="small"
-                  aria-label={t('jobs.toggleEnabled')}
-                />
-                <JobActions
-                  job={job}
-                  density="card"
-                  onRun={onJobRun}
-                  onEdit={(id) => navigate(`/jobs/edit/${id}`)}
-                  onClone={(id) => navigate('/jobs/new', { state: { cloneFrom: id } })}
-                  onDeleteListings={onListingRemoval}
-                  onDeleteJob={onJobRemoval}
-                />
-              </div>
-            </div>
-          ))}
+                <div className="jobGrid__card__footer">
+                  <Switch
+                    onChange={(checked) => onJobStatusChanged(job.id, checked)}
+                    checked={job.enabled}
+                    disabled={job.isOnlyShared}
+                    size="small"
+                    aria-label={t('jobs.toggleEnabled')}
+                  />
+                  <JobActions
+                    job={job}
+                    density="card"
+                    onRun={onJobRun}
+                    onEdit={(id) => navigate(`/jobs/edit/${id}`)}
+                    onClone={(id) => navigate('/jobs/new', { state: { cloneFrom: id } })}
+                    onDeleteListings={onListingRemoval}
+                    onDeleteJob={onJobRemoval}
+                  />
+                </div>
+              </article>
+            );
+          })}
         </div>
       ) : (
         <JobsTable

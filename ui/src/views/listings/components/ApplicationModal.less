@@ -51,6 +51,32 @@
     margin-top: @space-4;
   }
 
+  &__missingList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: @space-2;
+  }
+
+  &__missingChip {
+    display: inline-flex;
+    align-items: center;
+    height: 26px;
+    padding: 0 @space-3;
+    border: 1px solid rgb(@color-warning-rgb / 40%);
+    border-radius: @radius-pill;
+    background: rgb(@color-warning-rgb / 12%);
+    color: @color-text;
+    font-family: @font-ui;
+    font-size: @text-sm;
+    font-weight: @weight-medium;
+    cursor: pointer;
+    transition: background @transition-fast;
+
+    &:hover {
+      background: rgb(@color-warning-rgb / 20%);
+    }
+  }
+
   &__footer {
     display: flex;
     justify-content: flex-end;

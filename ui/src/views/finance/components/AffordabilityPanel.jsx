@@ -4,14 +4,14 @@
  */
 
 import React from 'react';
-import { Button, Select, Spin, Table, Tag, Tooltip, Typography } from '@douyinfe/semi-ui-19';
+import { Button, Select, Spin, Table, Tooltip, Typography } from '@douyinfe/semi-ui-19';
 import { IconSearch } from '@douyinfe/semi-icons';
 import { useNavigate } from 'react-router';
 
 import { SegmentPart } from '../../../components/segment/SegmentPart.jsx';
 import { FieldLabel } from './ProfileForm.jsx';
 import AffordabilityScatter from '../charts/AffordabilityScatter.jsx';
-import { VERDICT_COLORS, formatEuro, withAlpha } from '../../../components/cards/chartTheme.js';
+import { VERDICT_COLORS, formatEuro } from '../../../components/cards/chartTheme.js';
 import { useSelector, useActions } from '../../../services/state/store.js';
 import { useTranslation, useLocale } from '../../../services/i18n/i18n.jsx';
 import { listedPriceKey } from '../../../services/finance/rentBasis.js';
@@ -112,29 +112,25 @@ export default function AffordabilityPanel({ profile }) {
       {
         // Rent and purchase rows share one table, so each row has to say which it is - a
         // 1.200 EUR rent and a 1.200 EUR flat would otherwise look like the same kind of row,
-        // and the user could not tell that each was judged by its own rules.
+        // and the user could not tell that each was judged by its own rules. A plain pill: the
+        // kind of a row is a fact, and a blue one and a green one read as two verdicts.
         title: t('finance.table.dealType'),
         dataIndex: 'dealType',
         width: 110,
         render: (dealType) => (
-          <Tag size="small" color={dealType === 'rent' ? 'blue' : 'green'}>
+          <span className="affordabilityPanel__deal">
             {t(`finance.dealType.${dealType === 'rent' ? 'rent' : 'buy'}`)}
-          </Tag>
+          </span>
         ),
       },
       {
+        // The verdict as coloured words and nothing else - the colour is the verdict's, so it
+        // goes on the verdict and not on a tile around it.
         title: t('finance.table.verdict'),
         dataIndex: 'verdict',
         width: 130,
         render: (verdict) => (
-          <span
-            className="affordabilityPanel__chip"
-            style={{
-              color: VERDICT_COLORS[verdict],
-              backgroundColor: withAlpha(VERDICT_COLORS[verdict], 0.12),
-              borderColor: withAlpha(VERDICT_COLORS[verdict], 0.4),
-            }}
-          >
+          <span className="affordabilityPanel__verdict" style={{ color: VERDICT_COLORS[verdict] }}>
             {t(`finance.verdict.${verdict}`)}
           </span>
         ),
@@ -172,10 +168,11 @@ export default function AffordabilityPanel({ profile }) {
           </Select>
         </label>
 
+        {/* Outlined: red is for the one action a page is about, and on this page that is the Save in
+            the bar at its foot, which stands on screen beside this button whenever a field changed. */}
         <Button
           className="affordabilityPanel__run"
-          theme="solid"
-          type="primary"
+          theme="outline"
           icon={<IconSearch />}
           onClick={run}
           loading={loading}
@@ -203,12 +200,14 @@ export default function AffordabilityPanel({ profile }) {
           </Text>
 
           <div className="affordabilityPanel__summary">
+            {/* The count in the text colour, the verdict under it in its own: the colour belongs to
+                the words that name the verdict, not to the figure. */}
             {['affordable', 'stretch', 'unaffordable'].map((verdict) => (
               <div className="affordabilityPanel__stat" key={verdict}>
-                <span className="affordabilityPanel__stat-value" style={{ color: VERDICT_COLORS[verdict] }}>
-                  {data.summary[verdict]}
+                <span className="affordabilityPanel__stat-value">{data.summary[verdict]}</span>
+                <span className="affordabilityPanel__stat-label" style={{ color: VERDICT_COLORS[verdict] }}>
+                  {t(`finance.verdict.${verdict}`)}
                 </span>
-                <span className="affordabilityPanel__stat-label">{t(`finance.verdict.${verdict}`)}</span>
               </div>
             ))}
             {data.summary.buy?.cheapestAffordable != null && (

@@ -5,11 +5,12 @@
 
 @import '../../tokens.less';
 
+/* What the pins mean, in the panel's quiet tone: a key is read once and then looked past. */
 .mapLegend {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: @space-1 14px;
+  gap: @space-1 @space-4;
 
   &__entry {
     display: inline-flex;
@@ -20,14 +21,14 @@
   }
 
   &__dot {
-    width: 9px;
-    height: 9px;
+    width: 8px;
+    height: 8px;
     border-radius: @radius-pill;
     flex: none;
 
-    /* The stack badge on the pin (`.map-marker-badge`) is painted with the accent token. */
+    /* The stack badge on the pin (`.map-marker-badge`) is painted in the text colour. */
     &--stack {
-      background: @color-accent;
+      background: @color-text;
     }
   }
 }

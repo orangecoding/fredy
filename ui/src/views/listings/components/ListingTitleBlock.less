@@ -4,7 +4,7 @@
   display: flex;
   flex-direction: column;
   gap: @space-3;
-  padding: @space-6 @space-8 0;
+  padding-top: @space-7;
 
   &__heading {
     margin: 0;
@@ -12,10 +12,10 @@
     // A portal title can carry a word wider than a phone, a compound noun or a URL.
     overflow-wrap: anywhere;
     font-family: @font-ui;
-    font-size: 30px;
-    font-weight: 600;
+    font-size: @text-display;
+    font-weight: @weight-strong;
     letter-spacing: -0.02em;
-    line-height: 1.22;
+    line-height: 1.2;
     color: @color-text;
   }
 
@@ -35,16 +35,17 @@
     flex: 1 1 24rem;
   }
 
+  // A glyph beside the address, not a signal: muted like every other icon on the page.
   &__pin {
     flex: 0 0 auto;
-    color: @color-accent;
+    color: @color-muted;
     font-size: @text-md;
   }
 
   &__address-link {
     color: @color-muted;
     text-decoration: none;
-    font-size: @text-base;
+    font-size: @text-md;
     overflow-wrap: anywhere;
     transition: color @transition-fast;
 
@@ -55,6 +56,7 @@
     &:hover {
       color: @color-text;
       text-decoration: underline;
+      text-underline-offset: 3px;
     }
   }
 
@@ -69,73 +71,30 @@
   // caption, and four bare words would otherwise read as navigation.
   &__status-caption {
     font-size: @text-sm;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
     color: @color-muted;
   }
 
-  /* Semi draws its button radios as a bordered strip of grey boxes. Here the alternatives are the
-     quiet part and only the current state is drawn, so the strip loses its frame and the checked
-     segment becomes a solid accent pill - the same shape the page uses for its primary button,
-     because picking a status is the same kind of commitment. */
-  &__segment {
-    &.semi-radioGroup-buttonRadio .semi-radio-buttonRadioGroup {
-      background: transparent;
-      border: 0;
-      padding: 0;
-      gap: @space-1;
-    }
-
-    .semi-radio-addon-buttonRadio {
-      height: 32px;
-      display: inline-flex;
-      align-items: center;
-      padding: 0 @space-3;
-      border: 0;
-      border-radius: @radius-btn;
-      background: transparent;
-      color: @color-muted;
-      font-size: @text-base;
-      font-weight: 500;
-      transition:
-        color @transition-fast,
-        background @transition-fast;
-    }
-
-    .semi-radio-addon-buttonRadio-hover {
-      background: @color-fill-1;
-      color: @color-text;
-    }
-
-    .semi-radio-addon-buttonRadio-checked {
-      background: @color-accent;
-      // White on the accent, which is a dark red in both themes. One of the few literals the
-      // palette does not own, for exactly that reason.
-      color: #fff;
-      font-weight: 600;
-
-      &.semi-radio-addon-buttonRadio-hover {
-        background: @color-accent-dim;
-        color: #fff;
-      }
-    }
-  }
+  // The segment itself is drawn by `.listing-segmented` in ListingDetail.less, which the route
+  // picker on the map shares.
 
   &__status-set {
     font-size: @text-xs;
-    color: @color-faint;
+    color: @color-muted;
   }
 
   @media (max-width: 1180px) {
-    padding: @space-5 @space-4 0;
+    padding-top: @space-5;
 
     &__heading {
-      font-size: @text-xl;
+      font-size: @text-2xl;
     }
   }
 
   @media (max-width: 768px) {
+    &__heading {
+      font-size: @text-xl;
+    }
+
     &__row {
       flex-direction: column;
       align-items: stretch;

@@ -27,23 +27,19 @@
     color: @color-text;
   }
 
-  /* Noticeable enough to be found, quiet enough not to compete with the name it belongs to.
-     @color-faint measured 2,47:1 on @color-base and fails AA. */
+  /* Noticeable enough to be found, quiet enough not to compete with the name it belongs to. The
+     faint grey measured 2,47:1 on the page and fails AA. Brightens to the text colour on hover and
+     focus, the same gesture as the mark beside a section title; the focus ring is the global one. */
   &__help {
     display: inline-flex;
     align-items: center;
     color: @color-muted;
     cursor: help;
+    transition: color @transition-fast;
 
     &:hover,
     &:focus-visible {
-      color: @color-accent;
-    }
-
-    &:focus-visible {
-      outline: 2px solid @color-accent;
-      outline-offset: 2px;
-      border-radius: @radius-chip;
+      color: @color-text;
     }
   }
 
@@ -67,15 +63,13 @@
 }
 
 /* "Step 1" on the household, "Step 2" on the tab that follows it. The page asks for two numbers
-   and then for one tab's worth of detail, and saying so in the card headers is what turns two
-   cards into an order. An eyebrow, not a field name - which is why it keeps the uppercase
-   treatment that .financeField__label gave up. */
+   and then for one tab's worth of detail, and saying so in the section headers is what turns two
+   sections into an order. A quiet note at the right edge, in sentence case and the muted text
+   colour: it orders the page, it is not a status, and green capitals made it the loudest word in
+   every header it stood in. */
 .financeStep {
-  font-size: @text-xs;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: @color-success;
+  font-size: @text-sm;
+  color: @color-muted;
   white-space: nowrap;
 
   /* It takes its width out of the card's title, and on a phone "Objekt und Kaufnebenkosten" needs
@@ -102,9 +96,8 @@
 
     /*
      * Wider than the 112px of an admin setting, because the figures are longer. A purchase price
-     * runs to seven digits, and in @font-mono "1.500.000" alone is around 65px before the euro sign
-     * beside it. One width for every field on the page, so a column of them still reads as a
-     * column.
+     * runs to seven digits, and "1.500.000" alone is around 60px before the euro sign beside it.
+     * One width for every field on the page, so a column of them still reads as a column.
      *
      * Hung off `__fields` and not off `.financeForm`: these are flat BEM names and no element on
      * this page carries `.financeForm` on its own, so a rule nested under it would match nothing.
@@ -143,8 +136,8 @@
   }
 
   &__person {
-    padding-bottom: @space-4;
-    margin-bottom: @space-4;
+    padding-bottom: @space-5;
+    margin-bottom: @space-5;
     border-bottom: 1px solid @color-border;
 
     &:last-child {
@@ -164,8 +157,8 @@
 
   &__person-title {
     display: block;
-    margin-bottom: @space-3;
-    font-size: @text-sm;
+    margin-bottom: @space-2;
+    font-size: @text-base;
   }
 
   &__person-header &__person-title {
@@ -193,13 +186,13 @@
     line-height: 1.4;
   }
 
+  /* Figures read off rather than typed: a label on the left, the figure on the right, a hairline
+     between two of them. The last one - what has to be borrowed - is the answer to the section and
+     is set a step larger and heavier; no colour, the size is enough. */
   &__readout {
-    margin-top: @space-5;
-    padding-top: @space-4;
-    border-top: 1px solid @color-border;
+    margin-top: @space-4;
     display: flex;
     flex-direction: column;
-    gap: @space-2;
   }
 
   &__readout-row {
@@ -207,36 +200,37 @@
     align-items: baseline;
     justify-content: space-between;
     gap: @space-4;
+    padding: @space-2 0;
+    border-top: 1px solid @color-border;
 
     &--emphasis {
-      padding-top: @space-2;
-      border-top: 1px solid @color-border;
+      padding-top: @space-3;
 
       .financeForm__readout-value {
-        color: @color-accent;
-        font-size: @text-md;
+        font-size: @text-lg;
+        font-weight: @weight-strong;
       }
     }
   }
 
   &__readout-value {
-    font-family: @font-mono;
     font-size: @text-base;
+    font-weight: @weight-medium;
     color: @color-text;
+    white-space: nowrap;
   }
 }
 
 /* Deliberately after .financeForm: `resultSummary__rows` sits on the same element as
-   `financeForm__readout` and overrides its margin-top and border-top. Both selectors are one class
-   deep, so the one further down the file wins - move this block up and the override stops. */
+   `financeForm__readout` and overrides its margin. Both selectors are one class deep, so the one
+   further down the file wins - move this block up and the override stops. */
 .resultSummary {
   /* The four figures that back the answer up. Same rows PropertyForm uses for the closing costs,
-     because they are the same kind of figure: a label and a number, read once. */
+     because they are the same kind of figure: a label and a number, read once. Hairlines rather
+     than a box around them - they continue the figures above, they are not a widget. */
   &__rows {
-    margin-top: @space-4;
-    padding: @space-4;
-    border: 1px solid @color-border;
-    border-radius: @radius-card;
+    margin-top: 0;
+    border-bottom: 1px solid @color-border;
   }
 
   &__label {
@@ -246,12 +240,10 @@
 }
 
 .propertyForm {
-  /* The household fold in FinanceCalculator.less sits between cards and is drawn as a box. This
-     one sits inside a card, where a second bordered box would be a card within a card, so it is
-     a rule and a header row instead. The header itself is the shared .finance__fold* markup, so
-     both folds are read the same way. */
+  /* The same fold as the household's: a header row on a hairline, the shared .finance__fold*
+     markup inside it, so both folds are read the same way. */
   &__rates {
-    margin-top: @space-4;
+    margin-top: @space-2;
     border-top: 1px solid @color-border;
 
     .semi-collapse-item {
@@ -259,8 +251,15 @@
     }
 
     .semi-collapse-header {
+      margin: 0;
       padding: @space-3 0;
+      border-radius: 0;
       cursor: pointer;
+
+      &:hover,
+      &:active {
+        background: transparent;
+      }
     }
 
     .semi-collapse-content {
@@ -284,12 +283,14 @@
     border-bottom: none;
   }
 
+  /* The scenario's colour on the trajectory chart, so a row here and a line there need no legend
+     between them. A hairline-thin bar, not a tile. */
   &__swatch {
     flex: 0 0 auto;
-    width: 4px;
+    width: 3px;
     align-self: stretch;
     min-height: 40px;
-    border-radius: @radius-chip;
+    border-radius: @radius-pill;
   }
 
   &__fields {

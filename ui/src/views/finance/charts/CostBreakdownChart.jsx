@@ -11,21 +11,25 @@ import {
   baseChartOptions,
   formatEuro,
   registerFinanceCharts,
+  shareRamp,
 } from '../../../components/cards/chartTheme.js';
 import { useTranslation, useLocale } from '../../../services/i18n/i18n.jsx';
 
 registerFinanceCharts();
 
 /**
- * Fixed hues per cost type, so a slice keeps its meaning between renders.
+ * One step of the greyscale ramp per cost type, so a slice keeps its meaning between renders.
  *
- * Resolved per call rather than frozen into a constant: the hues themselves are theme tokens, and
- * a list captured at import time would still be the dark ones after a switch to light.
+ * Shares of one sum, so the ramp the dashboard uses for shares: the steps differ in lightness
+ * rather than hue, the purchase price is the brightest and the costs on top of it step down.
+ *
+ * Resolved per call rather than frozen into a constant: the ramp is made of theme tokens, and a
+ * list captured at import time would still be the dark one after a switch to light.
  *
  * @returns {string[]}
  */
 function sliceColors() {
-  return [CHART_COLORS.BLUE, CHART_COLORS.ACCENT, CHART_COLORS.WARNING, CHART_COLORS.PURPLE, CHART_COLORS.MUTED];
+  return shareRamp();
 }
 
 /**
@@ -50,11 +54,11 @@ const centerTotalPlugin = {
     ctx.textBaseline = 'middle';
 
     ctx.fillStyle = CHART_COLORS.MUTED;
-    ctx.font = `11px ${CHART_COLORS.FONT_UI}`;
-    ctx.fillText(String(options.label ?? '').toUpperCase(), arc.x, arc.y - 12);
+    ctx.font = `12px ${CHART_COLORS.FONT_UI}`;
+    ctx.fillText(String(options.label ?? ''), arc.x, arc.y - 12);
 
     ctx.fillStyle = CHART_COLORS.TEXT;
-    ctx.font = `16px ${CHART_COLORS.FONT_MONO}`;
+    ctx.font = `600 16px ${CHART_COLORS.FONT_UI}`;
     ctx.fillText(options.value, arc.x, arc.y + 8);
     ctx.restore();
   },
@@ -128,9 +132,11 @@ export default function CostBreakdownChart({ financing, height = 280 }) {
       {
         data: values,
         backgroundColor: labels.map((_, index) => slices[index % slices.length]),
-        borderColor: CHART_COLORS.ELEVATED,
-        borderWidth: 2,
-        hoverOffset: 6,
+        // Gaps between the slices instead of an outline in a surface colour, which drew a ring
+        // around each one now that the chart sits on the page rather than on a card.
+        borderWidth: 0,
+        spacing: 2,
+        hoverOffset: 4,
       },
     ],
   };

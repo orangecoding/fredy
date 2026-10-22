@@ -25,7 +25,7 @@
     /* Under every Semi portal (Modal 1000, Toast 1010, Dropdown 1050, Popover 1060), so the style
        dropdown, toasts and dialogs still open above an expanded map. */
     z-index: 900;
-    background: var(--semi-color-bg-0);
+    background: @color-base;
 
     .map-container {
       border: none;
@@ -97,8 +97,8 @@
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    /* Tight: the boxes are one stack, not separate widgets that happen to share a corner. */
-    gap: 4px;
+    /* Close: the boxes are one stack, not separate widgets that happen to share a corner. */
+    gap: @space-2;
     /* Fixed, so every box in the column comes out the same width. */
     width: min(300px, calc(100% - 24px));
     max-height: calc(100% - 24px);
@@ -139,43 +139,59 @@
     margin-top: 44px;
   }
 
-  &__expand {
+  /* On its own on the map it floats like the panels: their surface and their hairline, a muted
+     icon on it, no shadow. Inside a panel heading it drops the surface, see `&__groupTitle`. Two
+     classes, because Semi's own button rules are single classes that load after ours. */
+  &__expand.semi-button {
     padding: 0;
     flex: none;
-    box-shadow: @shadow-sm;
+    border: 1px solid @color-map-panel-border;
+    border-radius: @radius-card;
+    background: @color-map-panel;
+    color: @color-muted;
+
+    &:hover {
+      background: @color-map-panel;
+      color: @color-text;
+    }
   }
 }
 
 .map-panel {
+  /* Floats on the map: the map-panel surface with its own hairline, no blur and no shadow. A
+     `backdrop-filter` here also turned the panel into a containing block, which nothing inside it
+     needs. */
   background: @color-map-panel;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid @color-border;
+  border: 1px solid @color-map-panel-border;
   border-radius: @radius-card;
-  padding: 14px 16px;
+  padding: @space-4;
   /* The column sets the width; every box fills it, so they line up. */
   width: 100%;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: @space-3;
 
   &__row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
+    gap: @space-3;
 
     // A setting that only means something once the layer above it is on. Indented and rule-marked
     // so the dependency is visible rather than only discoverable by toggling.
     &--nested {
-      margin-left: 10px;
-      padding-left: 10px;
+      margin-left: @space-2;
+      padding-left: @space-3;
       border-left: 1px solid @color-map-panel-border;
     }
   }
 
-  &__label {
+  // Sentence case at the label size, in the panel's quiet tone. Semi's small text is 12px, so the
+  // size is restated on its own class.
+  &__label,
+  &__label.semi-typography {
+    font-size: @text-sm;
     color: @color-map-panel-text;
   }
 
@@ -184,55 +200,76 @@
     display: contents;
   }
 
+  /* The filters on the map are pills, like the quick filters over the listings. Two classes and
+     `!important`, because the global field rules carry it too. */
+  .semi-select {
+    border-radius: @radius-pill !important;
+  }
+
+  .semi-select:not(.semi-select-multiple) {
+    height: @control-sm;
+
+    .semi-select-selection {
+      height: @control-sm - 2px;
+      line-height: @control-sm - 2px;
+      font-size: @text-sm;
+    }
+  }
+
   /* A row rather than a bare line, so a heading can carry a control on its right. The first one
      does: the fullscreen toggle used to float above the box as a lone square. With nothing beside
-     it the row is indistinguishable from the line it replaced. */
+     it the row is indistinguishable from the line it replaced. A heading in sentence case, the
+     size of the text it heads. */
   &__groupTitle {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: @space-2;
-    min-height: 20px;
-    font-size: 10.5px;
-    font-weight: 600;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-    color: @color-faint;
+    min-height: 24px;
+    font-size: @text-base;
+    font-weight: @weight-strong;
+    color: @color-text;
 
-    /* Smaller than the same button gets on its own: here it sits beside 10.5px type, not on the
-       map. Two classes, because Semi's own `.semi-button { height: 32px }` is one and its
-       stylesheet loads after ours. */
+    /* Smaller than the same button gets on its own: here it sits beside a heading, not on the
+       map, and it drops the floating surface because the panel already is one. Two classes,
+       because Semi's own `.semi-button` height is one and its stylesheet loads after ours. */
     .map-shell__expand {
       width: 24px;
       height: 24px;
       min-width: 24px;
-      box-shadow: none;
+      border: 0;
+      background: transparent;
     }
   }
 
   &__divider {
     height: 1px;
-    background: @color-border;
+    background: @color-map-panel-border;
   }
 
-  // Warum ein Filter gesperrt ist, neben dem Filter statt in einem Balken ueber der Karte.
+  // Warum ein Filter gesperrt ist, neben dem Filter statt in einem Balken ueber der Karte. Ein Satz
+  // im leisen Ton, ohne Kasten; der Link wie jeder Link im Fliesstext.
   &__hint {
-    padding: @space-2 10px;
-    border-radius: @radius-chip;
-    background: @color-elevated;
-    border: 1px solid @color-border;
     font-size: @text-xs;
     line-height: 1.5;
     color: @color-map-panel-text;
 
     a {
-      color: @color-info;
+      color: @color-text;
+      text-decoration: underline;
+      text-underline-offset: 3px;
     }
   }
 }
 
+/* Every map in the app sits in the same frame: a hairline and the surface radius. A view that
+   wants it full bleed takes both away (see the map view's stylesheet). */
 .map-container {
+  width: 100%;
   height: 100%;
+  overflow: hidden;
+  border: 1px solid @color-border;
+  border-radius: @radius-card;
 }
 
 /* Fix Mapbox Draw cursors for MapLibre GL compatibility */

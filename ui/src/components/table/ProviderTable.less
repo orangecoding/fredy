@@ -5,9 +5,14 @@
 
 @import '../../tokens.less';
 
-/* Right-aligned by flex, not by `float`, and spaced by a gap rather than by an empty 16px div. */
+/* Right-aligned by flex, not by `float`, and spaced by a gap rather than by an empty 16px div. Two
+   round, muted icons, the same tools a job card and a listing card carry. */
 .providerTable__actions {
   display: flex;
   justify-content: flex-end;
-  gap: @space-2;
+  gap: @space-1;
+
+  .semi-button {
+    border-radius: @radius-pill;
+  }
 }

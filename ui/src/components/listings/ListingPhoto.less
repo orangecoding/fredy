@@ -1,0 +1,16 @@
+@import '../../tokens.less';
+
+.listingPhoto {
+  display: block;
+  width: 100%;
+  object-fit: cover;
+  background: @color-elevated;
+
+  &--empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: @color-faint;
+    font-size: 28px;
+  }
+}

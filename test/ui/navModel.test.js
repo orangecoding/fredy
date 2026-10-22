@@ -13,7 +13,6 @@ import {
   navTreeFor,
   routeKeysOf,
   resolveActiveKey,
-  sectionScope,
   startsSection,
 } from '../../ui/src/components/navigation/navModel.js';
 
@@ -36,6 +35,7 @@ describe('navModel', () => {
   });
 
   it('offers seven destinations to an admin and six to everyone else', () => {
+    // The searches straight under the overview: they are what everything below them is found by.
     expect(routeKeysOf(navTreeFor(true))).toEqual([
       '/dashboard',
       '/jobs',
@@ -46,6 +46,13 @@ describe('navModel', () => {
       '/admin',
     ]);
     expect(routeKeysOf(navTreeFor(false))).toHaveLength(6);
+  });
+
+  it('keeps every destination at the top level, one click away', () => {
+    for (const node of NAV_TREE) {
+      expect(node.key.startsWith('/')).toBe(true);
+      expect(node.children).toBeUndefined();
+    }
   });
 
   it('translates every label it shows', () => {
@@ -116,25 +123,6 @@ describe('navModel', () => {
 
     expect(breaks).toHaveLength(2);
     expect(breaks.map((index) => tree[index].key)).toEqual(['/settings', '/admin']);
-  });
-
-  it('names the two sections that need naming, and leaves the first one unnamed', () => {
-    // The scope a ScopeBadge takes, not a translation key of its own: the sidebar says whose
-    // settings these are with the same chip the two pages carry beside their heading.
-    const tree = navTreeFor(true);
-    expect(sectionScope(tree, 0)).toBeNull();
-    expect(
-      sectionScope(
-        tree,
-        tree.findIndex((node) => node.key === '/settings'),
-      ),
-    ).toBe('user');
-    expect(
-      sectionScope(
-        tree,
-        tree.findIndex((node) => node.key === '/admin'),
-      ),
-    ).toBe('instance');
   });
 
   it('prefers the longest match, so a listing does not resolve to a shorter sibling', () => {

@@ -6,11 +6,11 @@
 @import '../../../tokens.less';
 
 .householdHeadline {
-  /* The answer to the two fields above, separated by a rule rather than by a card boundary: it is
-     what they produce, not a second topic. */
+  /* The answer to the two fields above, separated by a rule rather than by a section boundary: it
+     is what they produce, not a second topic. */
   &__readout {
-    margin-top: @space-5;
-    padding-top: @space-4;
+    margin-top: @space-4;
+    padding-top: @space-5;
     border-top: 1px solid @color-border;
   }
 
@@ -26,39 +26,74 @@
     color: @color-muted;
   }
 
+  /* The figure the page is for. The interface face at headline size, in the text colour: a
+     monospaced red figure read as a warning about the number rather than as the number. */
   &__value {
-    font-family: @font-mono;
-    font-size: @text-lg;
-    color: @color-accent;
+    font-size: @text-2xl;
+    font-weight: @weight-strong;
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    color: @color-text;
+    white-space: nowrap;
   }
 
+  /* Three parts of one income, drawn in steps of the greyscale ramp: what the rule leaves for
+     housing in the brightest, living costs a step down, the buffer as the empty track. */
   &__bar {
     display: flex;
     overflow: hidden;
-    height: 8px;
-    margin-top: @space-3;
-    border-radius: @radius-chip;
-    background: @color-elevated;
+    height: 6px;
+    margin-top: @space-4;
+    border-radius: @radius-pill;
+    background: @color-fill-2;
   }
 
   &__seg {
     height: 100%;
 
     &--rule {
-      background: @color-accent;
+      background: @color-chart-1;
     }
 
     &--living {
-      background: @color-border-bright;
+      background: @color-chart-3;
     }
   }
 
   &__legend {
     display: flex;
-    justify-content: space-between;
-    margin-top: @space-2;
+    flex-wrap: wrap;
+    gap: @space-1 @space-5;
+    margin-top: @space-3;
     font-size: @text-xs;
     color: @color-muted;
+  }
+
+  &__legendItem {
+    display: inline-flex;
+    align-items: center;
+    gap: @space-2;
+  }
+
+  &__key {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    flex: none;
+
+    &--rule {
+      background: @color-chart-1;
+    }
+
+    &--living {
+      background: @color-chart-3;
+    }
+
+    &--buffer {
+      box-sizing: border-box;
+      background: @color-fill-2;
+      border: 1px solid @color-border-bright;
+    }
   }
 
   &__prompt {

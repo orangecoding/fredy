@@ -106,3 +106,39 @@ describe('notification/notify - price changes', () => {
 // The matching check against the adapters Fredy really ships lives in `shippedAdapters.test.js`.
 // It cannot run here: every case above replaces `lib/utils.js` with a mock, and unmocking it well
 // enough to load the real adapter directory raced the concurrent imports those adapters trigger.
+
+describe('notification/notify - two channels of the same type', () => {
+  // Adapters pick their settings with `notificationConfig.find((a) => a.id === config.id)`. Handed
+  // the whole list, both Telegram channels resolved to the first: it got every message twice, the
+  // second none.
+  it('hands each call only its own channel', async () => {
+    const telegram = { config: { id: 'telegram' }, send: vi.fn(() => Promise.resolve()) };
+    adapters = [telegram];
+    const notify = await loadNotify();
+    const family = { id: 'telegram', name: 'Family chat', fields: { chatId: '1' } };
+    const work = { id: 'telegram', name: 'Work chat', fields: { chatId: '2' } };
+
+    notify.send('immowelt', [{ title: 'A flat' }], [family, work], 'job1', '');
+
+    expect(telegram.send).toHaveBeenCalledTimes(2);
+    expect(telegram.send.mock.calls[0][0].notificationConfig).toEqual([family]);
+    expect(telegram.send.mock.calls[1][0].notificationConfig).toEqual([work]);
+  });
+
+  it('still reaches the other channels when one adapter throws on the spot', async () => {
+    const broken = {
+      config: { id: 'broken' },
+      send: vi.fn(() => {
+        throw new Error('missing token');
+      }),
+    };
+    const mail = { config: { id: 'mail' }, send: vi.fn(() => Promise.resolve()) };
+    adapters = [broken, mail];
+    const notify = await loadNotify();
+
+    const results = await Promise.allSettled(notify.send('x', [], [{ id: 'broken' }, { id: 'mail' }], 'job1', ''));
+
+    expect(mail.send).toHaveBeenCalledTimes(1);
+    expect(results.map((r) => r.status)).toEqual(['rejected', 'fulfilled']);
+  });
+});

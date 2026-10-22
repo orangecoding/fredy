@@ -7,11 +7,10 @@ import React from 'react';
 import { Bar } from 'react-chartjs-2';
 
 import {
-  CHART_COLORS,
   baseChartOptions,
   formatEuro,
   registerFinanceCharts,
-  withAlpha,
+  shareRamp,
 } from '../../../components/cards/chartTheme.js';
 import { useTranslation, useLocale } from '../../../services/i18n/i18n.jsx';
 
@@ -22,6 +21,9 @@ registerFinanceCharts();
  *
  * The instalment is flat for the whole term, so this chart is the one that shows why a low
  * Tilgung is expensive - the first years are almost entirely interest.
+ *
+ * Two steps of the greyscale ramp: principal, which is what the payment buys, in the brightest,
+ * interest a step down. Two hues would suggest two categories of equal standing.
  *
  * @param {Object} props
  * @param {Object} props.scenario A scenario from calculateFinancing.
@@ -36,28 +38,28 @@ export default function InterestPrincipalChart({ scenario, height = 280 }) {
     [scenario],
   );
 
-  const data = React.useMemo(
-    () => ({
+  const data = React.useMemo(() => {
+    const ramp = shareRamp();
+    return {
       labels: years.map((year) => `${year.year}`),
       datasets: [
         {
           label: t('finance.chart.interestShare'),
           data: years.map((year) => year.interest),
-          backgroundColor: withAlpha(CHART_COLORS.ACCENT, 0.85),
+          backgroundColor: ramp[2],
           borderRadius: 2,
           stack: 'payments',
         },
         {
           label: t('finance.chart.principalShare'),
           data: years.map((year) => year.principal),
-          backgroundColor: withAlpha(CHART_COLORS.BLUE, 0.85),
+          backgroundColor: ramp[0],
           borderRadius: 2,
           stack: 'payments',
         },
       ],
-    }),
-    [years, t],
-  );
+    };
+  }, [years, t]);
 
   const options = React.useMemo(() => {
     const base = baseChartOptions({ locale, legend: true });

@@ -127,6 +127,12 @@ describe('no styling in the markup', () => {
     expect(buttons.filter((button) => /size="small"/.test(button))).toEqual([]);
   });
 
+  // Exposé: mono is for tokens and code. The hint used to be mono with letter-spacing.
+  it('sets the caps lock hint as a sentence, not as code', () => {
+    const block = mutatorLess.match(/\.userMutator__capsHint \{[\s\S]*?\n\}/)[0];
+    expect(block).not.toMatch(/@font-mono|letter-spacing/);
+  });
+
   it('measures every gap and margin on the scale', () => {
     const offences = [...mutatorLess.matchAll(/(?:^|\s)(gap|margin|padding)(?:-[a-z]+)?:\s*([^;]+);/g)].filter(
       ([, , value]) => /\d+(\.\d+)?(px|rem|em)/.test(value) && value.trim() !== '0',

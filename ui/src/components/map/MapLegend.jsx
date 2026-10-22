@@ -28,8 +28,8 @@ export default function MapLegend({ hasStacks, hasRing, hasHome }) {
 
   const entries = [
     { key: 'listing', color: MARKER_COLORS.listing, show: true },
-    // No colour of its own: the dot takes the badge's accent token from the stylesheet, so it is
-    // the same red as the badge it explains in both themes.
+    // No colour of its own: the dot takes the badge's text-colour token from the stylesheet, so it
+    // is the same as the badge it explains in both themes.
     { key: 'stack', color: null, show: hasStacks },
     { key: 'inRing', color: MARKER_COLORS.inRing, show: hasRing },
     { key: 'home', color: MARKER_COLORS.home, show: hasHome },

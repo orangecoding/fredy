@@ -4,37 +4,30 @@
  */
 
 import { Tooltip } from '@douyinfe/semi-ui-19';
-import { IconChevronDown, IconChevronUp, IconExpand, IconGridView, IconHelpCircle } from '@douyinfe/semi-icons';
+import { IconHelpCircle } from '@douyinfe/semi-icons';
 
-import IconEuro from '../../../components/icons/IconEuro.jsx';
 import { describeBenchmark } from '../../../components/listings/PricePerSqmBadge.jsx';
 import PriceHistoryChart from './PriceHistoryChart.jsx';
 import { buildObjectFacts } from '../listingFacts.js';
 import { formatDeviation } from '../../../services/listings/marketBenchmark.js';
-import { VERDICT_COLORS, formatEuro, withAlpha } from '../../../components/cards/chartTheme.js';
+import { formatEuro } from '../../../components/cards/chartTheme.js';
 import { useTranslation, useLocale } from '../../../services/i18n/i18n.jsx';
 import './ListingKeyFacts.less';
 
-/** One icon per tile, in the order `buildObjectFacts` returns them. */
-const TILE_ICONS = {
-  size: <IconExpand />,
-  rooms: <IconGridView />,
-  pricePerSqm: <IconEuro />,
-};
-
 /**
- * The market comparison as one sentence a reader can act on.
+ * The market comparison as one phrase a reader can act on.
  *
  * The badge used elsewhere in the app leads with the price per square metre and appends the
  * deviation, which is right in a table where the quotient is the column. Here the quotient already
- * has a tile of its own, so the only thing left to say is the direction - and a direction reads
- * faster as a coloured pill with an arrow than as a percentage in brackets.
+ * has a figure of its own, so the only thing left to say is the direction - set as coloured words
+ * under the price, the way the grid and the dashboard say it. The words carry the direction
+ * ("below", "above"), so the colour is confirmation rather than the message.
  *
  * @param {Object} props
  * @param {{percent: number|null, verdict: string|null}} props.benchmark
  * @returns {React.ReactElement|null}
  */
-function MarketPill({ benchmark }) {
+function MarketWords({ benchmark }) {
   const t = useTranslation();
   const locale = useLocale();
   const { verdict, percent } = benchmark;
@@ -48,12 +41,7 @@ function MarketPill({ benchmark }) {
 
   return (
     <Tooltip content={describeBenchmark(benchmark, t, locale)} position="top">
-      <span className={`listing-keyfacts__market listing-keyfacts__market--${verdict}`}>
-        {/* Down is always cheaper and up is always dearer, on this page and everywhere else. The
-            arrow carries that on its own, so the colour is confirmation rather than the message. */}
-        {verdict === 'above' ? <IconChevronUp aria-hidden="true" /> : <IconChevronDown aria-hidden="true" />}
-        {label}
-      </span>
+      <span className={`listing-keyfacts__market listing-keyfacts__market--${verdict}`}>{label}</span>
     </Tooltip>
   );
 }
@@ -62,8 +50,9 @@ function MarketPill({ benchmark }) {
  * The figures a listing is judged by, in the order the questions are asked.
  *
  * What it costs comes first and largest, because every other number on the page is read against
- * it; how it compares to the area comes next, because that is the only figure two listings can be
- * compared on; and the three properties that fix the shape of the flat follow as tiles.
+ * it; how it compares to the area comes next, in words, because that is the only figure two
+ * listings can be compared on; and the three properties that fix the shape of the flat follow as a
+ * calm row of label over value, divided by hairlines rather than set in tiles.
  *
  * The explanations used to live in a tooltip wrapped around each whole row, with `cursor: help` as
  * the only sign they were there - which on a touch screen means they were not there at all. Each
@@ -90,7 +79,10 @@ export default function ListingKeyFacts({ listing, priceHistory, financeThreshol
 
   return (
     <section className="listing-card listing-keyfacts">
-      <h2 className="listing-card__label">{t('listing.detail.keyFactsTitle')}</h2>
+      {/* Named for the outline a screen reader announces, not drawn: the price beside the
+          photograph is the heading a sighted reader needs, and a caption over it was one line too
+          many at the top of the rail. */}
+      <h2 className="listing-card__label listing-keyfacts__title">{t('listing.detail.keyFactsTitle')}</h2>
 
       <div className="listing-keyfacts__price">
         <span className="listing-keyfacts__amount">{price.amount}</span>
@@ -98,31 +90,26 @@ export default function ListingKeyFacts({ listing, priceHistory, financeThreshol
         {price.reference && <span className="listing-keyfacts__reference">{price.reference}</span>}
       </div>
 
-      {benchmark != null && <MarketPill benchmark={benchmark} />}
+      {(benchmark?.verdict != null || affordability) && (
+        <div className="listing-keyfacts__verdicts">
+          {benchmark != null && <MarketWords benchmark={benchmark} />}
 
-      {affordability && (
-        <Tooltip content={affordability.helpText} position="top">
-          <span
-            className="listing-keyfacts__affordability"
-            style={{
-              color: VERDICT_COLORS[affordability.verdict],
-              backgroundColor: withAlpha(VERDICT_COLORS[affordability.verdict], 0.12),
-              borderColor: withAlpha(VERDICT_COLORS[affordability.verdict], 0.4),
-            }}
-          >
-            {affordability.label}
-          </span>
-        </Tooltip>
+          {affordability && (
+            <Tooltip content={affordability.helpText} position="top">
+              <span
+                className={`listing-keyfacts__affordability listing-keyfacts__affordability--${affordability.verdict}`}
+              >
+                {affordability.label}
+              </span>
+            </Tooltip>
+          )}
+        </div>
       )}
 
-      <div className="listing-keyfacts__tiles">
+      <dl className="listing-keyfacts__tiles">
         {tiles.map((tile) => (
           <div key={tile.id} className="listing-keyfacts__tile">
-            <span className="listing-keyfacts__tile-icon" aria-hidden="true">
-              {TILE_ICONS[tile.id]}
-            </span>
-            <span className="listing-keyfacts__tile-value">{tile.value ?? na}</span>
-            <span className="listing-keyfacts__tile-label">
+            <dt className="listing-keyfacts__tile-label">
               {tile.label}
               <Tooltip content={tile.helpText} position="top">
                 <IconHelpCircle
@@ -131,10 +118,11 @@ export default function ListingKeyFacts({ listing, priceHistory, financeThreshol
                   aria-label={t('listing.detail.explain', { field: tile.label })}
                 />
               </Tooltip>
-            </span>
+            </dt>
+            <dd className="listing-keyfacts__tile-value">{tile.value ?? na}</dd>
           </div>
         ))}
-      </div>
+      </dl>
 
       {/* Directly under the figures it explains. Hidden below two readings, so a listing whose
           price has never moved shows nothing at all rather than an empty frame. */}

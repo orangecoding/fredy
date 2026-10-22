@@ -5,6 +5,8 @@
 
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import Database from 'better-sqlite3';
+import { up as createSessions } from '../../lib/services/storage/migrations/sql/26.sessions.js';
+import { up as addSessionUserId } from '../../lib/services/storage/migrations/sql/50.session-user-id.js';
 
 /**
  * @fastify/session's default store keeps sessions in a process-local map: they are lost on
@@ -20,13 +22,8 @@ describe('SqliteSessionStore', () => {
 
   beforeEach(async () => {
     db = new Database(':memory:');
-    db.exec(`
-      CREATE TABLE sessions (
-        sid TEXT PRIMARY KEY,
-        data TEXT NOT NULL,
-        expires_at INTEGER NOT NULL
-      );
-    `);
+    createSessions(db);
+    addSessionUserId(db);
 
     vi.resetModules();
     vi.doMock('../../lib/services/storage/SqliteConnection.js', () => ({
@@ -63,6 +60,14 @@ describe('SqliteSessionStore', () => {
     await set('sid-1', sessionFor('user-1'));
     const loaded = await get('sid-1');
     expect(loaded.currentUser).toBe('user-1');
+  });
+
+  it('records the signed-in user on the row, so their sessions can be ended', async () => {
+    await set('sid-1', sessionFor('user-1'));
+    await set('sid-2', { cookie: { originalMaxAge: 60_000 } });
+    const userOf = (sid) => db.prepare('SELECT user_id FROM sessions WHERE sid = ?').get(sid).user_id;
+    expect(userOf('sid-1')).toBe('user-1');
+    expect(userOf('sid-2')).toBeNull();
   });
 
   it('returns null for an unknown session', async () => {

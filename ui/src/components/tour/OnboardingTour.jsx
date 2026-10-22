@@ -17,7 +17,7 @@ import {
   stepBodyKey,
   stepTitleKey,
 } from '../../services/tour/tourSteps.js';
-import { placeCard, scrimPanels, spotlightRect } from '../../services/tour/tourPlacement.js';
+import { placeCard, scrimPanels, sheetAtTop, spotlightRect } from '../../services/tour/tourPlacement.js';
 import {
   TOUR_OUTCOME,
   TOUR_STATUS_RUNNING,
@@ -62,7 +62,7 @@ const INITIAL_CARD_SIZE = Object.freeze({ width: 440, height: 280 });
  * @returns {string[]} Translation keys.
  */
 function routeStops(isAdmin) {
-  const stops = ['nav.dashboard', 'nav.jobs', 'nav.listings', 'nav.mapView', 'nav.finance', 'nav.settings'];
+  const stops = ['nav.dashboard', 'nav.jobs', 'nav.listings', 'nav.map', 'nav.finance', 'nav.settings'];
   return isAdmin ? [...stops, 'nav.administration'] : stops;
 }
 
@@ -156,9 +156,9 @@ function ArrowIcon() {
  * The onboarding tour: asks a new account once whether it wants a guided tour, and if so, walks it
  * through the app on example data the server lends it for the duration.
  *
- * Each step blurs and dims everything except the element it is about, rings that element, and
- * puts its explanation right next to it. The blur is four panels around the element rather than one
- * sheet, so the element itself stays sharp and can be used.
+ * Each step dims everything except the element it is about, rings that element, and puts its
+ * explanation right next to it. The dimming is four panels around the element rather than one
+ * sheet, so the element itself stays as it is and can be used.
  *
  * Every way out of the tour removes the example data again - the buttons on the card, Escape, a
  * closed or reloaded tab (a beacon on `pagehide`), and a page that comes back to find a tour it did
@@ -431,6 +431,7 @@ export default function OnboardingTour({ isAdmin, blocked }) {
   const cardClass = [
     'onboardingTour__card',
     phone ? 'onboardingTour__card--sheet' : null,
+    phone && sheetAtTop(hole, viewport) ? 'onboardingTour__card--sheetTop' : null,
     !phone && placement.side === 'center' ? 'onboardingTour__card--center' : null,
   ]
     .filter(Boolean)
@@ -539,7 +540,6 @@ export default function OnboardingTour({ isAdmin, blocked }) {
         <p className="onboardingTour__body" aria-live="polite">
           {t(stepBodyKey(step.id), {
             target: step.labelKey ? t(step.labelKey) : '',
-            group: step.groupKey ? t(step.groupKey) : '',
             ...Object.fromEntries(Object.entries(step.vars ?? {}).map(([name, key]) => [name, t(key)])),
           })}
         </p>

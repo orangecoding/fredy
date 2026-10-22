@@ -77,6 +77,15 @@ describe('both views survive', () => {
     }
   });
 
+  it('gives every card a copy-application button with its name, and the table row the icon', () => {
+    // As one unnamed icon among three on the card it was looked for rather than seen.
+    expect(code(actions)).toMatch(/density === 'card'/);
+    expect(actions).toMatch(/className="listingActions__applyLabel">\{applyLabel\}/);
+    expect(actions).toMatch(/aria-label=\{applyLabel\}/);
+    expect(grid).toMatch(/density="card"/);
+    expect(actionsLess).toMatch(/&--card \{\s*flex: 1 1 100%;/);
+  });
+
   it('keeps delete behind the overflow menu rather than beside everything harmless', () => {
     expect(actions).toMatch(/Dropdown/);
     expect(actions).toMatch(/Dropdown\.Divider/);
@@ -147,9 +156,10 @@ describe('the table is a table', () => {
 
   it('gives the action column a fixed width, so the columns stop wandering', () => {
     // `auto` made the last column as wide as its content, and a row with one button more shifted
-    // every other column of that row against every other row.
+    // every other column of that row against every other row. 140px since the Exposé redesign:
+    // four of the cards' round 32px buttons and three 4px gaps, where it was four 28px squares.
     expect(code(tableLess)).not.toMatch(/@listing-columns:[^;]*\bauto\b/);
-    expect(tableLess).toMatch(/@listing-columns:[^;]*124px;/);
+    expect(tableLess).toMatch(/@listing-columns:[^;]*140px;/);
   });
 
   it('hides the same columns in the header as in the row', () => {
@@ -230,5 +240,17 @@ describe('contrast', () => {
   it('spends no colour on the price', () => {
     expect(code(gridLess)).not.toMatch(/&__amount\s*\{[^}]*@color-success/);
     expect(code(tableLess)).not.toMatch(/&__amount\s*\{[^}]*@color-success/);
+  });
+});
+
+describe('the overview reloads on every value it sends', () => {
+  // The hand-kept dependency list missed the connectivity filters: the chips changed, the listings
+  // did not, and a bulk delete then used a query the page had never been loaded with.
+  it('keys the load on the request it sends rather than on a list of filters', () => {
+    const overview = fs.readFileSync(path.join(root, 'ui/src/components/listings/ListingsOverview.jsx'), 'utf-8');
+    expect(overview).toMatch(
+      /const requestKey = JSON\.stringify\(\{ \.\.\.listingsQuery, page, sortField, sortDir \}\);/,
+    );
+    expect(overview).toMatch(/\}, \[requestKey\]\);/);
   });
 });

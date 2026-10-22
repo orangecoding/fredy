@@ -24,6 +24,8 @@ const adminLayout = read('ui/src/views/admin/AdminLayout.jsx');
 const navJsx = read('ui/src/components/navigation/Navigation.jsx');
 const warning = read('ui/src/hooks/useUnsavedWarning.js');
 const themes = read('ui/src/themes.less');
+const indexLess = read('ui/src/Index.less');
+const preferencesLess = read('ui/src/views/settings/pages/PreferencesPage.less');
 
 const preferences = read('ui/src/views/settings/pages/PreferencesPage.jsx');
 const travelTime = read('ui/src/views/settings/pages/TravelTimePage.jsx');
@@ -57,25 +59,31 @@ describe('both areas say whose settings they are', () => {
     expect(badgeLess).not.toMatch(/@color-accent/);
   });
 
-  it('lets the sidebar say it too, on the two entries that carry the distinction', () => {
-    // On hover rather than printed into the list: standing there it was a second label competing
-    // with the entry it belonged to, on every visit, for an answer that is wanted once.
-    expect(navJsx).toMatch(/<ScopeBadge scope=\{scope\} \/>/);
-    expect(navJsx).toMatch(/const scope = sectionScope\(tree, index\);/);
+  it('is said by the two pages only, not again on hover in the sidebar', () => {
+    // The sidebar repeated it as a popover over Settings and Administration, which got in the way
+    // of every visit for an answer the page heading already gives.
+    expect(navJsx).not.toMatch(/ScopeBadge/);
+    expect(navJsx).not.toMatch(/Popover/);
   });
 });
 
+/*
+ * The tab strip is styled once, globally, in Index.less: every strip in the app is the same strip,
+ * so the shell no longer restates it. Exposé spec: muted labels, the current one in the text colour
+ * over a text-coloured ink bar. The old spec put the bar in the accent and the label at 600.
+ */
 describe('the tabs are readable without a mouse', () => {
   it('no longer prints five of six at 2,47 to 1', () => {
-    const block = shellLess.match(/\.semi-tabs-bar-line \.semi-tabs-tab \{[\s\S]*?\n\}/);
+    const block = indexLess.match(/\.semi-tabs-bar-line \.semi-tabs-tab \{[\s\S]*?\n\}/);
     expect(block).not.toBeNull();
     expect(block[0]).not.toMatch(/@color-faint/);
     expect(block[0]).toMatch(/color:\s*@color-muted;/);
   });
 
-  it('carries the selection on the weight and the ink bar', () => {
-    expect(shellLess).toMatch(/semi-tabs-tab-active[\s\S]{0,120}font-weight:\s*600/);
-    expect(shellLess).toMatch(/semi-tabs-ink-bar[\s\S]{0,120}@color-accent/);
+  it('carries the selection on the text colour and the ink bar, never on the accent', () => {
+    expect(indexLess).toMatch(/semi-tabs-tab-active \{\s*color:\s*@color-text/);
+    expect(indexLess).toMatch(/semi-tabs-ink-bar \{[\s\S]{0,80}@color-text/);
+    expect(shellLess).not.toMatch(/semi-tabs-ink-bar|semi-tabs-tab-active/);
   });
 });
 
@@ -94,6 +102,13 @@ describe('saving', () => {
   it('sticks to the bottom instead of sitting at the end of the page', () => {
     expect(saveBarLess).toMatch(/position: sticky/);
     expect(saveBarLess).toMatch(/bottom: @space-4/);
+  });
+
+  // Exposé: a surface with a hairline, like every other box. The old bar carried @shadow-lg.
+  it('floats flat, without a heavy shadow', () => {
+    expect(saveBarLess).not.toMatch(/box-shadow/);
+    expect(saveBarLess).toMatch(/background: @color-surface/);
+    expect(saveBarLess).toMatch(/border: 1px solid @color-border/);
   });
 
   it('is used by all four form pages, and none of them keeps its own save row', () => {
@@ -135,6 +150,18 @@ describe('preferences', () => {
     for (const token of ['--f-preview-dark-bg', '--f-preview-light-bg']) {
       expect([...themes.matchAll(new RegExp(token, 'g')), token]).toHaveLength(3);
     }
+  });
+
+  // Exposé: selected is the text colour - a 1px edge on the elevated step - never the accent, which
+  // is kept for the one action a page is about. The old tiles and cards were red.
+  it('marks the chosen theme and deletion mode in the text colour, not in red', () => {
+    expect(preferencesLess).not.toMatch(/@color-accent/);
+    expect(preferencesLess).toMatch(/&--on,[\s\S]{0,40}\{\s*border-color: @color-text;/);
+    expect(preferencesLess).toMatch(/&\.semi-radio-checked \{\s*border-color: @color-text;/);
+  });
+
+  it('keeps the radio card text left-aligned', () => {
+    expect(preferencesLess).toMatch(/\.semi-radio-addon \{[\s\S]*?text-align: left;/);
   });
 
   it('stops nesting the deletion consequence three levels deep', () => {
@@ -238,6 +265,24 @@ describe('notifications and connections', () => {
     expect(connections).toMatch(/theme="borderless"/);
     expect(connections).toMatch(/columnAction/);
     expect(connections).not.toMatch(/color=\{writes \? 'amber'/);
+  });
+});
+
+describe('status flags and badges are pills', () => {
+  it('draws the section flags as a pill whose dot carries the state', () => {
+    expect(shellLess).toMatch(/\.settingsShell__cardFlag \{[\s\S]*?border-radius: @radius-pill;/);
+    expect(shellLess).toMatch(/&--live \{\s*background: @color-error;/);
+  });
+
+  it('draws the scope badge as a muted pill without a tinted icon', () => {
+    expect(badgeLess).toMatch(/border-radius: @radius-pill/);
+    expect(badgeLess).not.toMatch(/@color-(info|warning)/);
+  });
+
+  it('gives write access a tinted pill and read access a plain one', () => {
+    const connectionsLess = read('ui/src/views/settings/pages/ConnectionsPage.less');
+    expect(connectionsLess).toMatch(/border-radius: @radius-pill/);
+    expect(connectionsLess).toMatch(/&--write \{\s*background: rgb\(@color-warning-rgb \/ 12%\);/);
   });
 });
 

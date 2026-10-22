@@ -69,7 +69,7 @@ export default function ListingWorkspace({
       <div className="listing-workspace__footer">
         <Button
           className="listing-workspace__save"
-          theme="borderless"
+          theme="outline"
           loading={notesSaving}
           disabled={notesSaving || !notesDirty}
           onClick={onSaveNotes}

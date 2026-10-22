@@ -1,51 +1,51 @@
-/*
- * Copyright (c) 2026 by Christian Kellner.
- * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
- */
-
 @import '../../tokens.less';
 
 /* Constants that are only true for the sidebar. tokens.less carries the app-wide names and has to
    stay free of rules, so a width that means something here and nowhere else lives here. */
-@nav-wide: 248px;
+@nav-wide: 224px;
 @nav-narrow: 64px;
-@nav-header: 64px;
-@nav-item: 40px;
-@nav-child: 34px;
-@nav-icon-cell: 44px;
-@nav-rail-inset: 10px;
+@nav-item: 38px;
+@nav-utility: 34px;
+@nav-icon: 17px;
+@nav-icon-cell: 40px;
+@nav-logo: 34px;
 
+/* The sidebar sits on the page colour with one hairline at its edge. It used to be a surface of its
+   own, which made it a second panel competing with the content instead of the frame around it. */
 .navigate {
   display: flex;
   flex-direction: column;
   height: 100%;
   width: @nav-wide;
   flex: none;
-  background: @color-surface;
+  box-sizing: border-box;
+  padding: @space-5 @space-3 @space-3;
+  background: @color-base;
   border-right: 1px solid @color-border;
   transition: @transition-sidebar;
-  overflow: hidden;
+  /* Scrolls rather than clips when the window is shorter than the sidebar - a phone held sideways
+     is about 390px tall - so the account menu and the toggle at the foot stay reachable. */
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: none;
 
-  /* The wordmark used to be a 160px image in a block the first entry only cleared a third of the
-     way down. The mark and the word say the same thing in the height of one row. */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
   &__header {
     display: flex;
     align-items: center;
-    gap: 10px;
+    justify-content: space-between;
     flex: none;
-    height: @nav-header;
-    padding: 0 @space-2 0 14px;
-    border-bottom: 1px solid @color-border;
+    padding: 0 0 @space-5 @space-2;
   }
 
-  /* The logo the project is known by, which is a bitmap with a cut per theme rather than anything a
-     custom property could recolour. Bound by height, because it is two and a half times as wide as
-     it is tall: a width chosen to look right resolves to a height taller than the header, which is
-     what used to push the first entry a third of the way down the sidebar. */
+  /* The logo the project is known by: a bitmap with a cut per theme, bound by height. */
   &__logo {
     flex: none;
     width: auto;
-    height: 36px;
+    height: @nav-logo;
   }
 
   /* In the rail there is no room for the word, so the heart carries the brand on its own. */
@@ -55,23 +55,18 @@
     height: 30px;
   }
 
-  &__spacer {
-    flex: 1 1 auto;
-  }
-
-  /* At the edge of the header, where every application puts it, rather than in the footer next to
-     signing out. */
   &__toggle {
     display: flex;
     align-items: center;
     justify-content: center;
     flex: none;
-    width: 36px;
-    height: 36px;
+    width: @control-md;
+    height: @control-md;
     border: none;
-    border-radius: @radius-btn;
+    border-radius: @radius-chip;
     background: transparent;
     color: @color-faint;
+    font-size: 16px;
     cursor: pointer;
     transition:
       background @transition-fast,
@@ -79,37 +74,42 @@
 
     &:hover {
       background: @color-fill-1;
-      color: @color-muted;
+      color: @color-text;
     }
   }
 
   &__list {
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    padding: @space-3 @space-2 0;
+    gap: 2px;
   }
 
   &__separator {
     height: 1px;
-    margin: @space-3 @space-1;
+    margin: @space-4 10px;
     background: @color-border;
+  }
+
+  &__spacer {
+    flex: 1 1 auto;
   }
 
   /* A real button, so it is reachable by keyboard and announced as something that does anything.
      Quiet by default: the loudest thing in a sidebar should not be the page you are already on. */
   &__item {
-    position: relative;
     display: flex;
     align-items: center;
     gap: @space-3;
     width: 100%;
     height: @nav-item;
-    padding: 0 @space-3;
+    padding: 0 10px;
     border: none;
-    border-radius: @radius-btn;
+    border-radius: @radius-chip;
     background: transparent;
+    color: @color-muted;
     font-family: @font-ui;
+    font-size: @text-base;
+    font-weight: @weight-medium;
     text-align: left;
     cursor: pointer;
     transition:
@@ -117,50 +117,22 @@
       color @transition-fast;
 
     &:hover {
-      background: @color-hover;
-
-      .navigate__itemLabel {
-        color: @color-text;
-      }
-
-      .navigate__itemIcon {
-        color: @color-muted;
-      }
+      background: @color-fill-1;
+      color: @color-text;
     }
 
-    /* One signal, not three. The old selected state carried an accent fill, an accent border and
-       an accent icon at once, which made the current page shout louder than any real action on
-       it. */
-    &--active {
-      background: @color-elevated;
-
-      .navigate__itemLabel {
-        color: @color-text;
-        font-weight: 600;
-      }
-
-      .navigate__itemIcon {
-        color: @color-accent;
-      }
+    /* One signal: a filled row in the text colour. No marker, no accent. */
+    &--active,
+    &--active:hover {
+      background: @color-selected;
+      color: @color-text;
     }
-  }
-
-  &__marker {
-    position: absolute;
-    left: 0;
-    top: 10px;
-    width: 2px;
-    height: 20px;
-    border-radius: 1px;
-    background: @color-accent;
   }
 
   &__itemIcon {
     display: flex;
     flex: none;
-    width: 18px;
-    height: 18px;
-    color: @color-faint;
+    font-size: @nav-icon;
   }
 
   &__itemLabel {
@@ -169,97 +141,20 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: @text-base;
-    font-weight: 500;
-    color: @color-muted;
   }
 
   /* Never allowed to shorten the label: it is the side note, the name is the entry. */
   &__itemCount {
     flex: none;
-    font-family: @font-mono;
-    font-size: @text-sm;
-    color: @color-faint;
+    font-size: @text-xs;
+    font-weight: 400;
+    color: @color-muted;
   }
 
-  &__itemChevron {
-    flex: none;
-    color: @color-faint;
-  }
-
-  /* The children used to float under their parent with nothing tying them to it. The rail is that
-     tie, and it lines up under the centre of the parent's icon. */
-  &__children {
-    position: relative;
+  &__footer {
     display: flex;
     flex-direction: column;
-    gap: @space-1;
-    margin-top: -2px;
-    padding-left: 21px;
-  }
-
-  &__rail {
-    position: absolute;
-    left: 20px;
-    top: @space-1;
-    bottom: @space-1;
-    width: 1px;
-    background: @color-border;
-  }
-
-  &__child {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    height: @nav-child;
-    padding: 0 @space-3 0 19px;
-    border: none;
-    border-radius: @radius-btn;
-    background: transparent;
-    font-family: @font-ui;
-    text-align: left;
-    cursor: pointer;
-    transition: background @transition-fast;
-
-    &:hover {
-      background: @color-hover;
-
-      .navigate__childLabel {
-        color: @color-text;
-      }
-    }
-
-    /* The rail segment carries the selection. No second marker, because one choice is one signal. */
-    &--active {
-      background: @color-elevated;
-
-      .navigate__childLabel {
-        color: @color-text;
-        font-weight: 600;
-      }
-
-      .navigate__childRail {
-        background: @color-accent;
-      }
-    }
-  }
-
-  &__childRail {
-    position: absolute;
-    left: 20px;
-    width: 1px;
-    height: @nav-child;
-    background: transparent;
-  }
-
-  &__childLabel {
-    flex: 1 1 auto;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-size: @text-sm;
-    color: @color-muted;
+    gap: 2px;
   }
 
   /* Whether Fredy is still running, readable from any page. Only rendered when the dashboard has
@@ -267,19 +162,27 @@
   &__status {
     display: flex;
     align-items: center;
-    gap: 10px;
-    flex: none;
-    height: 44px;
-    padding: 0 @space-4;
-    border-top: 1px solid @color-border;
+    gap: @space-3;
+    height: @nav-utility;
+    padding: 0 10px;
     font-size: @text-sm;
     color: @color-muted;
+
+    /* One line at the sidebar's width: the row has the height of the rows under it. */
+    > span:last-child {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
   }
 
+  /* Centred in the 17px column the icons above it use, so the dot lines up with them. */
   &__statusDot {
     flex: none;
-    width: 7px;
-    height: 7px;
+    width: 8px;
+    height: 8px;
+    margin: 0 4px;
     border-radius: @radius-pill;
     background: @color-success;
 
@@ -288,21 +191,63 @@
     }
   }
 
-  &__donate {
-    flex: none;
-    padding: 14px @space-3 @space-4;
+  /* The quiet rows under the status: news and support. Same shape as an entry, one step smaller,
+     because they are things the sidebar offers rather than places in the application. */
+  &__utility {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: @space-3;
+    width: 100%;
+    height: @nav-utility;
+    padding: 0 10px;
+    border: none;
+    border-radius: @radius-chip;
+    background: transparent;
+    color: @color-muted;
+    font-family: @font-ui;
+    font-size: @text-sm;
+    text-align: left;
+    cursor: pointer;
+    transition:
+      background @transition-fast,
+      color @transition-fast;
+
+    &:hover {
+      background: @color-fill-1;
+      color: @color-text;
+    }
   }
 
-  /* One row instead of four controls in four different idioms. Signing out lived here as a
-     permanently red button, and red in this application means an affordability verdict. */
+  &__utilityIcon {
+    display: flex;
+    flex: none;
+    width: @nav-icon;
+    height: @nav-icon;
+    font-size: @nav-icon;
+  }
+
+  /* An unread release. Next to the bell rather than on it, so it reads at the size of a dot. */
+  &__badge {
+    flex: none;
+    width: 6px;
+    height: 6px;
+    margin-left: auto;
+    border-radius: @radius-pill;
+    background: @color-accent;
+  }
+
+  /* Who is signed in, and the way out. A card of its own, because it is the one thing in the
+     sidebar that is about the person rather than about the application. */
   &__account {
     display: flex;
     align-items: center;
-    gap: 10px;
-    flex: none;
-    height: 60px;
-    padding: 0 @space-2 0 @space-3;
-    border-top: 1px solid @color-border;
+    gap: @space-3;
+    height: 52px;
+    margin-top: 10px;
+    padding: 0 6px 0 10px;
+    border: 1px solid @color-border;
+    border-radius: @radius-card;
   }
 
   &__avatar {
@@ -313,50 +258,50 @@
     width: 30px;
     height: 30px;
     /* Two shapes wear this: a span beside the name, and the account menu's trigger in the narrow
-       rail. The button carries the browser's own outset border until something says otherwise,
-       which paints a raised grey ring around the initials. */
+       rail, where the browser would otherwise draw its own outset border around the initial. */
     border: none;
     border-radius: @radius-pill;
     background: @color-solid;
-    color: @color-accent;
+    color: @color-text;
+    font-family: @font-ui;
     font-size: @text-sm;
-    font-weight: 700;
+    font-weight: @weight-strong;
   }
 
   &__accountText {
+    display: flex;
+    flex-direction: column;
     flex: 1 1 auto;
     min-width: 0;
+    line-height: 1.3;
   }
 
   &__accountName {
-    display: block;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: @text-sm;
-    font-weight: 500;
+    font-size: @text-base;
+    font-weight: @weight-medium;
     color: @color-text;
   }
 
   &__accountRole {
-    display: block;
-    margin-top: 1px;
     font-size: @text-xs;
-    color: @color-faint;
+    color: @color-muted;
   }
 
   &__accountAction {
-    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
     flex: none;
-    width: 32px;
-    height: 32px;
+    width: @control-md;
+    height: @control-md;
     border: none;
-    border-radius: @radius-btn;
+    border-radius: @radius-chip;
     background: transparent;
     color: @color-muted;
+    font-size: 16px;
     cursor: pointer;
     transition:
       background @transition-fast,
@@ -368,135 +313,61 @@
     }
   }
 
-  &__badge {
-    position: absolute;
-    top: 5px;
-    right: 6px;
-    width: 6px;
-    height: 6px;
-    border-radius: @radius-pill;
-    background: @color-accent;
-  }
-
-  /* Icons only. Everything that carried text either loses it or moves into a tooltip. */
+  /* The rail: icons only, every entry a square cell. */
   &--collapsed {
     width: @nav-narrow;
+    padding: @space-4 @space-3 @space-3;
 
     .navigate__header {
       justify-content: center;
-      padding: 0;
+      padding: 0 0 @space-4;
     }
 
-    .navigate__list {
+    .navigate__list,
+    .navigate__footer {
       align-items: center;
-      padding: @space-2 @nav-rail-inset 0;
     }
 
-    .navigate__item {
+    .navigate__item,
+    .navigate__utility {
       justify-content: center;
       width: @nav-icon-cell;
       height: @nav-icon-cell;
       padding: 0;
     }
 
-    /* The marker belongs to the edge of the sidebar; the cell is inset by the list's padding, so
-       it reaches back out by exactly that much. */
-    .navigate__marker {
-      left: -@nav-rail-inset;
-      top: 12px;
-    }
-
-    /* Outside the list now, sitting over the heart. `.navigate` stretches its children, so the
-       cell centres itself rather than inheriting a row's alignment. */
-    .navigate__toggle {
-      width: @nav-icon-cell;
-      height: @nav-icon-cell;
-      margin: @space-2 auto 0;
-    }
-
     .navigate__separator {
-      width: 40px;
-      margin: @space-2 0;
+      width: @nav-icon-cell;
+      margin: @space-3 0;
     }
 
-    .navigate__donate {
-      padding: 14px 15px @space-4;
-    }
-
-    .navigate__account,
     .navigate__status {
       justify-content: center;
       padding: 0;
     }
 
-    /* Here the circle is what opens the account menu, because 64 pixels hold one control and
-       signing out has to stay reachable. Expanded it is a span beside the name and points at
-       nothing. */
+    .navigate__badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      margin: 0;
+    }
+
+    .navigate__toggle {
+      width: @nav-icon-cell;
+      height: @nav-icon-cell;
+    }
+
+    .navigate__account {
+      justify-content: center;
+      width: @nav-icon-cell;
+      height: auto;
+      padding: 0;
+      border: none;
+    }
+
     .navigate__avatar {
       cursor: pointer;
-    }
-  }
-
-  &__cellBadge {
-    position: absolute;
-    top: 6px;
-    right: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-    min-width: 15px;
-    height: 15px;
-    padding: 0 3px;
-    border-radius: @radius-pill;
-    background: @color-solid;
-    color: @color-muted;
-    font-family: @font-mono;
-    font-size: 9.5px;
-    font-weight: 700;
-  }
-}
-
-/* The group menu beside the collapsed rail. Semi's Popover, which seven other components in this
-   project already use, rather than the navigation component's own popover and the pile of
-   overrides that came with it. */
-.navigate-flyout {
-  min-width: 200px;
-  padding: @space-1;
-
-  &__title {
-    padding: @space-1 10px @space-2;
-    font-size: @text-xs;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: @color-faint;
-  }
-
-  &__item {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    height: @nav-child;
-    padding: 0 10px;
-    border: none;
-    border-radius: @radius-btn;
-    background: transparent;
-    font-family: @font-ui;
-    font-size: @text-sm;
-    color: @color-muted;
-    text-align: left;
-    cursor: pointer;
-
-    &:hover {
-      background: @color-hover;
-      color: @color-text;
-    }
-
-    &--active {
-      background: @color-elevated;
-      color: @color-text;
-      font-weight: 600;
     }
   }
 }

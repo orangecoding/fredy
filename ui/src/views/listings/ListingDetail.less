@@ -5,9 +5,8 @@
    stylesheets import it. */
 @listing-detail-max: 1440px;
 @listing-detail-rail: 400px;
-@listing-detail-gap: @space-6;
-@listing-detail-pad: @space-8;
-@listing-detail-pad-narrow: @space-4;
+@listing-detail-gap: @space-8;
+@listing-detail-col-gap: @space-10;
 
 /* No `backdrop-filter`, `transform` or `filter` anywhere on this element or between it and the
    map: any of the three turns the ancestor into the containing block for `position: fixed`, and
@@ -29,22 +28,24 @@
     height: 100%;
   }
 
+  /* No side padding of its own anywhere on the page: the content area's gutter is the page's, so
+     the title, the photograph and the action bar line up with the heading of every other page. */
   &__scam:not(:empty) {
-    padding: 0 @listing-detail-pad @space-4;
+    padding-bottom: @space-4;
   }
 
   &__inactive {
-    padding: @space-4 @listing-detail-pad 0;
+    padding-top: @space-4;
   }
 
   /* Left the flat, right the case for it. Nothing moves between the two columns, which is the
-     whole point: the control that redraws the map is in the map's card, and the figures a decision
-     rests on are all in the rail. */
+     whole point: the control that redraws the map is in the map's chapter, and the figures a
+     decision rests on are all in the rail. */
   &__grid {
     display: flex;
     align-items: flex-start;
-    gap: @listing-detail-gap;
-    padding: @listing-detail-gap @listing-detail-pad 0;
+    gap: @listing-detail-col-gap;
+    padding-top: @space-6;
   }
 
   &__main,
@@ -54,8 +55,8 @@
     gap: @listing-detail-gap;
     min-width: 0;
 
-    /* A section whose card decided it had nothing to say leaves its wrapper behind. Without this
-       the column keeps the gap either side of it, which reads as a card that failed to load. */
+    /* A section whose chapter decided it had nothing to say leaves its wrapper behind. Without this
+       the column keeps the gap either side of it, which reads as a chapter that failed to load. */
     > div:empty {
       display: none;
     }
@@ -74,12 +75,13 @@
     padding: 0;
   }
 
+  /* The photograph leads the page, so it is the largest thing on it. No frame: a picture brings its
+     own edge, and a hairline round it only reads as a box around the one thing that is not one. */
   &__image {
     position: relative;
     width: 100%;
-    height: 400px;
+    height: 480px;
     overflow: hidden;
-    border: 1px solid @color-border;
     border-radius: @radius-card;
     background: @color-fill-subtle;
     display: flex;
@@ -108,12 +110,12 @@
     }
 
     @media (max-width: 768px) {
-      height: 250px;
+      height: 260px;
     }
   }
 
-  /* Sits on a photograph, which is a photograph in both themes, so the scrim behind it is one of
-     the literals the palette does not own. */
+  /* Sits on a photograph, so it takes the surface the map's floating panels use: legible over any
+     picture, and it turns with the theme. Round and quiet, like every icon control on the page. */
   &__image-expand {
     position: absolute;
     top: @space-3;
@@ -122,20 +124,15 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: @control-md;
+    height: @control-md;
     padding: 0;
     border: 0;
-    border-radius: @radius-btn;
+    border-radius: @radius-pill;
     cursor: pointer;
     font-size: @text-md;
-    color: #fff;
-    background: rgba(0, 0, 0, 0.6);
-    transition: background @transition-fast;
-
-    &:hover {
-      background: rgba(0, 0, 0, 0.78);
-    }
+    color: @color-map-panel-strong;
+    background: @color-map-panel;
   }
 
   &__image-note {
@@ -143,27 +140,19 @@
     margin-top: @space-2;
   }
 
-  &__finance-hint {
+  // Only spaced when the finance chapter is there above it; on its own, the column's gap does it.
+  .listingFinance + &__finance-hint {
     margin-top: @listing-detail-gap;
   }
 
   &__finance-hint-icon {
     font-size: @text-md;
-    color: @color-accent;
+    color: @color-muted;
   }
 
-  /* Preserved verbatim from the single-column page. The overrides are what stop Semi's own input
-     chrome drawing a second border inside the one the card already has. */
+  /* The field keeps the global field styles; this only stops Semi's own textarea chrome drawing a
+     second border inside the one the wrapper already has. */
   &__notes-textarea {
-    background: @color-input-bg !important;
-    border: 1px solid @color-border-bright !important;
-    border-radius: @radius-input !important;
-    box-shadow: none !important;
-    outline: none !important;
-    transition:
-      border-color @transition-fast,
-      background @transition-fast !important;
-
     textarea {
       background: transparent !important;
       border: 0 !important;
@@ -172,45 +161,32 @@
       color: @color-text !important;
       font-family: @font-ui !important;
       font-size: @text-base !important;
-    }
-
-    &.semi-input-textarea-focus,
-    &:focus,
-    &:focus-within {
-      border-color: @color-accent !important;
-      box-shadow: none !important;
-      outline: none !important;
-      background: @color-hover !important;
+      line-height: 1.6;
     }
   }
 
-  /* One column. The figures come before the pictures here, because on a single column the price is
-     the first question and a 400px photograph in front of it is a wall. */
+  /* One column. The pictures still lead, as they do beside the rail: on a phone the photograph is
+     not tall enough to be a wall, and the price follows it directly. */
   @media (max-width: 1180px) {
-    &__scam:not(:empty),
-    &__inactive {
-      padding-left: @listing-detail-pad-narrow;
-      padding-right: @listing-detail-pad-narrow;
-    }
-
     &__grid {
       display: flex;
       flex-direction: column;
       align-items: stretch;
-      padding: @space-5 @listing-detail-pad-narrow 0;
+      gap: @listing-detail-gap;
+      padding-top: @space-5;
     }
 
-    /* Both wrappers step out of the box tree so their cards become children of the one column and
-       can be ordered against each other. */
+    /* Both wrappers step out of the box tree so their chapters become children of the one column
+       and can be ordered against each other. */
     &__main,
     &__rail {
       display: contents;
     }
 
-    &__sec--keyfacts {
+    &__sec--media {
       order: 1;
     }
-    &__sec--media {
+    &__sec--keyfacts {
       order: 2;
     }
     &__sec--description {
@@ -242,24 +218,80 @@
   }
 }
 
-/* The card every section on this page is drawn as. Shared here rather than repeated per component
-   so a change to the chrome is one edit. */
+/* A chapter of the exposé. Every section on this page is drawn as one: no box, a hairline above it
+   and a heading in the text colour. Shared here rather than repeated per component so a change to
+   the rhythm is one edit. */
 .listing-card {
-  padding: @space-5;
-  border: 1px solid @color-border;
-  border-radius: @radius-card;
-  background: @color-surface;
+  padding-top: @space-6;
+  border-top: 1px solid @color-border;
 
-  /* The section label. An h2 by element, a small caps label by appearance - the page's one h1 is
-     the listing's title, and every card sits directly under it. */
+  /* The chapter heading. An h2 by element - the page's one h1 is the listing's title, and every
+     chapter sits directly under it - and a sentence-case heading by appearance. */
   &__label {
     margin: 0 0 @space-4;
     font-family: @font-ui;
-    font-size: @text-sm;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    font-size: @text-lg;
+    font-weight: @weight-strong;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+    color: @color-text;
+  }
+}
+
+/* The figures open the rail directly beside the photograph, so they need no rule above them: the
+   top edge of the picture is the line they start on. */
+.listing-detail__sec--keyfacts > .listing-card {
+  padding-top: 0;
+  border-top: 0;
+}
+
+/* Two to five alternatives drawn as one segmented control: the status in the title block and the
+   route on the map. The current one is set in the text colour on a raised step, never in the
+   accent - picking a state is not the action this page is about. */
+.listing-segmented.semi-radioGroup-buttonRadio {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid @color-border;
+  border-radius: @radius-btn;
+  background: transparent;
+
+  .semi-radio-buttonRadioGroup {
+    padding: 0;
+  }
+
+  .semi-radio-addon-buttonRadio {
+    display: inline-flex;
+    align-items: center;
+    height: 28px;
+    padding: 0 @space-3;
+    border: 0;
+    border-radius: @radius-chip;
+    background: transparent;
     color: @color-muted;
+    font-size: @text-sm;
+    font-weight: @weight-medium;
+    transition:
+      color @transition-fast,
+      background @transition-fast;
+  }
+
+  .semi-radio-addon-buttonRadio-hover {
+    background: transparent;
+    color: @color-text;
+  }
+
+  .semi-radio-addon-buttonRadio-checked,
+  .semi-radio-addon-buttonRadio-checked.semi-radio-addon-buttonRadio-hover {
+    background: @color-fill-2;
+    color: @color-text;
+  }
+
+  .semi-radio-addon-buttonRadio-disabled,
+  .semi-radio-addon-buttonRadio-disabled.semi-radio-addon-buttonRadio-hover {
+    background: transparent;
+    color: @color-faint;
   }
 }
 
@@ -267,23 +299,29 @@
    stay tight, so the breathing space is scoped to this page rather than added to its own
    stylesheet. Nothing here changes what it says - only how far apart it says it. */
 .listing-detail__sec--transit {
+  .transit-stops {
+    gap: 0;
+  }
+
   .transit-stops__item {
-    border-bottom: 0;
-    padding-bottom: 0;
+    padding: @space-2 0;
+    border-bottom: 1px solid @color-border;
+
+    &:last-child {
+      border-bottom: 0;
+    }
   }
 
   .transit-stops__header {
-    min-height: 32px;
+    min-height: @control-sm;
     font-size: @text-base;
-    font-weight: 600;
+    font-weight: @weight-medium;
   }
 
+  // A figure, not a verdict: in the muted tone like every other distance on the page.
   .transit-stops__distance {
-    // Green because a stop within walking distance is an advantage, which is the only thing green
-    // means on this page.
-    color: @color-success;
+    color: @color-muted;
     font-size: @text-sm;
-    font-weight: 600;
   }
 
   .transit-board {
@@ -301,7 +339,7 @@
     border-radius: @radius-chip;
 
     &:hover {
-      background: @color-hover;
+      background: @color-fill-1;
     }
   }
 
@@ -313,7 +351,7 @@
   }
 
   .transit-board__time {
-    font-weight: 600;
+    font-weight: @weight-medium;
   }
 
   .transit-board__countdown {
@@ -323,31 +361,45 @@
   }
 }
 
-/* A section folded shut on a phone. The card inside gives up its own heading to the summary,
+/* A chapter folded shut on a phone. The chapter inside gives up its own heading to the summary,
    otherwise the title is drawn twice. */
 .listing-collapse {
-  border: 1px solid @color-border;
-  border-radius: @radius-card;
-  background: @color-surface;
-  overflow: hidden;
+  border-top: 1px solid @color-border;
 
   &__summary {
     display: flex;
     align-items: center;
     gap: @space-2;
     min-height: 44px;
-    padding: @space-3 @space-5;
+    padding: @space-3 0;
     cursor: pointer;
-    font-size: @text-sm;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: @color-muted;
+    font-size: @text-md;
+    font-weight: @weight-strong;
+    color: @color-text;
     list-style: none;
 
     &::-webkit-details-marker {
       display: none;
     }
+
+    /* The marker is hidden for its triangle, so the fold draws a chevron of its own: without one a
+       shut section reads as an empty heading rather than as something to open. */
+    &::after {
+      content: '';
+      flex: none;
+      width: 7px;
+      height: 7px;
+      margin: 0 @space-1 @space-1 0;
+      border-right: 1.5px solid @color-muted;
+      border-bottom: 1.5px solid @color-muted;
+      transform: rotate(45deg);
+      transition: transform @transition-fast;
+    }
+  }
+
+  &[open] > &__summary::after {
+    margin-bottom: 0;
+    transform: rotate(-135deg);
   }
 
   &__title {
@@ -355,23 +407,22 @@
     min-width: 0;
   }
 
-  // The gist while shut: lower case, no tracking, so it reads as a sentence next to a label.
+  // The gist while shut, as a quiet sentence beside the heading.
   &__hint {
     flex: 0 1 auto;
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    font-size: @text-sm;
     font-weight: 400;
-    letter-spacing: 0;
-    text-transform: none;
-    color: @color-faint;
+    color: @color-muted;
   }
 
   .listing-card {
-    border: 0;
-    border-radius: 0;
+    border-top: 0;
     padding-top: 0;
+    padding-bottom: @space-4;
   }
 
   .listing-card__label {
@@ -379,11 +430,19 @@
   }
 }
 
+/* The two small popups on this page's map, the listing's pin and the saved addresses: a name and
+   an address, set as a label over a muted line. */
 .listing-detail-popup {
-  .map-popup-content {
-    padding: 5px;
-    h4 {
-      margin: 5px 0;
-    }
+  h4 {
+    margin: 0 0 2px;
+    font-size: @text-sm;
+    font-weight: @weight-strong;
+    color: @color-text;
+  }
+
+  p {
+    margin: 0;
+    font-size: @text-sm;
+    color: @color-muted;
   }
 }

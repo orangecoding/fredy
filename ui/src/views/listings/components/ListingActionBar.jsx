@@ -4,17 +4,9 @@
  */
 
 import { Button, Dropdown, Tooltip } from '@douyinfe/semi-ui-19';
-import {
-  IconChevronLeft,
-  IconCopy,
-  IconDelete,
-  IconLink,
-  IconMore,
-  IconRefresh,
-  IconStar,
-  IconStarStroked,
-} from '@douyinfe/semi-icons';
+import { IconChevronLeft, IconDelete, IconRefresh } from '@douyinfe/semi-icons';
 
+import { IconCopy, IconExternal, IconMore, IconStar } from '../../../components/icons/StrokeIcons.jsx';
 import { providerName } from '../listingFacts.js';
 import { useTranslation } from '../../../services/i18n/i18n.jsx';
 import './ListingActionBar.less';
@@ -24,9 +16,10 @@ import './ListingActionBar.less';
  *
  * Every button on this page used to carry the same visual weight, so "copy application letter" and
  * "delete listing" sat in the same register and, on a narrow viewport, at the same width. The bar
- * now has exactly one solid button - writing the letter, which is what the reader came to do - a
- * pair of outlined secondaries either side of it, and the two destructive actions folded into an
- * overflow menu where a wrong click costs a second step rather than a listing.
+ * now has exactly one solid button - writing the letter, which is what the reader came to do, in
+ * the red that is kept for that one action - one outlined secondary that leaves for the portal, two
+ * quiet round icon buttons for the watch list and the menu, and the two destructive actions folded
+ * into that menu where a wrong click costs a second step rather than a listing.
  *
  * On phones the bar leaves the top of the page and fixes itself to the bottom edge, where the
  * primary action takes the full width: the thumb is there and the header is not.
@@ -79,7 +72,7 @@ export default function ListingActionBar({ listing, onBack, onWatch, onApply, on
 
       <Tooltip content={watchLabel} position="bottom">
         <Button
-          icon={watched ? <IconStar /> : <IconStarStroked />}
+          icon={<IconStar filled={watched} />}
           onClick={onWatch}
           theme="borderless"
           aria-label={watchLabel}
@@ -95,7 +88,7 @@ export default function ListingActionBar({ listing, onBack, onWatch, onApply, on
         className="listing-actionbar__open"
         title={openLabel}
       >
-        <IconLink />
+        <IconExternal />
         <span className="listing-actionbar__open-label">{openLabel}</span>
       </a>
 

@@ -1,5 +1,25 @@
+@import '../../tokens.less';
+
+/* The logo positions itself absolutely for the places it is pinned to a corner; in this dialog it
+   is the first thing in the flow. */
 .trackingModal {
+  &__logo .logo {
+    display: block;
+    position: static;
+    width: 180px;
+    height: auto;
+  }
+
   &__description {
-    margin-top: 10rem;
+    display: flex;
+    flex-direction: column;
+    gap: @space-3;
+    margin-top: @space-6;
+    color: @color-text;
+    line-height: 1.6;
+
+    p {
+      margin: 0;
+    }
   }
 }

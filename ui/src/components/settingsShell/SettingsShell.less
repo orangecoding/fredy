@@ -10,17 +10,35 @@
   }
 
   &__content {
-    padding: @space-4 0;
+    padding: @space-6 0 0;
     display: flex;
     flex-direction: column;
-    gap: @space-4;
+    gap: 0;
   }
 
-  // A settings page holds a handful of cards, not a document. Keeping the column narrow means the
-  // label, the help text and the control stay within one eye movement of each other instead of the
-  // control drifting off to the right on a wide monitor.
+  // A settings page reads as one document of chapters, not as a stack of boxes. Keeping the column
+  // narrow means the name, the help text and the control stay within one eye movement of each other
+  // instead of the control drifting off to the right on a wide monitor.
   &__page {
     max-width: 860px;
+
+    // The tab strip already ends in a rule, so the first chapter does not draw a second one a few
+    // pixels below it.
+    > .segmentParts.semi-card:first-child {
+      border-top: 0;
+
+      .semi-card-header {
+        padding-top: 0;
+      }
+    }
+
+    > .settingsShell__groupTitle:first-child {
+      margin-top: 0;
+    }
+
+    > .settingsShell__pageIntro + .settingsShell__groupTitle {
+      margin-top: @space-6;
+    }
   }
 
   // Settings that only mean something once their parent feature is switched on. Indented and
@@ -28,7 +46,7 @@
   &__subSettings {
     margin-top: @space-4;
     padding-left: @space-4;
-    border-left: 2px solid @color-border-bright;
+    border-left: 1px solid @color-border-bright;
     display: flex;
     flex-direction: column;
     gap: @space-4;
@@ -46,7 +64,8 @@
       display: block;
       color: @color-text;
       font-size: @text-base;
-      margin-bottom: 2px;
+      font-weight: @weight-medium;
+      margin-bottom: @space-1;
     }
 
     &__help {
@@ -65,87 +84,25 @@
   }
 }
 
-// InputNumber fix
-.semi-input-number {
-  background: @color-elevated !important;
-  border: 1px solid @color-border-bright !important;
-  border-radius: @radius-input !important;
-  color: @color-text !important;
-}
-
-.semi-input-number-button-up,
-.semi-input-number-button-down {
-  background: @color-fill-1 !important;
-  border-color: @color-border-bright !important;
-  color: @color-muted !important;
-
-  &:hover {
-    background: @color-fill-strong !important;
-    color: @color-text !important;
-  }
-}
-
-// TimePicker fix - scoped so it doesn't pollute modal headers
-.semi-timepicker .semi-input-wrapper,
-.semi-timepicker .semi-input-inset-label-wrapper {
-  background: @color-elevated !important;
-  border: 1px solid @color-border-bright !important;
-  border-radius: @radius-input !important;
-  color: @color-text !important;
-}
-
-// Tabs styling
-//
-// Nicht gewaehlt stand in @color-faint: 2,47 zu 1 auf @color-base im dunklen und 2,88 im hellen
-// Theme, wo AA 4,5 verlangt. Damit waren fuenf von sechs Reitern unlesbar, und der lesbare Zustand
-// war ausgerechnet der, den nur eine Maus erreicht - :hover ging auf @color-muted.
-//
-// Jetzt traegt den Unterschied zwischen gewaehlt und nicht gewaehlt der Akzentbalken darunter und
-// das Schriftgewicht, nicht die Lesbarkeit. @color-muted schafft 5,43 zu 1 dunkel und 5,65 hell.
-.semi-tabs-bar-line .semi-tabs-tab {
-  color: @color-muted;
-  font-size: @text-base;
-  transition: color @transition-fast;
-
-  &:hover {
-    color: @color-text;
-  }
-
-  &.semi-tabs-tab-active {
-    color: @color-text !important;
-    font-weight: 600;
-  }
-}
-
-.semi-tabs-bar-line .semi-tabs-ink-bar {
-  background-color: @color-accent !important;
-  height: 2px;
-}
-
-/* Sagt, dass die Karten darunter zusammengehoeren, ohne eine eigene Karte um sie zu ziehen. Die
-   Bewerbungsseite traegt sechs gleich aussehende Karten, von denen vier das Profil sind und zwei
-   der Brief - der Dateikommentar sagt das seit jeher, die Seite selbst sagte es nirgends. */
+/* Says that the sections below belong together without drawing a box around them. The application
+   page carries six sections of which four are the profile and two the letter, and the page itself
+   said so nowhere. */
 .settingsShell__groupTitle {
-  /* Oben mehr als unten, und zwar deutlich: eine Ueberschrift, die von der Karte darueber genauso
-     weit weg steht wie von der darunter, gruppiert nichts - sie stand vorher sogar auf 0 unten und
-     klebte damit an der Karte, die sie benennt.
-     Der obere Rand faellt mit den 16px zusammen, die jede Karte nach unten traegt, statt sich mit
-     ihnen zu addieren; @space-6 setzt die Gruppengrenze also auf 24px gegen die 16px zwischen zwei
-     gewoehnlichen Karten. Unten bleiben 8. */
-  margin-top: @space-6;
+  /* Much more space above than below: a heading that stands as far from the group above as from
+     the one below groups nothing. One step larger than a section title, so it reads as a chapter
+     rather than as one more section. */
+  margin-top: @space-10;
   margin-bottom: @space-2;
-  font-size: 10.5px;
-  font-weight: 600;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  color: @color-faint;
+  font-size: @text-lg;
+  font-weight: @weight-strong;
+  letter-spacing: -0.01em;
+  color: @color-text;
   user-select: none;
 }
 
-/* Eine Warnung, die zur Hilfe der Karte gehoert und nicht zu einem einzelnen Bedienelement: dass
-   Anbieter-Details je Inserat einen weiteren Abruf kosten, gilt fuer die ganze Karte. Die Werte
-   sind die von `preferencesPage__modeWarning`, weil es dieselbe Art Zeile ist, und es gilt
-   dieselbe Regel: Bernstein traegt nur das Zeichen, die Schrift bleibt gedaempfte Textfarbe. */
+/* A warning that belongs to a section's help rather than to one control: that provider details
+   cost one more request per listing is true of the whole section. Amber carries only the mark; the
+   words stay in the muted text colour. */
 .settingsShell__helpWarning {
   display: flex;
   align-items: flex-start;
@@ -162,9 +119,8 @@
   }
 }
 
-/* Der einzige Ort in den Einstellungen, an dem "gilt sofort" steht. Ueberall sonst wartet eine
-   Aenderung auf die Speicherleiste, und dass genau diese eine Karte das nicht tut, ist eine
-   Entscheidung, die der Leser kennen muss. */
+/* The only place in the settings that says "applies immediately". Everywhere else a change waits
+   for the save bar, and that this one section does not is a decision the reader has to know. */
 .settingsShell__instant {
   display: inline-flex;
   align-items: center;
@@ -175,8 +131,8 @@
 }
 
 .settingsShell__instantDot {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
   border-radius: @radius-pill;
   background: @color-success;
   flex: none;
@@ -200,46 +156,44 @@
 }
 
 /* One line of orientation at the top of a long settings page, in the same quiet treatment as an
-   inline hint. Only the two pages deep enough to need it carry one: where a page is a single card,
-   that card's own help text already is the introduction. */
+   inline hint. Only the pages deep enough to need it carry one: where a page is a single section,
+   that section's own help text already is the introduction. */
 .settingsShell__pageIntro {
   margin: 0 0 @space-4;
+  max-width: 68ch;
   color: @color-muted;
   font-size: @text-sm;
   line-height: 1.5;
 }
 
-/* Rot, solange die Aufzeichnung laeuft. Gelesen aus derselben globalen Flagge wie das Banner der
-   Anwendung, damit die Beschriftung keinen eigenen Zustand braucht. */
-/* !important, because Semi colours every tab icon with a selector of up to five classes
-   (`.semi-tabs-bar .semi-tabs-tab-active:hover .semi-icon:not(...)`), and a single class lost to it:
-   the icon stayed grey while capture was running. */
+/* Red while debug capture is running, read from the same global flag as the app-wide banner so the
+   tab needs no state of its own. `!important`, because Semi colours every tab icon with a selector
+   of up to five classes and a single class lost to it: the icon stayed grey while capture ran. */
 .settingsShell__tabIcon--alert {
   color: @color-error !important;
 }
 
-/* Was beim Speichern mehr tut als speichern. Die Systemseite laedt den Browser drei Sekunden
-   danach neu, weil Port und Datenbankpfad beim Start gelesen werden, und das gehoert vor die
-   Entscheidung statt in den Toast danach. Bernstein traegt nur der Punkt, die Schrift bleibt
-   Textfarbe - dieselbe Regel wie beim Versionshinweis im Footer. */
+/* A standing fact about a section, in its header: that saving restarts the instance, when the next
+   run is, whether debug capture is on. A pill in the text colour; only the dot carries the state,
+   because coloured words beside a section title would be louder than the title. */
 .settingsShell__cardFlag {
   display: inline-flex;
   align-items: center;
   gap: @space-2;
-  height: 20px;
-  padding: 0 @space-2;
-  border-radius: @radius-chip;
-  background: @color-elevated;
-  border: 1px solid @color-border;
+  height: 24px;
+  padding: 0 @space-3;
+  border-radius: @radius-pill;
+  border: 1px solid @color-border-bright;
   font-size: @text-xs;
+  font-weight: @weight-medium;
   line-height: 1;
   color: @color-text;
   white-space: nowrap;
 }
 
 .settingsShell__cardFlagDot {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
   border-radius: @radius-pill;
   flex: none;
   background: @color-warning;

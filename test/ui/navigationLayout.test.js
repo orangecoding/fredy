@@ -16,17 +16,12 @@ const jsx = fs.readFileSync(path.join(root, 'ui/src/components/navigation/Naviga
  * Spacing values a rule is allowed to carry. Anything else is a number someone typed instead of
  * reaching for the scale, which is how a layout drifts away from its spec one rule at a time.
  *
- * The three that are neither on the scale nor round are here because the specification puts them
- * in the stylesheet itself, and the stylesheet is inserted as written rather than rebuilt:
- *
- * - `6px`, the gap between entries, which the measurement table names in its own right. The scale
- *   jumps from 4 to 8 and the rail was drawn at neither.
- * - `-2px`, which pulls a group's children up against the entry they belong to, so the rail starts
- *   at the row above instead of a gap below it.
- * - `3px`, the side padding of the count badge on a narrow icon, where the scale's smallest step
- *   would make a two-digit badge wider than the cell holding it.
+ * The few that are not on the scale are the sidebar's own grid: 10px is the inset of an entry's
+ * icon from the row edge, which every row repeats so the icons stand in one column; 2px is the gap
+ * between rows; 4px and 6px centre the status dot and the account card's logout button on that
+ * same column.
  */
-const ALLOWED_SPACING = /^(0|auto|inherit|-?@space-\d+|-?@nav-[a-z-]+|1px|-2px|3px|6px|10px|14px|15px|19px|21px|40px)$/;
+const ALLOWED_SPACING = /^(0|auto|inherit|-?@space-\d+|-?@nav-[a-z-]+|1px|2px|4px|6px|10px)$/;
 
 const SPACING_PROPERTIES =
   /(^|\s)(gap|row-gap|column-gap|margin|margin-top|margin-right|margin-bottom|margin-left|padding|padding-top|padding-right|padding-bottom|padding-left)\s*:\s*([^;{}]+);/g;
@@ -51,29 +46,27 @@ describe('Navigate.less', () => {
     expect(jsx).not.toMatch(/\bNav\b/);
   });
 
-  it('keeps the two widths the plan names', () => {
-    expect(less).toMatch(/@nav-wide:\s*248px/);
+  it('keeps the widths the design names', () => {
+    expect(less).toMatch(/@nav-wide:\s*224px/);
     expect(less).toMatch(/@nav-narrow:\s*64px/);
-    expect(less).toMatch(/@nav-header:\s*64px/);
-    expect(less).toMatch(/@nav-item:\s*40px/);
-    expect(less).toMatch(/@nav-child:\s*34px/);
+    expect(less).toMatch(/@nav-item:\s*38px/);
   });
 
-  it('gives a selected entry one signal, not three', () => {
-    const active = less.match(/&--active\s*\{[\s\S]*?\n {4}\}/);
+  it('gives a selected entry one signal, and it is not red', () => {
+    const active = less.match(/&--active,\s*&--active:hover\s*\{[\s\S]*?\n {4}\}/);
     expect(active).not.toBeNull();
-    expect(active[0]).toMatch(/background:\s*@color-elevated/);
-    expect(active[0]).not.toMatch(/border/);
+    // Its own token: elevated in the dark theme, a grey step below white in the light one, where an
+    // elevated (white) row on the off-white page read as a card rather than as a selection.
+    expect(active[0]).toMatch(/background:\s*@color-selected/);
+    expect(active[0]).not.toMatch(/border|@color-accent/);
   });
 
-  it('draws the marker at the size the plan names', () => {
-    expect(less).toMatch(/&__marker\s*\{[\s\S]*?width:\s*2px/);
-    expect(less).toMatch(/&__marker\s*\{[\s\S]*?height:\s*20px/);
+  it('draws no glow, gradient or animation', () => {
+    expect(less).not.toMatch(/gradient\(|@keyframes|animation:|box-shadow/);
   });
 
-  it('ties the children to their parent with a rail', () => {
-    expect(less).toMatch(/&__rail\s*\{[\s\S]*?left:\s*20px/);
-    expect(less).toMatch(/&__children\s*\{[\s\S]*?padding-left:\s*21px/);
+  it('lists every place at the top level', () => {
+    expect(jsx).not.toMatch(/navigate__child|aria-expanded|flyout/);
   });
 
   it('no longer paints signing out as an error', () => {
@@ -92,6 +85,25 @@ describe('Navigate.less', () => {
   // for the expression and not for the rendered spelling.
   it('marks the current page for assistive technology', () => {
     expect(jsx).toMatch(/aria-current=\{[^}]*'page'/);
-    expect(jsx).toMatch(/aria-expanded/);
+  });
+
+  // The listings count and the next-run line come with the overview's figures. Landing anywhere else
+  // left them out until the overview had been opened, and after a sign-in the store could still hold
+  // the previous session's numbers - so the sidebar asks once per mount, except on the overview,
+  // which asks for the same answer itself.
+  it('asks for the overview figures itself, once per mount and never twice on the overview', () => {
+    expect(jsx).toMatch(
+      /useEffect\(\(\) => \{\s*if \(!location\.pathname\.startsWith\('\/dashboard'\)\) actions\.dashboard\.getDashboard\(\);\s*\}, \[\]\);/,
+    );
+  });
+
+  it('takes the counts from the store rather than counting on its own', () => {
+    expect(jsx).toMatch(/state\.jobsData\.jobs\?\.length/);
+    expect(jsx).toMatch(/state\.dashboard\.data\?\.kpis\?\.numberOfActiveListings/);
+  });
+
+  it('scrolls instead of cutting off the account menu on a short window', () => {
+    expect(less).toMatch(/overflow-y:\s*auto/);
+    expect(less).not.toMatch(/^\s{2}overflow:\s*hidden/m);
   });
 });

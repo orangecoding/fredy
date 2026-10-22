@@ -40,7 +40,9 @@ export default function TrackingModal() {
       okText={t('tracking.okText')}
       cancelText={t('tracking.cancelText')}
     >
-      <Logo white />
+      <div className="trackingModal__logo">
+        <Logo white />
+      </div>
       <div className="trackingModal__description">
         <p>{t('tracking.greeting')}</p>
         <p>{t('tracking.paragraph1')}</p>

@@ -5,7 +5,6 @@
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: @space-2;
   }
 
   &__row {
@@ -13,6 +12,11 @@
     align-items: baseline;
     gap: @space-3;
     min-width: 0;
+    padding: @space-2 0;
+
+    & + & {
+      border-top: 1px solid @color-border;
+    }
   }
 
   // Fixed so the values line up into a column; the labels are short and the alignment is what makes
@@ -21,13 +25,13 @@
     display: flex;
     align-items: center;
     gap: @space-1;
-    flex: 0 0 108px;
-    font-size: @text-base;
+    flex: 0 0 112px;
+    font-size: @text-sm;
     color: @color-muted;
   }
 
   &__help {
-    font-size: @text-sm;
+    font-size: @text-xs;
     color: @color-faint;
     cursor: help;
 
@@ -42,33 +46,34 @@
     flex: 1 1 auto;
     font-size: @text-base;
     color: @color-text;
-    font-variant-numeric: tabular-nums;
     overflow-wrap: anywhere;
   }
 
+  // A link in prose: the link colour, underlined.
   &__link {
-    color: @color-accent;
-    text-decoration: none;
-    transition: color @transition-fast;
+    color: @color-link;
+    text-decoration: underline;
+    text-underline-offset: 3px;
 
     &:visited {
-      color: @color-accent;
+      color: @color-link;
     }
 
     &:hover {
-      color: @color-text;
-      text-decoration: underline;
+      color: @color-link;
+      text-decoration-thickness: 2px;
     }
   }
 
-  // Neutral information, per the page's chip scale: a filled recess with a bright hairline, which
-  // is not the green that means "an advantage" anywhere else on this page.
+  // Neutral information, as an outlined pill. Not the green that means "an advantage" anywhere
+  // else on this page, and no fill: it is a name, not a state.
   &__chip {
-    display: inline-block;
-    padding: 1px @space-2;
+    display: inline-flex;
+    align-items: center;
+    height: 24px;
+    padding: 0 @space-3;
     border: 1px solid @color-border-bright;
-    border-radius: @radius-chip;
-    background: @color-hover;
+    border-radius: @radius-pill;
     color: @color-text;
     font-size: @text-sm;
   }

@@ -1,14 +1,29 @@
 @import '../../tokens.less';
 
+/* The page heading every view opens with: an optional overline, the title, a line of context, and
+   the page's actions at the right edge. No rule underneath it: the space below the heading is
+   what separates it from the content, and a coloured line would be the loudest thing on the page. */
 .page-heading {
-  margin-bottom: @space-6;
-  margin-top: 0;
+  margin: 0 0 @space-7;
 
   &__row {
     display: flex;
-    align-items: center;
+    flex-wrap: wrap;
+    align-items: flex-end;
     justify-content: space-between;
-    margin-bottom: 10px;
+    gap: @space-5;
+  }
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  &__overline {
+    font-size: @text-sm;
+    color: @color-muted;
   }
 
   &__titleRow {
@@ -19,23 +34,30 @@
   }
 
   &__title {
-    font-size: @text-lg !important;
-    font-weight: 700 !important;
-    color: @color-text !important;
-    margin: 0 !important;
-    line-height: 1.2;
+    margin: 0;
+    font-size: @text-display;
+    font-weight: @weight-strong;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: @color-text;
+
+    @media (max-width: 768px) {
+      font-size: @text-2xl;
+    }
   }
 
   &__subtitle {
-    margin: 4px 0 0;
+    margin: 0;
+    max-width: 72ch;
     color: @color-muted;
-    font-size: @text-sm;
+    font-size: @text-base;
     line-height: 1.5;
   }
 
-  &__line {
-    height: 1px;
-    background: linear-gradient(90deg, rgb(@color-accent-rgb / 50%) 0%, rgb(@color-accent-rgb / 0%) 100%);
-    width: 100%;
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: @space-2;
   }
 }

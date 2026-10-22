@@ -7,13 +7,13 @@ import React from 'react';
 import { Line } from 'react-chartjs-2';
 
 import {
-  CHART_COLORS,
   baseChartOptions,
   formatEuro,
-  makeAreaGradient,
   registerFinanceCharts,
+  withAlpha,
   zinsbindungBandPlugin,
 } from '../../../components/cards/chartTheme.js';
+import { scenarioColors } from './scenarioColors.js';
 import { useTranslation, useLocale } from '../../../services/i18n/i18n.jsx';
 
 registerFinanceCharts();
@@ -41,27 +41,27 @@ export default function ListingPayoffChart({ scenario, currentAge = null, height
     [scenario],
   );
 
-  const data = React.useMemo(
-    () => ({
+  const data = React.useMemo(() => {
+    // The primary scenario's colour on /finance, so the curve here is the same line as there.
+    const color = scenarioColors()[0];
+    return {
       labels: years.map((year) => `${startYear + year.year}`),
       datasets: [
         {
           label: t('finance.chart.remainingDebt'),
           data: years.map((year) => year.balance),
-          borderColor: CHART_COLORS.ACCENT,
+          borderColor: color,
           borderWidth: 2.5,
           pointRadius: 0,
           pointHoverRadius: 4,
-          pointHoverBackgroundColor: CHART_COLORS.ACCENT,
+          pointHoverBackgroundColor: color,
           tension: 0.25,
           fill: 'origin',
-          backgroundColor: (context) =>
-            makeAreaGradient(context.chart.ctx, context.chart.chartArea, CHART_COLORS.ACCENT),
+          backgroundColor: withAlpha(color, 0.08),
         },
       ],
-    }),
-    [years, startYear, t],
-  );
+    };
+  }, [years, startYear, t]);
 
   const options = React.useMemo(() => {
     const base = baseChartOptions({ locale, legend: false });

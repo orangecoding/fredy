@@ -8,14 +8,13 @@ import { Line } from 'react-chartjs-2';
 
 import {
   CHART_COLORS,
-  chartPalette,
   baseChartOptions,
   formatEuro,
-  makeAreaGradient,
   registerFinanceCharts,
   withAlpha,
   zinsbindungBandPlugin,
 } from '../../../components/cards/chartTheme.js';
+import { scenarioColors } from './scenarioColors.js';
 import { useTranslation, useLocale } from '../../../services/i18n/i18n.jsx';
 
 registerFinanceCharts();
@@ -23,8 +22,9 @@ registerFinanceCharts();
 /**
  * Remaining debt over time, one line per interest scenario.
  *
- * The primary scenario is filled and accent-coloured; the alternatives are thin comparison
- * lines. The Zinsbindung is drawn as a shaded band ending in a dashed marker, because the
+ * The primary scenario is the brightest line, over a flat wash; the alternatives are thinner
+ * comparison lines a step further down the greyscale ramp, the same colours as their swatches in
+ * the scenario form. The Zinsbindung is drawn as a shaded band ending in a dashed marker, because the
  * Restschuld at that edge - not the final payoff date - is what a German buyer has to
  * refinance and therefore the most consequential number on the chart.
  *
@@ -47,7 +47,7 @@ export default function DebtTrajectoryChart({ scenarios = [], currentAge = null,
     const longest = Math.max(...perScenario.map((years) => years.length));
     const yearLabels = Array.from({ length: longest }, (_, index) => `${index + 1}`);
 
-    const palette = chartPalette();
+    const palette = scenarioColors();
     const sets = usable.map((scenario, index) => {
       const color = palette[index % palette.length];
       const isPrimary = index === 0;
@@ -59,17 +59,19 @@ export default function DebtTrajectoryChart({ scenarios = [], currentAge = null,
         // amount actually borrowed rather than after twelve instalments.
         data: yearLabels.map((_, yearIndex) => years[yearIndex]?.balance ?? null),
         borderColor: color,
-        borderWidth: isPrimary ? 2.5 : 1.5,
+        borderWidth: isPrimary ? 2.5 : 2,
+        // Past the end of the ramp a grey comes round again; the dash keeps the two lines apart.
+        borderDash: index >= palette.length ? [6, 4] : [],
         pointRadius: 0,
         pointHoverRadius: 4,
         pointHoverBackgroundColor: color,
         pointHoverBorderColor: color,
         tension: 0.25,
         spanGaps: false,
+        // A flat wash under the primary line, no gradient: it marks which curve the figures
+        // are read from without drawing a glow under it.
         fill: isPrimary ? 'origin' : false,
-        backgroundColor: isPrimary
-          ? (context) => makeAreaGradient(context.chart.ctx, context.chart.chartArea, color)
-          : withAlpha(color, 0),
+        backgroundColor: withAlpha(color, isPrimary ? 0.08 : 0),
       };
     });
 

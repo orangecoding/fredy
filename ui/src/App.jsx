@@ -3,44 +3,22 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import React, { useEffect } from 'react';
+import React, { Suspense, lazy, useEffect, useState } from 'react';
 
 import InsufficientPermission from './components/permission/InsufficientPermission';
 import PermissionAwareRoute from './components/permission/PermissionAwareRoute';
-import SettingsLayout from './views/settings/SettingsLayout';
-import PreferencesPage from './views/settings/pages/PreferencesPage';
-import TravelTimePage from './views/settings/pages/TravelTimePage';
-import ListingDetailsPage from './views/settings/pages/ListingDetailsPage';
-import ApplicationPage from './views/settings/pages/ApplicationPage';
-import NotificationsPage from './views/settings/pages/NotificationsPage';
-import ConnectionsPage from './views/settings/pages/ConnectionsPage';
-import AdminLayout from './views/admin/AdminLayout';
-import SystemPage from './views/admin/pages/SystemPage';
-import ExecutionPage from './views/admin/pages/ExecutionPage';
-import ConnectivityPage from './views/admin/pages/ConnectivityPage';
-import RoutingPage from './views/admin/pages/RoutingPage.jsx';
-import BackupPage from './views/admin/pages/BackupPage';
-import DebugPage from './views/admin/pages/DebugPage';
-import JobMutation from './views/jobs/mutation/JobMutation';
-import UserMutator from './views/user/mutation/UserMutator';
 import { useActions, useSelector } from './services/state/store';
 import { useBrowserNotifications } from './hooks/useBrowserNotifications';
 import { Routes, Route, Navigate, useLocation, useParams } from 'react-router';
 import Login from './views/login/Login';
-import Users from './views/user/Users';
-import Jobs from './views/jobs/Jobs';
 
 import './App.less';
 import TrackingModal from './components/tracking/TrackingModal.jsx';
 import { LocaleProvider } from '@douyinfe/semi-ui-19';
-import Listings from './views/listings/Listings.jsx';
-import MapView from './views/listings/Map.jsx';
+import semiEnUS from '@douyinfe/semi-ui-19/lib/es/locale/source/en_US';
 import Navigation from './components/navigation/Navigation.jsx';
 import { Layout } from '@douyinfe/semi-ui-19';
 import FredyFooter from './components/footer/FredyFooter.jsx';
-import Dashboard from './views/dashboard/Dashboard.jsx';
-import FinanceCalculator from './views/finance/FinanceCalculator.jsx';
-import ListingDetail from './views/listings/ListingDetail.jsx';
 import NewsModal from './components/news/NewsModal.jsx';
 import OnboardingTour from './components/tour/OnboardingTour.jsx';
 import inDevelopment from './services/developmentMode.js';
@@ -50,14 +28,67 @@ import DemoBanner from './components/demo/DemoBanner.jsx';
 import { LEGACY_REDIRECTS } from './services/routes/legacyRedirects.js';
 import { applyTheme, normalizeTheme } from './services/theme/theme.js';
 
-const semiLocaleModules = import.meta.glob('/node_modules/@douyinfe/semi-ui-19/lib/es/locale/source/*.js', {
-  eager: true,
+// Every page but the login screen loads on first visit. The start bundle used to carry all of them,
+// chart.js and MapLibre included, and the login screen on a phone waited for megabytes of pages it
+// does not show. All of them render inside the one <Suspense> around the routes.
+const Dashboard = lazy(() => import('./views/dashboard/Dashboard.jsx'));
+const Jobs = lazy(() => import('./views/jobs/Jobs'));
+const JobMutation = lazy(() => import('./views/jobs/mutation/JobMutation'));
+const Listings = lazy(() => import('./views/listings/Listings.jsx'));
+const ListingDetail = lazy(() => import('./views/listings/ListingDetail.jsx'));
+const MapView = lazy(() => import('./views/listings/Map.jsx'));
+const FinanceCalculator = lazy(() => import('./views/finance/FinanceCalculator.jsx'));
+const SettingsLayout = lazy(() => import('./views/settings/SettingsLayout'));
+const PreferencesPage = lazy(() => import('./views/settings/pages/PreferencesPage'));
+const TravelTimePage = lazy(() => import('./views/settings/pages/TravelTimePage'));
+const ListingDetailsPage = lazy(() => import('./views/settings/pages/ListingDetailsPage'));
+const ApplicationPage = lazy(() => import('./views/settings/pages/ApplicationPage'));
+const NotificationsPage = lazy(() => import('./views/settings/pages/NotificationsPage'));
+const ConnectionsPage = lazy(() => import('./views/settings/pages/ConnectionsPage'));
+const AdminLayout = lazy(() => import('./views/admin/AdminLayout'));
+const SystemPage = lazy(() => import('./views/admin/pages/SystemPage'));
+const ExecutionPage = lazy(() => import('./views/admin/pages/ExecutionPage'));
+const ConnectivityPage = lazy(() => import('./views/admin/pages/ConnectivityPage'));
+const RoutingPage = lazy(() => import('./views/admin/pages/RoutingPage.jsx'));
+const BackupPage = lazy(() => import('./views/admin/pages/BackupPage'));
+const DebugPage = lazy(() => import('./views/admin/pages/DebugPage'));
+const Users = lazy(() => import('./views/user/Users'));
+const UserMutator = lazy(() => import('./views/user/mutation/UserMutator'));
+
+// Semi ships 57 locales and the app speaks six; all of them were in the start bundle. Only the one
+// in use is fetched, and English, the fallback, is there from the start.
+const semiLocaleLoaders = import.meta.glob('/node_modules/@douyinfe/semi-ui-19/lib/es/locale/source/*.js', {
+  import: 'default',
 });
 
-const semiLocales = {};
-for (const [path, mod] of Object.entries(semiLocaleModules)) {
-  const name = path.match(/\/source\/(\w+)\.js$/)?.[1];
-  if (name) semiLocales[name] = mod.default ?? mod;
+/**
+ * Semi's locale for the interface language, fetched when the language is first used.
+ *
+ * Until it arrives Semi's own few strings (an empty table, the pager) stay in English.
+ *
+ * @param {string} language The interface language code, e.g. 'de'.
+ * @returns {Object} A Semi locale object for `LocaleProvider`.
+ */
+function useSemiLocale(language) {
+  const name = availableLanguages.find((l) => l.code === language)?.semiLocale ?? 'en_US';
+  const [loaded, setLoaded] = useState({ name: 'en_US', locale: semiEnUS });
+
+  useEffect(() => {
+    const load = semiLocaleLoaders[`/node_modules/@douyinfe/semi-ui-19/lib/es/locale/source/${name}.js`];
+    if (name === 'en_US' || load == null) {
+      setLoaded({ name: 'en_US', locale: semiEnUS });
+      return undefined;
+    }
+    let current = true;
+    load().then((locale) => {
+      if (current) setLoaded({ name, locale });
+    });
+    return () => {
+      current = false;
+    };
+  }, [name]);
+
+  return loaded.locale;
 }
 
 /**
@@ -94,6 +125,7 @@ export default function FredyApp() {
   const currentUser = useSelector((state) => state.user.currentUser);
   const settings = useSelector((state) => state.generalSettings.settings);
   const language = useSelector((state) => state.userSettings.settings.language);
+  const semiLocale = useSemiLocale(language ?? 'en');
   /*
    * Straight off the user's stored settings, with nothing cached in front of it. Until those have
    * arrived - on the login screen, and for the moment a cold load spends fetching them - this is
@@ -103,6 +135,10 @@ export default function FredyApp() {
 
   useBrowserNotifications();
 
+  // The stylesheets follow the body attribute on their own. A chart paints its canvas from colours
+  // read when it is built, and none is on screen where the theme is switched (the preferences page),
+  // so every chart is built after the switch. The layout used to be keyed on the theme for them,
+  // and the remount threw away whatever had been typed on that page and not saved yet.
   useEffect(() => {
     applyTheme(theme);
   }, [theme]);
@@ -183,14 +219,12 @@ export default function FredyApp() {
 
   const isAdmin = () => currentUser != null && currentUser.isAdmin;
   const { Sider, Content } = Layout;
+  // Never on a demo instance, and held back while the analytics question is still on screen.
+  const tourBlocked = settings.analyticsEnabled === null && !inDevelopment();
 
   return loading ? null : (
     <I18nProvider language={language ?? 'en'}>
-      <LocaleProvider
-        locale={
-          semiLocales[availableLanguages.find((l) => l.code === (language ?? 'en'))?.semiLocale] ?? semiLocales['en_US']
-        }
-      >
+      <LocaleProvider locale={semiLocale}>
         {needsLogin() ? (
           <Routes>
             <Route path="/login" element={<Login />} />
@@ -198,17 +232,8 @@ export default function FredyApp() {
           </Routes>
         ) : (
           <>
-            {/* Outside the keyed layout below: the tour visits the settings, where the theme can be
-                switched, and a remount mid-tour would lose the step it was on. Never on a demo
-                instance, and not while the analytics question is still on screen. */}
-            {!settings.demoMode && (
-              <OnboardingTour isAdmin={isAdmin()} blocked={settings.analyticsEnabled === null && !inDevelopment()} />
-            )}
-            {/* Keyed on the theme so everything below remounts when it changes. The stylesheets follow
-                the body attribute on their own, but the charts paint onto a canvas from colours they
-                read once per render, and a canvas keeps whatever it was last painted with until
-                something redraws it. */}
-            <Layout className="app" key={theme}>
+            {!settings.demoMode && <OnboardingTour isAdmin={isAdmin()} blocked={tourBlocked} />}
+            <Layout className="app">
               <Sider>
                 <Navigation isAdmin={isAdmin()} />
               </Sider>
@@ -218,67 +243,69 @@ export default function FredyApp() {
                   {settings.demoMode && <DemoBanner />}
                   {settings.analyticsEnabled === null && !settings.demoMode && <TrackingModal />}
                   {!settings.demoMode && <NewsModal />}
-                  <Routes>
-                    <Route path="/403" element={<InsufficientPermission />} />
-                    <Route path="/jobs/new" element={<JobMutation />} />
-                    <Route path="/jobs/edit/:jobId" element={<JobMutation />} />
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/jobs" element={<Jobs />} />
-                    <Route path="/listings" element={<Listings />} />
-                    <Route path="/listings/listing/:listingId" element={<ListingDetail />} />
-                    <Route path="/map" element={<MapView />} />
-                    <Route path="/finance" element={<FinanceCalculator />} />
+                  <Suspense fallback={null}>
+                    <Routes>
+                      <Route path="/403" element={<InsufficientPermission />} />
+                      <Route path="/jobs/new" element={<JobMutation />} />
+                      <Route path="/jobs/edit/:jobId" element={<JobMutation />} />
+                      <Route path="/dashboard" element={<Dashboard />} />
+                      <Route path="/jobs" element={<Jobs />} />
+                      <Route path="/listings" element={<Listings />} />
+                      <Route path="/listings/listing/:listingId" element={<ListingDetail />} />
+                      <Route path="/map" element={<MapView />} />
+                      <Route path="/finance" element={<FinanceCalculator />} />
 
-                    {/* Settings that belong to whoever is signed in. No guard: they are theirs.
+                      {/* Settings that belong to whoever is signed in. No guard: they are theirs.
                       One entry in the sidebar, and the tabs below the heading are the only place
                       these pages are named. */}
-                    <Route path="/settings" element={<SettingsLayout />}>
-                      <Route index element={<Navigate to="/settings/preferences" replace />} />
-                      <Route path="preferences" element={<PreferencesPage />} />
-                      <Route path="travel-time" element={<TravelTimePage />} />
-                      <Route path="listings" element={<ListingDetailsPage />} />
-                      <Route path="application" element={<ApplicationPage />} />
-                      <Route path="notifications" element={<NotificationsPage />} />
-                      <Route path="connections" element={<ConnectionsPage />} />
-                    </Route>
+                      <Route path="/settings" element={<SettingsLayout />}>
+                        <Route index element={<Navigate to="/settings/preferences" replace />} />
+                        <Route path="preferences" element={<PreferencesPage />} />
+                        <Route path="travel-time" element={<TravelTimePage />} />
+                        <Route path="listings" element={<ListingDetailsPage />} />
+                        <Route path="application" element={<ApplicationPage />} />
+                        <Route path="notifications" element={<NotificationsPage />} />
+                        <Route path="connections" element={<ConnectionsPage />} />
+                      </Route>
 
-                    {/* Settings that belong to the instance. Guarded once, at the parent, so a new
+                      {/* Settings that belong to the instance. Guarded once, at the parent, so a new
                       page cannot be added without inheriting the check. */}
-                    <Route
-                      path="/admin"
-                      element={
-                        <PermissionAwareRoute currentUser={currentUser}>
-                          <AdminLayout />
-                        </PermissionAwareRoute>
-                      }
-                    >
-                      <Route index element={<Navigate to="/admin/system" replace />} />
-                      <Route path="system" element={<SystemPage />} />
-                      <Route path="execution" element={<ExecutionPage />} />
-                      <Route path="connectivity" element={<ConnectivityPage />} />
-                      <Route path="routing" element={<RoutingPage />} />
-                      <Route path="users" element={<Users />} />
-                      <Route path="users/new" element={<UserMutator />} />
-                      <Route path="users/edit/:userId" element={<UserMutator />} />
-                      <Route path="backup" element={<BackupPage />} />
-                      <Route path="debug" element={<DebugPage />} />
-                    </Route>
+                      <Route
+                        path="/admin"
+                        element={
+                          <PermissionAwareRoute currentUser={currentUser}>
+                            <AdminLayout />
+                          </PermissionAwareRoute>
+                        }
+                      >
+                        <Route index element={<Navigate to="/admin/system" replace />} />
+                        <Route path="system" element={<SystemPage />} />
+                        <Route path="execution" element={<ExecutionPage />} />
+                        <Route path="connectivity" element={<ConnectivityPage />} />
+                        <Route path="routing" element={<RoutingPage />} />
+                        <Route path="users" element={<Users />} />
+                        <Route path="users/new" element={<UserMutator />} />
+                        <Route path="users/edit/:userId" element={<UserMutator />} />
+                        <Route path="backup" element={<BackupPage />} />
+                        <Route path="debug" element={<DebugPage />} />
+                      </Route>
 
-                    {/* The addresses these things used to live at, kept so existing bookmarks and the
+                      {/* The addresses these things used to live at, kept so existing bookmarks and the
                       links in older notification emails still land somewhere sensible. The table
                       lives in legacyRedirects.js so a test can check every entry still resolves. */}
-                    {Object.entries(LEGACY_REDIRECTS).map(([from, to]) => (
-                      <Route key={from} path={from} element={<Navigate to={to} replace />} />
-                    ))}
-                    {/* Carries a parameter, so it needs a component rather than a table entry. */}
-                    <Route path="/users/edit/:userId" element={<LegacyUserEditRedirect />} />
+                      {Object.entries(LEGACY_REDIRECTS).map(([from, to]) => (
+                        <Route key={from} path={from} element={<Navigate to={to} replace />} />
+                      ))}
+                      {/* Carries a parameter, so it needs a component rather than a table entry. */}
+                      <Route path="/users/edit/:userId" element={<LegacyUserEditRedirect />} />
 
-                    <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                    {/* Catch-all: an authenticated user landing on an unknown path (e.g. still on
+                      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                      {/* Catch-all: an authenticated user landing on an unknown path (e.g. still on
                       /login during the post-login transition) is sent to the dashboard instead
                       of matching no route. */}
-                    <Route path="*" element={<Navigate to="/dashboard" replace />} />
-                  </Routes>
+                      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+                    </Routes>
+                  </Suspense>
                 </Content>
                 <FredyFooter />
               </Layout>

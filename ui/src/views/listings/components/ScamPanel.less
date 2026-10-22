@@ -5,14 +5,14 @@
 
 @import '../../../tokens.less';
 
+/* A warning is one of the few things on the page that is genuinely a box of its own: a faint tint
+   of the error colour with an edge of it, the heading in the colour, everything else in the text
+   tones. No glow, no fill strong enough to read as a button. */
 .scamPanel {
-  // Sits between the "Details" heading and the figures, so the gap it needs is below it. The
-  // heading brings its own margin above.
-  margin-bottom: 1.25rem;
-  padding: @space-3;
+  padding: @space-4 @space-5;
   border-radius: @radius-card;
-  border: 1px solid var(--semi-color-danger-light-active);
-  background: var(--semi-color-danger-light-default);
+  border: 1px solid rgb(@color-error-rgb / 40%);
+  background: rgb(@color-error-rgb / 8%);
 
   &__header {
     display: flex;
@@ -22,13 +22,17 @@
   }
 
   &__icon {
-    color: var(--semi-color-danger);
-    font-size: 16px;
+    flex: none;
+    color: @color-error;
+    font-size: @text-md;
   }
 
   &__title {
     margin: 0;
-    color: var(--semi-color-danger);
+    font-size: @text-md;
+    font-weight: @weight-strong;
+    line-height: 1.3;
+    color: @color-error;
   }
 
   &__lead {
@@ -37,7 +41,7 @@
 
   &__reasons {
     margin: @space-2 0;
-    padding-left: 1.1rem;
+    padding-left: @space-5;
   }
 
   &__reason {
@@ -55,14 +59,25 @@
     display: flex;
     flex-wrap: wrap;
     gap: @space-2;
-    margin-top: @space-3;
+    margin-top: @space-4;
+  }
+
+  // The outlined secondaries come from the global button rules. The verdict that is on gets the
+  // text colour's edge on a raised step, which is how every picked state is drawn.
+  &__choice.semi-button {
+    border-radius: @radius-pill;
+  }
+
+  &__choice--on.semi-button:not(.semi-button-disabled) {
+    border-color: @color-text;
+    background-color: @color-fill-2;
   }
 
   // Once the user has said a listing is fine the panel stays as a record of what was found, but it
   // stops shouting. Same content, no alarm colours: it is history at that point, not a warning.
   &--dismissed {
     border-color: @color-border;
-    background: @color-elevated;
+    background: @color-surface;
 
     .scamPanel__icon,
     .scamPanel__title {

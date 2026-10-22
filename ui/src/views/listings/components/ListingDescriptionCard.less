@@ -12,32 +12,26 @@
     }
   }
 
+  // The outlined secondary is drawn by the global button rules; it only must not shrink.
   &__refetch {
-    border: 1px solid @color-border-bright !important;
-    border-radius: @radius-btn !important;
-    color: @color-muted !important;
-
-    &:hover:not(.semi-button-disabled) {
-      color: @color-text !important;
-      background: @color-fill-1 !important;
-    }
+    flex: none;
   }
 
-  /* The verb in the sentence, which is also the control. Styled as the accent link it reads as,
-     but it is a real button so the keyboard and a screen reader get an action rather than a
-     destination - it goes nowhere. */
+  /* The verb in the sentence, which is also the control. Drawn the way a link in prose is drawn -
+     the text colour, underlined - but it is a real button, so the keyboard and a screen reader get
+     an action rather than a destination: it goes nowhere. */
   &__action {
     padding: 0;
     border: 0;
     background: none;
     font: inherit;
-    color: @color-accent;
+    color: @color-text;
     cursor: pointer;
     text-decoration: underline;
-    text-underline-offset: 2px;
+    text-underline-offset: 3px;
 
     &:hover:not(:disabled) {
-      color: @color-text;
+      text-decoration-thickness: 2px;
     }
 
     &:disabled {
@@ -52,7 +46,7 @@
     vertical-align: middle;
   }
 
-  /* The result of the last fetch, kept on the card. A portal having no detail page is a standing
+  /* The result of the last fetch, kept on the chapter. A portal having no detail page is a standing
      fact about this listing, not an event, and a toast that has faded takes the answer with it. */
   &__outcome {
     margin: @space-3 0 0;
@@ -67,29 +61,27 @@
     }
   }
 
+  // The ad's own words, set as reading text: the reading size, a generous leading and a measure a
+  // line can be followed across.
   &__body {
     margin: 0;
-    max-width: 78ch;
+    max-width: 72ch;
     white-space: pre-wrap;
     // A pasted link is one word as far as line breaking is concerned.
     overflow-wrap: anywhere;
-    font-size: @text-base;
-    line-height: 1.6;
-    // Body copy, so @color-muted rather than @color-faint - the faint token is for hairlines and
-    // disabled states and does not carry a paragraph.
-    color: @color-muted;
+    font-size: @text-md;
+    line-height: 1.65;
+    color: @color-text;
   }
 
   /* The glyph beside the sentence rather than above it. An empty description is the normal case on
-     some portals, so this panel is shown often - and a three-line stack for "there is nothing here,
-     try the original ad" takes more of the page than the fact deserves. */
+     some portals, so this is shown often - and a three-line stack for "there is nothing here, try
+     the original ad" takes more of the page than the fact deserves. No box: it is the chapter's
+     text, there just is not much of it. */
   &__empty {
     display: flex;
     align-items: flex-start;
     gap: @space-3;
-    padding: @space-4;
-    border-radius: @radius-chip;
-    background: @color-hover;
   }
 
   &__empty-icon {
@@ -114,18 +106,18 @@
   &__link {
     align-self: flex-start;
     margin-top: @space-1;
-    color: @color-accent;
-    text-decoration: none;
+    color: @color-link;
+    text-decoration: underline;
+    text-underline-offset: 3px;
     font-size: @text-base;
-    transition: color @transition-fast;
 
     &:visited {
-      color: @color-accent;
+      color: @color-link;
     }
 
     &:hover {
-      color: @color-text;
-      text-decoration: underline;
+      color: @color-link;
+      text-decoration-thickness: 2px;
     }
   }
 }

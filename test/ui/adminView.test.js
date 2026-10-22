@@ -200,6 +200,38 @@ describe('danger looks like danger', () => {
   });
 });
 
+/*
+ * Exposé spec. The old one set every admin figure in the mono face with tabular digits, which tears
+ * "1.240" apart in Schibsted, drew Edit and More as outlined boxes on every row, and put the admin
+ * role in the accent.
+ */
+describe('figures in the interface face, actions quiet', () => {
+  it('sets no figure in mono and asks for no tabular digits', () => {
+    for (const [name, text] of [
+      ['AdminField', fieldLess],
+      ['ExecutionPage', read('ui/src/views/admin/pages/ExecutionPage.less')],
+      ['DebugPage', read('ui/src/views/admin/pages/DebugPage.less')],
+    ]) {
+      expect(text, name).not.toMatch(/tabular-nums/);
+      expect(text, name).not.toMatch(/font-family: @font-mono/);
+    }
+  });
+
+  it('makes a settings row as tall as a field', () => {
+    expect(fieldLess).toMatch(/min-height: @control-md/);
+  });
+
+  it('shows the row actions as muted icon buttons and the role as a plain pill', () => {
+    expect([...userTable.matchAll(/theme="borderless"/g)].length).toBeGreaterThanOrEqual(3);
+    expect(userTableLess).not.toMatch(/@color-accent/);
+    expect(userTableLess).toMatch(/&__admin \{[\s\S]*?border-radius: @radius-pill;/);
+  });
+
+  it('marks the restore section with a red hairline rather than a red box', () => {
+    expect(read('ui/src/views/admin/pages/BackupPage.less')).toMatch(/border-top-color: rgb\(@color-error-rgb/);
+  });
+});
+
 describe('no styling in the markup', () => {
   it('spends no colour and no spacing there', () => {
     for (const [name, text] of Object.entries(PAGES)) {

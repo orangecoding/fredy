@@ -5,9 +5,10 @@
 
 @import '../../../tokens.less';
 
+/* A chapter of the rail, drawn like every other one: a hairline above, a heading in the text
+   colour, no box. */
 .listingFinance {
-  margin-top: @space-6;
-  padding-top: @space-5;
+  padding-top: @space-6;
   border-top: 1px solid @color-border;
 
   &__header {
@@ -19,52 +20,54 @@
   }
 
   &__title {
-    margin: 0 !important;
+    margin: 0;
+    font-size: @text-lg;
+    font-weight: @weight-strong;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+    color: @color-text;
   }
 
+  /* Label over value in two columns, divided by hairlines - the key facts' calm grid, not a row of
+     coloured bars. */
   &__facts {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: @space-4;
-    margin: 0 0 @space-5;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: @space-4;
+    margin: @space-4 0 @space-5;
   }
 
   &__fact {
     display: flex;
     flex-direction: column;
     gap: 2px;
-    padding-left: @space-3;
-    border-left: 2px solid @color-border;
-
-    &--emphasis {
-      border-left-color: @color-accent;
-    }
+    min-width: 0;
+    padding: @space-3 0;
+    border-top: 1px solid @color-border;
   }
 
   &__fact-label {
-    font-size: @text-xs;
+    font-size: @text-sm;
     color: @color-muted;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
   }
 
+  // Figures in the UI face, like every other figure on the page.
   &__fact-value {
     margin: 0;
-    // Figures in the mono face, matching the calculator and reading like a Tilgungsplan.
-    font-family: @font-mono;
-    font-size: @text-base;
+    font-size: @text-md;
+    font-weight: @weight-strong;
     color: @color-text;
   }
 
+  // The one the household pays every month, a step larger rather than a different colour.
   &__fact--emphasis &__fact-value {
-    font-size: @text-md;
-    color: @color-accent;
+    font-size: @text-lg;
   }
 
   &__fact-note {
     margin: 0;
     font-size: @text-xs;
-    color: @color-faint;
+    color: @color-muted;
   }
 
   &__chart {

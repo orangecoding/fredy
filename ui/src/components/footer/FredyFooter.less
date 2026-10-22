@@ -29,7 +29,6 @@
   }
 
   &__version {
-    font-family: @font-mono;
     font-size: @text-xs;
     color: @color-muted;
     white-space: nowrap;
@@ -59,14 +58,14 @@
     align-items: center;
     gap: 6px;
     box-sizing: border-box;
-    height: 20px;
+    height: 22px;
     padding: 0 @space-2;
     border: 1px solid @color-orange-border;
-    border-radius: @radius-chip;
+    border-radius: @radius-pill;
     background: @color-orange-bg;
     font-family: @font-ui;
     font-size: @text-xs;
-    font-weight: 500;
+    font-weight: @weight-medium;
     /* Text wears a text token. The amber itself reaches only 4.24:1 on its own fill in the light
        theme; the dot and the border carry the colour instead. */
     color: @color-text;
@@ -76,14 +75,6 @@
 
     &:hover {
       border-color: @color-orange-text;
-    }
-
-    /* Index.less suppresses the focus ring on every button in the application, with !important, so
-       a control that has to stay reachable by keyboard has to say it louder. Step 8 asks for a
-       visible ring on this chip; without the flag the rule below loses to that blanket reset. */
-    &:focus-visible {
-      outline: 2px solid @color-accent !important;
-      outline-offset: 2px;
     }
   }
 
@@ -106,12 +97,13 @@
   }
 
   /* The same path the logo draws, rather than an emoji: an emoji follows no theme and renders
-     differently on every platform. */
+     differently on every platform. In the muted tone of the line it sits in, because red is kept
+     for the one action a page is about. */
   &__heart {
     flex: none;
     width: 12px;
     height: 12px;
-    color: @color-accent;
+    color: @color-muted;
   }
 
   a {
@@ -125,7 +117,7 @@
     }
 
     &:hover {
-      border-bottom-color: @color-accent;
+      border-bottom-color: @color-text;
     }
   }
 

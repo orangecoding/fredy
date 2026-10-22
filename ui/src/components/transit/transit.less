@@ -3,30 +3,36 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-/* Semi's CSS variables rather than the LESS tokens: these components render both inside the app
-   and inside MapLibre popups, which are themed through the same variables. */
+@import '../../tokens.less';
+
+/* The app's own tokens, not Semi's variables: these components render inside the app and inside
+   MapLibre popups, and both are in the same document under the same `<body theme-mode>`, so the
+   custom properties behind the tokens reach the popups as well.
+
+   Figures in the UI face and without tabular figures, like every figure in the app: Schibsted's
+   tabular set puts the colon of "10:42" on a fixed width and tears the time apart. */
 
 .transit-board {
-  font-size: 0.78rem;
+  font-size: @text-sm;
 
   &--state {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 4px 0;
+    gap: @space-2;
+    padding: @space-1 0;
   }
 
   &__stop {
     display: block;
-    margin-bottom: 4px;
-    font-size: 0.85rem;
+    margin-bottom: @space-1;
+    font-size: @text-sm;
   }
 
   &__lines {
     display: flex;
     flex-wrap: wrap;
-    gap: 4px;
-    margin-bottom: 6px;
+    gap: @space-1;
+    margin-bottom: @space-2;
   }
 
   &__list {
@@ -42,15 +48,18 @@
     display: grid;
     grid-template-columns: auto 1fr auto;
     align-items: center;
-    gap: 8px;
+    gap: @space-2;
   }
 
+  /* The line's own colour, from the operator's data: the one place colour is information here, the
+     way a line badge is at the stop itself. Set inline by the component, with a text colour
+     computed against it. */
   &__line {
     min-width: 30px;
     padding: 1px 6px;
-    border-radius: 4px;
-    font-weight: 600;
-    font-size: 0.72rem;
+    border-radius: @radius-chip;
+    font-weight: @weight-strong;
+    font-size: @text-xs;
     text-align: center;
     white-space: nowrap;
   }
@@ -59,26 +68,25 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    color: var(--semi-color-text-1);
+    color: @color-text;
   }
 
   &__time {
     display: flex;
     align-items: baseline;
-    gap: 4px;
+    gap: @space-1;
     white-space: nowrap;
-    font-variant-numeric: tabular-nums;
-    color: var(--semi-color-text-0);
+    color: @color-text;
   }
 
   &__delay {
-    color: var(--semi-color-danger);
-    font-weight: 600;
+    color: @color-error;
+    font-weight: @weight-strong;
   }
 
   &__countdown {
-    color: var(--semi-color-text-2);
-    font-size: 0.7rem;
+    color: @color-muted;
+    font-size: @text-xs;
   }
 }
 
@@ -88,18 +96,18 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: @space-1;
 
   &--state {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 6px;
+    gap: @space-2;
   }
 
   &__item {
-    border-bottom: 1px solid var(--semi-color-border);
-    padding-bottom: 4px;
+    border-bottom: 1px solid @color-border;
+    padding-bottom: @space-1;
 
     &:last-child {
       border-bottom: none;
@@ -110,18 +118,24 @@
   &__header {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: @space-2;
     width: 100%;
     padding: 2px 0;
     background: none;
     border: none;
     cursor: pointer;
-    color: var(--semi-color-text-0);
-    font-size: 0.8rem;
+    color: @color-text;
+    font-family: @font-ui;
+    font-size: @text-sm;
     text-align: left;
 
-    &:hover {
-      color: var(--semi-color-primary);
+    .semi-icon {
+      color: @color-muted;
+    }
+
+    &:hover .transit-stops__name {
+      text-decoration: underline;
+      text-underline-offset: 3px;
     }
   }
 
@@ -133,24 +147,23 @@
   }
 
   &__distance {
-    color: var(--semi-color-text-2);
-    font-size: 0.72rem;
-    font-variant-numeric: tabular-nums;
+    color: @color-muted;
+    font-size: @text-xs;
   }
 
   .transit-board {
-    padding: 4px 0 4px 20px;
+    padding: @space-1 0 @space-1 @space-5;
   }
 }
 
 .travel-times {
-  font-size: 0.78rem;
+  font-size: @text-sm;
 
   &--state {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 4px 0;
+    gap: @space-2;
+    padding: @space-1 0;
   }
 
   &__list {
@@ -159,19 +172,19 @@
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: @space-1;
   }
 
   &__entry {
     display: flex;
     align-items: baseline;
     flex-wrap: wrap;
-    gap: 4px 10px;
+    gap: @space-1 10px;
   }
 
   &__label {
-    color: var(--semi-color-text-1);
-    font-weight: 600;
+    color: @color-text;
+    font-weight: @weight-medium;
     /* Wide enough for "Home"/"Work" so several addresses line up under each other, but allowed to
        grow rather than truncate a label the user chose themselves. */
     min-width: 3.5rem;
@@ -180,7 +193,7 @@
   /* Which place a place type resolved to. Quiet, and after the label rather than instead of it:
      the label is what the user named this row, the place is what Fredy found for it. */
   &__place {
-    color: var(--semi-color-text-2);
+    color: @color-muted;
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -190,40 +203,41 @@
   &__modes {
     display: flex;
     flex-wrap: wrap;
-    gap: 4px 12px;
+    gap: @space-1 @space-3;
   }
 
   &__mode {
     display: inline-flex;
     align-items: baseline;
-    gap: 4px;
+    gap: @space-1;
     white-space: nowrap;
   }
 
   &__minutes {
-    color: var(--semi-color-text-0);
-    font-variant-numeric: tabular-nums;
+    color: @color-text;
+    font-weight: @weight-medium;
   }
 
   &__transfers,
   &__distance {
-    color: var(--semi-color-text-2);
-    font-size: 0.72rem;
+    color: @color-muted;
+    font-size: @text-xs;
   }
 
+  // A caveat, as an outlined pill in the muted tone.
   &__estimate {
-    color: var(--semi-color-text-2);
-    font-size: 0.68rem;
-    border: 1px solid var(--semi-color-border);
-    border-radius: 3px;
-    padding: 0 4px;
+    color: @color-muted;
+    font-size: @text-xs;
+    border: 1px solid @color-border-bright;
+    border-radius: @radius-pill;
+    padding: 0 6px;
     cursor: help;
   }
 
   &__attribution {
     display: block;
-    margin-top: 6px;
-    font-size: 0.68rem;
+    margin-top: @space-2;
+    font-size: @text-xs;
   }
 
   /* In a map popup there is no room for the reference note or the road distance, so the entries
@@ -239,12 +253,14 @@
   }
 }
 
+/* The commute under a listing's address: muted, like the rest of the line it sits on, with the
+   minutes in the text colour. */
 .commute-badge {
   display: flex;
   flex-wrap: wrap;
   gap: 3px 10px;
-  font-size: 0.72rem;
-  color: var(--semi-color-text-2);
+  font-size: @text-xs;
+  color: @color-muted;
 
   &__item {
     display: inline-flex;
@@ -254,25 +270,21 @@
   }
 
   &__minutes {
-    color: var(--semi-color-text-1);
-    font-variant-numeric: tabular-nums;
+    color: @color-text;
+    font-weight: @weight-medium;
 
-    /* Against a ceiling the user set, in the same three bands the map pins use. Semi's own
-       semantic colours rather than the map's hex values: this sits on a card that follows the
-       app's theme, and it has to stay readable in both of them. */
+    /* Against a ceiling the user set, in the same three bands the map pins use: coloured words,
+       in the semantic tokens that stay readable in both themes. */
     &--good {
-      color: var(--semi-color-success);
-      font-weight: 600;
+      color: @color-success;
     }
 
     &--acceptable {
-      color: var(--semi-color-warning);
-      font-weight: 600;
+      color: @color-warning;
     }
 
     &--poor {
-      color: var(--semi-color-danger);
-      font-weight: 600;
+      color: @color-error;
     }
   }
 
@@ -286,7 +298,8 @@
 /* The public transport figure opens its journey on hover, so it has to look like it does. */
 .travel-times__mode--detailed {
   cursor: help;
-  text-decoration: underline dotted var(--semi-color-border);
+  text-decoration: underline dotted;
+  text-decoration-color: @color-border-bright;
   text-underline-offset: 3px;
 }
 
@@ -294,12 +307,12 @@
   /* Wide enough for a station name and its time, narrow enough to stay a popover. */
   min-width: 240px;
   max-width: 340px;
-  font-size: 0.78rem;
+  font-size: @text-sm;
 
   &__title {
-    font-weight: 600;
-    color: var(--semi-color-text-0);
-    margin-bottom: 6px;
+    font-weight: @weight-strong;
+    color: @color-text;
+    margin-bottom: @space-2;
 
     &--spaced {
       margin-top: 10px;
@@ -320,16 +333,16 @@
     /* Fixed first column so the line badges line up under each other rather than ragging. */
     grid-template-columns: 3.6rem 1fr auto;
     align-items: center;
-    gap: 8px;
+    gap: @space-2;
   }
 
   &__badge {
-    background: var(--semi-color-fill-2);
-    color: var(--semi-color-text-0);
-    border-radius: 4px;
+    background: @color-fill-2;
+    color: @color-text;
+    border-radius: @radius-chip;
     padding: 1px 6px;
-    font-size: 0.72rem;
-    font-weight: 700;
+    font-size: @text-xs;
+    font-weight: @weight-strong;
     text-align: center;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -337,22 +350,21 @@
 
     &--walk {
       background: transparent;
-      border: 1px dashed var(--semi-color-border);
-      color: var(--semi-color-text-2);
-      font-weight: 500;
+      border: 1px dashed @color-border-bright;
+      color: @color-muted;
+      font-weight: @weight-medium;
     }
   }
 
   &__where {
-    color: var(--semi-color-text-0);
+    color: @color-text;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
   &__time {
-    color: var(--semi-color-text-2);
-    font-variant-numeric: tabular-nums;
+    color: @color-muted;
     white-space: nowrap;
   }
 }

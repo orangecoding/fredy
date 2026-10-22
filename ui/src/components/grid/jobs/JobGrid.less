@@ -6,29 +6,93 @@
 @import '../../../tokens.less';
 
 @job-card-min: 320px;
-@job-row: 52px;
+@job-dot: 8px;
+@job-name: 15px;
+@job-count: 17px;
+@job-count-w: 64px;
+@job-chip-h: 20px;
+@job-search-min: 200px;
+@job-sort-min: 200px;
 
 .jobGrid {
   display: flex;
   flex-direction: column;
   flex: 1;
 
+  /* Search, filters, sort and view on one row, the chips of whatever is on under it, and a hairline
+     under the block that separates the controls from the jobs - the listings page's toolbar, so the
+     two pages are one kind of page. */
+  &__toolbar {
+    display: flex;
+    flex-direction: column;
+    gap: @space-3;
+    margin-bottom: @space-7;
+    padding-bottom: @space-5;
+    border-bottom: 1px solid @color-border;
+  }
+
   &__topbar {
     display: flex;
     align-items: center;
-    gap: @space-3;
-    margin-bottom: @space-4;
     flex-wrap: wrap;
+    gap: @space-2;
 
     &__search {
-      flex: 1;
-      min-width: 160px;
+      flex: 1 1 320px;
+      min-width: @job-search-min;
+    }
+  }
+
+  &__sort {
+    flex-shrink: 0;
+    min-width: @job-sort-min;
+
+    .semi-select-prefix {
+      white-space: nowrap;
+      color: @color-muted;
+    }
+  }
+
+  /* Square, like every other control on the row: Index.less gives an icon-only button the width
+     of a medium one whatever its height. */
+  &__sortDir.semi-button.semi-button-with-icon-only {
+    width: @control-lg;
+  }
+
+  /* Two options, drawn as one segmented control. The chosen one is lifted in the text colour, the
+     way everything merely selected is; red is for "New job". */
+  &__viewToggle {
+    display: inline-flex;
+    flex: none;
+    gap: 2px;
+    padding: 3px;
+    border: 1px solid @color-border;
+    border-radius: @radius-btn;
+  }
+
+  &__viewOption {
+    height: @control-md;
+    padding: 0 @space-4;
+    border: none;
+    border-radius: @radius-chip;
+    background: transparent;
+    color: @color-muted;
+    font-family: @font-ui;
+    font-size: @text-sm;
+    font-weight: @weight-medium;
+    cursor: pointer;
+    transition:
+      background @transition-fast,
+      color @transition-fast;
+
+    &:hover {
+      color: @color-text;
     }
 
-    &__view-toggle {
-      display: flex;
-      gap: @space-1;
-      flex-shrink: 0;
+    &--on,
+    &--on:hover {
+      background: @color-border;
+      color: @color-text;
     }
   }
 
@@ -41,118 +105,139 @@
     /* min(): below about 400px the column is narrower than a card, and a card that may not shrink
        lost its right edge - and the menu with both deletes - to the page's clipping. */
     grid-template-columns: repeat(auto-fill, minmax(~'min(@{job-card-min}, 100%)', 1fr));
-    gap: @space-4;
-    align-items: start;
+    gap: @space-5;
+    align-items: stretch;
   }
 
+  /* A box, unlike the listing card. A listing card is held together by its photograph; a job card
+     is only text and controls, and without an edge of its own the footers of two neighbours ran
+     into one line of switches and buttons that belonged to nobody in particular. Flat: surface,
+     hairline, radius, no shadow. */
   &__card {
-    box-sizing: border-box;
-    height: 100%;
-    padding: @space-4;
-    background: @color-surface;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: @space-4;
+    min-width: 0;
+    padding: @space-4 @space-4 @space-3;
     border: 1px solid @color-border;
     border-radius: @radius-card;
-    transition: border-color @transition-card;
+    background: @color-surface;
 
-    &:hover {
-      border-color: @color-border-bright;
+    &__body {
+      display: flex;
+      align-items: flex-start;
+      gap: @space-4;
+      min-width: 0;
+    }
+
+    &__text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      flex: 1 1 auto;
+      min-width: 0;
     }
 
     &__header {
       display: flex;
       align-items: center;
-      gap: 9px;
+      gap: @space-3;
       min-width: 0;
     }
 
-    /* The state at a glance, up in the header. The switch in the footer is the control; this is
-       the readout, and the word "Active" that used to sit next to the switch was a third way of
-       saying the same thing. */
+    /* The state at a glance. The switch in the footer is the control; this is the readout. A paused
+       job keeps a ring rather than losing its dot, so the column of dots stays a column. */
     &__dot {
       flex: none;
-      width: 8px;
-      height: 8px;
+      box-sizing: border-box;
+      width: @job-dot;
+      height: @job-dot;
       border-radius: @radius-pill;
-      background: @color-faint;
+      border: 1.5px solid @color-faint;
 
       &--active {
+        border-color: @color-success;
         background: @color-success;
       }
     }
 
     &__name {
-      flex: 1 1 auto;
+      flex: 0 1 auto;
       min-width: 0;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      font-size: 15px;
-      font-weight: 600;
+      font-size: @job-name;
+      font-weight: @weight-medium;
       color: @color-text;
     }
 
+    &--paused &__name {
+      color: @color-muted;
+    }
+
+    /* A status pill: a light tint and a drawn edge of the status colour, the words in the text
+       colour, so it is found without being the loudest thing on the card. */
     &__running {
       display: inline-flex;
       align-items: center;
       flex: none;
-      height: 20px;
+      height: @job-chip-h;
       padding: 0 @space-2;
-      border: 1px solid @color-success;
-      border-radius: @radius-chip;
-      background: @color-success-dim;
-      color: @color-success;
+      border: 1px solid rgb(@color-success-rgb / 40%);
+      border-radius: @radius-pill;
+      background: rgb(@color-success-rgb / 12%);
+      color: @color-text;
       font-size: @text-xs;
-      font-weight: 600;
+      font-weight: @weight-medium;
     }
 
-    /* Indented to start under the name rather than under the dot. */
+    &__shared {
+      display: inline-flex;
+      flex: none;
+      color: @color-warning;
+      font-size: @text-md;
+      cursor: help;
+    }
+
+    /* Both lines start under the name rather than under the dot. */
+    &__setup,
     &__lastRun {
-      margin-top: 5px;
-      padding-left: 17px;
+      padding-left: @space-5;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
       font-size: @text-sm;
       color: @color-muted;
     }
 
-    &__stats {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: @space-2;
-      margin-top: @space-3;
+    /* The one figure on the card, the way the dashboard sets a job's count: the number in the UI
+       face, its unit under it. */
+    &__count {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      flex: none;
+      min-width: @job-count-w;
     }
 
-    /* One treatment for all three. Blue, orange and purple carried no information, and the tokens
-       behind them fail the separation check anyway, so they could never have carried any. */
-    &__stat {
-      box-sizing: border-box;
-      min-width: 0;
-      padding: 10px;
-      background: @color-hover;
-      border: 1px solid @color-border;
-      border-radius: @radius-chip;
-    }
-
-    &__statNumber {
-      font-family: @font-mono;
-      font-size: 17px;
-      font-weight: 700;
+    &__countValue {
+      font-size: @job-count;
+      font-weight: @weight-strong;
+      line-height: 1.3;
       color: @color-text;
     }
 
-    /* No opacity. At 0.7 the three labels landed between 3.35:1 and 3.74:1 on their own tiles,
-       below AA, and they are the part that says what the number means. */
-    &__statLabel {
-      margin-top: 3px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      font-size: 11.5px;
+    &--paused &__countValue {
       color: @color-muted;
     }
 
-    &__divider {
-      height: 1px;
-      margin: @space-3 0;
-      background: @color-border;
+    /* The text colour's quieter step, never an opacity: at 0.7 the labels of the old tiles fell
+       below AA, and this is the part that says what the number means. */
+    &__countLabel {
+      font-size: @text-xs;
+      color: @color-muted;
     }
 
     &__footer {
@@ -160,12 +245,27 @@
       align-items: center;
       justify-content: space-between;
       gap: @space-3;
+      padding-top: @space-3;
+      border-top: 1px solid @color-border;
     }
   }
 
   &__pagination {
-    margin-top: @space-4;
     display: flex;
     justify-content: center;
+    margin-top: @space-8;
+    padding-top: @space-5;
+    border-top: 1px solid @color-border;
+  }
+
+  @media (max-width: 768px) {
+    &__topbar__search {
+      flex-basis: 100%;
+    }
+
+    &__sort {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
   }
 }

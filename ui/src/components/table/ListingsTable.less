@@ -11,28 +11,28 @@
 //
 // Bild, Inserat, Preis, Adresse, Anbieter, Datum, Status, Aktionen. Die letzte Spalte ist fest:
 // mit `auto` war sie so breit wie ihr Inhalt, und eine Zeile mit einem Knopf mehr verschob damit
-// alle ihre uebrigen Spalten gegenueber jeder anderen Zeile. 124px sind vier Knoepfe zu 28px plus
-// drei Gaps zu @space-1.
-@listing-columns: 56px minmax(0, 1fr) 132px 180px 112px 96px 104px 124px;
-@listing-columns-900: 56px minmax(0, 1fr) 132px 104px 124px;
-@listing-columns-560: 56px minmax(0, 1fr) 124px;
+// alle ihre uebrigen Spalten gegenueber jeder anderen Zeile. 140px sind vier runde Knoepfe zu
+// @control-sm (32px) plus drei Gaps zu @space-1 - dieselben Knoepfe wie unter jeder Kachel.
+@listing-columns: 72px minmax(0, 1fr) 148px 200px 112px 96px 120px 140px;
+@listing-columns-900: 72px minmax(0, 1fr) 148px 120px 140px;
+@listing-columns-560: 72px minmax(0, 1fr) 140px;
 
+/* The table view of the same listings the grid shows, drawn the way the grid draws them: the
+   photograph, the price in the UI face, everything else muted, and the same round tools. Rows are
+   divided by hairlines rather than boxed, like every table in the app. */
 .listingsTable {
   display: flex;
   flex-direction: column;
-  gap: @space-1;
 
   &__head {
     display: grid;
     grid-template-columns: @listing-columns;
-    gap: @space-3;
+    gap: @space-4;
     align-items: center;
-    padding: 0 @space-3 @space-2;
+    padding: 0 @space-2 @space-3;
     border-bottom: 1px solid @color-border;
     font-size: @text-xs;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+    font-weight: @weight-medium;
     color: @color-muted;
 
     &__right {
@@ -63,31 +63,36 @@
     display: grid;
     grid-template-columns: @listing-columns;
     align-items: center;
-    gap: @space-3;
-    min-height: 52px;
-    padding: @space-2 @space-3;
-    background: @color-elevated;
-    border: 1px solid @color-border;
-    border-radius: @radius-chip;
+    gap: @space-4;
+    min-height: 72px;
+    padding: @space-3 @space-2;
+    border-bottom: 1px solid @color-border;
     cursor: pointer;
     transition: background @transition-fast;
 
     &:hover {
-      background: @color-solid;
+      background: @color-fill-subtle;
     }
 
     &__thumb {
-      width: 56px;
-      height: 40px;
+      width: 72px;
+      height: 48px;
       flex-shrink: 0;
       border-radius: @radius-chip;
       overflow: hidden;
+      background: @color-fill-subtle;
 
       img {
         width: 100%;
         height: 100%;
         object-fit: cover;
         display: block;
+      }
+
+      .listingPhoto--empty {
+        width: 100%;
+        height: 100%;
+        font-size: 18px;
       }
     }
 
@@ -98,9 +103,10 @@
       gap: @space-1;
     }
 
+    // The row's heading, a link without a link colour, underlined on hover - as on the card.
     &__title-text {
-      font-weight: 600;
-      font-size: @text-sm;
+      font-weight: @weight-medium;
+      font-size: @text-base;
       color: @color-text;
       text-decoration: none;
       overflow: hidden;
@@ -110,12 +116,7 @@
       &:hover {
         color: @color-text;
         text-decoration: underline;
-      }
-
-      &:focus-visible {
-        outline: 2px solid @color-accent;
-        outline-offset: 2px;
-        border-radius: @radius-chip;
+        text-underline-offset: 3px;
       }
     }
 
@@ -127,14 +128,13 @@
     }
 
     // Statt opacity: 0.6 auf der ganzen Zeile, was jede Beschriftung darin von 5,43 zu 1 auf
-    // 2,64 zu 1 gedrueckt hat. Jetzt sagt es ein Chip, und der Rest der Zeile bleibt lesbar.
+    // 2,64 zu 1 gedrueckt hat. Jetzt sagt es eine Pille, und der Rest der Zeile bleibt lesbar.
     &__inactive {
       display: inline-flex;
       align-items: center;
       height: 20px;
       padding: 0 @space-2;
-      border-radius: @radius-chip;
-      background: @color-elevated;
+      border-radius: @radius-pill;
       border: 1px solid @color-border-bright;
       color: @color-muted;
       font-size: @text-xs;
@@ -150,24 +150,20 @@
       text-align: right;
     }
 
-    // Wie in der Kachel: keine Farbe, Tabellenziffern. In einer Spalte untereinander ist das der
-    // Unterschied zwischen vergleichen koennen und nicht.
+    // Wie in der Kachel: keine Farbe, die Schrift der Oberflaeche, gross und kraeftig.
     &__amount {
-      font-family: @font-mono;
-      font-size: 13px;
-      font-weight: 700;
+      font-size: @text-md;
+      font-weight: @weight-strong;
+      letter-spacing: -0.01em;
       color: @color-text;
-      font-variant-numeric: tabular-nums;
     }
 
     &__perSqm {
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      gap: @space-1;
+      gap: @space-1 @space-2;
       flex-wrap: wrap;
-      row-gap: @space-1;
-      font-variant-numeric: tabular-nums;
     }
 
     &__address {
@@ -175,7 +171,7 @@
       display: flex;
       flex-direction: column;
       gap: @space-1;
-      font-size: @text-xs;
+      font-size: @text-sm;
       color: @color-muted;
     }
 
@@ -189,11 +185,12 @@
 
       .semi-icon {
         flex-shrink: 0;
+        font-size: @text-sm;
       }
     }
 
     &__meta {
-      font-size: @text-xs;
+      font-size: @text-sm;
       color: @color-muted;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -202,11 +199,12 @@
 
     // War @color-faint: 2,19 zu 1 auf @color-elevated.
     &__date {
-      font-size: @text-xs;
+      font-size: @text-sm;
       color: @color-muted;
       white-space: nowrap;
     }
 
+    // The status pill, from StatusControl - the same one the cards carry.
     &__status {
       min-width: 0;
       display: flex;

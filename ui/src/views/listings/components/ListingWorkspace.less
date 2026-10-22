@@ -16,14 +16,14 @@
 
   &__hint {
     font-size: @text-sm;
-    color: @color-faint;
+    color: @color-muted;
     text-align: right;
   }
 
   &__columns {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: @space-6;
+    gap: @space-8;
   }
 
   &__notes,
@@ -33,8 +33,8 @@
 
   &__subtitle {
     margin: 0 0 @space-2;
-    font-size: @text-base;
-    font-weight: 500;
+    font-size: @text-sm;
+    font-weight: 400;
     color: @color-muted;
   }
 
@@ -46,27 +46,16 @@
     margin-top: @space-4;
   }
 
-  // Outlined rather than borderless-flat: it is a real action and needs an edge to be aimed at,
-  // but it is not the page's primary and must not look like one.
-  &__save {
-    height: 36px !important;
-    padding: 0 @space-4 !important;
-    border: 1px solid @color-border-bright !important;
-    border-radius: @radius-btn !important;
-    color: @color-text !important;
+  // The outlined secondary comes from the global button rules; nothing of its own here.
 
-    &:hover:not(.semi-button-disabled) {
-      background: @color-fill-1 !important;
-      border-color: @color-muted !important;
-    }
-  }
-
-  /* The attachments card brings its own heading and its own copy of the retention note. Inside this
-     card the heading is one level down so it matches the notes heading beside it, and the note is
-     already on the label row above - printing it twice is how a standing fact turns into noise. */
+  /* The attachments block brings its own heading and its own copy of the retention note. Inside
+     this chapter the heading is one level down so it matches the notes heading beside it, and the
+     note is already on the heading row above - printing it twice is how a standing fact turns into
+     noise. */
   .attachmentsCard__title {
-    font-size: @text-base !important;
-    font-weight: 500 !important;
+    font-size: @text-sm !important;
+    font-weight: 400 !important;
+    line-height: 1.45 !important;
     color: @color-muted !important;
     margin-bottom: @space-2 !important;
   }
@@ -76,25 +65,26 @@
   }
 
   /* An empty document list is drawn as the slot it is. Dashed rather than solid because the panel
-     is a placeholder - and now also because it is a drop target, which is what dashed has always
-     meant on the web. The card listens for a drop on this box, so the caption underneath saying so
-     is the truth; it was left off while the picker was the only way in. */
+     is a placeholder - and also because it is a drop target, which is what dashed has always meant
+     on the web. The card listens for a drop on this box, so the caption underneath saying so is the
+     truth. */
   .attachmentsCard__empty {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: @space-1;
-    min-height: 116px;
+    min-height: 136px;
     padding: @space-4;
     border: 1px dashed @color-border-bright;
-    border-radius: @radius-chip;
+    border-radius: @radius-card;
     text-align: center;
   }
 
   @media (max-width: 1180px) {
     &__columns {
       grid-template-columns: minmax(0, 1fr);
+      gap: @space-6;
     }
 
     &__hint {

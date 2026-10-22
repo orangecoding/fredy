@@ -8,7 +8,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-import { applyTheme, currentTheme, normalizeTheme, DEFAULT_THEME, THEMES } from '../../ui/src/services/theme/theme.js';
+import { applyTheme, normalizeTheme, DEFAULT_THEME, THEMES } from '../../ui/src/services/theme/theme.js';
 
 const uiSrc = path.join(path.dirname(fileURLToPath(import.meta.url)), '../../ui/src');
 
@@ -56,11 +56,9 @@ describe('theme preference', () => {
   it('paints the document by setting the attribute Semi UI and themes.less both read', () => {
     expect(applyTheme('light')).toBe('light');
     expect(browser.attributes['theme-mode']).toBe('light');
-    expect(currentTheme()).toBe('light');
 
     applyTheme('dark');
     expect(browser.attributes['theme-mode']).toBe('dark');
-    expect(currentTheme()).toBe('dark');
   });
 
   it('never paints a theme it has no palette for', () => {
@@ -73,9 +71,39 @@ describe('theme preference', () => {
     expect(html).toContain(`<body theme-mode="${DEFAULT_THEME}">`);
   });
 
+  it('switches without remounting the page it is switched from', () => {
+    // The layout was keyed on the theme, so picking a tile remounted the preferences page and
+    // dropped the deletion setting the user had changed but not saved yet.
+    const app = fs.readFileSync(path.join(uiSrc, 'App.jsx'), 'utf-8');
+    expect(app).not.toMatch(/key=\{theme\}/);
+  });
+
   it('keeps no copy of the preference, which belongs to the settings table alone', () => {
     const source = fs.readFileSync(path.join(uiSrc, 'services/theme/theme.js'), 'utf-8');
     expect(source).not.toMatch(/localStorage|sessionStorage|document\.cookie/);
+  });
+});
+
+describe('text links', () => {
+  // One colour for every text link, so a new one cannot come out in the text colour again and a
+  // change of the link colour is one line in tokens.less.
+  const LINK_STYLESHEETS = [
+    'views/dashboard/Dashboard.less',
+    'views/listings/components/ListingLocationCard.less',
+    'views/listings/components/ListingOrigin.less',
+    'views/listings/components/ListingDescriptionCard.less',
+    'views/finance/components/AffordabilityPanel.less',
+  ];
+
+  it('are drawn in the link colour, the accent as text', () => {
+    const tokens = fs.readFileSync(path.join(uiSrc, 'tokens.less'), 'utf-8');
+    expect(tokens).toMatch(/^@color-link: @color-accent-text;$/m);
+    for (const file of LINK_STYLESHEETS) {
+      const block = fs.readFileSync(path.join(uiSrc, file), 'utf-8').match(/&__link \{[\s\S]*?\n {2}\}/)?.[0];
+      expect(block, file).toBeDefined();
+      expect(block, file).toMatch(/color: @color-link;/);
+      expect(block, file).not.toMatch(/color: @color-text;/);
+    }
   });
 });
 

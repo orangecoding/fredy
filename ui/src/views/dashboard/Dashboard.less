@@ -6,56 +6,343 @@
 @import '../../tokens.less';
 
 /* Constants that are only true for this page. tokens.less carries the app-wide names and has to
-   stay free of rules, so a width that means something here and nowhere else lives here. */
-@dash-rail: 400px;
-@dash-stack: 1180px;
-@dash-narrow: 680px;
-@dash-card-pad: @space-5;
-@dash-listing-row: 64px;
-@dash-job-row: 56px;
-@dash-thumb-w: 52px;
-@dash-thumb-h: 40px;
-@dash-spark-w: 60px;
+   stay free of rules, so a value that means something here and nowhere else lives here. */
+@dash-gap: @space-10;
+@dash-two-up: 1100px;
+@dash-one-up: 560px;
+@dash-jobs-min: 480px;
+@dash-activity-min: 340px;
+@dash-spark-w: 72px;
 @dash-spark-h: 24px;
-@dash-trend-h: 150px;
+@dash-count-w: 72px;
+@dash-trend-h: 112px;
+@dash-chip-h: 24px;
+@dash-action-h: 40px;
+@dash-tight: 2px;
+@dash-legend-gap: 6px;
 
+/* One column of sections separated by space, not by boxes. The only boxed thing on the page is the
+   attention notice, because it is the only thing that asks for action. */
 .dashboard {
   display: flex;
   flex-direction: column;
+  gap: @dash-gap;
   flex: 1;
 
-  // Two things you can set running from here. The rule between them says they are separate
-  // actions rather than one control with a dropdown.
-  &__actions {
-    display: flex;
+  /* The page heading carries its own bottom margin for pages that stack things under it; here the
+     column gap already spaces it. */
+  .page-heading {
+    margin-bottom: 0;
+  }
+
+  &__action.semi-button {
+    height: @dash-action-h;
+    padding: 0 @space-4;
+  }
+
+  &__status {
+    display: inline-flex;
     align-items: center;
     gap: @space-2;
+    font-size: @text-sm;
+    color: @color-muted;
   }
 
-  &__actions-divider {
-    width: 1px;
-    align-self: stretch;
-    margin: @space-1 0;
-    background: @color-border-bright;
-    flex-shrink: 0;
+  &__statusDot {
+    flex: none;
+    width: 7px;
+    height: 7px;
+    border-radius: @radius-pill;
+    background: @color-success;
+
+    &--stale {
+      background: @color-warning;
+    }
   }
 
-  /* Four tiles, equal width, never floated. minmax(0, 1fr) rather than 1fr because a long figure
-     in one tile otherwise widens its column and the row stops being four equal things. */
-  &__kpis {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+  /* The notice tinted in amber at a low strength, so it is found without shouting. */
+  &__attention {
+    display: flex;
+    flex-direction: column;
+    gap: @space-2;
+    padding: @space-3 @space-3 @space-3 @space-4;
+    border: 1px solid rgb(@color-warning-rgb / 28%);
+    border-radius: @radius-card;
+    background: rgb(@color-warning-rgb / 7%);
+  }
+
+  &__attentionItem {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: @space-3;
+  }
+
+  &__attentionIcon {
+    flex: none;
+    font-size: 18px;
+    color: @color-warning;
+  }
+
+  &__attentionText {
+    flex: 1 1 320px;
+    min-width: 0;
+    color: @color-text;
+  }
+
+  &__attentionMore {
+    padding-left: @space-8;
+    font-size: @text-sm;
+    color: @color-muted;
+  }
+
+  &__section {
+    display: flex;
+    flex-direction: column;
     gap: @space-4;
+    min-width: 0;
   }
 
-  /* The change against the previous week, inside a tile's description. Both directions carry the
-     same weight: green for growth and grey for a collapse reads as "nothing happened" for the one
-     number on this page that should send someone to their job settings. */
-  &__delta {
+  &__sectionHead {
+    display: flex;
+    align-items: baseline;
+    gap: @space-3;
+  }
+
+  &__sectionTitle {
+    margin: 0;
+    font-size: @text-lg;
+    font-weight: @weight-strong;
+    letter-spacing: -0.01em;
+    color: @color-text;
+  }
+
+  &__spacer {
+    flex: 1 1 auto;
+  }
+
+  &__link {
     display: inline-flex;
     align-items: center;
     gap: @space-1;
-    font-weight: 600;
+    padding: 0;
+    border: none;
+    background: none;
+    font-family: @font-ui;
+    font-size: @text-base;
+    font-weight: @weight-medium;
+    color: @color-link;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    svg {
+      font-size: 15px;
+    }
+  }
+
+  /* Newest hits: four photographs in a row, two on a tablet, one on a phone. */
+  &__listings {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: @space-6 @space-5;
+
+    @media (max-width: @dash-two-up) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @media (max-width: @dash-one-up) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  &__listing {
+    display: flex;
+    flex-direction: column;
+    gap: @space-3;
+    min-width: 0;
+    padding: 0;
+    border: none;
+    background: none;
+    color: @color-text;
+    font-family: @font-ui;
+    text-align: left;
+    cursor: pointer;
+
+    &:hover .dashboard__listingTitle {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+  }
+
+  &__listingMedia {
+    position: relative;
+    display: block;
+  }
+
+  &__listingPhoto {
+    aspect-ratio: 4 / 3;
+    border-radius: @radius-chip;
+  }
+
+  /* How old the listing is, on the photo, because it is the first thing someone deciding whether
+     to call cares about. Set on the map-panel surface, which stays legible over any photograph. */
+  &__listingAge {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    display: inline-flex;
+    align-items: center;
+    height: @dash-chip-h;
+    padding: 0 @space-2;
+    border-radius: 4px;
+    background: @color-map-panel;
+    color: @color-map-panel-strong;
+    font-size: @text-xs;
+    font-weight: @weight-medium;
+  }
+
+  &__listingBody {
+    display: flex;
+    flex-direction: column;
+    gap: @dash-tight;
+    min-width: 0;
+  }
+
+  &__listingPrice {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: @space-1 @space-2;
+  }
+
+  &__listingAmount {
+    font-size: @text-xl;
+    font-weight: @weight-strong;
+    letter-spacing: -0.01em;
+  }
+
+  &__listingSqm {
+    font-size: @text-sm;
+    color: @color-muted;
+  }
+
+  &__listingTitle,
+  &__listingMeta {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__listingTitle {
+    font-size: 15px;
+    font-weight: @weight-medium;
+  }
+
+  &__listingMeta {
+    font-size: @text-sm;
+    color: @color-muted;
+  }
+
+  &__listingBelow {
+    margin-top: @space-1;
+    font-size: @text-sm;
+    font-weight: @weight-medium;
+    color: @color-success;
+  }
+
+  &__latestEmpty {
+    margin: 0;
+    color: @color-muted;
+  }
+
+  /* The standing figures: one line between two rules, four cells divided by hairlines. */
+  &__kpis {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border-top: 1px solid @color-border;
+    border-bottom: 1px solid @color-border;
+
+    @media (max-width: @dash-two-up) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @media (max-width: @dash-one-up) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  &__kpi {
+    display: flex;
+    flex-direction: column;
+    gap: @space-1;
+    min-width: 0;
+    padding: @space-5 @space-6;
+    border: none;
+    border-left: 1px solid @color-border;
+    background: none;
+    color: @color-text;
+    font-family: @font-ui;
+    text-align: left;
+    cursor: pointer;
+    transition: background @transition-fast;
+
+    &:first-child {
+      padding-left: 0;
+      border-left: none;
+    }
+
+    &:hover {
+      background: @color-fill-subtle;
+    }
+
+    @media (max-width: @dash-two-up) {
+      &:nth-child(odd) {
+        padding-left: 0;
+        border-left: none;
+      }
+
+      &:nth-child(n + 3) {
+        border-top: 1px solid @color-border;
+      }
+    }
+
+    @media (max-width: @dash-one-up) {
+      padding-left: 0;
+      border-left: none;
+
+      &:nth-child(n + 2) {
+        border-top: 1px solid @color-border;
+      }
+    }
+  }
+
+  &__kpiLabel {
+    font-size: @text-sm;
+    color: @color-muted;
+  }
+
+  &__kpiValue {
+    font-size: @text-2xl;
+    font-weight: @weight-strong;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+  }
+
+  &__kpiMeta {
+    font-size: @text-xs;
+    color: @color-muted;
+  }
+
+  /* The change against the previous week. Both directions carry the same weight: green for growth
+     and grey for a collapse would read as "nothing happened" for the one number on this page that
+     should send someone to their job settings. */
+  &__delta {
+    font-weight: @weight-medium;
 
     &--up {
       color: @color-success;
@@ -66,349 +353,180 @@
     }
   }
 
-  /* Content left, context right. The main column is fluid because the app's navigation owns a
-     variable slice of the window; only the rail is fixed. */
-  &__grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) @dash-rail;
-    gap: @space-6;
-    align-items: start;
-    margin-top: @space-6;
+  /* The searches on the left, the activity on the right; stacked once there is no room for both. */
+  &__columns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: @space-12;
   }
 
-  &__main,
-  &__rail {
+  &__jobsSection {
+    flex: 999 1 @dash-jobs-min;
+    gap: @space-3;
+  }
+
+  &__activity {
     display: flex;
     flex-direction: column;
-    gap: @space-6;
+    gap: @space-7;
+    flex: 1 1 @dash-activity-min;
     min-width: 0;
   }
 
-  /* One card shell for the whole page. The old __panel and the KPI cards drew two different
-     cards, which is why the page read as two products stacked. */
-  &__card {
-    background: @color-surface;
-    border: 1px solid @color-border;
-    border-radius: @radius-card;
-    padding: @dash-card-pad;
-  }
-
-  &__cardHead {
-    display: flex;
-    align-items: center;
-    gap: @space-3;
-    min-height: 24px;
-    margin-bottom: @space-3;
-  }
-
-  &__cardLabel {
-    margin: 0;
-    font-size: @text-xs;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: @color-muted;
-  }
-
-  &__spacer {
-    flex: 1 1 auto;
-  }
-
-  &__count {
-    font-family: @font-mono;
-    font-size: @text-sm;
-    font-weight: 700;
-    color: @color-text;
-  }
-
-  /* A link that is really a button, so it is reachable by keyboard and announced as an action.
-     The accent is too dark to carry small text on this background, so the underline does the
-     work and the accent appears on hover, where legibility is no longer the question. */
-  &__link {
-    padding: 0;
-    border: none;
-    background: none;
-    font-family: @font-ui;
-    font-size: @text-sm;
-    font-weight: 500;
-    color: @color-text;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    cursor: pointer;
-
-    &:hover {
-      color: @color-accent-text;
-    }
-  }
-
-  &__chip {
-    display: inline-flex;
-    align-items: center;
-    height: 24px;
-    padding: 0 @space-2;
-    border: 1px solid @color-border;
-    border-radius: @radius-chip;
-    background: @color-hover;
-    font-family: @font-mono;
-    font-size: @text-xs;
-    color: @color-muted;
-    white-space: nowrap;
-  }
-
-  /* Newest hits. The reason anyone opens this page, and it used to be one navigation away. */
-  &__latest {
-    display: flex;
-    flex-direction: column;
-  }
-
-  &__latestRow {
-    display: flex;
-    align-items: center;
-    gap: @space-3;
-    width: 100%;
-    height: @dash-listing-row;
-    padding: 0;
-    border: none;
-    border-top: 1px solid @color-border;
-    background: none;
-    font-family: @font-ui;
-    text-align: left;
-    cursor: pointer;
-    transition: background @transition-fast;
-
-    &:hover {
-      background: @color-hover;
-    }
-  }
-
-  /* Two layers. The drawn house sits underneath and the photo covers it; a photo that fails to
-     load hides itself and uncovers the house again, which is why this needs no state. */
-  &__thumb {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex: none;
-    width: @dash-thumb-w;
-    height: @dash-thumb-h;
-    border-radius: @radius-chip;
-    background: @color-elevated;
-    color: @color-faint;
-    overflow: hidden;
-
-    svg {
-      width: 18px;
-      height: 18px;
-    }
-
-    img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-  }
-
-  &__latestText {
-    flex: 1 1 auto;
-    min-width: 0;
-  }
-
-  &__latestTitle,
-  &__latestMeta {
-    display: block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  &__latestTitle {
-    font-size: @text-base;
-    font-weight: 500;
-    color: @color-text;
-  }
-
-  &__latestMeta {
-    margin-top: @space-1;
-    font-size: @text-sm;
-    color: @color-muted;
-  }
-
-  /* Fixed widths on the three right-hand columns, so the edges line up down the list instead of
-     ragging with the length of each title. */
-  &__latestPrice {
-    flex: none;
-    width: 92px;
-    text-align: right;
-    font-family: @font-mono;
-    font-size: @text-base;
-    font-weight: 700;
-    color: @color-text;
-  }
-
-  &__latestSqm {
-    display: flex;
-    flex: none;
-    justify-content: flex-end;
-    width: 108px;
-  }
-
-  &__latestAge {
-    flex: none;
-    width: 74px;
-    text-align: right;
-    font-size: @text-sm;
-    color: @color-muted;
-  }
-
-  &__latestEmpty {
-    padding: @space-4 0;
-    color: @color-muted;
-    font-size: @text-base;
-  }
-
-  /* Which job is working and which is not. Two jobs and no way to tell them apart was the whole
-     content of the tile this replaces. */
   &__jobs {
     display: flex;
     flex-direction: column;
-    margin-bottom: @space-3;
+    border-bottom: 1px solid @color-border;
   }
 
   &__jobRow {
     display: flex;
     align-items: center;
-    gap: @space-3;
+    gap: @space-4;
     width: 100%;
-    height: @dash-job-row;
-    padding: 0;
+    padding: @space-4 0;
     border: none;
     border-top: 1px solid @color-border;
     background: none;
+    color: @color-text;
     font-family: @font-ui;
     text-align: left;
     cursor: pointer;
     transition: background @transition-fast;
 
     &:hover {
-      background: @color-hover;
+      background: @color-fill-subtle;
+    }
+  }
+
+  &__jobDot {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-radius: @radius-pill;
+
+    &--ok {
+      background: @color-success;
+    }
+
+    &--attention {
+      background: @color-warning;
+    }
+
+    &--paused {
+      border: 1.5px solid @color-faint;
     }
   }
 
   &__jobText {
+    display: flex;
+    flex-direction: column;
     flex: 1 1 auto;
     min-width: 0;
   }
 
   &__jobName {
-    display: flex;
-    align-items: center;
-    gap: @space-2;
-    font-size: @text-base;
-    font-weight: 500;
-    color: @color-text;
-  }
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 15px;
+    font-weight: @weight-medium;
 
-  &__jobWarning {
-    flex: none;
-    color: @color-warning;
+    &--paused {
+      color: @color-muted;
+    }
   }
 
   &__jobMeta {
-    display: block;
-    margin-top: @space-1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     font-size: @text-sm;
     color: @color-muted;
+
+    &--attention {
+      color: @color-warning;
+    }
   }
 
   &__jobSpark {
     flex: none;
     width: @dash-spark-w;
     height: @dash-spark-h;
-    color: @color-muted;
-  }
+    color: @color-chart-2;
 
-  &__jobCount {
-    flex: none;
-    width: 58px;
-    text-align: right;
-    font-family: @font-mono;
-    font-size: @text-base;
-    font-weight: 700;
-    color: @color-text;
+    &--quiet {
+      color: @color-chart-5;
+    }
 
-    &--zero {
-      color: @color-faint;
+    @media (max-width: @dash-one-up) {
+      display: none;
     }
   }
 
-  /* Fourteen daily bars. A smoothed line invented values between whole-day counts, and its header
-     claimed a seven-day window the curve did not show. */
+  &__jobCount {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    flex: none;
+    width: @dash-count-w;
+  }
+
+  &__jobTotal {
+    font-size: 17px;
+    font-weight: @weight-strong;
+
+    &--quiet {
+      color: @color-muted;
+    }
+  }
+
+  &__jobWindow {
+    font-size: @text-xs;
+    color: @color-muted;
+  }
+
+  /* Fourteen daily bars. */
   &__trend {
     height: @dash-trend-h;
+    border-bottom: 1px solid @color-border-bright;
   }
 
   &__trendLegend {
     display: flex;
-    align-items: center;
-    gap: @space-4;
-    margin-top: @space-3;
-    font-size: @text-sm;
-    color: @color-muted;
+    flex-wrap: wrap;
+    gap: @dash-legend-gap @space-5;
+    margin-top: -@dash-legend-gap;
   }
 
   &__trendKey {
     display: inline-flex;
     align-items: center;
-    gap: @space-2;
+    gap: @dash-legend-gap;
+    font-size: @text-sm;
+    color: @color-muted;
   }
 
   &__trendSwatch {
-    width: 10px;
-    height: 10px;
-    border-radius: @radius-chip;
-    background: @color-muted;
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    background: @color-chart-3;
 
     &--current {
       background: @color-accent;
     }
   }
 
-  /* Jobs that are not doing what their owner thinks they are. Only rendered when there are any:
-     a permanent panel reading "all good" is a panel people stop reading. */
-  &__attention {
-    &-list {
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    &-item {
-      display: flex;
-      align-items: center;
-      gap: @space-2;
-      padding: @space-2 0;
-      border-bottom: 1px solid @color-border;
-
-      &:last-child {
-        border-bottom: none;
-      }
-    }
-
-    &-icon {
-      flex: none;
-      color: @color-warning;
-    }
-
-    &-text {
-      flex: 1 1 auto;
-      color: @color-text;
-      font-size: @text-sm;
-    }
+  &__trendAxis {
+    display: flex;
+    justify-content: space-between;
+    margin-top: -@space-2;
+    font-size: @text-xs;
+    color: @color-muted;
   }
 
-  /* Nothing set up yet. One statement and one action, centred, instead of a grid of dashes. */
   &__empty {
     display: flex;
     flex-direction: column;
@@ -425,46 +543,5 @@
 
   &__empty-body {
     line-height: 1.6;
-  }
-
-  /* One column. The tiles come before the content because on a single column the price is the
-     first question, and the rail's cards follow the main column rather than splitting it. */
-  @media (max-width: @dash-stack) {
-    &__grid {
-      grid-template-columns: minmax(0, 1fr);
-    }
-
-    &__kpis {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-
-  @media (max-width: @dash-narrow) {
-    &__kpis {
-      grid-template-columns: minmax(0, 1fr);
-    }
-
-    &__latestSqm {
-      display: none;
-    }
-
-    &__latestAge {
-      width: 62px;
-    }
-  }
-}
-
-/* Interval, last run and next run, as one line instead of three cards. */
-.dashboard__status {
-  display: flex;
-  align-items: center;
-  gap: @space-2;
-  flex-wrap: wrap;
-  margin-bottom: @space-4;
-  color: @color-muted;
-  font-size: @text-sm;
-
-  &-icon {
-    color: @color-faint;
   }
 }

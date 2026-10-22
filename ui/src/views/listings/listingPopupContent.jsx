@@ -5,7 +5,6 @@
 
 import { renderToString } from 'react-dom/server';
 import { IconChevronLeft, IconChevronRight } from '@douyinfe/semi-icons';
-import no_image from '../../assets/no_image.png';
 import { listingPictureSrc } from '../../services/listings/listingPictures.js';
 import { availableModes, formatMinutes, hasAnyTime } from '../../components/transit/travelTimeFormat.js';
 import { formatEuroPrice } from '../../services/price/priceService.js';
@@ -42,9 +41,9 @@ import MapPopupActions from './components/MapPopupActions.jsx';
  * @param {(id: string) => void} [params.onPageChange] - Called after the popup switched to another
  * listing, with its id. That changes the popup's height, and it changes which listing the address
  * bar has to name.
- * @returns {{element: HTMLElement, transitMount: HTMLElement, unmount: () => void,
+ * @returns {{element: HTMLElement, transitMount: HTMLElement, activate: () => void, unmount: () => void,
  * currentId: () => string}} The popup content, the empty node the nearby stops are to be rendered
- * into, the teardown of the action bar, and which listing is on screen right now.
+ * into, the mount and the teardown of the action bar, and which listing is on screen right now.
  */
 export function createListingPopupContent({
   listings,
@@ -89,6 +88,21 @@ export function createListingPopupContent({
   // So the previous root has to be unmounted before the next one is created, or every page turn
   // leaks one.
   let unmountActions = null;
+  // Mounted on the first open, not here. The map builds the content of every pin up front and
+  // again on each filter change, and a React root per pin for popups nobody opened was most of the
+  // cost of rebuilding a map with a few hundred listings.
+  let active = false;
+
+  const mountActions = () => {
+    const actions = body.querySelector('.map-popup-content__actions');
+    if (actions) {
+      unmountActions = mountPopupNode(
+        actions,
+        <MapPopupActions listing={listings[index]} onDelete={onDelete} onNavigate={onNavigate} />,
+        language,
+      );
+    }
+  };
 
   const render = () => {
     unmountActions?.();
@@ -104,14 +118,7 @@ export function createListingPopupContent({
     body.querySelector('.js-popup-prev')?.addEventListener('click', () => step(-1));
     body.querySelector('.js-popup-next')?.addEventListener('click', () => step(1));
 
-    const actions = body.querySelector('.map-popup-content__actions');
-    if (actions) {
-      unmountActions = mountPopupNode(
-        actions,
-        <MapPopupActions listing={listings[index]} onDelete={onDelete} onNavigate={onNavigate} />,
-        language,
-      );
-    }
+    if (active) mountActions();
   };
 
   render();
@@ -119,6 +126,12 @@ export function createListingPopupContent({
   return {
     element,
     transitMount: transit.querySelector('.map-popup-content__transit-mount'),
+    /** Mounts the action bar. Called when the popup opens; a second call does nothing. */
+    activate: () => {
+      if (active) return;
+      active = true;
+      mountActions();
+    },
     /** Tears the action bar down with its popup. The caller already collects these. */
     unmount: () => unmountActions?.(),
     /** Which listing is on screen, for the caller to put in the address bar when it opens. */
@@ -168,7 +181,7 @@ function renderTravelTimes(listing, t) {
     return `${escapeHtml(entry.label)}: ${modes}`;
   });
 
-  return `<span><strong>${t('travelTime.title')}</strong> ${lines.join('<br/>')}</span>`;
+  return `<div class="map-popup-content__times"><span>${t('travelTime.title')}</span><span>${lines.join('<br/>')}</span></div>`;
 }
 
 /**
@@ -199,24 +212,31 @@ function renderListingBody(listing, index, total, t, locale) {
         </div>`
       : '';
 
+  // Laid out like a listing card: the photograph, the price in the UI face with the living space
+  // muted beside it, the title, the address. Only the two facts that are Fredy's own bookkeeping
+  // keep a label, because a search's name and a portal's are not self-explanatory on their own.
+  const price = listing.price ? escapeHtml(formatEuroPrice(listing.price, locale)) : t('common.na');
+  const size = listing.size != null ? `${escapeHtml(formatDecimal(listing.size, locale))} m²` : '';
+
+  // No picture, or one that fails to load, leaves the popup without one rather than showing the old
+  // English "No image available" bitmap: the price and the title already say which listing it is.
+  const picture = listingPictureSrc(listing);
+  const photo = picture ? `<img src="${escapeHtml(picture)}" alt="" onerror="this.onerror=null;this.remove()" />` : '';
+
   return `
     ${pager}
-    <img
-      src="${escapeHtml(listingPictureSrc(listing) ?? no_image)}"
-      onerror="this.onerror=null;this.src='${no_image}'"
-    />
+    ${photo}
+    <div class="map-popup-content__price">
+      <span class="map-popup-content__amount">${price}</span>
+      ${size ? `<span class="map-popup-content__size">${size}</span>` : ''}
+    </div>
     <a class="map-popup-content__title" href="#/listings/listing/${encodeURIComponent(listing.id)}">${escapeHtml(listing.title)}</a>
+    <div class="map-popup-content__meta">${escapeHtml(listing.address || t('common.na'))}</div>
     <div class="map-popup-content__facts">
-      <span>${t('map.popupPrice')}</span>
-      <span class="map-popup-content__num">${listing.price ? escapeHtml(formatEuroPrice(listing.price, locale)) : t('common.na')}</span>
-      <span>${t('map.popupAddress')}</span>
-      <span>${escapeHtml(listing.address || t('common.na'))}</span>
       <span>${t('map.popupJob')}</span>
       <span>${escapeHtml(listing.job_name || t('common.na'))}</span>
       <span>${t('map.popupProvider')}</span>
       <span>${escapeHtml(capitalizedProvider)}</span>
-      <span>${t('map.popupSize')}</span>
-      <span class="map-popup-content__num">${listing.size != null ? `${escapeHtml(formatDecimal(listing.size, locale))} m²` : t('common.na')}</span>
     </div>
     ${renderTravelTimes(listing, t)}
     <div class="map-popup-content__actions"></div>`;

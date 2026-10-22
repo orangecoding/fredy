@@ -1,30 +1,31 @@
 @import '../../tokens.less';
 
 .connectivity {
-  font-size: 0.82rem;
+  font-size: @text-sm;
 
   &--state {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 4px 0;
+    gap: @space-2;
+    padding: @space-1 0;
   }
 
   &__headline {
     display: flex;
     align-items: baseline;
     flex-wrap: wrap;
-    gap: 4px 8px;
-    margin-bottom: 6px;
+    gap: @space-1 @space-2;
+    margin-bottom: @space-2;
   }
 
+  /* The figure the section is about, set like every other headline figure: the interface face,
+     large and semibold, no tabular digits. */
   &__speed {
-    font-size: 2rem;
-    letter-spacing: -0.02em;
-    font-weight: 700;
-    color: @color-text;
-    font-variant-numeric: tabular-nums;
+    font-size: @text-2xl;
+    font-weight: @weight-strong;
+    letter-spacing: -0.015em;
     line-height: 1.1;
+    color: @color-text;
   }
 
   &__unit {
@@ -32,12 +33,13 @@
   }
 
   /* The share as a bar, directly under the figure it qualifies. A number that big wants something
-     to be measured against, and "100 %" in words is easy to read past. */
+     to be measured against, and "100 %" in words is easy to read past. Drawn in the text colour on
+     the track: it is a quantity, not a verdict. */
   &__meter {
     height: 4px;
-    margin: 2px 0 10px;
+    margin: 2px 0 @space-3;
     border-radius: @radius-pill;
-    background: @color-hover;
+    background: @color-fill-2;
     overflow: hidden;
   }
 
@@ -45,7 +47,7 @@
     display: block;
     height: 100%;
     border-radius: @radius-pill;
-    background: @color-success;
+    background: @color-text;
   }
 
   /* The share is what keeps the headline honest: the registers describe a cell, not a building. */
@@ -59,49 +61,52 @@
     display: flex;
     align-items: baseline;
     flex-wrap: wrap;
-    gap: 4px 10px;
-    padding: 3px 0;
+    gap: @space-1 @space-3;
+    padding: @space-2 0;
+
+    & + & {
+      border-top: 1px solid @color-border;
+    }
   }
 
   &__label {
-    color: var(--semi-color-text-1);
-    font-weight: 600;
+    color: @color-muted;
     min-width: 5.5rem;
   }
 
   &__chips {
     display: flex;
     flex-wrap: wrap;
-    gap: 4px;
+    gap: @space-1;
   }
 
-  /* Three states, told apart at a glance rather than by reading.
+  /* Three states, told apart at a glance rather than by reading, as pills.
 
-     Green on this page means one thing only: available, or better than the market. It never means
-     "status", which is why nothing here borrows it for a neutral fact. */
+     Green here means one thing only: available. It is the tint and the edge that carry it, the
+     words stay in the text colour, because green words on a green tint fall below AA in one theme
+     or the other. */
   &__chip {
     display: inline-flex;
     align-items: baseline;
-    gap: 4px;
+    gap: @space-1;
     white-space: nowrap;
+    padding: 2px @space-2;
     border: 1px solid @color-border-bright;
-    border-radius: @radius-chip;
-    padding: 0 5px;
-    background: @color-hover;
+    border-radius: @radius-pill;
+    font-size: @text-xs;
+    line-height: 1.4;
     color: @color-text;
 
     // Available.
     &--on {
-      background: @color-success-dim;
-      border-color: @color-success;
-      color: @color-success;
+      background: rgb(@color-success-rgb / 12%);
+      border-color: rgb(@color-success-rgb / 40%);
     }
 
     // Not available. Hollow and dashed, so absence looks like absence.
     &--off {
       background: transparent;
       border-style: dashed;
-      border-color: @color-border-bright;
       color: @color-muted;
     }
 
@@ -114,7 +119,7 @@
 
   &__attribution {
     display: block;
-    margin-top: 8px;
-    font-size: 0.68rem;
+    margin-top: @space-2;
+    font-size: @text-xs;
   }
 }

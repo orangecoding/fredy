@@ -4,24 +4,17 @@
  */
 
 import React from 'react';
-import { Bar } from 'react-chartjs-2';
 
-import { chartPalette, CHART_COLORS, baseChartOptions, registerFinanceCharts, withAlpha } from './chartTheme.js';
-import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
+import { shareRamp } from './chartTheme.js';
+import { useTranslation } from '../../services/i18n/i18n.jsx';
 
 import './ChartCard.less';
 import './ProviderShareChart.less';
 
-registerFinanceCharts();
-
 /**
- * Normalise the two shapes this chart can be handed into one list of rows.
+ * The provider distribution as rows of `{label, value}`, whichever of its two shapes it arrives in.
  *
- * `/api/dashboard` sends parallel `labels`/`values` arrays, while
- * `getProviderDistributionForJobIds` returns `{type, value}` rows. Accepting only one of them
- * silently renders an empty state for real data, which is exactly what happened here.
- *
- * @param {{labels?: string[], values?: number[]}|Array<{type?: string, value?: number}>|null} data
+ * @param {Array<{type: string, value: number}>|{labels: string[], values: number[]}} data
  * @returns {Array<{label: string, value: number}>}
  */
 function toRows(data) {
@@ -35,105 +28,56 @@ function toRows(data) {
   return [];
 }
 
-/** One bar, full width, split by provider. Just tall enough to read the segments. */
-const BAR_HEIGHT = 28;
-
 /**
- * Which share of the listings each provider brought in.
+ * Where the listings came from, as one bar split by portal with a legend of exact shares.
  *
- * Drawn as a single stacked bar rather than a pie: the question is "how do these compare", and
- * a length along one axis answers that far more precisely than the angle of a wedge. It also
- * degenerates gracefully - one provider fills the bar and still reads as 100 %, where a pie
- * becomes a featureless circle.
+ * Drawn in elements rather than on a canvas: a single stacked bar needs no chart library, and as
+ * elements it follows the theme through the stylesheet and can be read by assistive technology. The
+ * segments take the greyscale ramp in order of size, so the largest portal is the brightest and no
+ * colour suggests a category the data does not have.
  *
  * @param {Object} props
- * @param {{labels: string[], values: number[]}|Array<{type: string, value: number}>} props.data
- *   Percentages per provider. `/api/dashboard` sends the parallel-arrays form; the storage layer
- *   produces the row form, so both are accepted rather than betting on one.
- * @param {number} [props.totalListings] Used to phrase the single-provider case concretely.
+ * @param {Array|Object} props.data Percentages per provider, as the dashboard route sends them.
+ * @param {number} [props.totalListings] For the sentence that replaces the chart when there is only
+ *   one provider.
+ * @returns {React.ReactElement}
  */
 export default function ProviderShareChart({ data = [], totalListings = 0 }) {
   const t = useTranslation();
-  const locale = useLocale();
 
   const segments = React.useMemo(() => {
-    const rows = toRows(data);
+    const ramp = shareRamp();
     // Filtering on the percentage would erase a real provider: the backend rounds to whole
-    // percent, so one listing in a few hundred comes back as 0 and the provider vanished from
-    // both the bar and the legend. The distribution is a GROUP BY, so every row it returns has
-    // at least one listing - being in the list is what qualifies, not the rounded share.
-    const palette = chartPalette();
-    return rows
+    // percent, so one listing in a few hundred comes back as 0. The distribution is a GROUP BY, so
+    // every row it returns has at least one listing - being in the list is what qualifies.
+    const rows = toRows(data)
       .map((row) => ({ label: row.label, value: Number(row.value) }))
       .filter((row) => row.label && Number.isFinite(row.value) && row.value >= 0)
-      .sort((a, b) => b.value - a.value)
-      .map((row, index) => ({ ...row, color: palette[index % palette.length] }));
-  }, [data]);
-
-  const chartData = React.useMemo(
-    () => ({
-      labels: [''],
-      datasets: segments.map((segment) => ({
-        label: segment.label,
-        data: [segment.value],
-        // Muted rather than full strength: this is a background statistic, and a full-width bar
-        // at full saturation shouted louder than the KPIs above it.
-        backgroundColor: withAlpha(segment.color, 0.62),
-        borderColor: segment.color,
-        borderWidth: 0,
-        borderRadius: 3,
-        borderSkipped: false,
-        barThickness: 14,
-        stack: 'providers',
-      })),
-    }),
-    [segments],
-  );
-
-  const options = React.useMemo(() => {
-    const base = baseChartOptions({ locale, legend: false });
-    return {
-      ...base,
-      indexAxis: 'y',
-      // chart.js grows the bars in on every mount by default, so the bar replayed a little
-      // performance on each page load. A standing statistic should just be there.
-      animation: false,
-      // The shared base uses `{ mode: 'index', intersect: false }`, which is right for the trend
-      // charts: many points along one axis, one series. This chart is the opposite shape - a
-      // single index carrying one dataset per provider - and index mode resolves the hovered
-      // *index*, which is always 0 here. It therefore reported the first provider no matter which
-      // segment the cursor was over. Hit-testing the element under the cursor is what this bar
-      // actually needs.
-      interaction: { mode: 'nearest', axis: 'x', intersect: true },
-      layout: { padding: { top: 4, bottom: 4 } },
-      scales: {
-        x: { stacked: true, min: 0, max: 100, display: false, grid: { display: false } },
-        y: { stacked: true, display: false, grid: { display: false } },
-      },
-      plugins: {
-        ...base.plugins,
-        legend: { display: false },
-        tooltip: {
-          ...base.plugins?.tooltip,
-          callbacks: {
-            label: (ctx) =>
-              `${ctx.dataset.label}: ${ctx.parsed.x < 1 ? t('dashboard.providerBelowOnePercent') : `${ctx.parsed.x} %`}`,
-          },
-        },
-      },
-    };
-  }, [locale, t]);
+      .sort((a, b) => b.value - a.value);
+    // The ramp has five greys. Past five portals the smallest ones share the last grey as one
+    // "others" segment, so no two segments and no two legend entries look the same.
+    const shown =
+      rows.length > ramp.length
+        ? [
+            ...rows.slice(0, ramp.length - 1),
+            {
+              label: t('dashboard.providerOthers'),
+              value: rows.slice(ramp.length - 1).reduce((sum, row) => sum + row.value, 0),
+            },
+          ]
+        : rows;
+    return shown.map((row, index) => ({ ...row, color: ramp[index] }));
+  }, [data, t]);
 
   if (segments.length === 0) {
     return <div className="chartCard__no__data">{t('dashboard.noData')}</div>;
   }
 
-  // A bar that is 100 % one colour is a rectangle, not a comparison. With a single provider the
-  // sentence carries the same information and takes a fraction of the room.
+  // A bar that is all one portal is a rectangle, not a comparison. The sentence carries the same
+  // information in a fraction of the room.
   if (segments.length === 1) {
     return (
       <p className="providerShare__single">
-        <span className="providerShare__swatch" style={{ backgroundColor: segments[0].color }} aria-hidden="true" />
         {t('dashboard.providerSingle', {
           provider: segments[0].label,
           count: String(totalListings || 0),
@@ -142,24 +86,29 @@ export default function ProviderShareChart({ data = [], totalListings = 0 }) {
     );
   }
 
+  // A provider that rounds to zero still found something, so "0 %" would read as a bug. "<1 %"
+  // says the share is tiny without claiming it is nothing.
+  const share = (value) => (value < 1 ? t('dashboard.providerBelowOnePercent') : `${value} %`);
+
   return (
     <div className="providerShare">
-      <div className="providerShare__bar" style={{ height: BAR_HEIGHT }}>
-        <Bar data={chartData} options={options} />
+      <div className="providerShare__bar" aria-hidden="true">
+        {segments.map((segment) => (
+          <span
+            key={segment.label}
+            className="providerShare__segment"
+            // At least a sliver, so a provider under one percent is still a visible part of the bar.
+            style={{ flexGrow: Math.max(segment.value, 0.6), backgroundColor: segment.color }}
+          />
+        ))}
       </div>
 
-      {/* The legend is a list rather than chart.js's own, so each provider can carry its share as
-          a figure. Reading a percentage beats estimating one off a bar. */}
       <ul className="providerShare__legend">
         {segments.map((segment) => (
           <li className="providerShare__item" key={segment.label}>
             <span className="providerShare__swatch" style={{ backgroundColor: segment.color }} aria-hidden="true" />
             <span className="providerShare__name">{segment.label}</span>
-            {/* A provider that rounds to zero still found something, so "0 %" would read as a
-                bug. "<1 %" says the share is tiny without claiming it is nothing. */}
-            <span className="providerShare__value" style={{ color: CHART_COLORS.TEXT }}>
-              {segment.value < 1 ? t('dashboard.providerBelowOnePercent') : `${segment.value} %`}
-            </span>
+            <span className="providerShare__value">{share(segment.value)}</span>
           </li>
         ))}
       </ul>

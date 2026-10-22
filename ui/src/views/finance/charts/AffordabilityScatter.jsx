@@ -120,7 +120,7 @@ export default function AffordabilityScatter({ items = [], height = 340 }) {
           grid: { color: CHART_COLORS.GRID },
           ticks: {
             ...base.scales.x.ticks,
-            font: { family: CHART_COLORS.FONT_MONO, size: 11 },
+            font: { family: CHART_COLORS.FONT_UI, size: 11 },
             callback: (value) => formatEuroCompact(value, locale),
           },
           title: { display: true, text: t('finance.scatter.axisPrice'), color: CHART_COLORS.MUTED, font: { size: 11 } },

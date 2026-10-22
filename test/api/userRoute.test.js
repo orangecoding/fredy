@@ -80,7 +80,7 @@ describe('POST /api/admin/users', () => {
    */
   async function save(body) {
     const reply = replyDouble();
-    await post({ body, session: { currentUser: 'admin-1' } }, reply);
+    await post({ body, session: { currentUser: 'admin-1', sessionId: 'admin-session' } }, reply);
     return reply.recorded;
   }
 
@@ -91,7 +91,9 @@ describe('POST /api/admin/users', () => {
     const { status } = await save({ userId: 'kim-1', username: 'kim', password: '', password2: '', isAdmin: true });
 
     expect(status).toBe(200);
-    expect(upserts).toEqual([{ userId: 'kim-1', username: 'kim', password: '', isAdmin: true }]);
+    expect(upserts).toEqual([
+      { userId: 'kim-1', username: 'kim', password: '', isAdmin: true, keepSessionId: 'admin-session' },
+    ]);
   });
 
   it('lets an edit rename somebody without a password', async () => {
@@ -112,6 +114,8 @@ describe('POST /api/admin/users', () => {
 
     expect(status).toBe(200);
     expect(upserts[0].password).toBe('new one');
+    // The admin making the change stays signed in; every other session of kim's ends.
+    expect(upserts[0].keepSessionId).toBe('admin-session');
   });
 
   it('still refuses a new user without a password', async () => {
@@ -165,7 +169,9 @@ describe('POST /api/admin/users', () => {
     });
 
     expect(status).toBe(200);
-    expect(upserts).toEqual([{ userId: null, username: 'nina', password: 'correct horse', isAdmin: true }]);
+    expect(upserts).toEqual([
+      { userId: null, username: 'nina', password: 'correct horse', isAdmin: true, keepSessionId: 'admin-session' },
+    ]);
   });
 
   it('refuses an edit of a user that does not exist instead of creating one without a password', async () => {

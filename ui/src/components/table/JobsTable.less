@@ -6,10 +6,14 @@
 @import '../../tokens.less';
 
 @job-row: 52px;
-/* The last column holds Run with its word, edit and the menu: 140px in English, up to 170px in
-   Spanish. At 148px the German, Spanish and Turkish rows spilled out of it. */
-@job-columns: 16px minmax(0, 1fr) 92px 78px 78px 116px 44px 172px;
+@job-dot: 8px;
+@job-chip-h: 20px;
+/* The last column holds three round icon buttons - run, edit and the menu - so it no longer has to
+   fit the longest translation of "Run". */
+@job-columns: 16px minmax(0, 1fr) 92px 78px 78px 116px 44px 112px;
 
+/* Hairline rows, the way every table in the app is drawn now: no zebra, no filled header, no
+   capitals. */
 .jobsTable {
   display: flex;
   flex-direction: column;
@@ -28,9 +32,7 @@
 
   &__headCell {
     font-size: @text-xs;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+    font-weight: @weight-medium;
     color: @color-muted;
 
     &--number {
@@ -45,37 +47,36 @@
     align-items: center;
     height: @job-row;
     padding: 0 @space-3;
-    border-bottom: 1px solid @color-hover;
+    border-bottom: 1px solid @color-border;
     transition: background @transition-fast;
 
     &:hover {
-      background: @color-hover;
+      background: @color-fill-subtle;
     }
 
-    &--inactive {
-      opacity: 0.6;
-    }
-
+    /* A ring rather than a dot, the dashboard's paused state, so the column of dots stays a column. */
     &__dot {
-      width: 8px;
-      height: 8px;
+      box-sizing: border-box;
+      width: @job-dot;
+      height: @job-dot;
       border-radius: @radius-pill;
-      background: @color-faint;
+      border: 1.5px solid @color-faint;
 
       &--active {
+        border-color: @color-success;
         background: @color-success;
       }
     }
 
     /* A row of its own inside the cell, so only the name gives way. With the ellipsis on the whole
-       cell, the RUNNING tag and the shared warning after the name were the first things cut. */
+       cell, the running pill and the shared warning after the name were the first things cut. */
     &__name {
       display: flex;
       align-items: center;
-      gap: @space-1;
+      gap: @space-2;
       min-width: 0;
       font-size: @text-base;
-      font-weight: 500;
+      font-weight: @weight-medium;
       color: @color-text;
 
       > * {
@@ -91,12 +92,10 @@
       white-space: nowrap;
     }
 
-    /* Monospaced and right aligned, so the digits of several jobs line up under their heading
-       instead of each number floating next to its own icon. */
+    /* Right aligned under their headings, in the UI face like every other figure in the app. */
     &__stat {
       text-align: right;
-      font-family: @font-mono;
-      font-size: 13.5px;
+      font-size: @text-base;
       color: @color-text;
     }
 
@@ -106,11 +105,40 @@
     }
   }
 
+  /* A paused job is quieter in its words, not faded as a whole: at 0.6 opacity the switch that
+     turns it back on was faded too. */
+  &__row--inactive &__row__name,
+  &__row--inactive &__row__stat {
+    color: @color-muted;
+  }
+
+  /* The card's status pill: a light tint and an edge of the status colour, the words in the text
+     colour. */
+  &__running {
+    display: inline-flex;
+    align-items: center;
+    height: @job-chip-h;
+    padding: 0 @space-2;
+    border: 1px solid rgb(@color-success-rgb / 40%);
+    border-radius: @radius-pill;
+    background: rgb(@color-success-rgb / 12%);
+    color: @color-text;
+    font-size: @text-xs;
+    font-weight: @weight-medium;
+  }
+
+  &__shared {
+    display: inline-flex;
+    color: @color-warning;
+    font-size: @text-md;
+    cursor: help;
+  }
+
   /* The header hides exactly the columns the rows hide, or the two stop lining up. */
   @media (max-width: 900px) {
     &__head,
     &__row {
-      grid-template-columns: 16px minmax(0, 1fr) 92px 116px 44px 172px;
+      grid-template-columns: 16px minmax(0, 1fr) 92px 116px 44px 112px;
     }
 
     &__headCell--providers,
@@ -124,18 +152,7 @@
   @media (max-width: 560px) {
     &__head,
     &__row {
-      grid-template-columns: 16px minmax(0, 1fr) 44px 120px;
-    }
-
-    /* Run loses its word here, the way the other two already are icons: with it the group was wider
-       than the column, and the page clipped the menu - the only way to clone or delete from a row. */
-    .jobActions__run {
-      width: 28px;
-      padding: 0;
-
-      .semi-button-content-right {
-        display: none;
-      }
+      grid-template-columns: 16px minmax(0, 1fr) 44px 112px;
     }
 
     &__headCell--listings,

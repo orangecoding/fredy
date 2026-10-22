@@ -50,6 +50,10 @@ describe('the dashboard listing reads', () => {
         rooms REAL,
         price_per_sqm REAL,
         image_url TEXT,
+        provider TEXT,
+        market_median_sqm REAL,
+        market_sample_size INTEGER,
+        market_radius_km REAL,
         created_at INTEGER,
         manually_deleted INTEGER DEFAULT 0,
         is_active INTEGER DEFAULT 1
@@ -57,8 +61,10 @@ describe('the dashboard listing reads', () => {
     `);
     const insert = db.prepare(
       `INSERT INTO listings (id, job_id, title, address, price, size, rooms, price_per_sqm, image_url,
+                             provider, market_median_sqm, market_sample_size, market_radius_km,
                              created_at, manually_deleted, is_active)
        VALUES (@id, @jobId, @title, @address, @price, @size, @rooms, @pricePerSqm, @imageUrl,
+               @provider, @marketMedianSqm, @marketSampleSize, @marketRadiusKm,
                @createdAt, @manuallyDeleted, @isActive)`,
     );
     let seq = 0;
@@ -74,6 +80,10 @@ describe('the dashboard listing reads', () => {
         rooms: 2,
         pricePerSqm: 15,
         imageUrl: null,
+        provider: 'immoscout',
+        marketMedianSqm: 17.5,
+        marketSampleSize: 24,
+        marketRadiusKm: 1.5,
         createdAt,
         manuallyDeleted,
         isActive,
@@ -132,12 +142,12 @@ describe('the dashboard listing reads', () => {
       expect(latest(['job-1'], 3)).toHaveLength(3);
     });
 
-    it('falls back to eight for a limit that is not a whole number in range', () => {
+    it('falls back to four, one row of photo cards, for a limit that is not a whole number in range', () => {
       for (let i = 0; i < 12; i++) {
         addListing({ createdAt: daysAgo(i) });
       }
       for (const limit of [0, -1, 999, '8', 8.5, null, undefined, NaN]) {
-        expect(latest(['job-1'], limit), `limit ${String(limit)}`).toHaveLength(8);
+        expect(latest(['job-1'], limit), `limit ${String(limit)}`).toHaveLength(4);
       }
     });
 
@@ -152,14 +162,21 @@ describe('the dashboard listing reads', () => {
           'id',
           'image_url',
           'job_id',
+          'market_median_sqm',
+          'market_radius_km',
+          'market_sample_size',
           'price',
           'price_per_sqm',
+          'provider',
           'rooms',
           'size',
           'title',
         ].sort(),
       );
       expect(row.title).toBe('Altbau mit Balkon');
+      // The portal and the market comparison, which the photo cards print under the price.
+      expect(row.provider).toBe('immoscout');
+      expect(row.market_median_sqm).toBe(17.5);
     });
   });
 

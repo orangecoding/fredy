@@ -39,7 +39,7 @@ export default function MapControls({
   return (
     <div className={bare ? 'map-panel__group' : 'map-panel map-shell__controls'}>
       <div className="map-panel__row">
-        <Text size="small" strong className="map-panel__label">
+        <Text size="small" className="map-panel__label">
           {t('map.filterStyleLabel')}
         </Text>
         <Select size="small" value={style} onChange={(value) => onChange({ style: value })} style={{ width: 110 }}>
@@ -49,7 +49,7 @@ export default function MapControls({
       </div>
 
       <div className="map-panel__row">
-        <Text size="small" strong className="map-panel__label">
+        <Text size="small" className="map-panel__label">
           {t('map.filter3dBuildings')}
         </Text>
         {/* Satellite is raster imagery: there is no building geometry underneath it to extrude. */}
@@ -62,7 +62,7 @@ export default function MapControls({
       </div>
 
       <div className="map-panel__row">
-        <Text size="small" strong className="map-panel__label">
+        <Text size="small" className="map-panel__label">
           {t('map.filterTransit')}
         </Text>
         <Switch size="small" checked={showTransit} onChange={(value) => onChange({ showTransit: value })} />

@@ -5,28 +5,29 @@
 
 @import '../../tokens.less';
 
+/* Flat: a surface with a hairline, like every other box in the interface. It floats over the page,
+   but the opaque surface is what separates it from the content scrolling underneath; a heavy
+   shadow on top of that made it the loudest thing on a page whose subject is the form above it. */
 .settingsSaveBar {
   position: sticky;
-  // Nicht auf 0: die Leiste soll ueber dem Inhalt schweben, nicht an der Fensterkante kleben.
+  // Not at 0: the bar floats a little above the window edge instead of sticking to it.
   bottom: @space-4;
-  // Unter jedem Semi-Portal (Modal 1000, Toast 1010, Dropdown 1050), ueber dem Seiteninhalt.
+  // Below every Semi portal (modal 1000, toast 1010, dropdown 1050), above the page content.
   z-index: 5;
   box-sizing: border-box;
-  // Mindesthoehe, keine feste: acht Seiten setzen eine einzeilige Meldung hinein und messen damit
-  // weiter genau 56 px, aber der lange `note`-Satz der Systemseite und die Bereitschaftsliste des
-  // Job-Formulars duerfen umbrechen statt abgeschnitten zu werden.
+  // A minimum, not a fixed height: most pages put one line in it, but the system page's long
+  // `note` and the job form's readiness list may wrap instead of being cut off.
   min-height: 56px;
-  padding: @space-2 @space-4;
-  margin-top: @space-4;
+  padding: @space-2 @space-3 @space-2 @space-4;
+  margin-top: @space-6;
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: @space-3;
   background: @color-surface;
-  border: 1px solid @color-border;
+  border: 1px solid @color-border-bright;
   border-radius: @radius-card;
-  box-shadow: @shadow-lg;
 
   &__label {
     display: inline-flex;
@@ -36,11 +37,11 @@
     color: @color-text;
   }
 
-  // Bernstein traegt nur der Punkt, die Schrift bleibt Textfarbe - dieselbe Regel wie beim
-  // Versionshinweis im Footer, wo das Amber selbst im hellen Theme nur auf 4,24 zu 1 kaeme.
+  // Amber carries only the dot; the words stay in the text colour, where amber itself would not
+  // reach AA against the surface in the light theme.
   &__dot {
-    width: 7px;
-    height: 7px;
+    width: 6px;
+    height: 6px;
     border-radius: @radius-pill;
     background: @color-warning;
     flex: none;
@@ -51,12 +52,6 @@
     align-items: center;
     gap: @space-2;
     flex: none;
-  }
-
-  &__discard,
-  &__save {
-    height: 30px !important;
-    border-radius: @radius-chip !important;
   }
 
   /*

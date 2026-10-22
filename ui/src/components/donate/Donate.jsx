@@ -60,22 +60,24 @@ export default function Donate({ collapsed }) {
     actions.tracking.trackPoi(pois.DONATION_MODAL_OPENED);
   };
 
+  // One of the sidebar's quiet utility rows. The heart out of the logo rather than a drawn outline,
+  // so the one red thing in the sidebar is the same heart the brand is.
   const trigger = (
     <button
-      className={`donate__btn${collapsed ? ' donate__btn--icon-only' : ''}`}
+      type="button"
+      className="navigate__utility"
       onClick={open}
-      title={t('donate.button')}
-      aria-label={t('donate.button')}
+      aria-label={collapsed ? t('donate.button') : undefined}
     >
-      {/* The heart out of the logo rather than a drawn outline, so the one red thing in the
-          sidebar is the same heart the brand is. */}
-      <img className="donate__btn-heart" src={heart} alt="" />
-      {!collapsed && <span className="donate__btn-label">{t('donate.button')}</span>}
+      <span className="navigate__utilityIcon">
+        <img className="donate__heart-icon" src={heart} alt="" />
+      </span>
+      {!collapsed && <span>{t('donate.button')}</span>}
     </button>
   );
 
   return (
-    <div className="donate">
+    <>
       {/* In the rail the label is gone and a bare heart could mean anything, so it says what it is
           on hover, like every other icon there. */}
       {collapsed ? (
@@ -110,6 +112,6 @@ export default function Donate({ collapsed }) {
           <p className="donate__fine">{t('donate.fine')}</p>
         </div>
       </Modal>
-    </div>
+    </>
   );
 }

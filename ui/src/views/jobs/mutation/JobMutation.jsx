@@ -3,7 +3,7 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { Fragment, useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 
 import NotificationChannelPicker from './components/notificationAdapter/NotificationChannelPicker';
 import NotificationChannelEditor from './components/notificationAdapter/NotificationChannelEditor';
@@ -27,6 +27,7 @@ import { Input, Switch, Button, TagInput, Toast, Select, Banner, Collapse } from
 import './JobMutation.less';
 import { SegmentPart } from '../../../components/segment/SegmentPart';
 import { loadDraft, saveDraft, clearDraft, hasContent } from '../../../services/jobs/jobDraft.js';
+import { resolveJobFormSource } from '../../../services/jobs/jobFormSource.js';
 import { missingRequirements } from '../../../services/jobs/jobValidation.js';
 import { summariseJobRefinements } from '../../../services/jobs/jobSummary.js';
 import { withReturnTo } from '../../../services/routes/returnTo.js';
@@ -35,15 +36,7 @@ import { formatEuro } from '../../../components/cards/chartTheme.js';
 // own when a job carries no deal type, so a form that guessed differently would show one thing and
 // store another. Kept in step by test/ui/dealTypeCopyInSync.test.js.
 import { detectDealTypeFromUrl } from '../../../services/jobs/dealType.js';
-import {
-  IconArrowLeft,
-  IconBell,
-  IconBriefcase,
-  IconPaperclip,
-  IconPlusCircle,
-  IconUser,
-  IconFilter,
-} from '@douyinfe/semi-icons';
+import { IconArrowLeft, IconBell, IconBriefcase, IconPlus } from '@douyinfe/semi-icons';
 import { useTranslation, useLocale } from '../../../services/i18n/i18n.jsx';
 
 /**
@@ -62,7 +55,69 @@ function withManageLink(sentence, link) {
   return [before, link, after];
 }
 
-export default function JobMutator() {
+/**
+ * The job form's route: fetches the job list before the form mounts when a job is to be edited or
+ * cloned, and refuses to open for one that does not exist.
+ *
+ * The form reads its starting values once, at mount, from `jobsData.jobs`. That list is only
+ * reloaded at start-up, on the dashboard and after a few actions, while the job list page shows a
+ * fresh page of its own, so a job created since (over MCP, in another tab) was listed but unknown
+ * here: "Edit" opened an empty create form whose save stored a duplicate, and a job changed in
+ * another tab was saved back with its old values.
+ *
+ * @returns {React.ReactNode}
+ */
+export default function JobMutation() {
+  const t = useTranslation();
+  const params = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const actions = useActions();
+  const jobs = useSelector((state) => state.jobsData.jobs);
+  const jobId = params.jobId ?? null;
+  const cloneFrom = location.state?.cloneFrom ?? null;
+  const sourceId = jobId ?? cloneFrom;
+  /** The source id the list was last fetched for. The form waits until it matches. */
+  const [fetchedFor, setFetchedFor] = useState(null);
+
+  useEffect(() => {
+    if (sourceId == null) return undefined;
+    let current = true;
+    actions.jobsData.getJobs().finally(() => {
+      if (current) setFetchedFor(sourceId);
+    });
+    return () => {
+      current = false;
+    };
+  }, [actions, sourceId]);
+
+  if (sourceId != null && fetchedFor !== sourceId) return null;
+
+  const source = resolveJobFormSource({ jobs, jobId, cloneFrom });
+  if (source.missing) {
+    return (
+      <SettingsEmptyState
+        icon={<IconBriefcase size="large" />}
+        title={t('jobs.toastNotFound')}
+        description={t('jobs.mutation.missingText')}
+        action={
+          <Button icon={<IconArrowLeft />} onClick={() => navigate('/jobs')}>
+            {t('jobs.mutation.back')}
+          </Button>
+        }
+      />
+    );
+  }
+  // Keyed on what it edits: every default below is read at mount, so moving from one job's form to
+  // another's within the same route has to start a new form rather than keep the last one's state.
+  return <JobMutator key={`${source.mode}:${sourceId ?? ''}`} source={source} />;
+}
+
+/**
+ * @param {{source: import('../../../services/jobs/jobFormSource.js').JobFormSource}} props
+ * @returns {React.ReactNode}
+ */
+function JobMutator({ source }) {
   const t = useTranslation();
   const locale = useLocale();
 
@@ -72,20 +127,14 @@ export default function JobMutator() {
     { key: 'minRooms', translation: t('jobs.mutation.filterMinRooms') },
   ];
 
-  const jobs = useSelector((state) => state.jobsData.jobs);
   const shareableUserList = useSelector((state) => state.jobsData.shareableUserList);
   const allChannels = useSelector((state) => state.notificationChannels.channels);
-  const params = useParams();
   const location = useLocation();
-
-  const cloneFromId = location.state?.cloneFrom;
-  const jobToClone = cloneFromId ? jobs.find((job) => job.id === cloneFromId) : null;
-  const jobToBeEdit = params.jobId == null ? null : jobs.find((job) => job.id === params.jobId);
-
-  const sourceJob = jobToBeEdit || jobToClone;
+  const sourceJob = source.job;
+  const isEdit = source.mode === 'edit';
 
   const defaultBlacklist = sourceJob?.blacklist || [];
-  const defaultName = jobToClone ? `Copy of - ${sourceJob?.name}` : sourceJob?.name || null;
+  const defaultName = source.mode === 'clone' ? `Copy of - ${sourceJob?.name}` : sourceJob?.name || null;
   const defaultProviderData = sourceJob?.provider || [];
   // The job stores references, and a read hands back the hydrated adapter shape carrying the
   // channel id. Ids are what this form keeps: they are here at mount like every other default
@@ -149,7 +198,7 @@ export default function JobMutator() {
     return () => clearTimeout(timer);
   }, [highlighted]);
 
-  const draftId = params.jobId ?? null;
+  const draftId = source.draftId;
   const [draftRestored, setDraftRestored] = useState(false);
   /** Whether the restore attempt has run. Until it has, nothing may be written back over it. */
   const draftChecked = useRef(false);
@@ -311,7 +360,7 @@ export default function JobMutator() {
   // Only a stored job has something to compare against. A job that is not stored yet - a new one,
   // or a clone - is unsaved as soon as it holds anything: compared against its own starting point,
   // a clone saved as it came never showed the bar that holds the only Save button.
-  const dirty = params.jobId == null ? hasContent(current) : isJobDirty(current, baseline);
+  const dirty = isEdit ? isJobDirty(current, baseline) : hasContent(current);
 
   // Covers a reload, a closed tab and a typed address. An in-app navigation is not covered - see
   // the hook for why - which is the other half of why the bar is sticky.
@@ -376,7 +425,7 @@ export default function JobMutator() {
         commuteFilter,
         dealType,
         enabled,
-        jobId: jobToBeEdit?.id || null,
+        jobId: isEdit ? sourceJob.id : null,
       });
       await actions.jobsData.getJobs();
       // Only once the save actually landed. Clearing before would throw the draft away on a
@@ -396,7 +445,9 @@ export default function JobMutator() {
   };
 
   return (
-    <Fragment>
+    // One column at a reading measure rather than the width of the window: the form is a document
+    // read top to bottom, and at 1900px a label and the field it names ended up a foot apart.
+    <div className="jobMutation">
       <ProviderMutator
         visible={providerCreationVisible}
         onVisibilityChanged={(visible) => setProviderCreationVisibility(visible)}
@@ -435,7 +486,7 @@ export default function JobMutator() {
       )}
 
       <Headline
-        text={jobToBeEdit ? t('jobs.mutation.editTitle') : t('jobs.mutation.createTitle')}
+        text={isEdit ? t('jobs.mutation.editTitle') : t('jobs.mutation.createTitle')}
         actions={
           <Button icon={<IconArrowLeft />} onClick={leaveForm} theme="borderless" className="jobMutation__back">
             {t('jobs.mutation.back')}
@@ -474,7 +525,6 @@ export default function JobMutator() {
           <SegmentPart
             name={t('jobs.mutation.sectionBasics')}
             className="jobMutation__basics"
-            Icon={IconPaperclip}
             helpText={t('jobs.mutation.basicsHelp')}
             helpMode="popover"
           >
@@ -521,7 +571,6 @@ export default function JobMutator() {
           <SegmentPart
             name={t('jobs.mutation.sectionProviders')}
             className="jobMutation__providers"
-            Icon={IconBriefcase}
             helpText={t('jobs.mutation.providersHelp')}
             helpMode="popover"
             // In the header rather than above the table: a button that is pressed once should not
@@ -532,7 +581,7 @@ export default function JobMutator() {
               <Button
                 theme="borderless"
                 size="small"
-                icon={<IconPlusCircle />}
+                icon={<IconPlus />}
                 aria-label={t('jobs.mutation.addProvider')}
                 onClick={() => {
                   setProviderToEdit(null);
@@ -551,7 +600,7 @@ export default function JobMutator() {
                 action={
                   <Button
                     type="primary"
-                    icon={<IconPlusCircle />}
+                    icon={<IconPlus />}
                     onClick={() => {
                       setProviderToEdit(null);
                       setProviderCreationVisibility(true);
@@ -578,7 +627,6 @@ export default function JobMutator() {
 
         <div {...anchorProps('channel')}>
           <SegmentPart
-            Icon={IconBell}
             name={t('jobs.mutation.sectionNotifications')}
             className="jobMutation__channels"
             helpText={t('jobs.mutation.notificationsHelp')}
@@ -587,7 +635,7 @@ export default function JobMutator() {
               <Button
                 theme="borderless"
                 size="small"
-                icon={<IconPlusCircle />}
+                icon={<IconPlus />}
                 aria-label={t('jobs.mutation.addNotification')}
                 onClick={() => setPickerVisible(true)}
               >
@@ -615,7 +663,7 @@ export default function JobMutator() {
                   </Button>,
                 )}
                 action={
-                  <Button type="primary" icon={<IconPlusCircle />} onClick={() => setPickerVisible(true)}>
+                  <Button type="primary" icon={<IconPlus />} onClick={() => setPickerVisible(true)}>
                     {t('jobs.mutation.channelEmptyAction')}
                   </Button>
                 }
@@ -676,18 +724,22 @@ export default function JobMutator() {
           <Collapse.Panel
             itemKey="refine"
             header={
+              // Two rows: the title, what is set and which way the click goes, then what could be
+              // set under all of it. As one wrapping row the hint slotted in wherever there was
+              // room, which on a wide page was between "click to filter" and the chevron.
               <span className="jobMutation__refineHeader">
-                <span className="jobMutation__refineTitle">{t('jobs.mutation.sectionRefine')}</span>
-                <span className="jobMutation__refineSummary">{refinementSummary}</span>
-                <span className="jobMutation__refineToggle">
-                  {refineOpen ? t('jobs.mutation.refineClose') : t('jobs.mutation.refineOpen')}
+                <span className="jobMutation__refineLine">
+                  <span className="jobMutation__refineTitle">{t('jobs.mutation.sectionRefine')}</span>
+                  <span className="jobMutation__refineSummary">{refinementSummary}</span>
+                  <span className="jobMutation__refineToggle">
+                    {refineOpen ? t('jobs.mutation.refineClose') : t('jobs.mutation.refineOpen')}
+                  </span>
                 </span>
                 <span className="jobMutation__refineHint">{t('jobs.mutation.refineHint')}</span>
               </span>
             }
           >
             <SegmentPart
-              Icon={IconFilter}
               name={t('jobs.mutation.sectionCriteriaFilter')}
               helpText={t('jobs.mutation.criteriaFilterHelp')}
               helpMode="popover"
@@ -711,7 +763,6 @@ export default function JobMutator() {
                 statement about what this search will accept, and it is the one that needs the
                 travel times, which only exist once a listing has been found. */}
             <SegmentPart
-              Icon={IconFilter}
               name={t('jobs.mutation.sectionCommuteFilter')}
               helpText={t('jobs.mutation.commuteFilterHelp')}
               helpMode="popover"
@@ -720,7 +771,6 @@ export default function JobMutator() {
             </SegmentPart>
 
             <SegmentPart
-              Icon={IconFilter}
               name={t('jobs.mutation.sectionBlacklist')}
               helpText={t('jobs.mutation.blacklistHelp')}
               helpMode="popover"
@@ -733,7 +783,6 @@ export default function JobMutator() {
             </SegmentPart>
 
             <SegmentPart
-              Icon={IconFilter}
               name={t('jobs.mutation.sectionAreaFilter')}
               helpText={t('jobs.mutation.areaFilterHelp')}
               helpMode="popover"
@@ -766,7 +815,6 @@ export default function JobMutator() {
             than two, because they are one question asked twice: what happens with this job once it
             exists. */}
         <SegmentPart
-          Icon={IconUser}
           name={t('jobs.mutation.sectionSharingActivation')}
           helpText={t('jobs.mutation.sharingActivationHelp')}
           helpMode="popover"
@@ -827,6 +875,6 @@ export default function JobMutator() {
           onDiscard={discardChanges}
         />
       </form>
-    </Fragment>
+    </div>
   );
 }

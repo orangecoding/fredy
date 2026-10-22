@@ -18,14 +18,12 @@ vi.mock('../../lib/services/storage/settingsStorage.js', () => ({ getSettings: v
 import { setLastLoginToNow } from '../../lib/services/storage/userStorage.js';
 import { isUnauthorized, authHook } from '../../lib/api/security.js';
 import { proxyAuthHook } from '../../lib/api/proxyAuth.js';
+import { withSession } from '../mocks/mockSession.js';
 
 const PROXY_ON = { proxyAuthEnabled: true, proxyAuthTrustedProxies: '172.16.0.0/12' };
 
-const fromProxy = (headers = { 'remote-user': 'admin' }, session = {}) => ({
-  socket: { remoteAddress: '172.16.51.1' },
-  headers,
-  session,
-});
+const fromProxy = (headers = { 'remote-user': 'admin' }, session = {}) =>
+  withSession({ socket: { remoteAddress: '172.16.51.1' }, headers }, session);
 
 function makeReply() {
   return {
@@ -50,10 +48,13 @@ describe('proxyAuthHook', () => {
     settings = PROXY_ON;
     const request = fromProxy();
 
+    const before = request.session.sessionId;
+
     await proxyAuthHook(request);
 
     expect(await isUnauthorized(request)).toBe(false);
     expect(request.session.currentUser).toBe(ADMIN.id);
+    expect(request.session.sessionId).not.toBe(before);
     expect(Date.now() - request.session.createdAt).toBeLessThan(1000);
     expect(setLastLoginToNow).toHaveBeenCalledWith({ userId: ADMIN.id });
   });

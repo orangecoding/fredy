@@ -5,7 +5,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { Modal, Button, Select, Space, Spin, Tag, TextArea, Toast, Typography } from '@douyinfe/semi-ui-19';
+import { Modal, Button, Select, Space, Spin, TextArea, Toast, Typography } from '@douyinfe/semi-ui-19';
 import { IconCopy } from '@douyinfe/semi-icons';
 import { useTranslation } from '../../../services/i18n/i18n.jsx';
 import { useActions } from '../../../services/state/store.js';
@@ -240,13 +240,15 @@ export default function ApplicationModal({ visible, listingId, onCancel, onAppli
           {letter.hasProfile && letter.missing.length > 0 && (
             <div className="applicationModal__missing">
               <Text type="tertiary">{t('listing.application.missingTitle')}</Text>
-              <Space wrap>
+              {/* Pills in a tint of the warning colour, and real buttons: each one opens the
+                  profile, so a keyboard has to be able to reach it the way a pointer can. */}
+              <div className="applicationModal__missingList">
                 {letter.missing.map((key) => (
-                  <Tag key={key} color="amber" onClick={openSettings} style={{ cursor: 'pointer' }}>
+                  <button key={key} type="button" className="applicationModal__missingChip" onClick={openSettings}>
                     {PLACEHOLDER_CATALOG[key] ? t(PLACEHOLDER_CATALOG[key].labelKey) : key}
-                  </Tag>
+                  </button>
                 ))}
-              </Space>
+              </div>
             </div>
           )}
 

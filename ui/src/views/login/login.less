@@ -1,9 +1,13 @@
 @import '../../tokens.less';
 
+/* Constants that are only true for this screen. */
+@login-card-w: 420px;
+@login-card-radius: 16px;
+
 @keyframes login-card-in {
   from {
     opacity: 0;
-    transform: translateY(18px) scale(0.985);
+    transform: translateY(14px);
   }
   to {
     opacity: 1;
@@ -11,165 +15,157 @@
   }
 }
 
-@keyframes login-rise-in {
+@keyframes login-sweep {
   from {
-    opacity: 0;
-    transform: translateY(10px);
+    transform: translateX(-100%);
   }
   to {
-    opacity: 1;
-    transform: none;
+    transform: translateX(260%);
   }
 }
 
-@keyframes login-scan {
-  0% {
-    transform: translateX(-120%);
-  }
-  100% {
-    transform: translateX(360%);
-  }
-}
-
+/* One card over the city photograph, the way the login looked before the Exposé redesign, which
+   split the screen into a form beside a photo. The photograph is blurred and darkened so it is a
+   backdrop and not a picture, and the card is glass over it: it takes its colour from the city
+   behind it instead of standing on the page's black. The login always paints in the dark theme
+   (the user's setting is not known yet), so the scrims are literal black over the photo. */
 .login {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
   position: relative;
-  background-color: @color-base;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: @space-5;
+  overflow: hidden;
+  background: @color-base;
 
-  &__bgImage {
-    background-size: cover;
-    background-position: center;
-    filter: blur(10px) brightness(0.5);
-    -webkit-filter: blur(10px) brightness(0.5);
+  /* Larger than the screen, because a blur fades out at the image's own edges. */
+  &__backdrop {
     position: absolute;
-    top: -20px;
-    left: -20px;
-    right: -20px;
-    bottom: -20px;
-    z-index: 0;
+    inset: -@space-6;
+    z-index: -1;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: blur(8px) saturate(1.15) brightness(0.55);
+      transform: scale(1.04);
+    }
+
+    /* A warm light behind the card and a vignette towards the corners, so the card reads as lit. */
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(45% 40% at 50% 48%, rgb(@color-accent-rgb / 18%) 0%, transparent 70%),
+        radial-gradient(120% 100% at 50% 50%, transparent 30%, rgba(0, 0, 0, 0.55) 75%, rgba(0, 0, 0, 0.8) 100%);
+    }
   }
 
-  // Vignette plus a warm accent glow behind the card, so the card reads as lit
-  &__glow {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    background:
-      radial-gradient(58% 55% at 50% 46%, @color-accent-glow 0%, transparent 62%),
-      radial-gradient(115% 95% at 50% 50%, transparent 28%, rgba(0, 0, 0, 0.55) 72%, rgba(0, 0, 0, 0.82) 100%);
-  }
-
-  &__loginWrapper {
+  &__card {
     position: relative;
-    z-index: 1;
-    background: rgb(@color-surface-rgb / 82%);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid @color-border;
-    border-radius: 14px;
-    padding: @space-8;
-    width: 90%;
-    max-width: 480px;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    gap: @space-6;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: @login-card-w;
+    padding: @space-10 @space-8 @space-8;
     overflow: hidden;
-    box-shadow: @shadow-lg;
-    animation: login-card-in 0.45s ease-out both;
-  }
+    background: rgb(@color-surface-rgb / 70%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: @login-card-radius;
+    box-shadow:
+      @shadow-lg,
+      inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(24px) saturate(1.4);
+    -webkit-backdrop-filter: blur(24px) saturate(1.4);
+    animation: login-card-in 0.4s ease-out both;
 
-  // Signature: an accent hairline that sweeps the top edge while Fredy waits
-  &__scanLine {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, @color-accent-glow, transparent);
-    overflow: hidden;
+    /* The accent hairline along the top edge. It sweeps only while the login is under way, so the
+       card says that something is happening and is still the rest of the time. */
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgb(@color-accent-rgb / 70%), transparent);
+    }
 
     &::after {
       content: '';
       position: absolute;
       top: 0;
       left: 0;
+      width: 40%;
       height: 1px;
-      width: 38%;
       background: linear-gradient(90deg, transparent, @color-accent, transparent);
-      animation: login-scan 4.4s ease-in-out infinite;
+      opacity: 0;
+    }
+
+    &--pending::after {
+      opacity: 1;
+      animation: login-sweep 1.4s ease-in-out infinite;
     }
   }
 
-  &__logoWrapper {
-    margin-bottom: @space-8;
+  &__logo {
     display: flex;
     justify-content: center;
-    width: 100%;
-    animation: login-rise-in 0.4s ease-out 0.1s both;
 
     .logo {
+      display: block;
       position: static !important;
       max-width: 100%;
       height: auto;
     }
   }
 
-  form {
-    width: 100%;
+  &__form {
     display: flex;
     flex-direction: column;
     gap: @space-5;
   }
 
-  &__inputGroup {
-    width: 100%;
-    animation: login-rise-in 0.4s ease-out both;
-
-    &--first {
-      animation-delay: 0.16s;
-    }
-
-    &--second {
-      animation-delay: 0.22s;
-    }
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: @space-2;
   }
 
   &__label {
-    display: block;
-    margin: 0 0 @space-2 2px;
-    font-family: @font-mono;
-    font-size: @text-xs;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: @color-faint;
+    font-size: @text-sm;
+    font-weight: @weight-medium;
+    color: @color-muted;
     transition: color @transition-fast;
   }
 
-  &__inputGroup:focus-within &__label {
-    color: @color-muted;
+  &__field:focus-within &__label {
+    color: @color-text;
   }
 
   &__capsHint {
     display: flex;
     align-items: center;
     gap: @space-2;
-    margin: @space-2 0 0 2px;
-    font-family: @font-mono;
-    font-size: @text-xs;
-    letter-spacing: 0.04em;
+    font-size: @text-sm;
     color: @color-warning;
   }
 
-  // Semi kills focus rings globally (Index.less), the login brings the accent one back
+  &__capsHint svg {
+    flex: none;
+    font-size: 15px;
+  }
+
+  /* Semi switches focus rings off globally (Index.less); the fields bring the accent one back. */
   .semi-input-wrapper {
-    border-radius: @radius-input;
     transition:
       border-color @transition-fast,
       box-shadow @transition-fast;
@@ -177,57 +173,48 @@
 
   .semi-input-wrapper-focus {
     border-color: rgb(@color-accent-rgb / 55%) !important;
-    box-shadow: 0 0 0 3px @color-accent-glow !important;
+    box-shadow: 0 0 0 3px rgb(@color-accent-rgb / 18%) !important;
   }
 
-  &__submit {
-    animation: login-rise-in 0.4s ease-out 0.28s both;
+  &__submit.semi-button {
+    margin-top: @space-2;
     transition:
       transform @transition-fast,
       box-shadow @transition-fast;
 
     &:hover:not(:disabled) {
       transform: translateY(-1px);
-      box-shadow: 0 6px 18px -6px rgb(@color-accent-rgb / 65%);
+      box-shadow: 0 8px 20px -8px rgb(@color-accent-rgb / 70%);
     }
 
     &:active:not(:disabled) {
-      transform: translateY(0);
+      transform: none;
       box-shadow: none;
-    }
-
-    &:focus-visible {
-      box-shadow: 0 0 0 3px @color-accent-glow !important;
     }
   }
 
-  // Mobile responsiveness
+  /* On a phone the card is nearly the whole width, so it gets less padding and less transparency:
+     there is little photograph left around it to show through. */
   @media (max-width: 480px) {
-    &__loginWrapper {
-      padding: @space-6 @space-5;
-      width: 95%;
-      background: rgb(@color-surface-rgb / 92%);
-    }
+    padding: @space-4;
 
-    &__logoWrapper {
-      margin-bottom: @space-6;
+    &__card {
+      padding: @space-8 @space-5 @space-6;
+      background: rgb(@color-surface-rgb / 88%);
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    &__loginWrapper,
-    &__logoWrapper,
-    &__inputGroup,
-    &__submit {
+    &__card {
       animation: none;
     }
 
-    &__scanLine::after {
+    &__card--pending::after {
       animation: none;
       width: 100%;
     }
 
-    &__submit:hover:not(:disabled) {
+    &__submit.semi-button:hover:not(:disabled) {
       transform: none;
     }
   }

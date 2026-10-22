@@ -5,30 +5,28 @@
 
 @import '../../../tokens.less';
 
-/* Was ein verbundener Client darf. Die Flaeche traegt die Stufe, die Schrift bleibt Textfarbe -
-   dieselbe Regel wie bei den Preis-Badges der Inserate, wo eine farbige Schrift auf ihrer eigenen
-   gedaempften Flaeche in je einem Theme AA reisst.
- *
- * Kein Bernstein: fuer die Warnfarbe gibt es kein -rgb-Alias, und dafuer eines anzulegen gehoert
- * nicht in diesen Plan. Den Unterschied traegt hier ohnehin das Wort. */
+/* What a connected client may do, as a pill. The tint and the edge carry the level, the words stay
+   in the text colour - the same rule as every status pill, because amber words on their own amber
+   tint fall below AA in one theme or the other. Writing is the level worth noticing, so it is the
+   one with a colour; reading is a plain pill. */
 .accessTag {
   display: inline-flex;
   align-items: center;
-  height: 20px;
-  padding: 0 @space-2;
-  border-radius: @radius-chip;
+  height: 22px;
+  padding: 0 @space-3;
+  border-radius: @radius-pill;
   font-size: @text-xs;
+  font-weight: @weight-medium;
   line-height: 1;
   white-space: nowrap;
   color: @color-text;
 
   &--write {
-    background: @color-fill-strong;
-    border: 1px solid @color-border-bright;
+    background: rgb(@color-warning-rgb / 12%);
+    border: 1px solid rgb(@color-warning-rgb / 40%);
   }
 
   &--read {
-    background: @color-fill-1;
-    border: 1px solid @color-border;
+    border: 1px solid @color-border-bright;
   }
 }

@@ -16,9 +16,9 @@
       flex: 1;
     }
 
-    /* Rot, solange aufgezeichnet wird - und nur hier, nicht global: der Balken misst einen
-       Speicher, der volllaeuft, und das ist die einzige Stelle der Anwendung, wo ein Fortschritt
-       etwas Unerwuenschtes anzeigt. */
+    /* Red while capture is running - and only here, not globally: the bar measures a store that
+       fills up, and this is the one place in the application where progress shows something
+       unwanted. */
     .semi-progress-track-inner {
       background: @color-error !important;
     }
@@ -26,10 +26,8 @@
 
   &__usageText {
     flex: none;
-    font-family: @font-mono;
-    font-size: @text-xs;
+    font-size: @text-sm;
     color: @color-muted;
-    font-variant-numeric: tabular-nums;
   }
 
   &__actions {
@@ -39,8 +37,8 @@
     flex-wrap: wrap;
   }
 
-  /* Das Ueberlaufmenue gehoert zu keinem der beiden Knoepfe und steht deshalb am rechten Rand,
-     nicht als dritter in der Reihe. */
+  /* The overflow menu belongs to neither button and therefore stands at the right edge, not as a
+     third one in the row. */
   &__overflow {
     margin-left: auto;
   }

@@ -5,6 +5,7 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as hasher from '../../lib/services/security/hash.js';
+import { withSession } from '../mocks/mockSession.js';
 
 /**
  * The login endpoint is the one unauthenticated write in the app. These tests cover the two ways
@@ -29,13 +30,8 @@ describe('login hardening', () => {
     },
   });
 
-  const requestFrom = (ip, username, password) => ({
-    ip,
-    socket: { remoteAddress: ip },
-    headers: {},
-    body: { username, password },
-    session: {},
-  });
+  const requestFrom = (ip, username, password) =>
+    withSession({ ip, socket: { remoteAddress: ip }, headers: {}, body: { username, password } });
 
   beforeEach(async () => {
     state = { users: [], lastLogin: [], rehashed: [] };
@@ -50,13 +46,16 @@ describe('login hardening', () => {
       getSettings: async () => ({ demoMode: false }),
     }));
     vi.doMock('../../lib/services/tracking/Tracker.js', () => ({ trackDemoAccessed: vi.fn() }));
-    vi.doMock('../../lib/api/security.js', () => ({ isUnauthorized: () => true }));
+    vi.doMock('../../lib/api/security.js', async (importOriginal) => ({
+      ...(await importOriginal()),
+      isUnauthorized: () => true,
+    }));
 
     const plugin = (await import('../../lib/api/routes/loginRoute.js')).default;
     routes = {};
     await plugin({
       get: (path, handler) => (routes[`GET ${path}`] = handler),
-      post: (path, handler) => (routes[`POST ${path}`] = handler),
+      post: (path, optionsOrHandler, handler) => (routes[`POST ${path}`] = handler ?? optionsOrHandler),
     });
 
     state.users.push({ id: 'u1', username: 'alice', password: await hasher.hash('correct horse') });
@@ -77,13 +76,13 @@ describe('login hardening', () => {
     it('cannot be reset by varying X-Forwarded-For', async () => {
       // request.ip is derived by fastify (and only from the header when trustProxy is on), so a
       // caller sending their own header no longer gets a fresh counter per attempt.
-      const spoofed = (header) => ({
-        ip: '10.0.0.9',
-        socket: { remoteAddress: '10.0.0.9' },
-        headers: { 'x-forwarded-for': header },
-        body: { username: 'ghost', password: 'nope' },
-        session: {},
-      });
+      const spoofed = (header) =>
+        withSession({
+          ip: '10.0.0.9',
+          socket: { remoteAddress: '10.0.0.9' },
+          headers: { 'x-forwarded-for': header },
+          body: { username: 'ghost', password: 'nope' },
+        });
       for (let attempt = 0; attempt < 10; attempt++) {
         await routes['POST /'](spoofed(`1.2.3.${attempt}`), makeReply());
       }
@@ -141,9 +140,12 @@ describe('login hardening', () => {
     it('logs in successfully with the right password', async () => {
       const reply = makeReply();
       const request = requestFrom('10.4.0.1', 'alice', 'correct horse');
+      const before = request.session.sessionId;
       await routes['POST /'](request, reply);
       expect(reply.statusCode).toBe(200);
       expect(request.session.currentUser).toBe('u1');
+      // A session id that existed before the login must not become the signed-in one.
+      expect(request.session.sessionId).not.toBe(before);
       expect(state.lastLogin).toEqual(['u1']);
     });
 
@@ -159,5 +161,21 @@ describe('login hardening', () => {
       expect(state.rehashed).toHaveLength(1);
       expect(state.rehashed[0].passwordHash.startsWith('scrypt$')).toBe(true);
     });
+  });
+});
+
+describe('the attempt counter stays small', () => {
+  // Attempts with ever new user names grew the counter without bound for a whole window.
+  it('drops the oldest key once it holds as many as it may', async () => {
+    const { createWindowLimiter } = await import('../../lib/api/rateLimiter.js');
+    const limiter = createWindowLimiter(60_000, 3);
+    limiter.hit('a', 1);
+    limiter.hit('a', 1);
+    expect(limiter.hit('a', 1)).toBe(true);
+    limiter.hit('b', 1);
+    limiter.hit('c', 1);
+    limiter.hit('d', 1);
+    // 'a' was the oldest and is gone, so it starts a fresh window.
+    expect(limiter.hit('a', 1)).toBe(false);
   });
 });

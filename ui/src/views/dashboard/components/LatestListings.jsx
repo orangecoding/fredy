@@ -3,125 +3,122 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
+import { IconArrowRight } from '../../../components/icons/StrokeIcons.jsx';
+import ListingPhoto from '../../../components/listings/ListingPhoto.jsx';
 import { formatEuroPrice } from '../../../services/price/priceService.js';
-import { formatPricePerSqm } from '../../../services/listings/marketBenchmark.js';
+import { formatDeviation, formatPricePerSqm, readMarketBenchmark } from '../../../services/listings/marketBenchmark.js';
 import { listingPictureSrc } from '../../../services/listings/listingPictures.js';
 import { formatDecimal } from '../../../services/number/numberService.js';
 import { relativeTime } from '../../../services/time/relativeTime.js';
 
-/** The thumbnail a listing without a usable photo falls back to. Drawn, not imported: one icon
- *  does not earn an asset, and an inline path follows the theme through currentColor. */
-const THUMB_PLACEHOLDER = (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.6"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    aria-hidden="true"
-  >
-    <path d="M4 11 12 4.5 20 11" />
-    <path d="M6 10.5V19h12v-8.5" />
-  </svg>
-);
-
 /**
- * The address, living space and room count of one listing, as one line.
+ * The street, rooms, living space and portal of one listing, as one line.
  *
- * Whatever is missing is left out rather than filled with a dash: three separators around two
- * empty slots say less than the one fact that is actually known.
+ * The street only: postcode and city are the same for most of a search's listings, and on a card
+ * this narrow they pushed the portal out of sight. Whatever is missing is left out rather than
+ * filled with a dash: three separators around two empty slots say less than the one fact that is
+ * actually known.
  *
  * @param {Object} row
  * @param {string} locale
  * @param {(key: string, params?: Object) => string} t
+ * @param {Record<string, string>} providerNames
  * @returns {string}
  */
-function metaLine(row, locale, t) {
+function metaLine(row, locale, t, providerNames) {
   return [
-    row.address,
-    row.size == null ? null : `${formatDecimal(row.size, locale)} m²`,
+    row.address ? String(row.address).split(',')[0].trim() : null,
     row.rooms == null ? null : t('listing.detail.fieldRoomsValue', { count: formatDecimal(row.rooms, locale) }),
+    row.size == null ? null : `${formatDecimal(row.size, locale)} m²`,
+    row.provider ? (providerNames[row.provider] ?? row.provider) : null,
   ]
     .filter(Boolean)
     .join(' · ');
 }
 
 /**
- * The newest listings across every search the user can see.
+ * The newest listings across every search the user can see, as photographs.
  *
- * This is what the dashboard is for and it used to be one navigation away: the page led with
- * standing totals and left the bottom half of the screen empty, so "what came in" was a question
- * you had to leave the dashboard to answer.
+ * This is what the dashboard is for. A listing is judged by its pictures first, so they lead and
+ * the facts sit under them: price, price per square metre, the title, where it is and where it was
+ * found, and a green line when the price per square metre is under the area's. The age sits on the
+ * photo, because it is the first thing a person deciding whether to call cares about.
  *
- * Every row is a real `<button>` rather than a div with a handler, so the list can be walked and
- * opened from the keyboard. The three right-hand columns are fixed widths in the stylesheet and
- * keep their space even when a listing has no price per square metre, because a column edge that
- * moves from row to row costs more than the gap it saves.
+ * Every card is a real `<button>` rather than a div with a handler, so the row can be walked and
+ * opened from the keyboard.
  *
  * @param {Object} props
- * @param {Array<Object>} props.listings Newest first, at most eight.
+ * @param {Array<Object>} props.listings Newest first, at most four.
  * @param {string} props.locale
  * @param {(key: string, params?: Object) => string} props.t
+ * @param {Record<string, string>} [props.providerNames] Provider id to the portal's name.
  * @param {(id: string) => void} props.onOpen Opens one listing.
- * @param {() => void} props.onOpenAll Opens the listings overview. The plan's prop list omits it
- *   and the one for the total below; both are what `dashboard.latestAll` needs to say anything,
- *   and they follow the shape `JobsPanel` uses for its own footer link.
- * @param {number} props.total Listings found in total, which is the figure the link names - not
- *   the eight rows above it.
+ * @param {() => void} props.onOpenAll Opens the listings overview.
+ * @param {number} props.total Active listings in total, which is the figure the link names.
  * @returns {React.ReactElement}
  */
-export default function LatestListings({ listings = [], locale = 'de-DE', t, onOpen, onOpenAll, total = 0 }) {
+export default function LatestListings({
+  listings = [],
+  locale = 'de-DE',
+  t,
+  providerNames = {},
+  onOpen,
+  onOpenAll,
+  total = 0,
+}) {
   const rows = Array.isArray(listings) ? listings : [];
 
   return (
-    <div className="dashboard__card">
-      <div className="dashboard__cardHead">
-        <h2 className="dashboard__cardLabel">{t('dashboard.sectionLatest')}</h2>
+    <section className="dashboard__section dashboard__latest" aria-labelledby="dashboard-latest">
+      <div className="dashboard__sectionHead">
+        <h2 id="dashboard-latest" className="dashboard__sectionTitle">
+          {t('dashboard.sectionLatest')}
+        </h2>
         <span className="dashboard__spacer" />
         <button type="button" className="dashboard__link" onClick={onOpenAll}>
           {t('dashboard.latestAll', { count: String(total) })}
+          <IconArrowRight />
         </button>
       </div>
-      <div className="dashboard__latest">
-        {rows.length === 0 ? (
-          <div className="dashboard__latestEmpty">{t('dashboard.latestEmpty')}</div>
-        ) : (
-          rows.map((row) => (
-            <button type="button" className="dashboard__latestRow" key={row.id} onClick={() => onOpen(row.id)}>
-              <div className="dashboard__thumb">
-                {THUMB_PLACEHOLDER}
-                {row.image_url && (
-                  <img
-                    src={listingPictureSrc(row)}
-                    alt=""
-                    loading="lazy"
-                    onError={(event) => {
-                      event.currentTarget.style.display = 'none';
-                    }}
-                  />
-                )}
-              </div>
-              <div className="dashboard__latestText">
-                <span className="dashboard__latestTitle">{row.title}</span>
-                <span className="dashboard__latestMeta">{metaLine(row, locale, t)}</span>
-              </div>
-              {/* `price` is nullable (only id, link and title are required), and formatting null
-                  prints "0 €". */}
-              <span className="dashboard__latestPrice">
-                {row.price != null ? formatEuroPrice(row.price, locale) : t('common.na')}
-              </span>
-              <span className="dashboard__latestSqm">
-                {row.price_per_sqm != null && (
-                  <span className="dashboard__chip">{formatPricePerSqm(row.price_per_sqm, locale)}</span>
-                )}
-              </span>
-              <span className="dashboard__latestAge">{relativeTime(row.created_at, t)}</span>
-            </button>
-          ))
-        )}
-      </div>
-    </div>
+      {rows.length === 0 ? (
+        <p className="dashboard__latestEmpty">{t('dashboard.latestEmpty')}</p>
+      ) : (
+        <div className="dashboard__listings">
+          {rows.map((row) => {
+            const benchmark = readMarketBenchmark(row);
+            return (
+              <button type="button" className="dashboard__listing" key={row.id} onClick={() => onOpen(row.id)}>
+                <span className="dashboard__listingMedia">
+                  <ListingPhoto src={listingPictureSrc(row)} className="dashboard__listingPhoto" />
+                  <span className="dashboard__listingAge">{relativeTime(row.created_at, t)}</span>
+                </span>
+                <span className="dashboard__listingBody">
+                  <span className="dashboard__listingPrice">
+                    {/* `price` is nullable (only id, link and title are required), and formatting
+                        null prints "0 €". */}
+                    <span className="dashboard__listingAmount">
+                      {row.price != null ? formatEuroPrice(row.price, locale) : t('common.na')}
+                    </span>
+                    {row.price_per_sqm != null && (
+                      <span className="dashboard__listingSqm">{formatPricePerSqm(row.price_per_sqm, locale)}</span>
+                    )}
+                  </span>
+                  <span className="dashboard__listingTitle">{row.title}</span>
+                  <span className="dashboard__listingMeta">{metaLine(row, locale, t, providerNames)}</span>
+                  {benchmark?.verdict === 'below' && (
+                    <span className="dashboard__listingBelow">
+                      {t('dashboard.belowMarket', {
+                        percent: formatDeviation(Math.abs(benchmark.percent), locale, false),
+                      })}
+                    </span>
+                  )}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </section>
   );
 }
 

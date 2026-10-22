@@ -5,156 +5,139 @@
 
 @import '../../../tokens.less';
 
+/* Three photographs to a row on a desktop, spaced rather than boxed. */
 .listingsGrid__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: @space-4;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: @space-10 @space-7;
+
+  @media (max-width: 768px) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: @space-8;
+  }
 }
 
 .listingsGrid__card {
-  background: @color-elevated;
-  border: 1px solid @color-border;
-  border-radius: @radius-card;
-  overflow: hidden;
-  cursor: pointer;
-  transition: box-shadow @transition-card;
   display: flex;
   flex-direction: column;
+  gap: @space-3;
+  min-width: 0;
+  cursor: pointer;
 
-  &:hover {
-    box-shadow: @shadow-lg;
-  }
-
-  // Der Titel ist ein Link, traegt aber keine Linkfarbe: er ist die Ueberschrift der Karte, und
-  // zwanzig blaue Ueberschriften in einem Raster lesen sich als Liste von Links statt als Liste
-  // von Wohnungen. Die Unterstreichung beim Zeigen sagt, dass er einer ist.
-  &__title {
-    font-weight: 700;
-    font-size: @text-base;
-    color: @color-text;
-    text-decoration: none;
-    display: block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-
-    &:hover {
-      color: @color-text;
-      text-decoration: underline;
-    }
-
-    &:focus-visible {
-      outline: 2px solid @color-accent;
-      outline-offset: 2px;
-      border-radius: @radius-chip;
-    }
-  }
-
-  &__image-wrapper {
+  &__media {
     position: relative;
-    height: 160px;
-    overflow: hidden;
-    flex-shrink: 0;
-
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
   }
 
-  // Statt eines um 30 Grad gedrehten, unscharf hinterlegten Stempels in 18px extrafett ueber dem
-  // ganzen Bild. Dieselbe deckende Flaeche wie Betrugschip und Stern, gegenueber vom Chip.
-  // @color-map-panel-text darauf: 5,79 zu 1 dunkel, 6,48 zu 1 hell.
-  &__inactive {
+  &__photo {
+    aspect-ratio: 3 / 2;
+    border-radius: @radius-card;
+  }
+
+  /* How old the listing is, on the photo. Set on the map-panel surface, which stays legible over
+     any photograph and turns with the theme. */
+  &__age {
     position: absolute;
-    left: @space-2;
-    bottom: @space-2;
+    top: @space-3;
+    left: @space-3;
     display: inline-flex;
     align-items: center;
-    height: 20px;
-    padding: 0 @space-2;
-    border-radius: @radius-chip;
+    height: 26px;
+    padding: 0 @space-3;
+    border-radius: @radius-pill;
     background: @color-map-panel;
-    border: 1px solid @color-map-panel-border;
-    color: @color-map-panel-text;
+    color: @color-map-panel-strong;
     font-size: @text-xs;
-    line-height: 1;
+    font-weight: @weight-medium;
+  }
+
+  &--inactive &__photo {
+    opacity: 0.5;
+  }
+
+  &--inactive &__amount,
+  &--inactive &__title {
+    color: @color-muted;
   }
 
   &__body {
-    padding: @space-3;
     display: flex;
     flex-direction: column;
     gap: @space-1;
-    flex: 1;
+    min-width: 0;
   }
 
   &__price {
     display: flex;
-    align-items: baseline;
-    // A card can carry the price, an affordability verdict, a price move and a price per square
-    // metre at once, and a narrow column has no room for all four on one line. Without this the
-    // row overflows its card instead of breaking.
     flex-wrap: wrap;
-    gap: @space-2;
-    row-gap: @space-1;
+    align-items: baseline;
+    gap: @space-1 @space-3;
   }
 
-  // Der Preis war gruen, direkt neben einem Badge, in dem Gruen "unter dem Quadratmeterpreis der
-  // Umgebung" heisst. Eine Zahl ist keine Nachricht. Tabellenziffern, damit die Betraege ueber
-  // das Raster hinweg dieselbe Breite haben.
+  // The price was green once, next to a badge in which green means "under the area's price per
+  // square metre". A number is not a message, so it stays in the text colour.
   &__amount {
-    font-family: @font-mono;
-    font-size: @text-md;
-    font-weight: 700;
+    font-size: @text-xl;
+    font-weight: @weight-strong;
+    letter-spacing: -0.01em;
     color: @color-text;
-    font-variant-numeric: tabular-nums;
+  }
+
+  // The title is a link but carries no link colour: it is the card's heading, and twenty underlined
+  // headings read as a list of links rather than a list of flats. The underline on hover says it is
+  // one.
+  &__title {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: @text-md;
+    font-weight: @weight-medium;
+    color: @color-text;
+    text-decoration: none;
+
+    &:hover {
+      color: @color-text;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
   }
 
   &__meta {
-    font-size: @text-xs;
-    color: @color-muted;
     display: flex;
     align-items: center;
     gap: @space-1;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    font-size: @text-base;
+    color: @color-muted;
 
     .semi-icon {
-      font-size: 11px;
-      color: @color-muted;
       flex-shrink: 0;
+      font-size: 13px;
     }
   }
 
+  /* The tools: where it was found, its status, and three icons, behind one hairline. */
+  /* Provider and status on one line, the actions on their own below it (see ListingActions.less),
+     so the application button has the card's width rather than what the provider name leaves. */
   &__foot {
-    margin-top: auto;
-    padding-top: @space-2;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    justify-content: space-between;
-    gap: @space-2;
-  }
-
-  // War @color-faint: 2,19 zu 1 auf @color-elevated. AA verlangt 4,5, @color-muted schafft 5,43
-  // im dunklen und 6,48 im hellen Theme.
-  &__date {
-    font-size: @text-xs;
-    color: @color-muted;
-    white-space: nowrap;
-  }
-
-  &__status {
-    display: inline-flex;
-    flex-shrink: 0;
-  }
-
-  &__actions {
-    display: flex;
-    padding: @space-2 @space-3;
+    gap: @space-2 @space-1;
+    margin-top: auto;
+    padding-top: @space-3;
     border-top: 1px solid @color-border;
+  }
+
+  &__provider {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: @text-sm;
+    color: @color-muted;
   }
 }

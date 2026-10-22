@@ -5,7 +5,8 @@
 
 import logo from '../../assets/logo.png';
 import logoWhite from '../../assets/logo_white.png';
-import { currentTheme } from '../../services/theme/theme.js';
+import { normalizeTheme } from '../../services/theme/theme.js';
+import { useSelector } from '../../services/state/store';
 
 import './Logo.less';
 
@@ -16,8 +17,8 @@ import './Logo.less';
  * so the flag is read together with the theme rather than on its own - otherwise the white cut ends
  * up on paper and the wordmark disappears while the heart next to it stays perfectly visible.
  *
- * Read from the document rather than the store because this is an asset choice, and because the
- * app remounts on a theme change (see App.jsx), so there is nothing to subscribe to.
+ * Read from the store, the way App.jsx reads the theme it applies, so a switch re-renders it. Before
+ * the settings arrive (the login screen) that is the default, which is also what the body ships with.
  *
  * @param {Object} [props]
  * @param {number} [props.width=350]
@@ -25,6 +26,7 @@ import './Logo.less';
  * @returns {React.ReactElement}
  */
 export default function Logo({ width = 350, white = false } = {}) {
-  const src = white && currentTheme() === 'dark' ? logoWhite : logo;
+  const theme = normalizeTheme(useSelector((state) => state.userSettings.settings.theme));
+  const src = white && theme === 'dark' ? logoWhite : logo;
   return <img src={src} width={width} className="logo" alt="Fredy Logo" />;
 }

@@ -1,165 +1,32 @@
-@import './DashboardCardColors.less';
+@import '../../tokens.less';
 
+/* A figure on a surface with a hairline. Flat and still: no gradient edge, no lift on hover. */
 .dashboard-card {
-  width: 100%;
-  /* A floor, not a ceiling. A fixed height let a value that wraps to two lines run straight
-     through the description underneath it, which is what an empty-state placeholder or a long
-     figure does on a narrow column. */
-  min-height: 112px;
+  display: flex;
+  flex-direction: column;
+  gap: @space-1;
   height: 100%;
-  border-radius: @radius-card !important;
-  border: 1px solid @color-border !important;
-  background-color: @color-surface !important;
-  /* Motion on interaction rather than ambient. Every one of these cards used to run an infinite
-     8s glow, so a dashboard of eight sat there pulsing at the user with nothing to report. The
-     lift happens when they point at a card, which is when it means something. */
-  transition:
-    box-shadow @transition-card,
-    transform @transition-card,
-    border-color @transition-card;
-  position: relative;
-  overflow: visible;
-
-  /* The surface stays neutral so a row of cards reads as one calm block. The identity comes from
-     the border instead: coloured at the top edge and fading out towards the bottom, so the accent
-     is a highlight catching the light rather than a tinted box. Painted as a masked gradient over
-     the border box, which is the only way to fade a border along its length. */
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    padding: 1px;
-    background: linear-gradient(160deg, var(--card-accent, @color-border-bright) 0%, transparent 55%);
-    -webkit-mask:
-      linear-gradient(#000 0 0) content-box,
-      linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    opacity: 0.55;
-    transition: opacity @transition-card;
-    pointer-events: none;
-  }
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px -8px var(--card-glow, @color-border-bright);
-
-    &::before {
-      opacity: 0.9;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
-
-    &:hover {
-      transform: none;
-    }
-  }
-
-  &__icon {
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--card-accent, @color-gray-text);
-  }
+  box-sizing: border-box;
+  padding: @space-5 @space-6;
+  border: 1px solid @color-border;
+  border-radius: @radius-card;
+  background: @color-surface;
 
   &__title {
-    color: @color-muted !important;
-    font-size: @text-xs !important;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  &__content {
-    width: 100%;
+    font-size: @text-sm;
+    color: @color-muted;
   }
 
   &__value {
-    font-size: 1.2rem;
-    font-weight: 700;
-    margin-bottom: @space-1;
-    line-height: 1.25;
-    color: var(--card-value, @color-text);
+    font-size: @text-2xl;
+    font-weight: @weight-strong;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    color: @color-text;
   }
 
   &__desc {
-    color: @color-faint !important;
     font-size: @text-xs;
-  }
-
-  &.blue {
-    --card-accent: @color-blue-text;
-    --card-glow: @color-blue-border;
-    --card-value: @color-blue-text;
-  }
-  &.orange {
-    --card-accent: @color-orange-text;
-    --card-glow: @color-orange-border;
-    --card-value: @color-orange-text;
-  }
-  &.green {
-    --card-accent: @color-green-text;
-    --card-glow: @color-green-border;
-    --card-value: @color-green-text;
-  }
-  &.purple {
-    --card-accent: @color-purple-text;
-    --card-glow: @color-purple-border;
-    --card-value: @color-purple-text;
-  }
-  &.gray {
-    --card-accent: @color-gray-text;
-    --card-glow: @color-gray-border;
-    --card-value: @color-gray-text;
-  }
-
-  /* Die Variante fuer das Dashboard. Vier Kacheln nebeneinander, deren Farben nichts bedeuten,
-     lesen sich als Kategorien, die es nicht gibt. Hier traegt nur die Zahl, und Farbe bleibt der
-     Primaeraktion, der Richtung einer Veraenderung und dem Handlungsbedarf vorbehalten. */
-  &.plain {
-    --card-accent: @color-border-bright;
-    --card-glow: @color-border-bright;
-  }
-}
-
-/* A card that leads somewhere. It is a real button so it is reachable by keyboard, but it must not
-   look like one: the chevron and the hover lift are what say it is clickable. */
-.dashboard-card__button {
-  display: block;
-  width: 100%;
-  padding: 0;
-  border: none;
-  background: none;
-  color: inherit;
-  font: inherit;
-  text-align: left;
-  cursor: pointer;
-}
-
-.dashboard-card__chevron {
-  margin-left: auto;
-  color: @color-faint;
-  transition: color @transition-fast;
-}
-
-.dashboard-card--clickable {
-  transition:
-    border-color @transition-fast,
-    transform @transition-fast;
-
-  &:hover {
-    border-color: @color-border-bright !important;
-    transform: translateY(-1px);
-
-    .dashboard-card__chevron {
-      color: @color-text;
-    }
-  }
-
-  &:focus-within {
-    border-color: @color-border-bright !important;
+    color: @color-muted;
   }
 }

@@ -317,3 +317,21 @@ describe('telling the user what a save set off', () => {
     expect(response.json()).toEqual({ measured: 12, total: 174 });
   });
 });
+
+describe('the size of what may be saved', () => {
+  // Every entry is geocoded through the one shared, one-a-second Nominatim client: five thousand
+  // entries held it for an hour for every user of the instance.
+  it('refuses more than twenty places', async () => {
+    const app = await buildServer();
+    const many = Array.from({ length: 21 }, (_, i) => ({ address: `Street ${i}, Düsseldorf`, label: `P${i}` }));
+    const response = await save(app, many);
+    expect(response.statusCode).toBe(400);
+    expect(invalidations).toEqual([]);
+  });
+
+  it('refuses an address that is not text or is far too long', async () => {
+    const app = await buildServer();
+    expect((await save(app, [{ address: 'x'.repeat(301), label: 'Home' }])).statusCode).toBe(400);
+    expect((await save(app, [{ address: { evil: true }, label: 'Home' }])).statusCode).toBe(400);
+  });
+});

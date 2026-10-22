@@ -5,7 +5,7 @@
 
 import { useNavigate } from 'react-router';
 import { Button } from '@douyinfe/semi-ui-19';
-import { IconPlusCircle } from '@douyinfe/semi-icons';
+import { IconPlus } from '@douyinfe/semi-icons';
 import JobGrid from '../../components/grid/jobs/JobGrid.jsx';
 import Headline from '../../components/headline/Headline.jsx';
 import './Jobs.less';
@@ -22,7 +22,7 @@ export default function Jobs() {
           <Button
             type="primary"
             theme="solid"
-            icon={<IconPlusCircle />}
+            icon={<IconPlus />}
             onClick={() => navigate('/jobs/new')}
             data-tour="new-job"
           >

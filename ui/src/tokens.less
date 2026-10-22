@@ -20,6 +20,7 @@
 @color-surface: var(--f-surface);
 @color-surface-rgb: var(--f-surface-rgb);
 @color-elevated: var(--f-elevated);
+@color-selected: var(--f-selected);
 // Hovered rows and list entries, and the flat fill behind chips, pills and code.
 @color-hover: var(--f-hover);
 @color-solid: var(--f-solid);
@@ -30,8 +31,10 @@
 @color-accent: var(--f-accent);
 @color-accent-rgb: var(--f-accent-rgb);
 @color-accent-dim: var(--f-accent-dim);
-@color-accent-glow: var(--f-accent-glow);
 @color-accent-text: var(--f-accent-text);
+// Every text link, in prose and as an action beside a heading: the accent as text, which reads at
+// AA in both themes where the accent fill itself does not. One alias, so links cannot drift apart.
+@color-link: @color-accent-text;
 
 // Text
 @color-text: var(--f-text);
@@ -47,6 +50,7 @@
 @color-error-rgb: var(--f-error-rgb);
 @color-error-dim: var(--f-error-dim);
 @color-warning: var(--f-warning);
+@color-warning-rgb: var(--f-warning-rgb);
 @color-info: var(--f-info);
 @color-info-rgb: var(--f-info-rgb);
 
@@ -84,10 +88,12 @@
 @color-gray-border: var(--f-gray-border);
 @color-gray-bg: var(--f-gray-bg);
 
-// Donate button aurora
-@color-aurora-1: var(--f-aurora-1);
-@color-aurora-2: var(--f-aurora-2);
-@color-aurora-3: var(--f-aurora-3);
+// Greyscale ramp for shares and comparisons, brightest (dark) or darkest (light) first
+@color-chart-1: var(--f-chart-1);
+@color-chart-2: var(--f-chart-2);
+@color-chart-3: var(--f-chart-3);
+@color-chart-4: var(--f-chart-4);
+@color-chart-5: var(--f-chart-5);
 
 // Map overlay panels
 @color-map-panel: var(--f-map-panel);
@@ -102,15 +108,25 @@
 @color-preview-light-line: var(--f-preview-light-line);
 
 // Typography
-@font-ui: 'Outfit', system-ui, sans-serif;
+// Schibsted Grotesk for everything a person reads, figures included. Its tabular figures also set
+// the full stop and the comma on a fixed width, which tears "1.240 €" apart, so nothing here asks
+// for `tabular-nums`. The mono face is for code, tokens and logs only.
+@font-ui: 'Schibsted Grotesk', system-ui, sans-serif;
 @font-mono: 'JetBrains Mono', monospace;
 
-@text-xs: 11px;
-@text-sm: 12px;
+@text-xs: 12px;
+@text-sm: 13px;
 @text-base: 14px;
 @text-md: 16px;
-@text-lg: 20px;
-@text-xl: 24px;
+@text-lg: 18px;
+@text-xl: 22px;
+@text-2xl: 28px;
+@text-display: 32px;
+
+// Weights. Two are enough: 500 for anything that is a name or a control, 600 for headings and
+// figures. Bold (700) is not used.
+@weight-medium: 500;
+@weight-strong: 600;
 
 // Spacing
 @space-1: 4px;
@@ -119,16 +135,23 @@
 @space-4: 16px;
 @space-5: 20px;
 @space-6: 24px;
+@space-7: 28px;
 @space-8: 32px;
+@space-9: 36px;
+@space-10: 40px;
 @space-12: 48px;
+@space-14: 56px;
+
+// Control heights. A field and the button next to it are always the same height.
+@control-sm: 32px;
+@control-md: 36px;
+@control-lg: 44px;
 
 // Radius
-// Softer than the 8/4/3 this used to be. The tight corners were chosen to stop the app reading as
-// playful, but the warm palette does that job better and at these radii nothing looks like a
-// spreadsheet either. Buttons and cards differ by design: a card is a surface and can afford the
-// rounding, a control is a target and stays crisper than the thing it sits on.
+// One radius for every surface and control, a pill for chips and filters. Small images and
+// badges take the chip radius.
 @radius-input: 8px;
-@radius-card: 12px;
+@radius-card: 8px;
 @radius-btn: 8px;
 @radius-pill: 9999px;
 @radius-chip: 6px;

@@ -12,6 +12,7 @@ import {
   placeCard,
   sameRect,
   scrimPanels,
+  sheetAtTop,
   spotlightRect,
 } from '../../ui/src/services/tour/tourPlacement.js';
 
@@ -122,5 +123,21 @@ describe('rect comparison', () => {
     expect(sameRect(rect, { ...rect, top: 14 })).toBe(false);
     expect(sameRect(null, null)).toBe(true);
     expect(sameRect(rect, null)).toBe(false);
+  });
+});
+
+describe('sheetAtTop', () => {
+  const viewport = { width: 390, height: 844 };
+
+  // The listing page's action bar is fixed to the bottom edge on a phone; a sheet docked there
+  // covered the "copy application" button the step was pointing at.
+  it('moves the sheet up for an element in the lower part of the screen', () => {
+    expect(sheetAtTop({ top: 779, left: 170, width: 215, height: 60 }, viewport)).toBe(true);
+  });
+
+  it('keeps the sheet at the bottom for an element higher up, or for none', () => {
+    expect(sheetAtTop({ top: 102, left: 72, width: 310, height: 742 }, viewport)).toBe(false);
+    expect(sheetAtTop({ top: 245, left: 72, width: 310, height: 428 }, viewport)).toBe(false);
+    expect(sheetAtTop(null, viewport)).toBe(false);
   });
 });

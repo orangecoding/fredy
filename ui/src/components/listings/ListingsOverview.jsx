@@ -5,17 +5,9 @@
 
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useUrlState, parseNumber, parseString, parseNullableBoolean } from '../../hooks/useSearchParamState.js';
-import { Button, Pagination, Toast, Input, Select, Empty, Tooltip, Banner } from '@douyinfe/semi-ui-19';
-import {
-  IconSearch,
-  IconArrowUp,
-  IconArrowDown,
-  IconGridView,
-  IconList,
-  IconStar,
-  IconStarStroked,
-  IconDelete,
-} from '@douyinfe/semi-icons';
+import { Button, Pagination, Toast, Input, Select, Empty, Tooltip, Banner, Dropdown } from '@douyinfe/semi-ui-19';
+import { IconSearch, IconArrowUp, IconArrowDown, IconDelete } from '@douyinfe/semi-icons';
+import { IconMore } from '../icons/StrokeIcons.jsx';
 import { useNavigate, useSearchParams } from 'react-router';
 import ListingDeletionModal from '../ListingDeletionModal.jsx';
 import ApplicationModal from '../../views/listings/components/ApplicationModal.jsx';
@@ -32,6 +24,8 @@ import {
   clearFilter,
   clearAllFilters,
   toListingsQuery,
+  QUICK_FILTERS,
+  quickFilterKeys,
 } from '../../services/listings/listingFilters.js';
 import ListingsGrid from '../grid/listings/ListingsGrid.jsx';
 import ListingsTable from '../table/ListingsTable.jsx';
@@ -43,6 +37,7 @@ import { useFinanceProfile } from '../../hooks/useFinanceProfile.js';
 import { useScrollRestoration } from '../../hooks/useScrollRestoration.js';
 import { formatEuro } from '../cards/chartTheme.js';
 import { affordabilityFilterHelp } from '../../services/finance/rentBasis.js';
+import { subscribeJobEvents } from '../../services/sse/jobEvents.js';
 
 /**
  * Listings fetched per page. Large enough that the grid fills a desktop screen without paging,
@@ -104,20 +99,9 @@ const ListingsOverview = () => {
   // One piece of state for every filter. Each control here changes two params at once (its own,
   // plus the page reset), and separate per-key setters would race each other into the URL.
   const { values, setValue, setValues } = useUrlState(sp, LISTINGS_URL_STATE);
-  const {
-    page,
-    sort: sortField,
-    dir: sortDir,
-    q: freeTextFilter,
-    watch: watchListFilter,
-    job: jobNameFilter,
-    active: activityFilter,
-    provider: providerFilter,
-    status: statusFilter,
-    afford: affordabilityFilter,
-    commute: commuteFilter,
-    hidden: hiddenOnly,
-  } = values;
+  // The filters themselves reach the request through `toListingsQuery(values)` below; only what this
+  // component reads on its own is named here.
+  const { page, sort: sortField, dir: sortDir, q: freeTextFilter, hidden: hiddenOnly } = values;
   const setPage = (value) => setValue('page', value);
   const setSortField = (value) => setValue('sort', value);
   const setSortDir = (value) => setValue('dir', value);
@@ -163,23 +147,14 @@ const ListingsOverview = () => {
     });
   };
 
+  // Keyed on the request itself rather than on a hand-kept list of filters: the list missed the four
+  // connectivity filters, so setting one changed the chips but not the listings, and a bulk delete
+  // then went out with a query the visible page had never been loaded with.
+  const requestKey = JSON.stringify({ ...listingsQuery, page, sortField, sortDir });
   useEffect(() => {
     loadData();
     setNewAvailableCount(0);
-  }, [
-    page,
-    sortField,
-    sortDir,
-    freeTextFilter,
-    providerFilter,
-    activityFilter,
-    jobNameFilter,
-    watchListFilter,
-    statusFilter,
-    affordabilityFilter,
-    commuteFilter,
-    hiddenOnly,
-  ]);
+  }, [requestKey]);
 
   const loadDataRef = useRef(loadData);
   useEffect(() => {
@@ -188,8 +163,6 @@ const ListingsOverview = () => {
 
   // SSE connection for live listings updates
   useEffect(() => {
-    const src = new EventSource('/api/jobs/events');
-
     const onNewListings = (e) => {
       try {
         const data = JSON.parse(e.data || '{}');
@@ -201,19 +174,7 @@ const ListingsOverview = () => {
       }
     };
 
-    src.addEventListener('listings:new', onNewListings);
-    src.onerror = () => {
-      // Let browser auto-reconnect
-    };
-
-    return () => {
-      try {
-        src.removeEventListener('listings:new', onNewListings);
-        src.close();
-      } catch {
-        // noop
-      }
-    };
+    return subscribeJobEvents('listings:new', onNewListings);
   }, [t]);
 
   const handleFilterChange = useMemo(
@@ -348,113 +309,130 @@ const ListingsOverview = () => {
   // your place by hand on every return.
   useScrollRestoration('listings', listings.length > 0);
 
+  // The filters the quick chips already show as switched on, so the removable chips below do not
+  // repeat them.
+  const shownAsQuickFilter = quickFilterKeys(values);
+
   return (
     <div className="listingsOverview">
-      <div className="listingsOverview__topbar">
-        <Tooltip content={t('listings.filterSearchHelp')} trigger="hover" position="top">
-          <span className="listingsOverview__topbar__tooltipWrap listingsOverview__topbar__search">
-            <Input
-              prefix={<IconSearch />}
-              showClear
-              placeholder={t('listings.searchPlaceholder')}
-              defaultValue={freeTextFilter ?? ''}
-              onChange={handleFilterChange}
-            />
-          </span>
-        </Tooltip>
+      <div className="listingsOverview__toolbar">
+        <div className="listingsOverview__topbar">
+          <Tooltip content={t('listings.filterSearchHelp')} trigger="hover" position="top">
+            <span className="listingsOverview__search">
+              <Input
+                size="large"
+                prefix={<IconSearch />}
+                showClear
+                placeholder={t('listings.searchPlaceholder')}
+                defaultValue={freeTextFilter ?? ''}
+                onChange={handleFilterChange}
+              />
+            </span>
+          </Tooltip>
 
-        {/* The watchlist used to be a page of its own in the sidebar. It is a filter, and it was
-            always a filter - but it is the one people reach for daily, so it keeps a control out
-            here rather than being buried in the drawer with the rest. */}
-        <Tooltip
-          content={watchListFilter === true ? t('listings.watchlistToggleOff') : t('listings.watchlistToggleOn')}
-          position="top"
-        >
-          <span className="listingsOverview__topbar__tooltipWrap">
+          <FilterButton activeCount={activeFilterCount} onClick={() => setFiltersOpen(true)} />
+
+          <FilterSelect
+            help={t('listings.filterSortHelp')}
+            className="listingsOverview__sort"
+            prefix={t('listings.sortPrefix')}
+            size="large"
+            value={sortField}
+            onChange={(val) => setSortField(val)}
+          >
+            <Select.Option value="job_name">{t('listings.sortByJobName')}</Select.Option>
+            {/* The date the portal states, falling back to the day Fredy found the listing - the
+                order the list reads in by default. "created_at" alone is the other thing entirely:
+                the moment Fredy first saw the advert, whatever the portal says. */}
+            <Select.Option value="published_at">{t('listings.sortByListingDate')}</Select.Option>
+            <Select.Option value="created_at">{t('listings.sortByDateAdded')}</Select.Option>
+            <Select.Option value="price">{t('listings.sortByPrice')}</Select.Option>
+            <Select.Option value="provider">{t('listings.sortByProvider')}</Select.Option>
+          </FilterSelect>
+
+          <Tooltip
+            content={sortDir === 'asc' ? t('listings.sortAscending') : t('listings.sortDescending')}
+            trigger="hover"
+            position="top"
+          >
             <Button
-              icon={watchListFilter === true ? <IconStar /> : <IconStarStroked />}
-              theme={watchListFilter === true ? 'solid' : 'borderless'}
-              onClick={() => setValues({ watch: watchListFilter === true ? null : true, page: 1 })}
-              aria-pressed={watchListFilter === true}
-              aria-label={t('nav.watchlist')}
-            />
-          </span>
-        </Tooltip>
-
-        <FilterSelect
-          help={t('listings.filterSortHelp')}
-          className="listingsOverview__topbar__sort"
-          prefix={t('listings.sortPrefix')}
-          style={{ width: 220 }}
-          value={sortField}
-          onChange={(val) => setSortField(val)}
-        >
-          <Select.Option value="job_name">{t('listings.sortByJobName')}</Select.Option>
-          {/* The date the portal states, falling back to the day Fredy found the listing - the
-              order the list reads in by default. "created_at" alone is the other thing entirely:
-              the moment Fredy first saw the advert, whatever the portal says. */}
-          <Select.Option value="published_at">{t('listings.sortByListingDate')}</Select.Option>
-          <Select.Option value="created_at">{t('listings.sortByDateAdded')}</Select.Option>
-          <Select.Option value="price">{t('listings.sortByPrice')}</Select.Option>
-          <Select.Option value="provider">{t('listings.sortByProvider')}</Select.Option>
-        </FilterSelect>
-
-        <Tooltip
-          content={sortDir === 'asc' ? t('listings.sortAscending') : t('listings.sortDescending')}
-          trigger="hover"
-          position="top"
-        >
-          <span className="listingsOverview__topbar__tooltipWrap">
-            <Button
+              size="large"
               icon={sortDir === 'asc' ? <IconArrowUp /> : <IconArrowDown />}
               onClick={() => setSortDir(sortDir === 'asc' ? 'desc' : 'asc')}
               aria-label={sortDir === 'asc' ? t('listings.sortAscending') : t('listings.sortDescending')}
             />
-          </span>
-        </Tooltip>
+          </Tooltip>
 
-        <FilterButton activeCount={activeFilterCount} onClick={() => setFiltersOpen(true)} />
+          {/* Deleting everything the filter matches is rare and cannot be undone, so it sits behind
+              the overflow menu instead of as a red bin beside the controls used every day. */}
+          <Dropdown
+            trigger="click"
+            position="bottomRight"
+            clickToHide
+            render={
+              <Dropdown.Menu>
+                <Dropdown.Item
+                  type="danger"
+                  icon={<IconDelete />}
+                  disabled={(listingsData?.totalNumber || 0) === 0}
+                  onClick={() => setBulkDeleteVisible(true)}
+                >
+                  {t('listings.bulkDelete')}
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            }
+          >
+            <Button size="large" icon={<IconMore />} aria-label={t('listings.moreActions')} />
+          </Dropdown>
 
-        <Tooltip content={t('listings.bulkDeleteTooltip')} trigger="hover" position="top">
-          <span className="listingsOverview__topbar__tooltipWrap">
-            <Button
-              icon={<IconDelete />}
-              type="danger"
-              theme="borderless"
-              disabled={(listingsData?.totalNumber || 0) === 0}
-              onClick={() => setBulkDeleteVisible(true)}
-              aria-label={t('listings.bulkDelete')}
-            />
-          </span>
-        </Tooltip>
-
-        <div className="listingsOverview__topbar__view-toggle">
-          <Tooltip content={t('listings.tooltipGridView')}>
-            <Button
-              icon={<IconGridView />}
-              theme={viewMode === 'grid' ? 'solid' : 'borderless'}
-              onClick={() => switchViewMode('grid')}
-              aria-label={t('common.ariaGridView')}
+          <div className="listingsOverview__viewToggle" role="group" aria-label={t('listings.viewLabel')}>
+            <button
+              type="button"
+              className={`listingsOverview__viewOption${viewMode === 'grid' ? ' listingsOverview__viewOption--on' : ''}`}
               aria-pressed={viewMode === 'grid'}
-            />
-          </Tooltip>
-          <Tooltip content={t('listings.tooltipTableView')}>
-            <Button
-              icon={<IconList />}
-              theme={viewMode === 'table' ? 'solid' : 'borderless'}
-              onClick={() => switchViewMode('table')}
-              aria-label={t('common.ariaTableView')}
+              onClick={() => switchViewMode('grid')}
+            >
+              {t('listings.viewGrid')}
+            </button>
+            <button
+              type="button"
+              className={`listingsOverview__viewOption${viewMode === 'table' ? ' listingsOverview__viewOption--on' : ''}`}
               aria-pressed={viewMode === 'table'}
-            />
-          </Tooltip>
+              onClick={() => switchViewMode('table')}
+            >
+              {t('listings.viewTable')}
+            </button>
+          </div>
         </div>
-      </div>
 
-      <ActiveFilterChips
-        chips={describeActiveFilters(values, { t, jobs, providers })}
-        onRemove={(key) => setValues(clearFilter(key))}
-        onClearAll={() => setValues(clearAllFilters())}
-      />
+        {/* The filters people reach for daily, one click each. Every chip sets the same URL value
+            the drawer would; a lit chip is left out of the removable row below, so no filter is
+            named twice. */}
+        <div className="listingsOverview__quick" role="group" aria-label={t('listings.quickFilters')}>
+          {QUICK_FILTERS.map((filter) => {
+            const on = filter.isOn(values);
+            return (
+              <button
+                type="button"
+                key={filter.id}
+                className={`listingsOverview__chip${on ? ' listingsOverview__chip--on' : ''}`}
+                aria-pressed={on}
+                onClick={() => setValues(filter.toggle(values))}
+              >
+                {t(filter.labelKey)}
+              </button>
+            );
+          })}
+        </div>
+
+        <ActiveFilterChips
+          chips={describeActiveFilters(values, { t, jobs, providers }).filter(
+            (chip) => !shownAsQuickFilter.has(chip.key),
+          )}
+          onRemove={(key) => setValues(clearFilter(key))}
+          onClearAll={() => setValues(clearAllFilters())}
+        />
+      </div>
 
       <ListingsFilterPanel
         visible={filtersOpen}

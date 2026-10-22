@@ -5,7 +5,7 @@
 
 import { Link } from 'react-router';
 import { IconMapPin } from '@douyinfe/semi-icons';
-import no_image from '../../assets/no_image.png';
+import ListingPhoto from '../listings/ListingPhoto.jsx';
 import { listingPictureSrc } from '../../services/listings/listingPictures.js';
 import { formatEuroPrice } from '../../services/price/priceService.js';
 import * as timeService from '../../services/time/timeService.js';
@@ -69,13 +69,7 @@ const ListingsTable = ({
           }}
         >
           <div className="listingsTable__row__thumb">
-            <img
-              src={listingPictureSrc(item) ?? no_image}
-              alt=""
-              onError={(e) => {
-                e.target.src = no_image;
-              }}
-            />
+            <ListingPhoto src={listingPictureSrc(item)} className="listingsTable__row__thumbPhoto" />
           </div>
 
           <div className="listingsTable__row__title">

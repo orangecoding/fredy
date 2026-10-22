@@ -19,218 +19,200 @@
  *
  * ---
  *
- * The greys are warm. Every background, border and secondary text tone carries a little red and
- * yellow rather than sitting on the neutral axis, which is what makes the dark theme read as a
- * room with a lamp in it instead of as a switched-off monitor. The warmth is small in absolute
- * terms - a few points of chroma - and the whole effect comes from it being applied consistently:
- * a single neutral grey left among warm ones looks like a bug, which is why the KPI hues and the
- * map panels were pulled over too.
+ * The dark palette is "Exposé": an almost neutral black with no more than a trace of warmth, so
+ * the listing photographs are what brings colour to a page. The previous palette was a brown
+ * near-black under warm off-white text, which next to the red accent read as a template rather
+ * than as a tool. Structure comes from hairlines and from the few steps between base, surface and
+ * hover, not from boxes, gradients or glows.
  *
- * The steps between base, surface and the recess inside a card are deliberately narrow. Wide steps
- * stripe a page into bands and make every card shout for the same attention; at a few percent
- * apart the structure is still legible and nothing competes with the one control that matters.
+ * Red is reserved: the primary action, the current week in the trend chart, and nothing that is
+ * merely selected. Everything a user picks (a navigation entry, a tab, a filter) is shown in the
+ * text colour instead, so the one red thing on a page is always the thing to press.
  */
 
 :root {
-  // Backgrounds. A warm near-black, and elevation runs lighter as it comes forward.
-  --f-base: #14110f;
-  --f-surface: #1b1714;
-  --f-surface-rgb: 27 23 20;
-  --f-elevated: #221d19;
-  // The recess: a hovered row, a fact tile, the flat fill behind chips and code. Darker than the
-  // surface it sits on, because inside a card the way to say "set into this" is to go down.
-  --f-hover: #191512;
-  --f-solid: #282220;
-  --f-border: #2b2420;
-  --f-border-bright: #3a322d;
+  // Backgrounds. Elevation runs lighter as it comes forward, in steps of a few percent.
+  --f-base: #11110f;
+  --f-surface: #181816;
+  --f-surface-rgb: 24 24 22;
+  --f-elevated: #1f1f1c;
+  // A selected row in a list: the sidebar's current page. The elevated step in this theme.
+  --f-selected: #1f1f1c;
+  // A hovered row, the current navigation entry, the fill behind chips and code.
+  --f-hover: #1c1c1a;
+  --f-solid: #2a2a27;
+  --f-border: #262624;
+  --f-border-bright: #363632;
 
-  // Accent
-  // Warmer and a shade deeper than the brick red this used to be (#c0564a). The extra warmth is
-  // what ties it to the new backgrounds; the extra depth is what keeps white on it at 4.73:1,
-  // comfortably over AA, which a literally brighter red would not have managed.
-  --f-accent: #c64a37;
-  --f-accent-rgb: 198 74 55;
-  --f-accent-dim: #a63b2b;
-  --f-accent-glow: rgb(198 74 55 / 10%);
+  // Accent. White on it is 4.75:1, over AA for every primary button.
+  --f-accent: #c8473a;
+  --f-accent-rgb: 200 71 58;
+  --f-accent-dim: #a83b30;
+  // The accent as text: the fill itself is under AA as text on the base, this step above is 7.2:1.
+  --f-accent-text: #ec8170;
 
-  // Der Akzent als Textfarbe. #c64a37 liegt als Text bei 3,97:1 auf --f-base und reisst damit AA;
-  // als Fläche mit weisser Schrift ist er mit 4,73:1 in Ordnung und bleibt unveraendert. Dieser
-  // Schritt ist derselbe Farbton, zwei Stufen heller: 5,40:1 auf --f-base, 5,14:1 auf --f-surface.
-  --f-accent-text: #d9664f;
+  // Text. 16.6:1, 7.7:1 and 3.6:1 on the base; the faint step is for icons and disabled text only.
+  --f-text: #f2f0ec;
+  --f-muted: #a9a59e;
+  --f-faint: #6f6c66;
 
-  // Text. Warm off-white rather than grey-white: pure neutral text on a warm ground reads blue.
-  --f-text: #f2ede8;
-  --f-muted: #9c918a;
-  --f-faint: #5b524c;
+  // Semantic. Green means an advantage (cheaper than the area, service available), never a status.
+  --f-success: #74bb93;
+  --f-success-rgb: 116 187 147;
+  --f-success-dim: #1a3024;
+  --f-success-active: #62a37f;
+  --f-error: #e4705f;
+  --f-error-rgb: 228 112 95;
+  --f-error-dim: #4a1f1a;
+  --f-warning: #dba650;
+  --f-warning-rgb: 219 166 80;
+  --f-info: #82a5d6;
+  --f-info-rgb: 130 165 214;
 
-  // Semantic
-  // Green is the one colour on this palette that means "an advantage" - cheaper than the market,
-  // service available - and never "a status". Toned below the mockup's #74d398, which glows on a
-  // near-black surface rather than informing.
-  --f-success: #6fbf95;
-  --f-success-rgb: 111 191 149;
-  --f-success-dim: #163024;
-  --f-success-active: #5da881;
-  --f-error: #ce7268;
-  --f-error-rgb: 206 114 104;
-  --f-error-dim: #6e211f;
-  --f-warning: #d2a055;
-  --f-info: #6b93c4;
-  --f-info-rgb: 107 147 196;
+  // Fill overlays. Light on dark, dark on light: a white wash over a white card is nothing at all.
+  --f-fill-subtle: rgb(255 252 245 / 3%);
+  --f-fill-1: rgb(255 252 245 / 5%);
+  --f-fill-2: rgb(255 252 245 / 7%);
+  --f-fill-strong: rgb(255 252 245 / 11%);
 
-  // Fill overlays. Light on dark, dark on light - the one pair that has to invert rather than
-  // shift, because a white wash over a white card is nothing at all. Warm white, so a hover does
-  // not cool the surface it lands on.
-  --f-fill-subtle: rgb(255 244 235 / 4%);
-  --f-fill-1: rgb(255 244 235 / 6%);
-  --f-fill-2: rgb(255 244 235 / 8%);
-  --f-fill-strong: rgb(255 244 235 / 12%);
+  // Text inputs: a field one step above the page with a drawn edge.
+  --f-input-bg: #181816;
+  --f-input-border: #363632;
 
-  // Text inputs. Their own pair because the two themes want opposite constructions: a wash of
-  // light lifts a field off a dark page, while on paper the field is the lighter thing and needs a
-  // drawn edge instead.
-  --f-input-bg: rgb(255 244 235 / 5%);
-  --f-input-border: rgb(255 244 235 / 10%);
+  // Scrims and shadows. Shadows only for things that float (menus, popovers, toasts).
+  --f-scrim: rgb(8 8 7 / 72%);
+  --f-shadow-sm: 0 2px 8px rgb(0 0 0 / 40%);
+  --f-shadow-md: 0 8px 24px -8px rgb(0 0 0 / 55%);
+  --f-shadow-lg: 0 18px 44px -12px rgb(0 0 0 / 65%);
 
-  // Scrims and shadows. Warm black rather than neutral: a cold shadow over a warm brown surface
-  // reads as dirt on the screen.
-  --f-scrim: rgb(10 7 5 / 70%);
-  --f-shadow-sm: 0 2px 8px rgb(10 7 5 / 45%);
-  --f-shadow-md: 0 6px 20px -6px rgb(10 7 5 / 55%);
-  --f-shadow-lg: 0 18px 44px -12px rgb(10 7 5 / 70%);
+  // Category hues, for the few places that tell categories apart (finance series, job state).
+  --f-blue-text: #82a5d6;
+  --f-blue-border: #34485f;
+  --f-blue-bg: rgb(130 165 214 / 8%);
+  --f-orange-text: #d79a68;
+  --f-orange-text-rgb: 215 154 104;
+  --f-orange-border: #6b4a30;
+  --f-orange-bg: rgb(215 154 104 / 8%);
+  --f-green-text: #74bb93;
+  --f-green-border: #2f5543;
+  --f-green-bg: rgb(116 187 147 / 8%);
+  --f-purple-text: #a596c8;
+  --f-purple-text-rgb: 165 150 200;
+  --f-purple-border: #4a4266;
+  --f-purple-bg: rgb(165 150 200 / 8%);
+  --f-gray-text: #a9a59e;
+  --f-gray-border: #363632;
+  --f-gray-bg: rgb(169 165 158 / 7%);
 
-  // KPI card accents
-  // Muted, and their borders taken well down. At full strength four saturated blocks side by side
-  // compete with each other and with the accent, so a card carrying a routine count reads as
-  // urgent. The hues still separate the categories, which is all they are for - and each is warmed
-  // a touch so none of them sits on the neutral axis the rest of the palette has left.
-  --f-blue-text: #7ba4cd;
-  --f-blue-border: #34506b;
-  --f-blue-bg: rgb(123 164 205 / 7%);
-  --f-orange-text: #d4925e;
-  --f-orange-text-rgb: 212 146 94;
-  --f-orange-border: #7c5132;
-  --f-orange-bg: rgb(212 146 94 / 7%);
-  --f-green-text: #6cb193;
-  --f-green-border: #305f4e;
-  --f-green-bg: rgb(108 177 147 / 7%);
-  --f-purple-text: #9d8cc2;
-  --f-purple-text-rgb: 157 140 194;
-  --f-purple-border: #4e4270;
-  --f-purple-bg: rgb(157 140 194 / 7%);
-  --f-gray-text: #9c918a;
-  --f-gray-border: #3a322d;
-  --f-gray-bg: rgb(156 145 138 / 7%);
+  // A greyscale ramp for shares and comparisons, brightest first. Five steps that differ in
+  // lightness rather than hue, so they stay apart for every kind of colour vision.
+  --f-chart-1: #d6d1c9;
+  --f-chart-2: #a29d95;
+  --f-chart-3: #77736c;
+  --f-chart-4: #55524c;
+  --f-chart-5: #3e3d39;
 
-  // The three lights behind the Donate button. Their own tokens rather than the palette's: an
-  // aurora only reads as light when it is lighter than what it sits on, so on paper it becomes a
-  // pastel wash of the same three hues rather than three dark smudges.
-  --f-aurora-1: #c64a37;
-  --f-aurora-2: rgb(157 140 194 / 70%);
-  --f-aurora-3: rgb(212 146 94 / 60%);
-
-  // The panels that float over the map. Their own set because they sit on cartography rather than
-  // on a page, and need to stay legible over both.
-  --f-map-panel: rgb(27 23 20 / 95%);
-  --f-map-panel-border: #332b26;
-  --f-map-panel-text: #9c918a;
+  // The panels that float over the map, legible over cartography as well as over a page.
+  --f-map-panel: rgb(24 24 22 / 95%);
+  --f-map-panel-border: #2f2f2c;
+  --f-map-panel-text: #a9a59e;
   --f-map-panel-strong: #ffffff;
 
-  /* Die Vorschaukacheln des Themenwaehlers. Beide Paletten stehen in beiden Bloecken gleich, weil
-     eine Kachel zeigt, wie das *andere* Theme aussieht - im hellen Theme muss die dunkle Kachel
-     dunkel bleiben, sonst bietet sie nichts an. */
-  --f-preview-dark-bg: #14110f;
-  --f-preview-dark-line: #3a322d;
-  --f-preview-light-bg: #f2efea;
-  --f-preview-light-line: #d6cec4;
+  // The theme picker's preview tiles show the *other* theme too, so both palettes stand in both
+  // blocks unchanged.
+  --f-preview-dark-bg: #11110f;
+  --f-preview-dark-line: #363632;
+  --f-preview-light-bg: #f6f6f4;
+  --f-preview-light-line: #d7d5d0;
 }
 
 body[theme-mode='light'] {
-  // Warm paper rather than white. A pure #fff page under a warm red accent reads as unfinished,
-  // and leaves nothing to raise a card above.
-  --f-base: #f2efea;
-  --f-surface: #fbf9f6;
-  --f-surface-rgb: 251 249 246;
+  // An off-white page with white surfaces: fields and cards stand on it by a hair, the way they do
+  // on the dark page, without the sepia cast a paper tone gives every photograph next to it.
+  --f-base: #f6f6f4;
+  --f-surface: #ffffff;
+  --f-surface-rgb: 255 255 255;
   --f-elevated: #ffffff;
-  // Inverted from dark on purpose: on paper a surface comes forward by getting darker, not lighter.
-  --f-hover: #ece7e0;
-  --f-solid: #e4ded6;
-  --f-border: #e3ddd5;
-  --f-border-bright: #c9c1b7;
+  // On white a selected row cannot rise further, so it sinks: a light grey step instead.
+  --f-selected: #e9e8e4;
+  // Inverted from dark on purpose: on a light page a hovered row comes forward by getting darker.
+  --f-hover: #eeeeeb;
+  --f-solid: #e6e5e1;
+  --f-border: #e4e3df;
+  --f-border-bright: #cfcdc8;
 
-  // Two steps darker than the dark-theme accent. The same red that carries white text over AA on
-  // near-black falls below it against paper, which is the wrong side of the line for every primary
-  // button in the app. Same hue, same family, one notch of lightness: 5.66:1 here.
-  --f-accent: #b0442f;
-  --f-accent-rgb: 176 68 47;
-  --f-accent-dim: #953a28;
-  --f-accent-glow: rgb(176 68 47 / 8%);
+  // Darker than the dark-theme accent: the same red falls below AA under white text on a light
+  // page. Same hue, one notch of lightness: white on it is 5.53:1.
+  --f-accent: #b83f32;
+  --f-accent-rgb: 184 63 50;
+  --f-accent-dim: #9c3529;
 
-  // Auf Papier traegt der Akzent selbst als Text: 4,93:1 auf --f-base, 5,38:1 auf --f-surface.
-  --f-accent-text: #b0442f;
+  // On a light page the accent carries as text on its own: 5.11:1 on the base, 5.53:1 on white.
+  --f-accent-text: #b83f32;
 
-  --f-text: #1d1916;
-  --f-muted: #645d56;
-  --f-faint: #958c83;
+  --f-text: #191815;
+  --f-muted: #5e5b56;
+  --f-faint: #8e8a84;
 
-  // Darkened for contrast on paper. `-dim` is a fill rather than a foreground in both themes, so it
+  // Darkened for contrast on a light page, each above 4.8:1 on the base. `-dim` is a fill rather than a foreground in both themes, so it
   // inverts from a deep shade to a light tint instead of following its own hue down.
-  --f-success: #2e7a5a;
-  --f-success-rgb: 46 122 90;
-  --f-success-dim: #ddebe2;
-  --f-success-active: #26684c;
-  --f-error: #ae3b41;
-  --f-error-rgb: 174 59 65;
-  --f-error-dim: #f6dedc;
-  --f-warning: #96690f;
-  --f-info: #3a6ea5;
-  --f-info-rgb: 58 110 165;
+  --f-success: #2d7656;
+  --f-success-rgb: 45 118 86;
+  --f-success-dim: #dcebe3;
+  --f-success-active: #25654a;
+  --f-error: #b23a3a;
+  --f-error-rgb: 178 58 58;
+  --f-error-dim: #f5dddb;
+  --f-warning: #8f6410;
+  --f-warning-rgb: 143 100 16;
+  --f-info: #2f6aa3;
+  --f-info-rgb: 47 106 163;
 
-  --f-fill-subtle: rgb(38 28 22 / 3%);
-  --f-fill-1: rgb(38 28 22 / 5%);
-  --f-fill-2: rgb(38 28 22 / 7%);
-  --f-fill-strong: rgb(38 28 22 / 11%);
+  --f-fill-subtle: rgb(25 24 21 / 3%);
+  --f-fill-1: rgb(25 24 21 / 5%);
+  --f-fill-2: rgb(25 24 21 / 7%);
+  --f-fill-strong: rgb(25 24 21 / 11%);
 
   --f-input-bg: #ffffff;
-  --f-input-border: #d9d2c9;
+  --f-input-border: #d6d4cf;
 
-  --f-scrim: rgb(29 25 22 / 45%);
-  --f-shadow-sm: 0 2px 8px rgb(29 25 22 / 10%);
-  --f-shadow-md: 0 6px 20px -6px rgb(29 25 22 / 16%);
-  --f-shadow-lg: 0 18px 44px -12px rgb(29 25 22 / 22%);
+  --f-scrim: rgb(25 24 21 / 40%);
+  --f-shadow-sm: 0 1px 3px rgb(25 24 21 / 8%);
+  --f-shadow-md: 0 8px 24px -8px rgb(25 24 21 / 14%);
+  --f-shadow-lg: 0 18px 44px -12px rgb(25 24 21 / 20%);
 
-  --f-blue-text: #3c6a9a;
-  --f-blue-border: #c6d4e3;
-  --f-blue-bg: rgb(60 106 154 / 7%);
-  --f-orange-text: #9a5d26;
-  --f-orange-text-rgb: 154 93 38;
-  --f-orange-border: #e8d3b9;
-  --f-orange-bg: rgb(154 93 38 / 7%);
-  --f-green-text: #2e7a5a;
-  --f-green-border: #c6dcd0;
-  --f-green-bg: rgb(46 122 90 / 7%);
-  --f-purple-text: #655898;
-  --f-purple-text-rgb: 101 88 152;
-  --f-purple-border: #d3cce2;
-  --f-purple-bg: rgb(101 88 152 / 7%);
-  --f-gray-text: #645d56;
-  --f-gray-border: #d8d2c9;
-  --f-gray-bg: rgb(100 93 86 / 7%);
+  --f-blue-text: #2f6aa3;
+  --f-blue-border: #c9d6e4;
+  --f-blue-bg: rgb(47 106 163 / 7%);
+  --f-orange-text: #97592a;
+  --f-orange-text-rgb: 151 89 42;
+  --f-orange-border: #e7d4c0;
+  --f-orange-bg: rgb(151 89 42 / 7%);
+  --f-green-text: #2d7656;
+  --f-green-border: #c7dbcf;
+  --f-green-bg: rgb(45 118 86 / 7%);
+  --f-purple-text: #5f5498;
+  --f-purple-text-rgb: 95 84 152;
+  --f-purple-border: #d4cfe3;
+  --f-purple-bg: rgb(95 84 152 / 7%);
+  --f-gray-text: #5e5b56;
+  --f-gray-border: #d6d4cf;
+  --f-gray-bg: rgb(94 91 86 / 6%);
 
-  --f-aurora-1: #e8a08e;
-  --f-aurora-2: rgb(190 176 226 / 75%);
-  --f-aurora-3: rgb(244 194 144 / 70%);
+  // Darkest first on paper, mirroring the dark ramp's brightest first.
+  --f-chart-1: #2a2925;
+  --f-chart-2: #5c5a55;
+  --f-chart-3: #8b8882;
+  --f-chart-4: #b4b1ab;
+  --f-chart-5: #d7d5d0;
 
   --f-map-panel: rgb(255 255 255 / 95%);
-  --f-map-panel-border: #ddd6cd;
-  --f-map-panel-text: #645d56;
-  --f-map-panel-strong: #1d1916;
+  --f-map-panel-border: #e0ded9;
+  --f-map-panel-text: #5e5b56;
+  --f-map-panel-strong: #191815;
 
-  /* Die Vorschaukacheln des Themenwaehlers. Beide Paletten stehen in beiden Bloecken gleich, weil
-     eine Kachel zeigt, wie das *andere* Theme aussieht - im hellen Theme muss die dunkle Kachel
-     dunkel bleiben, sonst bietet sie nichts an. */
-  --f-preview-dark-bg: #14110f;
-  --f-preview-dark-line: #3a322d;
-  --f-preview-light-bg: #f2efea;
-  --f-preview-light-line: #d6cec4;
+  --f-preview-dark-bg: #11110f;
+  --f-preview-dark-line: #363632;
+  --f-preview-light-bg: #f6f6f4;
+  --f-preview-light-line: #d7d5d0;
 }

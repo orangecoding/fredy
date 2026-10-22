@@ -4,8 +4,9 @@
  */
 
 import { MarkdownRender } from '@douyinfe/semi-ui-19';
-import { IconChevronDown, IconHelpCircleStroked } from '@douyinfe/semi-icons';
+import { IconHelpCircleStroked } from '@douyinfe/semi-icons';
 
+import { IconChevronDown } from '../../../../../components/icons/StrokeIcons.jsx';
 import { useTranslation } from '../../../../../services/i18n/i18n.jsx';
 
 import './NotificationHelpDisplay.less';
