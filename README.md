@@ -43,9 +43,9 @@ On top of the listing itself, Fredy answers the three questions a portal will no
   <a href="https://trendshift.io/repositories/43464?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-43464" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/43464/daily?language=JavaScript" alt="orangecoding%2Ffredy | Trendshift" width="250" height="55"/></a>
 </p>
 
-| Fredy Maps View                                  | Dashboard                                               | Found Listings                                                              |
-|--------------------------------------------------|-----------------------------------------------------------------------|-----------------------------------------------------------------------------|
-| ![Screenshot showing Fredy](doc/screenshot1.png) | ![Screenshot showing job configuration in Fredy](doc/screenshot3.png) | ![Screenshot showing found listings in Fredy](doc/screenshot2.png) |
+| Fredy Maps View                                  | Dashboard                                               | Listings Overview                                                             | Detail View                                                             |
+|--------------------------------------------------|-----------------------------------------------------------------------|-----------------------------------------------------------------------------|-----------------------------------------------------------------------------|
+| ![Screenshot showing Fredy](doc/screenshot1.png) | ![Screenshot showing job configuration in Fredy](doc/screenshot3.png) | ![Screenshot showing found listings in Fredy](doc/screenshot2.png) | ![Screenshot showing listing details in Fredy](doc/screenshot4.png) |
 
 ------------------------------------------------------------------------
 
