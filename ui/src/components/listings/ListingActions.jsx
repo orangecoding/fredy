@@ -30,7 +30,8 @@ import './ListingActions.less';
  *
  * @param {Object} props
  * @param {Object} props.listing A row as the listings API returns it.
- * @param {'card'|'row'} props.density Where the group sits: under a card or at the end of a table row.
+ * @param {'card'|'row'} props.density Where the group sits: under a card, where the application
+ *   button carries its name, or at the end of a table row, where it is an icon.
  * @param {boolean} [props.isHiddenView=false] The soft-deleted view.
  * @param {(listing: Object) => void} [props.onApplication]
  * @param {(id: string) => void} [props.onReactivate]
@@ -74,23 +75,32 @@ export default function ListingActions({
     </Dropdown.Menu>
   );
 
+  // Not in the hidden view: the row is soft-deleted there, and writing to an agent about a listing
+  // you have just thrown away is noise. On a card it is a button with its name, because applying
+  // is what a listing is opened for, and as one icon among three it was looked for rather than
+  // seen. A table row has no room for the word, so it keeps the icon with its name on hover.
+  const applyLabel = t('listings.tooltipApplication');
+  const apply = isHiddenView ? null : density === 'card' ? (
+    <button type="button" className="listingActions__apply" onClick={() => onApplication?.(listing)}>
+      <IconCopy />
+      <span className="listingActions__applyLabel">{applyLabel}</span>
+    </button>
+  ) : (
+    <Tooltip content={applyLabel}>
+      <button
+        type="button"
+        className="listingActions__button"
+        aria-label={applyLabel}
+        onClick={() => onApplication?.(listing)}
+      >
+        <IconCopy />
+      </button>
+    </Tooltip>
+  );
+
   return (
     <div className={`listingActions listingActions--${density}`} role="group" aria-label={t('listings.actionsLabel')}>
-      {/* Not in the hidden view: the row is soft-deleted there, and writing to an agent about a
-          listing you have just thrown away is noise. An icon with its name on hover, the same as
-          the two beside it: a labelled button in every card was the loudest thing in the grid. */}
-      {!isHiddenView && (
-        <Tooltip content={t('listings.tooltipApplication')}>
-          <button
-            type="button"
-            className="listingActions__button"
-            aria-label={t('listings.tooltipApplication')}
-            onClick={() => onApplication?.(listing)}
-          >
-            <IconCopy />
-          </button>
-        </Tooltip>
-      )}
+      {apply}
 
       <ExternalListingLink
         href={listing.link}

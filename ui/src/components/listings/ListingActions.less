@@ -5,8 +5,10 @@
 
 @import '../../tokens.less';
 
-/* Three round icon buttons: copy the application, open the ad, the menu. Muted until pointed at,
-   because the listing is the content and these are tools for it. */
+/* Copy the application, open the ad, the menu. Opening and the menu are round icons, muted until
+   pointed at, because the listing is the content and these are tools for it. On a card the
+   application is a button with its name across the card's own row, outlined rather than filled:
+   twenty filled buttons in a grid are no longer a button that stands out but a wallpaper. */
 .listingActions {
   display: flex;
   align-items: center;
@@ -14,6 +16,49 @@
 
   &--row {
     justify-content: flex-end;
+  }
+
+  &--card {
+    flex: 1 1 100%;
+    gap: @space-2;
+  }
+
+  &__apply {
+    display: inline-flex;
+    flex: 1 1 auto;
+    align-items: center;
+    justify-content: center;
+    gap: @space-2;
+    min-width: 0;
+    height: @control-sm;
+    padding: 0 @space-3;
+    border: 1px solid @color-border-bright;
+    border-radius: @radius-pill;
+    background: transparent;
+    color: @color-text;
+    font-family: inherit;
+    font-size: @text-sm;
+    font-weight: @weight-medium;
+    cursor: pointer;
+    transition:
+      background @transition-fast,
+      border-color @transition-fast;
+
+    svg {
+      flex: none;
+      font-size: 15px;
+    }
+
+    &:hover {
+      background: @color-fill-1;
+      border-color: @color-muted;
+    }
+  }
+
+  &__applyLabel {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   &__button {

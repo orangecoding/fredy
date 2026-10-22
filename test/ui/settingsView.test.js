@@ -59,11 +59,11 @@ describe('both areas say whose settings they are', () => {
     expect(badgeLess).not.toMatch(/@color-accent/);
   });
 
-  it('lets the sidebar say it too, on the two entries that carry the distinction', () => {
-    // On hover rather than printed into the list: standing there it was a second label competing
-    // with the entry it belonged to, on every visit, for an answer that is wanted once.
-    expect(navJsx).toMatch(/<ScopeBadge scope=\{scope\} \/>/);
-    expect(navJsx).toMatch(/const scope = sectionScope\(tree, index\);/);
+  it('is said by the two pages only, not again on hover in the sidebar', () => {
+    // The sidebar repeated it as a popover over Settings and Administration, which got in the way
+    // of every visit for an answer the page heading already gives.
+    expect(navJsx).not.toMatch(/ScopeBadge/);
+    expect(navJsx).not.toMatch(/Popover/);
   });
 });
 

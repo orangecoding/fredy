@@ -119,10 +119,13 @@
   }
 
   /* The tools: where it was found, its status, and three icons, behind one hairline. */
+  /* Provider and status on one line, the actions on their own below it (see ListingActions.less),
+     so the application button has the card's width rather than what the provider name leaves. */
   &__foot {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: @space-1;
+    gap: @space-2 @space-1;
     margin-top: auto;
     padding-top: @space-3;
     border-top: 1px solid @color-border;

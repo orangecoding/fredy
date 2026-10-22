@@ -4,13 +4,12 @@
  */
 
 import { Fragment, useEffect, useState } from 'react';
-import { Dropdown, Popover, Tooltip } from '@douyinfe/semi-ui-19';
+import { Dropdown, Tooltip } from '@douyinfe/semi-ui-19';
 import logo from '../../assets/logo.png';
 import logoWhite from '../../assets/logo_white.png';
 import heart from '../../assets/heart.png';
 import logout from '../logout/Logout.jsx';
 import Donate from '../donate/Donate.jsx';
-import ScopeBadge from '../scopeBadge/ScopeBadge.jsx';
 import NewsHistory from '../news/NewsHistory.jsx';
 import {
   IconAdmin,
@@ -33,7 +32,7 @@ import { useTranslation } from '../../services/i18n/i18n.jsx';
 // A pure function that already answers exactly this question for the dashboard's own rows. A copy
 // here would be a second set of rounding rules for the same clock.
 import { relativeTime } from '../../services/time/relativeTime.js';
-import { navTreeFor, resolveActiveKey, sectionScope, startsSection } from './navModel.js';
+import { navTreeFor, resolveActiveKey, startsSection } from './navModel.js';
 
 /** How long after a promised run the status is asked for again: the run itself takes a moment. */
 const STATUS_REFRESH_GRACE_MS = 60 * 1000;
@@ -203,9 +202,6 @@ export default function Navigation({ isAdmin }) {
           const Icon = ICONS[node.key];
           const isActive = node.key === activeKey;
           const count = counts[node.key];
-          // Null for everything under "the daily work": naming that section would be naming the
-          // obvious, and an entry that announces nothing simply carries no popover.
-          const scope = sectionScope(tree, index);
 
           const item = (
             <button
@@ -230,19 +226,12 @@ export default function Navigation({ isAdmin }) {
                 <div className="navigate__separator" />
               )}
 
-              {/* Whose settings an entry leads to is said on hover rather than printed above it. In
-                  the rail the label tooltip already owns the hover, and two layers on one target
-                  would fight each other. */}
               {collapsed ? (
                 <Tooltip content={t(node.labelKey)} position="right">
                   {item}
                 </Tooltip>
-              ) : scope == null ? (
-                item
               ) : (
-                <Popover content={<ScopeBadge scope={scope} />} position="right">
-                  {item}
-                </Popover>
+                item
               )}
             </Fragment>
           );

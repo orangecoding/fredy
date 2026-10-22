@@ -77,6 +77,15 @@ describe('both views survive', () => {
     }
   });
 
+  it('gives every card a copy-application button with its name, and the table row the icon', () => {
+    // As one unnamed icon among three on the card it was looked for rather than seen.
+    expect(code(actions)).toMatch(/density === 'card'/);
+    expect(actions).toMatch(/className="listingActions__applyLabel">\{applyLabel\}/);
+    expect(actions).toMatch(/aria-label=\{applyLabel\}/);
+    expect(grid).toMatch(/density="card"/);
+    expect(actionsLess).toMatch(/&--card \{\s*flex: 1 1 100%;/);
+  });
+
   it('keeps delete behind the overflow menu rather than beside everything harmless', () => {
     expect(actions).toMatch(/Dropdown/);
     expect(actions).toMatch(/Dropdown\.Divider/);

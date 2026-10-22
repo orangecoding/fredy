@@ -1,69 +1,130 @@
 @import '../../tokens.less';
 
 /* Constants that are only true for this screen. */
-@login-form-w: 480px;
-@login-field-w: 360px;
-@login-split: 900px;
+@login-card-w: 420px;
+@login-card-radius: 16px;
 
-/* Two halves: the form on the page's own black, the city photograph beside it, sharp and
-   unretouched, because the photograph is what carries the colour here. Below the split there is
-   only the form; a photo squeezed above it would push the fields under the fold on a phone. */
+@keyframes login-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes login-sweep {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(260%);
+  }
+}
+
+/* One card over the city photograph, the way the login looked before the Exposé redesign, which
+   split the screen into a form beside a photo. The photograph is blurred and darkened so it is a
+   backdrop and not a picture, and the card is glass over it: it takes its colour from the city
+   behind it instead of standing on the page's black. The login always paints in the dark theme
+   (the user's setting is not known yet), so the scrims are literal black over the photo. */
 .login {
+  position: relative;
+  isolation: isolate;
   display: grid;
-  grid-template-columns: @login-form-w minmax(0, 1fr);
+  place-items: center;
+  box-sizing: border-box;
   width: 100%;
   min-height: 100vh;
   min-height: 100dvh;
+  padding: @space-5;
+  overflow: hidden;
   background: @color-base;
 
-  @media (max-width: @login-split) {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  &__panel {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: @space-12;
-    border-right: 1px solid @color-border;
-
-    @media (max-width: @login-split) {
-      align-items: center;
-      padding: @space-12 @space-5;
-      border-right: none;
-    }
-  }
-
-  &__content {
-    display: flex;
-    flex-direction: column;
-    gap: @space-8;
-    width: 100%;
-    max-width: @login-field-w;
-  }
-
-  &__logo .logo {
-    display: block;
-    position: static !important;
-    max-width: 100%;
-    height: auto;
-  }
-
-  /* The image sits absolutely in its cell so its own height never stretches the row. */
-  &__photo {
-    position: relative;
-    overflow: hidden;
+  /* Larger than the screen, because a blur fades out at the image's own edges. */
+  &__backdrop {
+    position: absolute;
+    inset: -@space-6;
+    z-index: -1;
 
     img {
-      position: absolute;
-      inset: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
+      filter: blur(8px) saturate(1.15) brightness(0.55);
+      transform: scale(1.04);
     }
 
-    @media (max-width: @login-split) {
-      display: none;
+    /* A warm light behind the card and a vignette towards the corners, so the card reads as lit. */
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(45% 40% at 50% 48%, rgb(@color-accent-rgb / 18%) 0%, transparent 70%),
+        radial-gradient(120% 100% at 50% 50%, transparent 30%, rgba(0, 0, 0, 0.55) 75%, rgba(0, 0, 0, 0.8) 100%);
+    }
+  }
+
+  &__card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: @space-6;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: @login-card-w;
+    padding: @space-10 @space-8 @space-8;
+    overflow: hidden;
+    background: rgb(@color-surface-rgb / 70%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: @login-card-radius;
+    box-shadow:
+      @shadow-lg,
+      inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(24px) saturate(1.4);
+    -webkit-backdrop-filter: blur(24px) saturate(1.4);
+    animation: login-card-in 0.4s ease-out both;
+
+    /* The accent hairline along the top edge. It sweeps only while the login is under way, so the
+       card says that something is happening and is still the rest of the time. */
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgb(@color-accent-rgb / 70%), transparent);
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 40%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, @color-accent, transparent);
+      opacity: 0;
+    }
+
+    &--pending::after {
+      opacity: 1;
+      animation: login-sweep 1.4s ease-in-out infinite;
+    }
+  }
+
+  &__logo {
+    display: flex;
+    justify-content: center;
+
+    .logo {
+      display: block;
+      position: static !important;
+      max-width: 100%;
+      height: auto;
     }
   }
 
@@ -83,6 +144,11 @@
     font-size: @text-sm;
     font-weight: @weight-medium;
     color: @color-muted;
+    transition: color @transition-fast;
+  }
+
+  &__field:focus-within &__label {
+    color: @color-text;
   }
 
   &__capsHint {
@@ -98,7 +164,58 @@
     font-size: 15px;
   }
 
+  /* Semi switches focus rings off globally (Index.less); the fields bring the accent one back. */
+  .semi-input-wrapper {
+    transition:
+      border-color @transition-fast,
+      box-shadow @transition-fast;
+  }
+
+  .semi-input-wrapper-focus {
+    border-color: rgb(@color-accent-rgb / 55%) !important;
+    box-shadow: 0 0 0 3px rgb(@color-accent-rgb / 18%) !important;
+  }
+
   &__submit.semi-button {
     margin-top: @space-2;
+    transition:
+      transform @transition-fast,
+      box-shadow @transition-fast;
+
+    &:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px -8px rgb(@color-accent-rgb / 70%);
+    }
+
+    &:active:not(:disabled) {
+      transform: none;
+      box-shadow: none;
+    }
+  }
+
+  /* On a phone the card is nearly the whole width, so it gets less padding and less transparency:
+     there is little photograph left around it to show through. */
+  @media (max-width: 480px) {
+    padding: @space-4;
+
+    &__card {
+      padding: @space-8 @space-5 @space-6;
+      background: rgb(@color-surface-rgb / 88%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &__card {
+      animation: none;
+    }
+
+    &__card--pending::after {
+      animation: none;
+      width: 100%;
+    }
+
+    &__submit.semi-button:hover:not(:disabled) {
+      transform: none;
+    }
   }
 }

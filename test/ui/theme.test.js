@@ -84,6 +84,29 @@ describe('theme preference', () => {
   });
 });
 
+describe('text links', () => {
+  // One colour for every text link, so a new one cannot come out in the text colour again and a
+  // change of the link colour is one line in tokens.less.
+  const LINK_STYLESHEETS = [
+    'views/dashboard/Dashboard.less',
+    'views/listings/components/ListingLocationCard.less',
+    'views/listings/components/ListingOrigin.less',
+    'views/listings/components/ListingDescriptionCard.less',
+    'views/finance/components/AffordabilityPanel.less',
+  ];
+
+  it('are drawn in the link colour, the accent as text', () => {
+    const tokens = fs.readFileSync(path.join(uiSrc, 'tokens.less'), 'utf-8');
+    expect(tokens).toMatch(/^@color-link: @color-accent-text;$/m);
+    for (const file of LINK_STYLESHEETS) {
+      const block = fs.readFileSync(path.join(uiSrc, file), 'utf-8').match(/&__link \{[\s\S]*?\n {2}\}/)?.[0];
+      expect(block, file).toBeDefined();
+      expect(block, file).toMatch(/color: @color-link;/);
+      expect(block, file).not.toMatch(/color: @color-text;/);
+    }
+  });
+});
+
 describe('themes.less', () => {
   const source = fs.readFileSync(path.join(uiSrc, 'themes.less'), 'utf-8');
 
