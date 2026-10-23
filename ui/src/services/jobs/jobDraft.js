@@ -6,7 +6,7 @@
 /**
  * Keeps a half-finished job around while the user goes somewhere else.
  *
- * The job form holds twelve pieces of plain component state, and the form itself offers two links
+ * The job form holds plain component state, and the form itself offers two links
  * that unmount it: "Manage channels", and the picker's "you have no channels yet". A first-time
  * user has to follow one of them - a job cannot be saved without a notification channel, and
  * channels are only created on the Settings page - and until now that threw away the name, the deal
@@ -48,6 +48,7 @@ export const DRAFT_FIELDS = [
   'providerData',
   'selectedChannelIds',
   'blacklist',
+  'excludedLocations',
   'shareWithUsers',
   'enabled',
   'spatialFilter',
@@ -86,6 +87,7 @@ export function hasContent(draft) {
     (draft.providerData?.length ?? 0) > 0 ||
     (draft.selectedChannelIds?.length ?? 0) > 0 ||
     (draft.blacklist?.length ?? 0) > 0 ||
+    (draft.excludedLocations?.length ?? 0) > 0 ||
     (draft.shareWithUsers?.length ?? 0) > 0 ||
     draft.dealType != null ||
     draft.spatialFilter != null ||

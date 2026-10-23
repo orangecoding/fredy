@@ -127,6 +127,17 @@ describe('start_job_draft', () => {
 });
 
 describe('update_job_draft', () => {
+  it('accepts location exclusions and carries them through final validation into the job', async () => {
+    await interview();
+    const result = await callTool('update_job_draft', {
+      excludedLocations: [' Neukölln ', 'neukölln', '', 'Spandau'],
+    });
+
+    expect(textOf(result)).toContain('**Excluded locations:** Neukölln, Spandau');
+    await callTool('create_job_from_draft', { confirmed: true });
+    expect(upsertJob.mock.calls[0][0].excludedLocations).toEqual(['Neukölln', 'Spandau']);
+  });
+
   it('refuses to run without an interview', async () => {
     const result = await callTool('update_job_draft', { name: 'Köln' });
 
@@ -159,6 +170,7 @@ describe('create_job_from_draft', () => {
     expect(payload.jobId).toEqual(expect.any(String));
     expect(payload.jobId.length).toBeGreaterThan(0);
     expect(payload.spatialFilter).toBeNull();
+    expect(payload.excludedLocations).toEqual([]);
     expect(payload.enabled).toBe(true);
     expect(payload.notificationAdapter).toEqual([{ configuredAdapterId: 'c1' }]);
     expect(trackPoi).toHaveBeenCalledWith(TRACKING_POIS.MCP_JOB_CREATED);
