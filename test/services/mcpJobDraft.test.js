@@ -4,6 +4,7 @@
  */
 
 import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest';
+import { normalizeGetJob, normalizeJobCreated } from '../../lib/mcp/mcpNormalizer.js';
 
 import {
   DRAFT_TTL_MS,
@@ -237,6 +238,26 @@ describe('optional refinements', () => {
     expect(apply({ blacklist: [] }).draft.blacklist).toEqual([]);
   });
 
+  it('starts without excluded locations and normalizes an exclusion answer', () => {
+    expect(emptyDraft().excludedLocations).toEqual([]);
+    const result = apply({ excludedLocations: [' Neukölln ', '', 'neukölln', ' Spandau '] });
+
+    expect(result.ok).toBe(true);
+    expect(result.draft.excludedLocations).toEqual(['Neukölln', 'Spandau']);
+    expect(result.draft.refinementsAnswered).toBe(true);
+    expect(describeDraft(result.draft, CTX)).toContain('**Excluded locations:** Neukölln, Spandau');
+  });
+
+  it('replaces exclusions without changing another draft or the previous answer', () => {
+    const first = apply({ excludedLocations: ['Neukölln'] }).draft;
+    const replacement = apply({ excludedLocations: ['Marzahn'] }, first).draft;
+
+    expect(first.excludedLocations).toEqual(['Neukölln']);
+    expect(replacement.excludedLocations).toEqual(['Marzahn']);
+    expect(apply({ excludedLocations: [] }, replacement).draft.excludedLocations).toEqual([]);
+    expect(emptyDraft().excludedLocations).toEqual([]);
+  });
+
   it('defaults the commute action to notify', () => {
     expect(apply({ commuteFilter: { limits: { Work: 30 } } }).draft.commuteFilter).toEqual({
       action: 'notify',
@@ -283,6 +304,7 @@ describe('what gets saved', () => {
   it('carries the interview into upsertJob arguments', () => {
     const draft = completedDraft({
       blacklist: ['Tausch'],
+      excludedLocations: ['Neukölln'],
       specFilter: { maxPrice: 1200 },
       commuteFilter: { action: 'exclude', limits: { Work: 30 } },
       shareWithUsers: ['u2'],
@@ -294,6 +316,7 @@ describe('what gets saved', () => {
       name: 'Köln',
       enabled: true,
       blacklist: ['Tausch'],
+      excludedLocations: ['Neukölln'],
       provider: [{ id: 'immoscout', name: 'Immoscout', url: RENT_URL, enabled: true }],
       notificationAdapter: [{ configuredAdapterId: 'c1' }],
       shareWithUsers: ['u2'],
@@ -304,12 +327,33 @@ describe('what gets saved', () => {
     });
   });
 
+  it('saves an empty exclusion list when the draft has none', () => {
+    expect(toUpsertPayload(completedDraft(), 'u1', 'job-1').excludedLocations).toEqual([]);
+  });
+
   it('keeps a job the user asked to start switched off', () => {
     expect(toUpsertPayload(completedDraft({ enabled: false }), 'u1', 'job-1').enabled).toBe(false);
   });
 
   it('falls back to the deal type in the URLs when the draft somehow carries none', () => {
     expect(toUpsertPayload(completedDraft({ dealType: null }), 'u1', 'job-1').dealType).toBe('rent');
+  });
+});
+
+describe('job location exclusions in MCP responses', () => {
+  const responses = [
+    { tool: 'get_job', normalize: normalizeGetJob },
+    { tool: 'create_job_from_draft', normalize: normalizeJobCreated },
+  ];
+
+  it.each(responses)('shows exclusions in $tool', ({ normalize }) => {
+    const result = normalize({ id: 'job-1', excludedLocations: ['Neukölln', 'Spandau'] });
+    expect(result.content[0].text).toContain('**Excluded locations:** Neukölln, Spandau');
+  });
+
+  it.each(responses)('allows older jobs without exclusions in $tool', ({ normalize }) => {
+    const result = normalize({ id: 'job-1' });
+    expect(result.content[0].text).toContain('**Excluded locations:** –');
   });
 });
 

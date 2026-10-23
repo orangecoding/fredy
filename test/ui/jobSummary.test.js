@@ -34,6 +34,7 @@ describe('jobSummary', () => {
     ['a size floor', { specFilter: { minSize: 60 } }, 'jobs.mutation.summaryMinSize'],
     ['a room count', { specFilter: { minRooms: 3 } }, 'jobs.mutation.summaryMinRooms'],
     ['blocked words', { blacklist: ['Tausch'] }, 'jobs.mutation.summaryBlacklist'],
+    ['excluded locations', { excludedLocations: ['Neukölln'] }, 'jobs.mutation.summaryExcludedLocations'],
     ['a drawn area', { spatialFilter: { type: 'Polygon' } }, 'jobs.mutation.summaryArea'],
   ])('mentions %s', (_what, job, expected) => {
     expect(describeJobRefinements(job, context)).toContain(expected);
@@ -60,6 +61,7 @@ describe('jobSummary', () => {
     const job = {
       specFilter: { maxPrice: 1200, minSize: 60, minRooms: 3 },
       blacklist: ['Tausch', 'WG'],
+      excludedLocations: ['Neukölln', 'Spandau'],
       spatialFilter: { type: 'Polygon' },
       commuteFilter: { action: 'mark', limits: { 'home-1': 30 } },
     };
@@ -68,6 +70,7 @@ describe('jobSummary', () => {
       'jobs.mutation.summaryMinSize',
       'jobs.mutation.summaryMinRooms',
       'jobs.mutation.summaryBlacklist',
+      'jobs.mutation.summaryExcludedLocations',
       'jobs.mutation.summaryArea',
       'jobs.mutation.summaryCommute',
     ]);
@@ -76,6 +79,15 @@ describe('jobSummary', () => {
   it('joins them into one readable line', () => {
     const job = { specFilter: { maxPrice: 1200 }, spatialFilter: {} };
     expect(summariseJobRefinements(job, context)).toBe('jobs.mutation.summaryMaxPrice · jobs.mutation.summaryArea');
+  });
+
+  it('counts excluded locations and ignores an empty exclusion list', () => {
+    const parts = describeJobRefinements(
+      { excludedLocations: ['Neukölln', 'Spandau'] },
+      { t: (key, vars) => `${key}:${vars?.count}`, formatPrice },
+    );
+    expect(parts).toEqual(['jobs.mutation.summaryExcludedLocations:2']);
+    expect(describeJobRefinements({ excludedLocations: [] }, context)).toEqual([]);
   });
 
   it('formats the price through the caller rather than printing a raw number', () => {
@@ -94,6 +106,7 @@ describe('jobSummary', () => {
       'jobs.mutation.summaryMinSize',
       'jobs.mutation.summaryMinRooms',
       'jobs.mutation.summaryBlacklist',
+      'jobs.mutation.summaryExcludedLocations',
       'jobs.mutation.summaryArea',
       'jobs.mutation.summaryCommute',
     ]) {
