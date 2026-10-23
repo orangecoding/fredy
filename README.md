@@ -120,7 +120,17 @@ Fredy is in the [Unraid](https://unraid.net/) community store.
     **ImmoScout Mobile API**
 
 ------------------------------------------------------------------------
+## A word about AI
+Being a software engineer for almost 25 years now, I've seen a lot of so-called trends come and go. I've seen the internet develop from a place where nerds share their ideas into something accessible to everybody...
 
+Now it might make me sound old, but I'm coming from a generation that was lucky enough to have a childhood without mobile phones, but grew up seeing all the things develop that shape today's society. I've learned early on that you either embrace change or you fall behind quickly.
+That being said, I'm using AI (Claude, to be exact) for a lot of things today. E.g. building dashboards in my Home Assistant, helping me out with writing tests... What I don't use it for (at least not yet) is letting it write the code for me. Why, you may ask? Call me old-fashioned, but I love being an engineer. While AI might be better at specific things, Fredy is (and always has been) a heart project of mine, and I just love solving problems on my own. As releasing things for Fredy is not about speed, I can afford to take a little time for things ;)
+
+So where exactly is AI used in Fredy, you may ask? Well, I sometimes use Claude to let it write tests for me. I often use it to review my code and point me to issues, and I sometimes use it to improve my written English. I'm actually quite good at speaking it, however, obviously, I'm not a native speaker...
+
+Hopefully, this answers a couple of the questions you might have.
+
+------------------------------------------------------------------------
 ## 🧩 Basic architecture overview
 
 | Concept | What it is |
