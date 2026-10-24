@@ -193,6 +193,48 @@ describe('services/listings/priceHistoryService', () => {
       expect(state.sent).toHaveLength(0);
     });
 
+    it('applies independent job exclusions while keeping other and unknown addresses', async () => {
+      state.settings.excludedLocations = ['Mitte'];
+      state.jobs.job1.excludedLocations = [' Neukölln '];
+      state.jobs.job2 = {
+        id: 'job2',
+        userId: 'u2',
+        excludedLocations: ['Marzahn'],
+        notificationAdapter: [{ id: 'ntfy' }],
+      };
+      const { notifyPriceChanges } = await loadService();
+      const at = (jobId, address) => ({ ...change(jobId), listing: listing(1100, { job_id: jobId, address }) });
+
+      await notifyPriceChanges([
+        at('job1', 'Berlin NEUKÖLLN'),
+        at('job2', 'Berlin Neukölln'),
+        at('job2', 'Berlin Marzahn'),
+        at('job1', 'Berlin Mitte'),
+        at('job2', undefined),
+      ]);
+
+      expect(state.sent).toHaveLength(2);
+      expect(state.sent[0][1]).toHaveLength(1);
+      expect(state.sent[0][1][0].address).toBe('Berlin Mitte');
+      expect(state.sent[1][1]).toHaveLength(2);
+      expect(state.sent[1][1][0].address).toBe('Berlin Neukölln');
+    });
+
+    it('reads exclusions for each notification batch without changing price history', async () => {
+      const { notifyPriceChanges, recordPriceChange } = await loadService();
+      const reading = recordPriceChange(listing(1200, { address: 'Berlin Neukölln' }), 1100);
+
+      state.jobs.job1.excludedLocations = ['Neukölln'];
+      await notifyPriceChanges([reading]);
+      expect(state.sent).toHaveLength(0);
+      expect(state.observations).toHaveLength(1);
+      expect(state.applied).toHaveLength(1);
+
+      state.jobs.job1.excludedLocations = [];
+      await notifyPriceChanges([reading]);
+      expect(state.sent).toHaveLength(1);
+    });
+
     // One job's misconfigured adapter must not swallow every other job's notifications.
     it('carries on after one job fails', async () => {
       state.jobs.job2 = { id: 'job2', userId: 'u2', name: 'Other', notificationAdapter: [{ id: 'ntfy' }] };
