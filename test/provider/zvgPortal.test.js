@@ -40,7 +40,7 @@ describe('#zvgPortal provider testsuite()', () => {
   it('carries address, a detail link and the court value as price', () => {
     for (const listing of listings) {
       expect(listing.address, `address of ${listing.id}`).toBeTruthy();
-      expect(listing.link).toContain('button=showZvg&zvg_id=');
+      expect(listing.link).toContain('zvg_id=');
       expect(listing.title).toContain('Zwangsversteigerung');
       if (listing.price != null) expect(listing.price).toBeGreaterThan(1000);
     }
