@@ -36,6 +36,9 @@ describe('session writes', () => {
         sessions.set(sid, JSON.parse(JSON.stringify(session)));
         callback();
       },
+      compareAndSet(sid, expectedGeneration, session, callback) {
+        this.set(sid, session, callback);
+      },
       get(sid, callback) {
         callback(null, sessions.get(sid) ?? null);
       },

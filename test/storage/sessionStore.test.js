@@ -132,6 +132,48 @@ describe('SqliteSessionStore', () => {
     expect(expiresAt).toBeGreaterThan(Date.now());
   });
 
+  describe('compareAndSet', () => {
+    const compareAndSet = (sid, expectedGeneration, session) =>
+      new Promise((resolve, reject) =>
+        store.compareAndSet(sid, expectedGeneration, session, (e) => (e ? reject(e) : resolve())),
+      );
+    const withGeneration = (session, generation) => ({ ...session, __fastifySessionMetadata: { generation } });
+
+    it('replaces a session whose generation matches', async () => {
+      await set('sid-1', withGeneration(sessionFor('user-1'), 'gen-1'));
+      await compareAndSet('sid-1', 'gen-1', withGeneration(sessionFor('user-2'), 'gen-1'));
+      expect((await get('sid-1')).currentUser).toBe('user-2');
+    });
+
+    it('takes the session id as the generation of a row written without one', async () => {
+      await set('sid-1', sessionFor('user-1'));
+      await compareAndSet('sid-1', 'sid-1', sessionFor('user-2'));
+      expect((await get('sid-1')).currentUser).toBe('user-2');
+    });
+
+    it('refuses to bring back a destroyed session', async () => {
+      await set('sid-1', withGeneration(sessionFor('user-1'), 'gen-1'));
+      await destroy('sid-1');
+      await expect(compareAndSet('sid-1', 'gen-1', sessionFor('user-1'))).rejects.toMatchObject({ code: 'ENOENT' });
+      expect(await get('sid-1')).toBeNull();
+    });
+
+    it('refuses to overwrite a session that was regenerated meanwhile', async () => {
+      await set('sid-1', withGeneration(sessionFor('user-2'), 'gen-2'));
+      await expect(compareAndSet('sid-1', 'gen-1', sessionFor('user-1'))).rejects.toMatchObject({ code: 'ENOENT' });
+      expect((await get('sid-1')).currentUser).toBe('user-2');
+    });
+
+    it('treats an expired row as missing', async () => {
+      db.prepare('INSERT INTO sessions (sid, data, expires_at) VALUES (?,?,?)').run(
+        'stale',
+        JSON.stringify({ currentUser: 'user-1' }),
+        Date.now() - 1000,
+      );
+      await expect(compareAndSet('stale', 'stale', sessionFor('user-1'))).rejects.toMatchObject({ code: 'ENOENT' });
+    });
+  });
+
   describe('sweepExpiredSessions', () => {
     it('removes only the expired rows', () => {
       db.prepare('INSERT INTO sessions (sid, data, expires_at) VALUES (?,?,?)').run('old', '{}', NOW - 1);
