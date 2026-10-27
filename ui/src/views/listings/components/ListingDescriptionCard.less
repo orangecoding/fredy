@@ -1,4 +1,4 @@
-@import '../../../tokens.less';
+@import "../../../tokens.less";
 
 .listing-description {
   &__head {
@@ -119,5 +119,16 @@
       color: @color-link;
       text-decoration-thickness: 2px;
     }
+  }
+}
+
+.listing-description-menu {
+  max-width: 320px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  .semi-dropdown-item {
+    font-size: 13px;
   }
 }

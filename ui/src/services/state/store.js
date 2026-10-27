@@ -322,6 +322,23 @@ export const useFredyState = create(
               return { jobsData: { ...state.jobsData, jobs: Object.freeze(updated), result: Object.freeze(result) } };
             });
           },
+          async addJobBlacklistWord(jobId, word) {
+            const response = await xhrPost(`/api/jobs/${jobId}/blacklist`, { word });
+            if (response.status === 200) {
+              set((state) => {
+                const updateList = (list) =>
+                  (list || []).map((j) => (j.id === jobId ? { ...j, blacklist: response.json.blacklist } : j));
+                return {
+                  jobsData: {
+                    ...state.jobsData,
+                    jobs: Object.freeze(updateList(state.jobsData.jobs)),
+                    result: Object.freeze(updateList(state.jobsData.result)),
+                  },
+                };
+              });
+            }
+            return response.json;
+          },
         },
         user: {
           async getUsers() {

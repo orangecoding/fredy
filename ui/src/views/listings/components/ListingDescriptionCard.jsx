@@ -3,10 +3,12 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { Button, Spin, Typography } from '@douyinfe/semi-ui-19';
-import { IconArticle, IconRefresh } from '@douyinfe/semi-icons';
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { Button, Dropdown, Spin, Toast, Typography } from '@douyinfe/semi-ui-19';
+import { IconArticle, IconFilter, IconRefresh } from '@douyinfe/semi-icons';
 
 import { useTranslation } from '../../../services/i18n/i18n.jsx';
+import { useActions } from '../../../services/state/store.js';
 import './ListingDescriptionCard.less';
 
 const { Text } = Typography;
@@ -55,18 +57,95 @@ const OUTCOME = {
  */
 export default function ListingDescriptionCard({ listing, onRefetch, refetching, outcome }) {
   const t = useTranslation();
+  const actions = useActions();
   const description = listing?.description;
+  const jobId = listing?.job_id;
+  const jobName = listing?.job_name;
   const note = outcome ? OUTCOME[outcome] : null;
   // A portal with no detail page will not grow one on a second press.
   const exhausted = outcome === 'unsupported';
 
+  const [selectedText, setSelectedText] = useState('');
+  const [menuVisible, setMenuVisible] = useState(false);
+  const [menuCoords, setMenuCoords] = useState({ x: 0, y: 0 });
+
+  const anchorRef = useRef(null);
+
+  const closeMenu = useCallback(() => {
+    setMenuVisible(false);
+  }, []);
+
+  useEffect(() => {
+    if (!menuVisible) return;
+    const handleDocumentClick = (e) => {
+      if (anchorRef.current && anchorRef.current.contains(e.target)) return;
+      closeMenu();
+    };
+    const handleScroll = () => closeMenu();
+
+    window.addEventListener('scroll', handleScroll, true);
+    window.addEventListener('click', handleDocumentClick);
+    return () => {
+      window.removeEventListener('scroll', handleScroll, true);
+      window.removeEventListener('click', handleDocumentClick);
+    };
+  }, [menuVisible, closeMenu]);
+
+  const handleContextMenu = (e) => {
+    const selection = window.getSelection()?.toString().trim();
+    if (!selection || !jobId) {
+      return;
+    }
+
+    e.preventDefault();
+    setSelectedText(selection);
+    setMenuCoords({
+      x: e.clientX,
+      y: e.clientY,
+    });
+    setMenuVisible(true);
+  };
+
+  const handleAddToBlacklist = async () => {
+    if (!jobId || !selectedText) return;
+    closeMenu();
+    const term = selectedText;
+
+    try {
+      const result = await actions.jobsData.addJobBlacklistWord(jobId, term);
+      if (result && Array.isArray(result.added) && result.added.length > 0) {
+        Toast.success(
+          t('listing.detail.blacklistAdded', {
+            term,
+            job: jobName || jobId,
+          }),
+        );
+      } else {
+        Toast.info(
+          t('listing.detail.blacklistAlreadyPresent', {
+            term,
+          }),
+        );
+      }
+    } catch (err) {
+      Toast.error(err?.message || 'Error adding to ignore list');
+    }
+  };
+
+  const menu = (
+    <Dropdown.Menu className="listing-description-menu">
+      <Dropdown.Item icon={<IconFilter />} onClick={handleAddToBlacklist}>
+        {t('listing.detail.addToBlacklist', { term: selectedText })}
+      </Dropdown.Item>
+    </Dropdown.Menu>
+  );
   // Read without variables, so the placeholder survives to be split on. The two halves are whatever
   // the locale wrote around it, which is the only way a German verb at the end and an English one
   // in the middle can share a single string.
   const [before, after] = t('listing.detail.refetchHint').split(ACTION_SLOT);
 
   return (
-    <section className="listing-card listing-description">
+    <section className="listing-card listing-description" onContextMenu={handleContextMenu}>
       <div className="listing-description__head">
         <h2 className="listing-card__label">{t('listing.detail.descriptionTitle')}</h2>
         {/* Only when there is already text: the empty state acts through its own sentence, and a
@@ -120,6 +199,27 @@ export default function ListingDescriptionCard({ listing, onRefetch, refetching,
       {note && (
         <p className={`listing-description__outcome listing-description__outcome--${note.tone}`}>{t(note.key)}</p>
       )}
+      <Dropdown
+        trigger="custom"
+        visible={menuVisible}
+        onVisibleChange={setMenuVisible}
+        position="bottomLeft"
+        render={menu}
+        stopPropagation
+      >
+        <span
+          ref={anchorRef}
+          style={{
+            position: 'fixed',
+            left: `${menuCoords.x}px`,
+            top: `${menuCoords.y}px`,
+            width: '1px',
+            height: '1px',
+            pointerEvents: 'none',
+            visibility: 'hidden',
+          }}
+        />
+      </Dropdown>
     </section>
   );
 }
