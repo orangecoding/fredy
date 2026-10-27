@@ -77,6 +77,10 @@
     "url": "https://www.willhaben.at/iad/immobilien/mietwohnungen/wien",
     "enabled": true
   },
+  "zvgPortal": {
+    "url": "https://www.zvg-portal.de/index.php?button=Suchen&land_abk=sh&obj_liste=3,15,16",
+    "enabled": true
+  },
   "flatfox": {
     "url": "https://flatfox.ch/de/search/?east=8.62&north=47.43&south=47.32&west=8.44&object_category=APARTMENT&offer_type=RENT",
     "enabled": true

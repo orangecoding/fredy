@@ -342,6 +342,39 @@ async function downloadBetterhomesFixtures(url) {
 }
 
 /**
+ * The ZVG-Portal's result table. A search is a form POST, so the fixture is the table of that answer, cut out of the page
+ * (the same cut the provider's parser reads).
+ *
+ * @param {string} url the search url from testProvider.json
+ * @returns {Promise<void>}
+ */
+async function downloadZvgPortalFixtures(url) {
+  console.log('\nDownloading zvgPortal...');
+  const params = new URL(url).searchParams;
+  const body = new URLSearchParams({ ger_id: '0', order_by: '2', art: '' });
+  for (const [name, value] of params) {
+    if (name === 'button') continue;
+    if (name === 'obj_liste') value.split(',').forEach((id) => body.append('obj_liste', id));
+    else body.set(name, value);
+  }
+  const response = await fetch('https://www.zvg-portal.de/index.php?button=Suchen&all=1', { method: 'POST', body });
+  if (!response.ok) {
+    console.warn(`  Failed to download zvgPortal: ${response.statusText}`);
+    return;
+  }
+  const html = await response.text();
+  const start = html.indexOf('<table border=0>');
+  const end = html.indexOf('<!--Zwangsversteigerungen Ende-->');
+  if (start < 0 || end < 0) {
+    console.warn('  zvgPortal page carried no result table - skipping fixture');
+    return;
+  }
+  const trimmed = `<!doctype html><html lang="de"><head><meta charset="utf-8"><title>zvg-portal fixture</title></head><body>\n${html.slice(start, end)}\n</body></html>\n`;
+  await writeFile(path.join(FIXTURES_DIR, 'zvgPortal.html'), trimmed, 'utf-8');
+  console.log('  Saved zvgPortal.html');
+}
+
+/**
  * Flatfox answers a search in two requests, so it needs two fixtures.
  *
  * The pins carry the primary keys of everything matching the search; the second call hydrates those
@@ -969,6 +1002,9 @@ async function main() {
         break;
       case 'willhaben':
         await downloadWillhabenFixtures(runConfig.url);
+        break;
+      case 'zvgPortal':
+        await downloadZvgPortalFixtures(runConfig.url);
         break;
       case 'flatfox':
         await downloadFlatfoxFixtures(runConfig.url);

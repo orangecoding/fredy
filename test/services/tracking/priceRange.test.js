@@ -163,6 +163,7 @@ const NO_RANGE_IN_URL = [
   ['regionalimmobilien24', 'https://www.regionalimmobilien24.de/rostock/rostock/kaufen/haus/-/-/-/?rd=5'],
   ['wgGesucht', 'https://www.wg-gesucht.de/wg-zimmer-in-Duesseldorf.30.0.1.0.html'],
   ['willhaben', 'https://www.willhaben.at/iad/immobilien/mietwohnungen/wien'],
+  ['zvgPortal', 'https://www.zvg-portal.de/index.php?button=Suchen&land_abk=sh&obj_liste=3,15,16'],
 ];
 
 const IMMOSCOUT = 'https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/duesseldorf';
