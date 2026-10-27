@@ -1,0 +1,82 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../../tokens.less';
+
+.addListingModal {
+  display: flex;
+  flex-direction: column;
+  gap: @space-5;
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: @space-2;
+  }
+
+  &__label {
+    font-size: @text-base;
+    font-weight: @weight-strong;
+    color: @color-text;
+  }
+
+  &__control {
+    width: 100%;
+  }
+
+  /* One line, always there: empty it holds the hint, then what the host says about the link. A row
+     that appeared on typing pushed the job field down under the cursor. */
+  &__detect {
+    min-height: @space-6;
+    font-size: @text-sm;
+    line-height: 1.6;
+
+    &--hint {
+      color: @color-muted;
+    }
+
+    &--ok {
+      color: @color-success;
+    }
+
+    &--warning {
+      color: @color-warning;
+    }
+
+    &--error {
+      color: @color-error;
+    }
+  }
+
+  &__hint {
+    font-size: @text-sm;
+    line-height: 1.6;
+    color: @color-muted;
+  }
+
+  &__progress {
+    margin: 0;
+    font-size: @text-sm;
+    line-height: 1.6;
+    color: @color-muted;
+  }
+
+  &__open {
+    margin-top: @space-2;
+  }
+
+  &__noJobs {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: @space-4;
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: @space-2;
+  }
+}
