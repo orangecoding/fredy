@@ -74,7 +74,13 @@ const LISTINGS_URL_STATE = {
   hidden: { defaultValue: false, codec: parseNullableBoolean },
 };
 
-const ListingsOverview = () => {
+/**
+ * @param {Object} [props]
+ * @param {() => void} [props.onAddListing] Opens the "add listing" dialog the page owns. Offered from
+ *   the empty state too, except in the view of hidden listings, where an empty page means nothing
+ *   was hidden and adding one is beside the point.
+ */
+const ListingsOverview = ({ onAddListing } = {}) => {
   const t = useTranslation();
   const locale = useLocale();
   const listingsData = useSelector((state) => state.listingsData);
@@ -494,12 +500,18 @@ const ListingsOverview = () => {
         />
       )}
 
-      {listings.length === 0 && (
+      {listingsData.loaded === true && listings.length === 0 && (
         <Empty
           image={<IllustrationNoResult />}
           darkModeImage={<IllustrationNoResultDark />}
           description={t('listings.empty')}
-        />
+        >
+          {onAddListing && !isHiddenView && (
+            <Button type="primary" theme="solid" onClick={onAddListing}>
+              {t('listings.add.button')}
+            </Button>
+          )}
+        </Empty>
       )}
 
       {viewMode === 'grid' ? (

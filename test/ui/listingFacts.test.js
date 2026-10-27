@@ -306,6 +306,15 @@ describe('buildOriginFacts', () => {
     expect(facts.find((fact) => fact.id === 'job').chip).toBe(true);
   });
 
+  it('says when the user added the listing by hand rather than the job finding it', () => {
+    const found = buildOriginFacts(full, ctx).find((fact) => fact.id === 'created');
+    const added = buildOriginFacts({ ...full, added_manually: 1 }, ctx).find((fact) => fact.id === 'created');
+
+    expect(found.helpText).toBe('listing.detail.fieldAddedHelp');
+    expect(added.value).toBe(`listing.detail.addedByHand(date=${found.value})`);
+    expect(added.helpText).toBe('listing.detail.fieldAddedByHandHelp');
+  });
+
   it('leaves the portal unlinked when the ad has no url', () => {
     const provider = buildOriginFacts({ ...full, link: null }, ctx).find((fact) => fact.id === 'provider');
     expect(provider.href).toBeUndefined();

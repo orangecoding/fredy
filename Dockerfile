@@ -13,8 +13,8 @@ FROM node:22-trixie-slim
 # Kasada/Akamai render emoji/CJK glyphs on hidden canvases and hash the pixel
 # output, so missing fonts produce hashes a minimal Linux image can't match.
 # NOTE: Real Windows fonts (Segoe UI, Calibri, etc.) can't be bundled here since
-# they require copying licensed files off an actual Windows install; the
-# resulting CLOAKBROWSER_SUPPRESS_FONT_WARNING startup notice is expected.
+# they require copying licensed files off an actual Windows install, which is
+# why launchBrowser makes CloakBrowser pose as Linux rather than Windows here.
 # tini is the container's init (see ENTRYPOINT below) and must survive the build-tool purge.
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates tini fonts-liberation libasound2t64 \
@@ -32,8 +32,7 @@ WORKDIR /fredy
 
 
 ENV NODE_ENV=production \
-    IS_DOCKER=true \
-    CLOAKBROWSER_SUPPRESS_FONT_WARNING=1
+    IS_DOCKER=true
 
 COPY --chown=node:node package.json yarn.lock ./
 

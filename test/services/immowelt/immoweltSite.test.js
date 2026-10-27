@@ -95,4 +95,19 @@ describe('#immowelt site, SeLoger', () => {
     expect(siteOf(link)).toBeNull();
     expect(() => requireSite('https://www.bellesdemeures.com/recherche?x=1', 'seloger')).toThrow(/SeLoger serves/);
   });
+
+  // An office search on SeLoger answers almost nothing but cards linking to its commercial-property
+  // sister. Same terms as Belles Demeures: asked about, never searched, its exposé never read.
+  it('knows the commercial-property sister site the same way', () => {
+    const link = 'https://www.seloger-bureaux-commerces.com/annonce/detail/direct/281930593';
+
+    expect(linkedSiteOf(link)).toMatchObject({
+      provider: 'seloger',
+      origin: 'https://www.seloger-bureaux-commerces.com',
+    });
+    expect(siteOf(link)).toBeNull();
+    expect(() => requireSite('https://www.seloger-bureaux-commerces.com/location/bureau/paris-75', 'seloger')).toThrow(
+      /SeLoger serves seloger\.com and nothing else/,
+    );
+  });
 });

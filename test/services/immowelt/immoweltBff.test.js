@@ -379,6 +379,17 @@ describe('#immowelt bff transport, exposé probe', () => {
     expect(gotos).toEqual(['https://www.bellesdemeures.com/']);
   });
 
+  // The commercial-property sister's card links redirect to the advert while it is online, which
+  // the probe's fetch follows to a 200, and answer 404 once it is gone.
+  it('asks about a SeLoger bureaux & commerces advert from a page on that site', async () => {
+    const browser = fakeBrowser(() => ({ status: 404, body: '<html>Erreur</html>' }));
+    const link = 'https://www.seloger-bureaux-commerces.com/annonce/detail/direct/281511653';
+
+    expect(await probeExpose(browser, link)).toBe(0);
+    expect(gotos).toEqual(['https://www.seloger-bureaux-commerces.com/']);
+    expect(requests).toEqual([link]);
+  });
+
   it('does not ask about a link on no site of the platform', async () => {
     const browser = fakeBrowser(() => ({ status: 200, body: '<html>expose</html>' }));
 

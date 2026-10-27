@@ -300,12 +300,16 @@ export function buildOriginFacts(listing, ctx) {
     });
   }
 
+  // A listing the user pasted sits under a job that never announced it, so the row says who put it
+  // there. Otherwise the job chip above reads as "this search found it" and the missing
+  // notification looks like a fault.
   if (row.created_at) {
+    const date = timeService.format(row.created_at, true, locale);
     facts.push({
       id: 'created',
       label: t('listing.detail.fieldAdded'),
-      value: timeService.format(row.created_at, true, locale),
-      helpText: t('listing.detail.fieldAddedHelp'),
+      value: row.added_manually ? t('listing.detail.addedByHand', { date }) : date,
+      helpText: row.added_manually ? t('listing.detail.fieldAddedByHandHelp') : t('listing.detail.fieldAddedHelp'),
     });
   }
 

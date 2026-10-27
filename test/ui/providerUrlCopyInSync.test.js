@@ -7,10 +7,12 @@ import { describe, it, expect } from 'vitest';
 
 import {
   normalizeHost as backendHost,
+  resolveProviderForUrl as backendResolve,
   validateProviderUrl as backendValidate,
 } from '../../lib/services/jobs/providerUrl.js';
 import {
   normalizeHost as frontendHost,
+  resolveProviderForUrl as frontendResolve,
   validateProviderUrl as frontendValidate,
 } from '../../ui/src/services/jobs/providerUrl.js';
 
@@ -121,6 +123,25 @@ describe('provider URL validation stays in sync between the frontend copy and li
     for (const validate of [frontendValidate, backendValidate]) {
       expect(validate(URLS[0], PROVIDER)).toEqual({ ok: true, problem: null, expectedHost: 'immobilienscout24.de' });
       expect(validate(URLS[0], { ...PROVIDER, hosts: [] }).ok).toBe(true);
+    }
+  });
+
+  it.each([...URLS, ...MULTI_HOST_URLS])('agrees on which portal %s belongs to', (url) => {
+    // The add-listing dialog names the portal with the frontend copy, and the server then fetches
+    // with the lib copy. A disagreement would show one portal and read the page of another, or none.
+    const providers = [PROVIDER, MULTI_HOST];
+    expect(frontendResolve(url, providers)?.id ?? null).toBe(backendResolve(url, providers)?.id ?? null);
+  });
+
+  it('resolves a portal by exact host only', () => {
+    const providers = [PROVIDER, MULTI_HOST];
+    for (const resolve of [frontendResolve, backendResolve]) {
+      expect(resolve('https://www.immowelt.at/expose/abc', providers)?.id).toBe('immowelt');
+      expect(resolve('https://www.immobilienscout24.de/expose/123', providers)?.id).toBe('immoscout');
+      expect(resolve('https://www.immowelt.at.evil.example/expose/abc', providers)).toBeNull();
+      expect(resolve('https://www.immowelt.ch/expose/abc', providers)).toBeNull();
+      expect(resolve('', providers)).toBeNull();
+      expect(resolve(URLS[0], null)).toBeNull();
     }
   });
 

@@ -57,6 +57,40 @@ describe('launchBrowser proxy forwarding', () => {
   });
 });
 
+describe('launchBrowser fingerprint platform', () => {
+  const originalPlatform = process.platform;
+
+  /** @param {string} platform the value `process.platform` should report */
+  function pretendPlatform(platform) {
+    Object.defineProperty(process, 'platform', { value: platform, configurable: true });
+  }
+
+  beforeEach(() => {
+    launchMock.mockReset();
+    launchMock.mockResolvedValue({ close: async () => {} });
+  });
+
+  afterEach(() => {
+    pretendPlatform(originalPlatform);
+  });
+
+  it('poses as Linux on a Linux host instead of the Windows default', async () => {
+    pretendPlatform('linux');
+
+    await launchBrowser('https://www.immowelt.de/', {});
+
+    expect(launchMock.mock.calls[0][0].args).toContain('--fingerprint-platform=linux');
+  });
+
+  it("leaves CloakBrowser's own platform choice alone elsewhere", async () => {
+    pretendPlatform('darwin');
+
+    await launchBrowser('https://www.immowelt.de/', {});
+
+    expect(launchMock.mock.calls[0][0].args.some((arg) => arg.startsWith('--fingerprint-platform'))).toBe(false);
+  });
+});
+
 describe('closeBrowser', () => {
   /** @type {import('vitest').MockInstance} */
   let killSpy;

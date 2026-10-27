@@ -14,12 +14,12 @@ import {
   getDraft,
   missingRequired,
   nextStep,
-  resolveProviderForUrl,
   startDraft,
   toUpsertPayload,
   updateDraft,
   _resetDraftsForTests,
 } from '../../lib/mcp/jobDraftStore.js';
+import { resolveProviderForUrl } from '../../lib/services/jobs/providerUrl.js';
 
 const IMMOSCOUT = { id: 'immoscout', name: 'Immoscout', baseUrl: 'https://www.immobilienscout24.de/' };
 const IMMOWELT = { id: 'immowelt', name: 'Immowelt', baseUrl: 'https://www.immowelt.de/' };

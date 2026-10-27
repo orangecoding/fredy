@@ -44,6 +44,7 @@ describe('listing media storage', () => {
         latitude REAL,
         longitude REAL,
         price_per_sqm REAL,
+        added_manually INTEGER NOT NULL DEFAULT 0,
         UNIQUE (job_id, hash)
       );
     `);

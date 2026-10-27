@@ -435,6 +435,22 @@ export const useFredyState = create(
               console.error('Error while trying to get resource for api/listings. Error:', Exception);
             }
           },
+          /**
+           * Add one listing by its URL to one of the user's jobs.
+           *
+           * @param {{url: string, jobId: string, watch: boolean}} params
+           * @returns {Promise<{status: string, listingId?: string, jobName?: string|null, provider?: string}>}
+           *   The server's answer; a duplicate or an unreadable page is an answer, not an error.
+           */
+          async addListing({ url, jobId, watch }) {
+            try {
+              const response = await xhrPost('/api/listings', { url, jobId, watch });
+              return response.json;
+            } catch (Exception) {
+              console.error('Error while trying to add a listing by url. Error:', Exception);
+              throw Exception;
+            }
+          },
           async getListing(listingId) {
             try {
               const response = await xhrGet(`/api/listings/${listingId}`);

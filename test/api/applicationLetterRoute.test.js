@@ -56,7 +56,10 @@ async function loadHandler({ found = listing } = {}) {
   vi.doMock(root + '/lib/services/providers/providerCountries.js', () => ({
     getCountriesForListing: async () => ['it'],
   }));
-  vi.doMock(root + '/lib/utils.js', () => ({
+  // The rest of the module stays real: the router also reaches the pipeline, through adding a
+  // listing by URL, and that loads the notification adapters through here.
+  vi.doMock(root + '/lib/utils.js', async (importOriginal) => ({
+    ...(await importOriginal()),
     getProviders: async () => [{ metaInformation: { id: 'casa', name: 'Casa.it' } }],
     nullOrEmpty: (value) => value == null || value === '',
   }));

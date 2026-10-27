@@ -50,9 +50,10 @@ describe('#seloger testsuite()', () => {
       notificationObj.payload.forEach((notify) => {
         expect(notify.id).toBeTypeOf('string');
         expect(notify.title).not.toBe('');
-        // SeLoger lists the adverts of Belles Demeures, its luxury sister portal, among its own, and
-        // their cards link to the sister's site.
-        expect(notify.link).toMatch(/^https:\/\/www\.(seloger|bellesdemeures)\.com\//);
+        // SeLoger lists the adverts of its sister portals among its own - Belles Demeures for luxury
+        // homes, SeLoger bureaux & commerces for commercial property - and their cards link to the
+        // sister's site.
+        expect(notify.link).toMatch(/^https:\/\/www\.(seloger|bellesdemeures|seloger-bureaux-commerces)\.com\//);
         expect(notify.address).not.toBe('');
         if (notify.price != null) expect(notify.price).toContain('€');
       });
@@ -185,6 +186,7 @@ describe('#seloger price probe', () => {
 describe('#seloger offline exposé', () => {
   it.runIf(process.env.TEST_MODE === 'offline')('serves no exposé for a link production would not fetch', async () => {
     expect(await fetchExposeHtml(null, 'https://www.bellesdemeures.com/annonces/vente/appartement/1.htm')).toBeNull();
+    expect(await fetchExposeHtml(null, 'https://www.seloger-bureaux-commerces.com/annonce/detail/direct/1')).toBeNull();
     expect(await fetchExposeHtml(null, 'https://www.example.org/expose/1')).toBeNull();
   });
 

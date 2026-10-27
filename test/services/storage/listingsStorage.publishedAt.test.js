@@ -88,6 +88,7 @@ describe('listings published_at', () => {
         notes TEXT,
         status TEXT,
         price_per_sqm REAL,
+        added_manually INTEGER NOT NULL DEFAULT 0,
         UNIQUE (job_id, hash)
       );
       CREATE TABLE watch_list (id TEXT PRIMARY KEY, listing_id TEXT, user_id TEXT);

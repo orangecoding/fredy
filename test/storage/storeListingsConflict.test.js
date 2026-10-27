@@ -47,6 +47,7 @@ describe('storeListings id propagation', () => {
         notes TEXT,
         status TEXT,
         price_per_sqm REAL,
+        added_manually INTEGER NOT NULL DEFAULT 0,
         UNIQUE (job_id, hash)
       );
     `);
@@ -133,6 +134,22 @@ describe('storeListings id propagation', () => {
 
     expect(db.prepare('SELECT COUNT(*) AS c FROM listings').get().c).toBe(2);
     expect(forJobOne[0].id).not.toBe(forJobTwo[0].id);
+  });
+
+  it('marks a listing added by hand, and a later job run finding the same advert keeps the mark', () => {
+    const added = [listing('by-hand', { addedManually: true })];
+    listingsStorage.storeListings('job-1', 'immoscout', added);
+    listingsStorage.storeListings('job-1', 'immoscout', [listing('by-hand')]);
+
+    expect(db.prepare('SELECT COUNT(*) AS c FROM listings').get().c).toBe(1);
+    expect(db.prepare('SELECT added_manually FROM listings WHERE id = ?').get(added[0].id).added_manually).toBe(1);
+  });
+
+  it('does not mark what a job run found', () => {
+    const found = [listing('found')];
+    listingsStorage.storeListings('job-1', 'immoscout', found);
+
+    expect(db.prepare('SELECT added_manually FROM listings WHERE id = ?').get(found[0].id).added_manually).toBe(0);
   });
 
   it('strips parenthesised address suffixes', () => {

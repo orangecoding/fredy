@@ -49,6 +49,7 @@ describe('scam signals and overrides in the listings table', () => {
         longitude REAL,
         published_at INTEGER,
         price_per_sqm REAL,
+        added_manually INTEGER NOT NULL DEFAULT 0,
         market_median_sqm REAL,
         market_sample_size INTEGER,
         market_radius_km REAL,
