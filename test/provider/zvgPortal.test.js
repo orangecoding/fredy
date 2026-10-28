@@ -66,4 +66,14 @@ describe('#zvgPortal parseResults()', () => {
     expect(listing.price).toBe(475000);
     expect(listing.title).toBe('Zwangsversteigerung Einfamilienhaus, Freitag, 27. November 2026, 10:00 Uhr');
   });
+
+  it('takes the first amount of an auction of several objects, and skips cancelled dates', () => {
+    const multi = html.replace('475.000,00', 'Objekt 1: 129.000,00 € Objekt 2: 31.000,00 €');
+    expect(provider.config.normalize(provider.parseResults(multi)[0]).price).toBe(129000);
+    const cancelled = html.replace(
+      'Freitag, 27. November 2026, 10:00 Uhr',
+      'Der Termin Freitag, 27. November 2026 wurde aufgehoben.',
+    );
+    expect(provider.parseResults(cancelled)).toEqual([]);
+  });
 });

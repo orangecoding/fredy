@@ -10,6 +10,8 @@ import { expect, vi } from 'vitest';
 import * as provider from '../../lib/provider/sparkasse.js';
 import * as mockStore from '../mocks/mockStore.js';
 import { launchBrowser, closeBrowser } from '../../lib/services/extractor/puppeteerExtractor.js';
+import { parse } from '../../lib/services/extractor/parser/parser.js';
+import { fixture } from './byUrl/contract.js';
 
 /** Run-scoped provider config, built per test via createConfig(). */
 let runConfig;
@@ -90,6 +92,29 @@ describe('#sparkasse testsuite()', () => {
     },
     TEST_TIMEOUT,
   );
+
+  // Offline against the recorded search page, so the card selectors are checked on every run, not only when the live portal answers.
+  it('reads every field of every card of the recorded search page', () => {
+    const search = 'https://immobilien.sparkasse.de/immobilien/treffer?estateTypeGroupingId=396&marketingType=buy';
+    const cards = parse(provider.config.crawlContainer, provider.config.crawlFields, fixture('sparkasse.html'), search);
+    expect(cards).toHaveLength(10);
+
+    // The recorded page has cards without a living area; they must not take the room count as the size.
+    expect(cards.map((card) => card.size).filter((size) => size != null && !/Wohnfläche/.test(size))).toEqual([]);
+
+    const normalize = provider.createConfig({ url: search }).normalize;
+    for (const card of cards) {
+      const listing = normalize(card);
+      expect(listing.title).not.toBe('');
+      // "Keine Angabe" (price) and a missing living area are real states of a card, not parse failures
+      expect(listing.price === null || listing.price > 0).toBe(true);
+      expect(listing.size === null || listing.size > 1).toBe(true);
+      expect(listing.rooms).toBeGreaterThan(0);
+      expect(listing.address).toBeTruthy();
+      expect(listing.link).toMatch(/^https:\/\/immobilien\.sparkasse\.de\/expose\//);
+      expect(listing.image).toMatch(/^https?:\/\//);
+    }
+  });
 
   describe('with provider_details enabled', () => {
     beforeEach(() => {
