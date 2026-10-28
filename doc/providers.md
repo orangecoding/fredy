@@ -7,7 +7,7 @@ platform into Fredy.
 > Always make sure the search results are sorted by **date**, so Fredy picks up the newest listings
 > first.
 
-## The 29 built-in providers
+## The 30 built-in providers
 
 **🇩🇪 Germany**
 
@@ -26,6 +26,7 @@ platform into Fredy.
 **🇪🇸 Spain · 🇮🇹 Italy · 🇵🇹 Portugal** · idealista
 **🇮🇹 Italy** · Subito · Tecnocasa · Tecnorete · Casa.it
 **🇫🇷 France** · leboncoin · SeLoger · Bien'ici
+**🇵🇱 Poland** · Otodom
 
 If you run a portal Fredy does not cover yet, contributions are very welcome, see
 [CONTRIBUTING.md](../CONTRIBUTING.md).
@@ -189,6 +190,29 @@ Not supported: an area drawn on the map, a circle and a travel-time area. Bien'i
 own servers and the url carries nothing but an id, so the job stops and says so - search the town
 and narrow it down with Fredy's own map area filter instead. A place Bien'ici no longer knows stops
 the job too, rather than being searched as whatever its place lookup guesses instead.
+
+## Otodom
+
+Polish house-sale searches are supported, for example:
+
+```
+https://www.otodom.pl/pl/wyniki/sprzedaz/dom/malopolskie/krakow/krakow/krakow?ownerTypeSingleSelect=ALL
+```
+
+Fredy reads the search page's embedded JSON through a plain HTTP request. Every filter stays in
+the URL; sorting is set to newest first. Each run starts at page one and reads at most five pages,
+so this watches recent adverts rather than imports every historical result of a broad search.
+Narrow the search or shorten the interval if more than five pages arrive between runs.
+
+Amounts stay in PLN. Addresses are geocoded within Poland. Development groups without a single
+asking price are skipped; an individual advert with a hidden price remains usable. Full detail
+enrichment, adding an advert by URL, activity checks and scheduled price tracking are not included.
+Other categories, including rentals and flats, are refused until their payloads have test coverage.
+
+Access depends on the client and network. The tested native HTTP requests worked while a separate
+browser received a CloudFront 403. A blocked request fails the job; it is not treated as an empty
+search. No browser fallback or paid scraping service is used. EUR finance does not score PLN
+listings; see [Currencies](#currencies).
 
 ## Countries and the map
 
