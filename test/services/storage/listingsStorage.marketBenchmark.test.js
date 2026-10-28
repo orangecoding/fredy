@@ -19,6 +19,7 @@ import { MIN_SAMPLE } from '../../../lib/services/listings/marketBenchmark.js';
 describe('market benchmark against the listings table', () => {
   let db;
   let listingsStorage;
+  let currencyContext;
 
   /** Cologne cathedral. */
   const LAT = 50.9413;
@@ -34,6 +35,8 @@ describe('market benchmark against the listings table', () => {
       CREATE TABLE listings (
         id TEXT PRIMARY KEY,
         job_id TEXT,
+        provider TEXT DEFAULT 'immoscout',
+        link TEXT,
         price INTEGER,
         size INTEGER,
         latitude REAL,
@@ -60,6 +63,8 @@ describe('market benchmark against the listings table', () => {
     }));
     vi.doMock('../../../lib/services/similarity-check/similarityCache.js', () => ({ removeEntry: vi.fn() }));
     listingsStorage = await import('../../../lib/services/storage/listingsStorage.js');
+    const { currencyContextForProviders } = await import('../../../lib/services/providers/providerCurrency.js');
+    currencyContext = currencyContextForProviders([{ metaInformation: { id: 'polish', currency: 'PLN' } }]);
   });
 
   afterEach(() => {
@@ -178,6 +183,32 @@ describe('market benchmark against the listings table', () => {
     const kpis = listingsStorage.getListingsKpisForJobIds(['rent-job', 'buy-job']);
 
     expect(kpis.medianPricePerSqm).toEqual({ dealType: 'rent', value: 10, sampleSize: 5 });
+  });
+
+  it('never benchmarks PLN against EUR listings in the same neighbourhood', () => {
+    for (let index = 0; index < MIN_SAMPLE; index++) addListing(`eur-${index}`, { jobId: 'buy-job', price: 100000 });
+    addListing('pln-target', { jobId: 'buy-job', price: 1000000 });
+    db.prepare("UPDATE listings SET provider = 'polish' WHERE id = 'pln-target'").run();
+    listingsStorage.applyMarketBenchmark(
+      'buy-job',
+      [{ id: 'pln-target', latitude: LAT, longitude: LNG }],
+      currencyContext,
+    );
+    expect(rowOf('pln-target').market_median_sqm).toBeNull();
+    for (let index = 0; index < MIN_SAMPLE; index++) {
+      addListing(`pln-${index}`, { jobId: 'buy-job', price: 500000 });
+      db.prepare("UPDATE listings SET provider = 'polish' WHERE id = ?").run(`pln-${index}`);
+    }
+    listingsStorage.applyMarketBenchmark(
+      'buy-job',
+      [{ id: 'pln-target', latitude: LAT, longitude: LNG }],
+      currencyContext,
+    );
+    expect(rowOf('pln-target').market_median_sqm).toBe(10000);
+    const kpis = listingsStorage.getListingsKpisForJobIds(['buy-job'], currencyContext);
+    expect(kpis.currency).toBeNull();
+    expect(kpis.medianPriceOfListings).toBeNull();
+    expect(kpis.medianPricePerSqm).toBeNull();
   });
 
   it('has no median per square metre before anything has a size', () => {

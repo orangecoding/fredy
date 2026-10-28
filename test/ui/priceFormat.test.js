@@ -4,7 +4,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { formatEuroPrice } from '../../ui/src/services/price/priceService.js';
+import { formatEuroPrice, formatListingPrice } from '../../ui/src/services/price/priceService.js';
 import { formatEuro } from '../../ui/src/components/cards/chartTheme.js';
 
 /**
@@ -16,6 +16,11 @@ import { formatEuro } from '../../ui/src/components/cards/chartTheme.js';
 const normalize = (value) => value.replace(/[\u00a0\u202f]/g, ' ');
 
 describe('formatEuroPrice', () => {
+  it('keeps PLN amounts and currency in each locale', () => {
+    expect(normalize(formatListingPrice(1050000, 'de-DE', 'PLN'))).toBe('1.050.000 PLN');
+    expect(normalize(formatListingPrice(97.18, 'en-US', 'PLN'))).toContain('97.18');
+    expect(formatListingPrice(1050000, 'en-US', 'PLN')).not.toContain('€');
+  });
   it('groups thousands and appends the symbol, German style', () => {
     expect(normalize(formatEuroPrice(776515, 'de-DE'))).toBe('776.515 €');
   });

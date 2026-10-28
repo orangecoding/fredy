@@ -108,12 +108,17 @@ The picker orders providers by country and then by size, from
 behind the ranked ones of its own country. Add it to `PROVIDER_SIZE_ORDER` only if it belongs
 somewhere specific. A country new to `COUNTRY_ORDER` sorts behind the ones already listed.
 
-The same shape is where anything else that varies by country belongs. `currency` is the obvious
-next one and is deliberately not implemented: `€` appears in around forty places, twelve of them in
-the finance module, which assumes considerably more than a symbol, and three locale files carry it
-inside translated strings. Whoever arrives with a provider quoting in kroner should add
-`currency: 'DKK'` here, default it to `EUR`, and resolve it exactly the way `countries` is
-resolved in `lib/services/providers/`.
+A provider that quotes prices outside the euro declares `currency` on `metaInformation`, for
+example `currency: 'DKK'`. The default is `EUR`. Resolution lives in
+`lib/services/providers/`: `currency.js` is the pure half, while `providerCurrency.js` reads the
+loaded provider metadata. A provider serving several currencies can declare
+`currencyOf(listing)`, like `countryOf`, to resolve the currency from the listing's link.
+
+Amounts stay in the portal's currency; Fredy does not convert them. Listing views, notifications
+and MCP carry that currency. Monetary dashboard aggregates are hidden for mixed currencies, and
+a numeric price range or job price ceiling needs sources that share one currency. The finance
+module still models EUR and German purchase costs, so non-EUR listings receive no finance result
+or affordability verdict. Do not add a country-specific currency map elsewhere in the app.
 
 ### How to write new notification adapter?
 

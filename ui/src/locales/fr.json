@@ -1,4 +1,6 @@
 {
+  "listing.detail.financeCurrencyUnsupported": "Le financement concerne uniquement les annonces en EUR.",
+  "listings.mixedCurrencyPriceFilter": "Sélectionnez une seule devise pour filtrer par prix.",
   "_meta": {
     "flag": "🇫🇷",
     "name": "Français",
@@ -199,6 +201,7 @@
   "jobs.mutation.filterMaxPrice": "Prix max.",
   "jobs.mutation.filterMinSize": "Surface min. (m²)",
   "jobs.mutation.filterMinRooms": "Pièces min.",
+  "jobs.mutation.mixedCurrencyMaxPrice": "Un prix maximum nécessite des fournisseurs avec la même devise.",
   "jobs.mutation.areaSearchPlaceholder": "Recherchez une adresse ou une ville pour y déplacer la carte",
   "jobs.mutation.areaSearchNotFound": "Aucune coordonnée trouvée pour cette adresse.",
   "jobs.mutation.sectionAreaFilter": "Filtre de zone",
@@ -442,7 +445,7 @@
   "map.filterJobPlaceholder": "Toutes les recherches",
   "map.filterDistanceLabel": "Distance",
   "map.filterDistanceNone": "Aucune",
-  "map.filterPriceLabel": "Prix (€)",
+  "map.filterPriceLabel": "Prix",
   "map.filterStyleLabel": "Style",
   "map.filterStyleStandard": "Standard",
   "map.filterStyleSatellite": "Satellite",

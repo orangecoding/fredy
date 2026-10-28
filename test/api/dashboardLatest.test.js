@@ -51,6 +51,7 @@ describe('the dashboard listing reads', () => {
         price_per_sqm REAL,
         image_url TEXT,
         provider TEXT,
+        link TEXT,
         market_median_sqm REAL,
         market_sample_size INTEGER,
         market_radius_km REAL,
@@ -159,6 +160,8 @@ describe('the dashboard listing reads', () => {
         [
           'address',
           'created_at',
+          'currency',
+          'link',
           'id',
           'image_url',
           'job_id',

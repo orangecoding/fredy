@@ -6,7 +6,9 @@
 import React from 'react';
 import { Line } from 'react-chartjs-2';
 
-import { CHART_COLORS, formatEuro, registerFinanceCharts } from '../../../components/cards/chartTheme.js';
+import { CHART_COLORS, registerFinanceCharts } from '../../../components/cards/chartTheme.js';
+
+import { formatListingPrice } from '../../../services/price/priceService.js';
 
 registerFinanceCharts();
 
@@ -30,7 +32,7 @@ registerFinanceCharts();
  * @param {number} [props.height=120]
  * @returns {React.ReactElement|null}
  */
-export default function PriceHistoryChart({ data = [], locale = 'de-DE', height = 120 }) {
+export default function PriceHistoryChart({ data = [], locale = 'de-DE', height = 120, currency = 'EUR' }) {
   const rows = React.useMemo(() => (Array.isArray(data) ? data : []), [data]);
 
   const chartData = React.useMemo(
@@ -71,7 +73,7 @@ export default function PriceHistoryChart({ data = [], locale = 'de-DE', height 
             color: CHART_COLORS.MUTED,
             font: { family: CHART_COLORS.FONT_UI, size: 12 },
             maxTicksLimit: 4,
-            callback: (value) => formatEuro(value, locale),
+            callback: (value) => formatListingPrice(value, locale, currency),
           },
         },
       },
@@ -89,13 +91,13 @@ export default function PriceHistoryChart({ data = [], locale = 'de-DE', height 
           bodyFont: { family: CHART_COLORS.FONT_UI, size: 13, weight: '600' },
           callbacks: {
             title: (items) => new Date(Number(items[0].label)).toLocaleDateString(locale),
-            label: (ctx) => formatEuro(ctx.parsed.y, locale),
+            label: (ctx) => formatListingPrice(ctx.parsed.y, locale, currency),
           },
         },
       },
       interaction: { mode: 'index', intersect: false },
     }),
-    [locale],
+    [locale, currency],
   );
 
   if (rows.length < 2) {

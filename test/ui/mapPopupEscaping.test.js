@@ -43,7 +43,7 @@ describe('map popups built from strings', () => {
     // The picture's url is read once and escaped where it goes into the attribute.
     expect(popup).toMatch(/const picture = listingPictureSrc\(listing\);/);
     expect(popup).toMatch(/src="\$\{escapeHtml\(picture\)\}"/);
-    expect(popup).toMatch(/escapeHtml\(formatEuroPrice\(/);
+    expect(popup).toMatch(/escapeHtml\(formatListingPrice\(/);
     expect(popup).toMatch(/escapeHtml\(formatDecimal\(/);
     expect(popup).not.toMatch(/src="\$\{listing\.image_url\}"/);
   });

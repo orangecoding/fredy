@@ -208,6 +208,17 @@ export const metaInformation = {
 Addresses are then geocoded in those countries, and the map opens on them so you can draw a search
 area there. A provider spanning several is fine: `countries: ['de', 'at', 'ch']`.
 
+## Currencies
+
+Providers declare `metaInformation.currency`, with `EUR` as the default. Flatfox uses `CHF`;
+BETTERHOMES resolves EUR or CHF from the advert's national domain. Prices stay in their original
+currency throughout listing views, notifications, price history and MCP. Fredy does not convert
+between currencies.
+
+A dashboard covering several currencies hides its monetary medians. Price ranges need a selection
+with one currency, and a job price ceiling cannot span currencies. The finance calculator retains
+its EUR and German purchase-cost assumptions: it does not score non-EUR listings.
+
 ## 🛡️ Bot detection & proxies
 
 Most browser-based providers (kleinanzeigen, wg-gesucht, ohnemakler, ...) are scraped through a
