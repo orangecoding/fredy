@@ -116,6 +116,25 @@ describe('#sparkasse testsuite()', () => {
     }
   });
 
+  it('reads the living area of a house card and the plot area of a plot card', () => {
+    const card = (facts) =>
+      `<div data-testid="estate-teaser"><a href="/expose/1.html"><span data-testid="estate-teaser-title">T</span><div data-testid="estate-teaser-mainfacts">${facts.map((fact) => `<span>${fact}</span>`).join('')}</div></a></div>`;
+    const sizeOf = (facts) => {
+      const [parsed] = parse(
+        provider.config.crawlContainer,
+        provider.config.crawlFields,
+        card(facts),
+        'https://immobilien.sparkasse.de/x',
+      );
+      return provider.createConfig({ url: 'https://immobilien.sparkasse.de/x' }).normalize(parsed).size;
+    };
+
+    expect(sizeOf(['120 m² Wohnfläche', '774 m² Grundstücksfläche', '4 Zimmer'])).toBe(120);
+    expect(sizeOf(['450 m² Grundstücksfläche'])).toBe(450);
+    expect(sizeOf(['75 m² Wohnfläche', '3 Zimmer'])).toBe(75);
+    expect(sizeOf(['1 Zimmer'])).toBeNull();
+  });
+
   describe('with provider_details enabled', () => {
     beforeEach(() => {
       vi.spyOn(mockStore, 'getUserSettings').mockReturnValue({ provider_details: [provider.metaInformation.id] });
