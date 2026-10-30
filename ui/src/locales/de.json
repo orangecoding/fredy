@@ -372,6 +372,7 @@
   "listing.detail.addToBlacklist": "\"{{term}}\" zur Blacklist hinzufügen",
   "listing.detail.blacklistAdded": "\"{{term}}\" zur Blacklist von {{job}} hinzugefügt.",
   "listing.detail.blacklistAlreadyPresent": "\"{{term}}\" ist bereits in der Blacklist vorhanden.",
+  "listing.detail.blacklistError": "Fehler beim Hinzufügen zur Blacklist.",
   "listing.detail.distanceToHome": "Entfernungen:",
   "listing.detail.locationTitle": "Lage",
   "listing.detail.noGeoWarning": "Dieses Inserat hat keine gültigen Geokoordinaten und kann daher nicht auf der Karte angezeigt werden.",

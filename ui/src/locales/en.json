@@ -372,6 +372,7 @@
   "listing.detail.addToBlacklist": "Add \"{{term}}\" to ignore list",
   "listing.detail.blacklistAdded": "Added \"{{term}}\" to the ignore list of {{job}}.",
   "listing.detail.blacklistAlreadyPresent": "\"{{term}}\" is already in the ignore list.",
+  "listing.detail.blacklistError": "Error adding to ignore list.",
   "listing.detail.distanceToHome": "Distances:",
   "listing.detail.locationTitle": "Location",
   "listing.detail.noGeoWarning": "This listing has no valid geocoordinates, so we cannot show it on the map.",

@@ -372,6 +372,7 @@
   "listing.detail.addToBlacklist": "Aggiungi \"{{term}}\" alla lista di esclusione",
   "listing.detail.blacklistAdded": "Aggiunto \"{{term}}\" alla lista di esclusione di {{job}}.",
   "listing.detail.blacklistAlreadyPresent": "\"{{term}}\" è già presente nella lista di esclusione.",
+  "listing.detail.blacklistError": "Errore durante l'aggiunta alla lista di esclusione.",
   "listing.detail.distanceToHome": "Distanze:",
   "listing.detail.locationTitle": "Posizione",
   "listing.detail.noGeoWarning": "Questo annuncio non ha coordinate valide, quindi non possiamo mostrarlo sulla mappa.",

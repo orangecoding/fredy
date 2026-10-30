@@ -9,6 +9,7 @@ import { IconArticle, IconFilter, IconRefresh } from '@douyinfe/semi-icons';
 
 import { useTranslation } from '../../../services/i18n/i18n.jsx';
 import { useActions } from '../../../services/state/store.js';
+import { errorMessage } from '../../../services/xhr.js';
 import './ListingDescriptionCard.less';
 
 const { Text } = Typography;
@@ -128,7 +129,7 @@ export default function ListingDescriptionCard({ listing, onRefetch, refetching,
         );
       }
     } catch (err) {
-      Toast.error(err?.message || 'Error adding to ignore list');
+      Toast.error(errorMessage(err, t('listing.detail.blacklistError')));
     }
   };
 
