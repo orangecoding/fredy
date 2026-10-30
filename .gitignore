@@ -9,3 +9,5 @@ npm-debug.log
 tools/release/config.json
 .agents
 graft/
+.trail
+

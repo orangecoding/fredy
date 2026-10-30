@@ -53,17 +53,20 @@ describe('alive checker throttling', () => {
     db.close();
   });
 
-  const addListing = (id, { isActive = 1, lastCheckedAt = null, deleted = 0, failures = 0, manual = 0 } = {}) =>
+  const addListing = (
+    id,
+    { isActive = 1, lastCheckedAt = null, deleted = 0, failures = 0, manual = 0, provider = 'immowelt' } = {},
+  ) =>
     db
       .prepare(
         'INSERT INTO listings (id, link, provider, job_id, is_active, manually_deleted, last_checked_at, active_check_failures, activity_is_manual) VALUES (?,?,?,?,?,?,?,?,?)',
       )
-      .run(id, `https://example.com/${id}`, 'immowelt', 'job-1', isActive, deleted, lastCheckedAt, failures, manual);
+      .run(id, `https://example.com/${id}`, provider, 'job-1', isActive, deleted, lastCheckedAt, failures, manual);
 
   const rowOf = (id) => db.prepare('SELECT * FROM listings WHERE id = ?').get(id);
 
   const dueIds = (opts = {}) =>
-    listingsStorage.getListingsDueForActiveCheck({ now: NOW, ...opts }).map((row) => row.id);
+    listingsStorage.getListingsDueForActiveCheck({ providers: ['immowelt'], now: NOW, ...opts }).map((row) => row.id);
 
   it('includes listings that were never checked', () => {
     addListing('never-checked');
@@ -117,11 +120,40 @@ describe('alive checker throttling', () => {
 
   it('only selects the columns the checker needs', () => {
     addListing('lean');
-    expect(Object.keys(listingsStorage.getListingsDueForActiveCheck({ now: NOW })[0]).sort()).toEqual([
-      'id',
-      'link',
-      'provider',
-    ]);
+    expect(
+      Object.keys(listingsStorage.getListingsDueForActiveCheck({ providers: ['immowelt'], now: NOW })[0]).sort(),
+    ).toEqual(['id', 'link', 'provider']);
+  });
+
+  /**
+   * flatfox has no probe. Its listings used to be handed over first, skipped without a record, and
+   * so handed over first again on every run: once they filled a batch, nothing else got checked.
+   */
+  it('still checks a probe-able listing behind more probe-less listings than one run takes', async () => {
+    vi.resetModules();
+    vi.doMock('../../../lib/utils.js', async (importOriginal) => ({
+      ...(await importOriginal()),
+      getProviders: async () => [
+        { metaInformation: { id: 'immowelt' }, config: { activityProbe: async () => 1 } },
+        { metaInformation: { id: 'flatfox' }, config: {} },
+      ],
+    }));
+    vi.doMock('../../../lib/services/storage/settingsStorage.js', () => ({ getSettings: async () => ({}) }));
+    vi.doMock('../../../lib/services/extractor/puppeteerExtractor.js', () => ({
+      launchBrowser: vi.fn(),
+      closeBrowser: vi.fn(),
+    }));
+    vi.doMock('../../../lib/services/logger.js', () => ({
+      default: { debug: () => {}, info: () => {}, warn: () => {}, error: () => {} },
+    }));
+    const runActiveChecker = (await import('../../../lib/services/listings/listingActiveService.js')).default;
+
+    for (let i = 0; i < 20; i++) addListing(`flatfox-${i}`, { provider: 'flatfox' });
+    addListing('immowelt-1');
+
+    await runActiveChecker({ limit: 10, hostGapMs: 0 });
+
+    expect(rowOf('immowelt-1').last_checked_at).not.toBeNull();
   });
 
   describe('failure streaks', () => {
