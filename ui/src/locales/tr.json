@@ -342,7 +342,6 @@
   "listing.detail.descriptionTitle": "Açıklama",
   "listing.detail.noDescription": "Açıklama bulunmuyor.",
   "listing.detail.addToBlacklist": "\"{{term}}\" ifadesini kara listeye ekle",
-  "listing.detail.addToBlacklistHelp": "{{job}} için gelecekteki aramalar bu ifadeyi içeren ilanları filtreleyecektir.",
   "listing.detail.blacklistAdded": "\"{{term}}\" ifadesi {{job}} kara listesine eklendi.",
   "listing.detail.blacklistAlreadyPresent": "\"{{term}}\" zaten kara listede mevcut.",
   "listing.detail.distanceToHome": "Uzaklıklar:",

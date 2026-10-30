@@ -370,7 +370,6 @@
   "listing.detail.descriptionTitle": "Description",
   "listing.detail.noDescription": "Aucune description disponible.",
   "listing.detail.addToBlacklist": "Ajouter « {{term}} » à la liste noire",
-  "listing.detail.addToBlacklistHelp": "Les futures recherches pour {{job}} ignoreront les annonces contenant ce terme.",
   "listing.detail.blacklistAdded": "« {{term}} » ajouté à la liste noire de {{job}}.",
   "listing.detail.blacklistAlreadyPresent": "« {{term}} » est déjà présent dans la liste noire.",
   "listing.detail.distanceToHome": "Distances :",

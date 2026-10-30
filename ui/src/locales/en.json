@@ -370,7 +370,6 @@
   "listing.detail.descriptionTitle": "Description",
   "listing.detail.noDescription": "No description available.",
   "listing.detail.addToBlacklist": "Add \"{{term}}\" to ignore list",
-  "listing.detail.addToBlacklistHelp": "Future searches for {{job}} will filter out listings containing this term.",
   "listing.detail.blacklistAdded": "Added \"{{term}}\" to the ignore list of {{job}}.",
   "listing.detail.blacklistAlreadyPresent": "\"{{term}}\" is already in the ignore list.",
   "listing.detail.distanceToHome": "Distances:",
