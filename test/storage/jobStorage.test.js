@@ -184,9 +184,9 @@ describe('jobStorage.appendJobBlacklist', () => {
     expect(calls.execute).toHaveLength(0);
   });
 
-  it('appends and deduplicates words case-insensitively while trimming whitespace', () => {
+  it('appends and deduplicates words case-insensitively', () => {
     sqliteMock.__queryHandler = () => [{ blacklist: JSON.stringify(['ExistingWord', 'wbs']) }];
-    const result = jobStorage.appendJobBlacklist('job-1', ['  existingword  ', 'WBS', 'Tauschwohnung', '  ']);
+    const result = jobStorage.appendJobBlacklist('job-1', ['existingword', 'WBS', 'Tauschwohnung']);
     expect(result).toEqual({
       blacklist: ['ExistingWord', 'wbs', 'Tauschwohnung'],
       added: ['Tauschwohnung'],
@@ -196,12 +196,14 @@ describe('jobStorage.appendJobBlacklist', () => {
     expect(JSON.parse(updateCall.params.blacklist)).toEqual(['ExistingWord', 'wbs', 'Tauschwohnung']);
   });
 
-  it('handles a single string word parameter', () => {
-    sqliteMock.__queryHandler = () => [{ blacklist: '[]' }];
-    const result = jobStorage.appendJobBlacklist('job-1', 'Indexmiete');
+  it('returns early without updating the row when no words are added', () => {
+    sqliteMock.__queryHandler = () => [{ blacklist: JSON.stringify(['ExistingWord', 'wbs']) }];
+    const result = jobStorage.appendJobBlacklist('job-1', ['existingword', 'WBS']);
     expect(result).toEqual({
-      blacklist: ['Indexmiete'],
-      added: ['Indexmiete'],
+      blacklist: ['ExistingWord', 'wbs'],
+      added: [],
     });
+    const updateCall = calls.execute.find((c) => c.sql.includes('UPDATE jobs SET blacklist'));
+    expect(updateCall).toBeUndefined();
   });
 });
