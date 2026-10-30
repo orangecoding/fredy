@@ -1,4 +1,6 @@
 {
+  "listing.detail.financeCurrencyUnsupported": "Finansman yalnızca EUR cinsinden ilanları destekler.",
+  "listings.mixedCurrencyPriceFilter": "Fiyata göre filtrelemek için tek bir para birimi seçin.",
   "_meta": {
     "flag": "🇹🇷",
     "name": "Türkçe",
@@ -199,6 +201,7 @@
   "jobs.mutation.filterMaxPrice": "Maksimum Fiyat",
   "jobs.mutation.filterMinSize": "Minimum Metrekare (m²)",
   "jobs.mutation.filterMinRooms": "Minimum Oda Sayısı",
+  "jobs.mutation.mixedCurrencyMaxPrice": "En yüksek fiyat, aynı para birimine sahip sağlayıcılar gerektirir.",
   "jobs.mutation.areaSearchPlaceholder": "Haritayı oraya taşımak için bir adres veya şehir arayın",
   "jobs.mutation.areaSearchNotFound": "Bu adres için koordinat bulunamadı.",
   "jobs.mutation.sectionAreaFilter": "Bölge Filtresi",
@@ -414,7 +417,7 @@
   "map.filterJobPlaceholder": "Tüm işler",
   "map.filterDistanceLabel": "Uzaklık",
   "map.filterDistanceNone": "Yok",
-  "map.filterPriceLabel": "Fiyat (€)",
+  "map.filterPriceLabel": "Fiyat",
   "map.filterStyleLabel": "Stil",
   "map.filterStyleStandard": "Standart",
   "map.filterStyleSatellite": "Uydu",

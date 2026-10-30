@@ -36,6 +36,12 @@ vi.mock('../../lib/api/security.js', () => ({ isAdmin: vi.fn(() => false) }));
 import { getListingById, queryListings } from '../../lib/services/storage/listingsStorage.js';
 import { getUserSettings } from '../../lib/services/storage/settingsStorage.js';
 import listingsPlugin from '../../lib/api/routes/listingsRouter.js';
+vi.mock('../../lib/services/providers/providerCurrency.js', () => ({
+  getCurrencyContext: async () => ({
+    resolve: (listing) => (listing.provider === 'polish' ? 'PLN' : 'EUR'),
+    euroSql: "l.provider != 'polish'",
+  }),
+}));
 import { priceThresholds, rentThresholds } from '../../lib/services/finance/affordability.js';
 
 const COMPLETE_PROFILE = {
@@ -74,6 +80,17 @@ beforeEach(() => {
 });
 
 describe('GET /table affordability filter', () => {
+  it('carries PLN through table and detail responses without an EUR verdict', async () => {
+    const listing = { id: 'pl', provider: 'polish', currency: 'PLN', price: 1050000, dealType: 'buy' };
+    queryListings.mockReturnValue({ totalNumber: 1, page: 1, result: [listing] });
+    getListingById.mockReturnValue(listing);
+    const app = await buildApp();
+    const table = (await app.inject({ method: 'GET', url: '/table' })).json();
+    const detail = (await app.inject({ method: 'GET', url: '/pl' })).json();
+    expect(table.result[0]).toMatchObject({ currency: 'PLN', affordabilityVerdict: null });
+    expect(detail).toMatchObject({ currency: 'PLN', affordabilityVerdict: null });
+    await app.close();
+  });
   it('translates "affordable" into a buy price band capped at the 35 % ceiling', async () => {
     const app = await buildApp();
     const response = await app.inject({ method: 'GET', url: '/table?affordabilityFilter=affordable' });

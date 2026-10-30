@@ -22,7 +22,7 @@ vi.mock('../../lib/services/storage/SqliteConnection.js', () => ({ default: sqli
 vi.mock('../../lib/services/similarity-check/similarityCache.js', () => ({ removeEntry: vi.fn() }));
 
 /** The SELECT that fetches the page (as opposed to the COUNT). */
-const pageQuery = () => calls.query.find((call) => !call.sql.includes('COUNT(1)'));
+const pageQuery = () => calls.query.find((call) => call.sql.includes('SELECT l.*'));
 
 /** A band scored only for buying, leaving rent unjudged. */
 const buyOnly = (min, max) => ({ buy: { min, max }, rent: null });
@@ -31,11 +31,19 @@ const rentOnly = (min, max) => ({ buy: null, rent: { min, max } });
 
 describe('queryListings affordabilityBand', () => {
   let listingsStorage;
+  let currencyContext;
 
   beforeEach(async () => {
     calls.query.length = 0;
     vi.resetModules();
     listingsStorage = await import('../../lib/services/storage/listingsStorage.js');
+    const { currencyContextForProviders } = await import('../../lib/services/providers/providerCurrency.js');
+    currencyContext = currencyContextForProviders([{ metaInformation: { id: 'polish', currency: 'PLN' } }]);
+  });
+
+  it('excludes PLN providers from the EUR affordability band', () => {
+    listingsStorage.queryListings({ userId: 'u1', affordabilityBand: buyOnly(30000, 412000), currencyContext });
+    expect(pageQuery().sql).toContain("l.provider != 'polish'");
   });
 
   it('adds no clause when no band is given', () => {

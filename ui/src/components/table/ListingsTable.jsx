@@ -7,7 +7,7 @@ import { Link } from 'react-router';
 import { IconMapPin } from '@douyinfe/semi-icons';
 import ListingPhoto from '../listings/ListingPhoto.jsx';
 import { listingPictureSrc } from '../../services/listings/listingPictures.js';
-import { formatEuroPrice } from '../../services/price/priceService.js';
+import { formatListingPrice } from '../../services/price/priceService.js';
 import * as timeService from '../../services/time/timeService.js';
 import StatusControl from '../listings/StatusControl.jsx';
 import AffordabilityChip from '../listings/AffordabilityChip.jsx';
@@ -95,7 +95,9 @@ const ListingsTable = ({
           <div className="listingsTable__row__price">
             {item.price ? (
               <>
-                <span className="listingsTable__row__amount">{formatEuroPrice(item.price, locale)}</span>
+                <span className="listingsTable__row__amount">
+                  {formatListingPrice(item.price, locale, item.currency)}
+                </span>
                 <span className="listingsTable__row__perSqm">
                   <PricePerSqmBadge listing={item} />
                   <AffordabilityChip
@@ -104,6 +106,7 @@ const ListingsTable = ({
                     chargesIncluded={rentIncludesCharges(item)}
                   />
                   <PriceChangeBadge
+                    currency={item.currency}
                     price={item.price}
                     previousPrice={item.previous_price}
                     changedAt={item.price_changed_at}

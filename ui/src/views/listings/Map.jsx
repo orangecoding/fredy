@@ -40,7 +40,7 @@ import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
 import { keepPopupInView, mountPopupNode } from '../../components/map/popupContent.jsx';
 import NearbyStops from '../../components/transit/NearbyStops.jsx';
 import { COMMUTE_OPTIONS, parseCommuteFilter } from '../../components/transit/travelTimeFormat.js';
-import { formatEuroCompact } from '../../components/cards/chartTheme.js';
+import { formatListingPrice } from '../../services/price/priceService.js';
 import { normalizeTheme } from '../../services/theme/theme.js';
 
 /**
@@ -248,6 +248,10 @@ export default function MapView() {
     }
   }, [listings]);
 
+  const currencies = [...new Set(listings.map((listing) => listing.currency ?? 'EUR'))];
+  const mixedCurrencies = currencies.length > 1;
+  const currency = currencies[0] ?? 'EUR';
+
   const getMaxPrice = () => {
     return listings.reduce((acc, item) => {
       const price = Number(item.price);
@@ -263,7 +267,9 @@ export default function MapView() {
     // one it has nothing to fail, and hiding it always left it off the map with no filter active.
     const priceLimited = urlPriceMin != null || urlPriceMax != null;
     return listings
-      .filter((listing) => (listing.price ? listing.price >= min && listing.price <= max : !priceLimited))
+      .filter(
+        (listing) => mixedCurrencies || (listing.price ? listing.price >= min && listing.price <= max : !priceLimited),
+      )
       .filter(withinCommute);
   };
 
@@ -804,13 +810,23 @@ export default function MapView() {
                   <Text size="small" className="map-panel__label">
                     {t('map.filterPriceLabel')}
                   </Text>
-                  <div className="map-view-container__price-slider">
-                    <div className="map__rangesliderLabels">
-                      <span>{formatEuroCompact(priceRange[0], locale)}</span>
-                      <span>{formatEuroCompact(priceRange[1] || getMaxPrice(), locale)}</span>
+                  {mixedCurrencies ? (
+                    <Text size="small">{t('listings.mixedCurrencyPriceFilter')}</Text>
+                  ) : (
+                    <div className="map-view-container__price-slider">
+                      <div className="map__rangesliderLabels">
+                        <span>{formatListingPrice(priceRange[0], locale, currency)}</span>
+                        <span>{formatListingPrice(priceRange[1] || getMaxPrice(), locale, currency)}</span>
+                      </div>
+                      <RangeSlider
+                        min={0}
+                        max={getMaxPrice()}
+                        step={100}
+                        value={priceRange}
+                        onInput={handlePriceRange}
+                      />
                     </div>
-                    <RangeSlider min={0} max={getMaxPrice()} step={100} value={priceRange} onInput={handlePriceRange} />
-                  </div>
+                  )}
                 </div>
 
                 {!hasHome && (

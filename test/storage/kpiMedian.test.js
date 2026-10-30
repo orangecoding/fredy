@@ -25,6 +25,8 @@ describe('getListingsKpisForJobIds', () => {
       CREATE TABLE listings (
         id TEXT PRIMARY KEY,
         job_id TEXT,
+        provider TEXT DEFAULT 'immoscout',
+        link TEXT,
         price REAL,
         is_active INTEGER,
         manually_deleted INTEGER DEFAULT 0,
@@ -81,6 +83,21 @@ describe('getListingsKpisForJobIds', () => {
     };
     expect(kpis([])).toEqual(empty);
     expect(listingsStorage.getListingsKpisForJobIds()).toEqual(empty);
+  });
+
+  it('rejects a numeric price range spanning currencies before it filters either amount', async () => {
+    const { currencyContextForProviders } = await import('../../lib/services/providers/providerCurrency.js');
+    const currencyContext = currencyContextForProviders([{ metaInformation: { id: 'polish', currency: 'PLN' } }]);
+    db.exec('CREATE TABLE watch_list (id TEXT, listing_id TEXT, user_id TEXT)');
+    add(1000);
+    add(1000000);
+    db.prepare("UPDATE listings SET provider = 'polish' WHERE price = 1000000").run();
+    expect(() => listingsStorage.queryListings({ minPrice: 500000, isAdmin: true, currencyContext })).toThrow(
+      'Select one currency before filtering by price.',
+    );
+    const kpis = listingsStorage.getListingsKpisForJobIds(['job-1'], currencyContext);
+    expect(kpis.currency).toBeNull();
+    expect(kpis.medianPriceOfListings).toBeNull();
   });
 
   it('counts only active listings', () => {
@@ -140,6 +157,7 @@ describe('getListingsKpisForJobIds', () => {
     add(1000);
     add(50_000, { deleted: 1 });
     expect(kpis()).toEqual({
+      currency: 'EUR',
       numberOfListings: 1,
       numberOfActiveListings: 1,
       medianPriceOfListings: 1000,
@@ -156,6 +174,7 @@ describe('getListingsKpisForJobIds', () => {
     add(prices[3], { jobId: 'job-2' });
     add(prices[4], { jobId: 'job-2' });
     expect(kpis(['job-1', 'job-2'])).toEqual({
+      currency: 'EUR',
       numberOfListings: 5,
       numberOfActiveListings: 5,
       medianPriceOfListings: referenceMedian(prices),
@@ -167,6 +186,7 @@ describe('getListingsKpisForJobIds', () => {
   it('reports a zero median when no listing has a price', () => {
     add(null);
     expect(kpis()).toEqual({
+      currency: 'EUR',
       numberOfListings: 1,
       numberOfActiveListings: 1,
       medianPriceOfListings: 0,

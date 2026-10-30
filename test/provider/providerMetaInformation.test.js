@@ -77,6 +77,13 @@ describe('provider metaInformation', () => {
 
   // The check above states the rule; this one states it as "nothing gets thrown away", which is the
   // failure that actually matters. A discarded code is a country the geocoder will not search.
+  it('declares valid currency metadata when it overrides EUR', () => {
+    for (const { metaInformation: meta } of providers) {
+      if (meta.currency != null) expect(meta.currency, `${meta.id}.currency`).toMatch(/^[A-Z]{3}$/);
+      if (meta.currencyOf != null) expect(typeof meta.currencyOf, `${meta.id}.currencyOf`).toBe('function');
+    }
+  });
+
   it('declares nothing the resolver would have to discard', () => {
     for (const provider of providers) {
       const { id, countries } = provider.metaInformation;

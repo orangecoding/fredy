@@ -5,7 +5,7 @@
 
 import { IconArrowRight } from '../../../components/icons/StrokeIcons.jsx';
 import ListingPhoto from '../../../components/listings/ListingPhoto.jsx';
-import { formatEuroPrice } from '../../../services/price/priceService.js';
+import { formatListingPrice } from '../../../services/price/priceService.js';
 import { formatDeviation, formatPricePerSqm, readMarketBenchmark } from '../../../services/listings/marketBenchmark.js';
 import { listingPictureSrc } from '../../../services/listings/listingPictures.js';
 import { formatDecimal } from '../../../services/number/numberService.js';
@@ -97,10 +97,12 @@ export default function LatestListings({
                     {/* `price` is nullable (only id, link and title are required), and formatting
                         null prints "0 €". */}
                     <span className="dashboard__listingAmount">
-                      {row.price != null ? formatEuroPrice(row.price, locale) : t('common.na')}
+                      {row.price != null ? formatListingPrice(row.price, locale, row.currency) : t('common.na')}
                     </span>
                     {row.price_per_sqm != null && (
-                      <span className="dashboard__listingSqm">{formatPricePerSqm(row.price_per_sqm, locale)}</span>
+                      <span className="dashboard__listingSqm">
+                        {formatPricePerSqm(row.price_per_sqm, locale, true, row.currency)}
+                      </span>
                     )}
                   </span>
                   <span className="dashboard__listingTitle">{row.title}</span>

@@ -100,6 +100,13 @@ describe('calculate_financing for a rental', () => {
     expect(md).toContain('Warm rent **1.300 EUR**');
   });
 
+  it('refuses to finance a non-EUR listing', async () => {
+    getListingById.mockReturnValue({ id: 'pl', provider: 'flatfox', price: 1050000, dealType: 'buy' });
+    const result = await callTool('calculate_financing', { listingId: 'pl' });
+    expect(result.isError).toBe(true);
+    expect(textOf(result)).toContain('Financing supports EUR listings only.');
+  });
+
   it('keeps adding the surcharge to a rent quoted without the charges', async () => {
     getListingById.mockReturnValue({ id: 'hc', title: 'Altbau', price: 1300, dealType: 'rent', charges_included: 0 });
 
