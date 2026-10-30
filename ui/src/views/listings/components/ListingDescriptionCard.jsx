@@ -8,7 +8,7 @@ import { Button, Dropdown, Spin, Toast, Typography } from '@douyinfe/semi-ui-19'
 import { IconArticle, IconFilter, IconRefresh } from '@douyinfe/semi-icons';
 
 import { useTranslation } from '../../../services/i18n/i18n.jsx';
-import { useActions } from '../../../services/state/store.js';
+import { useActions, useSelector } from '../../../services/state/store.js';
 import { errorMessage } from '../../../services/xhr.js';
 import './ListingDescriptionCard.less';
 
@@ -59,8 +59,10 @@ const OUTCOME = {
 export default function ListingDescriptionCard({ listing, onRefetch, refetching, outcome }) {
   const t = useTranslation();
   const actions = useActions();
+  const jobs = useSelector((state) => state.jobsData.jobs);
   const description = listing?.description;
   const jobId = listing?.job_id;
+  const job = (jobs ?? []).find((j) => j?.id === jobId);
   const jobName = listing?.job_name;
   const note = outcome ? OUTCOME[outcome] : null;
   // A portal with no detail page will not grow one on a second press.
@@ -94,7 +96,7 @@ export default function ListingDescriptionCard({ listing, onRefetch, refetching,
 
   const handleContextMenu = (e) => {
     const selection = window.getSelection()?.toString().trim();
-    if (!selection || !jobId) {
+    if (!selection || !jobId || job?.isOnlyShared) {
       return;
     }
 
