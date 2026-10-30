@@ -73,7 +73,7 @@ export default function ListingDescriptionCard({ listing, onRefetch, refetching,
   const [menuCoords, setMenuCoords] = useState({ x: 0, y: 0 });
 
   const anchorRef = useRef(null);
-
+  const bodyRef = useRef(null);
   const closeMenu = useCallback(() => {
     setMenuVisible(false);
   }, []);
@@ -95,20 +95,33 @@ export default function ListingDescriptionCard({ listing, onRefetch, refetching,
   }, [menuVisible, closeMenu]);
 
   const handleContextMenu = (e) => {
-    const selection = window.getSelection()?.toString().trim();
-    if (!selection || !jobId || job?.isOnlyShared) {
+    if (!jobId || job?.isOnlyShared) {
+      return;
+    }
+
+    const sel = window.getSelection();
+    if (!sel || sel.isCollapsed || sel.rangeCount === 0) {
+      return;
+    }
+
+    const bodyEl = bodyRef.current;
+    if (!bodyEl || !bodyEl.contains(sel.anchorNode) || !bodyEl.contains(sel.focusNode)) {
+      return;
+    }
+
+    const text = sel.toString().trim();
+    if (!text || text.includes('\n') || text.includes('\r') || text.length > 100) {
       return;
     }
 
     e.preventDefault();
-    setSelectedText(selection);
+    setSelectedText(text);
     setMenuCoords({
       x: e.clientX,
       y: e.clientY,
     });
     setMenuVisible(true);
   };
-
   const handleAddToBlacklist = async () => {
     if (!jobId || !selectedText) return;
     closeMenu();
@@ -169,7 +182,9 @@ export default function ListingDescriptionCard({ listing, onRefetch, refetching,
       </div>
 
       {description ? (
-        <p className="listing-description__body">{description}</p>
+        <p ref={bodyRef} className="listing-description__body">
+          {description}
+        </p>
       ) : (
         <div className="listing-description__empty">
           <IconArticle className="listing-description__empty-icon" aria-hidden="true" />
