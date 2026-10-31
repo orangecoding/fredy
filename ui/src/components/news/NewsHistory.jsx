@@ -7,16 +7,15 @@ import { useMemo, useState } from 'react';
 import { SideSheet, Tooltip } from '@douyinfe/semi-ui-19';
 import { IconBell } from '../icons/StrokeIcons.jsx';
 
-import newsConfig from '../../assets/news/news.json';
-import { allReleases, selectUnseenReleases } from '../../services/news/newsSelection.js';
+import { selectUnseenRelease } from '../../services/news/newsSelection.js';
 import { useSelector } from '../../services/state/store.js';
 import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
-import { NewsEntryBody } from './newsContent.jsx';
+import { NewsReleaseBody, formatReleaseDate } from './newsContent.jsx';
 
 import './NewsModal.less';
 
 /**
- * Everything Fredy has announced, newest first, openable at any time.
+ * The release notes of the newest installed releases, newest first, openable at any time.
  *
  * The dialog that appears on its own is easy to dismiss without reading, and until now that was
  * the end of it - there was no way back to what it had said. This is that way back, and it is also
@@ -30,25 +29,17 @@ export default function NewsHistory({ collapsed }) {
   const t = useTranslation();
   const locale = useLocale();
   const [visible, setVisible] = useState(false);
-  const releases = useMemo(() => allReleases(newsConfig), []);
+  const releases = useSelector((state) => state.news.releases);
   // The same marker the dialog that appears on its own writes when it is dismissed, so the dot on
   // the bell means what the dialog would have said and goes out when it has been said. Nothing is
   // invented here: a user with no marker stored - a fresh account - has no unseen releases by
   // definition, so the dot stays off rather than greeting them with a history they have no use for.
   const lastSeen = useSelector((state) => state.userSettings.settings.news_last_seen_version);
-  const hasUnread = useMemo(() => selectUnseenReleases(newsConfig, lastSeen).length > 0, [lastSeen]);
+  const hasUnread = useMemo(() => selectUnseenRelease(releases, lastSeen) != null, [releases, lastSeen]);
 
   if (releases.length === 0) {
     return null;
   }
-
-  const formatDate = (value) => {
-    if (!value) {
-      return null;
-    }
-    const date = new Date(value);
-    return Number.isNaN(date.getTime()) ? null : date.toLocaleDateString(locale, { dateStyle: 'long' });
-  };
 
   // A row among the sidebar's quiet utilities, labelled like the entries above it. In the rail the
   // label is gone and the tooltip names it instead.
@@ -93,14 +84,11 @@ export default function NewsHistory({ collapsed }) {
           <section key={release.version} className="news__release">
             <header className="news__releaseHeader">
               <h3 className="news__releaseVersion">v{release.version}</h3>
-              {formatDate(release.date) && <span className="news__releaseDate">{formatDate(release.date)}</span>}
+              {formatReleaseDate(release.date, locale) && (
+                <span className="news__releaseDate">{formatReleaseDate(release.date, locale)}</span>
+              )}
             </header>
-            {release.entries.map((entry, index) => (
-              <article key={index} className="news__historyEntry">
-                <h4 className="news__historyEntryTitle">{entry.title}</h4>
-                <NewsEntryBody entry={entry} />
-              </article>
-            ))}
+            <NewsReleaseBody release={release} />
           </section>
         ))}
       </SideSheet>

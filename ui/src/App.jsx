@@ -188,10 +188,11 @@ export default function FredyApp() {
           // Marked done only now: a route that seeds its state from the store on mount must not
           // be rendered before the store actually holds it.
           initializedFor.current = userId;
-          // Nothing in the first render depends on these two - the version line in the footer
-          // and the tracking modal appear when they arrive - so they must not hold up the app.
-          // getVersionUpdate in particular reaches out to api.github.com.
+          // Nothing in the first render depends on these - the version line in the footer, the
+          // What's New views and the tracking modal appear when they arrive - so they must not
+          // hold up the app. The first two reach out to api.github.com.
           actions.versionUpdate.getVersionUpdate();
+          actions.news.getReleases();
           actions.tracking.getTrackingPois();
         }
 

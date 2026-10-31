@@ -1,0 +1,71 @@
+@import '../../tokens.less';
+
+// Bottom right, just above the footer whose chip it announces. Below Semi's dialogs, so the release
+// notes it opens are not covered by it.
+.updateToast {
+  position: fixed;
+  right: @space-6;
+  bottom: 52px;
+  z-index: 100;
+  box-sizing: border-box;
+  width: min(360px, calc(100vw - 32px));
+  display: flex;
+  gap: @space-3;
+  padding: 14px 14px 14px @space-4;
+  border: 1px solid @color-border-bright;
+  border-radius: 12px;
+  background: @color-elevated;
+  box-shadow: @shadow-lg;
+  color: @color-text;
+
+  &__mark {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9px;
+    background: rgb(@color-accent-rgb / 14%);
+    border: 1px solid rgb(@color-accent-rgb / 30%);
+
+    img {
+      width: 20px;
+    }
+  }
+
+  &__text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: @space-1;
+  }
+
+  &__title {
+    font-size: @text-base;
+    font-weight: @weight-strong;
+  }
+
+  &__body {
+    font-size: @text-sm;
+    line-height: 1.5;
+    color: @color-muted;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: @space-2;
+    margin-top: @space-2;
+  }
+
+  &__close {
+    align-self: flex-start;
+    margin: -6px -6px 0 0;
+  }
+
+  @media (max-width: 560px) {
+    right: @space-4;
+  }
+}

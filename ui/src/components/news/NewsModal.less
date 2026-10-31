@@ -1,57 +1,266 @@
 @import '../../tokens.less';
 
-.semi-userGuide-modal-body-title {
-  width: 100%;
-}
-
 .news {
-  &__title {
+  // The release notes dialog. Semi's modal pads its content and its body; the two columns run to
+  // the edges, so those paddings move onto the parts inside.
+  &__modal {
+    .semi-modal-content {
+      padding: 0;
+    }
+
+    .semi-modal-body-wrapper {
+      margin: 0;
+    }
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+  }
+
+  &__mark {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: rgb(@color-accent-rgb / 12%);
+    border: 1px solid rgb(@color-accent-rgb / 30%);
+
+    img {
+      width: 24px;
+    }
+  }
+
+  &__headerText {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  &__eyebrow {
+    font-size: 11px;
+    font-weight: @weight-strong;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: @color-muted;
+  }
+
+  &__headerTitle {
+    font-size: @text-xl;
+    line-height: 1.25;
+    font-weight: @weight-strong;
+    color: @color-text;
+  }
+
+  &__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: @space-3;
+    margin-top: @space-1;
+    font-size: @text-sm;
+    font-weight: 400;
+    color: @color-muted;
+  }
+
+  &__versions {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 1px 9px;
+    border: 1px solid @color-border-bright;
+    border-radius: @radius-pill;
+    background: @color-elevated;
+    font-family: @font-mono;
+    font-size: @text-xs;
+  }
+
+  &__versionsTo {
+    color: @color-text;
+  }
+
+  // The foot of the phone sheet: the button the full width, the link under it.
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: @space-1;
+    width: 100%;
+
+    .news__githubLink {
+      justify-content: center;
+      min-height: 44px;
+    }
+  }
+
+  &__done {
+    height: 48px;
+  }
+
+  &__githubLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: @color-link;
+    font-weight: @weight-medium;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+  }
+
+  // The release, its contents and the GitHub link in a column on the left, the notes and the
+  // button on the right. As tall as the notes need, so a patch release with four bullet points is
+  // not a mostly empty box; long notes stop at the cap and scroll.
+  &__contentsDialog {
+    position: relative;
+    display: flex;
+    min-height: 440px;
+    max-height: min(760px, calc(100vh - 160px));
+  }
+
+  &__close {
+    position: absolute;
+    top: @space-3;
+    right: @space-3;
+    z-index: 1;
+  }
+
+  &__rail {
+    width: 264px;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: @space-7;
+    padding: 28px @space-5 @space-6 @space-6;
+    background: @color-base;
+    border-right: 1px solid @color-border;
+    border-radius: 12px 0 0 12px;
+    overflow-y: auto;
+
+    .news__header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .news__githubLink {
+      margin-top: auto;
+      padding: 0 10px;
+    }
+  }
+
+  &__contents {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    // Room for the close button above the notes.
+    padding-top: 52px;
+  }
+
+  &__mainFooter {
+    display: flex;
+    justify-content: flex-end;
+    padding: @space-4 @space-6;
+    border-top: 1px solid @color-border;
+  }
+
+  &__contentsLabel {
+    padding: 0 10px @space-2;
+    font-size: 11px;
+    font-weight: @weight-strong;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: @color-muted;
+  }
+
+  &__contentsItem {
     display: flex;
     align-items: center;
     gap: @space-2;
-  }
-
-  &__title-mark {
-    flex-shrink: 0;
-  }
-
-  &__version {
-    margin-left: auto;
+    min-height: 36px;
+    padding: 6px 10px;
+    border: 0;
+    border-radius: @radius-btn;
+    background: transparent;
     color: @color-muted;
+    font-family: @font-ui;
+    font-size: @text-base;
+    line-height: 1.35;
+    text-align: left;
+    cursor: pointer;
+
+    &:hover {
+      background: @color-hover;
+      color: @color-text;
+    }
+
+    &--active {
+      background: @color-elevated;
+      color: @color-text;
+      font-weight: @weight-medium;
+    }
+  }
+
+  &__contentsTitle {
+    flex: 1;
+    min-width: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  &__contentsCount {
+    font-family: @font-mono;
     font-size: @text-xs;
-    font-weight: 400;
+    color: @color-muted;
+  }
+
+  // Release notes run long (30.0.0 is a page and a half); they scroll in the right column while
+  // the left one stays put. Positioned, because the contents measure their headings' `offsetTop`
+  // against this box.
+  &__scroll {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    overflow-y: auto;
+    padding: 0 40px;
+
+    // There is more below: the last lines fade out while the notes scroll, and at the end the fade
+    // is only bottom padding.
+    &::after {
+      content: '';
+      position: sticky;
+      bottom: 0;
+      display: block;
+      height: 48px;
+      background: linear-gradient(rgb(@color-surface-rgb / 0%), @color-surface);
+      pointer-events: none;
+    }
   }
 
   &__entry {
     text-align: left;
-    // Stated rather than inherited. The same markup is rendered inside two very different Semi
-    // containers - the UserGuide modal and a SideSheet - and only one of them passes the themed
-    // text colour down, so the sheet was rendering this prose in Semi's stock near-black.
-    color: @color-text;
-
-    p {
-      margin: 0;
-      line-height: 1.6;
-      color: @color-text;
-    }
-
-    a {
-      color: @color-text;
-      text-decoration: underline;
-      text-underline-offset: 3px;
-    }
-
-    b,
-    strong {
-      color: @color-text;
-    }
-  }
-
-  &__media {
-    width: 100%;
-    max-width: 100%;
-    margin-bottom: @space-3;
-    border-radius: @radius-card;
+    // Stated rather than inherited. The same markup is rendered inside a Modal and a SideSheet,
+    // and the sheet does not pass the themed text colour down, so it was rendering this prose in
+    // Semi's stock near-black. A step softer than headings, which keep the full text colour.
+    color: color-mix(in oklab, @color-text 82%, @color-surface);
   }
 
   // The sheet is what a phone gets instead of the centred dialog, and what the reopenable history
@@ -61,10 +270,6 @@
       padding-bottom: @space-8;
       color: @color-text;
     }
-  }
-
-  &__sheet-entry {
-    margin-bottom: @space-6;
   }
 
   &__release {
@@ -94,20 +299,6 @@
   &__releaseDate {
     color: @color-muted;
     font-size: @text-sm;
-  }
-
-  &__historyEntry {
-    margin-bottom: @space-6;
-
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
-
-  &__historyEntryTitle {
-    margin: 0 0 @space-2;
-    font-size: @text-base;
-    color: @color-text;
   }
 
   // Matches the Donate button it sits directly above in the sidebar footer, down to the height and

@@ -50,40 +50,59 @@
     height: 11px;
   }
 
-  /* An update is not a warning, and it does not deserve a permanent amber strip across the top of
-     every page. It belongs next to the version number, which is where somebody is already looking
-     when the question comes up. */
+  /* An update is not a warning, and it does not deserve a permanent strip across the top of every
+     page. It belongs next to the version number, which is where somebody is already looking when
+     the question comes up. It used to be a faint amber pill nobody noticed; it now wears Fredy's
+     own red, says what to do ("what's new") and is announced once by the update toast. */
   &__update {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: @space-2;
     box-sizing: border-box;
-    height: 22px;
-    padding: 0 @space-2;
-    border: 1px solid @color-orange-border;
+    height: 24px;
+    padding: 0 @space-3 0 @space-2;
+    border: 1px solid rgb(@color-accent-rgb / 55%);
     border-radius: @radius-pill;
-    background: @color-orange-bg;
+    background: rgb(@color-accent-rgb / 14%);
     font-family: @font-ui;
     font-size: @text-xs;
     font-weight: @weight-medium;
-    /* Text wears a text token. The amber itself reaches only 4.24:1 on its own fill in the light
-       theme; the dot and the border carry the colour instead. */
+    /* Text wears a text token. The accent fill does not reach AA as text on its own tint; the dot,
+       the border and the fill carry the colour instead. */
     color: @color-text;
     white-space: nowrap;
     cursor: pointer;
-    transition: border-color @transition-fast;
+    transition:
+      border-color @transition-fast,
+      background-color @transition-fast;
 
     &:hover {
-      border-color: @color-orange-text;
+      border-color: @color-accent;
+      background: rgb(@color-accent-rgb / 22%);
     }
   }
 
   &__updateDot {
     flex: none;
-    width: 6px;
-    height: 6px;
+    width: 7px;
+    height: 7px;
     border-radius: @radius-pill;
-    background: @color-orange-text;
+    background: @color-accent-text;
+    box-shadow: 0 0 0 3px rgb(@color-accent-rgb / 22%);
+  }
+
+  &__updateDivider {
+    flex: none;
+    width: 1px;
+    height: 12px;
+    background: rgb(@color-accent-rgb / 40%);
+  }
+
+  &__updateAction {
+    display: inline-flex;
+    align-items: center;
+    gap: @space-1;
+    color: @color-link;
   }
 
   &__credit {

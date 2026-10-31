@@ -1,0 +1,159 @@
+@import './tokens.less';
+
+/* GitHub release notes, rendered to HTML on the server. Shared by the update dialog and the What's
+   New views, so these are plain element selectors rather than a component library's classes. Only
+   what a GitHub release body actually contains is styled. Colour and height are left to the
+   container, which knows whether it scrolls and how loud it should be. */
+.releaseNotes {
+  font-size: @text-base;
+  line-height: 1.65;
+  /* GitHub autolinks bare urls, and a compare link is one unbroken word wider than a phone. */
+  overflow-wrap: anywhere;
+
+  > :first-child {
+    margin-top: 0;
+  }
+
+  > :last-child {
+    margin-bottom: 0;
+  }
+
+  /* Release notes often open with a heading of their own, and at document scale it would shout over
+     the title of whatever shows them. Two sizes, both close to body copy. */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: @space-4 0 @space-2;
+    font-weight: 600;
+    color: @color-text;
+  }
+
+  h1,
+  h2 {
+    font-size: @text-lg;
+  }
+
+  h3 {
+    margin-top: @space-7;
+    font-size: @text-md;
+  }
+
+  h4,
+  h5,
+  h6 {
+    font-size: @text-base;
+  }
+
+  p {
+    margin: 0 0 @space-3;
+  }
+
+  strong,
+  b {
+    font-weight: @weight-strong;
+    color: @color-text;
+  }
+
+  ul,
+  ol {
+    margin: 0 0 @space-3;
+    padding-left: @space-5;
+  }
+
+  li {
+    margin-bottom: @space-1;
+    padding-left: @space-1;
+  }
+
+  li::marker {
+    color: @color-accent;
+  }
+
+  /* Most releases open with a short list of what they bring. Set apart as a card it reads as the
+     summary it is, before the prose that explains each point. */
+  > ul:first-child {
+    margin-bottom: @space-5;
+    padding: @space-3 @space-4 @space-3 @space-8;
+    background: @color-elevated;
+    border: 1px solid @color-border;
+    border-radius: 10px;
+    color: @color-text;
+    font-weight: @weight-medium;
+
+    > li:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  a {
+    color: @color-text;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  /* Screenshots are pasted at their native width, which is routinely wider than any dialog. */
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: @radius-chip;
+    vertical-align: middle;
+  }
+
+  /* A screenshot on a line of its own is a block in the flow and needs the gap a paragraph gets.
+     Badge rows sit inside a paragraph and keep flowing inline, which is why this is a child
+     selector rather than a rule on every image. */
+  > img {
+    display: block;
+    margin: 0 0 @space-3;
+  }
+
+  /* Screenshots of Fredy, in Fredy's own colours, need an edge to stand apart from the dialog. */
+  > img,
+  p > img:only-child {
+    border: 1px solid @color-border-bright;
+    border-radius: @radius-card;
+  }
+
+  :not(pre) > code {
+    padding: 1px 6px;
+    border-radius: 5px;
+    background: @color-solid;
+    color: @color-text;
+  }
+
+  code,
+  pre {
+    font-family: @font-mono;
+    font-size: @text-xs;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  pre {
+    padding: @space-3;
+    border-radius: @radius-chip;
+    background: @color-base;
+  }
+
+  hr {
+    margin: @space-4 0;
+    border: 0;
+    border-top: 1px solid @color-border;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: @space-3;
+  }
+
+  th,
+  td {
+    padding: @space-2;
+    border: 1px solid @color-border;
+    text-align: left;
+  }
+}

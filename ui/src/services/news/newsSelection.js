@@ -4,19 +4,16 @@
  */
 
 /**
- * One shipped release, as `ui/src/assets/news/news.json` declares it.
+ * One installed release, as `GET /api/version/releases` returns it: taken from the GitHub release
+ * list, newest first, at most the six newest that are not newer than the running version.
  *
  * @typedef {Object} NewsRelease
- * @property {string} version Semantic version, matching the tag the release went out under.
- * @property {string} [date] ISO date, shown next to the version.
- * @property {NewsEntry[]} entries What is worth telling someone about, in reading order.
- *
- * @typedef {Object} NewsEntry
- * @property {string} title
- * @property {string} text Inline HTML, rendered as-is. Written in English and not translated:
- *   release prose changes every few weeks and would otherwise have to be written twice, with the
- *   German half going stale the first time somebody forgot.
- * @property {string} [media] File name under `ui/src/assets/news/`. `.mp4` renders as a video.
+ * @property {string} version Semantic version, the tag the release went out under.
+ * @property {string} [date] ISO timestamp the release was published at.
+ * @property {string} [url] The release page on GitHub.
+ * @property {string} bodyHtml The release notes, rendered from markdown and sanitised server-side.
+ * @property {{title: string, items: number}[]} [outline] The top-level headings of the notes, down
+ *   to h3, each with the number of list items under it.
  */
 
 /**
@@ -49,77 +46,38 @@ export function compareVersions(a, b) {
 }
 
 /**
- * Whether a release is well-formed enough to show.
+ * The release to tell someone about after an upgrade: the newest installed one, if they have not
+ * been shown it yet.
  *
- * A malformed entry is dropped rather than rendered: news.json is hand-edited on every release and
- * a missing field there must not take the dialog - or the page behind it - down with it.
- *
- * @param {any} release
- * @returns {boolean}
- */
-function isUsable(release) {
-  return (
-    release != null &&
-    typeof release === 'object' &&
-    typeof release.version === 'string' &&
-    release.version.length > 0 &&
-    Array.isArray(release.entries) &&
-    release.entries.some((entry) => entry != null && typeof entry.title === 'string')
-  );
-}
-
-/**
- * Every release, newest first, with the unusable ones dropped.
- *
- * @param {any} config The parsed news.json.
- * @returns {NewsRelease[]}
- */
-export function allReleases(config) {
-  const releases = Array.isArray(config?.releases) ? config.releases : [];
-  return releases
-    .filter(isUsable)
-    .map((release) => ({
-      ...release,
-      entries: release.entries.filter((entry) => entry != null && typeof entry.title === 'string'),
-    }))
-    .sort((a, b) => compareVersions(b.version, a.version));
-}
-
-/**
- * The releases someone has not been told about yet, oldest first.
- *
- * Oldest first because they are shown as consecutive steps and the story only makes sense in the
- * order it happened. Someone who skipped two releases gets both, which is the point: the previous
- * mechanism stored a single hash of the current payload, so skipping a release meant never hearing
- * about it.
+ * Only the newest, even when several were skipped. Somebody coming from 29 to 30 wants to know what
+ * 30 brought; the releases in between are in the What's New sheet for whoever cares.
  *
  * A `lastSeen` of null means "no marker stored" - a user created after this shipped. They are shown
  * nothing and the current version is recorded for them, because a brand new account being greeted
  * with the history of a product it has never used is noise, not news.
  *
- * @param {any} config The parsed news.json.
+ * @param {NewsRelease[]} releases Newest first, as the server sends them.
  * @param {string|null|undefined} lastSeen The newest version this user has been shown.
- * @returns {NewsRelease[]} Empty when there is nothing to say.
+ * @returns {NewsRelease|null} `null` when there is nothing to say.
  */
-export function selectUnseenReleases(config, lastSeen) {
-  if (lastSeen == null || String(lastSeen).length === 0) {
-    return [];
+export function selectUnseenRelease(releases, lastSeen) {
+  const newest = Array.isArray(releases) ? releases[0] : null;
+  if (newest == null || lastSeen == null || String(lastSeen).length === 0) {
+    return null;
   }
-  return allReleases(config)
-    .filter((release) => compareVersions(release.version, lastSeen) > 0)
-    .reverse();
+  return compareVersions(newest.version, lastSeen) > 0 ? newest : null;
 }
 
 /**
- * The newest version named in the file, used as the marker to store once the dialog is dismissed.
+ * The newest release in the list, used as the marker to store once the dialog is dismissed.
  *
- * Taken from news.json rather than from package.json: the marker has to mean "you have seen
- * everything this file holds", and a build whose version is ahead of the newest written release
- * would otherwise silently swallow that release when it is added later.
+ * Taken from the list rather than from the running version: the marker has to mean "you have seen
+ * everything that was listed". While GitHub cannot be reached the list is empty, so nothing is
+ * stored, and the news are still there to be shown once it answers again.
  *
- * @param {any} config The parsed news.json.
+ * @param {NewsRelease[]} releases Newest first, as the server sends them.
  * @returns {string|null}
  */
-export function newestVersion(config) {
-  return allReleases(config)[0]?.version ?? null;
+export function newestVersion(releases) {
+  return (Array.isArray(releases) && releases[0]?.version) || null;
 }

@@ -4,7 +4,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { markdownToSafeHtml } from '../../lib/services/markdown.js';
+import { markdownToSafeHtml, releaseOutline } from '../../lib/services/markdown.js';
 
 /**
  * The version banner used to hand GitHub's release body to Semi's MarkdownRender, an MDX compiler.
@@ -82,5 +82,48 @@ describe('markdownToSafeHtml', () => {
     expect(markdownToSafeHtml(null)).toBe('');
     expect(markdownToSafeHtml('')).toBe('');
     expect(markdownToSafeHtml('   \n  ')).toBe('');
+  });
+});
+
+/**
+ * The contents beside long release notes. The browser scrolls to the n-th top-level h1-h3 of the
+ * rendered notes, so the outline has to count exactly those.
+ */
+describe('releaseOutline', () => {
+  const body = [
+    '- You can now add a listing by pasting its URL',
+    '- Fixing bot detection in docker',
+    '',
+    '## Fredy V 30 - A **calmer**, cleaner `Fredy`',
+    'Every page has a new look.',
+    '',
+    '### Fixes',
+    '- one',
+    '- two',
+    '  - nested, not counted',
+    '',
+    '#### Small print, too deep for the contents',
+    '- three',
+    '',
+    '### Under the hood',
+    '1. numbered lists count too',
+  ].join('\n');
+
+  it('lists the headings down to h3, as readable text', () => {
+    expect(releaseOutline(body).map((section) => section.title)).toEqual([
+      'Fredy V 30 - A calmer, cleaner Fredy',
+      'Fixes',
+      'Under the hood',
+    ]);
+  });
+
+  it('counts the list items under each heading, and ignores the list before the first one', () => {
+    // The h4's list belongs to "Fixes": the h4 is no section of its own.
+    expect(releaseOutline(body).map((section) => section.items)).toEqual([0, 3, 1]);
+  });
+
+  it('has nothing to say about notes without headings, or no notes', () => {
+    expect(releaseOutline('- just\n- a list')).toEqual([]);
+    expect(releaseOutline(null)).toEqual([]);
   });
 });
