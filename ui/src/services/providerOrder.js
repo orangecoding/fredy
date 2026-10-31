@@ -57,6 +57,7 @@ export const PROVIDER_SIZE_ORDER = [
   'regionalimmobilien24',
   'inberlinwohnen',
   'schwarzesbrett',
+  'zvgPortal',
   // Austria
   'willhaben',
   'immoscoutAt',

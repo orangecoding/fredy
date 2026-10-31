@@ -337,6 +337,12 @@ export function buildFetchMock() {
       return { ok: true, status: 200, text: () => Promise.resolve(html) };
     }
 
+    // The ZVG-Portal answers a search form POST with a server-rendered table; one recording stands for any search.
+    if (urlStr.includes('zvg-portal.de/')) {
+      const html = (await tryReadFile(path.join(FIXTURES_DIR, 'zvgPortal.html'))) ?? '';
+      return { ok: true, status: 200, text: () => Promise.resolve(html) };
+    }
+
     // Flatfox answers a search in two calls - the pins, then the listings those keys belong to -
     // and both have to be served for the provider to get through its own flow.
     if (urlStr.includes('flatfox.ch/api/v1/pin/')) {
