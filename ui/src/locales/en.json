@@ -1,4 +1,6 @@
 {
+  "listing.detail.financeCurrencyUnsupported": "Financing supports EUR listings only.",
+  "listings.mixedCurrencyPriceFilter": "Select one currency to filter by price.",
   "_meta": {
     "flag": "🇬🇧",
     "name": "English",
@@ -199,6 +201,7 @@
   "jobs.mutation.filterMaxPrice": "Max Price",
   "jobs.mutation.filterMinSize": "Min Size (m²)",
   "jobs.mutation.filterMinRooms": "Min Rooms",
+  "jobs.mutation.mixedCurrencyMaxPrice": "A maximum price requires providers with the same currency.",
   "jobs.mutation.areaSearchPlaceholder": "Search an address or town to move the map there",
   "jobs.mutation.areaSearchNotFound": "No coordinates found for that address.",
   "jobs.mutation.sectionAreaFilter": "Area Filter",
@@ -446,7 +449,7 @@
   "map.filterJobPlaceholder": "All jobs",
   "map.filterDistanceLabel": "Distance",
   "map.filterDistanceNone": "None",
-  "map.filterPriceLabel": "Price (€)",
+  "map.filterPriceLabel": "Price",
   "map.filterStyleLabel": "Style",
   "map.filterStyleStandard": "Standard",
   "map.filterStyleSatellite": "Satellite",

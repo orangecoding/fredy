@@ -25,7 +25,7 @@
 
 # Fredy 🏡 - Your Self-Hosted Real Estate Finder for Europe
 
-**Fredy** watches **29 real estate portals** across 🇩🇪 🇦🇹 🇨🇭 🇪🇸 🇮🇹 🇵🇹 🇫🇷 for you (e.g. Immoscout,
+**Fredy** watches **30 real estate portals** across 🇩🇪 🇦🇹 🇨🇭 🇪🇸 🇮🇹 🇵🇹 🇫🇷 🇵🇱 for you (e.g. Immoscout,
 Kleinanzeigen etc), drops duplicates across platforms, and notifies you via **Slack, Telegram,
 Email, ntfy, Discord and more** the moment a new listing appears. Searches are managed from a Web
 UI, and you never see the same listing twice.
@@ -96,9 +96,9 @@ Fredy is in the [Unraid](https://unraid.net/) community store.
 
 ## ✨ What you get
 
--   🏠 **29 portals** across 🇩🇪 🇦🇹 🇨🇭 🇪🇸 🇮🇹 🇵🇹 🇫🇷: ImmoScout24 (Germany and Austria), Immowelt,
+-   🏠 **30 portals** across 🇩🇪 🇦🇹 🇨🇭 🇪🇸 🇮🇹 🇵🇹 🇫🇷 🇵🇱: ImmoScout24 (Germany and Austria), Immowelt,
     Kleinanzeigen, WG-Gesucht, willhaben, Flatfox, idealista, Subito, leboncoin, SeLoger and
-    [19 more](doc/providers.md)
+    [20 more, including Otodom](doc/providers.md)
 -   ⚡ **Instant notifications**: Slack, Telegram, Email (SMTP, SendGrid, Mailjet, Resend), ntfy,
     Gotify, Discord, Mattermost, Pushover, Apprise and more
 -   🔄 **Deduplication across platforms**: the same flat advertised on ImmoScout, Immowelt and
@@ -245,7 +245,7 @@ class node_debug,node_mcp toneMint
 
 | Topic | What is in there |
 |---|---|
-| [Providers & scraping](doc/providers.md) | All 29 providers, the Immoscout / idealista / Casa.it / French portal specifics, and residential proxies for when a VPS gets blocked |
+| [Providers & scraping](doc/providers.md) | All 30 providers, the Immoscout / idealista / Casa.it / French portal specifics, and residential proxies for when a VPS gets blocked |
 | [Scam detection](doc/scam-detection.md) | The signals, their weights, the languages, and how to overrule Fredy |
 | [Financing calculator](doc/financing.md) | Rent and Annuitätendarlehen, Kaufnebenkosten, Restschuld, the 35 % rule |
 | [Travel time & public transport](doc/travel-time.md) | Addresses and place types, estimated vs exact, route drawing, departure boards, operator settings |

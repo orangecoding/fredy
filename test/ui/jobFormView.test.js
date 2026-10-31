@@ -165,6 +165,20 @@ describe('the two required steps look like steps, not like empty results', () =>
   });
 });
 
+describe('a mixed-currency selection refuses the ceiling without locking the form', () => {
+  it('keeps the maximum price editable so a stale ceiling can be cleared', () => {
+    // A job saved before currencies were resolved can carry a price ceiling over providers that
+    // stopped sharing one the day the metadata arrived. Refusing that save is the API's job -
+    // disabling the field removed the only way to make the job saveable again.
+    expect(form).not.toMatch(/disabled=\{filter\.key === 'maxPrice'/);
+  });
+
+  it('explains the refusal with the job form wording, not the map filter wording', () => {
+    expect(form).toMatch(/jobs\.mutation\.mixedCurrencyMaxPrice/);
+    expect(form).not.toMatch(/listings\.mixedCurrencyPriceFilter/);
+  });
+});
+
 describe('no colour, spacing or type in the markup', () => {
   it.each(ALL_JSX)('%s sets none of them inline', (_name, source) => {
     expect(source).not.toMatch(/style=\{\{[^}]*\b(color|margin|padding|gap|fontSize|fontWeight|lineHeight)\b/);

@@ -86,6 +86,22 @@ describe('DELETE /filtered', () => {
     expect(deleteListingsByFilter).not.toHaveBeenCalled();
   });
 
+  it("keeps the currency guard's own status code instead of turning it into a 500", async () => {
+    // The storage layer throws this exact shape when a price bound spans two currencies. The
+    // catch-all below it used to rewrite every failure into a 500, so a client could not tell a
+    // refused request from a broken server.
+    const refusal = new Error('Select one currency before filtering by price.');
+    refusal.statusCode = 400;
+    deleteListingsByFilter.mockImplementation(() => {
+      throw refusal;
+    });
+
+    const response = await del({ minPrice: 500000 });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.json().error).toBe(refusal.message);
+  });
+
   it('lets an admin through in demo mode', async () => {
     getSettings.mockResolvedValue({ demoMode: true });
     isAdmin.mockReturnValue(true);

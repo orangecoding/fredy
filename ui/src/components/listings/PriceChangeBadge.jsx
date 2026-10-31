@@ -5,7 +5,7 @@
 
 import { Tooltip } from '@douyinfe/semi-ui-19';
 
-import { formatEuroPrice } from '../../services/price/priceService.js';
+import { formatListingPrice } from '../../services/price/priceService.js';
 import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
 import './PriceChangeBadge.less';
 
@@ -25,7 +25,7 @@ import './PriceChangeBadge.less';
  * @param {number|null|undefined} props.changedAt Epoch milliseconds of that change.
  * @returns {React.ReactElement|null}
  */
-export default function PriceChangeBadge({ price, previousPrice, changedAt }) {
+export default function PriceChangeBadge({ price, previousPrice, changedAt, currency = 'EUR' }) {
   const t = useTranslation();
   const locale = useLocale();
 
@@ -40,7 +40,7 @@ export default function PriceChangeBadge({ price, previousPrice, changedAt }) {
   const label = `${dropped ? '↓' : '↑'} ${percent > 0 ? '+' : '-'}${Math.abs(percent).toFixed(1)} %`;
 
   const tooltip = [
-    t('listings.priceChangeFrom', { price: formatEuroPrice(previous, locale) }),
+    t('listings.priceChangeFrom', { price: formatListingPrice(previous, locale, currency) }),
     changedAt ? new Date(Number(changedAt)).toLocaleDateString() : null,
   ]
     .filter(Boolean)

@@ -7,7 +7,7 @@ platform into Fredy.
 > Always make sure the search results are sorted by **date**, so Fredy picks up the newest listings
 > first.
 
-## The 29 built-in providers
+## The 30 built-in providers
 
 **🇩🇪 Germany**
 
@@ -26,6 +26,7 @@ platform into Fredy.
 **🇪🇸 Spain · 🇮🇹 Italy · 🇵🇹 Portugal** · idealista
 **🇮🇹 Italy** · Subito · Tecnocasa · Tecnorete · Casa.it
 **🇫🇷 France** · leboncoin · SeLoger · Bien'ici
+**🇵🇱 Poland** · Otodom
 
 If you run a portal Fredy does not cover yet, contributions are very welcome, see
 [CONTRIBUTING.md](../CONTRIBUTING.md).
@@ -190,6 +191,29 @@ own servers and the url carries nothing but an id, so the job stops and says so 
 and narrow it down with Fredy's own map area filter instead. A place Bien'ici no longer knows stops
 the job too, rather than being searched as whatever its place lookup guesses instead.
 
+## Otodom
+
+Polish house-sale searches are supported, for example:
+
+```
+https://www.otodom.pl/pl/wyniki/sprzedaz/dom/malopolskie/krakow/krakow/krakow?ownerTypeSingleSelect=ALL
+```
+
+Fredy reads the search page's embedded JSON through a plain HTTP request. Every filter stays in
+the URL; sorting is set to newest first. Each run starts at page one and reads at most five pages,
+so this watches recent adverts rather than imports every historical result of a broad search.
+Narrow the search or shorten the interval if more than five pages arrive between runs.
+
+Amounts stay in PLN. Addresses are geocoded within Poland. Development groups without a single
+asking price are skipped; an individual advert with a hidden price remains usable. Full detail
+enrichment, adding an advert by URL, activity checks and scheduled price tracking are not included.
+Other categories, including rentals and flats, are refused until their payloads have test coverage.
+
+Access depends on the client and network. The tested native HTTP requests worked while a separate
+browser received a CloudFront 403. A blocked request fails the job; it is not treated as an empty
+search. No browser fallback or paid scraping service is used. EUR finance does not score PLN
+listings; see [Currencies](#currencies).
+
 ## Countries and the map
 
 **Every provider declares the countries it covers**, and the job form puts the matching flag in
@@ -207,6 +231,17 @@ export const metaInformation = {
 
 Addresses are then geocoded in those countries, and the map opens on them so you can draw a search
 area there. A provider spanning several is fine: `countries: ['de', 'at', 'ch']`.
+
+## Currencies
+
+Providers declare `metaInformation.currency`, with `EUR` as the default. Flatfox uses `CHF`;
+BETTERHOMES resolves EUR or CHF from the advert's national domain. Prices stay in their original
+currency throughout listing views, notifications, price history and MCP. Fredy does not convert
+between currencies.
+
+A dashboard covering several currencies hides its monetary medians. Price ranges need a selection
+with one currency, and a job price ceiling cannot span currencies. The finance calculator retains
+its EUR and German purchase-cost assumptions: it does not score non-EUR listings.
 
 ## 🛡️ Bot detection & proxies
 

@@ -262,7 +262,7 @@ describe('the page', () => {
   });
 
   it('formats both ends of the price slider', () => {
-    expect(viewJsx).toMatch(/formatEuroCompact\(priceRange\[0\]/);
+    expect(viewJsx).toMatch(/formatListingPrice\(priceRange\[0\]/);
     expect(viewJsx).not.toMatch(/<span>\{priceRange\[0\]\}<\/span>/);
   });
 

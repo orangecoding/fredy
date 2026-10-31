@@ -922,6 +922,48 @@ export async function clearFixtures(fixturesDir) {
   return files.length;
 }
 
+/**
+ * Record two Otodom pages; unrelated bootstrap data and contact details are omitted.
+ * @param {string} url
+ * @returns {Promise<void>}
+ */
+async function downloadOtodomFixtures(url) {
+  const { parseSearchPage } = await import('../../lib/provider/otodom.js');
+  const searchUrl = new URL(url);
+  searchUrl.searchParams.set('by', 'LATEST');
+  searchUrl.searchParams.set('direction', 'DESC');
+  for (let page = 1; page <= 2; page++) {
+    searchUrl.searchParams.set('page', String(page));
+    const response = await fetch(searchUrl, { signal: AbortSignal.timeout(30_000), redirect: 'error' });
+    if (!response.ok) throw new Error(`Otodom fixture failed: ${response.status} ${response.statusText}`);
+    const search = parseSearchPage(await response.text());
+    const fields = [
+      'id',
+      'title',
+      'slug',
+      'estate',
+      'transaction',
+      'images',
+      'areaInSquareMeters',
+      'dateCreated',
+      'location',
+      'roomsNumber',
+      'totalPrice',
+      'hidePrice',
+      'shortDescription',
+      'investmentUnitsNumber',
+      'investmentUnitsAreaInSquareMeters',
+    ];
+    search.items = search.items.map((item) =>
+      Object.fromEntries(fields.filter((key) => key in item).map((key) => [key, item[key]])),
+    );
+    search.pagination = { ...search.pagination, totalPages: 2 };
+    const data = JSON.stringify({ props: { pageProps: { data: { searchAds: search } } } }).replaceAll('<', '\\u003c');
+    const html = `<!doctype html>\n<!-- Recorded from ${searchUrl}; pagination shortened to two pages for offline tests. -->\n<script id="__NEXT_DATA__" type="application/json">${data}</script>\n`;
+    await writeFile(path.join(FIXTURES_DIR, page === 1 ? 'otodom.html' : 'otodom_page2.html'), html);
+  }
+}
+
 async function main() {
   await mkdir(FIXTURES_DIR, { recursive: true });
 
@@ -966,6 +1008,9 @@ async function main() {
         break;
       case 'leboncoin':
         await downloadLeboncoinFixtures(runConfig, launchBrowser, closeBrowser);
+        break;
+      case 'otodom':
+        await downloadOtodomFixtures(runConfig.url);
         break;
       case 'willhaben':
         await downloadWillhabenFixtures(runConfig.url);

@@ -3,7 +3,7 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { formatEuroPrice } from '../price/priceService.js';
+import { formatListingPrice } from '../price/priceService.js';
 
 /**
  * Reading the price per square metre a listing carries, and how it compares to the area.
@@ -112,6 +112,7 @@ export function readMarketBenchmark(listing) {
   const percent = deviationPercent(value, median);
   return {
     pricePerSqm: value,
+    currency: listing?.currency ?? 'EUR',
     median,
     sampleSize: toNumber(listing?.market_sample_size),
     radiusKm: toNumber(listing?.market_radius_km),
@@ -130,7 +131,7 @@ export function readMarketBenchmark(listing) {
  *   that push the number out of a narrow tile.
  * @returns {string} e.g. `12,40 €/m²`.
  */
-export function formatPricePerSqm(value, locale, withUnit = true) {
+export function formatPricePerSqm(value, locale, withUnit = true, currency = 'EUR') {
   const parsed = toNumber(value);
   if (parsed == null) {
     return '';
@@ -140,7 +141,7 @@ export function formatPricePerSqm(value, locale, withUnit = true) {
   // square metre to the cent.
   const whole = parsed >= WHOLE_EURO_ABOVE;
   const rounded = whole ? Math.round(parsed) : Math.round(parsed * 100) / 100;
-  const amount = formatEuroPrice(rounded, locale, whole ? 0 : 2);
+  const amount = formatListingPrice(rounded, locale, currency, whole ? 0 : 2);
   return withUnit ? `${amount}/m²` : amount;
 }
 

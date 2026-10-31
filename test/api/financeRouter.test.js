@@ -21,6 +21,12 @@ import { queryListings, getListingById } from '../../lib/services/storage/listin
 import { getUserSettings } from '../../lib/services/storage/settingsStorage.js';
 import { trackPoi } from '../../lib/services/tracking/Tracker.js';
 import financePlugin from '../../lib/api/routes/financeRouter.js';
+vi.mock('../../lib/services/providers/providerCurrency.js', () => ({
+  getCurrencyContext: async () => ({
+    resolve: (listing) => (listing.provider === 'polish' ? 'PLN' : 'EUR'),
+    euroSql: "l.provider != 'polish'",
+  }),
+}));
 
 const PROFILE = {
   personA: { label: 'A', enabled: true, age: 34, primaryIncome: 3400, secondaryIncome: 0 },
@@ -205,7 +211,7 @@ describe('POST /affordability', () => {
     const body = response.json();
     expect(body.items).toHaveLength(1);
     expect(body.items[0].id).toBe('buy');
-    expect(body.skipped).toEqual({ noPrice: 1, incompleteProfile: 0 });
+    expect(body.skipped).toEqual({ noPrice: 1, incompleteProfile: 0, unsupportedCurrency: 0 });
   });
 
   it('falls back to the price heuristic when a listing has no deal type', async () => {
@@ -400,6 +406,19 @@ describe('GET /listing/:listingId', () => {
 
     expect(response.statusCode).toBe(404);
     expect(getListingById).toHaveBeenCalledWith('someone-elses', 'user-1', false);
+  });
+
+  it('does not run EUR financing or affordability against PLN listings', async () => {
+    const polish = { ...listing('pl', 1050000), provider: 'polish' };
+    getListingById.mockReturnValue(polish);
+    queryListings.mockReturnValue({ totalNumber: 1, page: 1, result: [polish] });
+    const app = await buildApp();
+    const detail = (await app.inject({ method: 'GET', url: '/listing/pl' })).json();
+    expect(detail).toMatchObject({ result: null, scored: null, unsupportedCurrency: true });
+    const sweep = (await app.inject({ method: 'POST', url: '/affordability', payload: { profile: PROFILE } })).json();
+    expect(sweep.items).toEqual([]);
+    expect(sweep.skipped.unsupportedCurrency).toBe(1);
+    await app.close();
   });
 
   it('returns no figures for a listing without a price', async () => {
