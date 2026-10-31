@@ -24,6 +24,7 @@ const sqliteMock = {
     return [];
   },
   __queryHandler: null,
+  withTransaction: (cb) => cb(),
 };
 
 vi.mock('../../lib/services/storage/SqliteConnection.js', () => ({
@@ -163,5 +164,46 @@ describe('jobStorage.upsertJob binds nothing it does not write', () => {
     const insert = calls.execute.find((c) => c.sql.includes('INSERT INTO jobs'));
     expect(insert.sql).toContain('commute_filter');
     expect(JSON.parse(insert.params.commuteFilter)).toEqual(aJob.commuteFilter);
+  });
+});
+
+describe('jobStorage.appendJobBlacklist', () => {
+  let jobStorage;
+
+  beforeEach(async () => {
+    calls.execute.length = 0;
+    calls.query.length = 0;
+    sqliteMock.__queryHandler = null;
+    jobStorage = await import('../../lib/services/storage/jobStorage.js');
+  });
+
+  it('returns null if job does not exist', () => {
+    sqliteMock.__queryHandler = () => [];
+    const result = jobStorage.appendJobBlacklist('missing-job', ['word']);
+    expect(result).toBeNull();
+    expect(calls.execute).toHaveLength(0);
+  });
+
+  it('appends and deduplicates words case-insensitively', () => {
+    sqliteMock.__queryHandler = () => [{ blacklist: JSON.stringify(['ExistingWord', 'wbs']) }];
+    const result = jobStorage.appendJobBlacklist('job-1', ['existingword', 'WBS', 'Tauschwohnung']);
+    expect(result).toEqual({
+      blacklist: ['ExistingWord', 'wbs', 'Tauschwohnung'],
+      added: ['Tauschwohnung'],
+    });
+    const updateCall = calls.execute.find((c) => c.sql.includes('UPDATE jobs SET blacklist'));
+    expect(updateCall).toBeDefined();
+    expect(JSON.parse(updateCall.params.blacklist)).toEqual(['ExistingWord', 'wbs', 'Tauschwohnung']);
+  });
+
+  it('returns early without updating the row when no words are added', () => {
+    sqliteMock.__queryHandler = () => [{ blacklist: JSON.stringify(['ExistingWord', 'wbs']) }];
+    const result = jobStorage.appendJobBlacklist('job-1', ['existingword', 'WBS']);
+    expect(result).toEqual({
+      blacklist: ['ExistingWord', 'wbs'],
+      added: [],
+    });
+    const updateCall = calls.execute.find((c) => c.sql.includes('UPDATE jobs SET blacklist'));
+    expect(updateCall).toBeUndefined();
   });
 });
