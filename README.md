@@ -115,6 +115,10 @@ Fredy is in the [Unraid](https://unraid.net/) community store.
 -   📎 **Document uploads**: attach the exposé, floor plans and photos to a listing, so they survive
     the portal taking the ad down. A listing with documents is never cleaned up automatically
 -   🖥️ **Web UI** in several languages, with configurable search intervals and working hours
+-   **Location exclusions per job**: enter district names or postal codes beside the job's blacklist
+    to reject new listings whose address contains them, ignoring case. Each search has its own list.
+    Addresses are checked before and after detail enrichment; unknown addresses remain allowed.
+    Existing listings are kept, but their matching price-change alerts are suppressed for that job.
 -   🤖 **[MCP server](lib/mcp/README.md)**: query your listings from Claude, ChatGPT or a local LLM
 -   🌍 Runs anywhere: Docker, Node.js, self-hosted, and uses the reverse engineered
     **ImmoScout Mobile API**
