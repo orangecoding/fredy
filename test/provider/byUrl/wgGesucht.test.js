@@ -23,7 +23,7 @@ beforeEach(() => {
 });
 
 describe('wgGesucht', () => {
-  const AD = 'https://www.wg-gesucht.de/wg-zimmer-in-Duesseldorf-Oberbilk.14245211.html';
+  const AD = 'https://www.wg-gesucht.de/wg-zimmer-in-Duesseldorf-Derendorf.14247424.html';
   const browser = { name: 'the run browser' };
 
   /** The same advert as a search run stores it, read off the recorded search page. */
@@ -39,30 +39,30 @@ describe('wgGesucht', () => {
     expectComplete(listing);
     expect(puppeteerExtractor).toHaveBeenCalledWith(AD, null, { browser, name: 'wgGesucht_details' });
 
-    // The list spells the rent "620 €" and the exposé's key fact "620€"; the hash is the list's.
+    // The list spells the rent "799 €" and the exposé's key fact "799€"; the hash is the list's.
     const found = fromSearch();
     expect(found).toBeDefined();
     expect(listing.id).toBe(found.id);
-    expect(listing.id).toBe(buildHash('14245211', '620 €'));
+    expect(listing.id).toBe(buildHash('14247424', '799 €'));
     expect(listing.link).toBe(found.link);
 
     expect(listing).toMatchObject({
       title: found.title,
-      price: 620,
-      size: 15,
-      rooms: 2,
+      price: 799,
+      size: 20,
+      rooms: 3,
       image: found.image,
-      address: 'Ellerstraße 40227 Düsseldorf Oberbilk',
+      address: 'Rather Straße 40476 Düsseldorf Derendorf',
     });
   });
 
   it('spells the rent the way the list does when the page has no map', async () => {
-    const withoutMap = fixture('wgGesucht_detail.html').replace('id="map_marker_info_14245211"', 'id="elsewhere"');
+    const withoutMap = fixture('wgGesucht_detail.html').replace('id="map_marker_info_14247424"', 'id="elsewhere"');
     puppeteerExtractor.mockResolvedValue(withoutMap);
     const listing = await config.fetchListingByUrl(AD, browser);
 
-    expect(listing.id).toBe(buildHash('14245211', '620 €'));
-    expect(listing.price).toBe(620);
+    expect(listing.id).toBe(buildHash('14247424', '799 €'));
+    expect(listing.price).toBe(799);
   });
 
   it('settles on the canonical link whatever the shared one carried', async () => {

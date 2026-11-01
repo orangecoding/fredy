@@ -34,7 +34,7 @@ const EXPECTED_DETAIL_PRICE = {
   kleinanzeigen: 195000,
   schwarzesbrett: 700,
   sparkasse: 410000,
-  wgGesucht: 620,
+  wgGesucht: 799,
 };
 
 /**
