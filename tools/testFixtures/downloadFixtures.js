@@ -350,13 +350,8 @@ async function downloadBetterhomesFixtures(url) {
  */
 async function downloadZvgPortalFixtures(url) {
   console.log('\nDownloading zvgPortal...');
-  const params = new URL(url).searchParams;
-  const body = new URLSearchParams({ ger_id: '0', order_by: '2', art: '' });
-  for (const [name, value] of params) {
-    if (name === 'button') continue;
-    if (name === 'obj_liste') value.split(',').forEach((id) => body.append('obj_liste', id));
-    else body.set(name, value);
-  }
+  const { parseSearchUrl } = await import('../../lib/provider/zvgPortal.js');
+  const { body } = parseSearchUrl(url);
   const response = await fetch('https://www.zvg-portal.de/index.php?button=Suchen&all=1', { method: 'POST', body });
   if (!response.ok) {
     console.warn(`  Failed to download zvgPortal: ${response.statusText}`);

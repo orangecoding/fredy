@@ -3,7 +3,7 @@
  * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
  */
 
-import { describe, it, expect, beforeAll } from 'vitest';
+import { describe, it, expect, beforeAll, afterEach, vi } from 'vitest';
 import * as similarityCache from '../../lib/services/similarity-check/similarityCache.js';
 import { mockFredy, providerConfig } from '../utils.js';
 import * as provider from '../../lib/provider/zvgPortal.js';
@@ -75,5 +75,71 @@ describe('#zvgPortal parseResults()', () => {
       'Der Termin Freitag, 27. November 2026 wurde aufgehoben.',
     );
     expect(provider.parseResults(cancelled)).toEqual([]);
+  });
+});
+
+describe('#zvgPortal search request', () => {
+  const row = (
+    id,
+    address,
+  ) => `<tr><td>Aktenzeichen</td><td><a href=index.php?button=showZvg&zvg_id=${id}&land_abk=nw><nobr>K ${id}&nbsp;(Detailansicht)</nobr></a></td></tr>
+    <tr><td>Objekt/Lage</td><td><strong>Einfamilienhaus:</strong> ${address}</td></tr>
+    <tr><td>Termin</td><td>Freitag, 27. November 2026, 10:00 Uhr</td></tr>`;
+
+  afterEach(() => vi.restoreAllMocks());
+
+  it('sends the object types as obj_arr[], the field the portal filters on', () => {
+    const { body } = provider.parseSearchUrl(
+      'https://www.zvg-portal.de/index.php?button=Suchen&land_abk=nw&obj_arr=3,15,16',
+    );
+    expect(body.getAll('obj_arr[]')).toEqual(['3', '15', '16']);
+    expect(body.has('obj_liste')).toBe(false);
+    expect(body.get('land_abk')).toBe('nw');
+  });
+
+  it('keeps only addresses whose postcode starts with a plz_prefix, ignoring house numbers', async () => {
+    const html = `<table>${row(1, 'Seydlitzstr. 48 a, 58840 Plettenberg')}${row(2, 'Wintersheide 4 - 14, 33689 Bielefeld')}${row(3, 'Hauptstr. 1, 44137 Dortmund')}</table>`;
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(html));
+    const found = await provider.config.getListings(
+      'https://www.zvg-portal.de/index.php?button=Suchen&land_abk=nw&plz_prefix=4',
+    );
+    expect(found.map((r) => r.zvgId)).toEqual(['3']);
+  });
+
+  it('survives a plz_prefix that is no valid regular expression', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(`<table>${row(1, 'Hauptstr. 1, 22880 Wedel')}</table>`),
+    );
+    const found = await provider.config.getListings(
+      'https://www.zvg-portal.de/index.php?button=Suchen&land_abk=sh&plz_prefix=2(',
+    );
+    expect(found).toEqual([]);
+  });
+});
+
+describe('#zvgPortal fetchDetails()', () => {
+  afterEach(() => vi.restoreAllMocks());
+  const detail = (place) =>
+    `<html><body>Beschreibung: Einfamilienhaus, Wohnfläche ca. 120 qm Verkehrswert: 300.000 EUR Ort der Versteigerung: ${place}</body></html>`;
+  const stored = {
+    link: 'https://www.zvg-portal.de/index.php?button=Termine%20suchen&land_abk=nw&zvg_id=7',
+    description: 'Einfamilienhaus',
+    size: null,
+  };
+
+  it('gives the same description when run again on its own result', async () => {
+    vi.spyOn(globalThis, 'fetch').mockImplementation(
+      async () => new Response(detail('Saal 1 Informationen zum Termin')),
+    );
+    const once = await provider.config.fetchDetails(stored);
+    const twice = await provider.config.fetchDetails(once);
+    expect(once.size).toBe(120);
+    expect(twice.description).toBe(once.description);
+  });
+
+  it('reads the place of the auction when the page has no court link and continues with GeoServer', async () => {
+    vi.spyOn(globalThis, 'fetch').mockImplementation(async () => new Response(detail('Saal 2 GeoServer: Karte')));
+    const listing = await provider.config.fetchDetails(stored);
+    expect(listing.description).toContain('Ort der Versteigerung: Saal 2');
   });
 });

@@ -78,7 +78,7 @@
     "enabled": true
   },
   "zvgPortal": {
-    "url": "https://www.zvg-portal.de/index.php?button=Suchen&land_abk=sh&obj_liste=3,15,16",
+    "url": "https://www.zvg-portal.de/index.php?button=Suchen&land_abk=sh&obj_arr=3,15,16",
     "enabled": true
   },
   "flatfox": {
