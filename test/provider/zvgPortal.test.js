@@ -106,7 +106,7 @@ describe('#zvgPortal search request', () => {
     expect(found.map((r) => r.zvgId)).toEqual(['3']);
   });
 
-  it('survives a plz_prefix that is no valid regular expression', async () => {
+  it('treats a plz_prefix with regex characters as plain text', async () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(
       new Response(`<table>${row(1, 'Hauptstr. 1, 22880 Wedel')}</table>`),
     );
@@ -114,6 +114,68 @@ describe('#zvgPortal search request', () => {
       'https://www.zvg-portal.de/index.php?button=Suchen&land_abk=sh&plz_prefix=2(',
     );
     expect(found).toEqual([]);
+  });
+
+  it('sends exactly the request the portal expects: a POST of the form fields, object types as obj_arr[]', async () => {
+    const spy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response('<table></table>'));
+    await provider.config.getListings(
+      'https://www.zvg-portal.de/index.php?button=Suchen&land_abk=nw&obj_arr=3,15,16&plz=44&vtermin=2027-03-01&plz_prefix=44',
+    );
+    const [url, init] = spy.mock.calls[0];
+    expect(url).toBe('https://www.zvg-portal.de/index.php?button=Suchen&all=1');
+    expect(init.method).toBe('POST');
+    expect(init.headers['Content-Type']).toBe('application/x-www-form-urlencoded');
+    expect(init.signal).toBeInstanceOf(AbortSignal);
+    expect([...init.body]).toEqual([
+      ['ger_id', '0'],
+      ['order_by', '2'],
+      ['art', ''],
+      ['land_abk', 'nw'],
+      ['obj_arr[]', '3'],
+      ['obj_arr[]', '15'],
+      ['obj_arr[]', '16'],
+      ['plz', '44'],
+      ['vtermin', '2027-03-01'],
+    ]);
+  });
+
+  it('returns nothing when the portal answers a bare error or fails', async () => {
+    const url = 'https://www.zvg-portal.de/index.php?button=Suchen&land_abk=NW';
+    vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(new Response('error'));
+    expect(await provider.config.getListings(url)).toEqual([]);
+    vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(new Response('nope', { status: 503 }));
+    expect(await provider.config.getListings(url)).toEqual([]);
+    vi.spyOn(globalThis, 'fetch').mockRejectedValueOnce(new Error('timeout'));
+    expect(await provider.config.getListings(url)).toEqual([]);
+  });
+});
+
+describe('#zvgPortal normalize()', () => {
+  const base = {
+    zvgId: '7',
+    landAbk: 'sh',
+    fileNumber: 'K 1/2026',
+    kind: 'Einfamilienhaus',
+    address: 'Musterweg 1, 22880 Wedel',
+  };
+
+  it('keeps the id when the Verkehrswert is corrected or the date moves', () => {
+    const first = provider.config.normalize({ ...base, value: '300.000,00', date: 'Freitag, 27. November 2026' });
+    const later = provider.config.normalize({ ...base, value: '320.000,00', date: 'Montag, 11. Januar 2027' });
+    expect(later.id).toBe(first.id);
+    expect(later.link).toBe(first.link);
+    expect(provider.config.normalize({ ...base, zvgId: '8', value: '300.000,00' }).id).not.toBe(first.id);
+  });
+
+  it('does not take the 1 EUR placeholder for a price', () => {
+    const listing = provider.config.normalize({ ...base, value: '1,00' });
+    expect(listing.price).toBeNull();
+    expect(listing.description).not.toContain('Verkehrswert');
+  });
+
+  it('drops the empty part of an address', () => {
+    const listing = provider.config.normalize({ ...base, address: 'Hauptstraße 285-297, , 51465 Bergisch Gladbach' });
+    expect(listing.address).toBe('Hauptstraße 285-297, 51465 Bergisch Gladbach');
   });
 });
 
@@ -142,4 +204,40 @@ describe('#zvgPortal fetchDetails()', () => {
     const listing = await provider.config.fetchDetails(stored);
     expect(listing.description).toContain('Ort der Versteigerung: Saal 2');
   });
+
+  it.each([
+    ['Wohnfläche 96 qm', 96],
+    ['Wohnfläche: ca. 96 m²', 96],
+    ['Wohnfl. ca. 155,84 m²', 155.84],
+    ['Wohnfläche rd. 105 qm', 105],
+    ['Wohnfläche EG ca. 90 qm', 90],
+  ])('reads the living area from "%s"', async (text, size) => {
+    vi.spyOn(globalThis, 'fetch').mockImplementation(
+      async () =>
+        new Response(
+          `<html><body>Beschreibung: Haus, ${text} Verkehrswert: 1 Ort der Versteigerung: Saal 1 Gericht: X</body></html>`,
+        ),
+    );
+    expect((await provider.config.fetchDetails(stored)).size).toBe(size);
+  });
 });
+
+// Needs the real portal, so it is skipped in the offline run. It is the test that notices a filter the portal ignores:
+// a small state cannot (Schleswig-Holstein has a handful of auctions), a large one can.
+describe.skipIf(process.env.TEST_MODE === 'offline')(
+  '#zvgPortal live: the object type filter narrows the result',
+  () => {
+    it(
+      'returns fewer auctions with obj_arr than without',
+      async () => {
+        const all = await provider.config.getListings('https://www.zvg-portal.de/index.php?button=Suchen&land_abk=nw');
+        const houses = await provider.config.getListings(
+          'https://www.zvg-portal.de/index.php?button=Suchen&land_abk=nw&obj_arr=3,15,16',
+        );
+        expect(houses.length).toBeGreaterThan(0);
+        expect(houses.length).toBeLessThan(all.length);
+      },
+      TEST_TIMEOUT,
+    );
+  },
+);
