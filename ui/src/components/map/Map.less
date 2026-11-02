@@ -272,6 +272,20 @@
   border-radius: @radius-card;
 }
 
+/*
+ * MapLibre popups lie above the map's own panels (search, style and filter column: z-index 10, see
+ * `.map-shell` above).
+ *
+ * keepPopupInView() keeps a popup inside the map, not clear of the controls laid over it, and on a short
+ * phone screen the two meet: the popup is nearly as large as the map. What lay under a panel was drawn but
+ * took no taps - depending on the map's height the pager arrows of a group of listings, the close button,
+ * or both - so the second listing at an address could not be reached. A popup that cannot fit beside the
+ * controls anyway is better covering them for as long as it is open than being half dead; it always closes.
+ */
+.maplibregl-popup {
+  z-index: 20;
+}
+
 /* Fix Mapbox Draw cursors for MapLibre GL compatibility */
 .maplibregl-map.mouse-pointer .maplibregl-canvas-container.maplibregl-interactive {
   cursor: pointer;
