@@ -55,6 +55,7 @@ On top of the listing itself, Fredy answers the three questions a portal will no
 
 ``` bash
 docker run -d --name fredy \
+  --restart unless-stopped \
   -v fredy_conf:/conf \
   -v fredy_db:/db \
   -p 9998:9998 \
