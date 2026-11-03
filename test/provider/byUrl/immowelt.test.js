@@ -210,7 +210,7 @@ describe('seloger', () => {
       chargesIncluded: true,
       size: 37,
       rooms: 2,
-      address: '75012 Vallée de Fécamp, Paris',
+      address: 'Vallée de Fécamp, 75012 Paris',
       latitude: 48.83660310005011,
       longitude: 2.392940338675138,
       energyClass: 'E',

@@ -73,8 +73,8 @@ describe('#immowelt normalize', () => {
   // "10178 Mitte" alone geocodes to whichever Mitte the geocoder likes best; the city has to come
   // along or the map pin lands in another federal state.
   it('appends the city when immowelt only names the borough', () => {
-    expect(mitte.address).toBe('10178 Mitte, Berlin');
-    expect(spandau.address).toBe('13599 Spandau, Berlin');
+    expect(mitte.address).toBe('Mitte, 10178 Berlin');
+    expect(spandau.address).toBe('Spandau, 13599 Berlin');
   });
 
   it('builds a street address when the advertiser published one', () => {
@@ -83,7 +83,7 @@ describe('#immowelt normalize', () => {
     withStreet.location.address.houseNumber = '13';
     withStreet.location.isAddressPublished = true;
 
-    expect(provider.config.normalize(withStreet).address).toBe('Aldebaranstraße 13, 10178 Mitte, Berlin');
+    expect(provider.config.normalize(withStreet).address).toBe('Aldebaranstraße 13, Mitte, 10178 Berlin');
   });
 
   it('never yields an empty address, so the pipeline always has something to geocode', () => {
