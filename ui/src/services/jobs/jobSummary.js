@@ -6,7 +6,7 @@
 /**
  * What a job's filters add up to, in a line.
  *
- * The five of them - price and size criteria, blacklist, drawn area, commute limits - are folded
+ * Price and size criteria, blacklist, excluded locations, drawn area and commute limits are folded
  * into a collapsed section, and a collapsed section has to answer "is there anything in here"
  * without being opened. Otherwise the fold does not save the user anything: they open it every
  * time to check.
@@ -23,6 +23,7 @@ import { countCommuteLimits } from './commuteFilter.js';
  *
  * @param {Object} job
  * @param {string[]} [job.blacklist]
+ * @param {string[]} [job.excludedLocations]
  * @param {{maxPrice?: number, minSize?: number, minRooms?: number}|null} [job.specFilter]
  * @param {Object|null} [job.spatialFilter]
  * @param {{action?: string, limits?: Record<string, number>}|null} [job.commuteFilter]
@@ -48,6 +49,9 @@ export function describeJobRefinements(job, { t, formatPrice }) {
   }
   if ((job?.blacklist?.length ?? 0) > 0) {
     parts.push(t('jobs.mutation.summaryBlacklist', { count: job.blacklist.length }));
+  }
+  if ((job?.excludedLocations?.length ?? 0) > 0) {
+    parts.push(t('jobs.mutation.summaryExcludedLocations', { count: job.excludedLocations.length }));
   }
   if (job?.spatialFilter != null) {
     parts.push(t('jobs.mutation.summaryArea'));

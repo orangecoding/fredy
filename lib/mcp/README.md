@@ -67,7 +67,7 @@ A search job needs four things a model cannot invent - a name, at least one sear
 2. **providerUrls** - the portal is worked out from the URL's host, so the user is never asked to name it. A URL that is only the portal's homepage is refused: it saves cleanly, runs on schedule and quietly finds nothing.
 3. **dealType** - renting or buying. The URLs usually give it away, and the draft offers that reading, but the question is still asked.
 4. **channelIds** - one or more of the user's own channels. A user with none is told where to create one; the draft waits.
-5. **refinements** - price, size, rooms, blacklist words, travel-time limits, sharing, and whether the job starts switched on. Asked once, and answerable with "skip".
+5. **refinements** - price, size, rooms, blacklist words, excluded locations matched against listing addresses for this job, travel-time limits, sharing, and whether the job starts switched on. Asked once, and answerable with "skip".
 6. **ready** - the summary is read back to the user, and only then does `create_job_from_draft` with `confirmed=true` create anything.
 
 Why the server keeps the state: putting the interview inside the model works with Claude and does not work with the local models this server is mostly pointed at. They send one guessed payload, or forget an answer given two turns ago.
