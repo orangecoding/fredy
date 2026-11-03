@@ -39,7 +39,7 @@ describe('job routes and the onboarding tour', () => {
       CREATE TABLE jobs (
         id TEXT PRIMARY KEY, user_id TEXT, enabled INTEGER DEFAULT 1, name TEXT, blacklist TEXT, provider TEXT,
         notification_adapter TEXT, shared_with_user TEXT DEFAULT '[]', spatial_filter TEXT, spec_filter TEXT,
-        commute_filter TEXT, deal_type TEXT, last_run_at INTEGER
+        commute_filter TEXT, deal_type TEXT, last_run_at INTEGER, excluded_locations TEXT NOT NULL DEFAULT '[]'
       );
       CREATE TABLE configured_adapter (
         id TEXT PRIMARY KEY, user_id TEXT NOT NULL, adapter_id TEXT NOT NULL, name TEXT NOT NULL,

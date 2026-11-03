@@ -51,6 +51,7 @@ describe('POST /api/jobs/:jobId/blacklist', () => {
         enabled INTEGER DEFAULT 1,
         name TEXT,
         blacklist TEXT,
+        excluded_locations TEXT NOT NULL DEFAULT '[]',
         provider TEXT,
         notification_adapter TEXT,
         shared_with_user TEXT,

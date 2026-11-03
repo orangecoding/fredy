@@ -51,6 +51,7 @@ const aDraft = () => ({
   providerData: [{ id: 'immoscout', url: 'https://www.immobilienscout24.de/Suche/de/koeln/wohnung-mieten' }],
   selectedChannelIds: [],
   blacklist: ['Tausch'],
+  excludedLocations: ['Neukölln'],
   shareWithUsers: [],
   enabled: true,
   spatialFilter: null,
@@ -84,6 +85,7 @@ describe('jobDraft', () => {
       ['a provider', { providerData: [{ id: 'a' }] }],
       ['a channel', { selectedChannelIds: ['a'] }],
       ['a blacklist word', { blacklist: ['x'] }],
+      ['an excluded location', { excludedLocations: ['Neukölln'] }],
       ['a deal type', { dealType: 'buy' }],
       ['a drawn area', { spatialFilter: { type: 'Polygon' } }],
       // Not reachable on its own from the form, which needs a name before it can be saved, but the
@@ -97,7 +99,7 @@ describe('jobDraft', () => {
     it.each([
       ['nothing at all', {}],
       ['a blank name', { name: '   ' }],
-      ['empty lists', { providerData: [], selectedChannelIds: [], blacklist: [] }],
+      ['empty lists', { providerData: [], selectedChannelIds: [], blacklist: [], excludedLocations: [] }],
       // `enabled` defaults to true on a fresh form, so on its own it is not evidence of any editing.
       ['only the activation default', { enabled: true }],
       ['null', null],
