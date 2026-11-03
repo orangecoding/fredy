@@ -52,4 +52,13 @@ describe('map popup layering', () => {
   it('declares a z-index for MapLibre popups above the panel column', () => {
     expect(popup()).toBeGreaterThan(zIndexOf(panels, '&__ui'));
   });
+
+  it('keeps those z-indexes inside the map by isolating the shell', () => {
+    // Without a stacking context on .map-shell the popup's 20 competes with the whole page and lands
+    // above the listing detail's action bar (20) and the job form's save bar (5).
+    const found = /^\.map-shell \{/m.exec(panels);
+    expect(found).not.toBeNull();
+    const body = panels.slice(found.index, panels.indexOf('\n}', found.index));
+    expect(body).toMatch(/^ {2}isolation:\s*isolate;/m);
+  });
 });

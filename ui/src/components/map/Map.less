@@ -16,6 +16,9 @@
  */
 .map-shell {
   position: relative;
+  /* Makes the shell a stacking context, so the z-indexes of the panels and of MapLibre's popups below
+     stay inside the map instead of competing with the page (sticky action bar, save bar). */
+  isolation: isolate;
   width: 100%;
   height: 100%;
 
