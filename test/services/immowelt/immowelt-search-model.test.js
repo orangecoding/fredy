@@ -200,6 +200,21 @@ describe('#immowelt search model', () => {
 
     expect(criteria.location).toEqual({ placeIds: ['AD08DE8634'] });
   });
+
+  // Issue 510. The natural-language search box writes the typed text into `nlsQuery` next to the
+  // filters immowelt read out of it. The text itself filters nothing, immowelt drops it from its
+  // own requests.
+  it('accepts the text of the natural-language search next to the filters it produced', () => {
+    const { criteria } = convertSearchUrlToRequest(
+      `${BASE}?distributionTypes=Rent&locations=AD08DE8634&numberOfRoomsMin=3&nlsQuery=3%20Zimmer%20Wohnung%20mit%20Balkon`,
+    );
+
+    expect(criteria).toEqual({
+      distributionTypes: ['Rent'],
+      numberOfRoomsMin: 3,
+      location: { placeIds: ['AD08DE8634'] },
+    });
+  });
 });
 
 // The values in here are what immowelt itself put in the url and sent to `/serp-bff/search` for a
