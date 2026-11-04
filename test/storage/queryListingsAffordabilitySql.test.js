@@ -70,6 +70,7 @@ describe('queryListings affordability band against real SQLite', () => {
         id TEXT PRIMARY KEY,
         job_id TEXT,
         price REAL,
+        currency TEXT NOT NULL DEFAULT 'EUR',
         charges_included INTEGER,
         charges REAL,
         size REAL,
@@ -206,6 +207,45 @@ describe('queryListings affordability band against real SQLite', () => {
     });
     // The band alone would also allow buy-cheap at 120.000; minPrice narrows it further.
     expect(result.result.map((row) => row.id)).toEqual(['buy-at-ceiling']);
+  });
+
+  describe('with listings in another currency', () => {
+    beforeEach(() => {
+      db.prepare(`INSERT INTO listings (id, job_id, price, currency, title) VALUES (?, ?, ?, ?, ?)`).run(
+        'buy-francs',
+        'job-buy',
+        120000,
+        'CHF',
+        'buy-francs',
+      );
+    });
+
+    const query = (filters) => listingsStorage.queryListings({ userId: USER, pageSize: 100, ...filters });
+    const ids = (filters) =>
+      query(filters)
+        .result.map((row) => row.id)
+        .sort();
+
+    it('carries the currency on every row', () => {
+      const byId = Object.fromEntries(query({}).result.map((row) => [row.id, row.currency]));
+      expect(byId['buy-francs']).toBe('CHF');
+      expect(byId['buy-cheap']).toBe('EUR');
+    });
+
+    it('never counts francs as affordable in euros', () => {
+      expect(idsFor({ buy: { min: 30000, max: 130000 }, rent: null })).toEqual(['buy-cheap']);
+    });
+
+    it('takes a price range only once the selection is down to one currency', () => {
+      expect(() => query({ minPrice: 100000 })).toThrow('Select one currency before filtering by price.');
+      expect(ids({ minPrice: 100000, currencyFilter: 'CHF' })).toEqual(['buy-francs']);
+      expect(ids({ minPrice: 100000, maxPrice: 130000, currencyFilter: 'EUR' })).toEqual(['buy-cheap']);
+    });
+
+    it('needs no currency of its own when the band has already narrowed to euros', () => {
+      const band = { buy: { min: 30000, max: 130000 }, rent: null };
+      expect(ids({ minPrice: 100000, affordabilityBand: band })).toEqual(['buy-cheap']);
+    });
   });
 
   it('reports a total that matches the filtered rows, so pagination stays honest', () => {

@@ -36,6 +36,7 @@ describe('price history storage', () => {
         address TEXT,
         link TEXT,
         price INTEGER,
+        currency TEXT NOT NULL DEFAULT 'EUR',
         size INTEGER,
         rooms INTEGER,
         image_url TEXT,
@@ -128,6 +129,20 @@ describe('price history storage', () => {
       });
       // Price change notifications carry no photo.
       expect(row).not.toHaveProperty('image');
+    });
+
+    it('prices a change in the currency stored on the row', () => {
+      addListing('a');
+      db.prepare(`UPDATE listings SET currency = 'CHF' WHERE id = 'a'`).run();
+      const [row] = storage.getListingsDueForPriceCheck({ now: NOW });
+      const change = formatPriceChange({
+        listing: { ...row, price: 1100 },
+        oldPrice: 1000,
+        newPrice: 1100,
+        changePercent: 10,
+        direction: 'up',
+      });
+      expect(change).toMatchObject({ price: '1.100 CHF', oldPrice: '1.000 CHF', newPrice: '1.100 CHF' });
     });
 
     it('leaves out inactive and manually deleted listings', () => {

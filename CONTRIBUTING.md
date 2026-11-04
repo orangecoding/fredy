@@ -108,12 +108,21 @@ The picker orders providers by country and then by size, from
 behind the ranked ones of its own country. Add it to `PROVIDER_SIZE_ORDER` only if it belongs
 somewhere specific. A country new to `COUNTRY_ORDER` sorts behind the ones already listed.
 
-The same shape is where anything else that varies by country belongs. `currency` is the obvious
-next one and is deliberately not implemented: `€` appears in around forty places, twelve of them in
-the finance module, which assumes considerably more than a symbol, and three locale files carry it
-inside translated strings. Whoever arrives with a provider quoting in kroner should add
-`currency: 'DKK'` here, default it to `EUR`, and resolve it exactly the way `countries` is
-resolved in `lib/services/providers/`.
+A provider that quotes prices outside the euro declares `currency` on `metaInformation`, for
+example `currency: 'DKK'`. The default is `EUR`. A provider whose national sites price differently
+lists the exceptions by host, for example `currencyByHost: { 'betterhomes.ch': 'CHF' }`. That is
+data rather than a function like `countryOf`, because the job form has to read it in the browser.
+
+The pipeline copies the answer onto each listing as it stores it, and from then on
+`listings.currency` is the only source: comparisons happen in SQL, and everything else reads the
+row. Declaring a currency therefore does not reach listings already stored. A provider that has
+any needs a migration to backfill them, as `55.listing-currency.js` does for flatfox.
+
+Amounts stay in the portal's currency; Fredy does not convert them. Listing views, notifications
+and MCP carry that currency. Monetary dashboard aggregates are hidden for mixed currencies, and
+a numeric price range or job price ceiling needs sources that share one currency. The finance
+module still models EUR and German purchase costs, so non-EUR listings receive no finance result
+or affordability verdict. Do not add a country-specific currency map elsewhere in the app.
 
 ### How to write new notification adapter?
 

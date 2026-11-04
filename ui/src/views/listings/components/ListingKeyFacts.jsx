@@ -129,7 +129,7 @@ export default function ListingKeyFacts({ listing, priceHistory, financeThreshol
       {priceHistory.length >= 2 && (
         <div className="listing-keyfacts__history">
           <h3 className="listing-keyfacts__history-title">{t('listing.detail.priceHistory')}</h3>
-          <PriceHistoryChart data={priceHistory} locale={locale} />
+          <PriceHistoryChart data={priceHistory} locale={locale} currency={listing.currency} />
         </div>
       )}
     </section>

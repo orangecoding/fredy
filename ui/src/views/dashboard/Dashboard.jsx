@@ -23,7 +23,7 @@ import Headline from '../../components/headline/Headline.jsx';
 
 import './Dashboard.less';
 import { xhrPost, errorMessage } from '../../services/xhr.js';
-import { formatEuroPrice } from '../../services/price/priceService.js';
+import { formatListingPrice } from '../../services/price/priceService.js';
 import { formatPricePerSqm } from '../../services/listings/marketBenchmark.js';
 import { format } from '../../services/time/timeService.js';
 import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
@@ -69,6 +69,8 @@ export default function Dashboard() {
   }, []);
 
   const kpis = dashboard?.kpis || { totalJobs: 0, totalListings: 0, providersUsed: 0 };
+  // Null, as opposed to not loaded yet: the listings have prices, just no one unit to put a median in.
+  const mixedCurrencies = kpis.currency === null;
   const trend = dashboard?.trend;
   const providerShare = dashboard?.pie || [];
   const latest = dashboard?.latest || [];
@@ -276,7 +278,7 @@ export default function Dashboard() {
               ? '---'
               : // Rounded before formatting: an even number of listings averages the two middle
                 // prices, and half a cent of that arithmetic is not a fact about the market.
-                formatEuroPrice(Math.round(kpis.medianPriceOfListings), locale)}
+                formatListingPrice(Math.round(kpis.medianPriceOfListings), locale, kpis.currency)}
           </span>
           {/* The population the median is taken over. Without it, two medians that cannot be
               reconciled sit next to each other. */}
@@ -285,20 +287,25 @@ export default function Dashboard() {
               {t('dashboard.kpiMedianPriceDesc', { count: String(kpis.medianPriceSampleSize) })}
             </span>
           )}
+          {mixedCurrencies && <span className="dashboard__kpiMeta">{t('dashboard.kpiMixedCurrencies')}</span>}
         </button>
         <button type="button" className="dashboard__kpi" onClick={() => navigate('/listings')}>
           <span className="dashboard__kpiLabel">{t('dashboard.kpiMedianSqm')}</span>
           <span className="dashboard__kpiValue">
-            {kpis.medianPricePerSqm == null ? '---' : formatPricePerSqm(kpis.medianPricePerSqm.value, locale, false)}
+            {kpis.medianPricePerSqm == null
+              ? '---'
+              : formatPricePerSqm(kpis.medianPricePerSqm.value, locale, false, kpis.currency)}
           </span>
           {/* One deal type only, named here: a median over rents and purchase prices at once would
               describe neither. */}
           <span className="dashboard__kpiMeta">
-            {kpis.medianPricePerSqm == null
-              ? t('dashboard.kpiMedianSqmPending')
-              : t(`dashboard.kpiMedianSqmDesc.${kpis.medianPricePerSqm.dealType}`, {
-                  count: String(kpis.medianPricePerSqm.sampleSize),
-                })}
+            {mixedCurrencies
+              ? t('dashboard.kpiMixedCurrencies')
+              : kpis.medianPricePerSqm == null
+                ? t('dashboard.kpiMedianSqmPending')
+                : t(`dashboard.kpiMedianSqmDesc.${kpis.medianPricePerSqm.dealType}`, {
+                    count: String(kpis.medianPricePerSqm.sampleSize),
+                  })}
           </span>
         </button>
       </section>

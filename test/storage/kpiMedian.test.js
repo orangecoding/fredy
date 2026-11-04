@@ -25,7 +25,10 @@ describe('getListingsKpisForJobIds', () => {
       CREATE TABLE listings (
         id TEXT PRIMARY KEY,
         job_id TEXT,
+        provider TEXT DEFAULT 'immoscout',
+        link TEXT,
         price REAL,
+        currency TEXT NOT NULL DEFAULT 'EUR',
         is_active INTEGER,
         manually_deleted INTEGER DEFAULT 0,
         price_per_sqm REAL
@@ -53,10 +56,10 @@ describe('getListingsKpisForJobIds', () => {
   afterEach(() => db.close());
 
   let seq = 0;
-  const add = (price, { jobId = 'job-1', isActive = 1, deleted = 0 } = {}) =>
+  const add = (price, { jobId = 'job-1', isActive = 1, deleted = 0, currency = 'EUR' } = {}) =>
     db
-      .prepare('INSERT INTO listings (id, job_id, price, is_active, manually_deleted) VALUES (?,?,?,?,?)')
-      .run(`l-${seq++}`, jobId, price, isActive, deleted);
+      .prepare('INSERT INTO listings (id, job_id, price, currency, is_active, manually_deleted) VALUES (?,?,?,?,?,?)')
+      .run(`l-${seq++}`, jobId, price, currency, isActive, deleted);
 
   const kpis = (jobIds = ['job-1']) => listingsStorage.getListingsKpisForJobIds(jobIds);
 
@@ -76,11 +79,52 @@ describe('getListingsKpisForJobIds', () => {
       numberOfListings: 0,
       numberOfActiveListings: 0,
       medianPriceOfListings: 0,
+      currency: 'EUR',
       medianPriceSampleSize: 0,
       medianPricePerSqm: null,
     };
     expect(kpis([])).toEqual(empty);
     expect(listingsStorage.getListingsKpisForJobIds()).toEqual(empty);
+  });
+
+  it('rejects a numeric price range spanning currencies before it filters either amount', () => {
+    db.exec('CREATE TABLE watch_list (id TEXT, listing_id TEXT, user_id TEXT)');
+    add(1000);
+    add(1000000, { currency: 'PLN' });
+    const message = 'Select one currency before filtering by price.';
+    expect(() => listingsStorage.queryListings({ minPrice: 500000, isAdmin: true })).toThrow(message);
+    expect(() => listingsStorage.deleteListingsByFilter({ minPrice: 500000, isAdmin: true })).toThrow(message);
+    expect(db.prepare('SELECT COUNT(1) AS cnt FROM listings WHERE manually_deleted = 0').get().cnt).toBe(2);
+  });
+
+  it('does not count a listing without a price against a price range', () => {
+    db.exec('CREATE TABLE watch_list (id TEXT, listing_id TEXT, user_id TEXT)');
+    add(1000);
+    add(null, { currency: 'CHF' });
+    expect(listingsStorage.deleteListingsByFilter({ minPrice: 500, isAdmin: true }).changes).toBe(1);
+  });
+
+  it('leaves both medians out of a selection spanning currencies, and says so', () => {
+    add(1000);
+    add(1000000, { currency: 'PLN' });
+    expect(kpis()).toMatchObject({
+      numberOfListings: 2,
+      medianPriceOfListings: null,
+      currency: null,
+      medianPriceSampleSize: 0,
+      medianPricePerSqm: null,
+    });
+  });
+
+  it('names the one currency a selection is priced in', () => {
+    add(1400, { currency: 'CHF' });
+    expect(kpis()).toMatchObject({ medianPriceOfListings: 1400, currency: 'CHF' });
+  });
+
+  it('is not put off a median by a listing that has no price to compare', () => {
+    add(1000);
+    add(null, { currency: 'CHF' });
+    expect(kpis()).toMatchObject({ medianPriceOfListings: 1000, currency: 'EUR' });
   });
 
   it('counts only active listings', () => {
@@ -140,6 +184,7 @@ describe('getListingsKpisForJobIds', () => {
     add(1000);
     add(50_000, { deleted: 1 });
     expect(kpis()).toEqual({
+      currency: 'EUR',
       numberOfListings: 1,
       numberOfActiveListings: 1,
       medianPriceOfListings: 1000,
@@ -156,6 +201,7 @@ describe('getListingsKpisForJobIds', () => {
     add(prices[3], { jobId: 'job-2' });
     add(prices[4], { jobId: 'job-2' });
     expect(kpis(['job-1', 'job-2'])).toEqual({
+      currency: 'EUR',
       numberOfListings: 5,
       numberOfActiveListings: 5,
       medianPriceOfListings: referenceMedian(prices),
@@ -167,6 +213,7 @@ describe('getListingsKpisForJobIds', () => {
   it('reports a zero median when no listing has a price', () => {
     add(null);
     expect(kpis()).toEqual({
+      currency: 'EUR',
       numberOfListings: 1,
       numberOfActiveListings: 1,
       medianPriceOfListings: 0,

@@ -96,6 +96,31 @@ const pipeline = () =>
   new Fredy({ priceTracking: { selector: '.price' } }, JOB, 'kleinanzeigen', similarity, undefined);
 const rows = () => db.prepare(`SELECT hash, price, added_manually, manually_deleted, job_id FROM listings`).all();
 
+describe('the currency of a stored listing', () => {
+  const ingestAs = (providerId, link) =>
+    new Fredy({}, JOB, providerId, similarity, undefined).ingest([advert('hash-1', 1440, { link })]);
+  const storedCurrency = () => db.prepare(`SELECT currency FROM listings`).get().currency;
+
+  it('comes from the provider that found it', async () => {
+    const [stored] = await ingestAs('flatfox', 'https://flatfox.ch/en/flat/1/');
+
+    expect(stored.currency).toBe('CHF');
+    expect(storedCurrency()).toBe('CHF');
+  });
+
+  it('follows the site, for a provider that prices differently per country', async () => {
+    await ingestAs('betterhomes', 'https://www.betterhomes.ch/de/immobilie-suchen/detail/objectId/1');
+
+    expect(storedCurrency()).toBe('CHF');
+  });
+
+  it('is the euro for everyone else', async () => {
+    await ingestAs('kleinanzeigen', LINK);
+
+    expect(storedCurrency()).toBe('EUR');
+  });
+});
+
 describe('ingest', () => {
   it('stores the listing under the job, marked, unfiltered and unannounced', async () => {
     const [stored] = await pipeline().ingest([advert('hash-800', 800, { addedManually: true })]);

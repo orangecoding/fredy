@@ -44,6 +44,7 @@ const PROFILE = {
 const listing = (id, price, dealType = 'buy') => ({
   id,
   price,
+  currency: 'EUR',
   dealType,
   title: `Listing ${id}`,
   provider: 'immoscout',
@@ -400,6 +401,22 @@ describe('GET /listing/:listingId', () => {
 
     expect(response.statusCode).toBe(404);
     expect(getListingById).toHaveBeenCalledWith('someone-elses', 'user-1', false);
+  });
+
+  it('does not run EUR financing against a PLN listing', async () => {
+    getListingById.mockReturnValue({ ...listing('pl', 1050000), currency: 'PLN' });
+    const app = await buildApp();
+    const detail = (await app.inject({ method: 'GET', url: '/listing/pl' })).json();
+    expect(detail).toMatchObject({ result: null, scored: null, unsupportedCurrency: true });
+    await app.close();
+  });
+
+  // Filtered afterwards they would still use up the cap, and euro listings past it go unscored.
+  it('keeps other currencies out of the affordability sweep in the query itself', async () => {
+    const app = await buildApp();
+    await app.inject({ method: 'POST', url: '/affordability', payload: { profile: PROFILE } });
+    expect(queryListings.mock.calls.at(-1)[0]).toMatchObject({ currencyFilter: 'EUR' });
+    await app.close();
   });
 
   it('returns no figures for a listing without a price', async () => {

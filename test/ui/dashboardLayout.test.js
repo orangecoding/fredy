@@ -30,6 +30,18 @@ const SPACING_PROPERTIES =
 /** A translator that shows which key and parameters it was asked for. */
 const t = (key, params) => (params ? `${key}:${JSON.stringify(params)}` : key);
 
+describe('the medians across currencies', () => {
+  // The price per m² tile used to fall through to "waiting for listings with a size", which is not
+  // why it is empty, and the median price tile said nothing at all.
+  it('says why both tiles are empty rather than leaving them to the pending text', () => {
+    expect(jsx).toMatch(/const mixedCurrencies = kpis\.currency === null/);
+    expect(jsx.match(/t\('dashboard\.kpiMixedCurrencies'\)/g)).toHaveLength(2);
+    expect(jsx.indexOf("t('dashboard.kpiMixedCurrencies')", jsx.indexOf('kpiMedianSqm'))).toBeLessThan(
+      jsx.indexOf("t('dashboard.kpiMedianSqmPending')"),
+    );
+  });
+});
+
 describe('Dashboard.less', () => {
   it('takes every spacing value from the scale, never a bare number', () => {
     const offenders = [];

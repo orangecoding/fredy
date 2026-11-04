@@ -197,13 +197,19 @@ export default function MapView() {
   const priceCommitTimer = useRef(null);
   useEffect(() => () => clearTimeout(priceCommitTimer.current), []);
 
+  // Priced listings only, as on the server: a price bound drops the others in any currency.
+  const currencies = [...new Set(listings.filter((listing) => listing.price).map((listing) => listing.currency))];
+  const mixedCurrencies = currencies.length > 1;
+  const currency = currencies[0] ?? 'EUR';
+
   // Read from the address bar rather than from the controls, which the folded panel on a phone does
-  // not render: what is on in the URL is what is hiding pins.
+  // not render: what is on in the URL is what is hiding pins. A price bound hides none across
+  // currencies, so it does not count there.
   const activeFilterCount = countActiveMapFilters({
     jobId,
     commute: commuteFilter,
-    priceMin: urlPriceMin,
-    priceMax: urlPriceMax,
+    priceMin: mixedCurrencies ? null : urlPriceMin,
+    priceMax: mixedCurrencies ? null : urlPriceMax,
   });
   const screenWidth = useScreenWidth();
 
@@ -263,7 +269,9 @@ export default function MapView() {
     // one it has nothing to fail, and hiding it always left it off the map with no filter active.
     const priceLimited = urlPriceMin != null || urlPriceMax != null;
     return listings
-      .filter((listing) => (listing.price ? listing.price >= min && listing.price <= max : !priceLimited))
+      .filter(
+        (listing) => mixedCurrencies || (listing.price ? listing.price >= min && listing.price <= max : !priceLimited),
+      )
       .filter(withinCommute);
   };
 
@@ -804,13 +812,23 @@ export default function MapView() {
                   <Text size="small" className="map-panel__label">
                     {t('map.filterPriceLabel')}
                   </Text>
-                  <div className="map-view-container__price-slider">
-                    <div className="map__rangesliderLabels">
-                      <span>{formatEuroCompact(priceRange[0], locale)}</span>
-                      <span>{formatEuroCompact(priceRange[1] || getMaxPrice(), locale)}</span>
+                  {mixedCurrencies ? (
+                    <Text size="small">{t('listings.mixedCurrencyPriceFilter')}</Text>
+                  ) : (
+                    <div className="map-view-container__price-slider">
+                      <div className="map__rangesliderLabels">
+                        <span>{formatEuroCompact(priceRange[0], locale, currency)}</span>
+                        <span>{formatEuroCompact(priceRange[1] || getMaxPrice(), locale, currency)}</span>
+                      </div>
+                      <RangeSlider
+                        min={0}
+                        max={getMaxPrice()}
+                        step={100}
+                        value={priceRange}
+                        onInput={handlePriceRange}
+                      />
                     </div>
-                    <RangeSlider min={0} max={getMaxPrice()} step={100} value={priceRange} onInput={handlePriceRange} />
-                  </div>
+                  )}
                 </div>
 
                 {!hasHome && (

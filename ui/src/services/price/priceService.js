@@ -20,15 +20,16 @@ const formatterCache = new Map();
 /**
  * @param {string} locale BCP 47 locale.
  * @param {number} fractionDigits Exact number of decimals to print.
+ * @param {string} currency ISO 4217 code.
  * @returns {Intl.NumberFormat}
  */
-function euroFormatter(locale, fractionDigits) {
-  const key = `${locale}:${fractionDigits}`;
+function currencyFormatter(locale, fractionDigits, currency) {
+  const key = `${locale}:${fractionDigits}:${currency}`;
   let formatter = formatterCache.get(key);
   if (formatter == null) {
     formatter = new Intl.NumberFormat(locale, {
       style: 'currency',
-      currency: 'EUR',
+      currency,
       minimumFractionDigits: fractionDigits,
       maximumFractionDigits: fractionDigits,
     });
@@ -51,18 +52,19 @@ function euroFormatter(locale, fractionDigits) {
  *
  * @param {number|string} price
  * @param {string} [locale='de-DE'] BCP 47 locale, from `useLocale()` inside components.
+ * @param {string} [currency='EUR'] ISO 4217 currency.
  * @param {number|null} [fractionDigits=null] Forces an exact number of decimals instead of the rule
  *   above. Asking prices are read one at a time and are better off without a permanent `,00`, but a
  *   price per square metre is read down a column against its neighbours, and `13 €` beside
  *   `21,76 €` reads as a different kind of number rather than a rounder one.
  * @returns {string}
  */
-export const formatEuroPrice = (price, locale = DEFAULT_LOCALE, fractionDigits = null) => {
+export const formatListingPrice = (price, locale = DEFAULT_LOCALE, currency = 'EUR', fractionDigits = null) => {
   const parsedPrice = Number(price);
   if (!Number.isFinite(parsedPrice)) {
-    return `${price} €`;
+    return `${price} ${currency === 'EUR' ? '€' : currency}`;
   }
 
   const digits = fractionDigits ?? (Number.isInteger(parsedPrice) ? 0 : 2);
-  return euroFormatter(locale || DEFAULT_LOCALE, digits).format(parsedPrice);
+  return currencyFormatter(locale || DEFAULT_LOCALE, digits, currency).format(parsedPrice);
 };

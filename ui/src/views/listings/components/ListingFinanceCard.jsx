@@ -56,6 +56,10 @@ export default function ListingFinanceCard({ listing }) {
     };
   }, [listing?.id, listing?.price]);
 
+  if (finance?.unsupportedCurrency) {
+    return <Text type="tertiary">{t('listing.detail.financeCurrencyUnsupported')}</Text>;
+  }
+
   if (isRental) {
     return finance?.scored == null ? null : (
       <RentCard scored={finance.scored} budget={finance.budget} t={t} locale={locale} />
