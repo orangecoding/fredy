@@ -77,6 +77,7 @@ afterEach(() => db.close());
 const advert = (hash, price, overrides = {}) => ({
   id: hash,
   price,
+  currency: 'EUR',
   size: 60,
   rooms: 2,
   title: 'Flat',
@@ -131,6 +132,17 @@ describe('a stored advert at a new price', () => {
     const [provider, [change]] = notify.sendPriceChange.mock.calls[0];
     expect(provider).toBe('kleinanzeigen');
     expect(change.direction).toBe('down');
+  });
+
+  it('announces the change in the currency stored on the row', async () => {
+    storage.storeListings(JOB.id, 'kleinanzeigen', [advert('hash-800', 800, { currency: 'CHF' })]);
+
+    await expect(pipeline()._splitOffPriceChanges([advert('hash-750', 750)])).rejects.toBeInstanceOf(
+      NoNewListingsWarning,
+    );
+
+    const [, [change]] = notify.sendPriceChange.mock.calls[0];
+    expect(change).toMatchObject({ oldPrice: '800 CHF', newPrice: '750 CHF' });
   });
 
   it('stays silent when the price tracker already reported it', async () => {

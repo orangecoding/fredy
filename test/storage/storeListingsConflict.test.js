@@ -26,6 +26,7 @@ describe('storeListings id propagation', () => {
         provider TEXT,
         job_id TEXT,
         price REAL,
+        currency TEXT NOT NULL DEFAULT 'EUR',
         charges_included INTEGER,
         charges REAL,
         size REAL,
@@ -72,6 +73,7 @@ describe('storeListings id propagation', () => {
   const listing = (hash, overrides = {}) => ({
     id: hash,
     price: 1000,
+    currency: 'EUR',
     size: 60,
     rooms: 2,
     title: `Flat ${hash}`,
@@ -150,6 +152,21 @@ describe('storeListings id propagation', () => {
     listingsStorage.storeListings('job-1', 'immoscout', found);
 
     expect(db.prepare('SELECT added_manually FROM listings WHERE id = ?').get(found[0].id).added_manually).toBe(0);
+  });
+
+  it('stores the currency the listing carries', () => {
+    const listings = [listing('francs', { currency: 'CHF' })];
+    listingsStorage.storeListings('job-1', 'flatfox', listings);
+
+    expect(db.prepare('SELECT currency FROM listings WHERE id = ?').get(listings[0].id).currency).toBe('CHF');
+  });
+
+  // Defaulting here is how a franc price ends up stored as euros, with nothing to show for it.
+  it('refuses a listing that does not say its currency', () => {
+    expect(() => listingsStorage.storeListings('job-1', 'flatfox', [listing('x', { currency: undefined })])).toThrow(
+      /NOT NULL/,
+    );
+    expect(db.prepare('SELECT COUNT(1) AS cnt FROM listings').get().cnt).toBe(0);
   });
 
   it('strips parenthesised address suffixes', () => {

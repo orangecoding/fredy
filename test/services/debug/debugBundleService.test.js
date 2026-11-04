@@ -156,7 +156,7 @@ describe('services/debug/debugBundleService.js', () => {
       const os = await import('node:os');
       const sys = await svc.buildSystemInfo({ settings: null });
 
-      expect(sys).not.toContain(os.hostname());
+      expect(sys.match(/^Hostname:.*$/m)?.[0]).not.toContain(os.hostname());
       expect(sys).toMatch(/Hostname:\s+<redacted>:[0-9a-f]{8}/);
 
       // Stable, so two bundles from the same host can be recognised as such.

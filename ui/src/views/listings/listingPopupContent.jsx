@@ -7,7 +7,7 @@ import { renderToString } from 'react-dom/server';
 import { IconChevronLeft, IconChevronRight } from '@douyinfe/semi-icons';
 import { listingPictureSrc } from '../../services/listings/listingPictures.js';
 import { availableModes, formatMinutes, hasAnyTime } from '../../components/transit/travelTimeFormat.js';
-import { formatEuroPrice } from '../../services/price/priceService.js';
+import { formatListingPrice } from '../../services/price/priceService.js';
 import { formatDecimal } from '../../services/number/numberService.js';
 import { mountPopupNode } from '../../components/map/popupContent.jsx';
 import MapPopupActions from './components/MapPopupActions.jsx';
@@ -215,7 +215,9 @@ function renderListingBody(listing, index, total, t, locale) {
   // Laid out like a listing card: the photograph, the price in the UI face with the living space
   // muted beside it, the title, the address. Only the two facts that are Fredy's own bookkeeping
   // keep a label, because a search's name and a portal's are not self-explanatory on their own.
-  const price = listing.price ? escapeHtml(formatEuroPrice(listing.price, locale)) : t('common.na');
+  const price = listing.price
+    ? escapeHtml(formatListingPrice(listing.price, locale, listing.currency))
+    : t('common.na');
   const size = listing.size != null ? `${escapeHtml(formatDecimal(listing.size, locale))} m²` : '';
 
   // No picture, or one that fails to load, leaves the popup without one rather than showing the old

@@ -6,7 +6,7 @@
 import { Link } from 'react-router';
 import { IconPaperclip } from '@douyinfe/semi-icons';
 import { listingPictureSrc } from '../../../services/listings/listingPictures.js';
-import { formatEuroPrice } from '../../../services/price/priceService.js';
+import { formatListingPrice } from '../../../services/price/priceService.js';
 import { formatDecimal } from '../../../services/number/numberService.js';
 import * as timeService from '../../../services/time/timeService.js';
 import { relativeTime } from '../../../services/time/relativeTime.js';
@@ -105,7 +105,9 @@ const ListingsGrid = ({
             <div className="listingsGrid__card__body">
               {item.price && (
                 <div className="listingsGrid__card__price">
-                  <span className="listingsGrid__card__amount">{formatEuroPrice(item.price, locale)}</span>
+                  <span className="listingsGrid__card__amount">
+                    {formatListingPrice(item.price, locale, item.currency)}
+                  </span>
                   {/* Next to the price rather than on a line of its own: it is the same figure said
                       a second way, and reading the two together is the whole point. */}
                   <PricePerSqmBadge listing={item} />
@@ -115,6 +117,7 @@ const ListingsGrid = ({
                     chargesIncluded={rentIncludesCharges(item)}
                   />
                   <PriceChangeBadge
+                    currency={item.currency}
                     price={item.price}
                     previousPrice={item.previous_price}
                     changedAt={item.price_changed_at}

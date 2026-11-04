@@ -251,7 +251,7 @@ describe('the page', () => {
   it('counts the filters a folded panel hides, so an emptier map explains itself', () => {
     expect(viewJsx).toMatch(/activeCount=\{activeFilterCount\}/);
     expect(viewJsx).toMatch(
-      /const activeFilterCount = countActiveMapFilters\(\{\s*jobId,\s*commute: commuteFilter,\s*priceMin: urlPriceMin,\s*priceMax: urlPriceMax,?\s*\}\);/,
+      /const activeFilterCount = countActiveMapFilters\(\{\s*jobId,\s*commute: commuteFilter,\s*priceMin: mixedCurrencies \? null : urlPriceMin,\s*priceMax: mixedCurrencies \? null : urlPriceMax,?\s*\}\);/,
     );
   });
 

@@ -7,6 +7,7 @@ import { describe, it, expect, vi } from 'vitest';
 
 import {
   BENCHMARK_RADII_KM,
+  COMPARABLES_SQL,
   MARKET_BAND_PCT,
   MAX_COMPARABLES,
   MIN_SAMPLE,
@@ -148,6 +149,21 @@ describe('located', () => {
 
 describe('benchmark for one listing', () => {
   const listing = { id: 'target', latitude: LAT, longitude: LNG };
+
+  it('adds a scope to the query, with its parameters', () => {
+    const runQuery = vi.fn(() => []);
+
+    computeBenchmark(listing, 'rent', runQuery, { condition: 'l.currency = @currency', params: { currency: 'CHF' } });
+
+    const [sql, params] = runQuery.mock.calls[0];
+    expect(sql).toContain('AND l.currency = @currency');
+    expect(params).toMatchObject({ currency: 'CHF', id: 'target', dealType: 'rent' });
+  });
+
+  // Migration 41 prepares this on a table with no such column, and a fresh install runs it.
+  it('leaves the currency out of the query migration 41 prepares', () => {
+    expect(COMPARABLES_SQL).not.toContain('currency');
+  });
 
   it('takes the median of everything inside the tightest radius that has enough of it', () => {
     const rows = Array.from({ length: MIN_SAMPLE }, () => comparable(1, 500));

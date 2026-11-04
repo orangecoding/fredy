@@ -28,9 +28,10 @@ registerFinanceCharts();
  * @param {Array<{price: number, observed_at: number}>} props.data Oldest first.
  * @param {string} [props.locale]
  * @param {number} [props.height=120]
+ * @param {string} [props.currency='EUR'] ISO 4217 code of the prices.
  * @returns {React.ReactElement|null}
  */
-export default function PriceHistoryChart({ data = [], locale = 'de-DE', height = 120 }) {
+export default function PriceHistoryChart({ data = [], locale = 'de-DE', height = 120, currency = 'EUR' }) {
   const rows = React.useMemo(() => (Array.isArray(data) ? data : []), [data]);
 
   const chartData = React.useMemo(
@@ -71,7 +72,7 @@ export default function PriceHistoryChart({ data = [], locale = 'de-DE', height 
             color: CHART_COLORS.MUTED,
             font: { family: CHART_COLORS.FONT_UI, size: 12 },
             maxTicksLimit: 4,
-            callback: (value) => formatEuro(value, locale),
+            callback: (value) => formatEuro(value, locale, currency),
           },
         },
       },
@@ -89,13 +90,13 @@ export default function PriceHistoryChart({ data = [], locale = 'de-DE', height 
           bodyFont: { family: CHART_COLORS.FONT_UI, size: 13, weight: '600' },
           callbacks: {
             title: (items) => new Date(Number(items[0].label)).toLocaleDateString(locale),
-            label: (ctx) => formatEuro(ctx.parsed.y, locale),
+            label: (ctx) => formatEuro(ctx.parsed.y, locale, currency),
           },
         },
       },
       interaction: { mode: 'index', intersect: false },
     }),
-    [locale],
+    [locale, currency],
   );
 
   if (rows.length < 2) {

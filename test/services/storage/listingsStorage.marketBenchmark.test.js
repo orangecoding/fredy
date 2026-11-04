@@ -34,7 +34,10 @@ describe('market benchmark against the listings table', () => {
       CREATE TABLE listings (
         id TEXT PRIMARY KEY,
         job_id TEXT,
+        provider TEXT DEFAULT 'immoscout',
+        link TEXT,
         price INTEGER,
+        currency TEXT NOT NULL DEFAULT 'EUR',
         size INTEGER,
         latitude REAL,
         longitude REAL,
@@ -74,16 +77,20 @@ describe('market benchmark against the listings table', () => {
    * @param {number} [options.size=50]
    * @param {number} [options.km=1] Kilometres due north of the cathedral.
    * @param {number} [options.deleted=0]
+   * @param {string} [options.currency='EUR']
    */
-  const addListing = (id, { jobId = 'rent-job', price = 500, size = 50, km = 1, deleted = 0 } = {}) =>
+  const addListing = (id, { jobId = 'rent-job', price = 500, size = 50, km = 1, deleted = 0, currency = 'EUR' } = {}) =>
     db
       .prepare(
-        `INSERT INTO listings (id, job_id, price, size, latitude, longitude, manually_deleted, price_per_sqm)
-         VALUES (?,?,?,?,?,?,?,?)`,
+        `INSERT INTO listings (id, job_id, price, currency, size, latitude, longitude, manually_deleted, price_per_sqm)
+         VALUES (?,?,?,?,?,?,?,?,?)`,
       )
-      .run(id, jobId, price, size, LAT + km / 111.32, LNG, deleted, price / size);
+      .run(id, jobId, price, currency, size, LAT + km / 111.32, LNG, deleted, price / size);
 
   const rowOf = (id) => db.prepare(`SELECT * FROM listings WHERE id = ?`).get(id);
+
+  /** The listing being measured, the way the pipeline hands it over. */
+  const target = (overrides = {}) => ({ id: 'target', currency: 'EUR', latitude: LAT, longitude: LNG, ...overrides });
 
   it('writes the median, the sample size and the radius onto the listing', () => {
     for (let index = 0; index < MIN_SAMPLE; index += 1) {
@@ -91,7 +98,7 @@ describe('market benchmark against the listings table', () => {
     }
     addListing('target', { price: 400 });
 
-    listingsStorage.applyMarketBenchmark('rent-job', [{ id: 'target', latitude: LAT, longitude: LNG }]);
+    listingsStorage.applyMarketBenchmark('rent-job', [target()]);
 
     const row = rowOf('target');
     expect(row.market_median_sqm).toBe(10);
@@ -105,7 +112,7 @@ describe('market benchmark against the listings table', () => {
     }
     addListing('target');
 
-    listingsStorage.applyMarketBenchmark('rent-job', [{ id: 'target', latitude: LAT, longitude: LNG }]);
+    listingsStorage.applyMarketBenchmark('rent-job', [target()]);
 
     const row = rowOf('target');
     expect(row.market_median_sqm).toBeNull();
@@ -123,7 +130,7 @@ describe('market benchmark against the listings table', () => {
     }
     addListing('target', { price: 480 });
 
-    listingsStorage.applyMarketBenchmark('rent-job', [{ id: 'target', latitude: LAT, longitude: LNG }]);
+    listingsStorage.applyMarketBenchmark('rent-job', [target()]);
 
     expect(rowOf('target').market_median_sqm).toBe(10);
   });
@@ -137,7 +144,7 @@ describe('market benchmark against the listings table', () => {
     }
     addListing('target', { price: 500 });
 
-    listingsStorage.applyMarketBenchmark('rent-job', [{ id: 'target', latitude: LAT, longitude: LNG }]);
+    listingsStorage.applyMarketBenchmark('rent-job', [target()]);
 
     expect(rowOf('target').market_median_sqm).toBe(10);
   });
@@ -150,7 +157,7 @@ describe('market benchmark against the listings table', () => {
     }
     addListing('target', { price: 5000 });
 
-    listingsStorage.applyMarketBenchmark('rent-job', [{ id: 'target', latitude: LAT, longitude: LNG }]);
+    listingsStorage.applyMarketBenchmark('rent-job', [target()]);
 
     expect(rowOf('target').market_median_sqm).toBe(10);
   });
@@ -162,7 +169,7 @@ describe('market benchmark against the listings table', () => {
     }
     addListing('target', { jobId: 'undecided' });
 
-    listingsStorage.applyMarketBenchmark('undecided', [{ id: 'target', latitude: LAT, longitude: LNG }]);
+    listingsStorage.applyMarketBenchmark('undecided', [target()]);
 
     expect(rowOf('target').market_median_sqm).toBeNull();
   });
@@ -178,6 +185,23 @@ describe('market benchmark against the listings table', () => {
     const kpis = listingsStorage.getListingsKpisForJobIds(['rent-job', 'buy-job']);
 
     expect(kpis.medianPricePerSqm).toEqual({ dealType: 'rent', value: 10, sampleSize: 5 });
+  });
+
+  it('never benchmarks PLN against EUR listings in the same neighbourhood', () => {
+    for (let index = 0; index < MIN_SAMPLE; index++) addListing(`eur-${index}`, { jobId: 'buy-job', price: 100000 });
+    addListing('pln-target', { jobId: 'buy-job', price: 1000000, currency: 'PLN' });
+    const polish = () => target({ id: 'pln-target', currency: 'PLN' });
+    listingsStorage.applyMarketBenchmark('buy-job', [polish()]);
+    expect(rowOf('pln-target').market_median_sqm).toBeNull();
+    for (let index = 0; index < MIN_SAMPLE; index++) {
+      addListing(`pln-${index}`, { jobId: 'buy-job', price: 500000, currency: 'PLN' });
+    }
+    listingsStorage.applyMarketBenchmark('buy-job', [polish()]);
+    expect(rowOf('pln-target').market_median_sqm).toBe(10000);
+    const kpis = listingsStorage.getListingsKpisForJobIds(['buy-job']);
+    expect(kpis.currency).toBeNull();
+    expect(kpis.medianPriceOfListings).toBeNull();
+    expect(kpis.medianPricePerSqm).toBeNull();
   });
 
   it('has no median per square metre before anything has a size', () => {

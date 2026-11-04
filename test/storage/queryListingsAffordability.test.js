@@ -22,7 +22,7 @@ vi.mock('../../lib/services/storage/SqliteConnection.js', () => ({ default: sqli
 vi.mock('../../lib/services/similarity-check/similarityCache.js', () => ({ removeEntry: vi.fn() }));
 
 /** The SELECT that fetches the page (as opposed to the COUNT). */
-const pageQuery = () => calls.query.find((call) => !call.sql.includes('COUNT(1)'));
+const pageQuery = () => calls.query.find((call) => call.sql.includes('SELECT l.*'));
 
 /** A band scored only for buying, leaving rent unjudged. */
 const buyOnly = (min, max) => ({ buy: { min, max }, rent: null });
@@ -36,6 +36,13 @@ describe('queryListings affordabilityBand', () => {
     calls.query.length = 0;
     vi.resetModules();
     listingsStorage = await import('../../lib/services/storage/listingsStorage.js');
+  });
+
+  it('holds only euro listings against the band', () => {
+    listingsStorage.queryListings({ userId: 'u1', affordabilityBand: buyOnly(30000, 412000) });
+    const { sql, params } = pageQuery();
+    expect(sql).toContain('l.currency = @affordabilityCurrency');
+    expect(params.affordabilityCurrency).toBe('EUR');
   });
 
   it('adds no clause when no band is given', () => {

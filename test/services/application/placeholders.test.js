@@ -82,6 +82,13 @@ describe('listing values', () => {
     expect(resolve({ language: 'en' })['listing.price']).toBe('€1,200');
   });
 
+  it("prices the listing in its own currency, and leaves the applicant's income alone", () => {
+    const values = resolve({ listing: { ...listing, currency: 'CHF' } });
+    expect(values['listing.price']).toBe('1.200\u00a0CHF');
+    expect(values['listing.pricePerSqm']).toBe('15,90\u00a0CHF');
+    expect(values['applicant.netIncome']).toBe('3.800\u00a0€');
+  });
+
   it('formats the living space with its unit', () => {
     expect(resolve()['listing.size']).toBe('75,5 m²');
     expect(resolve({ language: 'en' })['listing.size']).toBe('75.5 m²');

@@ -25,9 +25,10 @@ const ACCEPTED = () => jsonResponse({ status: 'ok', stored: true, band: '500-100
  * @param {number|null} [overrides.perSqm] `null` stands for a job with no measured listing.
  * @returns {Object}
  */
-const kpisFor = ({ perSqm = 14.2, sampleSize = 47, total = 1180, dealType = 'rent' } = {}) => ({
+const kpisFor = ({ perSqm = 14.2, sampleSize = 47, total = 1180, dealType = 'rent', currency = 'EUR' } = {}) => ({
   numberOfActiveListings: sampleSize,
   medianPriceOfListings: total,
+  currency,
   medianPricePerSqm: perSqm == null ? null : { dealType, value: perSqm, sampleSize },
 });
 
@@ -131,6 +132,10 @@ describe('services/tracking - price observation', () => {
       median_price_total: 1180,
       sample_size: 47,
     });
+  });
+
+  it('reports nothing for a job priced outside the euro, whose figure would read as one', async () => {
+    expect(await reportOne(jobWith(), { kpi: kpisFor({ currency: 'CHF' }) })).toBeUndefined();
   });
 
   describe('the price range', () => {

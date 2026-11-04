@@ -38,6 +38,7 @@ import { deleteListingsByFilter } from '../../lib/services/storage/listingsStora
 import { getSettings, getUserSettings } from '../../lib/services/storage/settingsStorage.js';
 import { isAdmin } from '../../lib/api/security.js';
 import listingsPlugin from '../../lib/api/routes/listingsRouter.js';
+import { MixedCurrencyError } from '../../lib/errors.js';
 import { filterMask } from '../../lib/services/connectivity/mobileBits.js';
 
 async function buildApp() {
@@ -84,6 +85,20 @@ describe('DELETE /filtered', () => {
 
     expect(response.statusCode).toBe(403);
     expect(deleteListingsByFilter).not.toHaveBeenCalled();
+  });
+
+  it('answers a price bound across currencies with a 400, not a 500', async () => {
+    // The storage layer only reports the refusal. Without this the catch-all would turn it into a
+    // 500, and a client could not tell a refused request from a broken server.
+    const refusal = new MixedCurrencyError();
+    deleteListingsByFilter.mockImplementation(() => {
+      throw refusal;
+    });
+
+    const response = await del({});
+
+    expect(response.statusCode).toBe(400);
+    expect(response.json().error).toBe(refusal.message);
   });
 
   it('lets an admin through in demo mode', async () => {

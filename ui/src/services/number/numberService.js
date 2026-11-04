@@ -33,13 +33,13 @@ function decimalFormatter(locale) {
 /**
  * A plain figure the way the reader's language writes one: `5,5` and `1.200` in German, `5.5` and
  * `1,200` in English. For the numbers that carry a unit rather than a currency - a room count, a
- * floor area - where `formatEuroPrice` would be wrong.
+ * floor area - where `formatListingPrice` would be wrong.
  *
  * Decimals appear only when the figure has them, so a four-room flat stays `4` rather than becoming
  * `4,00`, and anything past two decimals is noise on a figure a portal rounded itself.
  *
  * A value that is not a number is handed back as it came rather than printed as `NaN`, matching how
- * {@link formatEuroPrice} treats a provider writing text into a numeric field.
+ * {@link formatListingPrice} treats a provider writing text into a numeric field.
  *
  * @param {number|string} value
  * @param {string} [locale='de-DE'] BCP 47 locale, from `useLocale()` inside components.

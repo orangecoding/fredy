@@ -501,7 +501,9 @@ export default function ListingDetail() {
   if (!listing) return null;
 
   const isRental = listing.dealType === 'rent';
-  const financeIncomplete = !(isRental ? rentComplete : buyComplete) && listing.price != null;
+  // Not offered outside the euro: the calculator would take the listing's price for euros.
+  const financeIncomplete =
+    listing.currency === 'EUR' && !(isRental ? rentComplete : buyComplete) && listing.price != null;
 
   return (
     <div className={`listing-detail${phone ? ' listing-detail--phone' : ''}`}>

@@ -32,6 +32,7 @@ import { missingRequirements } from '../../../services/jobs/jobValidation.js';
 import { summariseJobRefinements } from '../../../services/jobs/jobSummary.js';
 import { withReturnTo } from '../../../services/routes/returnTo.js';
 import { formatEuro } from '../../../components/cards/chartTheme.js';
+import { normalizeHost } from '../../../services/jobs/providerUrl.js';
 // The frontend copy of the server's detection. The two must agree: the pipeline falls back to its
 // own when a job carries no deal type, so a form that guessed differently would show one thing and
 // store another. Kept in step by test/ui/dealTypeCopyInSync.test.js.
@@ -129,6 +130,7 @@ function JobMutator({ source }) {
 
   const shareableUserList = useSelector((state) => state.jobsData.shareableUserList);
   const allChannels = useSelector((state) => state.notificationChannels.channels);
+  const providerMetadata = useSelector((state) => state.provider);
   const location = useLocation();
   const sourceJob = source.job;
   const isEdit = source.mode === 'edit';
@@ -404,10 +406,22 @@ function JobMutator({ source }) {
     };
   };
 
+  const currencies = [
+    ...new Set(
+      providerData
+        .filter((p) => p.enabled !== false)
+        .map((p) => {
+          const meta = providerMetadata.find((candidate) => candidate.id === p.id);
+          return meta?.currencyByHost?.[normalizeHost(p.url)] ?? meta?.currency ?? 'EUR';
+        }),
+    ),
+  ];
+  const currency = currencies.length === 1 ? currencies[0] : null;
+
   // What the collapsed section holds, so it does not have to be opened to find out.
   const refinementSummary = summariseJobRefinements(
     { blacklist, excludedLocations, specFilter, spatialFilter, commuteFilter },
-    { t, formatPrice: (value) => formatEuro(value, locale) },
+    { t, formatPrice: (value) => formatEuro(value, locale, currency ?? 'EUR') },
   );
 
   const handleProviderEdit = (data) => {
@@ -753,10 +767,18 @@ function JobMutator({ source }) {
               helpText={t('jobs.mutation.criteriaFilterHelp')}
               helpMode="popover"
             >
+              {/* Not the map's "select one currency" wording: a job's mixed selection cannot be
+                  priced at all. The field below stays editable on purpose - a job saved before
+                  currencies were resolved can still carry a ceiling, and clearing it is the only
+                  way to make that job saveable again. */}
+              {currencies.length > 1 && <p>{t('jobs.mutation.mixedCurrencyMaxPrice')}</p>}
               <div className="jobMutation__specFilter">
                 {SPEC_FILTERS.map((filter) => (
                   <div key={filter.key} className="jobMutation__specFilterItem">
-                    <div className="jobMutation__specFilterLabel">{filter.translation}</div>
+                    <div className="jobMutation__specFilterLabel">
+                      {filter.translation}
+                      {filter.key === 'maxPrice' && currency ? ` (${currency})` : ''}
+                    </div>
                     <Input
                       type="number"
                       placeholder={t('jobs.mutation.criteriaNumberPlaceholder')}

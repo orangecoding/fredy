@@ -17,7 +17,7 @@ import {
   Tooltip,
 } from 'chart.js';
 
-import { formatEuroPrice } from '../../services/price/priceService.js';
+import { formatListingPrice } from '../../services/price/priceService.js';
 
 /*
  * Chart colours and typography, read from the theme rather than copied out of it.
@@ -172,16 +172,17 @@ export function registerFinanceCharts() {
  *
  * @param {number} value
  * @param {string} [locale='de-DE']
+ * @param {string} [currency='EUR'] ISO 4217 code, for a listing priced in something else.
  * @returns {string}
  */
-export function formatEuro(value, locale = 'de-DE') {
+export function formatEuro(value, locale = 'de-DE', currency = 'EUR') {
   if (value == null || !Number.isFinite(Number(value))) {
     return '–';
   }
-  // Rounded before it is handed over: `formatEuroPrice` keeps the cents a value actually has, and
+  // Rounded before it is handed over: `formatListingPrice` keeps the cents a value actually has, and
   // on an axis label or a tooltip those two digits are exactly the noise this function exists to
   // drop. What is left is the same grouping and symbol the listings use.
-  return formatEuroPrice(Math.round(Number(value)), locale);
+  return formatListingPrice(Math.round(Number(value)), locale, currency);
 }
 
 /**
@@ -189,15 +190,16 @@ export function formatEuro(value, locale = 'de-DE') {
  *
  * @param {number} value
  * @param {string} [locale='de-DE']
+ * @param {string} [currency='EUR'] ISO 4217 code, for a listing priced in something else.
  * @returns {string}
  */
-export function formatEuroCompact(value, locale = 'de-DE') {
+export function formatEuroCompact(value, locale = 'de-DE', currency = 'EUR') {
   if (value == null || !Number.isFinite(Number(value))) {
     return '';
   }
   return new Intl.NumberFormat(locale, {
     style: 'currency',
-    currency: 'EUR',
+    currency,
     notation: 'compact',
     maximumFractionDigits: 1,
   }).format(Number(value));

@@ -46,6 +46,7 @@ describe('the dashboard listing reads', () => {
         title TEXT,
         address TEXT,
         price REAL,
+        currency TEXT NOT NULL DEFAULT 'EUR',
         size REAL,
         rooms REAL,
         price_per_sqm REAL,
@@ -159,6 +160,7 @@ describe('the dashboard listing reads', () => {
         [
           'address',
           'created_at',
+          'currency',
           'id',
           'image_url',
           'job_id',

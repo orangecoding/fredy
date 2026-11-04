@@ -24,11 +24,12 @@ vi.mock('../../lib/mcp/mcpAuthentication.js', () => ({
   checkJobAccess: vi.fn(() => true),
 }));
 
-import { getListingById } from '../../lib/services/storage/listingsStorage.js';
+import { getListingById, queryListings } from '../../lib/services/storage/listingsStorage.js';
 import { getUserSettings } from '../../lib/services/storage/settingsStorage.js';
 import { createMcpServer } from '../../lib/mcp/mcpAdapter.js';
 import { normalizeRentAffordability } from '../../lib/mcp/mcpNormalizer.js';
 import { computeBudget, scoreRentListing } from '../../lib/services/finance/affordability.js';
+import { MixedCurrencyError } from '../../lib/errors.js';
 
 /**
  * 4000 net and 1400 living costs: 1400 warm is the 35 % ceiling, 1120 cold at the 25 % surcharge. A
@@ -92,7 +93,14 @@ describe('calculate_financing for a rental', () => {
   });
 
   it('judges a rent quoted with the charges on that rent, without a surcharge on top', async () => {
-    getListingById.mockReturnValue({ id: 'cc', title: 'Studio', price: 1300, dealType: 'rent', charges_included: 1 });
+    getListingById.mockReturnValue({
+      id: 'cc',
+      title: 'Studio',
+      price: 1300,
+      currency: 'EUR',
+      dealType: 'rent',
+      charges_included: 1,
+    });
 
     const md = textOf(await callTool('calculate_financing', { listingId: 'cc' }));
 
@@ -100,12 +108,49 @@ describe('calculate_financing for a rental', () => {
     expect(md).toContain('Warm rent **1.300 EUR**');
   });
 
+  it('refuses to finance a non-EUR listing', async () => {
+    getListingById.mockReturnValue({ id: 'pl', currency: 'CHF', price: 1050000, dealType: 'buy' });
+    const result = await callTool('calculate_financing', { listingId: 'pl' });
+    expect(result.isError).toBe(true);
+    expect(textOf(result)).toContain('Financing supports EUR listings only.');
+  });
+
   it('keeps adding the surcharge to a rent quoted without the charges', async () => {
-    getListingById.mockReturnValue({ id: 'hc', title: 'Altbau', price: 1300, dealType: 'rent', charges_included: 0 });
+    getListingById.mockReturnValue({
+      id: 'hc',
+      title: 'Altbau',
+      price: 1300,
+      currency: 'EUR',
+      dealType: 'rent',
+      charges_included: 0,
+    });
 
     const md = textOf(await callTool('calculate_financing', { listingId: 'hc' }));
 
     expect(md).toContain('### Verdict: OUT OF REACH');
     expect(md).toContain('Warm rent **1.625 EUR**');
+  });
+});
+
+describe('list_listings across currencies', () => {
+  // The tool has no currency parameter, so "select one currency" is nothing a model can act on.
+  it('answers a price range it cannot apply with what to narrow by, not a thrown error', async () => {
+    queryListings.mockImplementationOnce(() => {
+      throw new MixedCurrencyError();
+    });
+
+    const result = await callTool('list_listings', { minPrice: 1000 });
+
+    expect(result.isError).toBe(true);
+    expect(textOf(result)).toContain('**Tool:** list_listings');
+    expect(textOf(result)).toContain('Set currency');
+    expect(textOf(result)).toContain('jobId or provider');
+  });
+
+  // One job can hold betterhomes.de and betterhomes.ch, which jobId and provider cannot tell apart.
+  it('takes a currency, so a job spanning two can still be asked about a price range', async () => {
+    await callTool('list_listings', { jobId: 'job-1', provider: 'betterhomes', maxPrice: 2000, currency: 'CHF' });
+
+    expect(queryListings.mock.calls.at(-1)[0]).toMatchObject({ currencyFilter: 'CHF', maxPrice: 2000 });
   });
 });
