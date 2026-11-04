@@ -994,6 +994,82 @@ async function downloadOtodomFixtures(url) {
   }
 }
 
+/**
+ * Serialise plain data the way Nuxt's devalue does: one flat array, values referenced by index, the
+ * root wrapped as Nuxt wraps it.
+ * @param {unknown} root
+ * @returns {unknown[]}
+ */
+function devalueFlatten(root) {
+  // Nuxt wraps its payload root in a reactive marker, which the provider has to see through.
+  const values = [['ShallowReactive', 1]];
+  const add = (value) => {
+    if (value === undefined) return -1;
+    const index = values.length;
+    values.push(null);
+    if (value === null || typeof value !== 'object') values[index] = value;
+    else if (Array.isArray(value)) values[index] = value.map(add);
+    else values[index] = Object.fromEntries(Object.entries(value).map(([key, item]) => [key, add(item)]));
+    return index;
+  };
+  add(root);
+  return values;
+}
+
+/**
+ * Record two Gratka pages; agent contacts, floor plans and unread fields are omitted.
+ * @param {string} url
+ * @returns {Promise<void>}
+ */
+async function downloadGratkaFixtures(url) {
+  const { parseSearchPage } = await import('../../lib/provider/gratka.js');
+  const searchUrl = new URL(url);
+  searchUrl.searchParams.set('sort', 'newest');
+  const fields = [
+    'id',
+    'title',
+    'advertisementText',
+    'url',
+    'price',
+    'priceM2',
+    'area',
+    'numberOfRooms',
+    'location',
+    'description',
+    'addedAt',
+    'development',
+  ];
+  for (let page = 1; page <= 2; page++) {
+    if (page === 1) searchUrl.searchParams.delete('page');
+    else searchUrl.searchParams.set('page', String(page));
+    const response = await fetch(searchUrl, {
+      headers: { 'User-Agent': 'Mozilla/5.0', 'Accept-Language': 'pl-PL,pl;q=0.9' },
+      signal: AbortSignal.timeout(30_000),
+      redirect: 'error',
+    });
+    if (!response.ok) throw new Error(`Gratka fixture failed: ${response.status} ${response.statusText}`);
+    const { items } = parseSearchPage(await response.text());
+    const nodes = items.map((item) => ({
+      ...Object.fromEntries(fields.filter((key) => key in item).map((key) => [key, item[key]])),
+      photos: (item.photos ?? []).map((photo) => ({ id: photo.id })),
+    }));
+    const numberOfResults = Math.max(nodes.length, 1);
+    const data = {
+      data: {
+        [`decode-listing-url-query-${searchUrl.pathname}`]: {
+          data: { decodeListingUrl: { listingParameters: { pageNumber: page, numberOfResults } } },
+        },
+        [`property-listing-data-${searchUrl.pathname}-offers`]: {
+          data: { searchResult: { properties: { nodes, totalCount: numberOfResults * 2 } } },
+        },
+      },
+    };
+    const payload = JSON.stringify(devalueFlatten(data)).replaceAll('<', '\\u003c');
+    const html = `<!doctype html>\n<!-- Recorded from ${searchUrl}; pagination shortened to two pages for offline tests. -->\n<script type="application/json" id="__NUXT_DATA__">${payload}</script>\n`;
+    await writeFile(path.join(FIXTURES_DIR, page === 1 ? 'gratka.html' : 'gratka_page2.html'), html);
+  }
+}
+
 async function main() {
   await mkdir(FIXTURES_DIR, { recursive: true });
 
@@ -1038,6 +1114,9 @@ async function main() {
         break;
       case 'leboncoin':
         await downloadLeboncoinFixtures(runConfig, launchBrowser, closeBrowser);
+        break;
+      case 'gratka':
+        await downloadGratkaFixtures(runConfig.url);
         break;
       case 'otodom':
         await downloadOtodomFixtures(runConfig.url);
