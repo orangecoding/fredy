@@ -74,6 +74,17 @@ docker run -d --name fredy \
 `ghcr.io/orangecoding/fredy:28.0.0`. Images are built for `linux/amd64` and `linux/arm64`. Logs:
 `docker logs fredy -f`.
 
+To update, pull the new image and recreate the container. Jobs, listings and settings live in the two
+volumes, so they survive this:
+
+``` bash
+docker pull ghcr.io/orangecoding/fredy:master
+docker stop fredy && docker rm fredy
+```
+
+Then start it again with the `docker run` command above. `docker image prune` removes the old image
+afterwards.
+
 There is also a pre-release channel following the `develop` branch,
 `ghcr.io/orangecoding/fredy-pre-release:latest`. It is built from the same pipeline (lint, format
 check and the offline test suite all have to pass first), but the changes in it have not been through
