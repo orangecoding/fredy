@@ -246,6 +246,15 @@ export function buildFetchMock() {
     const urlStr = String(url);
     const requestBody = new URLSearchParams(typeof init?.body === 'string' ? init.body : '');
 
+    if (new URL(urlStr).hostname === 'www.otodom.pl') {
+      const page = new URL(urlStr).searchParams.get('page') ?? '1';
+      const file = page === '1' ? 'otodom.html' : page === '2' ? 'otodom_page2.html' : null;
+      if (file == null) throw new Error(`No Otodom fixture for page ${page}`);
+      const html = await tryReadFile(path.join(FIXTURES_DIR, file));
+      if (html == null) throw new Error(`Missing Otodom fixture: ${file}`);
+      return { ok: true, status: 200, text: async () => html };
+    }
+
     // willhaben reads its results out of the page's __NEXT_DATA__, so this is the one fixture
     // served as text rather than json.
     if (urlStr.includes('willhaben.at/iad/')) {

@@ -7,7 +7,7 @@ platform into Fredy.
 > Always make sure the search results are sorted by **date**, so Fredy picks up the newest listings
 > first.
 
-## The 30 built-in providers
+## The 31 built-in providers
 
 **🇩🇪 Germany**
 
@@ -26,6 +26,7 @@ platform into Fredy.
 **🇪🇸 Spain · 🇮🇹 Italy · 🇵🇹 Portugal** · idealista
 **🇮🇹 Italy** · Subito · Tecnocasa · Tecnorete · Casa.it
 **🇫🇷 France** · leboncoin · SeLoger · Bien'ici
+**🇵🇱 Poland** · Otodom
 
 If you run a portal Fredy does not cover yet, contributions are very welcome, see
 [CONTRIBUTING.md](../CONTRIBUTING.md).
@@ -212,6 +213,24 @@ Not supported: an area drawn on the map, a circle and a travel-time area. Bien'i
 own servers and the url carries nothing but an id, so the job stops and says so - search the town
 and narrow it down with Fredy's own map area filter instead. A place Bien'ici no longer knows stops
 the job too, rather than being searched as whatever its place lookup guesses instead.
+
+## Otodom
+
+House-sale searches anywhere in Poland, for example:
+
+```
+https://www.otodom.pl/pl/wyniki/sprzedaz/dom/malopolskie/krakow/krakow/krakow?ownerTypeSingleSelect=ALL
+```
+
+Fredy reads the page's embedded JSON over plain HTTP, newest first, at most five pages per run. If more
+than five pages of new adverts arrive between runs, narrow the search or shorten the interval.
+
+Prices stay in PLN; adverts in other currencies and development groups without a single price are
+skipped. A price change does not announce an advert again. Rentals, flats, detail enrichment, adding
+an advert by URL, activity checks and price tracking are not supported yet.
+
+Otodom sits behind CloudFront: a blocked request fails the job rather than looking like an empty
+search. EUR financing does not score PLN listings; see [Currencies](#currencies).
 
 ## Countries and the map
 
