@@ -92,6 +92,48 @@ describe('#immobilien.de search url', () => {
 describe('#immobilien.de payload parsing', () => {
   const listings = provider.parseListings(fixture('immobilienDe.html'));
 
+  const flightPage = (data) => `<script>self.__next_f.push([1, ${JSON.stringify(JSON.stringify(data))}])</script>`;
+
+  it('recognises a successful search with no matches', () => {
+    expect(provider.parseListings(flightPage({ results: [], pins: [], resultsFailed: false, totalCount: 0 }))).toEqual(
+      [],
+    );
+  });
+
+  it('does not use recommended listings when the search itself has no matches', () => {
+    expect(
+      provider.parseListings(
+        flightPage([{ results: [], resultsFailed: false, totalCount: 0 }, { results: [{ legacyId: 42 }] }]),
+      ),
+    ).toEqual([]);
+  });
+
+  it('does not mistake an unrelated empty results array for an empty search', () => {
+    expect(provider.parseListings(flightPage({ results: [] }))).toBeNull();
+  });
+
+  it('keeps looking for listings after an unrelated empty results array', () => {
+    expect(provider.parseListings(flightPage([{ results: [] }, { results: [{ legacyId: 42 }] }]))).toEqual([
+      { legacyId: 42 },
+    ]);
+  });
+
+  it('does not report a failed search as a successful empty search', () => {
+    expect(provider.parseListings(flightPage({ results: [], resultsFailed: true, totalCount: 0 }))).toBeNull();
+  });
+
+  it('does not report missing result records as an empty search', () => {
+    expect(provider.parseListings(flightPage({ results: [], resultsFailed: false, totalCount: 3 }))).toBeNull();
+  });
+
+  it('does not accept truncated search metadata', () => {
+    const truncated =
+      '<script>self.__next_f.push([1, ' +
+      JSON.stringify('{"results":[],"resultsFailed":false,"totalCount":0') +
+      '])</script>';
+    expect(provider.parseListings(truncated)).toBeNull();
+  });
+
   it('reads the listings out of the flight payload', () => {
     expect(listings.length).toBeGreaterThan(0);
     expect(listings[0]).toHaveProperty('legacyId');
