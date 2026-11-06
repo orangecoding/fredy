@@ -7,7 +7,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { describe, it, expect } from 'vitest';
 
-import { galleryPictures, listingPictureSrc } from '../../ui/src/services/listings/listingPictures.js';
+import {
+  galleryPictures,
+  listingPictureSrc,
+  pictureIndexForKey,
+} from '../../ui/src/services/listings/listingPictures.js';
 
 describe('listingPictureSrc', () => {
   it('loads the first picture through Fredy, never straight from the portal', () => {
@@ -72,5 +76,38 @@ describe('galleryPictures', () => {
   it('is empty for a listing without any picture, and skips entries without a url', () => {
     expect(galleryPictures({ id: 'abc', image_url: null })).toEqual([]);
     expect(galleryPictures({ id: 'abc', image_url: null, images: [{ caption: 'x' }, null] })).toEqual([]);
+  });
+});
+
+describe('pictureIndexForKey', () => {
+  const key = (name, modifiers = {}) => ({ key: name, ...modifiers });
+
+  it('steps through the pictures with the left and right arrow keys', () => {
+    expect(pictureIndexForKey(key('ArrowRight'), 1, 4)).toBe(2);
+    expect(pictureIndexForKey(key('ArrowLeft'), 1, 4)).toBe(0);
+  });
+
+  it('wraps around at both ends, as the viewer buttons do', () => {
+    expect(pictureIndexForKey(key('ArrowRight'), 3, 4)).toBe(0);
+    expect(pictureIndexForKey(key('ArrowLeft'), 0, 4)).toBe(3);
+  });
+
+  it('leaves every other key alone', () => {
+    for (const name of ['ArrowUp', 'ArrowDown', 'Escape', 'Enter', ' ', 'a']) {
+      expect(pictureIndexForKey(key(name), 1, 4), name).toBeNull();
+    }
+  });
+
+  // Alt+Left is the browser's back, Cmd+Left on a Mac as well. Taking those over would trap the
+  // reader on the page instead of showing the previous picture.
+  it('leaves the arrow keys alone when a modifier is held', () => {
+    for (const modifier of ['altKey', 'ctrlKey', 'metaKey', 'shiftKey']) {
+      expect(pictureIndexForKey(key('ArrowLeft', { [modifier]: true }), 1, 4), modifier).toBeNull();
+    }
+  });
+
+  it('has nowhere to go with a single picture', () => {
+    expect(pictureIndexForKey(key('ArrowRight'), 0, 1)).toBeNull();
+    expect(pictureIndexForKey(key('ArrowLeft'), 0, 0)).toBeNull();
   });
 });

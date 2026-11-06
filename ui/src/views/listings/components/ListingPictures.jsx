@@ -8,7 +8,7 @@ import { Image, ImagePreview, Typography } from '@douyinfe/semi-ui-19';
 import { IconMaximize } from '@douyinfe/semi-icons';
 
 import ListingPhoto from '../../../components/listings/ListingPhoto.jsx';
-import { galleryPictures } from '../../../services/listings/listingPictures.js';
+import { galleryPictures, pictureIndexForKey } from '../../../services/listings/listingPictures.js';
 import { useTranslation } from '../../../services/i18n/i18n.jsx';
 
 import './ListingPictures.less';
@@ -39,6 +39,20 @@ export default function ListingPictures({ listing }) {
     setActive(0);
     setViewerOpen(false);
   }, [listing.id]);
+
+  // Semi's viewer closes on Escape but does nothing with the arrow keys, so they are wired up here.
+  // Only while it is open: on the page itself left and right belong to the inputs, tabs and the map.
+  useEffect(() => {
+    if (!viewerOpen) return undefined;
+    const onKeyDown = (event) => {
+      const next = pictureIndexForKey(event, active, pictures.length);
+      if (next == null) return;
+      event.preventDefault();
+      setActive(next);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [viewerOpen, active, pictures.length]);
 
   const current = pictures[active] ?? pictures[0] ?? null;
   const showStrip = pictures.length > 1;

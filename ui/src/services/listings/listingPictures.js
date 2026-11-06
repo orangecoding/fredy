@@ -54,3 +54,22 @@ export function galleryPictures(listing) {
     })),
   ];
 }
+
+/**
+ * The picture a key press moves the gallery to: left and right arrow step back and forth, wrapping
+ * around at both ends the way the viewer's own buttons do.
+ *
+ * Null for any other key, for an arrow pressed with a modifier (Alt+Left and Cmd+Left are the
+ * browser's back), and for a gallery with nothing to step to.
+ *
+ * @param {{key: string, altKey?: boolean, ctrlKey?: boolean, metaKey?: boolean, shiftKey?: boolean}} event
+ * @param {number} index The picture shown now.
+ * @param {number} total How many pictures the gallery has.
+ * @returns {number|null}
+ */
+export function pictureIndexForKey(event, index, total) {
+  if (total < 2 || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return null;
+  const step = event.key === 'ArrowLeft' ? -1 : event.key === 'ArrowRight' ? 1 : 0;
+  if (step === 0) return null;
+  return (index + step + total) % total;
+}
