@@ -25,7 +25,7 @@
 
 # Fredy 🏡 - Your Self-Hosted Real Estate Finder for Europe
 
-**Fredy** watches **32 real estate portals** across 🇩🇪 🇦🇹 🇨🇭 🇪🇸 🇮🇹 🇵🇹 🇫🇷 🇵🇱 for you (e.g. Immoscout,
+**Fredy** watches **33 real estate portals** across 🇩🇪 🇦🇹 🇨🇭 🇪🇸 🇮🇹 🇵🇹 🇫🇷 🇵🇱 for you (e.g. Immoscout,
 Kleinanzeigen etc), drops duplicates across platforms, and notifies you via **Slack, Telegram,
 Email, ntfy, Discord and more** the moment a new listing appears. Searches are managed from a Web
 UI, and you never see the same listing twice.
@@ -108,9 +108,9 @@ Fredy is in the [Unraid](https://unraid.net/) community store.
 
 ## ✨ What you get
 
--   🏠 **32 portals** across 🇩🇪 🇦🇹 🇨🇭 🇪🇸 🇮🇹 🇵🇹 🇫🇷 🇵🇱: ImmoScout24 (Germany and Austria), Immowelt,
+-   🏠 **33 portals** across 🇩🇪 🇦🇹 🇨🇭 🇪🇸 🇮🇹 🇵🇹 🇫🇷 🇵🇱: ImmoScout24 (Germany and Austria), Immowelt,
     Kleinanzeigen, WG-Gesucht, willhaben, Flatfox, idealista, Subito, leboncoin, SeLoger and
-    [21 more](doc/providers.md)
+    [22 more](doc/providers.md)
 -   ⚡ **Instant notifications**: Slack, Telegram, Email (SMTP, SendGrid, Mailjet, Resend), ntfy,
     Gotify, Discord, Mattermost, Pushover, Apprise and more
 -   🔄 **Deduplication across platforms**: the same flat advertised on ImmoScout, Immowelt and

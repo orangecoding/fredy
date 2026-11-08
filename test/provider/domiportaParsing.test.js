@@ -209,23 +209,54 @@ describe('Domiporta retrieval', () => {
     expect(fetch).toHaveBeenCalledTimes(3);
   });
 
-  it('keeps what it read when a later page redirects, but not when the first one does', async () => {
+  it('keeps results when page three redirects to page two in Domiporta’s real format', async () => {
+    const filteredUrl = `${URL}?Price.From=1000000&Price.To=1500000`;
     const moved = {
       ok: false,
       status: 301,
       statusText: 'Moved',
-      headers: new Headers({ location: `${URL}?PageNumber=1` }),
+      headers: new Headers({
+        location: `${URL}?Price.From=1000000&Price.To=1500000&PageNumber=2&SortingOrder=InsertionDate`,
+      }),
     };
     const fetch = vi
       .fn()
       .mockResolvedValueOnce(response([advert], 2))
+      .mockResolvedValueOnce(response([withId(2)], 3))
       .mockResolvedValueOnce(moved);
     vi.stubGlobal('fetch', fetch);
+    expect(await config.getListings(filteredUrl)).toHaveLength(2);
+  });
+
+  it.each([
+    'https://www.domiporta.pl/login',
+    'https://www.domiporta.pl/dom/sprzedam/inny-miasto?PageNumber=1&SortingOrder=InsertionDate',
+    `${URL}?Price.To=999999&PageNumber=1&SortingOrder=InsertionDate`,
+  ])('keeps prior results when a later page redirects elsewhere: %s', async (location) => {
+    const fetch = vi
+      .fn()
+      .mockResolvedValueOnce(response([advert], 2))
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 302,
+        statusText: 'Found',
+        headers: new Headers({ location }),
+      });
+    vi.stubGlobal('fetch', fetch);
     expect(await config.getListings(URL)).toHaveLength(1);
-    fetch.mockReset().mockResolvedValue(moved);
-    await expect(config.getListings(URL)).rejects.toThrow(
-      /Domiporta redirected the search to https:\/\/www.domiporta.pl/,
+  });
+
+  it('fails when the first page redirects', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: false,
+        status: 301,
+        statusText: 'Moved',
+        headers: new Headers({ location: `${URL}?PageNumber=1` }),
+      }),
     );
+    await expect(config.getListings(URL)).rejects.toThrow(/Domiporta redirected the search/);
   });
 
   it('stops at the five-page cap', async () => {
@@ -263,6 +294,18 @@ describe('Domiporta retrieval', () => {
         .mockResolvedValueOnce({ ok: false, status: 403, statusText: 'Forbidden' }),
     );
     await expect(config.getListings(URL)).rejects.toThrow('Domiporta search failed: 403 Forbidden');
+  });
+
+  it.each([
+    'https://www.domiporta.pl/dom/sprzedam/malopolskie/krakow',
+    'https://www.domiporta.pl/dom/wynajme/malopolskie/krakow',
+    'https://www.domiporta.pl/mieszkanie/sprzedam/malopolskie/krakow',
+    'https://www.domiporta.pl/mieszkanie/wynajme/malopolskie/krakow',
+  ])('accepts a supported search URL: %s', async (url) => {
+    const fetch = vi.fn().mockResolvedValue(response([advert]));
+    vi.stubGlobal('fetch', fetch);
+    expect(await config.getListings(url)).toEqual([advert]);
+    expect(new globalThis.URL(fetch.mock.calls[0][0]).pathname).toBe(new globalThis.URL(url).pathname);
   });
 
   it.each([
