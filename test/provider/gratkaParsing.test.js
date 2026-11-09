@@ -5,7 +5,14 @@
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { readFile } from 'node:fs/promises';
-import { config, createConfig, metaInformation, parseSearchPage, unflatten } from '../../lib/provider/gratka.js';
+import {
+  config,
+  createConfig,
+  fetchGratkaPage,
+  metaInformation,
+  parseSearchPage,
+  unflatten,
+} from '../../lib/provider/gratka.js';
 
 const URL = 'https://gratka.pl/nieruchomosci/domy/krakow';
 
@@ -51,7 +58,11 @@ const advert = {
   development: null,
   photos: [photo('https://d-gr.cdngr.pl/kadry/k/r/gr-ogl/55/57/49146287_1.jpg')],
 };
-const response = (nodes, page = 1, pages = 1) => ({ ok: true, text: async () => pageHtml(nodes, page, pages) });
+const response = (nodes, page = 1, pages = 1) => ({
+  ok: true,
+  status: 200,
+  text: async () => pageHtml(nodes, page, pages),
+});
 afterEach(() => vi.unstubAllGlobals());
 
 describe('Gratka search payload', () => {
@@ -199,16 +210,76 @@ describe('Gratka retrieval', () => {
       expect(url.searchParams.get('page')).toBe(index === 0 ? null : String(index + 1));
       expect(url.searchParams.get('cena-calkowita:max')).toBe('2000000');
       expect(url.searchParams.get('sort')).toBe('newest');
-      expect(options.redirect).toBe('error');
+      expect(options.redirect).toBe('manual');
       expect(options.signal).toBeInstanceOf(AbortSignal);
     }
   });
 
-  it('drops a trailing slash, which Gratka would redirect', async () => {
+  it('accepts the www host and normalizes it before fetching', async () => {
     const fetch = vi.fn().mockResolvedValue(response([advert]));
     vi.stubGlobal('fetch', fetch);
-    await config.getListings('https://gratka.pl/nieruchomosci/mieszkania/krakow/?cena-calkowita:max=900000');
-    expect(new globalThis.URL(fetch.mock.calls[0][0]).pathname).toBe('/nieruchomosci/mieszkania/krakow');
+    await config.getListings('https://www.gratka.pl/nieruchomosci/mieszkania/krakow');
+    expect(new globalThis.URL(fetch.mock.calls[0][0]).hostname).toBe('gratka.pl');
+  });
+
+  it.each([
+    [
+      'SEO path canonicalisation',
+      'https://gratka.pl/nieruchomosci/mieszkania/krakow/wynajem?cena-calkowita:max=3000&sort=newest',
+      '/nieruchomosci/mieszkania/do-3000/krakow/wynajem?cena-calkowita%3Amax=3000&sort=newest',
+    ],
+    [
+      'filter canonicalisation',
+      'https://gratka.pl/nieruchomosci/mieszkania/krakow?rynek=wtorny&sort=newest',
+      '/nieruchomosci/mieszkania/krakow?sort=newest',
+    ],
+  ])(
+    'follows Gratka %s redirects and carries the canonical URL to the next page',
+    async (_label, source, canonicalPath) => {
+      const canonical = `https://gratka.pl${canonicalPath}`;
+      const fetch = vi
+        .fn()
+        .mockResolvedValueOnce({
+          ok: false,
+          status: 302,
+          statusText: 'Found',
+          headers: new Headers({ location: canonical }),
+        })
+        .mockResolvedValueOnce(response([advert], 1, 2))
+        .mockResolvedValueOnce(response([{ ...advert, id: 3 }], 2, 2));
+      vi.stubGlobal('fetch', fetch);
+      const items = await config.getListings(source);
+      expect(items).toHaveLength(2);
+      expect(fetch).toHaveBeenCalledTimes(3);
+      const firstRequest = new globalThis.URL(source);
+      firstRequest.searchParams.set('sort', 'newest');
+      firstRequest.searchParams.delete('page');
+      const secondPage = new globalThis.URL(canonical);
+      secondPage.searchParams.set('page', '2');
+      expect(fetch.mock.calls.map(([input]) => String(input))).toEqual([
+        firstRequest.toString(),
+        canonical,
+        secondPage.toString(),
+      ]);
+      expect(fetch.mock.calls.every(([, options]) => options.redirect === 'manual')).toBe(true);
+    },
+  );
+
+  it.each([
+    'http://gratka.pl/nieruchomosci/domy/krakow',
+    'https://evil.example/nieruchomosci/domy/krakow',
+    'https://127.0.0.1/nieruchomosci/domy/krakow',
+  ])('rejects redirects outside HTTPS Gratka hosts: %s', async (location) => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: false,
+        status: 302,
+        statusText: 'Found',
+        headers: new Headers({ location }),
+      }),
+    );
+    await expect(fetchGratkaPage(URL)).rejects.toThrow(/unsupported URL/);
   });
 
   it('keeps what it read when a later page is gone, but not when the first one is', async () => {
@@ -265,7 +336,6 @@ describe('Gratka retrieval', () => {
   it.each([
     'https://evil.example/nieruchomosci/domy/krakow',
     'http://gratka.pl/nieruchomosci/domy/krakow',
-    'https://www.gratka.pl/nieruchomosci/domy/krakow',
     'https://gratka.pl/nieruchomosci/dzialki/krakow',
   ])('refuses unsupported URLs: %s', async (url) => {
     const fetch = vi.fn();

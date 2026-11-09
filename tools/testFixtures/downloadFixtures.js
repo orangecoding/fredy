@@ -1022,8 +1022,8 @@ function devalueFlatten(root) {
  * @returns {Promise<void>}
  */
 async function downloadGratkaFixtures(url) {
-  const { parseSearchPage } = await import('../../lib/provider/gratka.js');
-  const searchUrl = new URL(url);
+  const { fetchGratkaPage, parseSearchPage } = await import('../../lib/provider/gratka.js');
+  let searchUrl = new URL(url);
   searchUrl.searchParams.set('sort', 'newest');
   const fields = [
     'id',
@@ -1042,11 +1042,11 @@ async function downloadGratkaFixtures(url) {
   for (let page = 1; page <= 2; page++) {
     if (page === 1) searchUrl.searchParams.delete('page');
     else searchUrl.searchParams.set('page', String(page));
-    const response = await fetch(searchUrl, {
+    const { response, url: responseUrl } = await fetchGratkaPage(searchUrl, {
       headers: { 'User-Agent': 'Mozilla/5.0', 'Accept-Language': 'pl-PL,pl;q=0.9' },
       signal: AbortSignal.timeout(30_000),
-      redirect: 'error',
     });
+    searchUrl = new URL(responseUrl);
     if (!response.ok) throw new Error(`Gratka fixture failed: ${response.status} ${response.statusText}`);
     const { items } = parseSearchPage(await response.text());
     const nodes = items.map((item) => ({
