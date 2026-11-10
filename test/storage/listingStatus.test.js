@@ -195,10 +195,12 @@ describe('listingsStorage.restoreListingsById', () => {
     listingsStorage = await import('../../lib/services/storage/listingsStorage.js');
   });
 
-  it('clears the manually_deleted flag for the given ids', () => {
+  it('clears the manually_deleted flag and the duplicate mark for the given ids', () => {
     listingsStorage.restoreListingsById(['a', 'b']);
     expect(calls.execute).toHaveLength(1);
-    expect(calls.execute[0].sql).toMatch(/UPDATE listings\s+SET manually_deleted = 0\s+WHERE id IN \(\?,\?\)/);
+    expect(calls.execute[0].sql).toMatch(
+      /UPDATE listings\s+SET manually_deleted = 0,\s+hidden_as_duplicate = 0\s+WHERE id IN \(\?,\?\)/,
+    );
     expect(calls.execute[0].params).toEqual(['a', 'b']);
   });
 

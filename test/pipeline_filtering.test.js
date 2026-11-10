@@ -9,7 +9,7 @@ import * as mockStore from './mocks/mockStore.js';
 import { get as getLastNotification } from './mocks/mockNotification.js';
 
 describe('Issue reproduction: listings filtered by similarity or area should be marked as manually deleted', () => {
-  it('should call deleteListingsById when listings are filtered by similarity', async () => {
+  it('should hide listings filtered by similarity as duplicates', async () => {
     const Fredy = await mockFredy();
 
     const mockSimilarityCache = {
@@ -35,8 +35,7 @@ describe('Issue reproduction: listings filtered by similarity or area should be 
 
     const fredy = new Fredy(providerConfig, mockedJob, 'test-provider', mockSimilarityCache, undefined);
 
-    // Clear deletedIds before test
-    mockStore.deletedIds.length = 0;
+    mockStore.duplicateIds.length = 0;
 
     try {
       await fredy.execute();
@@ -44,7 +43,9 @@ describe('Issue reproduction: listings filtered by similarity or area should be 
       // Might throw NoNewListingsWarning if all are filtered out
     }
 
-    expect(mockStore.deletedIds).toContain('1');
+    // Marked, not just soft-deleted: the mark is what brings the copy back once the listing it
+    // duplicates goes offline.
+    expect(mockStore.duplicateIds).toContain('1');
     // The provider id travels with the listing: the cache only ever treats two listings as the
     // same flat when they came from different providers.
     expect(mockSimilarityCache.checkAndAddEntry).toHaveBeenCalledWith({

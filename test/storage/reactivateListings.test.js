@@ -15,6 +15,7 @@ import Database from 'better-sqlite3';
 describe('reactivateListings', () => {
   let db;
   let listingsStorage;
+  let addEntry;
 
   const DAY = 24 * 60 * 60 * 1000;
   const NOW = 1_800_000_000_000;
@@ -28,6 +29,13 @@ describe('reactivateListings', () => {
         provider TEXT,
         link TEXT,
         title TEXT,
+        address TEXT,
+        price REAL,
+        charges_included INTEGER,
+        charges REAL,
+        size REAL,
+        rooms REAL,
+        description TEXT,
         is_active INTEGER,
         manually_deleted INTEGER DEFAULT 0,
         inactive_since INTEGER,
@@ -46,7 +54,8 @@ describe('reactivateListings', () => {
         withTransaction: (callback) => db.transaction(() => callback(db))(),
       },
     }));
-    vi.doMock('../../lib/services/similarity-check/similarityCache.js', () => ({ removeEntry: vi.fn() }));
+    addEntry = vi.fn();
+    vi.doMock('../../lib/services/similarity-check/similarityCache.js', () => ({ removeEntry: vi.fn(), addEntry }));
     listingsStorage = await import('../../lib/services/storage/listingsStorage.js');
   });
 
@@ -109,6 +118,20 @@ describe('reactivateListings', () => {
 
     expect(read('other').is_active).toBe(0);
     expect(read('other').activity_is_manual).toBe(0);
+  });
+
+  it('hands the listings that come back to the similarity cache', () => {
+    addListing('gone');
+    addListing('hidden', { deleted: 1 });
+    addListing('online', { isActive: 1, inactiveSince: null });
+
+    listingsStorage.reactivateListings(['gone', 'hidden', 'online']);
+
+    // Only the one that was gone: a hidden row stays hidden, and an active one is in the cache already.
+    expect(addEntry).toHaveBeenCalledTimes(1);
+    expect(addEntry).toHaveBeenCalledWith(
+      expect.objectContaining({ job_id: 'job-1', provider: 'immoscout', title: 'flat' }),
+    );
   });
 
   it('does nothing on an empty id list', () => {
