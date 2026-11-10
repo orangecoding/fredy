@@ -22,6 +22,11 @@ const configOf = (id) => providers.find((provider) => provider.metaInformation.i
  */
 const RECORDED_SEARCHES = [
   [
+    'gratka',
+    'https://gratka.pl/nieruchomosci/domy/krakow?cena-calkowita:max=1500000&cena-calkowita:min=1000000',
+    { min: 1000000, max: 1500000 },
+  ],
+  [
     'otodom',
     'https://www.otodom.pl/pl/wyniki/sprzedaz/dom/krakow?priceMin=500000&priceMax=2000000',
     { min: 500000, max: 2000000 },

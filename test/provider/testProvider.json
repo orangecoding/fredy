@@ -1,4 +1,8 @@
 {
+  "gratka": {
+    "url": "https://gratka.pl/nieruchomosci/domy/krakow",
+    "enabled": true
+  },
   "otodom": {
     "url": "https://www.otodom.pl/pl/wyniki/sprzedaz/dom/malopolskie/krakow/krakow/krakow?ownerTypeSingleSelect=ALL",
     "enabled": true

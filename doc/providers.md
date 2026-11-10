@@ -7,7 +7,7 @@ platform into Fredy.
 > Always make sure the search results are sorted by **date**, so Fredy picks up the newest listings
 > first.
 
-## The 31 built-in providers
+## The 32 built-in providers
 
 **🇩🇪 Germany**
 
@@ -26,7 +26,7 @@ platform into Fredy.
 **🇪🇸 Spain · 🇮🇹 Italy · 🇵🇹 Portugal** · idealista
 **🇮🇹 Italy** · Subito · Tecnocasa · Tecnorete · Casa.it
 **🇫🇷 France** · leboncoin · SeLoger · Bien'ici
-**🇵🇱 Poland** · Otodom
+**🇵🇱 Poland** · Otodom · Gratka
 
 If you run a portal Fredy does not cover yet, contributions are very welcome, see
 [CONTRIBUTING.md](../CONTRIBUTING.md).
@@ -231,6 +231,29 @@ an advert by URL, activity checks and price tracking are not supported yet.
 
 Otodom sits behind CloudFront: a blocked request fails the job rather than looking like an empty
 search. EUR financing does not score PLN listings; see [Currencies](#currencies).
+
+## Gratka
+
+Polish flat and house searches are supported, for sale and for rent, for example:
+
+```
+https://gratka.pl/nieruchomosci/domy/krakow
+https://gratka.pl/nieruchomosci/mieszkania/krakow/wynajem
+```
+
+Fredy reads the search page's embedded Nuxt data through a plain HTTP request. Every filter stays in
+the URL; sorting is set to newest first. Like Otodom, each run reads at most five pages, so this
+watches recent adverts rather than importing every result of a broad search. Gratka sorts by the
+day an advert was added, and an imported advert can carry an earlier day than the ones around it,
+so keep a search narrow enough that a few days of adverts fit in five pages.
+
+Amounts stay in PLN, and an advert priced in another currency is skipped. Development groups without
+a single asking price are skipped; a single unit of a development is kept. An advert is recognised by
+its Gratka id, so a new asking price does not announce it again. Plots, commercial property and
+other categories are refused until their payloads have test coverage.
+
+Morizon is not a separate provider: it belongs to the same group and shows the same adverts from the
+same database, so watching both would report every advert twice.
 
 ## Countries and the map
 
