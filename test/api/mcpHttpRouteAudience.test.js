@@ -15,6 +15,7 @@ vi.mock('../../lib/services/storage/userStorage.js', () => ({
 }));
 vi.mock('../../lib/services/storage/settingsStorage.js', () => ({
   getSettings: vi.fn(async () => ({ baseUrl: 'https://fredy.example/' })),
+  getUserSettings: vi.fn(() => ({})),
 }));
 
 import { validateAccessToken } from '../../lib/mcp/mcpOAuthStorage.js';

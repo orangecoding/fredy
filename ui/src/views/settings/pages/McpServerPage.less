@@ -1,0 +1,191 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../../tokens.less';
+
+/* The server's own switch, in the section header. The word beside it is for a sighted reader; the
+   switch carries its state for everyone else. */
+.mcpServerPage__switch {
+  display: inline-flex;
+  align-items: center;
+  gap: @space-2;
+  font-size: @text-sm;
+  color: @color-muted;
+}
+
+.mcpServerPage__status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: @space-2 @space-4;
+}
+
+.mcpServerPage__link {
+  font-size: @text-sm;
+  color: @color-link;
+}
+
+.mcpServerPage__offNotice {
+  margin: 0 0 @space-4;
+}
+
+.mcpServerPage__groups {
+  display: flex;
+  flex-direction: column;
+  gap: @space-8;
+  transition: opacity @transition-fast;
+
+  /* Dimmed rather than hidden, the same rule as every dependent setting: what was turned off before
+     is kept, and the reader should see it. */
+  &--off {
+    opacity: 0.45;
+  }
+}
+
+.mcpServerPage__groupHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: @space-2 @space-4;
+  padding-bottom: @space-3;
+}
+
+.mcpServerPage__groupText {
+  flex: 1 1 280px;
+  min-width: 0;
+}
+
+.mcpServerPage__groupTitle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: @space-2;
+  margin: 0;
+  font-size: @text-base;
+  font-weight: @weight-strong;
+  color: @color-text;
+}
+
+.mcpServerPage__groupCount {
+  font-size: @text-xs;
+  font-weight: @weight-medium;
+  color: @color-muted;
+}
+
+/* Writing is the level worth noticing, so it is the one with a colour. Tint and edge carry it, the
+   words stay in the text colour, as on the access pill under Connections. */
+.mcpServerPage__writeTag {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 @space-3;
+  border-radius: @radius-pill;
+  background: rgb(@color-warning-rgb / 12%);
+  border: 1px solid rgb(@color-warning-rgb / 40%);
+  font-size: @text-xs;
+  font-weight: @weight-medium;
+  line-height: 1;
+  white-space: nowrap;
+  color: @color-text;
+}
+
+.mcpServerPage__groupHelp {
+  margin: @space-1 0 0;
+  max-width: 68ch;
+  font-size: @text-sm;
+  line-height: 1.5;
+  color: @color-muted;
+}
+
+/* "Turn all on", "More": actions that read as links, because they change a view or a set of
+   switches rather than save anything. */
+.mcpServerPage__textButton {
+  flex: none;
+  align-self: flex-start;
+  min-height: @control-sm;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: @text-sm;
+  font-weight: @weight-medium;
+  color: @color-link;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  .mcpServerPage__groupHead > & {
+    align-self: flex-end;
+  }
+}
+
+.mcpServerPage__tools {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mcpServerPage__tool {
+  display: flex;
+  align-items: flex-start;
+  gap: @space-4;
+  padding: @space-3 0;
+  border-top: 1px solid @color-border;
+
+  .semi-switch {
+    flex: none;
+    margin-top: 2px;
+  }
+}
+
+.mcpServerPage__toolText {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: @space-1;
+  min-width: 0;
+}
+
+.mcpServerPage__toolHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px @space-3;
+}
+
+.mcpServerPage__toolTitle {
+  font-size: @text-base;
+  font-weight: @weight-medium;
+  color: @color-text;
+}
+
+.mcpServerPage__toolName {
+  padding: 2px 6px;
+  border-radius: @radius-chip;
+  background: @color-hover;
+  font-family: @font-mono;
+  font-size: @text-xs;
+  color: @color-muted;
+  overflow-wrap: anywhere;
+}
+
+.mcpServerPage__toolDesc {
+  margin: 0;
+  max-width: 68ch;
+  font-size: @text-sm;
+  line-height: 1.5;
+  color: @color-muted;
+
+  &--clamped {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+  }
+}

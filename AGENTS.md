@@ -282,6 +282,8 @@ Read tools: `list_jobs`, `get_job`, `list_listings`, `get_listing`, `get_photo_f
 Write tools: `add_listing_note`, `set_listing_notes`, `watch_listing`, `unwatch_listing`, and the four that create a job.
 Responses are Markdown via `lib/mcp/mcpNormalizer.js`.
 
+Each user can switch the server off, or single tools, under Settings → MCP server (user setting `mcp_server`, `{ enabled, disabledTools }`, read through `lib/mcp/mcpUserSettings.js`). `authenticateToolCall` enforces both on every call; `applyMcpToolSettings` trims `tools/list` per request. The settings page gets its tool list from `GET /api/user/mcp-server`, which reads it off the registered tools (`mcpToolCatalog`), so a new tool needs no UI change. Register tools through `server.tool()` inside `createMcpServer`: that is what records them.
+
 Job creation is a draft-based interview, not a single call: `lib/mcp/jobDraftStore.js` holds the state (in memory, per user, 30 min) and computes the next question; `lib/mcp/jobDraftContext.js` is the only part that reads the database and is what strips channel secrets. Write tools go through `authenticateWriteToolCall`, which also enforces the `mcp:write` OAuth scope and refuses non-admins while demo mode is on.
 
 ## Key Conventions

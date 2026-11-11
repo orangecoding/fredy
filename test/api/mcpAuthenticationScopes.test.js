@@ -14,6 +14,7 @@ vi.mock('../../lib/mcp/mcpOAuthStorage.js', () => ({
 }));
 vi.mock('../../lib/services/storage/settingsStorage.js', () => ({
   getSettings: vi.fn(async () => ({ demoMode: false })),
+  getUserSettings: vi.fn(() => ({})),
 }));
 
 import { getUser } from '../../lib/services/storage/userStorage.js';

@@ -45,6 +45,7 @@ const ListingDetailsPage = lazy(() => import('./views/settings/pages/ListingDeta
 const ApplicationPage = lazy(() => import('./views/settings/pages/ApplicationPage'));
 const NotificationsPage = lazy(() => import('./views/settings/pages/NotificationsPage'));
 const ConnectionsPage = lazy(() => import('./views/settings/pages/ConnectionsPage'));
+const McpServerPage = lazy(() => import('./views/settings/pages/McpServerPage'));
 const AdminLayout = lazy(() => import('./views/admin/AdminLayout'));
 const SystemPage = lazy(() => import('./views/admin/pages/SystemPage'));
 const ExecutionPage = lazy(() => import('./views/admin/pages/ExecutionPage'));
@@ -267,6 +268,7 @@ export default function FredyApp() {
                         <Route path="application" element={<ApplicationPage />} />
                         <Route path="notifications" element={<NotificationsPage />} />
                         <Route path="connections" element={<ConnectionsPage />} />
+                        <Route path="mcp-server" element={<McpServerPage />} />
                       </Route>
 
                       {/* Settings that belong to the instance. Guarded once, at the parent, so a new

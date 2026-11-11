@@ -86,6 +86,16 @@ Example prompts:
 
 > "Add a note to listing abc123: viewing on Tuesday at 6, agent said pets are fine."
 
+### Turning the server or single tools off
+
+Every user decides for their own account under **Settings → MCP server**. The server is on by default, with every tool.
+
+- **The server switch.** Turned off, `/api/mcp` answers this user with `403` on every request, sessions that are already open included, and the stdio transport refuses to start for their token. Nothing is deleted: tokens and OAuth connections keep existing and work again once the switch is back on.
+- **One switch per tool.** A tool turned off is left out of `tools/list`, and a client with an open session gets `notifications/tools/list_changed`. A call that still names it is refused.
+- **Where it is enforced.** `authenticateToolCall` (`mcpAuthentication.js`) refuses both cases, for every transport, so nothing depends on a client honouring the trimmed list. The list itself is trimmed by `applyMcpToolSettings` (`mcpAdapter.js`), which the HTTP route runs on every request and the stdio transport on every message.
+- **What the page shows.** The tools come from the server: `GET /api/user/mcp-server` answers with every registered tool, its title, its description and its `readOnlyHint`, read off the same registrations clients see. The UI keeps no list of its own, so a new tool shows up on the page as it is added here.
+- **How it is stored.** One user setting, `mcp_server`, holding `{ enabled, disabledTools }`. The tools turned *off* are stored, not the ones that are on, so a tool added in a later release starts out on.
+
 ### Tool Details
 
 #### list_jobs
@@ -331,6 +341,7 @@ curl -X POST http://localhost:9998/api/mcp \
 - Write tools enforce the same rules as the web UI: a listing must be one the user can already see, a notification channel must be one they are allowed to send through, and a job can only be shared with a non-admin other user
 - Channel credentials are never returned. The interview is handed a channel list stripped of its `fields` before it reaches the adapter, so a bot token cannot reach an LLM transcript even by accident
 - While **demo mode** is on, every write tool refuses non-admin users. The public demo is read-only over MCP
+- Each user can switch the server off for their account, or turn single tools off, under **Settings → MCP server**. Both are enforced on every tool call, not only in the tool list (see [Turning the server or single tools off](#turning-the-server-or-single-tools-off))
 
 ## Response Format
 

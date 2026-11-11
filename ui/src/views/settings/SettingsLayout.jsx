@@ -36,6 +36,7 @@ export default function SettingsLayout() {
     { path: '/settings/application', label: t('settings.tabApplication') },
     { path: '/settings/notifications', label: t('settings.tabNotifications') },
     { path: '/settings/connections', label: t('settings.tabConnections') },
+    { path: '/settings/mcp-server', label: t('settings.tabMcpServer') },
   ];
 
   return (
