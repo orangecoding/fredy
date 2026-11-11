@@ -17,6 +17,7 @@ import { getSettings } from './lib/services/storage/settingsStorage.js';
 import SqliteConnection, { computeDbPath } from './lib/services/storage/SqliteConnection.js';
 import { initJobExecutionService } from './lib/services/jobs/jobExecutionService.js';
 import { ensureValidBinary } from './lib/services/ensureValidBinary.js';
+import { browserEngineName } from './lib/services/extractor/browserEngine.js';
 import { removeObsoleteProviders } from './lib/services/providers/providerCleanup.js';
 import { seedDemo, warnOnDefaultAdminPassword } from './lib/services/demo/demoService.js';
 import { initDemoCleanupCron } from './lib/services/crons/demo-cleanup-cron.js';
@@ -28,13 +29,13 @@ import { initTravelTimeCron } from './lib/services/crons/travel-time-cron.js';
 import { initConnectivityCron } from './lib/services/crons/connectivity-cron.js';
 import { initTourCleanupCron } from './lib/services/crons/tour-cleanup-cron.js';
 
-// Ensure the CloakBrowser stealth Chromium binary is present and complete before
-// jobs run.  ensureValidBinary() also detects and auto-heals partial extractions
-// (e.g. a newer version that was downloaded but only the chrome executable was
+// Ensure the stealth Chromium binary (Clearcote, or CloakBrowser where Clearcote has no build) is
+// present and complete before jobs run.  ensureValidBinary() also detects and auto-heals partial
+// extractions (e.g. a newer version that was downloaded but only the chrome executable was
 // written) so Chrome never crashes with "Invalid file descriptor to ICU data".
-logger.info('Checking CloakBrowser binary...');
+logger.info(`Checking ${browserEngineName()} binary...`);
 await ensureValidBinary();
-logger.info('CloakBrowser binary ready.');
+logger.info(`${browserEngineName()} binary ready.`);
 
 // Configuration comes first, because everything below reads it - SqliteConnection.init() in
 // particular resolves the database directory from `sqlitepath`.

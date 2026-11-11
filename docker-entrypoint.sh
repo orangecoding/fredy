@@ -25,7 +25,7 @@ if [ "$uid" = "0" ]; then
   find /db /conf \( \! -user node -o \! -group node \) -exec chown -h node:node {} + \
     || echo "WARN: could not fix ownership of /db or /conf" >&2
   # setpriv keeps root's environment, so HOME would still point at /root. Chromium's profile and
-  # CloakBrowser's binary cache both live under HOME.
+  # the stealth Chromium's binary cache (~/.cache/clearcote, ~/.cloakbrowser) both live under HOME.
   export HOME=/home/node
   exec setpriv --reuid=node --regid=node --init-groups /usr/bin/tini -g -- "$@"
 fi

@@ -311,9 +311,16 @@ purchase-cost assumptions: it does not score non-EUR listings.
 ## 🛡️ Bot detection & proxies
 
 Most browser-based providers (kleinanzeigen, wg-gesucht, ohnemakler, ...) are scraped through a
-hardened headless browser ([CloakBrowser](https://www.npmjs.com/package/cloakbrowser)). It makes the
-**browser fingerprint** indistinguishable from a real Chrome, which is enough when you run Fredy on
-a normal home connection.
+hardened headless browser. It makes the **browser fingerprint** indistinguishable from a real
+Chrome, which is enough when you run Fredy on a normal home connection.
+
+Which browser that is depends on the machine. On Linux x64 (the amd64 Docker image), Windows x64 and
+Apple Silicon Macs it is the open build of [Clearcote](https://github.com/clearcotelabs/clearcote-browser).
+Clearcote does not build for Linux arm64 (the arm64 Docker image, a Raspberry Pi) or Intel Macs, so
+those run [CloakBrowser](https://www.npmjs.com/package/cloakbrowser) instead, on its last release
+that works without a licence key. Neither needs an account or a key, and the binary downloads by
+itself on the first start (the Docker image ships it). Some portals behind DataDome (SeLoger) block
+CloakBrowser in a Linux container, so on arm64 those can fail where amd64 gets through.
 
 On a **server / VPS the requests usually originate from a datacenter IP**, and providers behind
 anti-bot systems (e.g. AWS CloudFront/WAF) block those based on **IP reputation alone**, no matter

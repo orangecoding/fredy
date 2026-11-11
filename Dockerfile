@@ -5,19 +5,21 @@
 # "libm.so.6: version `GLIBC_2.38' not found".
 FROM node:22-trixie-slim
 
-# System deps for CloakBrowser + build tools for native modules (better-sqlite3)
+# System deps for the stealth Chromium + build tools for native modules (better-sqlite3).
+# xz-utils lets tar unpack Clearcote's .tar.xz build.
 # NOTE: trixie renamed several libs as part of the 64-bit time_t transition
 # (libasound2 -> libasound2t64 etc.) - keep the t64 suffixes.
-# fonts-* packages below are CloakBrowser's recommended Linux font set
+# fonts-* packages below are CloakBrowser's recommended Linux font set, which Clearcote's Linux
+# persona draws on as well
 # (https://github.com/CloakHQ/cloakbrowser#font-setup-on-linux): sites like
 # Kasada/Akamai render emoji/CJK glyphs on hidden canvases and hash the pixel
 # output, so missing fonts produce hashes a minimal Linux image can't match.
 # NOTE: Real Windows fonts (Segoe UI, Calibri, etc.) can't be bundled here since
 # they require copying licensed files off an actual Windows install, which is
-# why launchBrowser makes CloakBrowser pose as Linux rather than Windows here.
+# why launchBrowser makes both engines pose as Linux rather than Windows here.
 # tini is the container's init (see ENTRYPOINT below) and must survive the build-tool purge.
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates tini fonts-liberation libasound2t64 \
+    curl ca-certificates tini xz-utils fonts-liberation libasound2t64 \
     libatk-bridge2.0-0t64 libatk1.0-0t64 libcups2t64 libdbus-1-3 \
     libdrm2 libgbm1 libgtk-3-0t64 libnspr4 libnss3 \
     libx11-xcb1 libxcomposite1 libxdamage1 libxrandr2 xdg-utils \
@@ -51,8 +53,14 @@ RUN node -e "const D = require('better-sqlite3'); new D(':memory:').close()"
 # it, but would then keep pictures only as the portal serves them, and none above 512 KB.
 RUN node -e "require('sharp')"
 
-# Pre-download the CloakBrowser stealth Chromium binary (supports x86_64 and arm64)
-RUN node -e "import('cloakbrowser').then(({ensureBinary}) => ensureBinary())"
+# Pre-download the stealth Chromium: Clearcote's open build where it is published (x86_64),
+# CloakBrowser's keyless build everywhere else (arm64). The same rule lives in
+# lib/services/extractor/browserEngine.js, which is not in the image yet at this point.
+RUN if [ "$(uname -m)" = "x86_64" ]; then \
+      node -e "import('clearcote').then(({download}) => download())"; \
+    else \
+      node -e "import('cloakbrowser').then(({ensureBinary}) => ensureBinary())"; \
+    fi
 
 USER root
 
