@@ -3,6 +3,10 @@
     "url": "https://gratka.pl/nieruchomosci/domy/krakow",
     "enabled": true
   },
+  "domiporta": {
+    "url": "https://www.domiporta.pl/dom/sprzedam/malopolskie/krakow",
+    "enabled": true
+  },
   "otodom": {
     "url": "https://www.otodom.pl/pl/wyniki/sprzedaz/dom/malopolskie/krakow/krakow/krakow?ownerTypeSingleSelect=ALL",
     "enabled": true

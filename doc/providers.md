@@ -7,7 +7,7 @@ platform into Fredy.
 > Always make sure the search results are sorted by **date**, so Fredy picks up the newest listings
 > first.
 
-## The 32 built-in providers
+## The 33 built-in providers
 
 **🇩🇪 Germany**
 
@@ -26,7 +26,7 @@ platform into Fredy.
 **🇪🇸 Spain · 🇮🇹 Italy · 🇵🇹 Portugal** · idealista
 **🇮🇹 Italy** · Subito · Tecnocasa · Tecnorete · Casa.it
 **🇫🇷 France** · leboncoin · SeLoger · Bien'ici
-**🇵🇱 Poland** · Otodom · Gratka
+**🇵🇱 Poland** · Otodom · Gratka · Domiporta
 
 If you run a portal Fredy does not cover yet, contributions are very welcome, see
 [CONTRIBUTING.md](../CONTRIBUTING.md).
@@ -234,7 +234,7 @@ search. EUR financing does not score PLN listings; see [Currencies](#currencies)
 
 ## Gratka
 
-Polish flat and house searches are supported, for sale and for rent, for example:
+Polish house-sale and apartment-rental searches, for example:
 
 ```
 https://gratka.pl/nieruchomosci/domy/krakow
@@ -254,6 +254,28 @@ other categories are refused until their payloads have test coverage.
 
 Morizon is not a separate provider: it belongs to the same group and shows the same adverts from the
 same database, so watching both would report every advert twice.
+
+## Domiporta
+
+Polish flat and house searches are supported, for sale and for rent, for example:
+
+```
+https://www.domiporta.pl/dom/sprzedam/malopolskie/krakow
+https://www.domiporta.pl/mieszkanie/wynajme/malopolskie/krakow?Price.To=4000
+```
+
+Fredy reads the adverts from the search page's schema.org data through a direct HTTPS request. Every
+filter stays in the URL; sorting is set to "Od najnowszych" (`SortingOrderDirection=InsertionDateDescending`),
+newest on the portal first. The portal's unlabelled default order is not by date. Each run reads at
+most five pages. Adverts beyond that limit are not fetched; narrow the search if important results
+fall outside the pages Fredy reads.
+
+Prices are stored in PLN. An advert explicitly priced in another currency is skipped. A price change
+does not announce the advert again because Fredy keys it by its Domiporta id. Domiporta appends a
+place to many headlines, so the provider moves that place into the address when it can identify it.
+A flat in a new development (`/nowe/ogloszenie/...`) is kept like any other advert. Searches for
+plots, commercial property or whole developments are not supported. Detail enrichment, adding an
+advert by URL, activity checks and price tracking are not supported either.
 
 ## Countries and the map
 

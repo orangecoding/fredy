@@ -255,6 +255,15 @@ export function buildFetchMock() {
       return { ok: true, status: 200, text: async () => html };
     }
 
+    if (new URL(urlStr).hostname === 'www.domiporta.pl') {
+      const page = new URL(urlStr).searchParams.get('PageNumber') ?? '1';
+      const file = page === '1' ? 'domiporta.html' : page === '2' ? 'domiporta_page2.html' : null;
+      if (file == null) throw new Error(`No Domiporta fixture for page ${page}`);
+      const html = await tryReadFile(path.join(FIXTURES_DIR, file));
+      if (html == null) throw new Error(`Missing Domiporta fixture: ${file}`);
+      return { ok: true, status: 200, text: async () => html };
+    }
+
     if (new URL(urlStr).hostname === 'www.otodom.pl') {
       const page = new URL(urlStr).searchParams.get('page') ?? '1';
       const file = page === '1' ? 'otodom.html' : page === '2' ? 'otodom_page2.html' : null;

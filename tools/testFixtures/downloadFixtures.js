@@ -1070,6 +1070,72 @@ async function downloadGratkaFixtures(url) {
   }
 }
 
+/**
+ * Record two Domiporta pages: the search page's schema.org list without seller names, the page's
+ * other JSON-LD blocks as they are, the page skeleton an empty search keeps, and the page's own link
+ * to the second page.
+ * @param {string} url
+ * @returns {Promise<void>}
+ */
+async function downloadDomiportaFixtures(url) {
+  const cheerio = await import('cheerio');
+  const { parseSearchPage } = await import('../../lib/provider/domiporta.js');
+  const searchUrl = new URL(url);
+  searchUrl.searchParams.set('SortingOrderDirection', 'InsertionDateDescending');
+  for (let page = 1; page <= 2; page++) {
+    searchUrl.searchParams.set('PageNumber', String(page));
+    const response = await fetch(searchUrl, {
+      headers: { 'User-Agent': 'Mozilla/5.0', 'Accept-Language': 'pl-PL,pl;q=0.9' },
+      signal: AbortSignal.timeout(30_000),
+      redirect: 'error',
+    });
+    if (!response.ok) throw new Error(`Domiporta fixture failed: ${response.status} ${response.statusText}`);
+    const source = await response.text();
+    const { items } = parseSearchPage(source);
+    const $ = cheerio.load(source);
+    const otherBlocks = $('script[type="application/ld+json"]')
+      .toArray()
+      .map((node) => $(node).text())
+      .filter((text) => !text.includes('"ItemList"'))
+      .map((text) => `<script type="application/ld+json">${text.replaceAll('<', '\\u003c')}</script>`);
+    const itemListElement = items.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      item: {
+        '@type': item['@type'],
+        name: item.name,
+        description: item.description,
+        image: item.image,
+        datePosted: item.datePosted,
+        url: item.url,
+        offers: {
+          '@type': 'Offer',
+          price: item.offers?.price,
+          priceCurrency: item.offers?.priceCurrency,
+          itemOffered: {
+            '@type': item.offers?.itemOffered?.['@type'],
+            numberOfRooms: item.offers?.itemOffered?.numberOfRooms,
+            floorSize: item.offers?.itemOffered?.floorSize,
+            address: item.offers?.itemOffered?.address,
+          },
+        },
+      },
+    }));
+    const data = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@graph': [{ '@type': 'WebPage' }, { '@type': 'ItemList', itemListElement }],
+    }).replaceAll('<', '\\u003c');
+    let pagination = '';
+    if (page === 1) {
+      const next = $('a[href*="PageNumber=2"]').first().attr('href');
+      if (next == null) throw new Error('Domiporta fixture failed: the first page links no second page.');
+      pagination = `<a href="${next.replaceAll('"', '&quot;')}">2</a>`;
+    }
+    const html = `<!doctype html>\n<!-- Recorded from ${searchUrl}; pagination shortened to two pages for offline tests. -->\n<script type="application/ld+json">${data}</script>\n${otherBlocks.join('\n')}\n<div class="listing__container">${pagination}</div>\n`;
+    await writeFile(path.join(FIXTURES_DIR, page === 1 ? 'domiporta.html' : 'domiporta_page2.html'), html);
+  }
+}
+
 async function main() {
   await mkdir(FIXTURES_DIR, { recursive: true });
 
@@ -1117,6 +1183,9 @@ async function main() {
         break;
       case 'gratka':
         await downloadGratkaFixtures(runConfig.url);
+        break;
+      case 'domiporta':
+        await downloadDomiportaFixtures(runConfig.url);
         break;
       case 'otodom':
         await downloadOtodomFixtures(runConfig.url);

@@ -27,6 +27,11 @@ const RECORDED_SEARCHES = [
     { min: 1000000, max: 1500000 },
   ],
   [
+    'domiporta',
+    'https://www.domiporta.pl/dom/sprzedam/malopolskie/krakow?Price.From=1000000&Price.To=1500000',
+    { min: 1000000, max: 1500000 },
+  ],
+  [
     'otodom',
     'https://www.otodom.pl/pl/wyniki/sprzedaz/dom/krakow?priceMin=500000&priceMax=2000000',
     { min: 500000, max: 2000000 },
