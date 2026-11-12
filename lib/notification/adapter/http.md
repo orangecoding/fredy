@@ -53,6 +53,28 @@ Where the provider already has a listing's pictures (from the search result, or 
 ]
 ```
 
+### Listing facts
+
+Beyond the card, an entry carries whatever else Fredy knows about the listing. Each field is left out when the listing does not know it - the portal does not state it, or the step that produces it is switched off - so a missing key means "unknown", never a value.
+
+```json
+"rooms": "2 Zimmer",
+"buildYear": 1972,
+"energyClass": "D",
+"currency": "EUR",
+"chargesIncluded": false,
+"charges": 180,
+"publishedAt": "2026-11-09T08:00:00.000Z",
+"latitude": 49.41,
+"longitude": 8.69,
+"market": { "medianPricePerSqm": 15.2, "sampleSize": 23, "radiusKm": 2 }
+```
+
+- `rooms` is formatted like `price` and `size`.
+- `buildYear` and `energyClass` mostly arrive with "provider details" enabled for the provider.
+- `chargesIncluded` and `charges` are only set for rents where the portal says whether the price includes the running charges.
+- `latitude`/`longitude` come from geocoding the address, `market` from the market benchmark around the listing.
+
 ### Price changes
 
 When price tracking is enabled (Settings > Price tracking, off by default), price changes are POSTed to the same endpoint under an `event: "priceChange"` discriminator, with the entries under `priceChanges` rather than `listings`. Each entry carries `oldPrice`, `newPrice`, `changePercent` and `direction` alongside the usual listing fields. A receiver written before this existed keeps parsing `listings` exactly as before.
