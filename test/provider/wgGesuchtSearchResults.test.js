@@ -29,6 +29,9 @@ const FIXTURES_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), '..
 const html = await readFile(path.join(FIXTURES_DIR, 'wgGesucht.html'), 'utf-8');
 const rows = parse(config.crawlContainer, config.crawlFields, html, 'wgGesucht.html') ?? [];
 
+const offerHtml = await readFile(path.join(FIXTURES_DIR, 'wgGesucht_offerCards.html'), 'utf-8');
+const offerRows = parse(config.crawlContainer, config.crawlFields, offerHtml, 'wgGesucht_offerCards.html') ?? [];
+
 /**
  * How many listings the page links to, counted without going through a selector.
  *
@@ -77,5 +80,80 @@ describe('wg-gesucht search results', () => {
       expect(listing.address).toMatch(/^Düsseldorf/);
       expect(listing.address).not.toMatch(/·/);
     }
+  });
+});
+
+/**
+ * The `card-offer` template, which the flats search (`/wohnungen-in-...`) prints and the room search
+ * too: `.card-offer-title-text` for the headline, the size in `.card-offer-property-size`, and a
+ * details line without separators whose text also holds the names of its icons.
+ *
+ * The fixture is two flats cards and one room card of that template, cut down to what the crawl
+ * fields read, with made-up adverts in a made-up town. It mirrors the markup of the live pages and is
+ * not refreshed by `yarn test:download-fixtures`.
+ */
+describe('wg-gesucht card-offer results', () => {
+  it('reads the headline and the size of every card', () => {
+    expect(offerRows.map((row) => [row.title, row.size])).toEqual([
+      ['Helle 3-Zimmer-Wohnung mit Balkon', '78 m²'],
+      ['Ruhige Wohnung am Park', '61 m²'],
+      ['Zimmer in netter WG frei', '16 m²'],
+    ]);
+  });
+
+  it('normalizes into what the pipeline stores', () => {
+    const normalized = offerRows.map((row) => config.normalize(row));
+
+    expect(normalized.map(({ link, price, size, rooms, address }) => ({ link, price, size, rooms, address }))).toEqual([
+      {
+        link: 'https://www.wg-gesucht.de/wohnungen-in-Musterstadt-Altstadt.10000001.html',
+        price: 1150,
+        size: 78,
+        rooms: 3,
+        address: 'Musterstadt Altstadt Musterstraße 1',
+      },
+      {
+        link: 'https://www.wg-gesucht.de/wohnungen-in-Musterstadt-Neustadt.10000002.html',
+        price: 890,
+        size: 61,
+        rooms: 2.5,
+        address: 'Musterstadt Neustadt Beispielweg 12',
+      },
+      {
+        link: 'https://www.wg-gesucht.de/wg-zimmer-in-Musterstadt-Altstadt.10000003.html',
+        price: 480,
+        size: 16,
+        rooms: 3,
+        address: 'Musterstadt Altstadt Probegasse',
+      },
+    ]);
+    for (const listing of normalized) {
+      expect(listing.description).not.toMatch(/apartment|bedroom_child|location_on/);
+    }
+  });
+});
+
+describe('wg-gesucht details line', () => {
+  /** @param {string|undefined} details */
+  const place = (details) => {
+    const { rooms, address } = config.normalize({ id: '1', price: '500 €', link: '/x.1.html', details });
+    return { rooms, address };
+  };
+
+  it('splits a line without separators after its type label', () => {
+    expect(place('1,5-Zimmer-Haus Musterstadt Altstadt Musterstraße 4')).toEqual({
+      rooms: 1.5,
+      address: 'Musterstadt Altstadt Musterstraße 4',
+    });
+    expect(place('2er WG Musterstadt Altstadt')).toEqual({ rooms: 2, address: 'Musterstadt Altstadt' });
+  });
+
+  it('still splits a line with separators', () => {
+    expect(place('3er WG · Musterstadt Altstadt')).toEqual({ rooms: 3, address: 'Musterstadt Altstadt' });
+  });
+
+  it('leaves the address empty when the line names no place', () => {
+    expect(place('2er WG')).toEqual({ rooms: 2, address: null });
+    expect(place(undefined)).toEqual({ rooms: null, address: null });
   });
 });
