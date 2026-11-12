@@ -95,6 +95,10 @@ curl -X POST 'https://api.mobile.immobilienscout24.de/search/list?pricetype=calc
 
 ```
 
+Paging: `pagenumber` picks the page, `pagesize` its length. Without `pagesize` a page holds 50 results; the largest page is 100, and a bigger `pagesize` is answered with 100. The answer states `totalResults`, `pageSize`, `pageNumber` and `numberOfPages`. Fredy reads one page of 100 per run, newest first (`sorting=-firstactivation`), and does not follow `numberOfPages`.
+
+Comparing counts with the website: the web result list ends with adverts that went offline in the last days ("deaktiviert vor 2 T.") and counts them in its headline ("211 Eigentumswohnungen"). `totalResults` counts only the active ones, so the API is lower by exactly that number. Checked for issue #521: 34 on the web were 29 active + 5 deactivated, 211 were 184 + 27.
+
 ---
 
 #### Get details of listings
