@@ -144,6 +144,8 @@ describe('jobStorage.upsertJob binds nothing it does not write', () => {
     spatialFilter: { type: 'FeatureCollection' },
     specFilter: { maxPrice: 1200 },
     commuteFilter: { action: 'notify', limits: { Work: 35 } },
+    marketFilter: { action: 'notify', minBelowMarketPercent: 10 },
+    priceChangeThreshold: 5,
     dealType: 'rent',
   };
 
@@ -164,6 +166,19 @@ describe('jobStorage.upsertJob binds nothing it does not write', () => {
     const insert = calls.execute.find((c) => c.sql.includes('INSERT INTO jobs'));
     expect(insert.sql).toContain('commute_filter');
     expect(JSON.parse(insert.params.commuteFilter)).toEqual(aJob.commuteFilter);
+  });
+
+  it('writes the market filter and the price change threshold of a brand new job too', () => {
+    jobStorage.upsertJob({ ...aJob, userId: 'u1' });
+    const insert = calls.execute.find((c) => c.sql.includes('INSERT INTO jobs'));
+    expect(JSON.parse(insert.params.marketFilter)).toEqual(aJob.marketFilter);
+    expect(insert.params.priceChangeThreshold).toBe(5);
+  });
+
+  it('keeps a price change threshold of zero, which means every change', () => {
+    jobStorage.upsertJob({ ...aJob, priceChangeThreshold: 0, userId: 'u1' });
+    const insert = calls.execute.find((c) => c.sql.includes('INSERT INTO jobs'));
+    expect(insert.params.priceChangeThreshold).toBe(0);
   });
 });
 

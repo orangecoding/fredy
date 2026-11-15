@@ -31,6 +31,9 @@ async function loadService() {
     markListingsPriceChecked: (ids) => state.marked.push(...ids),
   }));
   vi.doMock(settingsPath, () => ({ getSettings: async () => state.settings }));
+  vi.doMock(root + '/lib/services/storage/jobStorage.js', () => ({
+    getPriceChangeThresholdsByJob: () => new Map(state.jobThresholds),
+  }));
   vi.doMock(puppeteerPath, () => ({
     default: async (url) => {
       state.rendered.push(url);
@@ -50,8 +53,9 @@ async function loadService() {
   }));
   vi.doMock(historyPath, () => ({
     getThresholdPercent: async () => 1,
-    recordPriceChange: (listing, price) => {
+    recordPriceChange: (listing, price, options) => {
       state.recorded.push([listing.id, price]);
+      state.thresholds.push(options.thresholdPercent);
       return state.changeFor(listing, price);
     },
     notifyPriceChanges: async (changes) => state.notified.push(...changes),
@@ -86,6 +90,8 @@ beforeEach(() => {
     marked: [],
     rendered: [],
     recorded: [],
+    thresholds: [],
+    jobThresholds: [],
     notified: [],
     html: {},
     launches: 0,
@@ -283,6 +289,22 @@ describe('services/listings/priceTrackingService', () => {
 
     expect(state.launches).toBe(0);
     expect(state.marked).toHaveLength(0);
+  });
+
+  it("judges a change by the job's own threshold where the job has one", async () => {
+    state.due = [
+      { ...listing('a'), job_id: 'strict' },
+      { ...listing('b'), job_id: 'plain' },
+    ];
+    state.html['https://example.com/a'] = '<div class="price">1.100 €</div>';
+    state.html['https://example.com/b'] = '<div class="price">1.100 €</div>';
+    state.jobThresholds = [['strict', 5]];
+    const run = await loadService();
+
+    await run({ concurrency: 1 });
+
+    // The mocked instance setting is 1.
+    expect(state.thresholds).toEqual([5, 1]);
   });
 
   it('passes the changes it collected on to be notified', async () => {

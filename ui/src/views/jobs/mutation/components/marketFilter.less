@@ -1,0 +1,92 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../../../tokens.less';
+
+@market-percent-w: 150px;
+@market-action-max: 320px;
+
+/* Built like the travel time limit above it: one row per target, what it means on the left and the
+   number on the right, then the one decision that covers both. */
+.marketFilter {
+  display: flex;
+  flex-direction: column;
+  gap: @space-2;
+
+  &__intro {
+    margin: 0;
+    max-width: 62ch;
+    color: @color-muted;
+    font-size: @text-sm;
+    line-height: 1.5;
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: @space-3;
+    flex-wrap: wrap;
+    padding: @space-2 0;
+
+    & + & {
+      border-top: 1px solid @color-border;
+    }
+  }
+
+  &__target {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  &__label {
+    color: @color-text;
+    font-weight: @weight-medium;
+  }
+
+  &__hint {
+    max-width: 62ch;
+    color: @color-muted;
+    font-size: @text-sm;
+    line-height: 1.5;
+  }
+
+  &__percent {
+    width: @market-percent-w;
+  }
+
+  &__unit {
+    color: @color-muted;
+    font-size: @text-sm;
+  }
+
+  &__action {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: @space-2;
+    margin-top: @space-1;
+    padding-top: @space-3;
+    border-top: 1px solid @color-border;
+  }
+
+  &__actionLabel {
+    color: @color-muted;
+    font-size: @text-sm;
+    font-weight: @weight-medium;
+  }
+
+  &__actionSelect {
+    width: 100%;
+    max-width: @market-action-max;
+  }
+
+  @media (max-width: 700px) {
+    &__actionSelect {
+      max-width: none;
+    }
+  }
+}

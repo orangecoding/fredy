@@ -92,6 +92,8 @@ describe('jobDraft', () => {
       // rule is "anything the user set is worth keeping" and singling this one out as not counting
       // is how the field stops being carried at all.
       ['a travel time limit', { commuteFilter: { action: 'notify', limits: { Work: 35 } } }],
+      ['a market target', { marketFilter: { action: 'notify', minYieldPercent: 4 } }],
+      ['a price change threshold of zero', { priceChangeThreshold: 0 }],
     ])('counts %s', (_what, draft) => {
       expect(hasContent(draft)).toBe(true);
     });

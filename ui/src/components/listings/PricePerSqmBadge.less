@@ -35,4 +35,18 @@
       color: @color-muted;
     }
   }
+
+  /* What the rents nearby would make of a purchase. The same weight as the comparison, in the text
+     colour: it is a figure to rank by, not a verdict. */
+  &__yield {
+    color: @color-text;
+    font-weight: @weight-medium;
+  }
+
+  /* Misses what its job asked of the market. Struck through rather than recoloured, because green
+     and red are already taken by the comparison itself. */
+  &--missed &__value,
+  &--missed &__yield {
+    text-decoration: line-through;
+  }
 }

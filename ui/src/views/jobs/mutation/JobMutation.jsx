@@ -12,6 +12,8 @@ import ProviderTable from '../../../components/table/ProviderTable';
 import ProviderMutator from './components/provider/ProviderMutator';
 import AreaFilter from './components/areaFilter/AreaFilter';
 import CommuteFilter from './components/CommuteFilter.jsx';
+import MarketFilter from './components/MarketFilter.jsx';
+import { toPriceChangeThreshold } from '../../../services/jobs/marketFilter.js';
 import Headline from '../../../components/headline/Headline';
 import SettingsEmptyState from '../../../components/settingsShell/SettingsEmptyState';
 import SettingsSaveBar from '../../../components/settingsShell/SettingsSaveBar.jsx';
@@ -150,6 +152,8 @@ function JobMutator({ source }) {
   const defaultSpatialFilter = sourceJob?.spatialFilter || null;
   const defaultSpecFilter = sourceJob?.specFilter || null;
   const defaultCommuteFilter = sourceJob?.commuteFilter || null;
+  const defaultMarketFilter = sourceJob?.marketFilter || null;
+  const defaultPriceChangeThreshold = sourceJob?.priceChangeThreshold ?? null;
   // Deliberately not defaulted for a new job: the user has to say what they are looking for,
   // because it decides which half of their finance profile applies to everything this job finds.
   const defaultDealType = sourceJob?.dealType || null;
@@ -168,6 +172,8 @@ function JobMutator({ source }) {
   const [spatialFilter, setSpatialFilter] = useState(defaultSpatialFilter);
   const [specFilter, setSpecFilter] = useState(defaultSpecFilter);
   const [commuteFilter, setCommuteFilter] = useState(defaultCommuteFilter);
+  const [marketFilter, setMarketFilter] = useState(defaultMarketFilter);
+  const [priceChangeThreshold, setPriceChangeThreshold] = useState(defaultPriceChangeThreshold);
   const [dealType, setDealType] = useState(defaultDealType);
   /** Whether the value in the deal type field was guessed rather than chosen. */
   const [dealTypeWasInferred, setDealTypeWasInferred] = useState(false);
@@ -249,6 +255,8 @@ function JobMutator({ source }) {
     if (draft.spatialFilter !== undefined) setSpatialFilter(draft.spatialFilter);
     if (draft.specFilter !== undefined) setSpecFilter(draft.specFilter);
     if (draft.commuteFilter !== undefined) setCommuteFilter(draft.commuteFilter);
+    if (draft.marketFilter !== undefined) setMarketFilter(draft.marketFilter);
+    if (draft.priceChangeThreshold !== undefined) setPriceChangeThreshold(draft.priceChangeThreshold);
     setDraftRestored(true);
   }, [draftId]);
 
@@ -268,6 +276,8 @@ function JobMutator({ source }) {
       spatialFilter,
       specFilter,
       commuteFilter,
+      marketFilter,
+      priceChangeThreshold,
     };
     // A stored job always "has content", so without this every visit to its form left a copy
     // behind. The next visit restored that copy over whatever had changed in the meantime - a job
@@ -290,6 +300,8 @@ function JobMutator({ source }) {
     spatialFilter,
     specFilter,
     commuteFilter,
+    marketFilter,
+    priceChangeThreshold,
   ]);
 
   // The deal type decides which half of the finance profile applies to everything this job finds,
@@ -330,6 +342,8 @@ function JobMutator({ source }) {
     spatialFilter: defaultSpatialFilter,
     specFilter: defaultSpecFilter,
     commuteFilter: defaultCommuteFilter,
+    marketFilter: defaultMarketFilter,
+    priceChangeThreshold: defaultPriceChangeThreshold,
   };
 
   const discardChanges = () => {
@@ -346,6 +360,8 @@ function JobMutator({ source }) {
     setSpatialFilter(baseline.spatialFilter);
     setSpecFilter(baseline.specFilter);
     setCommuteFilter(baseline.commuteFilter);
+    setMarketFilter(baseline.marketFilter);
+    setPriceChangeThreshold(baseline.priceChangeThreshold);
     // A guessed deal type is only a guess about a provider that has just been discarded.
     setDealTypeWasInferred(false);
   };
@@ -362,6 +378,8 @@ function JobMutator({ source }) {
     spatialFilter,
     specFilter,
     commuteFilter,
+    marketFilter,
+    priceChangeThreshold,
   };
 
   // Compared, not tracked. Drives the save bar, so a character typed and deleted again closes it
@@ -420,7 +438,7 @@ function JobMutator({ source }) {
 
   // What the collapsed section holds, so it does not have to be opened to find out.
   const refinementSummary = summariseJobRefinements(
-    { blacklist, excludedLocations, specFilter, spatialFilter, commuteFilter },
+    { blacklist, excludedLocations, specFilter, spatialFilter, commuteFilter, marketFilter, priceChangeThreshold },
     { t, formatPrice: (value) => formatEuro(value, locale, currency ?? 'EUR') },
   );
 
@@ -446,6 +464,8 @@ function JobMutator({ source }) {
         spatialFilter,
         specFilter,
         commuteFilter,
+        marketFilter,
+        priceChangeThreshold,
         dealType,
         enabled,
         jobId: isEdit ? sourceJob.id : null,
@@ -799,6 +819,31 @@ function JobMutator({ source }) {
               helpMode="popover"
             >
               <CommuteFilter value={commuteFilter} onChange={setCommuteFilter} />
+            </SegmentPart>
+
+            <SegmentPart
+              name={t('jobs.mutation.sectionMarketFilter')}
+              helpText={t('jobs.mutation.marketFilterHelp')}
+              helpMode="popover"
+            >
+              <MarketFilter value={marketFilter} onChange={setMarketFilter} dealType={dealType} />
+            </SegmentPart>
+
+            <SegmentPart
+              name={t('jobs.mutation.sectionPriceChange')}
+              helpText={t('jobs.mutation.priceChangeHelp')}
+              helpMode="popover"
+            >
+              <div className="jobMutation__specFilterItem">
+                <div className="jobMutation__specFilterLabel">{t('jobs.mutation.priceChangeLabel')} (%)</div>
+                <Input
+                  type="number"
+                  aria-label={t('jobs.mutation.priceChangeLabel')}
+                  placeholder={t('jobs.mutation.priceChangePlaceholder')}
+                  value={priceChangeThreshold ?? ''}
+                  onChange={(value) => setPriceChangeThreshold(toPriceChangeThreshold(value))}
+                />
+              </div>
             </SegmentPart>
 
             <SegmentPart

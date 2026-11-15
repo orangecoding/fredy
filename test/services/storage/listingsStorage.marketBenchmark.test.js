@@ -46,7 +46,10 @@ describe('market benchmark against the listings table', () => {
         price_per_sqm REAL,
         market_median_sqm REAL,
         market_sample_size INTEGER,
-        market_radius_km REAL
+        market_radius_km REAL,
+        rent_median_sqm REAL,
+        rent_sample_size INTEGER,
+        rent_radius_km REAL
       );
     `);
     db.prepare(`INSERT INTO jobs (id, deal_type) VALUES ('rent-job', 'rent')`).run();
@@ -104,6 +107,36 @@ describe('market benchmark against the listings table', () => {
     expect(row.market_median_sqm).toBe(10);
     expect(row.market_sample_size).toBe(MIN_SAMPLE);
     expect(row.market_radius_km).toBe(5);
+  });
+
+  it('measures a purchase against the rents around it as well', () => {
+    for (let index = 0; index < MIN_SAMPLE; index += 1) {
+      addListing(`rental-${index}`, { price: 500 });
+    }
+    addListing('target', { jobId: 'buy-job', price: 150000 });
+    const measured = target();
+
+    listingsStorage.applyMarketBenchmark('buy-job', [measured]);
+
+    const row = rowOf('target');
+    expect(row.rent_median_sqm).toBe(10);
+    expect(row.rent_sample_size).toBe(MIN_SAMPLE);
+    expect(row.rent_radius_km).toBe(5);
+    // Rentals are plenty, purchases are not: the two halves are independent.
+    expect(row.market_median_sqm).toBeNull();
+    // The pipeline filters on the object it holds, so the figure has to be on it too.
+    expect(measured.rent_median_sqm).toBe(10);
+  });
+
+  it('gives a rental no rent median of its own', () => {
+    for (let index = 0; index < MIN_SAMPLE; index += 1) {
+      addListing(`rental-${index}`, { price: 500 });
+    }
+    addListing('target', { price: 400 });
+
+    listingsStorage.applyMarketBenchmark('rent-job', [target()]);
+
+    expect(rowOf('target').rent_median_sqm).toBeNull();
   });
 
   it('leaves the columns empty when there is nothing worth comparing against', () => {

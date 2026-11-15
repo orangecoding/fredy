@@ -307,6 +307,8 @@ describe('what gets saved', () => {
       excludedLocations: ['Neukölln'],
       specFilter: { maxPrice: 1200 },
       commuteFilter: { action: 'exclude', limits: { Work: 30 } },
+      marketFilter: { action: 'notify', minBelowMarketPercent: 10 },
+      priceChangeThreshold: 5,
       shareWithUsers: ['u2'],
     });
 
@@ -323,6 +325,8 @@ describe('what gets saved', () => {
       spatialFilter: null,
       specFilter: { maxPrice: 1200 },
       commuteFilter: { action: 'exclude', limits: { Work: 30 } },
+      marketFilter: { action: 'notify', minBelowMarketPercent: 10 },
+      priceChangeThreshold: 5,
       dealType: 'rent',
     });
   });

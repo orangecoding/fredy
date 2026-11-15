@@ -134,6 +134,22 @@ describe('a stored advert at a new price', () => {
     expect(change.direction).toBe('down');
   });
 
+  it("records a change under the job's own threshold without announcing it", async () => {
+    // The instance says every change counts; this job only wants to hear about ten percent and up.
+    job.priceChangeThreshold = 10;
+    storage.storeListings(JOB.id, 'kleinanzeigen', [advert('hash-800', 800)]);
+
+    await expect(pipeline()._splitOffPriceChanges([advert('hash-750', 750)])).rejects.toBeInstanceOf(
+      NoNewListingsWarning,
+    );
+
+    expect(rows()).toEqual([{ hash: 'hash-750', price: 750, previous_price: 800 }]);
+    expect(db.prepare(`SELECT price FROM listing_price_history WHERE source = 'scrape'`).all()).toEqual([
+      { price: 750 },
+    ]);
+    expect(notify.sendPriceChange).not.toHaveBeenCalled();
+  });
+
   it('announces the change in the currency stored on the row', async () => {
     storage.storeListings(JOB.id, 'kleinanzeigen', [advert('hash-800', 800, { currency: 'CHF' })]);
 

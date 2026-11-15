@@ -64,6 +64,8 @@ describe('jobSummary', () => {
       excludedLocations: ['Neukölln', 'Spandau'],
       spatialFilter: { type: 'Polygon' },
       commuteFilter: { action: 'mark', limits: { 'home-1': 30 } },
+      marketFilter: { action: 'notify', minYieldPercent: 4 },
+      priceChangeThreshold: 0,
     };
     expect(describeJobRefinements(job, context)).toEqual([
       'jobs.mutation.summaryMaxPrice',
@@ -73,6 +75,8 @@ describe('jobSummary', () => {
       'jobs.mutation.summaryExcludedLocations',
       'jobs.mutation.summaryArea',
       'jobs.mutation.summaryCommute',
+      'jobs.mutation.summaryMarket',
+      'jobs.mutation.summaryPriceChange',
     ]);
   });
 
@@ -109,6 +113,8 @@ describe('jobSummary', () => {
       'jobs.mutation.summaryExcludedLocations',
       'jobs.mutation.summaryArea',
       'jobs.mutation.summaryCommute',
+      'jobs.mutation.summaryMarket',
+      'jobs.mutation.summaryPriceChange',
     ]) {
       expect(Object.keys(english)).toContain(key);
     }

@@ -6,6 +6,8 @@
 import { Tooltip } from '@douyinfe/semi-ui-19';
 
 import { formatDeviation, formatPricePerSqm, readMarketBenchmark } from '../../services/listings/marketBenchmark.js';
+import { missesMarketTarget } from '../../services/jobs/marketFilter.js';
+import { useSelector } from '../../services/state/store.js';
 import { useTranslation, useLocale } from '../../services/i18n/i18n.jsx';
 
 import './PricePerSqmBadge.less';
@@ -22,6 +24,10 @@ import './PricePerSqmBadge.less';
  * enough listings around this one, and until then the badge shows the price per square metre alone
  * rather than a grey placeholder promising a number that may never come.
  *
+ * A purchase with enough rentals around it also shows the gross yield those rents would make. And a
+ * listing that misses what its job asked of the market is struck through, whatever the job does
+ * with it otherwise, so a filter set to only mark has something to show for itself.
+ *
  * Renders nothing at all when the provider gave no size, which is the same silence
  * {@link PriceChangeBadge} keeps for a listing whose price has never moved.
  *
@@ -36,19 +42,28 @@ export default function PricePerSqmBadge({ listing, withTooltip = true }) {
   const t = useTranslation();
   const locale = useLocale();
 
+  const jobs = useSelector((state) => state.jobsData.jobs);
+
   const benchmark = readMarketBenchmark(listing);
   if (benchmark == null) {
     return null;
   }
 
-  const { pricePerSqm, percent, verdict } = benchmark;
+  const { pricePerSqm, percent, verdict, yieldPercent } = benchmark;
+  const job = (jobs ?? []).find((candidate) => candidate?.id === listing.job_id);
+  const missed = missesMarketTarget(benchmark, job?.marketFilter);
 
   const badge = (
-    <span className="pricePerSqmBadge">
+    <span className={`pricePerSqmBadge${missed ? ' pricePerSqmBadge--missed' : ''}`}>
       <span className="pricePerSqmBadge__value">{formatPricePerSqm(pricePerSqm, locale, true, listing.currency)}</span>
       {verdict != null && (
         <span className={`pricePerSqmBadge__deviation pricePerSqmBadge__deviation--${verdict}`}>
           {formatDeviation(percent, locale)}
+        </span>
+      )}
+      {yieldPercent != null && (
+        <span className="pricePerSqmBadge__yield">
+          {t('listings.yieldBadge', { value: formatDeviation(yieldPercent, locale, false) })}
         </span>
       )}
     </span>
@@ -58,8 +73,12 @@ export default function PricePerSqmBadge({ listing, withTooltip = true }) {
     return badge;
   }
 
+  const explanation = [describeBenchmark(benchmark, t, locale), missed ? t('listings.marketTargetMissed') : null]
+    .filter(Boolean)
+    .join(' ');
+
   return (
-    <Tooltip content={describeBenchmark(benchmark, t, locale)} position="top">
+    <Tooltip content={explanation} position="top">
       {badge}
     </Tooltip>
   );
@@ -81,17 +100,28 @@ export function describeBenchmark(benchmark, t, locale) {
     return '';
   }
   const { median, sampleSize, radiusKm, percent, verdict } = benchmark;
-  if (verdict == null) {
-    return t('listings.pricePerSqmNoBenchmark');
+  const parts =
+    verdict == null
+      ? [t('listings.pricePerSqmNoBenchmark')]
+      : [
+          t(`listings.pricePerSqmVerdict.${verdict}`, { percent: formatDeviation(Math.abs(percent), locale, false) }),
+          t('listings.pricePerSqmTooltip', {
+            median: formatPricePerSqm(median, locale, true, benchmark.currency),
+            count: String(sampleSize ?? 0),
+            radius: String(radiusKm ?? 0),
+          }),
+        ];
+  if (benchmark.yieldPercent != null) {
+    parts.push(
+      t('listings.yieldTooltip', {
+        value: formatDeviation(benchmark.yieldPercent, locale, false),
+        rent: formatPricePerSqm(benchmark.rentMedian, locale, true, benchmark.currency),
+        count: String(benchmark.rentSampleSize ?? 0),
+        radius: String(benchmark.rentRadiusKm ?? 0),
+      }),
+    );
   }
-  return [
-    t(`listings.pricePerSqmVerdict.${verdict}`, { percent: formatDeviation(Math.abs(percent), locale, false) }),
-    t('listings.pricePerSqmTooltip', {
-      median: formatPricePerSqm(median, locale, true, benchmark.currency),
-      count: String(sampleSize ?? 0),
-      radius: String(radiusKm ?? 0),
-    }),
-  ].join(' ');
+  return parts.join(' ');
 }
 
 PricePerSqmBadge.displayName = 'PricePerSqmBadge';

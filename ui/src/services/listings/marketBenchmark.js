@@ -13,7 +13,7 @@ import { formatListingPrice } from '../price/priceService.js';
  * those into a verdict is arithmetic, and it happens here so a chip, a table row and the detail
  * page cannot arrive at three different answers about the same listing.
  *
- * `MARKET_BAND_PCT`, `deviationPercent` and `marketVerdict` are duplicated from
+ * `MARKET_BAND_PCT`, `deviationPercent`, `grossYieldPercent` and `marketVerdict` are duplicated from
  * lib/services/listings/marketBenchmark.js. The frontend must not import out of lib/ - that code is
  * server-side and free to grow a Node built-in at any time, which would break the Vite build with
  * an error pointing nowhere near the cause. test/ui/marketBenchmarkCopyInSync.test.js fails if the
@@ -71,6 +71,23 @@ export function deviationPercent(value, median) {
 }
 
 /**
+ * What a purchase would earn in rent each year, as a percentage of its price. Gross: twelve months
+ * of the local median rent against the asking price, nothing deducted.
+ *
+ * @param {number|null|undefined} pricePerSqm The listing's own asking price per square metre.
+ * @param {number|null|undefined} rentMedianSqm Median monthly rent per square metre around it.
+ * @returns {number|null} Rounded to one decimal, or `null` when either side is missing.
+ */
+export function grossYieldPercent(pricePerSqm, rentMedianSqm) {
+  const price = toNumber(pricePerSqm);
+  const rent = toNumber(rentMedianSqm);
+  if (price == null || rent == null || price <= 0 || rent <= 0) {
+    return null;
+  }
+  return Math.round(((rent * 12) / price) * 1000) / 10;
+}
+
+/**
  * Below, above, or near enough to the local median to be neither.
  *
  * @param {number|null|undefined} percent From {@link deviationPercent}.
@@ -97,9 +114,13 @@ export function marketVerdict(percent) {
  * always has a quotient; whether it also has something to compare that quotient against depends on
  * how many listings Fredy has seen nearby, which is nothing to do with the listing itself.
  *
+ * A purchase can carry a third: what the same square metre rents for nearby, and the gross yield
+ * that makes. It depends on the rentals Fredy has seen, so it is missing or present on its own too.
+ *
  * @param {Object|null|undefined} listing A row as the listings API returns it.
  * @returns {{pricePerSqm: number, median: number|null, sampleSize: number|null, radiusKm: number|null,
- *   percent: number|null, verdict: ('below'|'inline'|'above'|null)}|null}
+ *   percent: number|null, verdict: ('below'|'inline'|'above'|null), rentMedian: number|null,
+ *   rentSampleSize: number|null, rentRadiusKm: number|null, yieldPercent: number|null}|null}
  *   `null` when the listing has no price per square metre at all, which is the case for anything
  *   the provider did not state a size for.
  */
@@ -118,6 +139,10 @@ export function readMarketBenchmark(listing) {
     radiusKm: toNumber(listing?.market_radius_km),
     percent,
     verdict: marketVerdict(percent),
+    rentMedian: toNumber(listing?.rent_median_sqm),
+    rentSampleSize: toNumber(listing?.rent_sample_size),
+    rentRadiusKm: toNumber(listing?.rent_radius_km),
+    yieldPercent: grossYieldPercent(value, listing?.rent_median_sqm),
   };
 }
 

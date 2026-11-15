@@ -17,6 +17,7 @@
  */
 
 import { countCommuteLimits } from './commuteFilter.js';
+import { countMarketTargets } from './marketFilter.js';
 
 /**
  * Describe the refinements a job carries.
@@ -27,6 +28,8 @@ import { countCommuteLimits } from './commuteFilter.js';
  * @param {{maxPrice?: number, minSize?: number, minRooms?: number}|null} [job.specFilter]
  * @param {Object|null} [job.spatialFilter]
  * @param {{action?: string, limits?: Record<string, number>}|null} [job.commuteFilter]
+ * @param {{action?: string, minBelowMarketPercent?: number, minYieldPercent?: number}|null} [job.marketFilter]
+ * @param {number|null} [job.priceChangeThreshold]
  * @param {Object} context
  * @param {(key: string, vars?: Object) => string} context.t
  * @param {(value: number) => string} context.formatPrice
@@ -61,6 +64,12 @@ export function describeJobRefinements(job, { t, formatPrice }) {
   const commuteLimits = countCommuteLimits(job?.commuteFilter);
   if (commuteLimits > 0) {
     parts.push(t('jobs.mutation.summaryCommute', { count: commuteLimits }));
+  }
+  if (countMarketTargets(job?.marketFilter) > 0) {
+    parts.push(t('jobs.mutation.summaryMarket'));
+  }
+  if (job?.priceChangeThreshold != null) {
+    parts.push(t('jobs.mutation.summaryPriceChange', { value: job.priceChangeThreshold }));
   }
   return parts;
 }
