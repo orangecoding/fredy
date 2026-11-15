@@ -24,6 +24,7 @@ const READ_TOOLS = [
   'get_job',
   'list_listings',
   'get_listing',
+  'get_listing_document',
   'get_photo_for_listing',
   'calculate_financing',
   'get_current_date_time',
