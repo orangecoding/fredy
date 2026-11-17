@@ -165,11 +165,11 @@ describe('launchBrowser on Clearcote', () => {
     expect(first).not.toBe(second);
   });
 
-  it('forwards proxyUrl as the proxy option, and none without one', async () => {
+  it('forwards proxyUrl as a { server } object, which is the only form Clearcote applies, and none without one', async () => {
     await launchBrowser('https://www.immowelt.de/', { proxyUrl: 'http://user:pass@host:8080' });
     await launchBrowser('https://www.immowelt.de/', {});
 
-    expect(serveMock.mock.calls[0][0].proxy).toBe('http://user:pass@host:8080');
+    expect(serveMock.mock.calls[0][0].proxy).toEqual({ server: 'http://user:pass@host:8080' });
     expect(serveMock.mock.calls[1][0].proxy).toBeUndefined();
   });
 
