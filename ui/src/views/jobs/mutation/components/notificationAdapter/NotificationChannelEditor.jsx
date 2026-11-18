@@ -12,6 +12,7 @@ import { errorMessage } from '../../../../../services/xhr';
 import { triggerTestNotification } from '../../../../../services/notification/browserNotification';
 import { useScreenWidth } from '../../../../../hooks/screenWidth.js';
 import { useTranslation } from '../../../../../services/i18n/i18n.jsx';
+import { copyToClipboard } from '../../../../../services/clipboard.js';
 import {
   emptyChannel,
   toCloneDraft,
@@ -20,6 +21,63 @@ import {
 } from '../../../../../services/notificationChannels/channelForm.js';
 
 import './NotificationChannelEditor.less';
+
+/**
+ * A field whose value Fredy creates when the channel is saved, such as the rss adapter's feed token.
+ *
+ * Nothing to type: the value is shown masked, as the url it is part of (`definition.urlPath`), with a
+ * button to copy that url and one to ask for a new value. Asking empties the field, and the server
+ * fills it again on save, so the old url keeps working until then.
+ *
+ * @param {Object} props
+ * @param {string} props.fieldKey
+ * @param {{label: string, description?: string, urlPath?: string}} props.definition
+ * @param {string} [props.value]
+ * @param {boolean} props.renewing - The channel is stored already, so an empty value replaces one.
+ * @param {() => void} props.onRenew
+ * @returns {React.ReactElement}
+ */
+function GeneratedField({ fieldKey, definition, value, renewing, onRenew }) {
+  const t = useTranslation();
+  const hasValue = typeof value === 'string' && value.length > 0;
+  // The page's own origin, like every request the interface makes: it is the address this browser
+  // already reaches Fredy under.
+  const url = hasValue ? `${window.location.origin}${definition.urlPath ?? ''}${value}` : '';
+
+  const copy = async () => {
+    if (await copyToClipboard(url)) {
+      Toast.success(t('notification.channels.generatedCopied'));
+    } else {
+      Toast.error(t('notification.channels.generatedCopyError'));
+    }
+  };
+
+  return (
+    <div className="channelEditor__field">
+      <label className="channelEditor__label" htmlFor={`channelEditorField-${fieldKey}`}>
+        {definition.label}
+      </label>
+      {hasValue ? (
+        <>
+          <Input id={`channelEditorField-${fieldKey}`} mode="password" value={url} readonly />
+          <div className="channelEditor__generatedActions">
+            <Button theme="outline" type="tertiary" onClick={copy}>
+              {t('notification.channels.generatedCopy')}
+            </Button>
+            <Button theme="borderless" type="tertiary" onClick={onRenew}>
+              {t('notification.channels.generatedRenew')}
+            </Button>
+          </div>
+        </>
+      ) : (
+        <div className="channelEditor__value">
+          {t(renewing ? 'notification.channels.generatedRenewPending' : 'notification.channels.generatedPending')}
+        </div>
+      )}
+      {definition.description && <div className="channelEditor__extra">{definition.description}</div>}
+    </div>
+  );
+}
 
 /**
  * Create, edit or duplicate one notification channel.
@@ -279,7 +337,16 @@ export default function NotificationChannelEditor({
         {adapterConfig.readme != null && <Help readme={adapterConfig.readme} />}
 
         {Object.entries(adapterConfig.fields ?? {}).map(([key, definition]) =>
-          definition.type === 'boolean' ? (
+          definition.generated === true ? (
+            <GeneratedField
+              key={key}
+              fieldKey={key}
+              definition={definition}
+              value={draft.fields[key]}
+              renewing={draft.id != null}
+              onRenew={() => setField(key, '')}
+            />
+          ) : definition.type === 'boolean' ? (
             <div key={key} className="channelEditor__field">
               <div className="channelEditor__switchRow">
                 <Switch checked={draft.fields[key] === true} onChange={(checked) => setField(key, checked)} />

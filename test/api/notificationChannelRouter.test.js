@@ -38,6 +38,14 @@ vi.mock('../../lib/utils.js', async (importOriginal) => {
         config: { id: 'sqlite', name: 'SQLite', fields: { dbPath: { type: 'text', label: 'Path', target: true } } },
         send: async (payload) => sent.push(payload),
       },
+      {
+        config: {
+          id: 'rss',
+          name: 'RSS feed',
+          fields: { token: { type: 'text', label: 'Feed url', secret: true, generated: true } },
+        },
+        send: async (payload) => sent.push(payload),
+      },
     ],
   };
 });
@@ -196,6 +204,21 @@ describe('notificationChannelRouter', () => {
 
     it('rejects an unknown adapter', async () => {
       expect((await post('/api/notificationChannels', { ...payload, adapterId: 'ghost' })).statusCode).toBe(400);
+    });
+
+    it('creates the feed token of an rss channel itself and keeps it on later saves', async () => {
+      const created = (
+        await post('/api/notificationChannels', { adapterId: 'rss', name: 'Feed', fields: { token: 'mine' } })
+      ).json();
+      const token = storage.getChannel(created.id).fields.token;
+      expect(token).not.toBe('mine');
+      expect(token.length).toBeGreaterThan(40);
+
+      await post('/api/notificationChannels', { id: created.id, name: 'Renamed', fields: { token: 'other' } });
+      expect(storage.getChannel(created.id).fields.token).toBe(token);
+
+      await post('/api/notificationChannels', { id: created.id, name: 'Renamed', fields: { token: '' } });
+      expect(storage.getChannel(created.id).fields.token).not.toBe(token);
     });
 
     it('rejects a non-admin setting the sqlite dbPath', async () => {

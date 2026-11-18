@@ -40,13 +40,15 @@ export function emptyChannel(adapterConfig) {
  * same rule the editor uses.
  *
  * @param {{adapterId: string, name: string, fields?: Record<string, any>}} channel
- * @param {{canRevealSecrets: boolean, adapterConfig: {fields?: Record<string, {secret?: boolean, type?: string}>}}} options
+ * @param {{canRevealSecrets: boolean, adapterConfig: {fields?: Record<string, {secret?: boolean, generated?: boolean, type?: string}>}}} options
  * @returns {ChannelDraft}
  */
 export function toCloneDraft(channel, { canRevealSecrets, adapterConfig }) {
   const fields = {};
   for (const [key, definition] of Object.entries(adapterConfig?.fields ?? {})) {
-    if (definition?.secret === true && !canRevealSecrets) {
+    // A generated value (a feed token) belongs to the original channel. The server would replace it
+    // anyway; blank, the form says so instead of showing the original's url as the copy's.
+    if (definition?.generated === true || (definition?.secret === true && !canRevealSecrets)) {
       fields[key] = '';
       continue;
     }
@@ -65,7 +67,7 @@ export function toCloneDraft(channel, { canRevealSecrets, adapterConfig }) {
  * Validate a draft. Returns translated messages, de-duplicated, in a stable order.
  *
  * @param {ChannelDraft} draft
- * @param {{fields?: Record<string, {type?: string, optional?: boolean}>}} adapterConfig
+ * @param {{fields?: Record<string, {type?: string, optional?: boolean, generated?: boolean}>}} adapterConfig
  * @param {(key: string) => string} t
  * @returns {string[]}
  */
@@ -77,7 +79,8 @@ export function validateChannel(draft, adapterConfig, t) {
 
   for (const [key, definition] of Object.entries(adapterConfig?.fields ?? {})) {
     const value = draft?.fields?.[key];
-    if (definition?.type === 'boolean') continue;
+    // Fredy fills a generated field when the channel is saved, so it is empty on every new draft.
+    if (definition?.type === 'boolean' || definition?.generated === true) continue;
 
     if (definition?.type === 'number' && value !== '' && value != null) {
       const parsed = parseFloat(value);

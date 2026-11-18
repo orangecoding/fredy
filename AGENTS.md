@@ -105,6 +105,16 @@ needs per-adapter code:
 - `secret: true` - a credential. Never serialised to anyone who may not edit the channel, and
   masked in the form. Every token, password, API key and webhook URL must carry it.
 - `target: true` - the one field naming the destination. Drives the "Destination" column.
+- `generated: true` - Fredy creates the value, the user never types it (the rss adapter's feed
+  token). `settleGeneratedFields` in `lib/services/security/adapterFields.js` fills it on create and
+  whenever a save sends it empty, and otherwise keeps the stored value, whatever the client sent. The
+  form shows it masked and, with `urlPath`, copies it as a url on Fredy's own origin.
+
+The rss adapter is the one adapter nobody is pushed to: it keeps each notification as a row in
+`notification_feed_item` (`lib/services/storage/notificationFeedStorage.js`), and the public route
+`GET /api/feed/:token` (`lib/api/routes/feedRouter.js`, outside `authHook`) serves the channel's
+latest 100 as RSS 2.0. The token in the path is the only credential, since feed readers cannot sign
+in.
 
 An adapter *configuration* is separate from the adapter itself: it is a row in `configured_adapter`
 ("a notification channel" in the UI) that many jobs can reference.

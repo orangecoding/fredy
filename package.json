@@ -1,6 +1,6 @@
 {
   "name": "fredy",
-  "version": "31.1.0",
+  "version": "31.2.0",
   "description": "Fredy - [F]ind [R]eal [E]state [D]amn Eas[y] - Fredy keeps searching for new apartments, houses, and flats in Europe on platforms like ImmoScout24, Immowelt, Immonet, eBay Kleinanzeigen, and WG-Gesucht and instantly delivers the results to you via Slack, Telegram, Email, Discord or ntfy, so you can focus on the more important things in life ;)",
   "scripts": {
     "prepare": "husky",
@@ -76,20 +76,20 @@
     "better-sqlite3": "^13.2.0",
     "chart.js": "^4.6.1",
     "cheerio": "^1.2.0",
-    "clearcote": "^0.69.1",
+    "clearcote": "^0.70.0",
     "cloakbrowser": "^0.6.5",
     "fastify": "^5.12.8",
     "handlebars": "4.7.10",
-    "maplibre-gl": "6.18.0",
-    "marked": "^18.2.0",
+    "maplibre-gl": "6.19.0",
+    "marked": "^18.2.1",
     "nanoid": "6.0.2",
     "node-cron": "^4.6.0",
     "node-fetch": "3.3.2",
     "node-mailjet": "6.0.11",
-    "nodemailer": "^10.5.0",
+    "nodemailer": "^10.6.0",
     "p-throttle": "^8.1.1",
     "package-up": "^5.0.0",
-    "puppeteer-core": "^25.17.0",
+    "puppeteer-core": "^25.18.1",
     "query-string": "10.0.0",
     "react": "19.3.1",
     "react-chartjs-2": "^5.3.1",
@@ -110,10 +110,10 @@
     "history": "5.3.0",
     "husky": "9.1.7",
     "less": "4.9.1",
-    "lint-staged": "17.6.0",
+    "lint-staged": "17.6.1",
     "nodemon": "^3.1.14",
-    "oxfmt": "^0.78.0",
-    "oxlint": "^1.93.0",
-    "vitest": "^5.1.0"
+    "oxfmt": "^0.79.0",
+    "oxlint": "^1.94.0",
+    "vitest": "^5.1.1"
   }
 }

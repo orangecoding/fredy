@@ -162,3 +162,20 @@ describe('toPayload', () => {
     expect(draft.fields.a).toBe('1');
   });
 });
+
+describe('generated fields', () => {
+  const rss = {
+    id: 'rss',
+    name: 'RSS feed',
+    fields: { token: { type: 'text', label: 'Feed url', secret: true, generated: true, urlPath: '/api/feed/' } },
+  };
+
+  it('are not required, since Fredy fills them on save', () => {
+    expect(validateChannel({ ...emptyChannel(rss), name: 'Berlin' }, rss, t)).toEqual([]);
+  });
+
+  it('are left blank on a clone, even for somebody who may see the secret', () => {
+    const channel = { id: 'c1', adapterId: 'rss', name: 'Berlin', fields: { token: 'original-token' } };
+    expect(toCloneDraft(channel, { canRevealSecrets: true, adapterConfig: rss }).fields.token).toBe('');
+  });
+});

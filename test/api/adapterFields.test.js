@@ -9,6 +9,7 @@ import {
   assertAdapterFieldsAllowed,
   assertPrivilegedFieldsUnchanged,
   PRIVILEGED_ADAPTER_FIELDS,
+  settleGeneratedFields,
 } from '../../lib/services/security/adapterFields.js';
 
 describe('privileged notification adapter fields', () => {
@@ -114,5 +115,50 @@ describe('privileged notification adapter fields', () => {
       const { resolveDbPath } = await loadAdapter();
       await expect(resolveDbPath('../fredy-db-evil/x.db')).rejects.toThrow(/may only write inside/);
     });
+  });
+});
+
+describe('settleGeneratedFields', () => {
+  const rss = { fields: { token: { type: 'text', secret: true, generated: true }, note: { type: 'text' } } };
+
+  it('creates a url-safe value for a new channel', () => {
+    const { token } = settleGeneratedFields(rss, { token: '' }, null);
+    expect(token).toMatch(/^[A-Za-z0-9_-]{43}$/);
+  });
+
+  it('never stores a value the client chose, not even on create', () => {
+    expect(settleGeneratedFields(rss, { token: 'weak' }, null).token).not.toBe('weak');
+  });
+
+  it('gives a clone a token of its own', () => {
+    const original = settleGeneratedFields(rss, {}, null).token;
+    expect(settleGeneratedFields(rss, { token: original }, null).token).not.toBe(original);
+  });
+
+  it('keeps the stored value when an update sends it back, leaves it out, or sends something else', () => {
+    const stored = { token: 'stored-token' };
+    expect(settleGeneratedFields(rss, { token: 'stored-token' }, stored).token).toBe('stored-token');
+    expect(settleGeneratedFields(rss, {}, stored).token).toBe('stored-token');
+    expect(settleGeneratedFields(rss, { token: 'picked-by-client' }, stored).token).toBe('stored-token');
+  });
+
+  it('creates a new value when an update sends the field empty', () => {
+    const renewed = settleGeneratedFields(rss, { token: '' }, { token: 'stored-token' }).token;
+    expect(renewed).not.toBe('stored-token');
+    expect(renewed).toMatch(/^[A-Za-z0-9_-]{43}$/);
+  });
+
+  it('leaves the other fields alone and does not change the bag it was given', () => {
+    const fields = { token: '', note: 'kept' };
+    const settled = settleGeneratedFields(rss, fields, null);
+    expect(settled.note).toBe('kept');
+    expect(fields.token).toBe('');
+  });
+
+  it('does nothing for an adapter without generated fields', () => {
+    expect(settleGeneratedFields({ fields: { token: { secret: true } } }, { token: 'bot' }, null)).toEqual({
+      token: 'bot',
+    });
+    expect(settleGeneratedFields(null, { a: 1 }, null)).toEqual({ a: 1 });
   });
 });
