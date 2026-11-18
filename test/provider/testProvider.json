@@ -26,7 +26,8 @@
   },
   "immobilienDe": {
     "url": "https://www.immobilien.de/suche?kategorie=wohnen&typ=mieten&objektart=wohnung&ort=D%C3%BCsseldorf&umkreis=15&flaeche_von=50&preis_bis=1200",
-    "enabled": true
+    "enabled": true,
+    "emptySearchUrl": "https://www.immobilien.de/suche?kategorie=wohnen&typ=mieten&objektart=wohnung&ort=D%C3%BCsseldorf&umkreis=0&flaeche_von=400&preis_bis=50"
   },
   "immowelt": {
     "url": "https://www.immowelt.de/classified-search?distributionTypes=Buy,Buy_Auction,Compulsory_Auction&estateTypes=House,Apartment&locations=AD08DE2350",

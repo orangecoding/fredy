@@ -284,6 +284,53 @@ async function downloadCasaMapFixture(mapSearchUrl, launchBrowser, closeBrowser,
 }
 
 /**
+ * immobilien.de's answer to a search narrow enough to find nothing.
+ *
+ * The provider tells an empty search apart from a broken page by the metadata that follows
+ * `results` in the payload, so it depends on the order the site serializes those props in. A
+ * hand-built payload has whatever order the test gave it, which is why only a recording catches
+ * the site changing it.
+ *
+ * @param {string} emptySearchUrl the empty search url from testProvider.json
+ * @param {Function} launchBrowser opens the shared browser
+ * @param {Function} closeBrowser closes it again
+ * @param {Function} puppeteerExtractor the extractor the provider itself uses
+ * @returns {Promise<void>}
+ */
+async function downloadImmobilienDeEmptyFixture(emptySearchUrl, launchBrowser, closeBrowser, puppeteerExtractor) {
+  console.log('  Downloading immobilienDe empty search...');
+
+  const browser = await launchBrowser(emptySearchUrl, {});
+  let html;
+  try {
+    html = await puppeteerExtractor(emptySearchUrl, null, { browser, name: 'download_fixtures' });
+  } finally {
+    await closeBrowser(browser);
+  }
+  const { readFlightPayload, parseListings } = await import('../../lib/provider/immobilienDe.js');
+  // Without a payload this is a block page, not the site's answer, and recording it would only make
+  // the parsing test fail for a reason that has nothing to do with the parser.
+  if (!readFlightPayload(html)) {
+    console.warn('  immobilienDe empty search carried no Next.js payload (blocked?) - skipping fixture');
+    return;
+  }
+
+  await writeFile(path.join(FIXTURES_DIR, 'immobilienDe_empty.html'), html, 'utf-8');
+  console.log('  Saved immobilienDe_empty.html');
+
+  // A real answer that no longer reads as an empty search is still recorded, because catching the
+  // site changing is what the fixture is for. The warning says which side has to move.
+  const listings = parseListings(html);
+  if (listings == null) {
+    console.warn('  immobilienDe empty search no longer parses as empty - parseListings needs adapting to the site');
+  } else if (listings.length > 0) {
+    console.warn(
+      `  immobilienDe empty search matched ${listings.length} listing(s) - narrow emptySearchUrl in testProvider.json`,
+    );
+  }
+}
+
+/**
  * BETTERHOMES answers both a search and one advert's detail from the same endpoint, so both
  * fixtures are recorded through the provider's own payload builder rather than a URL written out
  * here - the payload is the whole translation, and a copy of it would drift.
@@ -1219,6 +1266,10 @@ async function main() {
         await downloadHtmlProvider(name, runConfig, launchBrowser, closeBrowser, puppeteerExtractor);
         await downloadCasaMapFixture(cfg.mapSearchUrl, launchBrowser, closeBrowser, puppeteerExtractor);
         await downloadCasaApiFixtures(runConfig.url);
+        break;
+      case 'immobilienDe':
+        await downloadHtmlProvider(name, runConfig, launchBrowser, closeBrowser, puppeteerExtractor);
+        await downloadImmobilienDeEmptyFixture(cfg.emptySearchUrl, launchBrowser, closeBrowser, puppeteerExtractor);
         break;
       default:
         await downloadHtmlProvider(name, runConfig, launchBrowser, closeBrowser, puppeteerExtractor);

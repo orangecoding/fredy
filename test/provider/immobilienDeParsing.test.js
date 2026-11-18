@@ -172,6 +172,60 @@ describe('#immobilien.de payload parsing', () => {
   });
 });
 
+describe('#immobilien.de empty search', () => {
+  /** @param {unknown} data @returns {string} a page streaming `data` as its only flight chunk */
+  const flightPage = (data) => `<script>self.__next_f.push([1, ${JSON.stringify(JSON.stringify(data))}])</script>`;
+
+  // The empty search is recognised by metadata that sits after `results` in the props object. A
+  // hand-built payload keeps that order by construction, so only the recorded page proves the site
+  // still serializes it that way.
+  it('recognises a recorded search with no matches as an empty result', () => {
+    expect(provider.parseListings(fixture('immobilienDe_empty.html'))).toEqual([]);
+  });
+
+  it('does not take recommended listings for hits when the search itself found none', () => {
+    const page = flightPage([{ results: [], resultsFailed: false, totalCount: 0 }, { results: [{ legacyId: 42 }] }]);
+    expect(provider.parseListings(page)).toEqual([]);
+  });
+
+  it('does not take recommended listings for hits when the search failed', () => {
+    const page = flightPage([{ results: [], resultsFailed: true, totalCount: 0 }, { results: [{ legacyId: 42 }] }]);
+    expect(provider.parseListings(page)).toBeNull();
+  });
+
+  it('reports a failed search as unreadable rather than as empty', () => {
+    expect(provider.parseListings(flightPage({ results: [], resultsFailed: true, totalCount: 0 }))).toBeNull();
+  });
+
+  it('reports a search that counts matches but ships none as unreadable', () => {
+    expect(provider.parseListings(flightPage({ results: [], resultsFailed: false, totalCount: 3 }))).toBeNull();
+  });
+
+  // Other widgets on the page name their arrays `results` as well, so an empty one alone says
+  // nothing about the search.
+  it('does not mistake an unrelated empty results array for an empty search', () => {
+    expect(provider.parseListings(flightPage({ results: [] }))).toBeNull();
+  });
+
+  it('keeps looking for the listings past an unrelated empty results array', () => {
+    expect(provider.parseListings(flightPage([{ results: [] }, { results: [{ legacyId: 42 }] }]))).toEqual([
+      { legacyId: 42 },
+    ]);
+  });
+
+  it('does not accept search metadata that never closes', () => {
+    const truncated = `<script>self.__next_f.push([1, ${JSON.stringify('{"results":[],"resultsFailed":false,"totalCount":0')}])</script>`;
+    expect(provider.parseListings(truncated)).toBeNull();
+  });
+
+  // A chunk that will not unescape is dropped from the payload, and losing one with an odd number of
+  // quotes leaves the search props unparseable. The recommendations inside them must not take over.
+  it('does not report recommended listings when the search metadata will not parse', () => {
+    const broken = `<script>self.__next_f.push([1, ${JSON.stringify('{"results":[],"resultsFailed":false,"totalCount":0,"seo":"a"k":1,"relax":{"results":[{"legacyId":7}]}}')}])</script>`;
+    expect(provider.parseListings(broken)).toBeNull();
+  });
+});
+
 describe('#immobilien.de expose price', () => {
   // An exposé ends with a carousel of other flats from the same agent, each a complete listing
   // object in the same payload. Reading the first price in the document reported one of those - a
