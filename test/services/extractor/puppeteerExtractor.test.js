@@ -7,19 +7,27 @@ import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 // Mock both engines' launchers so no real Chromium binary is needed and we can
 // assert which options get forwarded to them.
-const { launchMock, serveMock, connectMock, usesClearcoteMock } = vi.hoisted(() => ({
-  launchMock: vi.fn(),
-  serveMock: vi.fn(),
-  connectMock: vi.fn(),
-  usesClearcoteMock: vi.fn(() => false),
-}));
+const { launchMock, serveMock, connectMock, usesClearcoteMock, downloadMock, engineSupportsSwitchMock } = vi.hoisted(
+  () => ({
+    launchMock: vi.fn(),
+    serveMock: vi.fn(),
+    connectMock: vi.fn(),
+    usesClearcoteMock: vi.fn(() => false),
+    downloadMock: vi.fn(async () => '/cache/clearcote/chrome'),
+    engineSupportsSwitchMock: vi.fn(() => true),
+  }),
+);
 
 vi.mock('cloakbrowser/puppeteer', () => ({
   launch: launchMock,
 }));
 
-vi.mock('clearcote', () => ({
+// The real toProxySpec: how it reads credentials out of the URL is part of what is under test.
+vi.mock('clearcote', async (importOriginal) => ({
+  toProxySpec: (await importOriginal()).toProxySpec,
   serve: serveMock,
+  download: downloadMock,
+  engineSupportsSwitch: engineSupportsSwitchMock,
 }));
 
 vi.mock('puppeteer-core', () => ({
@@ -171,6 +179,75 @@ describe('launchBrowser on Clearcote', () => {
 
     expect(serveMock.mock.calls[0][0].proxy).toEqual({ server: 'http://user:pass@host:8080' });
     expect(serveMock.mock.calls[1][0].proxy).toBeUndefined();
+  });
+
+  describe('proxy login', () => {
+    /** A browser double whose pages record the login they were asked to answer. */
+    function browserWithPages() {
+      const authenticate = vi.fn(async () => {});
+      const newPage = vi.fn(async () => ({ authenticate }));
+      return { browser: { close: vi.fn(async () => {}), newPage }, authenticate, newPage };
+    }
+
+    beforeEach(() => {
+      downloadMock.mockClear();
+      engineSupportsSwitchMock.mockReset();
+    });
+
+    it('leaves the login to an engine that has --proxy-auth', async () => {
+      engineSupportsSwitchMock.mockReturnValue(true);
+      const { browser, authenticate } = browserWithPages();
+      connectMock.mockResolvedValue(browser);
+
+      const launched = await launchBrowser('https://www.immowelt.de/', { proxyUrl: 'http://user:pass@host:8080' });
+      await launched.newPage();
+
+      expect(engineSupportsSwitchMock).toHaveBeenCalledWith('/cache/clearcote/chrome', 'proxy-auth');
+      expect(authenticate).not.toHaveBeenCalled();
+    });
+
+    it('answers the login from every page when the engine cannot, as the macOS build cannot', async () => {
+      engineSupportsSwitchMock.mockReturnValue(false);
+      const { browser, authenticate, newPage } = browserWithPages();
+      connectMock.mockResolvedValue(browser);
+
+      const launched = await launchBrowser('https://www.immowelt.de/', {
+        proxyUrl: 'http://us%40er:p%3Ass@host:8080',
+      });
+      const page = await launched.newPage();
+
+      expect(page).toBe(await newPage.mock.results[0].value);
+      expect(authenticate).toHaveBeenCalledWith({ username: 'us@er', password: 'p:ss' });
+    });
+
+    it('does not look at the engine for a proxy without credentials', async () => {
+      const { browser, authenticate } = browserWithPages();
+      connectMock.mockResolvedValue(browser);
+
+      const launched = await launchBrowser('https://www.immowelt.de/', { proxyUrl: 'http://host:8080' });
+      await launched.newPage();
+
+      expect(downloadMock).not.toHaveBeenCalled();
+      expect(authenticate).not.toHaveBeenCalled();
+    });
+
+    it('refuses a SOCKS5 login the engine cannot do before starting a browser', async () => {
+      engineSupportsSwitchMock.mockReturnValue(false);
+
+      await expect(
+        launchBrowser('https://www.immowelt.de/', { proxyUrl: 'socks5://user:pass@host:1080' }),
+      ).rejects.toThrow(/cannot log in to a SOCKS5 proxy/);
+      expect(engineSupportsSwitchMock).toHaveBeenCalledWith('/cache/clearcote/chrome', 'socks5-credentials');
+      expect(serveMock).not.toHaveBeenCalled();
+    });
+
+    it('leaves a SOCKS5 login to an engine that has --socks5-credentials', async () => {
+      engineSupportsSwitchMock.mockImplementation((_binary, name) => name === 'socks5-credentials');
+
+      await launchBrowser('https://www.immowelt.de/', { proxyUrl: 'socks5://user:pass@host:1080' });
+
+      expect(serveMock.mock.calls[0][0].proxy).toEqual({ server: 'socks5://user:pass@host:1080' });
+    });
   });
 
   it('poses as Linux on a Linux host and leaves the platform alone elsewhere', async () => {

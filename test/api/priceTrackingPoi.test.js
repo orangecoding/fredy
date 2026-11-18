@@ -124,3 +124,52 @@ describe('POST /api/admin/generalSettings - price tracking POIs', () => {
     ]);
   });
 });
+
+/**
+ * Same reasoning for the base URL and the proxy: their pages post them on every save, so only a
+ * stored value changing to a new one counts as setting it.
+ */
+describe('POST /api/admin/generalSettings - base URL and proxy POIs', () => {
+  const post = async (body, stored) => {
+    const handler = await loadPostHandler(stored);
+    const reply = replyDouble();
+    await handler({ body }, reply);
+    return reply.recorded;
+  };
+
+  const pois = () => trackPoi.mock.calls.map(([poi]) => poi);
+
+  it.each([
+    ['baseUrl', 'https://fredy.example', TRACKING_POIS.BASE_URL_SETTING],
+    ['proxyUrl', 'http://proxy.example:8080', TRACKING_POIS.SET_PROXY_SETTING],
+  ])('reports %s set to a new value', async (name, value, poi) => {
+    const result = await post({ [name]: value }, { [name]: '' });
+
+    expect(result.status).toBe(200);
+    expect(pois()).toEqual([poi]);
+  });
+
+  it.each([
+    ['baseUrl', 'https://fredy.example'],
+    ['proxyUrl', 'http://proxy.example:8080'],
+  ])('says nothing when %s is saved unchanged', async (name, value) => {
+    await post({ [name]: value }, { [name]: value });
+
+    expect(pois()).toEqual([]);
+  });
+
+  it('compares the normalised value, so a trailing slash or space is no change', async () => {
+    await post(
+      { baseUrl: 'https://fredy.example/', proxyUrl: ' http://proxy.example:8080 ' },
+      { baseUrl: 'https://fredy.example', proxyUrl: 'http://proxy.example:8080' },
+    );
+
+    expect(pois()).toEqual([]);
+  });
+
+  it.each(['baseUrl', 'proxyUrl'])('says nothing when %s is cleared', async (name) => {
+    await post({ [name]: '' }, { [name]: 'http://proxy.example:8080' });
+
+    expect(pois()).toEqual([]);
+  });
+});
