@@ -23,7 +23,7 @@ beforeEach(() => {
 });
 
 describe('wgGesucht', () => {
-  const AD = 'https://www.wg-gesucht.de/wg-zimmer-in-Duesseldorf-Derendorf.14247424.html';
+  const AD = 'https://www.wg-gesucht.de/wg-zimmer-in-Duesseldorf-Innenstadt.10468197.html';
   const browser = { name: 'the run browser' };
 
   /** The same advert as a search run stores it, read off the recorded search page. */
@@ -39,30 +39,40 @@ describe('wgGesucht', () => {
     expectComplete(listing);
     expect(puppeteerExtractor).toHaveBeenCalledWith(AD, null, { browser, name: 'wgGesucht_details' });
 
-    // The list spells the rent "799 €" and the exposé's key fact "799€"; the hash is the list's.
+    // The list spells the rent "599 €" and the exposé's key fact "599€"; the hash is the list's.
     const found = fromSearch();
     expect(found).toBeDefined();
     expect(listing.id).toBe(found.id);
-    expect(listing.id).toBe(buildHash('14247424', '799 €'));
+    expect(listing.id).toBe(buildHash('10468197', '599 €'));
     expect(listing.link).toBe(found.link);
 
     expect(listing).toMatchObject({
       title: found.title,
-      price: 799,
-      size: 20,
+      price: 599,
+      size: 22,
       rooms: 3,
       image: found.image,
-      address: 'Rather Straße 40476 Düsseldorf Derendorf',
+      address: 'Karlstraße 4 40210 Düsseldorf Innenstadt',
     });
   });
 
   it('spells the rent the way the list does when the page has no map', async () => {
-    const withoutMap = fixture('wgGesucht_detail.html').replace('id="map_marker_info_14247424"', 'id="elsewhere"');
+    const withoutMap = fixture('wgGesucht_detail.html').replace('id="map_marker_info_10468197"', 'id="elsewhere"');
     puppeteerExtractor.mockResolvedValue(withoutMap);
     const listing = await config.fetchListingByUrl(AD, browser);
 
-    expect(listing.id).toBe(buildHash('14247424', '799 €'));
-    expect(listing.price).toBe(799);
+    expect(listing.id).toBe(buildHash('10468197', '599 €'));
+    expect(listing.price).toBe(599);
+  });
+
+  it('keeps the flatmates of the heading out of the address', async () => {
+    // The heading's type label reads "3er WG (1w,1m,0d,0n)". Without the address panel nothing else
+    // names a place, and the bracket must not stand in for one.
+    const withoutAddress = fixture('wgGesucht_detail.html').replace('href="#map_container"', 'href="#elsewhere"');
+    puppeteerExtractor.mockResolvedValue(withoutAddress);
+    const listing = await config.fetchListingByUrl(AD, browser);
+
+    expect(listing).toMatchObject({ rooms: 3, address: null });
   });
 
   it('settles on the canonical link whatever the shared one carried', async () => {

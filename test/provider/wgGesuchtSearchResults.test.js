@@ -20,6 +20,10 @@ import { config } from '../../lib/provider/wgGesucht.js';
  * stopped being `.wgg_card` divs with a title link inside and became one `a.wgg-list-card` each,
  * so the crawl container matched nothing and every run ended as an empty page rather than an error.
  *
+ * Then the cards became `card-offer` cards, with other class names for the headline and the size and
+ * a details line without separators, and every result came through without a title, size, room
+ * count or address.
+ *
  * Written against the shape of the page rather than against particular ads, the same way the
  * Kleinanzeigen results are, so refreshing the fixture does not rewrite these cases. How many
  * listings the page holds is counted out of the raw HTML instead of through a selector.
@@ -59,9 +63,15 @@ describe('wg-gesucht search results', () => {
   });
 
   it('reads the figures and the text off every result', () => {
-    for (const field of ['id', 'title', 'price', 'size', 'details', 'image']) {
+    for (const field of ['id', 'title', 'price', 'size', 'details', 'image', 'description']) {
       expect({ field, missing: rows.length - populated(field) }).toEqual({ field, missing: 0 });
     }
+  });
+
+  it('reads the picture the card shows, not a placeholder of its carousel', () => {
+    // A card holds a carousel of pictures and only the first has its `src`, the rest are a blank gif
+    // until scrolled to.
+    expect(rows.filter((row) => !/^https:\/\//.test(row.image))).toEqual([]);
   });
 
   it('normalizes into what the pipeline stores', () => {
@@ -71,11 +81,47 @@ describe('wg-gesucht search results', () => {
       expect(listing.link).toMatch(/^https:\/\/www\.wg-gesucht\.de\/wg-zimmer-in-/);
       expect({ id: listing.id, price: typeof listing.price }).toEqual({ id: listing.id, price: 'number' });
       expect({ id: listing.id, size: typeof listing.size }).toEqual({ id: listing.id, size: 'number' });
-      // The subtitle reads "3er WG · Düsseldorf Oberbilk · Ellerstraße": the flat share's size, then
-      // where it is. The address is the part after the first separator, without the separators.
+      // The details line reads "3er WG Düsseldorf Pempelfort Am Wehrhahn 45": the flat share's size,
+      // then where it is. The address is everything after the type label.
       expect({ id: listing.id, rooms: typeof listing.rooms }).toEqual({ id: listing.id, rooms: 'number' });
-      expect(listing.address).toMatch(/^Düsseldorf/);
-      expect(listing.address).not.toMatch(/·/);
+      expect(listing.address).toMatch(/^Düsseldorf \S/);
+      // The element's text holds the names of the icons in front of each part as well.
+      for (const text of [listing.address, listing.description]) {
+        expect(text).not.toMatch(/\b(?:bedroom_child|apartment|map|location_on)\b/);
+      }
     }
+  });
+});
+
+describe('wg-gesucht details line', () => {
+  /**
+   * @param {string|undefined} details
+   * @returns {{rooms: number|null, address: string|null}}
+   */
+  const place = (details) => {
+    const { rooms, address } = config.normalize({ id: '1', price: '500 €', link: '/x.1.html', details });
+    return { rooms, address };
+  };
+
+  it('reads the room count off the type label of a flat or a house', () => {
+    // The recorded search is one of rooms, whose label is "3er WG". Flats and houses label the room
+    // count differently.
+    expect(place('3-Zimmer-Wohnung Mannheim Neckarstadt Musterstraße 4')).toEqual({
+      rooms: 3,
+      address: 'Mannheim Neckarstadt Musterstraße 4',
+    });
+    expect(place('2,5-Zimmer-Wohnung Berlin Mitte Beispielweg 12')).toEqual({
+      rooms: 2.5,
+      address: 'Berlin Mitte Beispielweg 12',
+    });
+    expect(place('1-Zimmer-Haus Mannheim Neuostheim Probegasse')).toEqual({
+      rooms: 1,
+      address: 'Mannheim Neuostheim Probegasse',
+    });
+  });
+
+  it('leaves the address empty when the line names no place', () => {
+    expect(place('2er WG')).toEqual({ rooms: 2, address: null });
+    expect(place(undefined)).toEqual({ rooms: null, address: null });
   });
 });
