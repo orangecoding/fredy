@@ -66,7 +66,7 @@ company running a different platform and shares nothing with this API.
 _Returns the total number of listings for the given query._
 
 ```
-curl -H "User-Agent: ImmoScout_28.1_26.5.2_._" \
+curl -H "User-Agent: ImmoScout_28.9_27.2_._" \
      -H "Accept: application/json" \
      "https://api.mobile.immobilienscout24.de/search/total?searchType=region&realestatetype=apartmentrent&pricetype=calculatedtotalrent&geocodes=%2Fde%2Fberlin%2Fberlin"
 ```
@@ -88,7 +88,7 @@ _The body is json encoded and contains data specifying additional results (adver
 ```
 curl -X POST 'https://api.mobile.immobilienscout24.de/search/list?pricetype=calculatedtotalrent&realestatetype=apartmentrent&searchType=region&geocodes=%2Fde%2Fberlin%2Fberlin&pagenumber=1' \
   -H "Connection: keep-alive" \
-  -H "User-Agent: ImmoScout_28.1_26.5.2_._" \
+  -H "User-Agent: ImmoScout_28.9_27.2_._" \
   -H "Accept: application/json" \
   -H "Content-Type: application/json" \
   -d '{"supportedResultListType":[],"userData":{}}'
@@ -107,7 +107,7 @@ Comparing counts with the website: the web result list ends with adverts that we
 The response contains additional details not included in the listing response.
 
 ```
-curl -H "User-Agent: ImmoScout_28.1_26.5.2_._" \
+curl -H "User-Agent: ImmoScout_28.9_27.2_._" \
      -H "Accept: application/json" \
      "https://api.mobile.immobilienscout24.de/expose/158382494"
 ```

@@ -360,7 +360,7 @@ describe('#immoscout-mobile URL conversion', () => {
       for (const path of listKnownWebPaths()) {
         const url = convertWebToMobile(`${DUESSELDORF}/${path}`).replace('/search/list?', '/search/total?');
 
-        const response = await fetch(url, { headers: { 'User-Agent': 'ImmoScout_28.1_26.5.2_._' } });
+        const response = await fetch(url, { headers: { 'User-Agent': 'ImmoScout_28.9_27.2_._' } });
         const body = await response.json();
         if (!response.ok || body.error) {
           rejected.push(`${path}: ${response.status} ${JSON.stringify(body).slice(0, 160)}`);
@@ -380,7 +380,7 @@ describe('#immoscout-mobile URL conversion', () => {
       const response = await fetch(url, {
         method: 'POST',
         headers: {
-          'User-Agent': 'ImmoScout_28.1_26.5.2_._',
+          'User-Agent': 'ImmoScout_28.9_27.2_._',
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -503,7 +503,7 @@ describe('#immoscout-at URL conversion', () => {
       for (const path of listKnownAtPaths()) {
         const url = convertAtWebToMobile(`${WIEN}/${path}`).replace('/search/list?', '/search/total?');
 
-        const response = await fetch(url, { headers: { 'User-Agent': 'ImmoScout_28.1_26.5.2_._' } });
+        const response = await fetch(url, { headers: { 'User-Agent': 'ImmoScout_28.9_27.2_._' } });
         const body = await response.json();
         if (!response.ok || body.error) {
           rejected.push(`${path}: ${response.status} ${JSON.stringify(body).slice(0, 160)}`);
