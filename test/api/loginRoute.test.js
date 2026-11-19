@@ -12,7 +12,7 @@ vi.mock('../../lib/services/storage/userStorage.js', () => ({
   getUsers: vi.fn(() => []),
   setLastLoginToNow: vi.fn(),
 }));
-vi.mock('../../lib/services/tracking/Tracker.js', () => ({ trackDemoAccessed: vi.fn() }));
+vi.mock('../../lib/services/tracking/Tracker.js', () => ({ trackDemoAccessed: vi.fn(), trackPoi: vi.fn() }));
 vi.mock('../../lib/services/storage/settingsStorage.js', () => ({ getSettings: vi.fn(async () => ({})) }));
 vi.mock('../../lib/services/logger.js', () => ({ default: { error: vi.fn(), info: vi.fn() } }));
 

@@ -193,6 +193,26 @@
     }
   }
 
+  /* "Forgot password?" under the login button, quieter than it. */
+  &__forgot.semi-button {
+    align-self: center;
+    margin-top: -@space-2;
+    color: @color-muted;
+
+    &:hover {
+      color: @color-text;
+    }
+  }
+
+  /* "Write a new code" and "Back to login" under the reset form. */
+  &__links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: @space-2;
+    margin-top: -@space-2;
+  }
+
   /* On a phone the card is nearly the whole width, so it gets less padding and less transparency:
      there is little photograph left around it to show through. */
   @media (max-width: 480px) {

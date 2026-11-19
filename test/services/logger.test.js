@@ -79,6 +79,20 @@ describe('services/logger.js - debug log sink', () => {
     expect(captured[0].message).toContain('one');
   });
 
+  // For lines that carry a secret, like the password reset code: the console, never debug_logs.
+  it('writes warnConsoleOnly to the console with the usual prefix but never to the sink', () => {
+    const captured = [];
+    setDebugLogSink((entry) => captured.push(entry));
+
+    logger.warnConsoleOnly('Reset code: ABCD-EFGH');
+
+    expect(captured).toHaveLength(0);
+    expect(consoleSpies.warn).toHaveBeenCalledTimes(1);
+    const [prefix, message] = consoleSpies.warn.mock.calls[0];
+    expect(prefix).toMatch(/^\[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\] .*WARN.*:$/);
+    expect(message).toBe('Reset code: ABCD-EFGH');
+  });
+
   it('does not break the caller when the sink throws', () => {
     setDebugLogSink(() => {
       throw new Error('sink exploded');

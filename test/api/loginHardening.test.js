@@ -45,7 +45,7 @@ describe('login hardening', () => {
     vi.doMock('../../lib/services/storage/settingsStorage.js', () => ({
       getSettings: async () => ({ demoMode: false }),
     }));
-    vi.doMock('../../lib/services/tracking/Tracker.js', () => ({ trackDemoAccessed: vi.fn() }));
+    vi.doMock('../../lib/services/tracking/Tracker.js', () => ({ trackDemoAccessed: vi.fn(), trackPoi: vi.fn() }));
     vi.doMock('../../lib/api/security.js', async (importOriginal) => ({
       ...(await importOriginal()),
       isUnauthorized: () => true,

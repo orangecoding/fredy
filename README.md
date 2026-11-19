@@ -104,6 +104,18 @@ yarn run start:backend   # serves the UI and the API on port 9998
 
 Fredy is in the [Unraid](https://unraid.net/) community store.
 
+### Forgot your password?
+
+Click **Forgot password?** on the login screen. Fredy writes a one-time code to its logs:
+`docker logs fredy` in Docker, otherwise the terminal it runs in. Type the code into the form together with the
+user name and a new password. A code is valid for 3 minutes, works once and stops working after five
+wrong tries, and the next one can only be asked for once those 3 minutes are over; every session of
+the account ends with the old password.
+
+> [!IMPORTANT]
+> Whoever can read Fredy's logs can reset any account with it, the admin included. Treat access
+> to its logs like access to its database. Not available in demo mode.
+
 ------------------------------------------------------------------------
 
 ## ✨ What you get

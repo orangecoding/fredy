@@ -20,7 +20,10 @@ are untouched.
 
 Under **Administration → System → Reverse proxy sign-in**:
 
-1. Create the Fredy user with the **same username** the proxy will send (e.g. `cedric`).
+1. Create the Fredy user with the **same username** the proxy will send (e.g. `cedric`). The account
+   still needs a password, but nobody has to know it: give it a long random one and throw it away.
+   If the proxy ever stops vouching for you, **Forgot password?** on the login screen gets you back
+   in (see the [README](../README.md#forgot-your-password)).
 2. Tick *Accept the identity header from trusted proxies*.
 3. Enter the proxy's address(es), single IPs or CIDR ranges. In Docker this is usually the bridge
    network the proxy connects from, e.g. `172.16.0.0/12`; check `docker network inspect`.

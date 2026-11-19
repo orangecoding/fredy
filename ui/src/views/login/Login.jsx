@@ -16,6 +16,7 @@ import './login.less';
 import { IconWarning } from '../../components/icons/StrokeIcons.jsx';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
 import { useCapsLock } from '../../hooks/useCapsLock.js';
+import PasswordReset from './PasswordReset.jsx';
 
 export default function Login() {
   const t = useTranslation();
@@ -23,6 +24,8 @@ export default function Login() {
   const [username, setUserName] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [error, setError] = React.useState(null);
+  const [notice, setNotice] = React.useState(null);
+  const [resetting, setResetting] = React.useState(false);
   const [pending, setPending] = React.useState(false);
   const { capsLockOn, trackCapsLock, clearCapsLock } = useCapsLock();
   const demoMode = useSelector((state) => state.demoMode.demoMode || false);
@@ -86,6 +89,20 @@ export default function Login() {
     }
   };
 
+  const startReset = () => {
+    setError(null);
+    setNotice(null);
+    setResetting(true);
+  };
+
+  /** @param {string} resetUsername */
+  const finishReset = (resetUsername) => {
+    setUserName(resetUsername);
+    setPassword('');
+    setNotice(t('login.reset.success'));
+    setResetting(false);
+  };
+
   return (
     <div className="login">
       <div className="login__backdrop" aria-hidden="true">
@@ -101,61 +118,72 @@ export default function Login() {
           <Banner fullMode={true} type="info" bordered closeIcon={null} description={t('login.demoBanner')} />
         )}
 
-        <form className="login__form" onSubmit={(e) => e.preventDefault()}>
-          {error && <Banner type="danger" closeIcon={null} description={error} />}
-          <div className="login__field">
-            <label className="login__label" htmlFor={usernameId}>
-              {t('login.usernameLabel')}
-            </label>
-            <Input
-              id={usernameId}
-              size="large"
-              value={username}
-              autoComplete="username"
-              showClear
-              autoFocus
-              onChange={(value) => setUserName(value)}
-              onKeyUp={trackCapsLock}
-              onKeyPress={submitOnEnter}
-            />
-          </div>
+        {resetting ? (
+          <PasswordReset initialUsername={username} onSuccess={finishReset} onCancel={() => setResetting(false)} />
+        ) : (
+          <form className="login__form" onSubmit={(e) => e.preventDefault()}>
+            {notice && <Banner type="success" closeIcon={null} description={notice} />}
+            {error && <Banner type="danger" closeIcon={null} description={error} />}
+            <div className="login__field">
+              <label className="login__label" htmlFor={usernameId}>
+                {t('login.usernameLabel')}
+              </label>
+              <Input
+                id={usernameId}
+                size="large"
+                value={username}
+                autoComplete="username"
+                showClear
+                autoFocus
+                onChange={(value) => setUserName(value)}
+                onKeyUp={trackCapsLock}
+                onKeyPress={submitOnEnter}
+              />
+            </div>
 
-          <div className="login__field">
-            <label className="login__label" htmlFor={passwordId}>
-              {t('login.passwordLabel')}
-            </label>
-            <Input
-              id={passwordId}
+            <div className="login__field">
+              <label className="login__label" htmlFor={passwordId}>
+                {t('login.passwordLabel')}
+              </label>
+              <Input
+                id={passwordId}
+                size="large"
+                mode="password"
+                value={password}
+                autoComplete="current-password"
+                aria-describedby={capsLockOn ? capsLockHintId : undefined}
+                onChange={(value) => setPassword(value)}
+                onKeyUp={trackCapsLock}
+                onBlur={clearCapsLock}
+                onKeyPress={submitOnEnter}
+              />
+              {capsLockOn && (
+                <div className="login__capsHint" id={capsLockHintId} role="status">
+                  <IconWarning />
+                  {t('login.capsLockHint')}
+                </div>
+              )}
+            </div>
+
+            <Button
+              block
               size="large"
-              mode="password"
-              value={password}
-              autoComplete="current-password"
-              aria-describedby={capsLockOn ? capsLockHintId : undefined}
-              onChange={(value) => setPassword(value)}
-              onKeyUp={trackCapsLock}
-              onBlur={clearCapsLock}
-              onKeyPress={submitOnEnter}
-            />
-            {capsLockOn && (
-              <div className="login__capsHint" id={capsLockHintId} role="status">
-                <IconWarning />
-                {t('login.capsLockHint')}
-              </div>
+              type="primary"
+              theme="solid"
+              onClick={tryLogin}
+              loading={pending}
+              className="login__submit"
+            >
+              {pending ? t('login.loginButtonPending') : t('login.loginButton')}
+            </Button>
+
+            {!demoMode && (
+              <Button theme="borderless" className="login__forgot" onClick={startReset}>
+                {t('login.forgotPassword')}
+              </Button>
             )}
-          </div>
-
-          <Button
-            block
-            size="large"
-            type="primary"
-            theme="solid"
-            onClick={tryLogin}
-            loading={pending}
-            className="login__submit"
-          >
-            {pending ? t('login.loginButtonPending') : t('login.loginButton')}
-          </Button>
-        </form>
+          </form>
+        )}
       </div>
     </div>
   );
