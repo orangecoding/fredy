@@ -380,12 +380,17 @@ export const useFredyState = create(
           },
         },
         demoMode: {
+          /**
+           * @returns {Promise<boolean|undefined>} The flag, or undefined when it could not be read. An
+           *   instance without the setting answers without the field, which is no demo.
+           */
           async getDemoMode() {
             try {
               const response = await xhrGet('/api/demo');
               set((state) => ({
                 demoMode: { ...state.demoMode, demoMode: response.json.demoMode },
               }));
+              return response.json.demoMode === true;
             } catch (Exception) {
               console.error('Error while trying to get resource for api/demo. Error:', Exception);
             }

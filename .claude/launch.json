@@ -8,6 +8,12 @@
       "port": 9998
     },
     {
+      "name": "fredy-backend-scratch",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": ["-c", "mkdir -p /private/tmp/claude-501/-Users-chriz--claude-spares-spare-LQ9rWK/0842ddb4-5150-4757-97e9-c5bd89f1c586/scratchpad/fredy-run && cd /private/tmp/claude-501/-Users-chriz--claude-spares-spare-LQ9rWK/0842ddb4-5150-4757-97e9-c5bd89f1c586/scratchpad/fredy-run && exec node /Users/chriz/dev/private/fredy/index.js"],
+      "port": 9998
+    },
+    {
       "name": "fredy-frontend",
       "runtimeExecutable": "yarn",
       "runtimeArgs": ["run", "start:frontend:dev"],

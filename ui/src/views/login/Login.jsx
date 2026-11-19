@@ -26,6 +26,9 @@ export default function Login() {
   const [error, setError] = React.useState(null);
   const [notice, setNotice] = React.useState(null);
   const [resetting, setResetting] = React.useState(false);
+  // Only once the server said it is no demo: the store's demo flag starts out false, so going by it
+  // showed the reset link on the demo instance until /api/demo answered, and for good if it failed.
+  const [resetAvailable, setResetAvailable] = React.useState(false);
   const [pending, setPending] = React.useState(false);
   const { capsLockOn, trackCapsLock, clearCapsLock } = useCapsLock();
   const demoMode = useSelector((state) => state.demoMode.demoMode || false);
@@ -36,7 +39,8 @@ export default function Login() {
 
   useEffect(() => {
     async function init() {
-      await actions.demoMode.getDemoMode();
+      const isDemo = await actions.demoMode.getDemoMode();
+      setResetAvailable(isDemo === false);
     }
 
     init();
@@ -177,7 +181,7 @@ export default function Login() {
               {pending ? t('login.loginButtonPending') : t('login.loginButton')}
             </Button>
 
-            {!demoMode && (
+            {resetAvailable && (
               <Button theme="borderless" className="login__forgot" onClick={startReset}>
                 {t('login.forgotPassword')}
               </Button>
