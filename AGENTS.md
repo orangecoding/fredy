@@ -289,8 +289,9 @@ Two transports:
 1. **stdio** (`lib/mcp/stdio.js`) - for Claude Desktop/LM Studio; opens its own DB connection (main process need not be running)
 2. **HTTP** (`/api/mcp`) - authenticated via Bearer token (`mcp_token` column in `users` table)
 
-Read tools: `list_jobs`, `get_job`, `list_listings`, `get_listing`, `get_photo_for_listing`, `calculate_financing`, `get_current_date_time`.
+Read tools: `list_jobs`, `get_job`, `list_listings`, `get_listing`, `get_listing_document`, `get_photo_for_listing`, `calculate_financing`, `get_current_date_time`.
 Write tools: `add_listing_note`, `set_listing_notes`, `watch_listing`, `unwatch_listing`, and the four that create a job.
+`get_listing` carries the listing's notes and the metadata of its documents (id, filename, type, size); `get_listing_document` returns the bytes of one document by that id. Small data rides along, bytes are fetched on demand.
 Responses are Markdown via `lib/mcp/mcpNormalizer.js`.
 
 Each user can switch the server off, or single tools, under Settings → MCP server (user setting `mcp_server`, `{ enabled, disabledTools }`, read through `lib/mcp/mcpUserSettings.js`). `authenticateToolCall` enforces both on every call; `applyMcpToolSettings` trims `tools/list` per request. The settings page gets its tool list from `GET /api/user/mcp-server`, which reads it off the registered tools (`mcpToolCatalog`), so a new tool needs no UI change. Register tools through `server.tool()` inside `createMcpServer`: that is what records them.
