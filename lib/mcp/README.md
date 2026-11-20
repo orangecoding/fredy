@@ -53,11 +53,54 @@ These change something. Each is annotated so a client can warn before calling it
 | `create_job_from_draft` | Create the job, once the user has confirmed the summary | no |
 | `discard_job_draft` | Throw the interview away | no |
 
-Only `set_listing_notes` is marked destructive, and the rule is narrow on purpose: destructive means *this can overwrite or delete something the user wrote*. A watch flag and an in-memory draft are neither, and marking them destructive would train people to click straight through the prompt that guards the one that is.
+Only tools that can overwrite or delete something the user wrote beyond recovery are marked destructive, and the rule is narrow on purpose: destructive means *this can overwrite or delete something the user wrote*. A watch flag and an in-memory draft are neither, and marking them destructive would train people to click straight through the prompt that guards the one that is.
 
 Two note tools rather than one with a `mode` parameter, because the annotations are per tool: a single tool would have to be marked destructive, and Claude.ai would then confirm every harmless append.
 
 Watching uses `ensureWatch` / `deleteWatch`, never a toggle - a client that retries a failed `watch_listing` must not silently unwatch the listing.
+
+### Administering Fredy through MCP
+
+Jobs, notification channels, listings and the user's own core settings can be administered over MCP. Each tool calls the same service the matching web route calls - `lib/services/jobs/jobService.js`, `lib/services/channels/channelService.js`, `lib/services/listings/listingActionService.js`, `lib/services/settings/userSettingsService.js` (with `homeAddressService.js`) and `manualListingService.js` - so every rule a change is held to, from ownership to the demo-mode locks, is written once and applies to both. What the tools add is only what a model needs: confirmation before a destructive call, merging where a model cannot read back what it would replace, and answers that say what to do next. Not covered: restoring hidden listings, scam verdicts, address corrections and detail refetches, bulk deletes, attachments, application templates, the smaller display preferences, and everything admin-only (general settings, users, backups) - those stay in the web UI.
+
+A rule that runs through all of them: a model can only change what it can read back. Every replacing list (`providerUrls`, `homeAddresses`) is shown in full by the matching read tool, and what a model cannot be shown (channel secrets) or would only ever want to change a part of (the two profiles) is merged rather than replaced.
+
+**Jobs**
+
+| Tool | Description | Destructive |
+|------|-------------|-------------|
+| `run_job` | Run one job now, in the background | no |
+| `run_all_jobs` | Run every job the user is allowed to run | no |
+| `set_job_enabled` | Switch a job on or off | no |
+| `update_job` | Edit a job: read it with `get_job` first, pass only what changes, every list is the complete list (`get_job` shows each search URL, so one can be added by resending the rest) | no |
+| `delete_job` | Remove a job and all its listings, after `confirmed: true` | **yes** |
+
+Runs are carried out by the running Fredy server; the standalone stdio process refuses and says so, because it has no scheduler attached. Editing re-uses the interview's validation (URL resolution, channel permissions, currency agreement), which words a problem for a model, and refuses anything that would leave the job without a name, search, deal type or channel. The job is then stored through the web form's own save, which checks it again, and the job's drawn area filter is never touched.
+
+**Notification channels**
+
+| Tool | Description | Destructive |
+|------|-------------|-------------|
+| `list_channels` | The channels this user may attach to a job, with usage counts | read-only |
+| `list_adapters` | The notification types and the field definitions they take | read-only |
+| `create_channel` | Create a channel; field values are stored but never shown back | no |
+| `update_channel` | Rename or reconfigure; only the fields sent change, null removes an optional one | no |
+| `delete_channel` | Remove a channel no job uses, after `confirmed: true` | **yes** |
+| `test_channel` | Send one test listing through a stored channel | no |
+
+Channel secrets (tokens, feed urls) are never serialised back - not masked, simply never sent. Because a model never sees them, `update_channel` merges where the web form replaces: changing a chat id never needs the token again. Everything else is the web form's save: a field name the adapter does not have is refused (under a merge, a typo would otherwise be stored beside the real field and change nothing), and so is a channel left without a field it needs. A channel still used by a job cannot be deleted, and the answer names the jobs - before the user is asked to confirm, since no answer would change it.
+
+Creating a channel does mean the user hands its credentials to the model - a bot token pasted into the chat sits in the model provider's history. Anyone who would rather not can create the channel in the web UI and attach it over MCP.
+
+**Listings and settings**
+
+| Tool | Description | Destructive |
+|------|-------------|-------------|
+| `set_listing_status` | Mark a listing applied, rejected or accepted (which also watches it, as in the web UI), or clear it | no |
+| `add_listing_by_url` | Store a single pasted advert under a job the user names | no |
+| `delete_listing` | Hide a listing (default) or remove it permanently with `hard: true`, hidden or not | **yes** |
+| `get_user_settings` | Read language, theme, addresses, and both profiles in full | read-only |
+| `update_user_settings` | Change any of those; the profiles are merged key by key, null on a key removes it | no |
 
 ### Creating a job by interview
 
@@ -78,7 +121,7 @@ Details worth knowing:
 - Every list field is the **complete list**, replacing the previous one. An LLM asked to "add one more" reliably resends the whole list and much less reliably works out a delta.
 - An update that gets one field wrong applies **none** of it and reports every problem at once.
 - Everything is re-validated from scratch at creation time. A channel can be made private, an address renamed or a shared user deleted while the interview is running; the interview is not an authorization.
-- Out of scope, deliberately: **area filters** (a polygon is drawn, not described - the created-job response says where to add one), editing or deleting existing jobs, creating notification channels (their secrets must not travel through an LLM), and triggering a run.
+- Out of scope, deliberately: **area filters** (a polygon is drawn, not described - the created-job response and every edit say where to add one). Everything else the web UI does to a job, a channel, a listing or the user's settings has a tool; see "Administering Fredy through MCP" above.
 
 Example prompts:
 
@@ -338,7 +381,7 @@ curl -X POST http://localhost:9998/api/mcp \
 - Tokens are deleted automatically when the owning user is removed
 - The `/api/mcp` endpoint uses Bearer token auth (independent of cookie-session)
 - Treat MCP tokens like passwords - do not share them publicly
-- Write tools enforce the same rules as the web UI: a listing must be one the user can already see, a notification channel must be one they are allowed to send through, and a job can only be shared with a non-admin other user
+- Write tools go through the same services as the web UI, so they enforce the same rules: a listing must be one the user can already see, a notification channel must be one they are allowed to send through, and a job can only be shared with a non-admin other user
 - Channel credentials are never returned. The interview is handed a channel list stripped of its `fields` before it reaches the adapter, so a bot token cannot reach an LLM transcript even by accident
 - While **demo mode** is on, every write tool refuses non-admin users. The public demo is read-only over MCP
 - Each user can switch the server off for their account, or turn single tools off, under **Settings → MCP server**. Both are enforced on every tool call, not only in the tool list (see [Turning the server or single tools off](#turning-the-server-or-single-tools-off))
