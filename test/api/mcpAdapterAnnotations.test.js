@@ -59,6 +59,7 @@ const WRITE_TOOLS = [
   'add_listing_by_url',
   'delete_listing',
   'update_user_settings',
+  'write_application_draft',
 ];
 
 /**
@@ -82,6 +83,7 @@ const NON_IDEMPOTENT_TOOLS = [
   'delete_job',
   'delete_channel',
   'delete_listing',
+  'write_application_draft',
 ];
 
 describe('MCP tool annotations', () => {
@@ -123,7 +125,8 @@ describe('MCP tool annotations', () => {
 
   it('flags the remote fetches and the outward test-send as open-world while everything else is closed-world', async () => {
     const tools = await listTools();
-    const OPEN_WORLD_TOOLS = ['get_photo_for_listing', 'add_listing_by_url', 'test_channel'];
+    // write_application_draft sends the listing to the AI endpoint the admin set up.
+    const OPEN_WORLD_TOOLS = ['get_photo_for_listing', 'add_listing_by_url', 'test_channel', 'write_application_draft'];
     for (const name of OPEN_WORLD_TOOLS) {
       expect(tools[name]?.annotations?.openWorldHint, `${name}.openWorldHint`).toBe(true);
     }

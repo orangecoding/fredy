@@ -22,6 +22,15 @@ import { xhrGet, xhrPost } from './xhr.js';
  * @property {string[]} unknown Placeholders in the user's own template that do not exist.
  * @property {boolean} hasProfile
  * @property {{name: string|null, company: string|null}|null} contact
+ * @property {{available: boolean, draft: AiDraft|null}} aiDraft Whether this Fredy can write AI
+ *   drafts, and the one stored on the listing.
+ */
+
+/**
+ * @typedef {Object} AiDraft
+ * @property {string} text
+ * @property {string|null} model
+ * @property {number|null} generatedAt
  */
 
 /**
@@ -34,6 +43,36 @@ import { xhrGet, xhrPost } from './xhr.js';
 export async function fetchApplicationLetter(listingId, language = null) {
   const query = language == null ? '' : `?language=${encodeURIComponent(language)}`;
   const response = await xhrGet(`/api/listings/${encodeURIComponent(listingId)}/application${query}`);
+  return response.json;
+}
+
+/**
+ * Have the AI endpoint write the draft for a listing, or a new one, and store it.
+ * Costs a request to the endpoint the admin pays for, so only on the user's own click.
+ * @param {string} listingId
+ * @param {string|null} [language] Write in this language instead of the portal's.
+ * @returns {Promise<AiDraft>}
+ */
+export async function writeAiDraft(listingId, language = null) {
+  const response = await xhrPost(`/api/listings/${encodeURIComponent(listingId)}/application/draft`, {
+    ...(language == null ? {} : { language }),
+  });
+  return response.json;
+}
+
+/**
+ * @typedef {Object} DraftInstructions
+ * @property {string|null} instructions The user's own, or null while the default applies.
+ * @property {string} defaultInstructions What the editor starts from and resets to.
+ * @property {number} maxLength
+ */
+
+/**
+ * The instructions the user's AI drafts are written by, with the default.
+ * @returns {Promise<DraftInstructions>}
+ */
+export async function fetchDraftInstructions() {
+  const response = await xhrGet('/api/user/settings/application-draft-instructions');
   return response.json;
 }
 

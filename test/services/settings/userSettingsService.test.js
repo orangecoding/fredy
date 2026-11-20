@@ -136,3 +136,34 @@ describe('language and theme', () => {
     expect(stored()).toMatchObject({ language: 'de', theme: 'dark' });
   });
 });
+
+describe('the AI draft instructions', () => {
+  it('stores the user’s own instructions, and goes back to the default on null', async () => {
+    const saved = await service.updateUserSettings(ALICE, { applicationDraftInstructions: '  Keep it short.  ' });
+    expect(saved).toMatchObject({ ok: true, changes: { applicationDraftInstructions: 'Keep it short.' } });
+    expect(stored().application_draft_instructions).toBe('Keep it short.');
+
+    const reset = await service.updateUserSettings(ALICE, { applicationDraftInstructions: null });
+    expect(reset.changes.applicationDraftInstructions).toBeNull();
+    expect(stored().application_draft_instructions ?? null).toBeNull();
+  });
+
+  it('refuses instructions that are not text or too long, and stores nothing', async () => {
+    const wrongType = await service.updateUserSettings(ALICE, { applicationDraftInstructions: 42 });
+    const tooLong = await service.updateUserSettings(ALICE, { applicationDraftInstructions: 'x'.repeat(4001) });
+
+    expect(wrongType).toMatchObject({ ok: false, reason: 'invalid' });
+    expect(tooLong).toMatchObject({ ok: false, reason: 'invalid' });
+    expect(stored()?.application_draft_instructions ?? null).toBeNull();
+  });
+
+  it('is locked in demo mode for everyone but an admin', async () => {
+    demoMode = true;
+
+    expect(await service.updateUserSettings(ALICE, { applicationDraftInstructions: 'Mine.' })).toMatchObject({
+      ok: false,
+      reason: 'forbidden',
+    });
+    expect((await service.updateUserSettings(ADMIN, { applicationDraftInstructions: 'Mine.' })).ok).toBe(true);
+  });
+});

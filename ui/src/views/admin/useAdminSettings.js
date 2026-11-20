@@ -72,6 +72,11 @@ export const EXECUTION_FIELDS = [
   'priceCheckIntervalDays',
   'priceCheckLimitPerRun',
   'priceChangeThresholdPercent',
+  'llmEnabled',
+  'llmBaseUrl',
+  'llmModel',
+  'llmApiKey',
+  'llmApiKeyClear',
 ];
 
 const nullOrEmpty = (val) => val == null || String(val).length === 0;
@@ -114,6 +119,16 @@ function toForm(settings) {
     },
     proxyUrl: settings?.proxyUrl ?? '',
     priceTrackingEnabled: settings?.priceTrackingEnabled === true,
+    llmEnabled: settings?.llmEnabled === true,
+    llmBaseUrl: settings?.llmBaseUrl ?? '',
+    llmModel: settings?.llmModel ?? '',
+    // Write-only, like proxyAuthSecret: the backend never sends it back, so the form always starts
+    // empty and an empty value on save means "keep the current key".
+    llmApiKey: '',
+    // Read-only: whether the backend holds a key. Not in any field list, so it is never posted.
+    llmApiKeySet: settings?.llmApiKeySet === true,
+    // The one way to remove a stored key, since an empty field means "keep".
+    llmApiKeyClear: false,
     priceCheckIntervalDays: settings?.priceCheckIntervalDays ?? 7,
     priceCheckLimitPerRun: settings?.priceCheckLimitPerRun ?? 100,
     priceChangeThresholdPercent: settings?.priceChangeThresholdPercent ?? 1,
@@ -263,6 +278,15 @@ export function useAdminSettings(settings) {
         payload.priceCheckLimitPerRun = Number(form.priceCheckLimitPerRun);
         payload.priceChangeThresholdPercent = Number(form.priceChangeThresholdPercent);
         payload.proxyUrl = form.proxyUrl?.trim() ?? '';
+      }
+      if (fields.includes('llmBaseUrl')) {
+        payload.llmBaseUrl = form.llmBaseUrl?.trim() ?? '';
+        payload.llmModel = form.llmModel?.trim() ?? '';
+        // An empty key keeps the stored one (same contract as the proxy secret), so saving any other
+        // field on this page leaves the credential alone. Removing it is an explicit null.
+        payload.llmApiKey = form.llmApiKeyClear ? null : (form.llmApiKey?.trim() ?? '');
+        // A form-only switch: posted, it would be stored as a setting of its own.
+        delete payload.llmApiKeyClear;
       }
 
       setSaving(fields);

@@ -57,6 +57,7 @@ export const DRAFT_FIELDS = [
   'marketFilter',
   'priceChangeThreshold',
   'paging',
+  'applicationDrafts',
 ];
 
 /**
@@ -98,7 +99,8 @@ export function hasContent(draft) {
     draft.commuteFilter != null ||
     draft.marketFilter != null ||
     draft.priceChangeThreshold != null ||
-    draft.paging != null
+    draft.paging != null ||
+    draft.applicationDrafts === true
   );
 }
 

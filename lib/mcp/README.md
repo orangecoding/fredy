@@ -99,8 +99,9 @@ Creating a channel does mean the user hands its credentials to the model - a bot
 | `set_listing_status` | Mark a listing applied, rejected or accepted (which also watches it, as in the web UI), or clear it | no |
 | `add_listing_by_url` | Store a single pasted advert under a job the user names | no |
 | `delete_listing` | Hide a listing (default) or remove it permanently with `hard: true`, hidden or not | **yes** |
-| `get_user_settings` | Read language, theme, addresses, and both profiles in full | read-only |
-| `update_user_settings` | Change any of those; the profiles are merged key by key, null on a key removes it | no |
+| `get_user_settings` | Read language, theme, addresses, both profiles and the AI draft instructions in full | read-only |
+| `update_user_settings` | Change any of those; the profiles are merged key by key, null on a key removes it, and the AI draft instructions are replaced whole (null goes back to the default) | no |
+| `write_application_draft` | Have the AI endpoint the admin set up write a message tailored to one listing, and store it on the listing. A listing that already has a draft answers with it unless `rewrite: true`, since every draft is a paid request | no |
 
 ### Creating a job by interview
 

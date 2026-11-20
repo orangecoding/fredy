@@ -17,8 +17,21 @@
     min-height: 320px;
   }
 
+  &__mode {
+    margin-bottom: @space-3;
+  }
+
   &__meta {
     margin-bottom: @space-3;
+  }
+
+  &__aiMeta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: @space-2;
+    margin-top: @space-2;
   }
 
   /* Narrow on purpose: it holds a flag and one word, and a full-width select would read as the

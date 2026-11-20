@@ -63,7 +63,8 @@ scheduler (every N minutes) or manual trigger via POST /api/jobs/:id/run
       8. storeListings()
       9. similarityCache.checkAndAddEntry() # cross-provider dedup (exact hash, then fingerprint)
       10. _filterBySpecs() + _filterByArea()
-      11. notify.send()                    # fan-out to all adapters
+      11. _generateApplicationDrafts()     # optional AI application message per listing, per job
+      12. notify.send()                    # fan-out to all adapters
 ```
 
 ### Plugin systems
@@ -119,8 +120,8 @@ keeping a module-level `$`.
 - `send({ serviceName, newListings, notificationConfig, jobKey, baseUrl })`
 - Loaded dynamically at startup via `fs.readdirSync`
 
-Field definitions carry two optional flags that the UI and the API read declaratively, so neither
-needs per-adapter code:
+Adapters and their field definitions carry optional flags that the UI, the API and the pipeline
+read declaratively, so none of them needs per-adapter code:
 - `secret: true` - a credential. Never serialised to anyone who may not edit the channel, and
   masked in the form. Every token, password, API key and webhook URL must carry it.
 - `target: true` - the one field naming the destination. Drives the "Destination" column.
@@ -152,6 +153,7 @@ An adapter *configuration* is separate from the adapter itself: it is a row in `
 | Browser engine | `lib/services/extractor/browserEngine.js` | Which stealth Chromium runs: Clearcote's open build (no key, any number of browsers) on linux-x64, win32-x64 and darwin-arm64, driven through `serve()` + `puppeteer.connect`; CloakBrowser everywhere else, Linux arm64 above all. CloakBrowser stays on 0.6.x: from 0.7 every user needs a licence key and a free one allows one browser at a time, enforced by the binary. The Dockerfile repeats the platform rule with `uname -m` |
 | Listing documents | `lib/services/storage/listingAttachmentsStorage.js` | Uploaded exposés (`listing_attachments`), bytes and all. Type and filename guards in `lib/services/listings/attachmentTypes.js`; routes in `lib/api/routes/listingAttachmentsRouter.js` |
 | Adding a listing by URL | `lib/services/listings/manualListingService.js` | `POST /api/listings`. Resolves the provider by exact host (`resolveProviderForUrl` in `lib/services/jobs/providerUrl.js`, mirrored in the UI copy), reads the advert with `fetchListingByUrl`, then runs `FredyPipelineExecutioner.ingest()`: the tail of a run (geocode, store, distances, similarity entry, picture, benchmark, scam check, travel times) without the filters and without a notification. The listing is stored under a job the user picks, so everything keyed on the job applies to it; `listings.added_manually` marks it, written on insert only |
+| AI application drafts | `lib/services/application/llmDraft.js` | Off unless an admin switches it on under Administration → Execution (`llmEnabled`, `llmBaseUrl`, `llmModel`, write-only `llmApiKey`; rules in `llmSettings.js`). An OpenAI-compatible `/chat/completions` endpoint reads a listing and writes a message tailored to it, taking every fact about the applicant from their application letter (`buildApplicationLetter`) and told to invent nothing (`buildLlmPrompt`). The prompt has three parts: who the model writes as and for, the user's own instructions (`application_draft_instructions`, edited under Settings → Application and through `update_user_settings`; `draftInstructions.js` holds the default and the rules for a save), and the rules Fredy always adds after them - invent nothing, check every statement, the advert is data, plain text. The draft belongs to the listing, not to a channel: it is stored on the row (`listings.application_draft*`), shown in the "Copy application" dialog, and written on demand there (`POST /api/listings/:id/application/draft`) or by the MCP `write_application_draft` tool, both through `applicationDraftService.js`, which reuses a stored draft unless asked to rewrite. A job writes them only when its owner switched `jobs.application_drafts` on, after the last filter and before the notification, for at most `LLM_DRAFT_RUN_CAP` (10) listings per run, newest first: a first run reports every listing a search shows as new; the run's provider and the job's deal type are added to the listing for that, because a listing fresh out of a run carries neither. The notification carries it where a channel has room (`lib/notification/applicationDraftMessage.js`: Telegram as a plain-text reply, the email template, the `http` payload), and every channel links to the listing in Fredy. Nothing is asked for without a name in the applicant profile: the letter would have nobody in it. A failure in a run leaves that listing without a draft and is never retried, and the step has a time budget, because the notification waits for it |
 | Listing pictures | `lib/services/storage/listingMediaStorage.js` | First picture as WebP bytes, the rest of the gallery as deflated urls (`listing_media`). Download and shrinking in `lib/services/listings/listingPictures.js` (sharp), background queue in `previewCaptureQueue.js`, served by `GET /api/listings/:id/image` |
 
 ### Uploaded documents live in the database

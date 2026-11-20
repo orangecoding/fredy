@@ -156,6 +156,7 @@ function JobMutator({ source }) {
   const defaultMarketFilter = sourceJob?.marketFilter || null;
   const defaultPriceChangeThreshold = sourceJob?.priceChangeThreshold ?? null;
   const defaultPaging = sourceJob?.paging ?? null;
+  const defaultApplicationDrafts = sourceJob?.applicationDrafts === true;
   // Deliberately not defaulted for a new job: the user has to say what they are looking for,
   // because it decides which half of their finance profile applies to everything this job finds.
   const defaultDealType = sourceJob?.dealType || null;
@@ -177,6 +178,7 @@ function JobMutator({ source }) {
   const [marketFilter, setMarketFilter] = useState(defaultMarketFilter);
   const [priceChangeThreshold, setPriceChangeThreshold] = useState(defaultPriceChangeThreshold);
   const [paging, setPaging] = useState(defaultPaging);
+  const [applicationDrafts, setApplicationDrafts] = useState(defaultApplicationDrafts);
   const [dealType, setDealType] = useState(defaultDealType);
   /** Whether the value in the deal type field was guessed rather than chosen. */
   const [dealTypeWasInferred, setDealTypeWasInferred] = useState(false);
@@ -261,6 +263,7 @@ function JobMutator({ source }) {
     if (draft.marketFilter !== undefined) setMarketFilter(draft.marketFilter);
     if (draft.priceChangeThreshold !== undefined) setPriceChangeThreshold(draft.priceChangeThreshold);
     if (draft.paging !== undefined) setPaging(draft.paging);
+    if (draft.applicationDrafts !== undefined) setApplicationDrafts(draft.applicationDrafts);
     setDraftRestored(true);
   }, [draftId]);
 
@@ -283,6 +286,7 @@ function JobMutator({ source }) {
       marketFilter,
       priceChangeThreshold,
       paging,
+      applicationDrafts,
     };
     // A stored job always "has content", so without this every visit to its form left a copy
     // behind. The next visit restored that copy over whatever had changed in the meantime - a job
@@ -308,6 +312,7 @@ function JobMutator({ source }) {
     marketFilter,
     priceChangeThreshold,
     paging,
+    applicationDrafts,
   ]);
 
   // The deal type decides which half of the finance profile applies to everything this job finds,
@@ -351,6 +356,7 @@ function JobMutator({ source }) {
     marketFilter: defaultMarketFilter,
     priceChangeThreshold: defaultPriceChangeThreshold,
     paging: defaultPaging,
+    applicationDrafts: defaultApplicationDrafts,
   };
 
   const discardChanges = () => {
@@ -370,6 +376,7 @@ function JobMutator({ source }) {
     setMarketFilter(baseline.marketFilter);
     setPriceChangeThreshold(baseline.priceChangeThreshold);
     setPaging(baseline.paging);
+    setApplicationDrafts(baseline.applicationDrafts);
     // A guessed deal type is only a guess about a provider that has just been discarded.
     setDealTypeWasInferred(false);
   };
@@ -389,6 +396,7 @@ function JobMutator({ source }) {
     marketFilter,
     priceChangeThreshold,
     paging,
+    applicationDrafts,
   };
 
   // Compared, not tracked. Drives the save bar, so a character typed and deleted again closes it
@@ -498,6 +506,7 @@ function JobMutator({ source }) {
         paging,
         dealType,
         enabled,
+        applicationDrafts,
         jobId: isEdit ? sourceJob.id : null,
       });
       await actions.jobsData.getJobs();
@@ -981,6 +990,20 @@ function JobMutator({ source }) {
                 onChange={(checked) => setEnabled(checked)}
                 checked={enabled}
                 aria-label={t('jobs.mutation.labelRunning')}
+              />
+            </AdminField>
+
+            {/* Off by default and per job: every draft is a request to the AI endpoint the admin
+                pays for, and a job kept for browsing should not cost one per listing. Without it a
+                draft can still be written for a single listing in its "Copy application" dialog. */}
+            <AdminField
+              label={t('jobs.mutation.labelApplicationDrafts')}
+              help={t('jobs.mutation.applicationDraftsHelp')}
+            >
+              <Switch
+                onChange={(checked) => setApplicationDrafts(checked)}
+                checked={applicationDrafts}
+                aria-label={t('jobs.mutation.labelApplicationDrafts')}
               />
             </AdminField>
           </div>

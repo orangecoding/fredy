@@ -65,3 +65,6 @@ More details about bots and BotFather: https://core.telegram.org/bots#botfather
 ### Price changes
 
 This adapter also reports **price changes** when price tracking is enabled (Settings > Price tracking, off by default). A price change notification carries the old price, the new price and the percentage, and says whether the price went up or down. Changes smaller than the configured threshold are recorded in the listing's price history but are not sent, so rounding noise does not reach you.
+
+#### Application drafts (optional)
+When a job has *AI application drafts* switched on (job form, below *Running*) and an admin has set up an AI endpoint under Administration → Execution, each new listing is followed by a second message (for up to 10 listings per run): an application text written by an AI model from your applicant profile and letter template, adapted to that listing. Your profile (Settings → Application) needs at least your name; without it, no drafts are written. It arrives as a reply to the listing and is plain text, so you can copy it straight into the portal's contact form. The same draft is in Fredy too, in the listing's *Copy application* dialog. A listing whose draft could not be written still arrives, just without the second message.

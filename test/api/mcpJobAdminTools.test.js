@@ -314,6 +314,14 @@ describe('update_job', () => {
     expect(upsertJob.mock.calls[0][0].blacklist).toEqual(['Ground floor']);
     expect(result.isError).toBeUndefined();
   });
+  it('switches AI application drafts on, and keeps a stored switch an edit does not mention', async () => {
+    await callTool('update_job', { jobId: 'job-1', applicationDrafts: true });
+    expect(upsertJob.mock.calls[0][0].applicationDrafts).toBe(true);
+
+    getJob.mockReturnValue(job({ applicationDrafts: true }));
+    await callTool('update_job', { jobId: 'job-1', name: 'Köln rent 2' });
+    expect(upsertJob.mock.calls[1][0].applicationDrafts).toBe(true);
+  });
 });
 
 describe('delete_job', () => {

@@ -98,6 +98,14 @@
                                                 </td>
                                             </tr>
                                             {{/if}}
+                                            {{#if this.applicationDraft}}
+                                            <tr><td class="sp-8"></td><td class="sp-8"></td></tr>
+                                            <tr>
+                                                <td colspan="2">
+                                                    <p class="meta"><strong>{{this.applicationDraftHeading}}</strong><br/>{{#each this.applicationDraftLines}}{{this}}<br/>{{/each}}</p>
+                                                </td>
+                                            </tr>
+                                            {{/if}}
                                         </table>
                                     </td>
                                 </tr>

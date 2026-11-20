@@ -26,7 +26,7 @@ import { useUnsavedWarning } from '../../../hooks/useUnsavedWarning.js';
 import { errorMessage } from '../../../services/xhr';
 import { useActions, useSelector, useIsLoading } from '../../../services/state/store';
 import { useTranslation } from '../../../services/i18n/i18n.jsx';
-import { previewApplicationTemplate } from '../../../services/applicationClient.js';
+import { fetchDraftInstructions, previewApplicationTemplate } from '../../../services/applicationClient.js';
 import {
   LETTER_LANGUAGES,
   PLACEHOLDER_CATALOG,
@@ -86,6 +86,8 @@ export default function ApplicationPage() {
   const storedTemplates = useSelector((state) => state.userSettings.settings.application_templates);
   const savingProfile = useIsLoading(actions.userSettings.setApplicantProfile);
   const savingTemplates = useIsLoading(actions.userSettings.setApplicationTemplates);
+  const storedInstructions = useSelector((state) => state.userSettings.settings.application_draft_instructions) ?? null;
+  const savingInstructions = useIsLoading(actions.userSettings.setApplicationDraftInstructions);
 
   const [profile, setProfile] = useState({});
   const [overrides, setOverrides] = useState({});
@@ -113,6 +115,14 @@ export default function ApplicationPage() {
    * afterwards - what the letter now reads like - was the thing it covered.
    */
   const [placeholdersOpen, setPlaceholdersOpen] = useState(false);
+  /**
+   * The AI draft instructions being edited, or null while the default applies.
+   *
+   * The default itself comes from the server, which writes the drafts: a copy of it here would be a
+   * second answer to what drafts are written by, waiting to disagree with the first.
+   */
+  const [instructions, setInstructions] = useState(null);
+  const [instructionDefaults, setInstructionDefaults] = useState(null);
 
   useEffect(() => {
     setProfile(storedProfile ?? {});
@@ -121,6 +131,29 @@ export default function ApplicationPage() {
   useEffect(() => {
     setOverrides(storedTemplates ?? {});
   }, [storedTemplates]);
+
+  useEffect(() => {
+    setInstructions(storedInstructions);
+  }, [storedInstructions]);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchDraftInstructions()
+      .then((answer) => {
+        if (!cancelled) setInstructionDefaults(answer);
+      })
+      .catch((error) => console.error('Error while loading the AI draft instructions.', error));
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const defaultInstructions = instructionDefaults?.defaultInstructions ?? '';
+  /** What a save would store: null for the default, as the server settles it too. */
+  const settledInstructions = (value) => {
+    const trimmed = typeof value === 'string' ? value.trim() : '';
+    return trimmed.length === 0 || trimmed === defaultInstructions.trim() ? null : trimmed;
+  };
 
   const slot = `${language}:${dealType}`;
   const shipped = defaults[slot];
@@ -255,7 +288,9 @@ export default function ApplicationPage() {
     [overrides, storedTemplates],
   );
 
-  const dirty = profileDirty || templatesDirty;
+  const instructionsDirty = settledInstructions(instructions) !== settledInstructions(storedInstructions);
+
+  const dirty = profileDirty || templatesDirty || instructionsDirty;
 
   useUnsavedWarning(dirty);
 
@@ -267,6 +302,7 @@ export default function ApplicationPage() {
   const discard = () => {
     setProfile(storedProfile ?? {});
     setOverrides(storedTemplates ?? {});
+    setInstructions(storedInstructions);
   };
 
   const handleSave = async () => {
@@ -277,6 +313,9 @@ export default function ApplicationPage() {
       }
       if (templatesDirty) {
         await actions.userSettings.setApplicationTemplates(Object.keys(overrides).length > 0 ? overrides : null);
+      }
+      if (instructionsDirty) {
+        await actions.userSettings.setApplicationDraftInstructions(settledInstructions(instructions));
       }
       // The preview renders against the *stored* profile, so a save is the only thing that can
       // change it without the template changing. Bumping this is what re-asks for it.
@@ -543,9 +582,46 @@ export default function ApplicationPage() {
         </div>
       </SegmentPart>
 
+      <div className="settingsShell__groupTitle">{t('settings.application.groupAi')}</div>
+      <SegmentPart
+        name={t('settings.application.aiInstructions')}
+        helpText={t('settings.application.aiInstructionsHelp')}
+      >
+        <div className="applicationPage__templateControls">
+          <Button
+            icon={<IconRefresh />}
+            theme="borderless"
+            size="small"
+            disabled={settledInstructions(instructions) == null}
+            onClick={() => setInstructions(null)}
+          >
+            {t('settings.application.aiInstructionsReset')}
+          </Button>
+        </div>
+        <TextArea
+          value={instructions ?? defaultInstructions}
+          onChange={setInstructions}
+          maxLength={instructionDefaults?.maxLength}
+          // Semi only knows the limit through maxCount: with showCounter alone it compares the
+          // length against null, and every text reads as over the limit, in red.
+          maxCount={instructionDefaults?.maxLength}
+          showCounter={instructionDefaults != null}
+          disabled={instructionDefaults == null}
+          autosize={{ minRows: 8, maxRows: 20 }}
+          className="applicationPage__editor"
+          textareaStyle={{ fontSize: 13, lineHeight: 1.55 }}
+          aria-label={t('settings.application.aiInstructions')}
+        />
+        {/* The rules are not in the field because no edit may remove them. Saying what they are
+            spares the user writing them again, and explains why a draft keeps to them. */}
+        <Paragraph type="tertiary" size="small" className="applicationPage__warning">
+          {t('settings.application.aiInstructionsFixed')}
+        </Paragraph>
+      </SegmentPart>
+
       <SettingsSaveBar
         dirty={dirty}
-        saving={savingProfile || savingTemplates}
+        saving={savingProfile || savingTemplates || savingInstructions}
         onSave={handleSave}
         onDiscard={discard}
       />

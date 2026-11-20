@@ -5,12 +5,23 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { Modal, Button, Select, Space, Spin, TextArea, Toast, Typography } from '@douyinfe/semi-ui-19';
-import { IconCopy } from '@douyinfe/semi-icons';
+import {
+  Modal,
+  Button,
+  Radio,
+  RadioGroup,
+  Select,
+  Space,
+  Spin,
+  TextArea,
+  Toast,
+  Typography,
+} from '@douyinfe/semi-ui-19';
+import { IconCopy, IconRefresh } from '@douyinfe/semi-icons';
 import { useTranslation } from '../../../services/i18n/i18n.jsx';
 import { useActions } from '../../../services/state/store.js';
 import { errorMessage } from '../../../services/xhr.js';
-import { fetchApplicationLetter } from '../../../services/applicationClient.js';
+import { fetchApplicationLetter, writeAiDraft } from '../../../services/applicationClient.js';
 import { copyToClipboard } from '../../../services/clipboard.js';
 import {
   LETTER_LANGUAGE_FLAG,
@@ -51,6 +62,17 @@ export default function ApplicationModal({ visible, listingId, onCancel, onAppli
   const [text, setText] = useState('');
   const [copying, setCopying] = useState(false);
   /**
+   * Which text the dialog shows and copies: the letter from the user's template, or the AI draft.
+   *
+   * Starts on the AI draft when the listing has one, since that is the text written for this
+   * listing; the template letter is one click away either way.
+   */
+  const [mode, setMode] = useState('letter');
+  /** The stored AI draft's metadata, and the text on screen, edited like the letter's. */
+  const [aiDraft, setAiDraft] = useState(null);
+  const [aiText, setAiText] = useState('');
+  const [writing, setWriting] = useState(false);
+  /**
    * The language the user picked, or null while the portal's country still decides.
    *
    * Kept apart from `letter.language` so the two questions stay separate: what the letter is
@@ -79,12 +101,17 @@ export default function ApplicationModal({ visible, listingId, onCancel, onAppli
     // it for a frame on reopen, and - if the new request fails - leave Copy enabled over it.
     setLetter(null);
     setText('');
+    setAiDraft(null);
+    setAiText('');
 
     try {
       const result = await fetchApplicationLetter(listingId, language);
       if (token !== request.current) return;
       setLetter(result);
       setText(result.text);
+      const stored = result.aiDraft?.draft ?? null;
+      setAiDraft(stored);
+      setAiText(stored?.text ?? '');
     } catch (exception) {
       if (token !== request.current) return;
       console.error('Error while trying to draft an application letter.', exception);
@@ -106,6 +133,44 @@ export default function ApplicationModal({ visible, listingId, onCancel, onAppli
     setLanguage(null);
   }, [listingId]);
 
+  // A listing that has an AI draft opens on it; one without opens on the letter. Decided when the
+  // dialog opens on a listing, not on every reload, so a language switch keeps the tab the user is on.
+  const openedFor = useRef(null);
+  useEffect(() => {
+    if (letter == null || openedFor.current === listingId) return;
+    openedFor.current = listingId;
+    setMode(letter.aiDraft?.draft != null ? 'ai' : 'letter');
+  }, [letter, listingId]);
+  useEffect(() => {
+    if (!visible) openedFor.current = null;
+  }, [visible]);
+
+  /**
+   * Have the AI endpoint write the draft, or a new one, for this listing.
+   *
+   * Only on this click: every draft is a request the admin pays for. The answer replaces what is on
+   * screen, including edits made to the previous draft, which is what "Rewrite" says it does.
+   */
+  const handleWrite = async () => {
+    const token = request.current;
+    setWriting(true);
+    try {
+      const draft = await writeAiDraft(listingId, language);
+      if (token !== request.current) return;
+      setAiDraft(draft);
+      setAiText(draft.text);
+    } catch (exception) {
+      if (token !== request.current) return;
+      console.error('Error while trying to write an AI application draft.', exception);
+      Toast.error(errorMessage(exception, t('listing.application.aiWriteError')));
+    } finally {
+      if (token === request.current) setWriting(false);
+    }
+  };
+
+  /** The text the copy button takes: whichever of the two is on screen. */
+  const activeText = mode === 'ai' ? aiText : text;
+
   /**
    * Copy the letter, then record that this listing has been applied for.
    *
@@ -121,7 +186,7 @@ export default function ApplicationModal({ visible, listingId, onCancel, onAppli
   const handleCopy = async () => {
     setCopying(true);
     try {
-      const copied = await copyToClipboard(text);
+      const copied = await copyToClipboard(activeText);
       if (!copied) {
         Toast.error(t('listing.application.copyError'));
         return;
@@ -154,7 +219,7 @@ export default function ApplicationModal({ visible, listingId, onCancel, onAppli
         type="primary"
         icon={<IconCopy />}
         loading={copying}
-        disabled={loading || copying || text.length === 0}
+        disabled={loading || copying || writing || activeText.trim().length === 0}
         onClick={handleCopy}
       >
         {t('listing.application.copyAndMark')}
@@ -186,6 +251,17 @@ export default function ApplicationModal({ visible, listingId, onCancel, onAppli
 
       {!loading && error == null && letter != null && (
         <>
+          <RadioGroup
+            type="button"
+            className="applicationModal__mode"
+            value={mode}
+            onChange={(event) => setMode(event.target.value)}
+            aria-label={t('listing.application.modeLabel')}
+          >
+            <Radio value="letter">{t('listing.application.modeLetter')}</Radio>
+            <Radio value="ai">{t('listing.application.modeAi')}</Radio>
+          </RadioGroup>
+
           <Space wrap className="applicationModal__meta">
             {/* The portal's country picks the language, and the picker starts on that answer - but
                 the portal is not always right about who reads the letter, and an Italian listing
@@ -212,21 +288,80 @@ export default function ApplicationModal({ visible, listingId, onCancel, onAppli
             </Text>
           </Space>
 
-          {/* Semi puts className on the wrapper, not on the textarea, so the letter's own type
-              has to be set through textareaStyle or it silently keeps the form default. */}
-          <TextArea
-            value={text}
-            onChange={setText}
-            autosize={{ minRows: 14, maxRows: 24 }}
-            className="applicationModal__text"
-            textareaStyle={{ fontSize: 14, lineHeight: 1.55 }}
-            aria-label={t('listing.application.title')}
-          />
+          {mode === 'letter' && (
+            <>
+              {/* Semi puts className on the wrapper, not on the textarea, so the letter's own type
+                  has to be set through textareaStyle or it silently keeps the form default. */}
+              <TextArea
+                value={text}
+                onChange={setText}
+                autosize={{ minRows: 14, maxRows: 24 }}
+                className="applicationModal__text"
+                textareaStyle={{ fontSize: 14, lineHeight: 1.55 }}
+                aria-label={t('listing.application.title')}
+              />
 
-          {/* Edits here are for this one letter. Saying so is cheaper than a surprise later. */}
-          <Paragraph type="tertiary" size="small" className="applicationModal__hint">
-            {t('listing.application.editHint')}
-          </Paragraph>
+              {/* Edits here are for this one letter. Saying so is cheaper than a surprise later. */}
+              <Paragraph type="tertiary" size="small" className="applicationModal__hint">
+                {t('listing.application.editHint')}
+              </Paragraph>
+            </>
+          )}
+
+          {mode === 'ai' && !letter.aiDraft?.available && aiDraft == null && (
+            <div className="applicationModal__callout">
+              <Text>{t('listing.application.aiUnavailable')}</Text>
+            </div>
+          )}
+
+          {mode === 'ai' && (letter.aiDraft?.available || aiDraft != null) && (
+            <>
+              {aiDraft == null ? (
+                <div className="applicationModal__callout">
+                  <Text>{t('listing.application.aiNone')}</Text>
+                  <Button theme="solid" type="primary" loading={writing} onClick={handleWrite}>
+                    {t('listing.application.aiWrite')}
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  <TextArea
+                    value={aiText}
+                    onChange={setAiText}
+                    autosize={{ minRows: 14, maxRows: 24 }}
+                    className="applicationModal__text"
+                    textareaStyle={{ fontSize: 14, lineHeight: 1.55 }}
+                    aria-label={t('listing.application.modeAi')}
+                    disabled={writing}
+                  />
+                  <div className="applicationModal__aiMeta">
+                    <Text type="tertiary" size="small">
+                      {aiDraft.model
+                        ? t('listing.application.aiWrittenBy', { model: aiDraft.model })
+                        : t('listing.application.aiWritten')}
+                    </Text>
+                    {letter.aiDraft?.available && (
+                      <Button
+                        icon={<IconRefresh />}
+                        theme="borderless"
+                        size="small"
+                        loading={writing}
+                        onClick={handleWrite}
+                      >
+                        {t('listing.application.aiRewrite')}
+                      </Button>
+                    )}
+                  </div>
+                </>
+              )}
+
+              {/* It is a model's text about the user, sent under their name. Saying so here is the
+                  last chance before it reaches a landlord. */}
+              <Paragraph type="tertiary" size="small" className="applicationModal__hint">
+                {t('listing.application.aiHint')}
+              </Paragraph>
+            </>
+          )}
 
           {!letter.hasProfile && (
             <div className="applicationModal__callout">

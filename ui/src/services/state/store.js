@@ -904,6 +904,31 @@ export const useFredyState = create(
               throw Exception;
             }
           },
+
+          /**
+           * Save the instructions the user's AI application drafts are written by.
+           *
+           * The server settles what is stored - null for an empty text or the default itself, so
+           * the user keeps following the default - and the store keeps what it answered.
+           *
+           * @param {string|null} instructions Null to go back to the default.
+           * @returns {Promise<void>}
+           */
+          async setApplicationDraftInstructions(instructions) {
+            try {
+              const response = await xhrPost('/api/user/settings/application-draft-instructions', { instructions });
+              const stored = response?.json?.instructions ?? null;
+              set((state) => ({
+                userSettings: {
+                  ...state.userSettings,
+                  settings: { ...state.userSettings.settings, application_draft_instructions: stored },
+                },
+              }));
+            } catch (Exception) {
+              console.error('Error while trying to update the AI draft instructions. Error:', Exception);
+              throw Exception;
+            }
+          },
         },
       };
 

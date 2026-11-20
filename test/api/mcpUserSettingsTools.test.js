@@ -107,6 +107,16 @@ describe('get_user_settings', () => {
     expect(text).toContain('"occupation": "Engineer"');
   });
 
+  it('shows the AI draft instructions in full, the default or the user’s own', async () => {
+    getUserSettings.mockReturnValue({});
+    expect(textOf(await callTool('get_user_settings', {}))).toMatch(/AI draft instructions:\*\* the default/);
+
+    getUserSettings.mockReturnValue({ application_draft_instructions: 'Keep it under 80 words.' });
+    const text = textOf(await callTool('get_user_settings', {}));
+    expect(text).toMatch(/AI draft instructions:\*\* the user's own/);
+    expect(text).toContain('Keep it under 80 words.');
+  });
+
   it('fences a profile so backticks the user typed cannot close the block early', async () => {
     getUserSettings.mockReturnValue({ applicant_profile: { note: 'see ```here```' } });
 
@@ -237,6 +247,16 @@ describe('update_user_settings', () => {
     expect(result.isError).toBe(true);
     expect(textOf(result)).toContain('20000');
     expect(upsertSettings).not.toHaveBeenCalled();
+  });
+
+  it('saves the AI draft instructions, and goes back to the default on null', async () => {
+    const saved = await callTool('update_user_settings', { applicationDraftInstructions: 'Keep it short.' });
+    expect(upsertSettings).toHaveBeenCalledWith({ application_draft_instructions: 'Keep it short.' }, 'u1');
+    expect(textOf(saved)).toContain('AI draft instructions updated');
+
+    const reset = await callTool('update_user_settings', { applicationDraftInstructions: null });
+    expect(upsertSettings).toHaveBeenLastCalledWith({ application_draft_instructions: null }, 'u1');
+    expect(textOf(reset)).toContain('AI draft instructions back to the default');
   });
 
   it('refuses a call that changes nothing', async () => {

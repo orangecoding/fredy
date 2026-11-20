@@ -226,8 +226,9 @@ describe('application', () => {
   it('shows the letter next to what produces it', () => {
     expect(application).toMatch(/applicationPage__split/);
     expect(applicationLess).toMatch(/auto-fit, minmax\(min\(320px, 100%\), 1fr\)/);
-    // The preview stopped being a card of its own at the very bottom.
-    expect([...application.matchAll(/<SegmentPart/g)]).toHaveLength(5);
+    // The preview stopped being a card of its own at the very bottom. The sixth card is the AI draft
+    // instructions, which have no preview of their own.
+    expect([...application.matchAll(/<SegmentPart/g)]).toHaveLength(6);
   });
 
   it('puts the placeholders behind a control instead of between the two', () => {

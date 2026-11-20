@@ -327,6 +327,7 @@ describe('what gets saved', () => {
       marketFilter: { action: 'notify', minBelowMarketPercent: 10 },
       priceChangeThreshold: 5,
       dealType: 'rent',
+      applicationDrafts: false,
     });
   });
 

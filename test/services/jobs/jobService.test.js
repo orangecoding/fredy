@@ -99,6 +99,25 @@ describe('saveJob', () => {
     expect(jobStorage.getJob(jobId).paging).toBeNull();
   });
 
+  it('starts a job with AI drafts off, and keeps the switch when an update does not mention it', async () => {
+    const { jobId } = await service.saveJob(ALICE, input());
+    expect(jobStorage.getJob(jobId).applicationDrafts).toBe(false);
+
+    await service.saveJob(ALICE, input({ jobId, applicationDrafts: true }));
+    expect(jobStorage.getJob(jobId).applicationDrafts).toBe(true);
+
+    await service.saveJob(ALICE, input({ jobId, name: 'Renamed' }));
+    expect(jobStorage.getJob(jobId)).toMatchObject({ name: 'Renamed', applicationDrafts: true });
+
+    await service.saveJob(ALICE, input({ jobId, applicationDrafts: false }));
+    expect(jobStorage.getJob(jobId).applicationDrafts).toBe(false);
+  });
+
+  it('refuses an AI drafts switch that is not true or false', async () => {
+    const saved = await service.saveJob(ALICE, input({ applicationDrafts: 'yes' }));
+    expect(saved).toMatchObject({ ok: false, reason: 'invalid' });
+  });
+
   it('refuses a channel the caller may not use, and stores nothing', async () => {
     const saved = await service.saveJob(ALICE, input({ notificationAdapter: [{ configuredAdapterId: 'bobs' }] }));
     expect(saved).toMatchObject({ ok: false, reason: 'forbidden' });
