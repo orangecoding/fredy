@@ -63,7 +63,8 @@ scheduler (every N minutes) or manual trigger via POST /api/jobs/:id/run
       8. storeListings()
       9. similarityCache.checkAndAddEntry() # cross-provider dedup (exact hash, then fingerprint)
       10. _filterBySpecs() + _filterByArea()
-      11. notify.send()                    # fan-out to all adapters
+      11. _generateApplicationDrafts()     # optional LLM application message per listing
+      12. notify.send()                    # fan-out to all adapters
 ```
 
 ### Plugin systems
@@ -100,8 +101,11 @@ keeping a module-level `$`.
 - `send({ serviceName, newListings, notificationConfig, jobKey, baseUrl })`
 - Loaded dynamically at startup via `fs.readdirSync`
 
-Field definitions carry two optional flags that the UI and the API read declaratively, so neither
-needs per-adapter code:
+Adapters and their field definitions carry optional flags that the UI, the API and the pipeline
+read declaratively, so none of them needs per-adapter code:
+- `applicationDrafts: true` on the adapter's `config` itself, not on a field - the adapter sends a
+  listing's `applicationDraft` along with it, so the pipeline pays for one for jobs using it
+  (`deliversApplicationDrafts` in `notify.js`). Only Telegram declares it.
 - `secret: true` - a credential. Never serialised to anyone who may not edit the channel, and
   masked in the form. Every token, password, API key and webhook URL must carry it.
 - `target: true` - the one field naming the destination. Drives the "Destination" column.
@@ -133,6 +137,7 @@ An adapter *configuration* is separate from the adapter itself: it is a row in `
 | Browser engine | `lib/services/extractor/browserEngine.js` | Which stealth Chromium runs: Clearcote's open build (no key, any number of browsers) on linux-x64, win32-x64 and darwin-arm64, driven through `serve()` + `puppeteer.connect`; CloakBrowser everywhere else, Linux arm64 above all. CloakBrowser stays on 0.6.x: from 0.7 every user needs a licence key and a free one allows one browser at a time, enforced by the binary. The Dockerfile repeats the platform rule with `uname -m` |
 | Listing documents | `lib/services/storage/listingAttachmentsStorage.js` | Uploaded exposés (`listing_attachments`), bytes and all. Type and filename guards in `lib/services/listings/attachmentTypes.js`; routes in `lib/api/routes/listingAttachmentsRouter.js` |
 | Adding a listing by URL | `lib/services/listings/manualListingService.js` | `POST /api/listings`. Resolves the provider by exact host (`resolveProviderForUrl` in `lib/services/jobs/providerUrl.js`, mirrored in the UI copy), reads the advert with `fetchListingByUrl`, then runs `FredyPipelineExecutioner.ingest()`: the tail of a run (geocode, store, distances, similarity entry, picture, benchmark, scam check, travel times) without the filters and without a notification. The listing is stored under a job the user picks, so everything keyed on the job applies to it; `listings.added_manually` marks it, written on insert only |
+| LLM application drafts | `lib/services/application/llmDraft.js` | Off unless an admin switches it on under Administration → Execution (`llmEnabled`, `llmBaseUrl`, `llmModel`, write-only `llmApiKey`; rules in `llmSettings.js`). After the last filter and before the notification, an OpenAI-compatible `/chat/completions` endpoint reads each listing and writes a message tailored to it, taking every fact about the applicant from the job owner's application letter (`buildApplicationLetter`) and told to invent nothing (`buildLlmPrompt`). The run's provider and the job's deal type are added to the listing for that, because a listing fresh out of a run carries neither. The draft is stored on the row (`listings.application_draft*`) and put on the listing as `applicationDraft`. Only jobs with a channel whose adapter declares `config.applicationDrafts` get drafts (Telegram, which sends the draft as a plain-text reply to the listing), and only when the job owner's applicant profile has a name: without one the letter has nobody in it, so nothing is asked for and the run logs why. A failure leaves that listing without a draft and is never retried. The whole step has a time budget, because the notification waits for it |
 | Listing pictures | `lib/services/storage/listingMediaStorage.js` | First picture as WebP bytes, the rest of the gallery as deflated urls (`listing_media`). Download and shrinking in `lib/services/listings/listingPictures.js` (sharp), background queue in `previewCaptureQueue.js`, served by `GET /api/listings/:id/image` |
 
 ### Uploaded documents live in the database

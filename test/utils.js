@@ -6,7 +6,7 @@
 import { vi } from 'vitest';
 import { readFile } from 'fs/promises';
 import * as mockStore from './mocks/mockStore.js';
-import { send } from './mocks/mockNotification.js';
+import { deliversApplicationDrafts, send } from './mocks/mockNotification.js';
 
 export const providerConfig = JSON.parse(
   await readFile(new URL('./provider/testProvider.json', import.meta.url), 'utf-8'),
@@ -27,7 +27,7 @@ vi.mock('../lib/services/sse/sse-broker.js', () => ({
     sseEvents.push({ userId, event, data });
   },
 }));
-vi.mock('../lib/notification/notify.js', () => ({ send }));
+vi.mock('../lib/notification/notify.js', () => ({ send, deliversApplicationDrafts }));
 // Keeping a listing's first picture downloads it in the background, after the pipeline has already
 // returned. A provider suite has no database to keep it in and must not leave work running past its
 // own end, so the queue only records what it was handed.

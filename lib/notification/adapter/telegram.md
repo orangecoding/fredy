@@ -65,3 +65,6 @@ More details about bots and BotFather: https://core.telegram.org/bots#botfather
 ### Price changes
 
 This adapter also reports **price changes** when price tracking is enabled (Settings > Price tracking, off by default). A price change notification carries the old price, the new price and the percentage, and says whether the price went up or down. Changes smaller than the configured threshold are recorded in the listing's price history but are not sent, so rounding noise does not reach you.
+
+#### Application drafts (optional)
+When an admin switches on *LLM application drafts* under Administration → Execution, every new listing is followed by a second message: an application text written by an AI model from your applicant profile and letter template, adapted to that listing. Your profile (Settings → Application) needs at least your name; without it, no drafts are written. It arrives as a reply to the listing and is plain text, so you can copy it straight into the portal's contact form. Any OpenAI-compatible endpoint works, including a local Ollama or LM Studio server. A listing whose draft could not be written still arrives, just without the second message.

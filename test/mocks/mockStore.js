@@ -71,8 +71,20 @@ export function getUserSettings(userId) {
   return userSettings;
 }
 
+/** What `getSettings` answers when a test did not say otherwise. */
+const DEFAULT_GLOBAL_SETTINGS = { baseUrl: '' };
+let globalSettings = DEFAULT_GLOBAL_SETTINGS;
+/**
+ * Make `getSettings` answer with these global settings, on top of the defaults.
+ *
+ * @param {Record<string, any>|null} settings `null` goes back to the defaults.
+ * @returns {void}
+ */
+export function setGlobalSettings(settings) {
+  globalSettings = settings == null ? DEFAULT_GLOBAL_SETTINGS : { ...DEFAULT_GLOBAL_SETTINGS, ...settings };
+}
 export async function getSettings() {
-  return { baseUrl: '' };
+  return globalSettings;
 }
 
 export function getAddresses(settings) {
@@ -115,5 +127,11 @@ export const applyMarketBenchmark = (jobId, listings) => {
  */
 export const applyScamSignals = (listings) => {
   // noop
+};
+/** Every `setApplicationDraft` call, as `{ listingId, draft }`, for the LLM draft pipeline tests. */
+export const storedApplicationDrafts = [];
+export const setApplicationDraft = (listingId, draft) => {
+  storedApplicationDrafts.push({ listingId, draft });
+  return 1;
 };
 /* eslint-enable no-unused-vars */

@@ -10,6 +10,16 @@ export const send = (serviceName, payload) => {
   return [Promise.resolve()];
 };
 
+/**
+ * Stands in for the real check, which asks each channel's adapter for `config.applicationDrafts`.
+ * Telegram is the adapter that declares it.
+ *
+ * @param {Array<{id: string}>|null|undefined} notificationConfig
+ * @returns {boolean}
+ */
+export const deliversApplicationDrafts = (notificationConfig) =>
+  Array.isArray(notificationConfig) && notificationConfig.some((entry) => entry?.id === 'telegram');
+
 export const get = () => {
   return tmpStore;
 };

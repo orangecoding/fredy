@@ -22,7 +22,12 @@ const STORED_SETTINGS = {
   workingHours: { from: '08:00', to: '20:00' },
   session_secret: 'super-secret-signing-key',
   proxyAuthSecret: 'shared-with-the-proxy',
+  llmBaseUrl: 'https://llm.example/v1',
+  llmApiKey: 'sk-operator-key',
 };
+
+/** The settings no response may carry, whoever asks. */
+const SECRETS = ['session_secret', 'proxyAuthSecret', 'llmApiKey'];
 
 const settingsRows = Object.entries(STORED_SETTINGS).map(([name, value]) => ({
   name,
@@ -41,16 +46,17 @@ const { getSettings, getPublicSettings } = await import('../../lib/services/stor
 
 describe('settings exposure', () => {
   describe('getPublicSettings', () => {
-    it('drops the session secret and the proxy-auth shared secret', async () => {
+    it('drops the session secret, the proxy-auth shared secret and the LLM API key', async () => {
       const published = await getPublicSettings();
-      expect(published).not.toHaveProperty('session_secret');
-      expect(published).not.toHaveProperty('proxyAuthSecret');
+      for (const secret of SECRETS) {
+        expect(published).not.toHaveProperty(secret);
+      }
     });
 
     it('keeps every non-secret setting', async () => {
       const published = await getPublicSettings();
       for (const name of Object.keys(STORED_SETTINGS)) {
-        if (name === 'session_secret' || name === 'proxyAuthSecret') continue;
+        if (SECRETS.includes(name)) continue;
         expect(published[name]).toEqual(STORED_SETTINGS[name]);
       }
     });
@@ -91,11 +97,17 @@ describe('settings exposure', () => {
       return routes['GET /'];
     }
 
-    it('never returns the session secret or the proxy-auth secret, not even to an admin', async () => {
+    it('never returns a secret, not even to an admin', async () => {
       const handler = await loadGetHandler(true);
       const payload = await handler({});
-      expect(payload).not.toHaveProperty('session_secret');
-      expect(payload).not.toHaveProperty('proxyAuthSecret');
+      for (const secret of SECRETS) {
+        expect(payload).not.toHaveProperty(secret);
+      }
+    });
+
+    it('tells an admin whether an LLM API key is stored, and a non-admin nothing about it', async () => {
+      expect((await (await loadGetHandler(true))({})).llmApiKeySet).toBe(true);
+      expect(await (await loadGetHandler(false))({})).not.toHaveProperty('llmApiKeySet');
     });
 
     it('gives an admin the operator configuration', async () => {
