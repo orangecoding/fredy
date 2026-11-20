@@ -7,6 +7,7 @@ import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import Database from 'better-sqlite3';
 
 import { up } from '../../lib/services/storage/migrations/sql/28.price-history.js';
+import { up as addCharges } from '../../lib/services/storage/migrations/sql/46.listing-charges.js';
 import { formatPriceChange } from '../../lib/utils/formatListing.js';
 import { toPriceChangeListing } from '../../lib/notification/priceChangeMessage.js';
 
@@ -54,6 +55,7 @@ describe('price history storage', () => {
       CREATE TABLE watch_list (id TEXT PRIMARY KEY, listing_id TEXT, user_id TEXT);
     `);
     up(db);
+    addCharges(db);
 
     vi.resetModules();
     vi.doMock('../../lib/services/storage/SqliteConnection.js', () => ({
@@ -95,6 +97,9 @@ describe('price history storage', () => {
       checked,
     );
   };
+  const setCharges = (id, chargesIncluded, charges) =>
+    db.prepare('UPDATE listings SET charges_included = ?, charges = ? WHERE id = ?').run(chargesIncluded, charges, id);
+  const chargesOf = (id) => db.prepare('SELECT charges_included, charges FROM listings WHERE id = ?').get(id);
   const dueIds = (opts = {}) => storage.getListingsDueForPriceCheck({ now: NOW, ...opts }).map((row) => row.id);
 
   describe('getListingsDueForPriceCheck', () => {
@@ -197,6 +202,22 @@ describe('price history storage', () => {
       const row = db.prepare('SELECT price, previous_price, price_changed_at FROM listings WHERE id = ?').get('a');
       expect(row).toEqual({ price: 1100, previous_price: 1200, price_changed_at: NOW });
       expect(storage.getPriceHistory('a')).toEqual([{ price: 1100, observed_at: NOW, source: 'priceProbe' }]);
+    });
+
+    it('forgets the stated charges of a rent quoted with them', () => {
+      addListing('a', { price: 1400 });
+      setCharges('a', 1, 250);
+      storage.applyPriceChange('a', 1300, NOW);
+
+      expect(chargesOf('a')).toEqual({ charges_included: 1, charges: null });
+    });
+
+    it('keeps the charges stated beside a rent quoted without them', () => {
+      addListing('a', { price: 900 });
+      setCharges('a', 0, 180);
+      storage.applyPriceChange('a', 850, NOW);
+
+      expect(chargesOf('a')).toEqual({ charges_included: 0, charges: 180 });
     });
 
     it('refuses an unusable price rather than writing a zero', () => {
