@@ -458,3 +458,116 @@ describe('telegram send() - custom API url', () => {
     },
   );
 });
+
+describe('telegram send() - application drafts', () => {
+  const listing = (id, applicationDraft) => ({
+    id,
+    title: `Flat ${id}`,
+    link: `https://ex.com/${id}`,
+    address: 'Berlin',
+    price: '800',
+    size: '50',
+    image: null,
+    ...(applicationDraft != null ? { applicationDraft } : {}),
+  });
+
+  /** A Bot API answer for a sent message with this id. */
+  const sent = (messageId) => jsonOk({ ok: true, result: { message_id: messageId } });
+
+  const calls = () =>
+    mockNodeFetch.mock.calls.map(([url, opts]) => ({ endpoint: url.split('/').pop(), body: JSON.parse(opts.body) }));
+
+  it('sends the draft as a plain-text reply to its listing', async () => {
+    mockNodeFetch.mockResolvedValueOnce(sent(42)).mockResolvedValueOnce(sent(43));
+
+    await send({
+      serviceName: 'immoscout',
+      newListings: [listing('1', 'Guten Tag, <ich> & meine Frau ...')],
+      notificationConfig: [baseConfig],
+      jobKey: 'Berlin',
+    });
+
+    const [listingMessage, draftMessage] = calls();
+    expect(listingMessage.endpoint).toBe('sendMessage');
+    expect(draftMessage.endpoint).toBe('sendMessage');
+    // Copied into a portal form as it is: no parse mode, so nothing in it is escaped.
+    expect(draftMessage.body.text).toBe('Guten Tag, <ich> & meine Frau ...');
+    expect(draftMessage.body).not.toHaveProperty('parse_mode');
+    expect(draftMessage.body.reply_parameters).toEqual({ message_id: 42, allow_sending_without_reply: true });
+  });
+
+  it('keeps each draft right behind its own listing in a batch', async () => {
+    mockNodeFetch.mockImplementation(async () => sent(7));
+
+    await send({
+      serviceName: 'immoscout',
+      newListings: [listing('1', 'Draft one'), listing('2', 'Draft two'), listing('3')],
+      notificationConfig: [baseConfig],
+      jobKey: 'Berlin',
+    });
+
+    // A listing message reads by its title, a draft (the reply) by its text.
+    const order = calls().map(({ body }) => (body.reply_parameters ? body.text : body.text.match(/Flat \d/)[0]));
+    expect(order).toEqual(['Flat 1', 'Draft one', 'Flat 2', 'Draft two', 'Flat 3']);
+  });
+
+  it('sends the draft without a reply when Telegram returned no message id', async () => {
+    mockNodeFetch.mockResolvedValueOnce(jsonOk()).mockResolvedValueOnce(jsonOk());
+
+    await send({
+      serviceName: 'immoscout',
+      newListings: [listing('1', 'Draft')],
+      notificationConfig: [baseConfig],
+      jobKey: 'Berlin',
+    });
+
+    const [, draftMessage] = calls();
+    expect(draftMessage.body.text).toBe('Draft');
+    expect(draftMessage.body).not.toHaveProperty('reply_parameters');
+  });
+
+  it('sends no draft for a listing that did not reach the chat', async () => {
+    mockNodeFetch.mockResolvedValueOnce(jsonErr(400, { ok: false, description: 'chat not found' }));
+
+    await send({
+      serviceName: 'immoscout',
+      newListings: [listing('1', 'Draft')],
+      notificationConfig: [baseConfig],
+      jobKey: 'Berlin',
+    });
+
+    expect(mockNodeFetch).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not fail the batch when only the draft fails', async () => {
+    mockNodeFetch
+      .mockResolvedValueOnce(sent(1))
+      .mockResolvedValueOnce(jsonErr(400, { ok: false, description: 'message is too long' }))
+      .mockResolvedValueOnce(sent(2));
+
+    await expect(
+      send({
+        serviceName: 'immoscout',
+        newListings: [listing('1', 'Draft'), listing('2')],
+        notificationConfig: [baseConfig],
+        jobKey: 'Berlin',
+      }),
+    ).resolves.toBeDefined();
+    expect(mockNodeFetch).toHaveBeenCalledTimes(3);
+  });
+
+  it("caps the draft at Telegram's message limit and posts it into the listing's thread", async () => {
+    mockNodeFetch.mockResolvedValueOnce(sent(5)).mockResolvedValueOnce(sent(6));
+
+    await send({
+      serviceName: 'immoscout',
+      newListings: [listing('1', 'x'.repeat(5000))],
+      notificationConfig: [{ id: 'telegram', fields: { token: 'TKN', chatId: '999', messageThreadId: '12' } }],
+      jobKey: 'Berlin',
+    });
+
+    const [, draftMessage] = calls();
+    expect(draftMessage.body.text).toHaveLength(4096);
+    expect(draftMessage.body.message_thread_id).toBe(12);
+  });
+});

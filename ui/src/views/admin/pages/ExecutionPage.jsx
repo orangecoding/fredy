@@ -234,6 +234,63 @@ export default function ExecutionPage() {
         </div>
       </SegmentPart>
 
+      <SegmentPart name={t('settings.llmDrafts')} helpText={t('settings.llmDraftsHelp')}>
+        <Checkbox checked={form.llmEnabled} onChange={(e) => setField('llmEnabled', e.target.checked)}>
+          {t('settings.llmDraftsEnabled')}
+        </Checkbox>
+
+        <div className={`settingsShell__subSettings${form.llmEnabled ? '' : ' settingsShell__subSettings--disabled'}`}>
+          <AdminField label={t('settings.llmBaseUrl')} help={t('settings.llmBaseUrlHelp')} htmlFor="llmBaseUrl">
+            <Input
+              id="llmBaseUrl"
+              type="url"
+              disabled={!form.llmEnabled}
+              placeholder="https://api.openai.com/v1"
+              value={form.llmBaseUrl}
+              onChange={(value) => setField('llmBaseUrl', value)}
+            />
+          </AdminField>
+
+          <AdminField label={t('settings.llmModel')} help={t('settings.llmModelHelp')} htmlFor="llmModel">
+            <Input
+              id="llmModel"
+              type="text"
+              disabled={!form.llmEnabled}
+              placeholder="gpt-4o-mini"
+              value={form.llmModel}
+              onChange={(value) => setField('llmModel', value)}
+            />
+          </AdminField>
+
+          <AdminField
+            label={t('settings.llmApiKey')}
+            help={t(form.llmApiKeySet ? 'settings.llmApiKeyHelpStored' : 'settings.llmApiKeyHelp')}
+            htmlFor="llmApiKey"
+          >
+            <Input
+              id="llmApiKey"
+              type="password"
+              autoComplete="off"
+              disabled={!form.llmEnabled || form.llmApiKeyClear}
+              placeholder={t(
+                form.llmApiKeySet ? 'settings.llmApiKeyPlaceholderStored' : 'settings.llmApiKeyPlaceholder',
+              )}
+              value={form.llmApiKey}
+              onChange={(value) => setField('llmApiKey', value)}
+            />
+            {form.llmApiKeySet && (
+              <Checkbox
+                disabled={!form.llmEnabled}
+                checked={form.llmApiKeyClear}
+                onChange={(e) => setField('llmApiKeyClear', e.target.checked)}
+              >
+                {t('settings.llmApiKeyClear')}
+              </Checkbox>
+            )}
+          </AdminField>
+        </div>
+      </SegmentPart>
+
       <SettingsSaveBar
         dirty={executionDirty}
         saving={savingExecution}
