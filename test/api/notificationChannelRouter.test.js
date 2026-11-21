@@ -254,7 +254,13 @@ describe('notificationChannelRouter', () => {
 
     it('keeps the adapter type when updating', async () => {
       const id = seed();
-      await post('/api/notificationChannels', { id, adapterId: 'sqlite', name: 'Family', fields: {} });
+      const response = await post('/api/notificationChannels', {
+        id,
+        adapterId: 'sqlite',
+        name: 'Family',
+        fields: { token: 'tok', chatId: '123' },
+      });
+      expect(response.statusCode).toBe(200);
       expect(storage.getChannel(id).adapterId).toBe('telegram');
     });
 
@@ -311,11 +317,47 @@ describe('notificationChannelRouter', () => {
       expect(storage.getChannel(id).visibility).toBe('everyone');
     });
 
-    it('defaults a create with no fields and no visibility keys to {} and private', async () => {
-      const body = (await post('/api/notificationChannels', { adapterId: 'telegram', name: 'Bare' })).json();
-      const saved = storage.getChannel(body.id);
-      expect(saved.fields).toEqual({});
-      expect(saved.visibility).toBe('private');
+    it('defaults a create with no visibility key to private', async () => {
+      const body = (await post('/api/notificationChannels', { adapterId: 'rss', name: 'Bare' })).json();
+      expect(storage.getChannel(body.id).visibility).toBe('private');
+    });
+
+    // The form checks this before it sends. The server checks it too, the same rule the MCP tools
+    // are held to: a channel without its token saves cleanly and then notifies nobody.
+    it('refuses a create that leaves a field the adapter cannot work without empty', async () => {
+      const response = await post('/api/notificationChannels', {
+        adapterId: 'telegram',
+        name: 'Bare',
+        fields: { token: 't', chatId: '  ' },
+      });
+      expect(response.statusCode).toBe(400);
+      expect(response.json().error).toMatch(/"chatId"/);
+      expect(storage.getAllChannels()).toHaveLength(0);
+    });
+
+    it('refuses a create with no fields at all for an adapter that needs some', async () => {
+      const response = await post('/api/notificationChannels', { adapterId: 'telegram', name: 'Bare' });
+      expect(response.statusCode).toBe(400);
+      expect(response.json().error).toMatch(/"token", "chatId"/);
+    });
+
+    it('still renames an older, incomplete channel when the body leaves the fields out', async () => {
+      const id = seed({ fields: { token: 'tok' } });
+      const response = await post('/api/notificationChannels', { id, name: 'Renamed' });
+      expect(response.statusCode).toBe(200);
+      expect(storage.getChannel(id)).toMatchObject({ name: 'Renamed', fields: { token: 'tok' } });
+    });
+
+    it('refuses a field name the adapter does not define', async () => {
+      const id = seed();
+      const response = await post('/api/notificationChannels', {
+        id,
+        name: 'Family',
+        fields: { token: 'tok', chatID: '999' },
+      });
+      expect(response.statusCode).toBe(400);
+      expect(response.json().error).toMatch(/no field "chatID"/);
+      expect(storage.getChannel(id).fields).toEqual({ token: 'tok', chatId: '123' });
     });
 
     it('does not clear a stored privileged field when a non-admin omits the fields key', async () => {

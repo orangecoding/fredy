@@ -11,6 +11,10 @@ vi.mock('../../lib/services/storage/listingsStorage.js', () => ({
   queryListings: vi.fn(() => ({ totalNumber: 0, page: 1, result: [] })),
   getListingById: vi.fn(),
   setListingNotes: vi.fn(() => 1),
+  // The access check the shared listing actions run before every write. Who may touch which
+  // listing is tested against real rows in listingAccessControl.test.js; here it lets the call through.
+  userCanAccessListing: vi.fn(() => true),
+  filterListingIdsForUser: vi.fn((ids) => ids),
 }));
 vi.mock('../../lib/services/storage/watchListStorage.js', () => ({
   ensureWatch: vi.fn(() => ({ watched: true })),

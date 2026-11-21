@@ -182,6 +182,21 @@ describe('POST /api/user/settings/home-address, what a save invalidates', () => 
     await app.close();
   });
 
+  /**
+   * A `null` has always been the same as an empty list here rather than a refusal, and the save is
+   * now shared with the MCP settings tool - so the one code path has to keep answering both.
+   */
+  it('treats a null list as a clear, the way it always has', async () => {
+    const app = await buildServer();
+    await save(app, [{ label: 'Work', address: 'Office Street 1', mode: 'transit' }]);
+    const response = await save(app, null);
+
+    expect(response.statusCode).toBe(200);
+    expect(stored.home_addresses).toBeNull();
+    expect(invalidations).toHaveLength(2);
+    await app.close();
+  });
+
   it('does nothing at all when an empty list is saved over an empty list', async () => {
     const app = await buildServer();
     await save(app, []);

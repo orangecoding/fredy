@@ -339,8 +339,9 @@ describe('what gets saved', () => {
     expect(toUpsertPayload(completedDraft({ enabled: false }), 'u1', 'job-1').enabled).toBe(false);
   });
 
-  it('falls back to the deal type in the URLs when the draft somehow carries none', () => {
-    expect(toUpsertPayload(completedDraft({ dealType: null }), 'u1', 'job-1').dealType).toBe('rent');
+  // The save fills it in, by the chain the web form's jobs go through - see jobService.test.js.
+  it('leaves a missing deal type to the save', () => {
+    expect(toUpsertPayload(completedDraft({ dealType: null }), 'u1', 'job-1').dealType).toBeNull();
   });
 });
 
