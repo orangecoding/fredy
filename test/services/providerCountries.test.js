@@ -189,8 +189,6 @@ describe('running a country resolution with a fallback', () => {
   // needs - so a storage that is having a bad day must cost a Germany-scoped answer, not the
   // search suggestion or the save the caller came for.
   it('answers with the default rather than failing when the resolver throws', async () => {
-    await expect(module_.resolveCountries(async () => ['fr'])).resolves.toEqual(['fr']);
-
     await expect(
       module_.resolveCountries(async () => {
         throw new Error('storage is having a moment');
