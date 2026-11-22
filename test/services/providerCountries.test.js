@@ -180,6 +180,33 @@ describe('the countries in scope for a user', () => {
   });
 });
 
+describe('running a country resolution with a fallback', () => {
+  it('answers whatever the resolver answers', async () => {
+    await expect(module_.resolveCountries(async () => ['fr'])).resolves.toEqual(['fr']);
+  });
+
+  // Resolving reads the provider modules and the job storage, neither of which the caller itself
+  // needs - so a storage that is having a bad day must cost a Germany-scoped answer, not the
+  // search suggestion or the save the caller came for.
+  it('answers with the default rather than failing when the resolver throws', async () => {
+    await expect(
+      module_.resolveCountries(async () => {
+        throw new Error('storage is having a moment');
+      }),
+    ).resolves.toEqual([...DEFAULT_COUNTRIES]);
+  });
+
+  // A fresh array, so a caller patching its answer cannot reach into the exported constant.
+  it('hands back a copy of the default, not the default itself', async () => {
+    const fallback = await module_.resolveCountries(async () => {
+      throw new Error('no');
+    });
+    expect(fallback).toEqual([...DEFAULT_COUNTRIES]);
+    fallback.push('zz');
+    expect(DEFAULT_COUNTRIES).not.toContain('zz');
+  });
+});
+
 describe('the providers of a set of countries', () => {
   it('finds the undeclared ones under Germany', async () => {
     await expect(module_.getProviderIdsForCountries(['de'])).resolves.toEqual(['immowelt']);

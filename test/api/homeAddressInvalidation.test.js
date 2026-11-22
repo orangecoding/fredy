@@ -106,6 +106,37 @@ describe('POST /api/user/settings/home-address, what a save invalidates', () => 
     await app.close();
   });
 
+  /** Clearing the form stores nothing a retry would be for, and never started a sweep. */
+  it('starts no sweep when the save clears every address', async () => {
+    const app = await buildServer();
+    await save(app, [{ label: 'Work', address: 'Office Street 1', mode: 'transit' }]);
+    await save(app, []);
+
+    expect(sweeps).toHaveLength(1);
+    await app.close();
+  });
+
+  /**
+   * The sweep stays behind the web Save button. The same save made through the shared service - as
+   * the MCP settings tool makes it, possibly from the stdio server, which is a second process -
+   * must not start one: the Nominatim throttle and the 429 backoff are per process, so a second
+   * sweep would neither share the server's one-request-a-second budget nor see it backed off.
+   */
+  it('starts no sweep when the same save comes through the shared service', async () => {
+    const app = await buildServer();
+    const { updateUserSettings } = await import(root + '/lib/services/settings/userSettingsService.js');
+
+    const saved = await updateUserSettings(
+      { id: 'user-1', isAdmin: false },
+      { homeAddresses: [{ label: 'Work', address: 'Office Street 1', mode: 'transit' }] },
+    );
+
+    expect(saved.ok).toBe(true);
+    expect(stored.home_addresses).toHaveLength(1);
+    expect(sweeps).toHaveLength(0);
+    await app.close();
+  });
+
   /** How far is too far is the job's to say, so it has no business on the address. */
   it('never stores a commute limit on the address', async () => {
     const app = await buildServer();
@@ -179,6 +210,21 @@ describe('POST /api/user/settings/home-address, what a save invalidates', () => 
 
     expect(invalidations).toHaveLength(2);
     expect(stored.home_addresses).toBeNull();
+    await app.close();
+  });
+
+  /**
+   * A `null` has always been the same as an empty list here rather than a refusal, and the save is
+   * now shared with the MCP settings tool - so the one code path has to keep answering both.
+   */
+  it('treats a null list as a clear, the way it always has', async () => {
+    const app = await buildServer();
+    await save(app, [{ label: 'Work', address: 'Office Street 1', mode: 'transit' }]);
+    const response = await save(app, null);
+
+    expect(response.statusCode).toBe(200);
+    expect(stored.home_addresses).toBeNull();
+    expect(invalidations).toHaveLength(2);
     await app.close();
   });
 

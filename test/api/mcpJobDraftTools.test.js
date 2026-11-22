@@ -22,6 +22,20 @@ vi.mock('../../lib/services/storage/jobStorage.js', () => ({
   upsertJob: vi.fn(),
 }));
 vi.mock('../../lib/services/tracking/Tracker.js', () => ({ trackPoi: vi.fn() }));
+// The save behind every job tool is the web form's (`jobService.saveJob`), which checks the
+// channels and the portals again on its own. Both stand in here for the storage and the provider
+// modules, which would pull in the browser stack.
+vi.mock('../../lib/services/storage/configuredAdapterStorage.js', () => ({
+  getChannel: vi.fn((id) =>
+    id === 'c1' ? { id: 'c1', userId: 'u1', adapterId: 'telegram', visibility: 'private' } : null,
+  ),
+}));
+vi.mock('../../lib/utils.js', async (importOriginal) => ({
+  ...(await importOriginal()),
+  getProviders: async () => [
+    { metaInformation: { id: 'immoscout', name: 'Immoscout', baseUrl: 'https://www.immobilienscout24.de/' } },
+  ],
+}));
 vi.mock('../../lib/mcp/jobDraftContext.js', () => ({ buildDraftContext: vi.fn() }));
 // Inlined rather than referenced: `vi.mock` is hoisted above every `const` in this file.
 vi.mock('../../lib/mcp/mcpAuthentication.js', () => ({
@@ -77,14 +91,21 @@ beforeEach(() => {
   _resetDraftsForTests();
   authenticateWriteToolCall.mockImplementation(async () => ({ user: USER, error: null }));
   buildDraftContext.mockResolvedValue(context());
-  getJob.mockReturnValue({
-    id: 'job-1',
-    name: 'Köln',
-    enabled: true,
-    dealType: 'rent',
-    provider: [{ id: 'immoscout', name: 'Immoscout', url: RENT_URL }],
-    blacklist: [],
-  });
+  // There once it has been stored, and not before: the save looks the new id up first, and a job
+  // already under it would be one the user may not overwrite.
+  getJob.mockImplementation((id) =>
+    upsertJob.mock.calls.some(([payload]) => payload.jobId === id)
+      ? {
+          id,
+          userId: 'u1',
+          name: 'Köln',
+          enabled: true,
+          dealType: 'rent',
+          provider: [{ id: 'immoscout', name: 'Immoscout', url: RENT_URL }],
+          blacklist: [],
+        }
+      : null,
+  );
 });
 
 describe('start_job_draft', () => {

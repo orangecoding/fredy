@@ -312,9 +312,8 @@ describe('what gets saved', () => {
       shareWithUsers: ['u2'],
     });
 
-    expect(toUpsertPayload(draft, 'u1', 'job-1')).toEqual({
+    expect(toUpsertPayload(draft, 'job-1')).toEqual({
       jobId: 'job-1',
-      userId: 'u1',
       name: 'Köln',
       enabled: true,
       blacklist: ['Tausch'],
@@ -332,15 +331,16 @@ describe('what gets saved', () => {
   });
 
   it('saves an empty exclusion list when the draft has none', () => {
-    expect(toUpsertPayload(completedDraft(), 'u1', 'job-1').excludedLocations).toEqual([]);
+    expect(toUpsertPayload(completedDraft(), 'job-1').excludedLocations).toEqual([]);
   });
 
   it('keeps a job the user asked to start switched off', () => {
-    expect(toUpsertPayload(completedDraft({ enabled: false }), 'u1', 'job-1').enabled).toBe(false);
+    expect(toUpsertPayload(completedDraft({ enabled: false }), 'job-1').enabled).toBe(false);
   });
 
-  it('falls back to the deal type in the URLs when the draft somehow carries none', () => {
-    expect(toUpsertPayload(completedDraft({ dealType: null }), 'u1', 'job-1').dealType).toBe('rent');
+  // The save fills it in, by the chain the web form's jobs go through - see jobService.test.js.
+  it('leaves a missing deal type to the save', () => {
+    expect(toUpsertPayload(completedDraft({ dealType: null }), 'job-1').dealType).toBeNull();
   });
 });
 
