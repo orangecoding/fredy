@@ -92,6 +92,40 @@ describe('Gratka search payload', () => {
     expect(() => parseSearchPage(html)).toThrow(/valid search payload/),
   );
 
+  // Seen live on 2026-11-22: a visitor in Gratka's grouping experiment gets `propertyGroups` instead of
+  // `properties`, every page of the search. The units after a group's first come as stubs, and only a
+  // preview of them (4 of 16 for one development), so the group's full first card is what is read.
+  it('reads the first card of every group when Gratka groups the search', () => {
+    const unit = { ...advert, id: 1541758756, url: '/nieruchomosci/dom-gdansk-matarnia-telewizyjna/ob/45639759' };
+    const stub = { id: 1541758757, url: '/nieruchomosci/dom-gdansk-matarnia-telewizyjna/ob/45639761', area: '90' };
+    const html = `<script type="application/json" id="__NUXT_DATA__">${JSON.stringify(
+      flatten({
+        data: {
+          'decode-listing-url-query-/nieruchomosci/domy/krakow?sort=newest': {
+            data: { decodeListingUrl: { listingParameters: { pageNumber: 1, numberOfResults: 35 } } },
+          },
+          'property-listing-data-/nieruchomosci/domy/krakow?sort=newest-groups': {
+            data: {
+              searchResult: {
+                propertyGroups: {
+                  nodes: [
+                    { total: 1, development: null, primary: advert, secondary: [] },
+                    { total: 16, development: { name: 'Innova' }, primary: unit, secondary: [stub] },
+                  ],
+                  totalCount: 564,
+                  offersCount: 596,
+                },
+              },
+            },
+          },
+        },
+      }),
+    )}</script>`;
+    const parsed = parseSearchPage(html);
+    expect(parsed.items.map((item) => item.id)).toEqual([advert.id, unit.id]);
+    expect(parsed.pagination).toEqual({ currentPage: 1, totalPages: 17 });
+  });
+
   it("unwraps devalue's tagged values without evaluating anything", () => {
     // root -> {a: Reactive([1, 2]), b: Date, c: null-prototype object, d: undefined, e: shared ref}
     const values = [
@@ -213,6 +247,22 @@ describe('Gratka retrieval', () => {
       expect(options.redirect).toBe('manual');
       expect(options.signal).toBeInstanceOf(AbortSignal);
     }
+  });
+
+  // A request without the cookie is put in a random experiment bucket, grouped or flat. Runs that
+  // disagree reach back to different adverts, and the older ones at the far end would be reported new.
+  it('presents one Gratka visitor on every page and every run', async () => {
+    const fetch = vi.fn().mockImplementation(async (input) => {
+      const page = Number(new globalThis.URL(input).searchParams.get('page') ?? 1);
+      return response([{ ...advert, id: page }], page, 2);
+    });
+    vi.stubGlobal('fetch', fetch);
+    await config.getListings(URL);
+    await config.getListings(URL);
+    expect(fetch).toHaveBeenCalledTimes(4);
+    const cookies = fetch.mock.calls.map(([, options]) => options.headers.Cookie);
+    expect(cookies[0]).toMatch(/^gbuuid_v2=[0-9a-f-]{36}$/);
+    expect(new Set(cookies).size).toBe(1);
   });
 
   it('accepts the www host and normalizes it before fetching', async () => {

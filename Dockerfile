@@ -1,3 +1,28 @@
+# The frontend bundle is plain JS/CSS and the same on every architecture, so it is built once on the
+# build machine's own platform and copied into each image. Built inside the arm64 image instead,
+# Vite ran under QEMU emulation in CI and now and then hung in "rendering chunks..." until GitHub
+# cancelled the job after 6 hours.
+FROM --platform=$BUILDPLATFORM node:22-trixie-slim AS frontend
+
+WORKDIR /fredy
+
+ENV NODE_ENV=production
+
+COPY package.json yarn.lock ./
+
+# --ignore-scripts: the bundle needs no compiled native module and no browser download, and
+# skipping them keeps this stage free of build tools. Vite's own binaries are platform packages
+# that install without scripts.
+RUN yarn config set network-timeout 600000 \
+  && yarn --frozen-lockfile --ignore-scripts
+
+COPY index.html vite.config.js ./
+# Static files Vite copies into the build as they are, such as the onboarding tour's pictures.
+COPY public ./public
+COPY ui ./ui
+
+RUN yarn build:frontend
+
 # Debian 13 (trixie, glibc 2.41) is required: since better-sqlite3 v13 the npm
 # tarball ships prebuilt binaries, and prebuilds/linux-arm64.node is linked
 # against GLIBC_2.38. Debian 12 (bookworm) only has glibc 2.36, so arm64
@@ -69,19 +94,11 @@ RUN apt-get purge -y python3 make g++ \
   && apt-get autoremove -y \
   && rm -rf /var/lib/apt/lists/*
 
-COPY --chown=node:node index.html vite.config.js ./
-# Static files Vite copies into the build as they are, such as the onboarding tour's pictures.
-COPY --chown=node:node public ./public
-COPY --chown=node:node ui ./ui
 COPY --chown=node:node lib ./lib
-
-USER node
-RUN yarn build:frontend
-
+# lib/api/api.js serves the SPA from ui/public, the only part of ui/ the server reads.
+COPY --chown=node:node --from=frontend /fredy/ui/public ./ui/public
 COPY --chown=node:node index.js ./
 
-
-USER root
 RUN ln -s /db /fredy/db \
   && ln -s /conf /fredy/conf
 

@@ -21,10 +21,21 @@ const sha = (s) => createHash('sha256').update(s).digest('hex');
 
 describe('einsAImmobilien listing hash', () => {
   it('differs for two adverts at the same price', () => {
-    // 26844881 and 26844882 are two flats at 238.900 EUR on the fixture page.
-    const samePrice = normalized.filter((l) => l.price === 238900);
-    expect(samePrice).toHaveLength(2);
-    expect(samePrice[0].id).not.toBe(samePrice[1].id);
+    // 26844881 and 26844882 were two flats at 238.900 EUR on an earlier recording of the search
+    // page. Built here instead of read from the recording, which changes with every refresh.
+    const card = (id) => ({
+      id,
+      price: '238.900 EUR Kaufpreis',
+      size: '40,00 m² Wohnfläche',
+      rooms: '2 Zimmer',
+      title: 'D-Zoo, möbl. 2 Zi. ETW',
+      address: '40237 Düsseldorf',
+      image: '/x.jpg',
+    });
+    const [first, second] = [card(26844881), card(26844882)].map(config.normalize);
+    expect(first.price).toBe(238900);
+    expect(second.price).toBe(238900);
+    expect(first.id).not.toBe(second.id);
     expect(new Set(normalized.map((l) => l.id)).size).toBe(normalized.length);
   });
 });

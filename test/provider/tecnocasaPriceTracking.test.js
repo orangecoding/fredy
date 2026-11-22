@@ -32,6 +32,7 @@ describe.each([
     expect(await config.priceTracking.probe(listing)).toBe(expected);
     expect(fetch).toHaveBeenCalledExactlyOnceWith(link, {
       headers: { 'User-Agent': expect.any(String), 'Accept-Language': 'it-IT,it;q=0.9' },
+      signal: expect.any(AbortSignal),
     });
     expect(config.priceTracking.extract).toBeUndefined();
     expect(extractPrice(html)).toBe(expected);

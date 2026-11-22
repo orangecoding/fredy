@@ -203,6 +203,67 @@ describe('the tecnocasa group page walk', () => {
 
     expect(await tecnocasa.getListings(SEARCH_URL)).toEqual([]);
   });
+
+  /**
+   * Now and then the platform holds a request for sixty seconds before it answers, and the same page
+   * asked again comes straight back. The timeout the module sets is cut to a few milliseconds here,
+   * so a held request is one that never settles until its own signal gives up on it.
+   */
+  describe('a request the platform holds', () => {
+    /** @type {number[]} */
+    let timeouts;
+
+    beforeEach(() => {
+      timeouts = [];
+      const realTimeout = AbortSignal.timeout.bind(AbortSignal);
+      vi.spyOn(AbortSignal, 'timeout').mockImplementation((ms) => {
+        timeouts.push(ms);
+        return realTimeout(5);
+      });
+    });
+
+    /**
+     * @param {AbortSignal} signal the signal the request was sent with
+     * @returns {Promise<never>} settles only when the signal aborts, with its reason
+     */
+    const heldUntilAborted = (signal) =>
+      new Promise((_, reject) => signal.addEventListener('abort', () => reject(signal.reason), { once: true }));
+
+    // The stall has been seen before the headers; the bound has to cover the body as well.
+    it.each(['headers', 'body'])('is asked again when it is held for its %s', async (stage) => {
+      let calls = 0;
+      globalThis.fetch = vi.fn(async (_url, { signal }) => {
+        calls++;
+        if (calls > 1) return { ok: true, status: 200, text: async () => searchPage(1, 1) };
+        if (stage === 'headers') return heldUntilAborted(signal);
+        return { ok: true, status: 200, text: () => heldUntilAborted(signal) };
+      });
+
+      const estates = await tecnocasa.getListings(SEARCH_URL);
+
+      expect(estates).toHaveLength(15);
+      expect(globalThis.fetch).toHaveBeenCalledTimes(2);
+      // A bound of a minute or more would wait out the whole stall before asking again.
+      for (const ms of timeouts) expect(ms).toBeLessThan(60_000);
+    });
+
+    it('is asked again once, then lets the timeout through', async () => {
+      globalThis.fetch = vi.fn(async (_url, { signal }) => heldUntilAborted(signal));
+
+      await expect(tecnocasa.getListings(SEARCH_URL)).rejects.toMatchObject({ name: 'TimeoutError' });
+      expect(globalThis.fetch).toHaveBeenCalledTimes(2);
+    });
+
+    // A refusal is not a stall, and asking again would only be refused again.
+    it('is not asked again when the request fails for another reason', async () => {
+      globalThis.fetch = vi.fn(async () => {
+        throw new TypeError('fetch failed');
+      });
+
+      await expect(tecnocasa.getListings(SEARCH_URL)).rejects.toThrow('fetch failed');
+      expect(globalThis.fetch).toHaveBeenCalledTimes(1);
+    });
+  });
 });
 
 describe('the two brands of the tecnocasa group', () => {

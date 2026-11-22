@@ -22,6 +22,9 @@ env:
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
+    # Green runs take 4 to 15 minutes. Without a limit a hung build step holds the runner for
+    # GitHub's default of 6 hours, as an emulated arm64 Vite build once did.
+    timeout-minutes: 45
     permissions:
       contents: read
       packages: write
