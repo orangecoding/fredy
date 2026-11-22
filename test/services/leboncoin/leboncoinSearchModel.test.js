@@ -4,7 +4,7 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import { convertSearchUrlToBody, parseLocation } from '../../../lib/services/leboncoin/search-model.js';
+import { ADS_PER_PAGE, convertSearchUrlToBody, parseLocation } from '../../../lib/services/leboncoin/search-model.js';
 
 const SEARCH = 'https://www.leboncoin.fr/recherche';
 
@@ -74,11 +74,16 @@ describe('#leboncoin search model', () => {
     expect(filters.enums).toEqual({ ad_type: ['offer'] });
   });
 
-  it('ignores what the site ignores, and the page - Fredy reads the newest page', () => {
-    const { filters } = convertSearchUrlToBody(
+  it('ignores what the site ignores, and reads the page as an offset rather than a filter', () => {
+    const { filters, offset } = convertSearchUrlToBody(
       `${SEARCH}?category=10&from=hc&kst=r&pi=abc&page=4&utm_source=x&gclid=y&cities=Paris`,
     );
     expect(filters).toEqual({ category: { id: '10' }, enums: { ad_type: ['offer'] } });
+    expect(offset).toBe(3 * ADS_PER_PAGE);
+  });
+
+  it('starts at the first advert without a page', () => {
+    expect(convertSearchUrlToBody(`${SEARCH}?category=10`).offset).toBe(0);
   });
 
   it('ignores the campaign tags an alert mail or an ad click appends', () => {

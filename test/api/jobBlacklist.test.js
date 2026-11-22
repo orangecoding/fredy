@@ -57,7 +57,7 @@ describe('POST /api/jobs/:jobId/blacklist', () => {
         shared_with_user TEXT,
         spatial_filter TEXT,
         spec_filter TEXT,
-        commute_filter TEXT, market_filter TEXT, price_change_threshold REAL,
+        commute_filter TEXT, market_filter TEXT, price_change_threshold REAL, paging TEXT,
         deal_type TEXT,
         last_run_at INTEGER
       );

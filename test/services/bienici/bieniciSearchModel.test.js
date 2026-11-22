@@ -187,6 +187,10 @@ describe('#bienici request', () => {
   it('searches all of France without zones', () => {
     expect(buildFilters({ filterType: 'buy' }, [])).not.toHaveProperty('zoneIdsByTypes');
   });
+
+  it('chooses a later result page by the offset of its first advert, which is what the endpoint reads', () => {
+    expect(buildFilters({ filterType: 'rent' }, [], { page: 3 })).toMatchObject({ size: 100, from: 200 });
+  });
 });
 
 describe('#bienici transport', () => {

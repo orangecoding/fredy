@@ -227,26 +227,25 @@ describe('Gratka search payload', () => {
 });
 
 describe('Gratka retrieval', () => {
-  it('starts at page one, preserves filters and sorts, deduplicates, and omits developments and other currencies', async () => {
+  it('reads page one first, preserving filters and sorts, deduplicating, and omitting developments and other currencies', async () => {
     const development = { ...advert, id: 2, price: null, development: { id: 9 } };
     const euro = { ...advert, id: 4, price: { amount: '250000.00', currency: 'EUR' } };
     const fetch = vi
       .fn()
-      .mockResolvedValueOnce(response([advert, development], 1, 2))
-      .mockResolvedValueOnce(response([advert, euro, { ...advert, id: 3, price: null }], 2, 2));
+      .mockResolvedValueOnce(response([advert, development, advert, euro, { ...advert, id: 3, price: null }], 1, 2));
     vi.stubGlobal('fetch', fetch);
-    const items = await config.getListings(`${URL}?page=9&sort=cheap&cena-calkowita:max=2000000`);
+    // A page number copied into the saved URL does not decide where a run starts.
+    const items = await config.getListings(config.pageUrl(`${URL}?page=9&sort=cheap&cena-calkowita:max=2000000`, 1));
     expect(items.map((item) => item.id)).toEqual([advert.id, 3]);
-    expect(fetch).toHaveBeenCalledTimes(2);
-    for (const [index, [input, options]] of fetch.mock.calls.entries()) {
-      const url = new globalThis.URL(input);
-      // Gratka answers an explicit first page with 404.
-      expect(url.searchParams.get('page')).toBe(index === 0 ? null : String(index + 1));
-      expect(url.searchParams.get('cena-calkowita:max')).toBe('2000000');
-      expect(url.searchParams.get('sort')).toBe('newest');
-      expect(options.redirect).toBe('manual');
-      expect(options.signal).toBeInstanceOf(AbortSignal);
-    }
+    expect(fetch).toHaveBeenCalledTimes(1);
+    const [input, options] = fetch.mock.calls[0];
+    const url = new globalThis.URL(input);
+    // Gratka answers an explicit first page with 404.
+    expect(url.searchParams.get('page')).toBeNull();
+    expect(url.searchParams.get('cena-calkowita:max')).toBe('2000000');
+    expect(url.searchParams.get('sort')).toBe('newest');
+    expect(options.redirect).toBe('manual');
+    expect(options.signal).toBeInstanceOf(AbortSignal);
   });
 
   // A request without the cookie is put in a random experiment bucket, grouped or flat. Runs that
@@ -258,8 +257,9 @@ describe('Gratka retrieval', () => {
     });
     vi.stubGlobal('fetch', fetch);
     await config.getListings(URL);
+    await config.getListings(config.pageUrl(URL, 2));
     await config.getListings(URL);
-    expect(fetch).toHaveBeenCalledTimes(4);
+    expect(fetch).toHaveBeenCalledTimes(3);
     const cookies = fetch.mock.calls.map(([, options]) => options.headers.Cookie);
     expect(cookies[0]).toMatch(/^gbuuid_v2=[0-9a-f-]{36}$/);
     expect(new Set(cookies).size).toBe(1);
@@ -283,37 +283,27 @@ describe('Gratka retrieval', () => {
       'https://gratka.pl/nieruchomosci/mieszkania/krakow?rynek=wtorny&sort=newest',
       '/nieruchomosci/mieszkania/krakow?sort=newest',
     ],
-  ])(
-    'follows Gratka %s redirects and carries the canonical URL to the next page',
-    async (_label, source, canonicalPath) => {
-      const canonical = `https://gratka.pl${canonicalPath}`;
-      const fetch = vi
-        .fn()
-        .mockResolvedValueOnce({
-          ok: false,
-          status: 302,
-          statusText: 'Found',
-          headers: new Headers({ location: canonical }),
-        })
-        .mockResolvedValueOnce(response([advert], 1, 2))
-        .mockResolvedValueOnce(response([{ ...advert, id: 3 }], 2, 2));
-      vi.stubGlobal('fetch', fetch);
-      const items = await config.getListings(source);
-      expect(items).toHaveLength(2);
-      expect(fetch).toHaveBeenCalledTimes(3);
-      const firstRequest = new globalThis.URL(source);
-      firstRequest.searchParams.set('sort', 'newest');
-      firstRequest.searchParams.delete('page');
-      const secondPage = new globalThis.URL(canonical);
-      secondPage.searchParams.set('page', '2');
-      expect(fetch.mock.calls.map(([input]) => String(input))).toEqual([
-        firstRequest.toString(),
-        canonical,
-        secondPage.toString(),
-      ]);
-      expect(fetch.mock.calls.every(([, options]) => options.redirect === 'manual')).toBe(true);
-    },
-  );
+  ])('follows Gratka %s redirects, keeping the page asked for', async (_label, source, canonicalPath) => {
+    const canonical = new globalThis.URL(`https://gratka.pl${canonicalPath}`);
+    canonical.searchParams.set('page', '2');
+    const fetch = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 302,
+        statusText: 'Found',
+        headers: new Headers({ location: canonical.toString() }),
+      })
+      .mockResolvedValueOnce(response([{ ...advert, id: 3 }], 2, 2));
+    vi.stubGlobal('fetch', fetch);
+    const items = await config.getListings(config.pageUrl(source, 2));
+    expect(items.map((item) => item.id)).toEqual([3]);
+    const firstRequest = new globalThis.URL(source);
+    firstRequest.searchParams.set('sort', 'newest');
+    firstRequest.searchParams.set('page', '2');
+    expect(fetch.mock.calls.map(([input]) => String(input))).toEqual([firstRequest.toString(), canonical.toString()]);
+    expect(fetch.mock.calls.every(([, options]) => options.redirect === 'manual')).toBe(true);
+  });
 
   it.each([
     'http://gratka.pl/nieruchomosci/domy/krakow',
@@ -332,50 +322,26 @@ describe('Gratka retrieval', () => {
     await expect(fetchGratkaPage(URL)).rejects.toThrow(/unsupported URL/);
   });
 
-  it('keeps what it read when a later page is gone, but not when the first one is', async () => {
+  it('reads a later page that is gone as empty, which ends the walk, but fails on a missing first page', async () => {
     const gone = { ok: false, status: 404, statusText: 'Not Found' };
-    const fetch = vi
-      .fn()
-      .mockResolvedValueOnce(response([advert], 1, 2))
-      .mockResolvedValueOnce(gone);
+    const fetch = vi.fn().mockResolvedValue(gone);
     vi.stubGlobal('fetch', fetch);
-    expect((await config.getListings(URL)).map((item) => item.id)).toEqual([advert.id]);
-    fetch.mockReset().mockResolvedValue(gone);
+    expect(await config.getListings(config.pageUrl(URL, 2))).toEqual([]);
     await expect(config.getListings(URL)).rejects.toThrow('Gratka search failed: 404 Not Found');
   });
 
-  it('stops at the five-page cap', async () => {
-    const fetch = vi.fn().mockImplementation(async (url) => {
-      const page = Number(new globalThis.URL(url).searchParams.get('page') ?? '1');
-      return response([{ ...advert, id: page }], page, 99);
-    });
+  it('reads the page pageUrl names, and a page number the search does not have as empty', async () => {
+    const fetch = vi.fn().mockResolvedValueOnce(response([{ ...advert, id: 7 }], 3, 5));
     vi.stubGlobal('fetch', fetch);
-    expect(await config.getListings(URL)).toHaveLength(5);
-    expect(fetch).toHaveBeenCalledTimes(5);
+    expect((await config.getListings(config.pageUrl(URL, 3))).map((item) => item.id)).toEqual([7]);
+    expect(new globalThis.URL(fetch.mock.calls[0][0]).searchParams.get('page')).toBe('3');
+    fetch.mockResolvedValueOnce(response([advert], 5, 5));
+    expect(await config.getListings(config.pageUrl(URL, 6))).toEqual([]);
   });
 
-  it('stops when a page repeats or contains no adverts', async () => {
-    const fetch = vi
-      .fn()
-      .mockResolvedValueOnce(response([advert], 1, 99))
-      .mockResolvedValueOnce(response([advert], 2, 99));
-    vi.stubGlobal('fetch', fetch);
-    expect(await config.getListings(URL)).toHaveLength(1);
-    expect(fetch).toHaveBeenCalledTimes(2);
-    fetch.mockReset().mockResolvedValue(response([], 1, 0));
-    expect(await config.getListings(URL)).toEqual([]);
-    expect(fetch).toHaveBeenCalledTimes(1);
-  });
-
-  it('fails the entire retrieval on a later-page HTTP failure', async () => {
-    vi.stubGlobal(
-      'fetch',
-      vi
-        .fn()
-        .mockResolvedValueOnce(response([advert], 1, 2))
-        .mockResolvedValueOnce({ ok: false, status: 403, statusText: 'Forbidden' }),
-    );
-    await expect(config.getListings(URL)).rejects.toThrow('Gratka search failed: 403 Forbidden');
+  it('fails on a later-page HTTP failure, which the pipeline turns into the end of the walk', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 403, statusText: 'Forbidden' }));
+    await expect(config.getListings(config.pageUrl(URL, 2))).rejects.toThrow('Gratka search failed: 403 Forbidden');
   });
 
   it('rejects incorrect pagination instead of walking the same page', async () => {

@@ -53,7 +53,7 @@ index.js (startup)
 scheduler (every N minutes) or manual trigger via POST /api/jobs/:id/run
   └── FredyPipelineExecutioner.execute()
       1. queryStringMutator(url)           # inject sort-by-date param
-      2. provider.getListings()            # API or Puppeteer+Cheerio
+      2. provider.getListings()            # API or Puppeteer+Cheerio, once per result page the job reads
       3. provider.normalize(listing)       # raw → ParsedListing
       4. provider.filter(listing)          # blacklist + required fields
       5. filter to hashes not yet in DB; for price-tracked providers, a stored row with the same
@@ -87,6 +87,25 @@ scheduler (every N minutes) or manual trigger via POST /api/jobs/:id/run
   every writer has to set it
 - `config` - the **static** `ProviderConfig` template: `requiredFieldNames`, `crawlContainer`, `crawlFields`, `sortByDateParam`, `normalize()`, optional `getListings()`, `fetchDetails()`, `activityProbe()`, and `needsBrowser: false` on a provider whose search and details never touch the browser (ImmoScout's mobile API, flatfox, the tecnocasa network), so a job run or detail fetch with only such providers starts no Chromium. `url` is `null` here and there is no bound `filter`. A portal whose pages only answer a browser session (DataDome answers node with 403 whether an advert is online or not - immowelt, SeLoger) declares `browserActivityProbe(link, browser)` and `priceTracking.browserProbe(listing, browser)` instead; the alive-checker and the price tracker start one browser per run for them, and only when a due listing needs it.
 - `createConfig(sourceConfig, blacklist)` - returns a **fresh** `ProviderConfig` per job run: the template plus this run's `url`, `enabled`, and a `filter` closed over this run's blacklist.
+- `pageUrl(url, page)` on the static template - how result page N of a search is addressed, so a
+  job's page count reaches the provider. A job reads one page unless its owner raises
+  `jobs.paging` (`{ pages, waitSeconds, jitterSeconds }`, NULL = one page, bounds in
+  `lib/utils/paging.js`). The pipeline owns the walk (`_readPages` in `FredyPipelineExecutioner`):
+  it waits the job's wait plus jitter before each further page, stops at a page that brings nothing
+  or nothing new to this run, and ends the walk without a retry when a later page fails. A provider
+  only says how to reach page N and reads one page per call: `queryPageUrl(param)` in
+  `lib/utils/pageUrl.js` covers a page number in a query parameter; path schemes (kleinanzeigen
+  `seite:N`, wg-gesucht's last number, imaxx `/page/N/`, idealista `lista-N.htm`) bring their own.
+  A body-driven API reads the page back out of the URL it is handed (leboncoin's offset, bienici's
+  `from`, the casa/idealista apis). A later page past the end must come back as `[]`, not as an
+  error or as a redirect followed to somewhere else (imaxx redirects to its unfiltered list, so it
+  refuses redirects there). `readPages(url, browser)`, an async iterator, is the alternative for a
+  pager that can only be clicked; no provider needs it today. A provider declaring neither always
+  reads one page, because its answer already is the whole result: tecnocasa, tecnorete,
+  deutscheWohnen and inberlinwohnen cannot sort by date and walk every page themselves, betterhomes
+  and zvgPortal answer the whole search at once. `test/provider/providerPaging.test.js` keeps that
+  list, so a new provider has to choose. `/api/jobs/provider` reports `pagesConfigurable` per
+  provider for the job form.
 - Optional `fetchListingByUrl(url, browser)` on the static template - reads one advert's page into a complete `ParsedListing`, or `null` when the page is no single advert or could not be read. It is what "Add listing" in the listings view calls. Build the provider's own search-card shape from the exposé and pass it through its `normalize`, so `link` and hash come out as a search run would produce them: a later run of the job recognises the stored row by both, and a different spelling stores the advert twice. The `/api/jobs/provider` response carries `addByUrl` per provider so the dialog can say "not supported yet" before anything is sent.
 
 Providers are **stateless**. Nothing run-specific may live at module scope: two jobs can execute

@@ -913,17 +913,20 @@ describe('the pages a run reads', () => {
     vi.useRealTimers();
   });
 
-  it('walks a whole search the first time, and settles for its head from then on', async () => {
+  it('reads the one page it is asked for, the first by default', async () => {
     mockDeepSearch();
 
     const first = searchListings(IT, DRAWN_URL);
     await vi.runAllTimersAsync();
-    await expect(first).resolves.toHaveLength(250);
+    const firstPage = await first;
+    expect(firstPage).toHaveLength(50);
+    expect(firstPage[0].propertyCode).toBe('1-0');
 
-    const second = searchListings(IT, DRAWN_URL);
+    const third = searchListings(IT, DRAWN_URL, 3);
     await vi.runAllTimersAsync();
-    // Three pages of fifty: the head every other run reads.
-    await expect(second).resolves.toHaveLength(150);
+    const thirdPage = await third;
+    expect(thirdPage).toHaveLength(50);
+    expect(thirdPage[0].propertyCode).toBe('3-0');
   });
 });
 

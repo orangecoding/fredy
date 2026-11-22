@@ -89,26 +89,24 @@ describe('Otodom search payload', () => {
 });
 
 describe('Otodom retrieval', () => {
-  it('starts at page one, preserves filters and sorts, deduplicates, and omits development ranges', async () => {
+  it('reads page one first, preserving filters and sorts, deduplicating, and omitting development ranges', async () => {
     const development = { ...advert, id: 2, slug: 'investment-ID2', totalPrice: null, investmentUnitsNumber: 5 };
-    const fetch = vi
-      .fn()
-      .mockResolvedValueOnce(response([advert, development], 1, 2))
-      .mockResolvedValueOnce(response([advert, { ...advert, id: 3, slug: 'on-request-ID3', totalPrice: null }], 2, 2));
+    const onRequest = { ...advert, id: 3, slug: 'on-request-ID3', totalPrice: null };
+    const fetch = vi.fn().mockResolvedValueOnce(response([advert, development, advert, onRequest], 1, 2));
     vi.stubGlobal('fetch', fetch);
-    const items = await config.getListings(`${URL}&page=9&by=PRICE&priceMax=2000000`);
+    // A page number copied into the saved URL does not decide where a run starts.
+    const items = await config.getListings(config.pageUrl(`${URL}&page=9&by=PRICE&priceMax=2000000`, 1));
     expect(items.map((item) => item.id)).toEqual([advert.id, 3]);
-    expect(fetch).toHaveBeenCalledTimes(2);
-    for (const [index, [input, options]] of fetch.mock.calls.entries()) {
-      const url = new globalThis.URL(input);
-      expect(url.searchParams.get('page')).toBe(String(index + 1));
-      expect(url.searchParams.get('ownerTypeSingleSelect')).toBe('ALL');
-      expect(url.searchParams.get('priceMax')).toBe('2000000');
-      expect(url.searchParams.get('by')).toBe('LATEST');
-      expect(url.searchParams.get('direction')).toBe('DESC');
-      expect(options.redirect).toBe('manual');
-      expect(options.signal).toBeInstanceOf(AbortSignal);
-    }
+    expect(fetch).toHaveBeenCalledTimes(1);
+    const [input, options] = fetch.mock.calls[0];
+    const url = new globalThis.URL(input);
+    expect(url.searchParams.get('page')).toBe('1');
+    expect(url.searchParams.get('ownerTypeSingleSelect')).toBe('ALL');
+    expect(url.searchParams.get('priceMax')).toBe('2000000');
+    expect(url.searchParams.get('by')).toBe('LATEST');
+    expect(url.searchParams.get('direction')).toBe('DESC');
+    expect(options.redirect).toBe('manual');
+    expect(options.signal).toBeInstanceOf(AbortSignal);
   });
 
   it('skips adverts priced in another currency instead of failing the run', async () => {
@@ -142,38 +140,21 @@ describe('Otodom retrieval', () => {
     );
   });
 
-  it('stops at the five-page cap', async () => {
-    const fetch = vi.fn().mockImplementation(async (url) => {
-      const page = Number(new globalThis.URL(url).searchParams.get('page'));
-      return response([{ ...advert, id: page, slug: `dom-ID${page}` }], page, 99);
-    });
+  it('reads the page pageUrl names', async () => {
+    const fetch = vi.fn().mockResolvedValue(response([{ ...advert, id: 7, slug: 'dom-ID7' }], 3, 5));
     vi.stubGlobal('fetch', fetch);
-    expect(await config.getListings(URL)).toHaveLength(5);
-    expect(fetch).toHaveBeenCalledTimes(5);
+    expect((await config.getListings(config.pageUrl(URL, 3))).map((item) => item.id)).toEqual([7]);
+    expect(new globalThis.URL(fetch.mock.calls[0][0]).searchParams.get('page')).toBe('3');
   });
 
-  it('stops when a page repeats or contains no adverts', async () => {
-    const fetch = vi
-      .fn()
-      .mockResolvedValueOnce(response([advert], 1, 99))
-      .mockResolvedValueOnce(response([advert], 2, 99));
-    vi.stubGlobal('fetch', fetch);
-    expect(await config.getListings(URL)).toHaveLength(1);
-    expect(fetch).toHaveBeenCalledTimes(2);
-    fetch.mockReset().mockResolvedValue(response([], 1, 0));
-    expect(await config.getListings(URL)).toEqual([]);
-    expect(fetch).toHaveBeenCalledTimes(1);
+  it('reads a later page the search does not have as empty, which ends the walk', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(response([advert], 2, 2)));
+    expect(await config.getListings(config.pageUrl(URL, 3))).toEqual([]);
   });
 
-  it('fails the entire retrieval on a later-page HTTP failure', async () => {
-    vi.stubGlobal(
-      'fetch',
-      vi
-        .fn()
-        .mockResolvedValueOnce(response([advert], 1, 2))
-        .mockResolvedValueOnce({ ok: false, status: 403, statusText: 'Forbidden' }),
-    );
-    await expect(config.getListings(URL)).rejects.toThrow('Otodom search failed: 403 Forbidden');
+  it('fails on a later-page HTTP failure, which the pipeline turns into the end of the walk', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 403, statusText: 'Forbidden' }));
+    await expect(config.getListings(config.pageUrl(URL, 2))).rejects.toThrow('Otodom search failed: 403 Forbidden');
   });
 
   it('rejects incorrect pagination instead of walking the same page', async () => {

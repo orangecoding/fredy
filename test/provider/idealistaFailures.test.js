@@ -92,28 +92,39 @@ describe('Idealista interrupted searches', () => {
     expect(fetchSearchHtml).toHaveBeenCalledWith(SEARCH_URL, browser);
   });
 
-  it.each(Object.keys(failures))('retains page one and retries the full catch-up after a %s failure', async (kind) => {
-    let interrupted = true;
-    const listings = Array.from({ length: 250 }, (_, index) => ({ propertyCode: String(index) }));
-    serve((body) => {
-      const page = Number(body.get('numPage'));
-      if (interrupted && page === 2) return failures[kind]();
-      return json({ elementList: listings.slice((page - 1) * 50, page * 50), totalPages: 5 });
+  it.each(Object.keys(failures))(
+    'fails a later page the api cannot answer (%s), without reading the website again',
+    async (kind) => {
+      serve((body) =>
+        Number(body.get('numPage')) === 2 ? failures[kind]() : json({ elementList: [], totalPages: 5 }),
+      );
+
+      const pending = expect(config.getListings(config.pageUrl(SEARCH_URL, 2), {})).rejects.toThrow();
+      await vi.runAllTimersAsync();
+      await pending;
+      expect(fetchSearchHtml).not.toHaveBeenCalled();
+    },
+  );
+
+  it('reads the page a url names, and the search behind it once per url', async () => {
+    const pages = [];
+    const fetchMock = serve((body) => {
+      pages.push(Number(body.get('numPage')));
+      return json({ elementList: [{ propertyCode: `p${body.get('numPage')}` }], totalPages: 5 });
     });
 
-    let pending = expect(config.getListings(SEARCH_URL, {})).resolves.toEqual(listings.slice(0, 50));
+    let pending = expect(config.getListings(config.pageUrl(SEARCH_URL, 2), {})).resolves.toEqual([
+      { propertyCode: 'p2' },
+    ]);
     await vi.runAllTimersAsync();
     await pending;
-    expect(fetchSearchHtml).not.toHaveBeenCalled();
+    pending = expect(config.getListings(config.pageUrl(SEARCH_URL, 3), {})).resolves.toEqual([{ propertyCode: 'p3' }]);
+    await vi.runAllTimersAsync();
+    await pending;
 
-    interrupted = false;
-    pending = expect(config.getListings(SEARCH_URL, {})).resolves.toEqual(listings);
-    await vi.runAllTimersAsync();
-    await pending;
-
-    pending = expect(config.getListings(SEARCH_URL, {})).resolves.toEqual(listings.slice(0, 150));
-    await vi.runAllTimersAsync();
-    await pending;
+    expect(pages).toEqual([2, 3]);
+    // The parser is asked about the search, not about each page of it.
+    expect(fetchMock.mock.calls.filter(([url]) => String(url).includes('/deeplinks/'))).toHaveLength(1);
   });
 
   it('retains completed variants when a later variant fails', async () => {

@@ -30,6 +30,7 @@ import { countMarketTargets } from './marketFilter.js';
  * @param {{action?: string, limits?: Record<string, number>}|null} [job.commuteFilter]
  * @param {{action?: string, minBelowMarketPercent?: number, minYieldPercent?: number}|null} [job.marketFilter]
  * @param {number|null} [job.priceChangeThreshold]
+ * @param {{pages: number}|null} [job.paging]
  * @param {Object} context
  * @param {(key: string, vars?: Object) => string} context.t
  * @param {(value: number) => string} context.formatPrice
@@ -70,6 +71,9 @@ export function describeJobRefinements(job, { t, formatPrice }) {
   }
   if (job?.priceChangeThreshold != null) {
     parts.push(t('jobs.mutation.summaryPriceChange', { value: job.priceChangeThreshold }));
+  }
+  if ((job?.paging?.pages ?? 1) > 1) {
+    parts.push(t('jobs.mutation.summaryPaging', { count: job.paging.pages }));
   }
   return parts;
 }

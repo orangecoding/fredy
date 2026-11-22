@@ -31,7 +31,17 @@
   },
   {
     "url": "https://www.engelvoelkers.com/de/de/propertysearch?businessArea%5B%5D=residential&placeIds%5B%5D=ChIJ8_KccStOqEcRhtFXjKWPuo0&propertyMarketingType%5B%5D=sale&sortingOptions%5B%5D=SALES_PRICE_DESC",
-    "shouldBecome": "https://www.engelvoelkers.com/de/de/propertysearch?businessArea%5B%5D=residential&placeIds%5B%5D=ChIJ8_KccStOqEcRhtFXjKWPuo0&propertyMarketingType%5B%5D=sale&sortingOptions%5B%5D=CREATED_AT_DESC",
+    "shouldBecome": "https://www.engelvoelkers.com/de/de/propertysearch?businessArea%5B%5D=residential&placeIds%5B%5D=ChIJ8_KccStOqEcRhtFXjKWPuo0&propertyMarketingType%5B%5D=sale&sortingOptions%5B%5D=PUBLISHED_AT_DESC",
     "id": "engelVoelkers"
+  },
+  {
+    "url": "https://www.kleinanzeigen.de/s-wohnung-mieten/berlin/preis:500:1500/dachterrasse/k0c203l3331",
+    "shouldBecome": "https://www.kleinanzeigen.de/s-wohnung-mieten/berlin/preis:500:1500/dachterrasse/k0c203l3331?sortingField=SORTING_DATE",
+    "id": "kleinanzeigen"
+  },
+  {
+    "url": "https://www.ohne-makler.net/immobilien/wohnung-mieten/berlin/berlin/?sort=price_asc",
+    "shouldBecome": "https://www.ohne-makler.net/immobilien/wohnung-mieten/berlin/berlin/?sort=date_desc",
+    "id": "ohneMakler"
   }
 ]

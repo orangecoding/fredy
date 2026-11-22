@@ -34,23 +34,17 @@ describe('Casa search failures', () => {
     expect(puppeteerExtractor).toHaveBeenCalledWith(URL, 'body', { browser, name: 'casa' });
   });
 
-  it.each(Object.keys(failures))('retains page one after a second-page %s failure', async (kind) => {
-    const listings = Array.from({ length: 50 }, (_, index) => ({ listing_id: String(index) }));
-    vi.stubGlobal(
-      'fetch',
-      vi.fn((_url, options) =>
-        JSON.parse(options.body).page === 1
-          ? Promise.resolve(
-              new Response(JSON.stringify({ data: { total: 100, tiers: [{ tier: 'listings', results: listings }] } })),
-            )
-          : failures[kind](),
-      ),
-    );
+  it.each(Object.keys(failures))(
+    'reads a later page the api fails on (%s) as the end of the search, not as a reason to render the site',
+    async (kind) => {
+      vi.stubGlobal('fetch', vi.fn(failures[kind]));
 
-    await expect(config.getListings(URL, {})).resolves.toEqual(listings);
-    expect(puppeteerExtractor).not.toHaveBeenCalled();
-    expect(fetch).toHaveBeenCalledTimes(2);
-  });
+      await expect(config.getListings(config.pageUrl(URL, 2), {})).resolves.toEqual([]);
+      expect(puppeteerExtractor).not.toHaveBeenCalled();
+      expect(fetch).toHaveBeenCalledTimes(1);
+      expect(JSON.parse(fetch.mock.calls[0][1].body).page).toBe(2);
+    },
+  );
 
   it.each(['example.invalid', 'casa.it.example.invalid', 'www.casa.it.example.invalid'])(
     'rejects the host %s before any request',

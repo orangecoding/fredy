@@ -66,6 +66,7 @@ describe('jobSummary', () => {
       commuteFilter: { action: 'mark', limits: { 'home-1': 30 } },
       marketFilter: { action: 'notify', minYieldPercent: 4 },
       priceChangeThreshold: 0,
+      paging: { pages: 3, waitSeconds: 30, jitterSeconds: 30 },
     };
     expect(describeJobRefinements(job, context)).toEqual([
       'jobs.mutation.summaryMaxPrice',
@@ -77,7 +78,13 @@ describe('jobSummary', () => {
       'jobs.mutation.summaryCommute',
       'jobs.mutation.summaryMarket',
       'jobs.mutation.summaryPriceChange',
+      'jobs.mutation.summaryPaging',
     ]);
+  });
+
+  it('says nothing about the one page every job reads', () => {
+    expect(describeJobRefinements({ paging: null }, context)).toEqual([]);
+    expect(describeJobRefinements({ paging: { pages: 1 } }, context)).toEqual([]);
   });
 
   it('joins them into one readable line', () => {

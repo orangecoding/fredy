@@ -175,41 +175,37 @@ describe('Domiporta search page', () => {
 });
 
 describe('Domiporta retrieval', () => {
-  it('starts at page one, keeps filters, sorts newest first, deduplicates and skips other currencies', async () => {
+  it('reads page one first, keeps filters, sorts newest first, deduplicates and skips other currencies', async () => {
     const euro = withId(4, { offers: { ...advert.offers, priceCurrency: 'EUR' } });
-    const fetch = vi
-      .fn()
-      .mockResolvedValueOnce(response([advert, withId(2)], 2))
-      .mockResolvedValueOnce(response([advert, euro, withId(3)]));
+    const fetch = vi.fn().mockResolvedValueOnce(response([advert, withId(2), advert, euro, withId(3)], 2));
     vi.stubGlobal('fetch', fetch);
+    // A page number copied into the saved URL does not decide where a run starts.
     const items = await config.getListings(
-      'https://domiporta.pl/dom/sprzedam/malopolskie/krakow?PageNumber=7&SortingOrderDirection=PriceAscending&Price.To=2500000',
+      config.pageUrl(
+        'https://domiporta.pl/dom/sprzedam/malopolskie/krakow?PageNumber=7&SortingOrderDirection=PriceAscending&Price.To=2500000',
+        1,
+      ),
     );
     expect(items.map((item) => item.url)).toEqual([advert.url, withId(2).url, withId(3).url]);
-    expect(fetch).toHaveBeenCalledTimes(2);
-    for (const [index, [input, options]] of fetch.mock.calls.entries()) {
-      const url = new globalThis.URL(input);
-      expect(url.hostname).toBe('www.domiporta.pl');
-      expect(url.searchParams.get('PageNumber')).toBe(String(index + 1));
-      expect(url.searchParams.get('SortingOrderDirection')).toBe('InsertionDateDescending');
-      expect(url.searchParams.get('Price.To')).toBe('2500000');
-      expect(options.redirect).toBe('manual');
-      expect(options.signal).toBeInstanceOf(AbortSignal);
-    }
+    expect(fetch).toHaveBeenCalledTimes(1);
+    const [input, options] = fetch.mock.calls[0];
+    const url = new globalThis.URL(input);
+    expect(url.hostname).toBe('www.domiporta.pl');
+    expect(url.searchParams.get('PageNumber')).toBe('1');
+    expect(url.searchParams.get('SortingOrderDirection')).toBe('InsertionDateDescending');
+    expect(url.searchParams.get('Price.To')).toBe('2500000');
+    expect(options.redirect).toBe('manual');
+    expect(options.signal).toBeInstanceOf(AbortSignal);
   });
 
-  it('keeps paging past a page of development flats', async () => {
-    const fetch = vi
-      .fn()
-      .mockResolvedValueOnce(response([advert, withUnit(1)], 2))
-      .mockResolvedValueOnce(response([withUnit(2), withUnit(3)], 3))
-      .mockResolvedValueOnce(response([withId(4)]));
+  it('keeps a page of development flats', async () => {
+    const fetch = vi.fn().mockResolvedValueOnce(response([withUnit(2), withUnit(3)], 3));
     vi.stubGlobal('fetch', fetch);
-    expect(await config.getListings(URL)).toHaveLength(5);
-    expect(fetch).toHaveBeenCalledTimes(3);
+    expect(await config.getListings(config.pageUrl(URL, 2))).toHaveLength(2);
+    expect(new globalThis.URL(fetch.mock.calls[0][0]).searchParams.get('PageNumber')).toBe('2');
   });
 
-  it('keeps results when page three redirects to page two in Domiporta’s real format', async () => {
+  it('reads a later page that redirects to the last one, in Domiporta’s real format, as empty', async () => {
     const filteredUrl = `${URL}?Price.From=1000000&Price.To=1500000`;
     const moved = {
       ok: false,
@@ -219,31 +215,22 @@ describe('Domiporta retrieval', () => {
         location: `${URL}?Price.From=1000000&Price.To=1500000&PageNumber=2&SortingOrder=InsertionDate`,
       }),
     };
-    const fetch = vi
-      .fn()
-      .mockResolvedValueOnce(response([advert], 2))
-      .mockResolvedValueOnce(response([withId(2)], 3))
-      .mockResolvedValueOnce(moved);
-    vi.stubGlobal('fetch', fetch);
-    expect(await config.getListings(filteredUrl)).toHaveLength(2);
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValueOnce(moved));
+    expect(await config.getListings(config.pageUrl(filteredUrl, 3))).toEqual([]);
   });
 
   it.each([
     'https://www.domiporta.pl/login',
     'https://www.domiporta.pl/dom/sprzedam/inny-miasto?PageNumber=1&SortingOrder=InsertionDate',
     `${URL}?Price.To=999999&PageNumber=1&SortingOrder=InsertionDate`,
-  ])('keeps prior results when a later page redirects elsewhere: %s', async (location) => {
-    const fetch = vi
-      .fn()
-      .mockResolvedValueOnce(response([advert], 2))
-      .mockResolvedValueOnce({
-        ok: false,
-        status: 302,
-        statusText: 'Found',
-        headers: new Headers({ location }),
-      });
-    vi.stubGlobal('fetch', fetch);
-    expect(await config.getListings(URL)).toHaveLength(1);
+  ])('reads a later page that redirects elsewhere as empty: %s', async (location) => {
+    vi.stubGlobal(
+      'fetch',
+      vi
+        .fn()
+        .mockResolvedValueOnce({ ok: false, status: 302, statusText: 'Found', headers: new Headers({ location }) }),
+    );
+    expect(await config.getListings(config.pageUrl(URL, 2))).toEqual([]);
   });
 
   it('fails when the first page redirects', async () => {
@@ -259,41 +246,14 @@ describe('Domiporta retrieval', () => {
     await expect(config.getListings(URL)).rejects.toThrow(/Domiporta redirected the search/);
   });
 
-  it('stops at the five-page cap', async () => {
-    const fetch = vi.fn().mockImplementation(async (url) => {
-      const page = Number(new globalThis.URL(url).searchParams.get('PageNumber'));
-      return response([withId(page)], page + 1);
-    });
-    vi.stubGlobal('fetch', fetch);
-    expect(await config.getListings(URL)).toHaveLength(5);
-    expect(fetch).toHaveBeenCalledTimes(5);
-  });
-
-  it('stops when a page repeats, contains no adverts, or links no next page', async () => {
-    const fetch = vi
-      .fn()
-      .mockResolvedValueOnce(response([advert], 2))
-      .mockResolvedValueOnce(response([advert], 3));
-    vi.stubGlobal('fetch', fetch);
-    expect(await config.getListings(URL)).toHaveLength(1);
-    expect(fetch).toHaveBeenCalledTimes(2);
-    fetch.mockReset().mockResolvedValue(response([], 2));
+  it('reads an empty page as empty', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(response([])));
     expect(await config.getListings(URL)).toEqual([]);
-    expect(fetch).toHaveBeenCalledTimes(1);
-    fetch.mockReset().mockResolvedValue(response([advert]));
-    expect(await config.getListings(URL)).toHaveLength(1);
-    expect(fetch).toHaveBeenCalledTimes(1);
   });
 
-  it('fails the entire retrieval on a later-page HTTP failure', async () => {
-    vi.stubGlobal(
-      'fetch',
-      vi
-        .fn()
-        .mockResolvedValueOnce(response([advert], 2))
-        .mockResolvedValueOnce({ ok: false, status: 403, statusText: 'Forbidden' }),
-    );
-    await expect(config.getListings(URL)).rejects.toThrow('Domiporta search failed: 403 Forbidden');
+  it('fails on a later-page HTTP failure, which the pipeline turns into the end of the walk', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 403, statusText: 'Forbidden' }));
+    await expect(config.getListings(config.pageUrl(URL, 2))).rejects.toThrow('Domiporta search failed: 403 Forbidden');
   });
 
   it.each([

@@ -13,6 +13,7 @@ import ProviderMutator from './components/provider/ProviderMutator';
 import AreaFilter from './components/areaFilter/AreaFilter';
 import CommuteFilter from './components/CommuteFilter.jsx';
 import MarketFilter from './components/MarketFilter.jsx';
+import PagingSettings from './components/PagingSettings.jsx';
 import { toPriceChangeThreshold } from '../../../services/jobs/marketFilter.js';
 import Headline from '../../../components/headline/Headline';
 import SettingsEmptyState from '../../../components/settingsShell/SettingsEmptyState';
@@ -154,6 +155,7 @@ function JobMutator({ source }) {
   const defaultCommuteFilter = sourceJob?.commuteFilter || null;
   const defaultMarketFilter = sourceJob?.marketFilter || null;
   const defaultPriceChangeThreshold = sourceJob?.priceChangeThreshold ?? null;
+  const defaultPaging = sourceJob?.paging ?? null;
   // Deliberately not defaulted for a new job: the user has to say what they are looking for,
   // because it decides which half of their finance profile applies to everything this job finds.
   const defaultDealType = sourceJob?.dealType || null;
@@ -174,6 +176,7 @@ function JobMutator({ source }) {
   const [commuteFilter, setCommuteFilter] = useState(defaultCommuteFilter);
   const [marketFilter, setMarketFilter] = useState(defaultMarketFilter);
   const [priceChangeThreshold, setPriceChangeThreshold] = useState(defaultPriceChangeThreshold);
+  const [paging, setPaging] = useState(defaultPaging);
   const [dealType, setDealType] = useState(defaultDealType);
   /** Whether the value in the deal type field was guessed rather than chosen. */
   const [dealTypeWasInferred, setDealTypeWasInferred] = useState(false);
@@ -257,6 +260,7 @@ function JobMutator({ source }) {
     if (draft.commuteFilter !== undefined) setCommuteFilter(draft.commuteFilter);
     if (draft.marketFilter !== undefined) setMarketFilter(draft.marketFilter);
     if (draft.priceChangeThreshold !== undefined) setPriceChangeThreshold(draft.priceChangeThreshold);
+    if (draft.paging !== undefined) setPaging(draft.paging);
     setDraftRestored(true);
   }, [draftId]);
 
@@ -278,6 +282,7 @@ function JobMutator({ source }) {
       commuteFilter,
       marketFilter,
       priceChangeThreshold,
+      paging,
     };
     // A stored job always "has content", so without this every visit to its form left a copy
     // behind. The next visit restored that copy over whatever had changed in the meantime - a job
@@ -302,6 +307,7 @@ function JobMutator({ source }) {
     commuteFilter,
     marketFilter,
     priceChangeThreshold,
+    paging,
   ]);
 
   // The deal type decides which half of the finance profile applies to everything this job finds,
@@ -344,6 +350,7 @@ function JobMutator({ source }) {
     commuteFilter: defaultCommuteFilter,
     marketFilter: defaultMarketFilter,
     priceChangeThreshold: defaultPriceChangeThreshold,
+    paging: defaultPaging,
   };
 
   const discardChanges = () => {
@@ -362,6 +369,7 @@ function JobMutator({ source }) {
     setCommuteFilter(baseline.commuteFilter);
     setMarketFilter(baseline.marketFilter);
     setPriceChangeThreshold(baseline.priceChangeThreshold);
+    setPaging(baseline.paging);
     // A guessed deal type is only a guess about a provider that has just been discarded.
     setDealTypeWasInferred(false);
   };
@@ -380,6 +388,7 @@ function JobMutator({ source }) {
     commuteFilter,
     marketFilter,
     priceChangeThreshold,
+    paging,
   };
 
   // Compared, not tracked. Drives the save bar, so a character typed and deleted again closes it
@@ -436,9 +445,29 @@ function JobMutator({ source }) {
   ];
   const currency = currencies.length === 1 ? currencies[0] : null;
 
+  // The job's providers the page count does not reach, because they always read their whole result.
+  const wholeResultProviders = [
+    ...new Set(
+      providerData
+        .filter((p) => p.enabled !== false)
+        .map((p) => providerMetadata.find((candidate) => candidate.id === p.id))
+        .filter((meta) => meta != null && meta.pagesConfigurable === false)
+        .map((meta) => meta.name),
+    ),
+  ];
+
   // What the collapsed section holds, so it does not have to be opened to find out.
   const refinementSummary = summariseJobRefinements(
-    { blacklist, excludedLocations, specFilter, spatialFilter, commuteFilter, marketFilter, priceChangeThreshold },
+    {
+      blacklist,
+      excludedLocations,
+      specFilter,
+      spatialFilter,
+      commuteFilter,
+      marketFilter,
+      priceChangeThreshold,
+      paging,
+    },
     { t, formatPrice: (value) => formatEuro(value, locale, currency ?? 'EUR') },
   );
 
@@ -466,6 +495,7 @@ function JobMutator({ source }) {
         commuteFilter,
         marketFilter,
         priceChangeThreshold,
+        paging,
         dealType,
         enabled,
         jobId: isEdit ? sourceJob.id : null,
@@ -844,6 +874,14 @@ function JobMutator({ source }) {
                   onChange={(value) => setPriceChangeThreshold(toPriceChangeThreshold(value))}
                 />
               </div>
+            </SegmentPart>
+
+            <SegmentPart
+              name={t('jobs.mutation.sectionPaging')}
+              helpText={t('jobs.mutation.pagingHelp')}
+              helpMode="popover"
+            >
+              <PagingSettings value={paging} onChange={setPaging} wholeResultProviders={wholeResultProviders} />
             </SegmentPart>
 
             <SegmentPart

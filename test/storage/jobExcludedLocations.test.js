@@ -25,7 +25,7 @@ describe('job location exclusion persistence', () => {
         id TEXT PRIMARY KEY, user_id TEXT, enabled INTEGER DEFAULT 1, name TEXT,
         blacklist TEXT, excluded_locations TEXT NOT NULL DEFAULT '[]', provider TEXT,
         notification_adapter TEXT, shared_with_user TEXT DEFAULT '[]', spatial_filter TEXT,
-        spec_filter TEXT, commute_filter TEXT, market_filter TEXT, price_change_threshold REAL, deal_type TEXT, last_run_at INTEGER
+        spec_filter TEXT, commute_filter TEXT, market_filter TEXT, price_change_threshold REAL, paging TEXT, deal_type TEXT, last_run_at INTEGER
       );
       CREATE TABLE configured_adapter (
         id TEXT PRIMARY KEY, user_id TEXT, adapter_id TEXT, name TEXT, fields TEXT,

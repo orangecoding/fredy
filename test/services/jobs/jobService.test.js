@@ -88,6 +88,17 @@ describe('saveJob', () => {
     expect(jobStorage.getJob(jobId).commuteFilter).toBeNull();
   });
 
+  it('stores a page count above one, bounded, and one page as no setting at all', async () => {
+    const { jobId } = await service.saveJob(
+      ALICE,
+      input({ paging: { pages: 50, waitSeconds: 45, jitterSeconds: 15 } }),
+    );
+    expect(jobStorage.getJob(jobId).paging).toEqual({ pages: 10, waitSeconds: 45, jitterSeconds: 15 });
+
+    await service.saveJob(ALICE, input({ jobId, paging: { pages: 1, waitSeconds: 45, jitterSeconds: 15 } }));
+    expect(jobStorage.getJob(jobId).paging).toBeNull();
+  });
+
   it('refuses a channel the caller may not use, and stores nothing', async () => {
     const saved = await service.saveJob(ALICE, input({ notificationAdapter: [{ configuredAdapterId: 'bobs' }] }));
     expect(saved).toMatchObject({ ok: false, reason: 'forbidden' });

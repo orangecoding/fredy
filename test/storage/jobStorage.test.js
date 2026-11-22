@@ -73,6 +73,7 @@ describe('jobStorage.getJobs', () => {
     for (const call of calls.query) {
       if (call.sql.includes('j.notification_adapter')) {
         expect(call.sql).toContain('j.deal_type AS dealType');
+        expect(call.sql).toContain('j.paging');
       }
     }
   });
@@ -146,6 +147,7 @@ describe('jobStorage.upsertJob binds nothing it does not write', () => {
     commuteFilter: { action: 'notify', limits: { Work: 35 } },
     marketFilter: { action: 'notify', minBelowMarketPercent: 10 },
     priceChangeThreshold: 5,
+    paging: { pages: 3, waitSeconds: 30, jitterSeconds: 15 },
     dealType: 'rent',
   };
 
@@ -173,6 +175,16 @@ describe('jobStorage.upsertJob binds nothing it does not write', () => {
     const insert = calls.execute.find((c) => c.sql.includes('INSERT INTO jobs'));
     expect(JSON.parse(insert.params.marketFilter)).toEqual(aJob.marketFilter);
     expect(insert.params.priceChangeThreshold).toBe(5);
+  });
+
+  it('writes the paging of a brand new job as JSON, and one page as NULL', () => {
+    jobStorage.upsertJob({ ...aJob, userId: 'u1' });
+    const insert = calls.execute.find((c) => c.sql.includes('INSERT INTO jobs'));
+    expect(JSON.parse(insert.params.paging)).toEqual(aJob.paging);
+
+    calls.execute.length = 0;
+    jobStorage.upsertJob({ ...aJob, paging: null, userId: 'u1' });
+    expect(calls.execute.find((c) => c.sql.includes('INSERT INTO jobs')).params.paging).toBeNull();
   });
 
   it('keeps a price change threshold of zero, which means every change', () => {

@@ -94,6 +94,7 @@ describe('jobDraft', () => {
       ['a travel time limit', { commuteFilter: { action: 'notify', limits: { Work: 35 } } }],
       ['a market target', { marketFilter: { action: 'notify', minYieldPercent: 4 } }],
       ['a price change threshold of zero', { priceChangeThreshold: 0 }],
+      ['more than one result page', { paging: { pages: 2, waitSeconds: 30, jitterSeconds: 30 } }],
     ])('counts %s', (_what, draft) => {
       expect(hasContent(draft)).toBe(true);
     });

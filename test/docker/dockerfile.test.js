@@ -26,7 +26,9 @@ const lastDockerUserBefore = (marker) => {
 
   expect(markerIndex, `${marker} must exist in Dockerfile`).toBeGreaterThanOrEqual(0);
 
-  const users = dockerfile.slice(0, markerIndex).match(/^USER\s+\S+\s*$/gm);
+  // Spaces and tabs only around the value: `\s` also matches the line break, so a `USER` followed
+  // by a blank line was matched together with that break.
+  const users = dockerfile.slice(0, markerIndex).match(/^USER[ \t]+\S+[ \t]*$/gm);
 
   return users?.at(-1);
 };

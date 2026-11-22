@@ -1,0 +1,63 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../../../tokens.less';
+
+@paging-number-w: 150px;
+
+/* Built like the market filter: what a number means on the left, the number on the right. */
+.pagingSettings {
+  display: flex;
+  flex-direction: column;
+  gap: @space-2;
+
+  &__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: @space-3;
+    flex-wrap: wrap;
+    padding: @space-2 0;
+
+    & + & {
+      border-top: 1px solid @color-border;
+    }
+  }
+
+  &__target {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  &__label {
+    color: @color-text;
+    font-weight: @weight-medium;
+  }
+
+  &__hint {
+    margin: 0;
+    max-width: 62ch;
+    color: @color-muted;
+    font-size: @text-sm;
+    line-height: 1.5;
+  }
+
+  &__pair {
+    display: flex;
+    gap: @space-2;
+    flex-wrap: wrap;
+  }
+
+  &__number {
+    width: @paging-number-w;
+  }
+
+  &__unit {
+    color: @color-muted;
+    font-size: @text-sm;
+    padding: 0 @space-1;
+  }
+}
