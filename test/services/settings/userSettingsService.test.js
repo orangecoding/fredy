@@ -103,7 +103,7 @@ describe('all or nothing', () => {
   });
 
   it('stores none of the rest when the address save refuses the list', async () => {
-    addressSave.mockResolvedValueOnce({ ok: false, error: 'Each address needs its own name.' });
+    addressSave.mockResolvedValueOnce({ ok: false, reason: 'invalid', error: 'Each address needs its own name.' });
     const saved = await service.updateUserSettings(ALICE, { language: 'de', homeAddresses: [{}, {}] });
     expect(saved).toEqual({ ok: false, reason: 'invalid', error: 'Each address needs its own name.' });
     expect(stored().language).toBeUndefined();

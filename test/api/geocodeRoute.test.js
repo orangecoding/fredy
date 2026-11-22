@@ -20,11 +20,23 @@ vi.mock('../../lib/services/logger.js', () => ({
   default: { error: vi.fn(), info: vi.fn(), debug: vi.fn(), warn: vi.fn() },
 }));
 // Country resolution reads the provider modules and the job storage. Both are somebody else's test;
-// what matters here is that whatever it answers reaches the geocoder.
-vi.mock('../../lib/services/providers/providerCountries.js', () => ({
-  getCountriesForProviderIds: vi.fn(async () => ['fr']),
-  getCountriesForUser: vi.fn(async () => ['de', 'at']),
-}));
+// what matters here is that whatever it answers reaches the geocoder. The fallback to the default
+// is the real resolveCountries' own tested behaviour, so the mock repeats just enough of it to
+// keep the route's error path exercisable.
+vi.mock('../../lib/services/providers/providerCountries.js', async () => {
+  const { DEFAULT_COUNTRIES } = await vi.importActual('../../lib/services/providers/countries.js');
+  return {
+    getCountriesForProviderIds: vi.fn(async () => ['fr']),
+    getCountriesForUser: vi.fn(async () => ['de', 'at']),
+    resolveCountries: async (resolve) => {
+      try {
+        return await resolve();
+      } catch {
+        return [...DEFAULT_COUNTRIES];
+      }
+    },
+  };
+});
 vi.mock('../../lib/api/security.js', () => ({ isAdmin: vi.fn(() => false) }));
 
 import { geocodeAddress } from '../../lib/services/geocoding/geoCodingService.js';

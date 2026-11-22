@@ -4,11 +4,11 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { toChannelRefs } from '../../lib/api/routes/jobRouter.js';
+import { toChannelRefs } from '../../lib/services/jobs/jobService.js';
 
 /**
- * The client sends whatever its picker produced. The route pins that down to one shape before it
- * is authorised and stored, so the authorisation check and the stored value cannot disagree.
+ * The client sends whatever its picker produced. The save pins that down to one shape before it is
+ * authorised and stored, so the authorisation check and the stored value cannot disagree.
  */
 describe('toChannelRefs', () => {
   it('accepts the reference objects the UI sends', () => {

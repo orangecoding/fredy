@@ -151,7 +151,7 @@ describe('update_user_settings', () => {
   });
 
   it('relays a refused address save as an error, and changes nothing else', async () => {
-    saveHomeAddresses.mockResolvedValue({ ok: false, error: 'Each address needs its own name.' });
+    saveHomeAddresses.mockResolvedValue({ ok: false, reason: 'invalid', error: 'Each address needs its own name.' });
 
     const result = await callTool('update_user_settings', { language: 'de', homeAddresses: [] });
 

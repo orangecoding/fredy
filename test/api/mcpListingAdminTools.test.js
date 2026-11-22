@@ -189,11 +189,21 @@ describe('add_listing_by_url', () => {
 });
 
 describe('delete_listing', () => {
-  it('refuses without confirmation, and says what is at stake', async () => {
-    const result = await callTool('delete_listing', { listingId: 'l1', confirmed: false });
+  it('refuses without confirmation, and says what is at stake, worded by hard', async () => {
+    const soft = await callTool('delete_listing', { listingId: 'l1', confirmed: false });
 
-    expect(result.isError).toBe(true);
-    expect(textOf(result)).toContain('cannot be undone');
+    expect(soft.isError).toBe(true);
+    // The default is a hide the web UI can undo, so the model must not warn about something
+    // irreversible a call without `hard` would not do.
+    expect(textOf(soft)).toContain('only be hidden');
+    expect(textOf(soft)).toContain('can undo');
+    expect(deleteListingsById).not.toHaveBeenCalled();
+
+    const hard = await callTool('delete_listing', { listingId: 'l1', hard: true, confirmed: false });
+
+    expect(hard.isError).toBe(true);
+    expect(textOf(hard)).toContain('permanently');
+    expect(textOf(hard)).toContain('cannot be undone');
     expect(deleteListingsById).not.toHaveBeenCalled();
   });
 
