@@ -76,7 +76,7 @@
     "better-sqlite3": "^13.2.0",
     "chart.js": "^4.6.1",
     "cheerio": "^1.2.0",
-    "clearcote": "^0.70.5",
+    "clearcote": "^0.70.6",
     "cloakbrowser": "^0.6.5",
     "fastify": "^5.12.8",
     "handlebars": "4.7.10",
