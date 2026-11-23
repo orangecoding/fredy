@@ -38,34 +38,34 @@
   dependencies:
     tslib "^2.0.0"
 
-"@douyinfe/semi-animation-react@2.105.0":
-  version "2.105.0"
-  resolved "https://registry.yarnpkg.com/@douyinfe/semi-animation-react/-/semi-animation-react-2.105.0.tgz#58a2daa206d28d1ebe49dff97c4ac16189b91f6f"
-  integrity sha512-XeJbN3ztPi0FWRYTYQi50rCNRVdF09l9dXiIDD8F88+aJRQBBoIft+XguRScO4IqizGuZNLkowozn4j+BOJSxQ==
+"@douyinfe/semi-animation-react@2.105.1":
+  version "2.105.1"
+  resolved "https://registry.yarnpkg.com/@douyinfe/semi-animation-react/-/semi-animation-react-2.105.1.tgz#7b0fc4664e8c75463b20d12b2929347f1b8c0d06"
+  integrity sha512-tb9vBZBsBmGfJZGe4244sJVNZj/CF0cM8InIBZCTPrqP746Mr0zGN4mxH+4ukwFVu7q1fNiKuMqAMslSIMTWGQ==
   dependencies:
-    "@douyinfe/semi-animation" "2.105.0"
-    "@douyinfe/semi-animation-styled" "2.105.0"
+    "@douyinfe/semi-animation" "2.105.1"
+    "@douyinfe/semi-animation-styled" "2.105.1"
     classnames "^2.2.6"
 
-"@douyinfe/semi-animation-styled@2.105.0":
-  version "2.105.0"
-  resolved "https://registry.yarnpkg.com/@douyinfe/semi-animation-styled/-/semi-animation-styled-2.105.0.tgz#a38e179a3431f382970f57993d2b18a4f3a555e3"
-  integrity sha512-hjhDBU//95faMjn11BtQAHEw7pFVOV7FFbgP7H/jRx3xC5HINnT0NGf8BPtlDq8rP1Z2QAJ7F85jOaCCbcAl1g==
+"@douyinfe/semi-animation-styled@2.105.1":
+  version "2.105.1"
+  resolved "https://registry.yarnpkg.com/@douyinfe/semi-animation-styled/-/semi-animation-styled-2.105.1.tgz#f60487c1639f7c8418a04431ea89191189487617"
+  integrity sha512-k4QbOcHXtAS7GJ56TW/bs80dKh6FllDwPEC5kVjLYdbSPVvDx0Y5qNjlbfVKO8GP0QC2d96EiOAtxB3zbPWM/w==
 
-"@douyinfe/semi-animation@2.105.0":
-  version "2.105.0"
-  resolved "https://registry.yarnpkg.com/@douyinfe/semi-animation/-/semi-animation-2.105.0.tgz#55cdea90f97bf45ca30ee613dd48d2466379c376"
-  integrity sha512-9BFId5EXaFUVT0pVlVe6rmdu7GeB0DflBPmwUZDQ6FXqVa6Dd/3sW/mqf2wdnvNAjAAaREH6w1ysqtPBMaVnEg==
+"@douyinfe/semi-animation@2.105.1":
+  version "2.105.1"
+  resolved "https://registry.yarnpkg.com/@douyinfe/semi-animation/-/semi-animation-2.105.1.tgz#b1ac1c18b1dce9ce63d5334dab69c51fa527efac"
+  integrity sha512-AM/nXuZifxvBLYOcI4GKwbzvtM6m6y6V8fYE4jtYUKBvpo4GcgGIsRj17ZwfcHIZC5fxSXNBKyweLD0XDXNfYQ==
   dependencies:
     bezier-easing "^2.1.0"
 
-"@douyinfe/semi-foundation@2.105.0":
-  version "2.105.0"
-  resolved "https://registry.yarnpkg.com/@douyinfe/semi-foundation/-/semi-foundation-2.105.0.tgz#6caa589aa79661461df50048026beb91553838a1"
-  integrity sha512-m2bo4IZ5xdsxnyotAUYmRj4iyDdKaW4vd7DK8vsmve5GRys7BMrezO+1IFP2xkNo4Zxvl8OdBT/2U0jRIj4L7Q==
+"@douyinfe/semi-foundation@2.105.1":
+  version "2.105.1"
+  resolved "https://registry.yarnpkg.com/@douyinfe/semi-foundation/-/semi-foundation-2.105.1.tgz#39e12700a04e1d2a1f6d4577caad062204993c05"
+  integrity sha512-b4/njMbCqUuVt3OgRZApnWBctS4w85nhYSAA06ZP+oBVGdgDVXQ0uW0r7eFLDbWSBgLc4KbuCGORv0jAVhCvow==
   dependencies:
-    "@douyinfe/semi-animation" "2.105.0"
-    "@douyinfe/semi-json-viewer-core" "2.105.0"
+    "@douyinfe/semi-animation" "2.105.1"
+    "@douyinfe/semi-json-viewer-core" "2.105.1"
     "@mdx-js/mdx" "^3.0.1"
     async-validator "^3.5.0"
     classnames "^2.2.6"
@@ -79,44 +79,44 @@
     remark-gfm "^4.0.0"
     scroll-into-view-if-needed "^2.2.24"
 
-"@douyinfe/semi-icons@2.105.0", "@douyinfe/semi-icons@^2.105.0":
-  version "2.105.0"
-  resolved "https://registry.yarnpkg.com/@douyinfe/semi-icons/-/semi-icons-2.105.0.tgz#3eabd80e7019cd98fc4ada0ee0a885eb93c3a3dc"
-  integrity sha512-IQbPOx9w+4tC+KLcw2haVrclvtKGtK0E6lyfTzDmCK7W3ispIq86xtIK5L0NLCa/1C/SQ2TGLtUb/3JkCQ8E/w==
+"@douyinfe/semi-icons@2.105.1", "@douyinfe/semi-icons@^2.105.1":
+  version "2.105.1"
+  resolved "https://registry.yarnpkg.com/@douyinfe/semi-icons/-/semi-icons-2.105.1.tgz#72308e47574cc0998f0fb36596e27050bf147f1a"
+  integrity sha512-pjLTTWRVx/ILqLEgjXiIP14Eg9UiRWCxDyy3fsiIbKhTnkidePIxQ1jai9rJKp84UzQAPyxk6ggyh6dSMh2l9Q==
   dependencies:
     classnames "^2.2.6"
 
-"@douyinfe/semi-illustrations@2.105.0":
-  version "2.105.0"
-  resolved "https://registry.yarnpkg.com/@douyinfe/semi-illustrations/-/semi-illustrations-2.105.0.tgz#8cabdb59c80c521fb187ec5fbd0a948d406f7b59"
-  integrity sha512-PfU5lFoh2eQpYEHkcK1dylm9t0Ziq3t67TBZOqhdCpUZF0j7MOwZIroaUpt1OyjnxFXjMG4zqb6RzQJ1jVeyJA==
+"@douyinfe/semi-illustrations@2.105.1":
+  version "2.105.1"
+  resolved "https://registry.yarnpkg.com/@douyinfe/semi-illustrations/-/semi-illustrations-2.105.1.tgz#b2c96091f890fac0021feebd45ad625d76cdbc5b"
+  integrity sha512-n64YRYCFSxZg4jQWn2od+NRw3wo3eA+QDNLv3eoaOHJISBiRiqiHqpjVq1jsUdKJAym9qmfGlrzw1ZpnTMbjzA==
 
-"@douyinfe/semi-json-viewer-core@2.105.0":
-  version "2.105.0"
-  resolved "https://registry.yarnpkg.com/@douyinfe/semi-json-viewer-core/-/semi-json-viewer-core-2.105.0.tgz#be78b84be69dd7f71ffa3c38f57c2cde59201f4c"
-  integrity sha512-EZa7fnHIJHifJG0pnc+osj3ag5Z5fJciTql4F4K2Vaw3zdHDIvSIp04wrVD8czGDy9y6ciD4HaECHI01Rk877w==
+"@douyinfe/semi-json-viewer-core@2.105.1":
+  version "2.105.1"
+  resolved "https://registry.yarnpkg.com/@douyinfe/semi-json-viewer-core/-/semi-json-viewer-core-2.105.1.tgz#9e83831f056bfa17cd7b4e39518b084557f719fe"
+  integrity sha512-yYz4hOKHxkoy00Kc8J/V8OCh3NUi05e3/jLBISTuuGojSLcEgXKSkHY4b9hqbre8Da7/AzEbIfpQn2ln74y7xg==
   dependencies:
     jsonc-parser "^3.3.1"
 
-"@douyinfe/semi-theme-default@2.105.0":
-  version "2.105.0"
-  resolved "https://registry.yarnpkg.com/@douyinfe/semi-theme-default/-/semi-theme-default-2.105.0.tgz#368b3b1317f8634a4ef1dc5c7dca44015398ab09"
-  integrity sha512-83xm6Zr4OfGORV80W8ojh+FpTg6ToQVbU5HzHgvG1Vmj6cXHfSaMR2uxu7pyYvCTk1tJt/5OX2y5V3TCbPJkQQ==
+"@douyinfe/semi-theme-default@2.105.1":
+  version "2.105.1"
+  resolved "https://registry.yarnpkg.com/@douyinfe/semi-theme-default/-/semi-theme-default-2.105.1.tgz#9a086c4264a01f67ea3a4b7731fe3372097deb99"
+  integrity sha512-xTsIBR9LTIa6RQJilB5y5erjMCNQtHvyO9gVUhRCbrSOZn82BjiETIfTr554CMS+OY+QK3wwYi6ToZdic2hO/w==
 
-"@douyinfe/semi-ui-19@^2.105.0":
-  version "2.105.0"
-  resolved "https://registry.yarnpkg.com/@douyinfe/semi-ui-19/-/semi-ui-19-2.105.0.tgz#3dcdfe27aa3a6f953675786f59232ce34cefe364"
-  integrity sha512-yTgmA4F6hQQoepXwcjqIfIXxkwZPkHQlk/DsqJ8eo7Szchy6ayKtP7rHCn/TSf2tPEYVtX3xVNAyOE4zhV3mIg==
+"@douyinfe/semi-ui-19@^2.105.1":
+  version "2.105.1"
+  resolved "https://registry.yarnpkg.com/@douyinfe/semi-ui-19/-/semi-ui-19-2.105.1.tgz#c337af7eedf3f4948b2b1d0fe0e4c3475665a187"
+  integrity sha512-/CY7EY440hZ5DF9nFhgR0JagIDDOazd3S4YuAEN0QoUV1p019nf09Id4K7dFmZXdNb7xzkfqSUTq4NE1xS9mGg==
   dependencies:
     "@dnd-kit/core" "^6.0.8"
     "@dnd-kit/sortable" "^7.0.2"
     "@dnd-kit/utilities" "^3.2.1"
-    "@douyinfe/semi-animation" "2.105.0"
-    "@douyinfe/semi-animation-react" "2.105.0"
-    "@douyinfe/semi-foundation" "2.105.0"
-    "@douyinfe/semi-icons" "2.105.0"
-    "@douyinfe/semi-illustrations" "2.105.0"
-    "@douyinfe/semi-theme-default" "2.105.0"
+    "@douyinfe/semi-animation" "2.105.1"
+    "@douyinfe/semi-animation-react" "2.105.1"
+    "@douyinfe/semi-foundation" "2.105.1"
+    "@douyinfe/semi-icons" "2.105.1"
+    "@douyinfe/semi-illustrations" "2.105.1"
+    "@douyinfe/semi-theme-default" "2.105.1"
     "@tiptap/core" "^3.10.7"
     "@tiptap/extension-document" "^3.10.7"
     "@tiptap/extension-hard-break" "^3.10.7"
@@ -247,18 +247,18 @@
     http-errors "^2.0.0"
     mime "^3"
 
-"@fastify/session@^11.1.6":
-  version "11.1.6"
-  resolved "https://registry.yarnpkg.com/@fastify/session/-/session-11.1.6.tgz#7559e83183540bcb5bb104e6b9a810f08985a679"
-  integrity sha512-ggv3aRRQGPwPGLurZnKQiJu4cRa5Mnnf41gFeK9lo1tvaMFwqO70Nhx2tS/lREMdLZbwxBW2tRxVUaz0qMEguA==
+"@fastify/session@^11.2.1":
+  version "11.2.1"
+  resolved "https://registry.yarnpkg.com/@fastify/session/-/session-11.2.1.tgz#cb3a3f841d6512ae252969d4ccca68eb0c6885ef"
+  integrity sha512-BWMNRQBDS1ofSAkO9X3RR0hbVasdkbnJovrwY8vZDME2oY1x3iq+OfeDJgdMCy877EfPb/MID6gYR2g02BRcKA==
   dependencies:
     fastify-plugin "^6.0.0"
-    safe-stable-stringify "^2.4.3"
+    safe-stable-stringify "^3.0.0"
 
-"@fastify/static@^10.1.11":
-  version "10.1.11"
-  resolved "https://registry.yarnpkg.com/@fastify/static/-/static-10.1.11.tgz#a6df35fea508cda11bd9b8055b0a2a77aa72717b"
-  integrity sha512-WjEpDqkzOziIipghh4ki3ZNfLCmI1kRWlYKar3+9FiuY2LzoeogKiDqxIH68r6vYUSxvUzyEiV1BOP0yfW+glQ==
+"@fastify/static@^10.1.12":
+  version "10.1.12"
+  resolved "https://registry.yarnpkg.com/@fastify/static/-/static-10.1.12.tgz#a79399a3a3fc94ac520e9239a86dc06106abbcc2"
+  integrity sha512-D0pmf8OgurIsKiIjxC8ZJP/bCYnUSAiU6PS/se/6Me63UoliAu8FqrzDRX8FdgJMqFMXy45ISlfUZ1Gi6AJnqA==
   dependencies:
     "@fastify/accept-negotiator" "^2.0.0"
     "@fastify/error" "^4.0.0"
@@ -1788,10 +1788,10 @@ classnames@^2.2.6:
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.5.1.tgz#ba774c614be0f016da105c858e7159eae8e7687b"
   integrity sha512-saHYOzhIQs6wy2sVxTM6bUDsQO4F50V9RQ22qBpEdCW+I+/Wmke2HOl6lS6dTpdxVhb88/I6+Hs+438c3lfUow==
 
-clearcote@^0.70.0:
-  version "0.70.0"
-  resolved "https://registry.yarnpkg.com/clearcote/-/clearcote-0.70.0.tgz#fa1cc7643602416e6a78c44645ea5f486538d641"
-  integrity sha512-aQhbtIpKr2o0gytconDIqrHJBscM9oN5/6eFi40DoG68VxA8GyUsu8CM0qsCjkkGyE949szmMe3Y9ThXOM1FKQ==
+clearcote@^0.70.5:
+  version "0.70.5"
+  resolved "https://registry.yarnpkg.com/clearcote/-/clearcote-0.70.5.tgz#881fe10fe941aab93a11029cda407fe109933beb"
+  integrity sha512-tJ5U7WMf+tTaXiP0vJQjPq2sutprYHAxsRpyEyAj7qF9B1CODvfLjluhmFEmMwyqvrRadMmTgHF0uH+qPhKJHw==
   dependencies:
     extract-zip "^2.0.1"
     maxmind "^4.3.0"
@@ -3101,10 +3101,10 @@ linkifyjs@^4.3.3:
   resolved "https://registry.yarnpkg.com/linkifyjs/-/linkifyjs-4.3.3.tgz#da08f0eeb4d89a24541d09591fbdcc211eb8fef0"
   integrity sha512-P8aEP5U/D1/IlTY2OeYsErdwh9bGuLE30NcXtKEjgdHcahveQoQwM2yZNsioQHsWFz0P7KKudisbrzCgR0sDHg==
 
-lint-staged@17.6.1:
-  version "17.6.1"
-  resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-17.6.1.tgz#c508809e148021ece4f8ab5f9bfce1cd5d31d4be"
-  integrity sha512-3MXgVN7BERDR/6CXZs2fDHGc+r0+hlvGAa9wqMlVbIS6RVRuaPOnb5SnN6wMXulwfEy9DXVkMVUN/8cUlpPDnw==
+lint-staged@17.6.2:
+  version "17.6.2"
+  resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-17.6.2.tgz#39624370bff9865b66d00fafff2cef2eafe845fa"
+  integrity sha512-c/JaXaXmleubmKUwwp4OAcq55RV9Z3HTUNdqdqPh2srtmP9Of3bcR6o00GoWDUye+9JhMuoYkhYqAVPIOZKcsw==
   dependencies:
     picomatch "^4.0.7"
     string-argv "^0.4.0"
@@ -3965,10 +3965,10 @@ node-mailjet@6.0.11:
     json-bigint "^1.0.0"
     url-join "^4.0.0"
 
-nodemailer@^10.6.0:
-  version "10.6.0"
-  resolved "https://registry.yarnpkg.com/nodemailer/-/nodemailer-10.6.0.tgz#641f15ef6ddba543e1a41f255b83dd45c62e072c"
-  integrity sha512-jWanL7D9GD3jvUDYKmoC5rWTiG8MnBgnN2yV68bgMKip1zUJhiSTyz7Eg+18y8sk5OvdVDzws5nZK5arSI4f5Q==
+nodemailer@^10.6.1:
+  version "10.6.1"
+  resolved "https://registry.yarnpkg.com/nodemailer/-/nodemailer-10.6.1.tgz#cdcfbfde7f10e113a52c79abfe1d6b53bc017ded"
+  integrity sha512-d7kfFfS/tR4Aca+SBvRaQ+MXKNv7d2JiRe5TxaRcFT/kYMh4GGPnW9aKksTIEvyEbA7d/7HYWE4YPDEHxzJj/g==
 
 nodemon@^3.1.14:
   version "3.1.14"
@@ -4837,10 +4837,15 @@ safe-regex2@^5.0.0:
   dependencies:
     ret "~0.5.0"
 
-safe-stable-stringify@^2.3.1, safe-stable-stringify@^2.4.3:
+safe-stable-stringify@^2.3.1:
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/safe-stable-stringify/-/safe-stable-stringify-2.5.0.tgz#4ca2f8e385f2831c432a719b108a3bf7af42a1dd"
   integrity sha512-b3rppTKm9T+PsVCBEOUR46GWI7fdOs00VKZ1+9c1EWDaDMvjQc6tUwuFyIprgGgTcWoVHSKrU8H31ZHA2e0RHA==
+
+safe-stable-stringify@^3.0.0:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/safe-stable-stringify/-/safe-stable-stringify-3.0.1.tgz#8d3640bbb84abf9be5b9cd7e22f00b3ef856c6c0"
+  integrity sha512-tQUOE7EhXynTVsedprW7zvmY7sCETpwRRywh0XiF9Ml+yRAfaP6/UnZ+eDhhrX/tkQZeKBb2AZ1c1L8XCmEyzg==
 
 "safer-buffer@>= 2.1.2 < 3", "safer-buffer@>= 2.1.2 < 3.0.0":
   version "2.1.2"
