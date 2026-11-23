@@ -249,7 +249,7 @@ WARN: ImmoScout: no translator for query parameter "listingtags=holzbalken" (apa
       Please report the search URL at https://github.com/orangecoding/fredy/issues so it can be added.
 ```
 
-The first is expected and needs no action: ImmoScout itself does not offer that filter for that type. The second is a **gap in the table above** - a filter ImmoScout has that Fredy does not know yet - and the log line is the only place it can surface, which is why it names the parameter verbatim. Only the website's own tracking and paging noise (`enteredFrom`, `centerofsearchaddress`, `pagenumber`, `pagesize`, `searchId`, `referrer`, `utm_*`, `cmp_*`) is discarded without a word.
+The first is expected and needs no action: ImmoScout itself does not offer that filter for that type. The second is a **gap in the table above** - a filter ImmoScout has that Fredy does not know yet - and the log line is the only place it can surface, which is why it names the parameter verbatim. Only the website's own tracking and paging noise (`enteredFrom`, `centerofsearchaddress`, `pagenumber`, `pagesize`, `searchId`, `saveSearchId`, `referrer`, `utm_*`, `cmp_*`) is discarded without a word.
 
 Known gap at the time of writing: `listingtags` is a real web parameter that the mobile API accepts for every type, but every value tried against it returned zero results, so the two vocabularies evidently differ. Forwarding it would turn a job silent, so it is dropped and reported until the mapping is known.
 

@@ -162,6 +162,7 @@ describe('#immoscout parameter support', () => {
       'pagenumber',
       'pagesize',
       'searchId',
+      'saveSearchId',
       'referrer',
       'utm_source',
       'utm_campaign',

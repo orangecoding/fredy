@@ -303,6 +303,18 @@ describe('#immoscout-mobile URL conversion', () => {
       expect(logger.warn).not.toHaveBeenCalled();
     });
 
+    // A search opened from the user's saved searches carries the saved search's id. It names the
+    // search, it does not filter it.
+    it('should drop the id of a saved search without a word', () => {
+      const converted = convertWebToMobile(
+        `${BERLIN}/wohnung-mieten?price=-1500.0&saveSearchId=203211456&enteredFrom=saved_search`,
+      );
+
+      expect(converted).toContain('price=-1500');
+      expect(converted).not.toContain('saveSearchId');
+      expect(logger.warn).not.toHaveBeenCalled();
+    });
+
     // A filter we have no translator for must be visible in the logs rather than vanishing: it is
     // the only signal that ImmoScout grew a filter Fredy does not know yet.
     it('should log a filter it has no translator for', () => {
