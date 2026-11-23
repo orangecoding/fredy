@@ -16,21 +16,10 @@
     gap: 0;
   }
 
-  // A settings page reads as one document of chapters, not as a stack of boxes. Keeping the column
-  // narrow means the name, the help text and the control stay within one eye movement of each other
-  // instead of the control drifting off to the right on a wide monitor.
+  // Keeping the column narrow means the name, the help text and the control stay within one eye
+  // movement of each other instead of the control drifting off to the right on a wide monitor.
   &__page {
     max-width: 860px;
-
-    // The tab strip already ends in a rule, so the first chapter does not draw a second one a few
-    // pixels below it.
-    > .segmentParts.semi-card:first-child {
-      border-top: 0;
-
-      .semi-card-header {
-        padding-top: 0;
-      }
-    }
 
     > .settingsShell__groupTitle:first-child {
       margin-top: 0;

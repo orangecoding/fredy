@@ -78,6 +78,10 @@
   // Text inputs: a field one step above the page with a drawn edge.
   --f-input-bg: #181816;
   --f-input-border: #363632;
+  // A field or a well inside a section panel. The panel is already the step above the page, so a
+  // field there in the input colour was the panel's own colour and read as nothing to type into:
+  // it sinks back to the page's tone instead.
+  --f-inset: #11110f;
 
   // Scrims and shadows. Shadows only for things that float (menus, popovers, toasts).
   --f-scrim: rgb(8 8 7 / 72%);
@@ -175,6 +179,8 @@ body[theme-mode='light'] {
 
   --f-input-bg: #ffffff;
   --f-input-border: #d6d4cf;
+  // White on the white panel: the drawn edge already sets a field apart in this theme.
+  --f-inset: #ffffff;
 
   --f-scrim: rgb(25 24 21 / 40%);
   --f-shadow-sm: 0 1px 3px rgb(25 24 21 / 8%);

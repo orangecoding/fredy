@@ -1,20 +1,20 @@
 @import '../../tokens.less';
 
-/* One section of a form or a settings page. A hairline above, the title and its help, then the
-   controls: a page of these reads as one document with chapters rather than as a stack of boxes
-   that all ask for the same attention. The icon a caller hands in is not drawn; a section is
-   named by its title. */
+/* One section of a form or a settings page: a panel one step above the page, its title on a bar
+   of its own, then the controls. It used to be a hairline above an unboxed chapter, which read well
+   in the light theme and not at all in the dark one, where the page, the sections, the fields and
+   the tables were the same near-black and nothing said where one ended. The icon a caller hands in
+   is not drawn; a section is named by its title. */
 .segmentParts.semi-card {
-  background: transparent;
-  border: 0;
-  border-top: 1px solid @color-border;
-  border-radius: 0;
-  margin: 0;
+  background: @color-surface;
+  border: 1px solid @color-border-bright;
+  border-radius: @radius-card;
+  margin: 0 0 @space-4;
   overflow: visible;
 
   .semi-card-header {
-    border-bottom: 0;
-    padding: @space-6 0 @space-4;
+    border-bottom: 1px solid @color-border;
+    padding: @space-4 @space-6;
   }
 
   .semi-card-header-wrapper {
@@ -68,7 +68,75 @@
   }
 
   .semi-card-body {
-    padding: 0 0 @space-7;
+    padding: @space-5 @space-6 @space-6;
+  }
+
+  /* Sunk back to the page's tone: the panel is the step above the page, and a field in the input
+     colour was the panel's own colour in the dark theme. Index.less draws every field with
+     !important, so this has to as well. */
+  .semi-input-wrapper,
+  .semi-input-textarea-wrapper,
+  .semi-select,
+  .semi-tagInput,
+  .semi-cascader,
+  .semi-datepicker .semi-input-wrapper,
+  .semi-autocomplete .semi-input-wrapper {
+    background-color: @color-inset !important;
+  }
+
+  /* A table that is the section's content runs to the panel's edges, under a header band, so its
+     rows read as the panel's rows rather than as a second box floating inside it. Only a table
+     straight in the body: one placed inside other markup keeps its own layout. */
+  .semi-card-body > .semi-table-wrapper {
+    // Semi gives the wrapper `width: 100%`, which held it at the body's width and left the negative
+    // margin on the right with nothing to do.
+    width: auto;
+    margin: 0 -@space-6;
+
+    & + * {
+      margin-top: @space-4;
+    }
+
+    &:first-child {
+      margin-top: -@space-5;
+    }
+
+    &:last-child {
+      margin-bottom: -@space-6;
+    }
+
+    .semi-table-thead > .semi-table-row > .semi-table-row-head {
+      background-color: @color-fill-1 !important;
+    }
+
+    .semi-table-thead > .semi-table-row > .semi-table-row-head:first-child,
+    .semi-table-tbody > .semi-table-row > .semi-table-row-cell:first-child {
+      padding-left: @space-6;
+    }
+
+    .semi-table-thead > .semi-table-row > .semi-table-row-head:last-child,
+    .semi-table-tbody > .semi-table-row > .semi-table-row-cell:last-child {
+      padding-right: @space-6;
+    }
+  }
+
+  /* A section inside a section stays a chapter of it: a hairline above, no box of its own. A panel
+     in a panel is a frame around a frame. */
+  .segmentParts.semi-card {
+    background: transparent;
+    border: 0;
+    border-top: 1px solid @color-border;
+    border-radius: 0;
+    margin: 0;
+
+    .semi-card-header {
+      border-bottom: 0;
+      padding: @space-5 0 @space-3;
+    }
+
+    .semi-card-body {
+      padding: 0 0 @space-5;
+    }
   }
 
   // TagInput chips

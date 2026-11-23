@@ -6,9 +6,9 @@
 @share-w: 18rem;
 @spec-min: 150px;
 
-/* The whole page, heading included, as one column at a reading measure. The sections are chapters
-   of one document separated by hairlines (SegmentPart draws those); a page-wide column left the
-   deal type stranded a foot from its label and every hairline twice as long as anything under it. */
+/* The whole page, heading included, as one column at a reading measure. The sections are panels
+   (SegmentPart draws those); a page-wide column left the deal type stranded a foot from its label
+   and every panel twice as wide as anything in it. */
 .jobMutation {
   width: 100%;
   max-width: @form-measure;
@@ -81,12 +81,15 @@
   width: 100%;
 }
 
-/* The fold that holds everything optional, drawn as one more chapter of the document: a hairline
-   above, the title, what is set, and which way the next click goes. It used to be a filled, bordered
-   box among unboxed sections, which made the one optional part of the form the most prominent. */
+/* The fold that holds everything optional, drawn as one more panel like the sections around it:
+   the title, what is set, and which way the next click goes. Opened, the filters inside are
+   chapters of that panel rather than panels of their own. */
 .jobMutation__refine {
   .semi-collapse-item {
-    border: 0;
+    margin-bottom: @space-4;
+    border: 1px solid @color-border-bright;
+    border-radius: @radius-card;
+    background: @color-surface;
   }
 
   /* Reads as a control rather than a caption: the pointer, the line saying what a click does and
@@ -96,9 +99,9 @@
   .semi-collapse-header {
     align-items: flex-start;
     margin: 0;
-    padding: @space-6 0 @space-4;
-    border-top: 1px solid @color-border;
-    border-radius: 0;
+    padding: @space-4 @space-6;
+    border: 0;
+    border-radius: @radius-card;
     background: transparent;
     font-family: @font-ui;
     font-weight: 400;
@@ -121,6 +124,11 @@
     color: @color-muted;
   }
 
+  .semi-collapse-item-active .semi-collapse-header {
+    border-bottom: 1px solid @color-border;
+    border-radius: @radius-card @radius-card 0 0;
+  }
+
   .semi-collapse-item-active .semi-collapsible-wrapper {
     border-top: 0;
   }
@@ -134,13 +142,29 @@
   }
 
   .semi-collapse-content > div {
-    padding: 0;
+    padding: 0 @space-6;
   }
 
-  /* One level down from the chapters around the fold, so the four filters read as parts of it. */
+  /* One level down from the panels around the fold, so the filters read as parts of it: chapters
+     under a hairline, the first one without, since the header's rule is right above it. */
   .segmentParts.semi-card {
+    background: transparent;
+    border: 0;
+    border-top: 1px solid @color-border;
+    border-radius: 0;
+    margin: 0;
+
+    &:first-child {
+      border-top: 0;
+    }
+
     .semi-card-header {
+      border-bottom: 0;
       padding: @space-5 0 @space-3;
+    }
+
+    .semi-card-body {
+      padding: 0 0 @space-5;
     }
 
     .semi-card-meta-title {
@@ -319,26 +343,16 @@
 
 /* Two seconds of a drawn edge after a jump. Without it the page moves and nothing says which of the
    sections now on screen was the one meant. Amber, because the section is unfinished rather than
-   wrong; offset, because the section itself has no box to draw it on. */
+   wrong; just outside the panel's own edge, so it reads as a mark on the panel. */
 .jobMutation__anchor--highlight .segmentParts {
   outline: 1px solid @color-warning;
-  outline-offset: @space-2;
-  border-radius: @radius-card;
+  outline-offset: 2px;
 }
 
-/* The save bar flat on the page, under a hairline, rather than a raised box with a shadow floating
-   over the last section: the form is one document, and what closes it is a rule and two buttons.
-   Still sticky, so the Save - and the list of what is missing - stays in reach on a long form. */
+/* The save bar is the settings pages' one, a panel floating over the form, now that the sections
+   are panels too. Still sticky, so the Save - and the list of what is missing - stays in reach on a
+   long form. */
 .jobMutation .settingsSaveBar {
-  bottom: 0;
-  margin-top: 0;
-  padding: @space-3 0;
-  border: 0;
-  border-top: 1px solid @color-border;
-  border-radius: 0;
-  background: @color-base;
-  box-shadow: none;
-
   /* Under the readiness list the buttons start a line of their own; at its end, where a form's
      buttons are looked for, rather than under the first word of the list. */
   .settingsSaveBar__actions {

@@ -278,19 +278,30 @@ describe('the form is one calm document (Exposé)', () => {
     expect(formLess).toMatch(/\.jobMutation \{[\s\S]*?max-width: @form-measure;/);
   });
 
-  it('draws the fold as one more hairline chapter, not a filled box', () => {
-    const block = formLess.match(/\.semi-collapse-header \{[\s\S]*?\n {2}\}/);
-    expect(block).not.toBeNull();
-    expect(block[0]).toMatch(/border-top: 1px solid @color-border/);
-    expect(block[0]).toMatch(/background: transparent/);
-    expect(block[0]).not.toMatch(/border-radius: @radius-card|@color-fill/);
+  it('draws the fold as one more panel like the sections, its header without a fill of its own', () => {
+    const item = formLess.match(/\.semi-collapse-item \{[\s\S]*?\n {2}\}/);
+    expect(item).not.toBeNull();
+    expect(item[0]).toMatch(/border: 1px solid @color-border-bright/);
+    expect(item[0]).toMatch(/background: @color-surface/);
+    const header = formLess.match(/\.semi-collapse-header \{[\s\S]*?\n {2}\}/);
+    expect(header).not.toBeNull();
+    expect(header[0]).toMatch(/background: transparent/);
+    expect(header[0]).not.toMatch(/@color-fill/);
   });
 
-  it('closes the form with a flat bar under a hairline rather than a floating box', () => {
+  it('keeps the filters inside the fold as chapters of it, not as panels in a panel', () => {
+    const refine = formLess.match(/\.jobMutation__refine \{[\s\S]*?\n\}/);
+    expect(refine).not.toBeNull();
+    const inner = refine[0].match(/\.segmentParts\.semi-card \{[\s\S]*?\n {2}\}/);
+    expect(inner).not.toBeNull();
+    expect(inner[0]).toMatch(/border: 0;/);
+    expect(inner[0]).toMatch(/background: transparent/);
+  });
+
+  it("closes the form with the settings pages' save bar rather than a look of its own", () => {
     const block = formLess.match(/\.jobMutation \.settingsSaveBar \{[\s\S]*?\n\}/);
     expect(block).not.toBeNull();
-    expect(block[0]).toMatch(/border-top: 1px solid @color-border/);
-    expect(block[0]).toMatch(/box-shadow: none/);
+    expect(block[0]).not.toMatch(/background|border|box-shadow/);
   });
 
   it('keeps the fold hint on a row of its own under the title', () => {

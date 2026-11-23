@@ -227,8 +227,8 @@ describe('figures in the interface face, actions quiet', () => {
     expect(userTableLess).toMatch(/&__admin \{[\s\S]*?border-radius: @radius-pill;/);
   });
 
-  it('marks the restore section with a red hairline rather than a red box', () => {
-    expect(read('ui/src/views/admin/pages/BackupPage.less')).toMatch(/border-top-color: rgb\(@color-error-rgb/);
+  it('marks the restore section with a red edge on its panel rather than a red button', () => {
+    expect(read('ui/src/views/admin/pages/BackupPage.less')).toMatch(/border-color: rgb\(@color-error-rgb/);
   });
 });
 

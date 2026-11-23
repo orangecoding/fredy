@@ -652,7 +652,8 @@ function JobMutator({ source }) {
             // one being offered, this is the one that will still be there once the list is full.
             action={
               <Button
-                theme="borderless"
+                theme="outline"
+                type="tertiary"
                 size="small"
                 icon={<IconPlus />}
                 aria-label={t('jobs.mutation.addProvider')}
@@ -706,7 +707,8 @@ function JobMutator({ source }) {
             helpMode="popover"
             action={
               <Button
-                theme="borderless"
+                theme="outline"
+                type="tertiary"
                 size="small"
                 icon={<IconPlus />}
                 aria-label={t('jobs.mutation.addNotification')}
