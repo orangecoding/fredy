@@ -61,8 +61,8 @@
     "npm": ">=7.0.0"
   },
   "dependencies": {
-    "@douyinfe/semi-icons": "^2.105.1",
-    "@douyinfe/semi-ui-19": "^2.105.1",
+    "@douyinfe/semi-icons": "^2.105.2",
+    "@douyinfe/semi-ui-19": "^2.105.2",
     "@fastify/cookie": "^11.1.5",
     "@fastify/helmet": "^13.2.0",
     "@fastify/session": "^11.2.1",
@@ -74,14 +74,14 @@
     "@vitejs/plugin-react": "6.3.0",
     "adm-zip": "^0.6.1",
     "better-sqlite3": "^13.2.0",
-    "chart.js": "^4.6.1",
+    "chart.js": "^4.6.2",
     "cheerio": "^1.2.0",
-    "clearcote": "^0.70.6",
+    "clearcote": "^0.70.9",
     "cloakbrowser": "^0.6.5",
     "fastify": "^5.12.8",
     "handlebars": "4.7.10",
     "maplibre-gl": "6.19.0",
-    "marked": "^18.2.1",
+    "marked": "^18.3.0",
     "nanoid": "6.0.2",
     "node-cron": "^4.6.0",
     "node-fetch": "3.3.2",
@@ -112,8 +112,8 @@
     "less": "4.9.1",
     "lint-staged": "17.6.2",
     "nodemon": "^3.1.14",
-    "oxfmt": "^0.79.0",
-    "oxlint": "^1.94.0",
+    "oxfmt": "^0.80.0",
+    "oxlint": "^1.95.0",
     "vitest": "^5.1.1"
   }
 }
