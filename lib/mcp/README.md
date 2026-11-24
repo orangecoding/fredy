@@ -162,7 +162,7 @@ Response: markdown table with columns ID, Name, Enabled, Active Listings. Includ
 - `createdBefore` (number, optional) - Only include listings created at or before this unix timestamp in milliseconds (e.g. `1772008362564`).
 - `minPrice` (number, optional) - Only include listings with price >= this value (e.g. `500`). Numeric, no currency symbol.
 - `maxPrice` (number, optional) - Only include listings with price <= this value (e.g. `1500`). Numeric, no currency symbol.
-- `sortField` (string, optional) - Sort by: created_at, price, size, provider, title, is_active
+- `sortField` (string, optional) - Sort by: published_at, created_at, price, price_per_sqm, size, provider, title, is_active. Listings without a value come last in either direction.
 - `sortDir` (string, optional) - Sort direction: asc or desc
 
 Response: markdown table with columns ID, Title, Address, Price, Size, Provider, Active, Created, Job. Includes summary and pagination info. Use `get_listing` for full details.

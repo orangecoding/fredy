@@ -289,6 +289,7 @@
   "listings.sortByListingDate": "Data di pubblicazione",
   "listings.sortByDateAdded": "Data di inserimento",
   "listings.sortByPrice": "Prezzo",
+  "listings.sortByPricePerSqm": "Prezzo al m²",
   "listings.sortByProvider": "Portale",
   "listings.sortPrefix": "Ordina per",
   "listings.sortAscending": "Crescente",

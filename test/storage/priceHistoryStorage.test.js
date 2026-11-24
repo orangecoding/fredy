@@ -40,6 +40,7 @@ describe('price history storage', () => {
         currency TEXT NOT NULL DEFAULT 'EUR',
         size INTEGER,
         rooms INTEGER,
+        price_per_sqm REAL,
         image_url TEXT,
         created_at INTEGER,
         is_active INTEGER DEFAULT 1,
@@ -218,6 +219,28 @@ describe('price history storage', () => {
       storage.applyPriceChange('a', 850, NOW);
 
       expect(chargesOf('a')).toEqual({ charges_included: 0, charges: 180 });
+    });
+
+    it('moves the price per square metre with the price', () => {
+      // Stored at 1000 for 60 m², which is 16.67 per square metre.
+      addListing('a', { price: 1000 });
+      db.prepare('UPDATE listings SET price_per_sqm = 16.67 WHERE id = ?').run('a');
+      storage.applyPriceChange('a', 900, NOW);
+
+      expect(db.prepare('SELECT price_per_sqm FROM listings WHERE id = ?').get('a').price_per_sqm).toBe(15);
+    });
+
+    it('leaves no price per square metre where the size cannot carry one', () => {
+      addListing('unknown');
+      addListing('tiny');
+      db.prepare('UPDATE listings SET size = NULL, price_per_sqm = 20 WHERE id = ?').run('unknown');
+      db.prepare('UPDATE listings SET size = 2, price_per_sqm = 500 WHERE id = ?').run('tiny');
+      storage.applyPriceChange('unknown', 900, NOW);
+      storage.applyPriceChange('tiny', 900, NOW);
+
+      const perSqm = (id) => db.prepare('SELECT price_per_sqm FROM listings WHERE id = ?').get(id).price_per_sqm;
+      expect(perSqm('unknown')).toBeNull();
+      expect(perSqm('tiny')).toBeNull();
     });
 
     it('refuses an unusable price rather than writing a zero', () => {

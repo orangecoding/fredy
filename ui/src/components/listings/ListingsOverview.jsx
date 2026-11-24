@@ -353,6 +353,7 @@ const ListingsOverview = ({ onAddListing } = {}) => {
             <Select.Option value="published_at">{t('listings.sortByListingDate')}</Select.Option>
             <Select.Option value="created_at">{t('listings.sortByDateAdded')}</Select.Option>
             <Select.Option value="price">{t('listings.sortByPrice')}</Select.Option>
+            <Select.Option value="price_per_sqm">{t('listings.sortByPricePerSqm')}</Select.Option>
             <Select.Option value="provider">{t('listings.sortByProvider')}</Select.Option>
           </FilterSelect>
 

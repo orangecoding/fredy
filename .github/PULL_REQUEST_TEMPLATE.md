@@ -29,4 +29,5 @@ mandatory. Keep them on the same line as the label.
 - [ ] `yarn test:offline` passes (or `yarn test` if the change touches a live provider)
 - [ ] `yarn lint` and `yarn format:check` pass
 - [ ] The change is useful for everybody, not a custom tweak for my own setup
+- [ ] I'll donate my first born to the author (not rly, just checking if you read this)
 - [ ] I have read and answered the AI disclosure above honestly
