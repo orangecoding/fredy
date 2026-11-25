@@ -212,7 +212,7 @@
   "jobs.mutation.channelEmptyText": "Choisissez l'un de vos canaux ou rendez-vous dans les paramètres : {{link}}.",
   "jobs.mutation.channelEmptyAction": "Choisir un canal",
   "jobs.mutation.sectionBlacklist": "Liste noire",
-  "jobs.mutation.blacklistHelp": "Si une annonce contient l'un de ces mots, elle est écartée. Saisissez un mot, puis appuyez sur Entrée.",
+  "jobs.mutation.blacklistHelp": "Si une annonce contient l'un de ces termes, elle est écartée, sans tenir compte des majuscules. Saisissez un terme, puis appuyez sur Entrée. Un terme agit aussi à l'intérieur de mots plus longs : bail écarte donc aussi « bailleur ». Entre guillemets droits, seul le mot entier compte : \"bail\" écarte « bail » mais pas « bailleur ». Un terme qui commence par ! est une exception que les autres ignorent : meublé plus !non meublé garde les annonces « non meublé ».",
   "jobs.mutation.blacklistPlaceholder": "Ajouter un mot à filtrer…",
   "jobs.mutation.excludedLocations": "Lieux exclus",
   "jobs.mutation.excludedLocationsHelp": "S’applique uniquement à cette recherche. Recherche les correspondances dans toute partie de l’adresse, sans tenir compte de la casse. Les annonces sans adresse restent autorisées. Les annonces existantes sont conservées ; les nouvelles annonces et les notifications de changement de prix correspondantes sont exclues.",

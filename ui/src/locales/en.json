@@ -212,7 +212,7 @@
   "jobs.mutation.channelEmptyText": "Pick one of your channels, or {{link}} in Settings.",
   "jobs.mutation.channelEmptyAction": "Pick a channel",
   "jobs.mutation.sectionBlacklist": "Blacklist",
-  "jobs.mutation.blacklistHelp": "If a listing contains one of these words, it will be filtered out. Type in a word, then hit enter.",
+  "jobs.mutation.blacklistHelp": "If a listing contains one of these terms, it is filtered out, ignoring case. Type a term, then hit enter. A term also matches inside longer words, so tausch catches “Austausch” too. In double quotes it only matches as a whole word: \"tausch\" catches “nur Tausch”, not “Austausch”. A term starting with ! is an exception the others ignore: befristet plus !unbefristet keeps listings that say “unbefristet”.",
   "jobs.mutation.blacklistPlaceholder": "Add a word for filtering...",
   "jobs.mutation.excludedLocations": "Excluded locations",
   "jobs.mutation.excludedLocationsHelp": "Only applies to this job. Matches any part of the address, ignoring case. Listings without an address are allowed. Existing listings are kept; matching new listings and price-change notifications are excluded.",

@@ -139,6 +139,10 @@ the account ends with the old password.
 -   📎 **Document uploads**: attach the exposé, floor plans and photos to a listing, so they survive
     the portal taking the ad down. A listing with documents is never cleaned up automatically
 -   🖥️ **Web UI** in several languages, with configurable search intervals and working hours
+-   **Blacklist per job**: listings containing one of its terms are dropped, ignoring case. A plain
+    term matches anywhere, also inside longer words. `"tausch"` in double quotes matches only the
+    whole word, and `!unbefristet` is an exception the other terms ignore, so `befristet` plus
+    `!unbefristet` drops "befristet bis 2027" but keeps "unbefristet".
 -   **Location exclusions per job**: enter district names or postal codes beside the job's blacklist
     to reject new listings whose address contains them, ignoring case. Each search has its own list.
     Addresses are checked before and after detail enrichment; unknown addresses remain allowed.

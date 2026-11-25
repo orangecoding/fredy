@@ -212,7 +212,7 @@
   "jobs.mutation.channelEmptyText": "Elige uno de tus canales o {{link}} en los ajustes.",
   "jobs.mutation.channelEmptyAction": "Elegir un canal",
   "jobs.mutation.sectionBlacklist": "Lista negra",
-  "jobs.mutation.blacklistHelp": "Si un anuncio contiene una de estas palabras, se descarta. Escribe una palabra y pulsa Intro.",
+  "jobs.mutation.blacklistHelp": "Si un anuncio contiene uno de estos términos, se descarta, sin distinguir mayúsculas y minúsculas. Escribe un término y pulsa Intro. Un término también actúa dentro de palabras más largas, así que local descarta también «localidad». Entre comillas dobles solo cuenta la palabra entera: \"local\" descarta «local comercial», pero no «localidad». Un término que empieza por ! es una excepción que los demás ignoran: amueblado más !semiamueblado conserva los anuncios «semiamueblado».",
   "jobs.mutation.blacklistPlaceholder": "Añade una palabra para filtrar...",
   "jobs.mutation.excludedLocations": "Ubicaciones excluidas",
   "jobs.mutation.excludedLocationsHelp": "Solo se aplica a esta búsqueda. Busca coincidencias en cualquier parte de la dirección, sin distinguir mayúsculas y minúsculas. Se permiten anuncios sin dirección. Los anuncios existentes se conservan; se excluyen los nuevos anuncios y las notificaciones de cambios de precio que coincidan.",

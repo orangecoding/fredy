@@ -212,7 +212,7 @@
   "jobs.mutation.channelEmptyText": "Kanallarından birini seç ya da ayarlarda {{link}}.",
   "jobs.mutation.channelEmptyAction": "Kanal seç",
   "jobs.mutation.sectionBlacklist": "Kara Liste",
-  "jobs.mutation.blacklistHelp": "Bir ilan bu kelimelerden birini içeriyorsa filtrelenir. Bir kelime yazıp enter tuşuna basın.",
+  "jobs.mutation.blacklistHelp": "Bir ilan bu ifadelerden birini içeriyorsa filtrelenir, büyük/küçük harf fark etmez. Bir ifade yazıp enter tuşuna basın. Bir ifade daha uzun kelimelerin içinde de eşleşir, yani site “sitesi” kelimesini de yakalar. Çift tırnak içinde yalnızca tam kelime sayılır: \"site\" “site içinde” ifadesini yakalar, “sitesi” kelimesini yakalamaz. ! ile başlayan bir ifade, diğerlerinin yok saydığı bir istisnadır: eşyalı ile !yarı eşyalı birlikte “yarı eşyalı” ilanları tutar.",
   "jobs.mutation.blacklistPlaceholder": "Filtrelemek için bir kelime ekleyin...",
   "jobs.mutation.excludedLocations": "Hariç tutulan konumlar",
   "jobs.mutation.excludedLocationsHelp": "Yalnızca bu iş için geçerlidir. Büyük/küçük harf ayrımı yapmadan adresin herhangi bir bölümünde eşleşme arar. Adresi olmayan ilanlara izin verilir. Mevcut ilanlar korunur; eşleşen yeni ilanlar ve fiyat değişikliği bildirimleri hariç tutulur.",

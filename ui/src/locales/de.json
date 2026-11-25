@@ -212,7 +212,7 @@
   "jobs.mutation.channelEmptyText": "Wähle einen Kanal aus, oder {{link}} in den Einstellungen.",
   "jobs.mutation.channelEmptyAction": "Kanal auswählen",
   "jobs.mutation.sectionBlacklist": "Blacklist",
-  "jobs.mutation.blacklistHelp": "Wenn ein Inserat eines dieser Wörter enthält, wird es herausgefiltert. Gib ein Wort ein und bestätige mit Enter.",
+  "jobs.mutation.blacklistHelp": "Enthält ein Inserat einen dieser Begriffe, wird es herausgefiltert, egal ob groß oder klein geschrieben. Gib einen Begriff ein und bestätige mit Enter. Ein Begriff greift auch mitten in längeren Wörtern, tausch trifft also auch „Austausch“. In doppelten Anführungszeichen zählt nur das ganze Wort: \"tausch\" trifft „nur Tausch“, aber nicht „Austausch“. Ein Begriff mit ! davor ist eine Ausnahme, die die anderen übergehen: befristet plus !unbefristet behält Inserate mit „unbefristet“.",
   "jobs.mutation.blacklistPlaceholder": "Wort zum Filtern hinzufügen...",
   "jobs.mutation.excludedLocations": "Ausgeschlossene Orte",
   "jobs.mutation.excludedLocationsHelp": "Gilt nur für diesen Suchauftrag. Erkennt Übereinstimmungen in beliebigen Teilen der Adresse unabhängig von Groß- und Kleinschreibung. Inserate ohne Adresse bleiben erlaubt. Bestehende Inserate bleiben erhalten; passende neue Inserate und Preisänderungsbenachrichtigungen werden ausgeschlossen.",

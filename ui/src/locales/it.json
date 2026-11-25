@@ -212,7 +212,7 @@
   "jobs.mutation.channelEmptyText": "Scegli uno dei tuoi canali oppure {{link}} nelle impostazioni.",
   "jobs.mutation.channelEmptyAction": "Scegli un canale",
   "jobs.mutation.sectionBlacklist": "Lista nera",
-  "jobs.mutation.blacklistHelp": "Se un annuncio contiene una di queste parole, viene scartato. Scrivi una parola e premi Invio.",
+  "jobs.mutation.blacklistHelp": "Se un annuncio contiene uno di questi termini, viene scartato, senza distinguere maiuscole e minuscole. Scrivi un termine e premi Invio. Un termine vale anche dentro parole più lunghe, quindi asta colpisce anche “vasta”. Tra virgolette doppie conta solo la parola intera: \"asta\" colpisce “in asta”, ma non “vasta”. Un termine che inizia con ! è un'eccezione che gli altri ignorano: arredato più !non arredato tiene gli annunci “non arredato”.",
   "jobs.mutation.blacklistPlaceholder": "Aggiungi una parola per filtrare...",
   "jobs.mutation.excludedLocations": "Località escluse",
   "jobs.mutation.excludedLocationsHelp": "Si applica solo a questa ricerca. Cerca corrispondenze in qualsiasi parte dell’indirizzo, senza distinguere maiuscole e minuscole. Gli annunci senza indirizzo sono consentiti. Gli annunci esistenti vengono conservati; i nuovi annunci e le notifiche di variazione del prezzo corrispondenti sono esclusi.",
