@@ -10,6 +10,16 @@
 @nav-icon-cell: 40px;
 @nav-logo: 34px;
 
+/* The width the sidebar takes right now, for whatever is fixed to the viewport beside it and has to
+   stop at its edge: the listing detail's action bar, which sits on the bottom edge on a phone. */
+.app {
+  --nav-width: @nav-wide;
+
+  &:has(.navigate--collapsed) {
+    --nav-width: @nav-narrow;
+  }
+}
+
 /* The sidebar sits on the page colour with one hairline at its edge. It used to be a surface of its
    own, which made it a second panel competing with the content instead of the frame around it. */
 .navigate {

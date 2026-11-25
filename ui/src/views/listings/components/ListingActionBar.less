@@ -7,7 +7,11 @@
    exactly that. The bar is opaque instead, which over a flat app background looks the same. */
 .listing-actionbar {
   position: sticky;
-  top: 0;
+  /* A sticky offset is measured inside the scroll container's padding, so `top: 0` held the bar the
+     content area's top padding below the window edge, with the page scrolling through the strip
+     above it. Pulled up by exactly that padding (App.less, `.app__content`), the opaque bar covers
+     it. */
+  top: -@space-9;
   z-index: 20;
   display: flex;
   align-items: center;
@@ -42,6 +46,7 @@
   // tier - reachable, but never competing with the one thing the page wants you to do.
   &__watch,
   &__more {
+    flex: none;
     width: @control-md;
     border-radius: @radius-pill !important;
     color: @color-muted !important;
@@ -64,6 +69,8 @@
      middle-click and "open in new tab" have to keep working. Drawn as the outlined secondary every
      other button of that rank is. */
   &__open {
+    // An anchor is content-box, and its border made it 2px larger than the buttons beside it.
+    box-sizing: border-box;
     display: inline-flex;
     align-items: center;
     gap: @space-2;
@@ -126,21 +133,30 @@
      back button goes entirely - the browser and the app both have one already. */
   @media (max-width: 768px) {
     position: fixed;
-    inset: auto 0 0 0;
-    top: auto;
+    // From the sidebar's edge rather than the viewport's, or the bar covers the sidebar's foot,
+    // where its toggle and the account menu are. Navigate.less publishes the current width.
+    inset: auto 0 0 var(--nav-width);
     height: auto;
     padding: @space-3 @space-4 calc(@space-3 + env(safe-area-inset-bottom));
     border-top: 1px solid @color-border;
     border-bottom: 0;
 
-    &__back,
     &__spacer,
     &__divider,
     &__open-label {
       display: none;
     }
 
+    // Important, because `.semi-button.semi-button-with-icon` is two classes and sets
+    // `display: inline-flex`, which outranks the single class here whatever loads first.
+    &__back {
+      display: none !important;
+    }
+
+    // Not allowed to shrink: beside the primary button, which takes the rest of the row, the icon
+    // controls were squeezed below their width and the anchor into a narrow pill.
     &__open {
+      flex: none;
       width: @control-lg;
       justify-content: center;
       padding: 0;
@@ -151,13 +167,30 @@
       height: @control-lg;
     }
 
+    // Important, because Index.less sizes every icon-only button through
+    // `.semi-button.semi-button-with-icon-only`, which outranks this single class.
     &__watch,
     &__more {
-      width: @control-lg;
+      width: @control-lg !important;
     }
 
+    // Whatever the row has left, which beside the rail on a small phone is less than the label
+    // needs. Shortened with an ellipsis rather than pushed past the right edge.
     &__primary {
       flex: 1 1 auto;
+      min-width: 0;
+
+      .semi-button-content {
+        min-width: 0;
+      }
+
+      // Semi makes it a flex container, and an ellipsis is only drawn by a block one.
+      .semi-button-content-right {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
     }
   }
 }

@@ -221,3 +221,53 @@ describe('listing detail on a phone', () => {
     expect(narrow).toMatch(/&__tiles \{[^}]*grid-template-columns: minmax\(0, 1fr\);/);
   });
 });
+
+describe('listing detail action bar', () => {
+  const bar = source('components/ListingActionBar.less');
+  const desktop = bar.slice(0, bar.indexOf('@media'));
+  const phone = bar.slice(bar.indexOf('@media (max-width: 768px)'));
+
+  it('sticks flush with the top of the page rather than below the content padding', () => {
+    // A sticky box's offset is measured inside its scroll container's padding. With `top: 0` the bar
+    // stuck 36px below the window edge, and the page scrolled through the strip above it.
+    const app = fs.readFileSync(path.join(detailDir, '../../App.less'), 'utf-8');
+    const paddingTop = app.match(/&__content \{[^}]*?padding: (@[\w-]+)/)?.[1];
+    expect(paddingTop).toBeDefined();
+    expect(desktop).toMatch(new RegExp(`^\\s+top: -${paddingTop};$`, 'm'));
+  });
+
+  it('hides the back button on a phone, against the display Semi gives every button', () => {
+    // `.semi-button.semi-button-with-icon` is two classes and sets `display: inline-flex`, which
+    // outranks a single-class `display: none` no matter which stylesheet loads first.
+    expect(phone).toMatch(/&__back \{[^}]*display: none !important;/);
+  });
+
+  it('keeps the three icon controls one square size on a phone', () => {
+    // As shrinkable flex items next to the growing primary button they were squeezed below their
+    // width, the anchor into a narrow pill. The anchor is also no button: content-box by default,
+    // its border made it 2px larger than the controls beside it.
+    expect(bar).toMatch(/&__watch,\s*&__more \{[^}]*flex: none;/);
+    expect(bar).toMatch(/&__open \{[^}]*box-sizing: border-box;/);
+    expect(phone).toMatch(/&__open \{[^}]*flex: none;/);
+    // Index.less sizes every icon-only button with `.semi-button.semi-button-with-icon-only`, two
+    // classes, so a single-class width of 44px lost and the two buttons stayed 36px wide.
+    expect(phone).toMatch(/&__watch,\s*&__more \{\s*width: @control-lg !important;/);
+  });
+
+  it('lets the primary button give way on a narrow phone instead of running off the screen', () => {
+    // Beside the rail a 400px phone leaves the row 336px, and "Copy application" alone is 172px wide.
+    // Held at its min-content width, the button ran past the right edge.
+    const primary = phone.slice(phone.indexOf('&__primary {'));
+    expect(primary).toMatch(/^\s+min-width: 0;$/m);
+    expect(primary).toMatch(/\.semi-button-content-right \{[^}]*text-overflow: ellipsis;/);
+  });
+
+  it('starts the bottom bar where the sidebar ends instead of covering its foot', () => {
+    // Fixed to the viewport, the bar ran under the sidebar as well and hid its toggle and the account
+    // menu. The sidebar is wide or a rail, so it publishes whichever width it currently has.
+    expect(phone).toMatch(/inset: auto 0 0 var\(--nav-width\);/);
+    const nav = fs.readFileSync(path.join(detailDir, '../../components/navigation/Navigate.less'), 'utf-8');
+    expect(nav).toMatch(/^\.app \{[^}]*--nav-width: @nav-wide;/m);
+    expect(nav).toMatch(/&:has\(\.navigate--collapsed\) \{\s*--nav-width: @nav-narrow;/);
+  });
+});
