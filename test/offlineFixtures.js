@@ -169,24 +169,28 @@ export async function readFixture(url, options) {
 }
 
 /**
- * Immowelt's and SeLoger's listings come from the search BFF they share, which can only be reached
- * from inside a browser that holds a DataDome cookie. Offline mode therefore replaces the whole
- * transport module rather than a `fetch` or the extractor, and serves the two fixtures it would
- * have produced - the ones of whichever provider the site belongs to, since both run through the
- * very same module.
+ * Immowelt's and SeLoger's listings come from the result page and the search BFF they share, both
+ * only reachable from inside a browser that holds a DataDome cookie. Offline mode therefore
+ * replaces the whole transport module rather than a `fetch` or the extractor, and serves the
+ * fixtures it would have produced - the ones of whichever provider the site belongs to, since both
+ * run through the very same module. A provider without a result page recording gets null for it,
+ * which is what production gets for a page that never carried its listings.
  *
  * @param {'immowelt'|'seloger'} [provider] the provider whose recording to serve
- * @returns {Promise<{classifieds: any[], detailHtml: string|null}>} the recorded BFF responses
+ * @returns {Promise<{classifieds: any[], detailHtml: string|null, resultPageHtml: string|null}>}
+ *   the recorded responses
  */
 export async function readClassifiedFixtures(provider = 'immowelt') {
-  const [rawClassifieds, detailHtml] = await Promise.all([
+  const [rawClassifieds, detailHtml, resultPageHtml] = await Promise.all([
     tryReadFile(path.join(FIXTURES_DIR, `${provider}_classifieds.json`)),
     tryReadFile(path.join(FIXTURES_DIR, `${provider}_detail.html`)),
+    tryReadFile(path.join(FIXTURES_DIR, `${provider}_serp.html`)),
   ]);
 
   return {
     classifieds: rawClassifieds ? JSON.parse(rawClassifieds) : [],
     detailHtml,
+    resultPageHtml,
   };
 }
 

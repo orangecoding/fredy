@@ -10,7 +10,7 @@ vi.mock('../../../lib/services/logger.js', () => ({
   default: { warn: vi.fn(), error: vi.fn(), debug: vi.fn(), info: vi.fn() },
 }));
 
-const { searchClassifieds, fetchExposeHtml, probeExpose, releaseSession } =
+const { searchClassifieds, fetchExposeHtml, fetchResultPageHtml, probeExpose, releaseSession } =
   await import('../../../lib/services/immowelt/immoweltBff.js');
 const { SITES } = await import('../../../lib/services/immowelt/site.js');
 
@@ -28,6 +28,9 @@ let requests;
 /** Every url a page was warmed on, in order. */
 let gotos;
 
+/** Every selector a page was asked to wait for, in order. */
+let selectors;
+
 /**
  * A browser whose page runs the evaluated function in-process against a stubbed `fetch`.
  *
@@ -37,15 +40,22 @@ let gotos;
  *
  * @param {(url: string, init?: any) => {status: number, body: string, stream?: any}} handler answers one
  *   request; `stream` becomes the response's `body` stream
+ * @param {{resultPage?: string}} [options] `resultPage` is the markup a navigation ends on once the
+ *   waited-for tag is there; without it the tag never appears
  * @returns {any} something shaped enough like a puppeteer browser
  */
-function fakeBrowser(handler) {
+function fakeBrowser(handler, { resultPage } = {}) {
   const page = {
     isClosed: () => false,
     goto: async (url) => {
       gotos.push(String(url));
     },
     waitForFunction: async () => {},
+    waitForSelector: async (selector) => {
+      selectors.push(selector);
+      if (resultPage == null) throw new Error(`Waiting for selector \`${selector}\` failed`);
+    },
+    content: async () => resultPage ?? '<html>device check</html>',
     close: async () => {},
     evaluate: async (fn, ...args) => {
       const original = globalThis.fetch;
@@ -83,6 +93,53 @@ function listResponse(url) {
   const ids = url.replace('/classifiedList/', '').split(',');
   return JSON.stringify(ids.map((id) => ({ id, url: `https://www.immowelt.de/expose/${id}` })));
 }
+
+describe('#immowelt result page transport', () => {
+  const SEARCH_URL =
+    'https://www.immowelt.de/classified-search?distributionTypes=Rent&locations=AD08DE6345&order=DateDesc';
+
+  beforeEach(() => {
+    requests = [];
+    gotos = [];
+    selectors = [];
+  });
+
+  it('navigates the warm page to the result page and waits for the tag the listings come in', async () => {
+    const browser = fakeBrowser(() => ({ status: 200, body: '' }), { resultPage: '<html>result page</html>' });
+
+    expect(await fetchResultPageHtml(browser, SEARCH_URL, DE)).toBe('<html>result page</html>');
+    expect(gotos).toEqual(['https://www.immowelt.de/', SEARCH_URL]);
+    expect(selectors).toEqual(['#__UFRN_FETCHER__']);
+    await releaseSession(browser);
+  });
+
+  // The exposé fetches that follow have to run from the session that has just passed the device
+  // check, and on the same origin.
+  it('leaves the exposé fetches on the page it navigated', async () => {
+    let created = 0;
+    const base = fakeBrowser(() => ({ status: 200, body: '<html>expose</html>' }), { resultPage: '<html></html>' });
+    const browser = {
+      newPage: async () => {
+        created += 1;
+        return base.newPage();
+      },
+    };
+
+    await fetchResultPageHtml(browser, SEARCH_URL, DE);
+    expect(await fetchExposeHtml(browser, 'https://www.immowelt.de/expose/abc')).toBe('<html>expose</html>');
+    expect(created).toBe(1);
+    await releaseSession(browser);
+  });
+
+  // Still on DataDome's device check when the wait runs out: the caller asks the BFF instead, so the
+  // markup of the wall must not be handed on as if it were a result page.
+  it('answers null when the page never carries its listings', async () => {
+    const browser = fakeBrowser(() => ({ status: 200, body: '' }));
+
+    expect(await fetchResultPageHtml(browser, SEARCH_URL, DE)).toBeNull();
+    await releaseSession(browser);
+  });
+});
 
 describe('#immowelt bff transport', () => {
   beforeEach(() => {

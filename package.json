@@ -80,6 +80,7 @@
     "cloakbrowser": "^0.6.5",
     "fastify": "^5.12.8",
     "handlebars": "4.7.10",
+    "lz-string": "^1.5.0",
     "maplibre-gl": "6.19.0",
     "marked": "^18.3.0",
     "nanoid": "6.0.2",

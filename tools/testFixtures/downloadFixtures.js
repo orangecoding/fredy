@@ -10,6 +10,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { extractFirstDetailUrl } from './extractDetailUrl.js';
 import { siteOf } from '../../lib/services/immowelt/site.js';
+import { SEARCH_RESULTS_MARKER } from '../../lib/services/immowelt/embeddedState.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '../..');
@@ -608,6 +609,34 @@ function trimExpose(detailHtml, exposeUrl) {
 }
 
 /**
+ * A result page cut down to the script tag its listings are embedded in. The live page is ~850 KB
+ * of micro-frontend bootstrap around a ~100 KB tag.
+ *
+ * @param {string} html the result page source
+ * @param {string} searchUrl the url it was loaded from, for the fixture's header comment
+ * @returns {string|null} the trimmed page, or null when the page carries no listings tag
+ */
+export function trimResultPage(html, searchUrl) {
+  const open = html.indexOf(`<script id="${SEARCH_RESULTS_MARKER}">`);
+  const close = open < 0 ? -1 : html.indexOf('</script>', open);
+  if (close < 0) return null;
+
+  return `<!doctype html>
+<!--
+  Trimmed capture of ${searchUrl}: the \`${SEARCH_RESULTS_MARKER}\` tag immowelt's search reads its
+  listings out of, verbatim, so a change on the portal's side breaks the offline test the way it
+  breaks production.
+-->
+<html lang="de">
+  <head>
+    ${html.slice(open, close + '</script>'.length)}
+  </head>
+  <body></body>
+</html>
+`;
+}
+
+/**
  * The exposé to record: the first advert on one of the provider's own sites.
  *
  * SeLoger's results carry Belles Demeures' adverts too, whose links the transport refuses to fetch,
@@ -627,9 +656,10 @@ export function pickExposeLink(links, provider) {
  * nothing here can be fetched with a plain `fetch` - the providers' shared transport, which runs
  * inside the browser page, is used instead. The fixtures mirror exactly what it returns: the
  * `/classifiedList` payload and one exposé's markup, plus - for immowelt, whose suite pins the
- * server-state path - that exposé's embedded server state on its own. SeLoger's are recorded
- * trimmed already (see {@link LIST_FIXTURE_ADS} and {@link trimExpose}); immowelt's are trimmed by
- * hand, and a download replaces them with the full capture.
+ * server-state path - that exposé's embedded server state on its own, and the result page its search
+ * reads (see {@link trimResultPage}). SeLoger's are recorded trimmed already (see
+ * {@link LIST_FIXTURE_ADS} and {@link trimExpose}); immowelt's are trimmed by hand, and a download
+ * replaces them with the full capture.
  *
  * @param {'immowelt'|'seloger'} name the provider, which is also the fixtures' prefix
  * @param {import('../../lib/types/providerConfig.js').ProviderConfig} runConfig the initialized provider config
@@ -640,10 +670,22 @@ export function pickExposeLink(links, provider) {
 async function downloadClassifiedFixtures(name, runConfig, launchBrowser, closeBrowser) {
   console.log(`\nDownloading ${name}...`);
 
-  const { fetchExposeHtml, releaseSession } = await import('../../lib/services/immowelt/immoweltBff.js');
+  const { fetchExposeHtml, fetchResultPageHtml, releaseSession } =
+    await import('../../lib/services/immowelt/immoweltBff.js');
   const browser = await launchBrowser(runConfig.url, {});
 
   try {
+    if (name === 'immowelt') {
+      const resultPage = await fetchResultPageHtml(browser, runConfig.url, siteOf(runConfig.url));
+      const trimmed = resultPage == null ? null : trimResultPage(resultPage, runConfig.url);
+      if (trimmed == null) {
+        console.warn('  Result page carried no listings - skipping result page fixture');
+      } else {
+        await writeFile(path.join(FIXTURES_DIR, 'immowelt_serp.html'), trimmed, 'utf-8');
+        console.log('  Saved immowelt_serp.html');
+      }
+    }
+
     const classifieds = await runConfig.getListings(runConfig.url, browser);
     if (!classifieds?.length) {
       console.warn(`  ${name} returned no classifieds - skipping fixtures`);
