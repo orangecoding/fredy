@@ -1362,7 +1362,7 @@
   "jobs.mutation.commuteAction.exclude": "Les écarter complètement",
   "jobs.mutation.commuteActionHelp.mark": "Rien n'est filtré. Les annonces au-delà de la limite sont simplement colorées sur la carte et sur leurs fiches.",
   "jobs.mutation.commuteActionHelp.notify": "L'annonce est enregistrée et affichée comme d'habitude, elle ne déclenche simplement pas de notification.",
-  "jobs.mutation.commuteActionHelp.exclude": "L'annonce est aussi retirée de la liste. La décision est prise la première fois que Fredy la voit : une annonce dont le temps de trajet n'était pas encore connu est donc conservée.",
+  "jobs.mutation.commuteActionHelp.exclude": "L'annonce est aussi retirée de la liste. Une annonce dont le temps de trajet n'est connu que plus tard est retirée à ce moment-là, sauf si vous l'avez déjà ajoutée aux favoris, lui avez donné un statut, écrit une note ou travaillé dessus autrement.",
   "jobs.mutation.summaryCommute": "Temps de trajet limité pour {{count}} lieu(x)",
   "jobs.mutation.commuteOrphanedLimits": "Une limite de temps de trajet a été définie pour {{labels}}, mais aucune adresse ne porte plus ce nom. Elle n'est pas appliquée. Si vous modifiez quoi que ce soit ici, elle sera supprimée.",
   "jobs.mutation.commuteActionIdle": "Prend effet dès que vous définissez une limite ci-dessus.",

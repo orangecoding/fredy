@@ -1362,7 +1362,7 @@
   "jobs.mutation.commuteAction.exclude": "Filter them out completely",
   "jobs.mutation.commuteActionHelp.mark": "Nothing is filtered. Listings past the limit are simply coloured on the map and on their cards.",
   "jobs.mutation.commuteActionHelp.notify": "The listing is saved and shown as usual, it just does not trigger a notification.",
-  "jobs.mutation.commuteActionHelp.exclude": "The listing is removed from the list as well. This is decided the first time Fredy sees it, so a listing whose travel time was not known yet is kept.",
+  "jobs.mutation.commuteActionHelp.exclude": "The listing is removed from the list as well. A listing whose travel time is only known later is removed once it is, unless you already put it on your watchlist, set a status, wrote a note or otherwise worked with it.",
   "jobs.mutation.summaryCommute": "Travel time limit on {{count}} place(s)",
   "jobs.mutation.commuteOrphanedLimits": "A travel time limit was set for {{labels}}, but there is no address by that name any more. It is not being applied. Change anything here and it will be removed.",
   "jobs.mutation.commuteActionIdle": "Takes effect once you set a limit above.",

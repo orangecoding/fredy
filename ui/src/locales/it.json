@@ -1362,7 +1362,7 @@
   "jobs.mutation.commuteAction.exclude": "Escludili del tutto",
   "jobs.mutation.commuteActionHelp.mark": "Non viene filtrato nulla. Gli annunci oltre il limite vengono solo colorati sulla mappa e sulle loro schede.",
   "jobs.mutation.commuteActionHelp.notify": "L'annuncio viene salvato e mostrato come sempre, solo che non fa scattare alcuna notifica.",
-  "jobs.mutation.commuteActionHelp.exclude": "L'annuncio viene tolto anche dall'elenco. Si decide la prima volta che Fredy lo vede, quindi un annuncio il cui tempo di percorrenza non era ancora noto viene conservato.",
+  "jobs.mutation.commuteActionHelp.exclude": "L'annuncio viene tolto anche dall'elenco. Un annuncio il cui tempo di percorrenza si conosce solo più tardi viene tolto in quel momento, a meno che tu non l'abbia già aggiunto ai preferiti, gli abbia dato uno stato, scritto una nota o ci abbia lavorato in altro modo.",
   "jobs.mutation.summaryCommute": "Limite di percorrenza su {{count}} luogo/luoghi",
   "jobs.mutation.commuteOrphanedLimits": "È impostato un limite di percorrenza per {{labels}}, ma non esiste più un indirizzo con quel nome. Non viene applicato. Appena modifichi qualcosa qui, verrà rimosso.",
   "jobs.mutation.commuteActionIdle": "Ha effetto non appena imposti un limite sopra.",

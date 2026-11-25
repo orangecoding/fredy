@@ -1362,7 +1362,7 @@
   "jobs.mutation.commuteAction.exclude": "Komplett herausfiltern",
   "jobs.mutation.commuteActionHelp.mark": "Es wird nichts gefiltert. Inserate über dem Limit werden nur auf der Karte und in der Liste farblich markiert.",
   "jobs.mutation.commuteActionHelp.notify": "Das Inserat wird wie gewohnt gespeichert und angezeigt, löst aber keine Benachrichtigung aus.",
-  "jobs.mutation.commuteActionHelp.exclude": "Das Inserat verschwindet auch aus der Liste. Entschieden wird das beim ersten Fund, ein Inserat ohne bekannte Fahrzeit bleibt also erhalten.",
+  "jobs.mutation.commuteActionHelp.exclude": "Das Inserat verschwindet auch aus der Liste. Ein Inserat, dessen Fahrzeit erst später bekannt wird, verschwindet dann, außer du hast es schon auf die Watchlist gesetzt, ihm einen Status gegeben, eine Notiz geschrieben oder anders damit gearbeitet.",
   "jobs.mutation.summaryCommute": "Fahrzeit-Limit für {{count}} Ort(e)",
   "jobs.mutation.commuteOrphanedLimits": "Für {{labels}} war ein Fahrzeit-Limit gesetzt, eine Adresse mit diesem Namen gibt es aber nicht mehr. Es greift nicht. Sobald du hier etwas änderst, wird es entfernt.",
   "jobs.mutation.commuteActionIdle": "Greift, sobald du oben ein Limit setzt.",

@@ -8,6 +8,7 @@ import { vi, describe, it, expect, beforeEach } from 'vitest';
 const root = (await import('node:path')).resolve('.');
 const storagePath = root + '/lib/services/storage/listingsStorage.js';
 const settingsPath = root + '/lib/services/storage/settingsStorage.js';
+const jobStoragePath = root + '/lib/services/storage/jobStorage.js';
 const clientPath = root + '/lib/services/transit/transitousClient.js';
 const reachabilityPath = root + '/lib/services/transit/reachabilityService.js';
 const planPath = root + '/lib/services/transit/travelTimeService.js';
@@ -47,7 +48,18 @@ async function loadSweeper() {
     saveListingTravelTimes: (listingId, entries, _at, opts) =>
       state.saved.push({ listingId, entries, stamp: opts?.stamp !== false }),
     recordTravelTimeFailure: (listingId) => state.failures.push(listingId),
+    attachTravelTimes: (rows) => {
+      for (const row of rows) {
+        if (state.attached.has(row.id)) row.travelTimes = state.attached.get(row.id);
+      }
+      return rows;
+    },
+    deleteUntouchedListingsById: (ids) => {
+      state.deleted.push(...ids);
+      return { changes: ids.length };
+    },
   }));
+  vi.doMock(jobStoragePath, () => ({ getJob: (id) => state.jobs[id] ?? null }));
   vi.doMock(settingsPath, () => ({
     getSettings: async () => state.settings,
     getUserSettings: (userId) => ({ home_addresses: state.addressesByUser[userId] ?? [] }),
@@ -188,6 +200,11 @@ beforeEach(() => {
     stored: new Map(),
     saved: [],
     failures: [],
+    // What the stored rows read back as once attached to a listing, which is what the commute
+    // re-check judges on.
+    attached: new Map(),
+    deleted: [],
+    jobs: { j1: { id: 'j1', userId: 'u1', commuteFilter: null } },
     addressesByUser: { u1: [address()] },
     settings: {
       travelTimeLimitPerRun: 500,
@@ -664,6 +681,88 @@ describe('updateTravelTimesForListings', () => {
 
     expect(await updateForListings([{ id: 'n1', latitude: LAT, longitude: LNG }], [], { now: NOW })).toBe(0);
     expect(state.reachabilityCalls).toHaveLength(0);
+  });
+
+  it('routes every street address of a new listing, not only the first one', async () => {
+    const addresses = [address({ label: 'Home', mode: 'bike' }), address({ label: 'Work', mode: 'bike' })];
+
+    const { updateForListings } = await loadSweeper();
+    const updated = await updateForListings([{ id: 'n1', latitude: LAT, longitude: LNG }], addresses, { now: NOW });
+
+    // One routing per listing used to be the whole budget here, so the second address was always put
+    // off to a sweep, and a commute limit on it could not hold the listing back.
+    expect(state.streetCalls).toHaveLength(2);
+    expect(updated).toBe(1);
+    expect(state.saved[0].entries.map((entry) => entry.label)).toEqual(['Home', 'Work']);
+    expect(state.saved[0].stamp).toBe(true);
+  });
+});
+
+describe('commute re-check after a sweep', () => {
+  const bikeTo = (minutes, { label = 'Home', estimate = true } = {}) => [{ label, estimate, bike: { minutes } }];
+
+  beforeEach(() => {
+    state.addressesByUser.u1 = [address({ mode: 'bike' })];
+    state.jobs.j1.commuteFilter = { action: 'exclude', limits: { Home: 29 } };
+  });
+
+  it('removes a listing whose time arrived over the limit of a job that excludes', async () => {
+    state.attached.set('l1', bikeTo(41));
+
+    const { run } = await loadSweeper();
+    await run({ now: NOW });
+
+    expect(state.deleted).toEqual(['l1']);
+  });
+
+  it.each(['notify', 'mark'])('leaves the listing of a job that only does %s alone', async (action) => {
+    state.jobs.j1.commuteFilter.action = action;
+    state.attached.set('l1', bikeTo(41));
+
+    const { run } = await loadSweeper();
+    await run({ now: NOW });
+
+    expect(state.deleted).toEqual([]);
+  });
+
+  it('keeps a listing within the limit', async () => {
+    state.attached.set('l1', bikeTo(25));
+
+    const { run } = await loadSweeper();
+    await run({ now: NOW });
+
+    expect(state.deleted).toEqual([]);
+  });
+
+  it('gives an estimate the same slack the first pass does', async () => {
+    // 32 minutes against 29 is inside the tolerance for an estimate, and over it for an exact time.
+    state.due.push({ id: 'l2', latitude: LAT, longitude: LNG, job_id: 'j1', user_id: 'u1' });
+    state.attached.set('l1', bikeTo(32));
+    state.attached.set('l2', bikeTo(32, { estimate: false }));
+
+    const { run } = await loadSweeper();
+    await run({ now: NOW });
+
+    expect(state.deleted).toEqual(['l2']);
+  });
+
+  it('keeps a listing that still has no answer', async () => {
+    const { run } = await loadSweeper();
+    await run({ now: NOW });
+
+    expect(state.deleted).toEqual([]);
+  });
+
+  it('judges every listing by the limits of its own job', async () => {
+    state.jobs.j2 = { id: 'j2', userId: 'u1', commuteFilter: null };
+    state.due.push({ id: 'l2', latitude: LAT, longitude: LNG, job_id: 'j2', user_id: 'u1' });
+    state.attached.set('l1', bikeTo(41));
+    state.attached.set('l2', bikeTo(41));
+
+    const { run } = await loadSweeper();
+    await run({ now: NOW });
+
+    expect(state.deleted).toEqual(['l1']);
   });
 });
 

@@ -1362,7 +1362,7 @@
   "jobs.mutation.commuteAction.exclude": "Descartarlos del todo",
   "jobs.mutation.commuteActionHelp.mark": "No se filtra nada. Los anuncios que pasan del límite solo se colorean en el mapa y en sus tarjetas.",
   "jobs.mutation.commuteActionHelp.notify": "El anuncio se guarda y se muestra como siempre, solo que no dispara ningún aviso.",
-  "jobs.mutation.commuteActionHelp.exclude": "El anuncio se quita también de la lista. Se decide la primera vez que Fredy lo ve, así que un anuncio cuyo tiempo de viaje aún no se conocía se conserva.",
+  "jobs.mutation.commuteActionHelp.exclude": "El anuncio se quita también de la lista. Un anuncio cuyo tiempo de viaje se conoce más tarde se quita en ese momento, salvo que ya lo hayas añadido a favoritos, le hayas puesto un estado, escrito una nota o trabajado con él de otro modo.",
   "jobs.mutation.summaryCommute": "Límite de tiempo de viaje en {{count}} sitio(s)",
   "jobs.mutation.commuteOrphanedLimits": "Hay un límite de tiempo de viaje puesto para {{labels}}, pero ya no existe ninguna dirección con ese nombre. No se está aplicando. En cuanto cambies algo aquí, se quitará.",
   "jobs.mutation.commuteActionIdle": "Surte efecto en cuanto pongas un límite arriba.",

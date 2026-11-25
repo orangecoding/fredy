@@ -1322,7 +1322,7 @@
   "jobs.mutation.commuteAction.exclude": "Tamamen filtrele",
   "jobs.mutation.commuteActionHelp.mark": "Hiçbir şey filtrelenmez. Sınırı aşan ilanlar yalnızca haritada ve kartlarında renklendirilir.",
   "jobs.mutation.commuteActionHelp.notify": "İlan her zamanki gibi kaydedilir ve gösterilir, sadece bildirim tetiklemez.",
-  "jobs.mutation.commuteActionHelp.exclude": "İlan listeden de çıkar. Buna ilk görüldüğünde karar verilir, yani yolculuk süresi henüz bilinmeyen bir ilan korunur.",
+  "jobs.mutation.commuteActionHelp.exclude": "İlan listeden de çıkar. Yolculuk süresi sonradan öğrenilen bir ilan o zaman çıkarılır; ancak onu zaten Takip Listesine eklediysen, durum verdiysen, not yazdıysan ya da başka şekilde üzerinde çalıştıysan kalır.",
   "jobs.mutation.summaryCommute": "{{count}} yer için yolculuk süresi sınırı",
   "jobs.mutation.commuteOrphanedLimits": "{{labels}} için bir yolculuk süresi sınırı ayarlanmıştı ama artık bu isimde bir adres yok. Uygulanmıyor. Burada bir şey değiştirdiğinde kaldırılacak.",
   "jobs.mutation.commuteActionIdle": "Yukarıda bir sınır belirlediğinde devreye girer.",
