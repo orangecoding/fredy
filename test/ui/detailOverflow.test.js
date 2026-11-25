@@ -23,11 +23,14 @@ function block(relative, element) {
 }
 
 describe('long text in the listing detail stays inside its box (#537)', () => {
-  it('caps a line badge, because coaches carry their whole route as the line name', () => {
+  it('caps a line badge in width and wraps a long name inside it instead of cutting it short', () => {
+    // An ellipsis turned "FlixBus N1912" into "FlixBus N19…", and the title holding the rest cannot
+    // be reached on a phone.
     const line = block('components/transit/transit.less', 'line');
     expect(line).toMatch(/max-width: \d/);
-    expect(line).toMatch(/overflow: hidden;/);
-    expect(line).toMatch(/text-overflow: ellipsis;/);
+    expect(line).toMatch(/overflow-wrap: anywhere;/);
+    expect(line).not.toMatch(/white-space: nowrap;/);
+    expect(line).not.toMatch(/text-overflow: ellipsis;/);
   });
 
   it('lets the job chip grow with a name that wraps', () => {

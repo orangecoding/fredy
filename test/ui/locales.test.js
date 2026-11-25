@@ -22,6 +22,7 @@ import { SCAM_SIGNALS } from '../../ui/src/services/listings/scamSignals.js';
 import { PLACEHOLDERS, FLAG_PLACEHOLDERS } from '../../lib/services/application/placeholders.js';
 import { TEMPLATE_LANGUAGES } from '../../lib/services/application/templates/index.js';
 import { TOUR_STEPS, stepBodyKey, stepTitleKey } from '../../ui/src/services/tour/tourSteps.js';
+import { modeLabelKey } from '../../ui/src/components/transit/transitFormat.js';
 
 const localeDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '../../ui/src/locales');
 const donateComponent = fs.readFileSync(path.join(localeDir, '../components/donate/Donate.jsx'), 'utf-8');
@@ -173,6 +174,30 @@ const COMPUTED_KEYS = [
   ...['In', 'Ago'].flatMap((direction) =>
     ['Minutes', 'Hours', 'Day', 'Days'].map((unit) => `dashboard.time${direction}${unit}`),
   ),
+  // A line badge's tooltip names the mode MOTIS sent for the departure. These are the concrete
+  // modes a board can receive (`TRANSIT` expanded, ride sharing left out, plus `METRO` that feeds
+  // still send). A missing one put the raw key into the tooltip, `transit.mode.suburban S8`.
+  ...[
+    'BUS',
+    'COACH',
+    'TRAM',
+    'SUBWAY',
+    'METRO',
+    'SUBURBAN',
+    'RAIL',
+    'HIGHSPEED_RAIL',
+    'LONG_DISTANCE',
+    'NIGHT_RAIL',
+    'REGIONAL_RAIL',
+    'REGIONAL_FAST_RAIL',
+    'FERRY',
+    'AIRPLANE',
+    'ODM',
+    'FUNICULAR',
+    'AERIAL_LIFT',
+    'OTHER',
+    'UNKNOWN',
+  ].map(modeLabelKey),
 ];
 
 /**

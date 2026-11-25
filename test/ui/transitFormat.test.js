@@ -62,9 +62,8 @@ describe('transitFormat', () => {
   });
 
   describe('lineTitle', () => {
-    it('names the mode and the full line, which the badge may cut short', () => {
-      const route = 'München, Reichenbachplatz → Stuttgart, Charlottenplatz';
-      expect(lineTitle({ mode: 'COACH', line: route }, t)).toBe(`transit.mode.coach ${route}`);
+    it('names the mode next to the line', () => {
+      expect(lineTitle({ mode: 'COACH', line: 'FlixBus N1912' }, t)).toBe('transit.mode.coach FlixBus N1912');
       expect(lineTitle({ mode: 'BUS', line: '738' }, t)).toBe('transit.mode.bus 738');
     });
 

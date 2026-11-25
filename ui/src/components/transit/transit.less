@@ -55,9 +55,11 @@
      way a line badge is at the stop itself. Set inline by the component, with a text colour
      computed against it.
 
-     Capped, because a long distance coach carries its whole route as the line name. Uncapped, the
-     badge set the width of the row's first column, squeezed the destination down to one letter
-     and ran under the time; in a popup it stuck out on the right. The full name is in the title. */
+     Capped in width and wrapped inside it, never cut short. Uncapped and on one line, a long name
+     set the width of the row's first column, squeezed the destination down to one letter and ran
+     under the time; in a popup it stuck out on the right. An ellipsis kept it in the row but cut off
+     the part that tells lines apart ("FlixBus N19…"), and a title to read the rest is out of reach
+     on a phone. A name that fits stays on one line, the row only grows for one that does not. */
   &__line {
     min-width: 30px;
     max-width: 6rem;
@@ -65,10 +67,9 @@
     border-radius: @radius-chip;
     font-weight: @weight-strong;
     font-size: @text-xs;
+    line-height: 1.3;
     text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    overflow-wrap: anywhere;
   }
 
   &__headsign {

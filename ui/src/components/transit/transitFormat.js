@@ -76,11 +76,10 @@ export function modeLabelKey(mode) {
 }
 
 /**
- * The tooltip of a line badge: the mode and the line's full name, e.g. `Bus 738`.
+ * The tooltip of a line badge: the mode and the line, e.g. `Bus 738`, `Fernbus FlixBus N1912`.
  *
- * The badge is capped in width and cuts a long name short. Long distance coaches carry their whole
- * route as the short name (`München, Reichenbachplatz → Stuttgart, Charlottenplatz`), so the
- * tooltip is the one place that name is still readable in full.
+ * The badge shows the line alone, and the colour says only so much about what kind of vehicle it
+ * is, so the mode is named here.
  *
  * @param {{line?: string, mode?: string}} departure
  * @param {(key: string) => string} t
