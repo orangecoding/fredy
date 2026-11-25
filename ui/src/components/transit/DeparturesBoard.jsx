@@ -13,6 +13,7 @@ import {
   distinctLines,
   formatClockTime,
   formatCountdown,
+  lineTitle,
 } from './transitFormat.js';
 import './transit.less';
 
@@ -131,7 +132,7 @@ export default function DeparturesBoard({ stopId, lat, lng, name, limit = 8, sho
                 key={`${line.mode}-${line.line}`}
                 className="transit-board__line"
                 style={{ backgroundColor: background, color: contrastingTextColor(background) }}
-                title={t(`transit.mode.${line.mode.toLowerCase()}`)}
+                title={lineTitle(line, t)}
               >
                 {line.line}
               </span>
@@ -149,7 +150,7 @@ export default function DeparturesBoard({ stopId, lat, lng, name, limit = 8, sho
               <span
                 className="transit-board__line"
                 style={{ backgroundColor: background, color: contrastingTextColor(background) }}
-                title={t(`transit.mode.${departure.mode.toLowerCase()}`)}
+                title={lineTitle(departure, t)}
               >
                 {departure.line || t('transit.unknownLine')}
               </span>

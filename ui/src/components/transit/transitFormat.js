@@ -76,6 +76,22 @@ export function modeLabelKey(mode) {
 }
 
 /**
+ * The tooltip of a line badge: the mode and the line's full name, e.g. `Bus 738`.
+ *
+ * The badge is capped in width and cuts a long name short. Long distance coaches carry their whole
+ * route as the short name (`München, Reichenbachplatz → Stuttgart, Charlottenplatz`), so the
+ * tooltip is the one place that name is still readable in full.
+ *
+ * @param {{line?: string, mode?: string}} departure
+ * @param {(key: string) => string} t
+ * @returns {string}
+ */
+export function lineTitle(departure, t) {
+  const mode = t(modeLabelKey(departure.mode));
+  return departure.line ? `${mode} ${departure.line}` : mode;
+}
+
+/**
  * Whole minutes from now until a departure, rounded down. Negative once it has left.
  *
  * @param {string} isoTime

@@ -26,6 +26,7 @@ function source(relative) {
 const card = source('views/listings/components/AttachmentsCard.jsx');
 const cardStyles = source('views/listings/components/AttachmentsCard.less');
 const mapStyles = source('views/listings/Map.less');
+const popupStyles = source('components/map/Map.less');
 
 describe('listing documents accept a drop', () => {
   it('listens on the list, which is the box a file is dragged onto', () => {
@@ -80,7 +81,7 @@ describe('map popup pager', () => {
     const pager = mapStyles.slice(mapStyles.indexOf('&__pager {'), mapStyles.indexOf('&__pagerLabel'));
     const reserved = Number(/padding-right:\s*(\d+)px;/.exec(pager)?.[1]);
 
-    const close = mapStyles.slice(mapStyles.indexOf('.maplibregl-popup-close-button {'));
+    const close = popupStyles.slice(popupStyles.indexOf('.maplibregl-popup-close-button {'));
     const width = Number(/width:\s*(\d+)px;/.exec(close)?.[1]);
 
     // The close button is offset by @space-2 and MapLibre's own content padding is 10px, so what

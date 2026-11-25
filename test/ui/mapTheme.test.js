@@ -315,8 +315,20 @@ describe('the popup', () => {
   it('gives the close button a size and a surface, because it sits on the photograph', () => {
     // MapLibre ships it transparent at the very corner, where it vanished into whatever the
     // listing photo happened to be behind it.
-    expect(viewLess).toMatch(/\.maplibregl-popup-close-button \{[\s\S]*?width: 28px/);
-    expect(viewLess).toMatch(/\.maplibregl-popup-close-button \{[\s\S]*?background: rgba\(0, 0, 0/);
+    expect(mapLess).toMatch(/\.maplibregl-popup-close-button \{[\s\S]*?width: 28px/);
+    expect(mapLess).toMatch(/\.maplibregl-popup-close-button \{[\s\S]*?background: rgba\(0, 0, 0/);
+  });
+
+  it('themes every popup from the stylesheet every map imports, not from the lazily loaded view', () => {
+    // The listing detail's map is the component without the view around it. While these rules
+    // lived in the view's stylesheet, a detail page opened first showed MapLibre's white popup with
+    // the app's light text on it (#537).
+    expect(mapJsx).toMatch(/import '\.\/Map\.less';/);
+    expect(mapLess).toMatch(/\.maplibregl-popup-content \{[\s\S]*?background-color: @color-surface/);
+    expect(mapLess).toMatch(/\.maplibregl-popup-content \{[\s\S]*?color: @color-text/);
+    expect(mapLess).toMatch(/\.maplibregl-popup-content \{[\s\S]*?font-family: @font-ui/);
+    expect(mapLess).toMatch(/\.maplibregl-popup-tip \{[\s\S]*?border-top-color: @color-surface/);
+    expect(viewLess).not.toMatch(/\.maplibregl-popup-(content|tip|close-button)/);
   });
 
   it('does not put a focus ring on the heading every time it opens', () => {

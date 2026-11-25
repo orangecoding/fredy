@@ -11,6 +11,7 @@ import {
   formatClockTime,
   formatCountdown,
   formatDistance,
+  lineTitle,
   minutesUntil,
   modeLabelKey,
 } from '../../ui/src/components/transit/transitFormat.js';
@@ -57,6 +58,18 @@ describe('transitFormat', () => {
     it('maps a MOTIS mode to its translation key', () => {
       expect(modeLabelKey('REGIONAL_RAIL')).toBe('transit.mode.regional_rail');
       expect(modeLabelKey(undefined)).toBe('transit.mode.unknown');
+    });
+  });
+
+  describe('lineTitle', () => {
+    it('names the mode and the full line, which the badge may cut short', () => {
+      const route = 'München, Reichenbachplatz → Stuttgart, Charlottenplatz';
+      expect(lineTitle({ mode: 'COACH', line: route }, t)).toBe(`transit.mode.coach ${route}`);
+      expect(lineTitle({ mode: 'BUS', line: '738' }, t)).toBe('transit.mode.bus 738');
+    });
+
+    it('falls back to the mode alone without a line name', () => {
+      expect(lineTitle({ mode: 'TRAM', line: '' }, t)).toBe('transit.mode.tram');
     });
   });
 

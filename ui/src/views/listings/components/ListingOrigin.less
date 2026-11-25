@@ -67,11 +67,14 @@
 
   // Neutral information, as an outlined pill. Not the green that means "an advantage" anywhere
   // else on this page, and no fill: it is a name, not a state.
+  // A minimum height, not a fixed one: a long job name wraps (the value breaks anywhere), and a
+  // fixed height left its second line running over the border.
   &__chip {
     display: inline-flex;
     align-items: center;
-    height: 24px;
-    padding: 0 @space-3;
+    min-height: 24px;
+    padding: 2px @space-3;
+    line-height: 1.35;
     border: 1px solid @color-border-bright;
     border-radius: @radius-pill;
     color: @color-text;

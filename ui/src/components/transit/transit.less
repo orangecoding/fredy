@@ -53,15 +53,22 @@
 
   /* The line's own colour, from the operator's data: the one place colour is information here, the
      way a line badge is at the stop itself. Set inline by the component, with a text colour
-     computed against it. */
+     computed against it.
+
+     Capped, because a long distance coach carries its whole route as the line name. Uncapped, the
+     badge set the width of the row's first column, squeezed the destination down to one letter
+     and ran under the time; in a popup it stuck out on the right. The full name is in the title. */
   &__line {
     min-width: 30px;
+    max-width: 6rem;
     padding: 1px 6px;
     border-radius: @radius-chip;
     font-weight: @weight-strong;
     font-size: @text-xs;
     text-align: center;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &__headsign {
