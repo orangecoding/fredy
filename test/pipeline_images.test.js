@@ -8,6 +8,9 @@ import { mockFredy } from './utils.js';
 import { get as getLastNotification } from './mocks/mockNotification.js';
 import { send } from '../lib/notification/adapter/http.js';
 
+const fetchMock = vi.hoisted(() => vi.fn());
+vi.mock('node-fetch', () => ({ default: fetchMock }));
+
 const images = [{ url: 'http://example.com/plan.jpg', caption: 'Grundriss', floorPlan: true }];
 
 const listing = (id) => ({
@@ -41,8 +44,7 @@ describe('listing images', () => {
       undefined,
     ).execute();
 
-    const fetchMock = vi.fn().mockResolvedValue({ ok: true });
-    vi.stubGlobal('fetch', fetchMock);
+    fetchMock.mockResolvedValue({ ok: true });
     await send({
       serviceName: 'images',
       newListings: getLastNotification().payload,
