@@ -16,8 +16,8 @@ import './PricePerSqmBadge.less';
  * What a square metre of this listing costs, and how that compares to the area.
  *
  * The number German listings are actually judged by. A price on its own says nothing without the
- * size next to it, and the size is not even on the card, so the quotient is the only figure that
- * lets two cards be compared at a glance.
+ * size next to it, and two cards of different sizes are only compared at a glance through the
+ * quotient.
  *
  * Two halves, shown independently. The quotient needs nothing but the listing and appears as soon
  * as the provider stated a size. The comparison needs neighbours: it appears once Fredy has seen

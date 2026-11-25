@@ -26,8 +26,12 @@ import './ListingsGrid.less';
 import { useTranslation, useLocale } from '../../../services/i18n/i18n.jsx';
 
 /**
- * Address, rooms and living space of one listing, as one line. Whatever is missing is left out
- * rather than filled with a dash.
+ * Address and rooms of one listing, as one line. Whatever is missing is left out rather than filled
+ * with a dash.
+ *
+ * The living space is not part of it. It sat at the end of this line, which is the part an ellipsis
+ * cuts first, so the figure compared right after the price was the one a normal German address hid.
+ * It is a pill in the price row now (#538).
  *
  * @param {Object} item
  * @param {string} locale
@@ -38,7 +42,6 @@ function whereLine(item, locale, t) {
   return [
     item.address,
     item.rooms == null ? null : t('listing.detail.fieldRoomsValue', { count: formatDecimal(item.rooms, locale) }),
-    item.size == null ? null : `${formatDecimal(item.size, locale)} m²`,
   ]
     .filter(Boolean)
     .join(' · ');
@@ -103,11 +106,13 @@ const ListingsGrid = ({
             </div>
 
             <div className="listingsGrid__card__body">
-              {item.price && (
+              {(item.price || item.size != null) && (
                 <div className="listingsGrid__card__price">
-                  <span className="listingsGrid__card__amount">
-                    {formatListingPrice(item.price, locale, item.currency)}
-                  </span>
+                  {item.price && (
+                    <span className="listingsGrid__card__amount">
+                      {formatListingPrice(item.price, locale, item.currency)}
+                    </span>
+                  )}
                   {/* Next to the price rather than on a line of its own: it is the same figure said
                       a second way, and reading the two together is the whole point. */}
                   <PricePerSqmBadge listing={item} />
@@ -122,6 +127,9 @@ const ListingsGrid = ({
                     previousPrice={item.previous_price}
                     changedAt={item.price_changed_at}
                   />
+                  {item.size != null && (
+                    <span className="listingsGrid__card__size">{formatDecimal(item.size, locale)} m²</span>
+                  )}
                 </div>
               )}
 

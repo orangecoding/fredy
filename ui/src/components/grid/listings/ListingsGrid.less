@@ -82,6 +82,22 @@
     color: @color-text;
   }
 
+  // The living space, next to the price because it is the figure compared right after it. Pushed to
+  // the row's end so it does not read as one more price badge; when the row wraps on a narrow card
+  // it stays at the right of the line it lands on.
+  &__size {
+    margin-left: auto;
+    align-self: center;
+    padding: 0 @space-2;
+    border: 1px solid @color-border-bright;
+    border-radius: @radius-pill;
+    font-size: @text-sm;
+    font-weight: @weight-medium;
+    line-height: 1.8;
+    white-space: nowrap;
+    color: @color-text;
+  }
+
   // The title is a link but carries no link colour: it is the card's heading, and twenty underlined
   // headings read as a list of links rather than a list of flats. The underline on hover says it is
   // one.
@@ -102,13 +118,14 @@
     }
   }
 
+  // Wraps rather than ending in an ellipsis: a normal German address with district already filled
+  // the line, so the street was cut, and before #538 the living space behind it too. The
+  // `overflow-wrap` is for the one word longer than the card, which would otherwise push it wider.
   &__meta {
     display: flex;
     align-items: center;
     gap: @space-1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    overflow-wrap: anywhere;
     font-size: @text-base;
     color: @color-muted;
 

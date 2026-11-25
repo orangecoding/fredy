@@ -12,12 +12,15 @@ import { formatDecimal } from '../../../services/number/numberService.js';
 import { relativeTime } from '../../../services/time/relativeTime.js';
 
 /**
- * The street, rooms, living space and portal of one listing, as one line.
+ * The street, rooms and portal of one listing, as one line.
  *
  * The street only: postcode and city are the same for most of a search's listings, and on a card
- * this narrow they pushed the portal out of sight. Whatever is missing is left out rather than
+ * this narrow they pushed the portal onto a second line. Whatever is missing is left out rather than
  * filled with a dash: three separators around two empty slots say less than the one fact that is
  * actually known.
+ *
+ * The living space is a pill in the price row instead, as on the listing cards (#538): it is the
+ * figure compared right after the price, and at the end of this line it was the first one cut.
  *
  * @param {Object} row
  * @param {string} locale
@@ -29,7 +32,6 @@ function metaLine(row, locale, t, providerNames) {
   return [
     row.address ? String(row.address).split(',')[0].trim() : null,
     row.rooms == null ? null : t('listing.detail.fieldRoomsValue', { count: formatDecimal(row.rooms, locale) }),
-    row.size == null ? null : `${formatDecimal(row.size, locale)} m²`,
     row.provider ? (providerNames[row.provider] ?? row.provider) : null,
   ]
     .filter(Boolean)
@@ -40,9 +42,9 @@ function metaLine(row, locale, t, providerNames) {
  * The newest listings across every search the user can see, as photographs.
  *
  * This is what the dashboard is for. A listing is judged by its pictures first, so they lead and
- * the facts sit under them: price, price per square metre, the title, where it is and where it was
- * found, and a green line when the price per square metre is under the area's. The age sits on the
- * photo, because it is the first thing a person deciding whether to call cares about.
+ * the facts sit under them: price, price per square metre, living space, the title, where it is and
+ * where it was found, and a green line when the price per square metre is under the area's. The age
+ * sits on the photo, because it is the first thing a person deciding whether to call cares about.
  *
  * Every card is a real `<button>` rather than a div with a handler, so the row can be walked and
  * opened from the keyboard.
@@ -103,6 +105,9 @@ export default function LatestListings({
                       <span className="dashboard__listingSqm">
                         {formatPricePerSqm(row.price_per_sqm, locale, true, row.currency)}
                       </span>
+                    )}
+                    {row.size != null && (
+                      <span className="dashboard__listingSize">{formatDecimal(row.size, locale)} m²</span>
                     )}
                   </span>
                   <span className="dashboard__listingTitle">{row.title}</span>

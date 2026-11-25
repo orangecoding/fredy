@@ -230,20 +230,35 @@
     color: @color-muted;
   }
 
-  &__listingTitle,
-  &__listingMeta {
+  /* The living space, the same pill as on the listing cards (issue 538), at the end of the price
+     row. */
+  &__listingSize {
+    margin-left: auto;
+    align-self: center;
+    padding: 0 @space-2;
+    border: 1px solid @color-border-bright;
+    border-radius: @radius-pill;
+    font-size: @text-sm;
+    font-weight: @weight-medium;
+    line-height: 1.8;
+    white-space: nowrap;
+    color: @color-text;
+  }
+
+  &__listingTitle {
     display: block;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-  }
-
-  &__listingTitle {
     font-size: 15px;
     font-weight: @weight-medium;
   }
 
+  /* Wraps rather than ending in an ellipsis, which cut the portal off a four-up card. The
+     `overflow-wrap` is for the one word longer than the card. */
   &__listingMeta {
+    display: block;
+    overflow-wrap: anywhere;
     font-size: @text-sm;
     color: @color-muted;
   }
