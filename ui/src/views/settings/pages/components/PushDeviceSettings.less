@@ -1,0 +1,41 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../../../tokens.less';
+
+.pushDevices {
+  display: flex;
+  flex-direction: column;
+  gap: @space-3;
+
+  &__status {
+    margin: 0;
+    font-size: @text-sm;
+    line-height: 1.5;
+    color: @color-muted;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: @space-2;
+  }
+
+  &__this {
+    margin-left: @space-2;
+    padding: 0 @space-2;
+    border: 1px solid @color-border-bright;
+    border-radius: @radius-pill;
+    font-size: @text-xs;
+    color: @color-muted;
+    white-space: nowrap;
+  }
+
+  &__error {
+    margin-left: @space-2;
+    font-size: @text-xs;
+    color: @color-error;
+  }
+}

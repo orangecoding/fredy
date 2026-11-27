@@ -8,6 +8,7 @@ import { useSelector } from '../services/state/store';
 import { usesBrowserAdapter } from '../services/notifications/browserAdapter.js';
 import heartIcon from '../assets/heart.png';
 import { subscribeJobEvents } from '../services/sse/jobEvents.js';
+import { syncPushSubscription } from '../services/push/webPushClient.js';
 
 /**
  * Deliver browser notifications for jobs that are configured to send them.
@@ -38,6 +39,13 @@ export function useBrowserNotifications() {
     }
   }, [currentUser?.userId, wantsBrowserNotifications]);
 
+  // A device that has push switched on re-registers with the server on every sign-in: that brings
+  // back a row a restore lost and moves a shared browser over to whoever signed in on it.
+  useEffect(() => {
+    if (currentUser == null || Object.keys(currentUser).length === 0) return;
+    syncPushSubscription();
+  }, [currentUser?.userId]);
+
   useEffect(() => {
     if (currentUser == null || Object.keys(currentUser).length === 0) return undefined;
 
@@ -49,6 +57,9 @@ export function useBrowserNotifications() {
             body: data.body,
             // Imported, so the build serves it: the source path only existed on the dev server.
             icon: data.image || heartIcon,
+            // The same tag the Web Push for this listing carries, so a device that has both the tab
+            // open and push switched on shows the listing once: the second replaces the first.
+            ...(data.tag ? { tag: data.tag } : {}),
           });
           notification.onclick = () => {
             window.focus();
@@ -62,6 +73,13 @@ export function useBrowserNotifications() {
       }
     };
 
-    return subscribeJobEvents('notification:browser', onBrowserNotification);
+    // Price changes come on their own event, which nothing used to listen to, so the browser channel
+    // announced them and the tab never showed them.
+    const unsubscribeListings = subscribeJobEvents('notification:browser', onBrowserNotification);
+    const unsubscribePrices = subscribeJobEvents('notification:priceChange', onBrowserNotification);
+    return () => {
+      unsubscribeListings();
+      unsubscribePrices();
+    };
   }, [currentUser?.userId]);
 }

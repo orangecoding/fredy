@@ -18,16 +18,28 @@ vi.mock('../../lib/services/sse/sse-broker.js', () => ({
   sendToUser: vi.fn(),
 }));
 
+vi.mock('../../lib/services/push/webPushService.js', () => ({
+  sendPushToUser: vi.fn(async () => ({ sent: 1, failed: 0, removed: 0 })),
+}));
+
+vi.mock('../../lib/services/logger.js', () => ({
+  default: { warn: vi.fn(), error: vi.fn(), debug: vi.fn(), info: vi.fn() },
+}));
+
 let send;
+let sendPriceChange;
 let mockSendToUser;
+let mockSendPush;
 
 beforeEach(async () => {
   vi.resetModules();
   const sseBroker = await import('../../lib/services/sse/sse-broker.js');
   mockSendToUser = sseBroker.sendToUser;
   mockSendToUser.mockReset();
+  mockSendPush = (await import('../../lib/services/push/webPushService.js')).sendPushToUser;
+  mockSendPush.mockClear();
 
-  ({ send } = await import('../../lib/notification/adapter/browser.js'));
+  ({ send, sendPriceChange } = await import('../../lib/notification/adapter/browser.js'));
 });
 
 describe('browser notification adapter', () => {
@@ -56,6 +68,7 @@ describe('browser notification adapter', () => {
       body: 'Price: 1.200 € | Size: 80 m²\nAddress: Musterstraße 1, Berlin',
       link: 'https://example.com/1',
       image: 'https://example.com/image.png',
+      tag: 'fredy-listing-listing_1',
       jobKey: 'Job_Berlin',
       serviceName: 'immoscout',
     });
@@ -80,6 +93,7 @@ describe('browser notification adapter', () => {
       body: '',
       link: 'http://localhost:9998/#/listings/listing/listing_2',
       image: undefined,
+      tag: 'fredy-listing-listing_2',
       jobKey: 'Job_Berlin',
       serviceName: 'immoscout',
     });
@@ -105,8 +119,86 @@ describe('browser notification adapter', () => {
       body: '',
       link: 'http://localhost:9998/#/listings/listing/listing_3',
       image: undefined,
+      tag: 'fredy-listing-listing_3',
       jobKey: 'TestJob',
       serviceName: 'immoscout',
     });
+  });
+
+  it('also sends each listing as Web Push to the user’s devices, opening it in Fredy', async () => {
+    await send({
+      serviceName: 'immoscout',
+      newListings: [
+        {
+          id: 'l1',
+          title: 'One',
+          price: '900 €',
+          link: 'https://portal.example/1',
+          image: 'https://cdn.example/1.jpg',
+        },
+        { id: 'l2', title: 'Two' },
+      ],
+      jobKey: 'Job_Berlin',
+      baseUrl: 'http://localhost:9998',
+    });
+
+    expect(mockSendPush).toHaveBeenCalledTimes(2);
+    expect(mockSendPush).toHaveBeenNthCalledWith(
+      1,
+      'user_123',
+      {
+        title: 'One',
+        body: 'Price: 900 €',
+        url: '/#/listings/listing/l1',
+        tag: 'fredy-listing-l1',
+        image: 'https://cdn.example/1.jpg',
+      },
+      { urgency: 'high' },
+    );
+  });
+
+  it('does not fail the channel when push fails', async () => {
+    mockSendPush.mockRejectedValueOnce(new Error('push service down'));
+    await expect(
+      send({ serviceName: 'immoscout', newListings: [{ id: 'l1' }], jobKey: 'Job_Berlin', baseUrl: '' }),
+    ).resolves.toBeUndefined();
+    expect(mockSendToUser).toHaveBeenCalledTimes(1);
+  });
+
+  it('pushes price changes with their own tag', async () => {
+    await sendPriceChange({
+      serviceName: 'immoscout',
+      priceChanges: [
+        {
+          id: 'l1',
+          title: 'One',
+          address: 'Musterstraße 1',
+          changeHeadline: 'Price drop',
+          oldPrice: '1.000 €',
+          newPrice: '900 €',
+          changePercent: '-10%',
+          direction: 'down',
+        },
+      ],
+      jobKey: 'Job_Berlin',
+      baseUrl: 'http://localhost:9998',
+    });
+
+    expect(mockSendToUser).toHaveBeenCalledWith(
+      'user_123',
+      'notification:priceChange',
+      expect.objectContaining({ tag: 'fredy-price-l1' }),
+    );
+    expect(mockSendPush).toHaveBeenCalledWith(
+      'user_123',
+      {
+        title: 'Price drop: 1.000 € -> 900 € (-10%)',
+        body: 'One\nAddress: Musterstraße 1',
+        url: '/#/listings/listing/l1',
+        tag: 'fredy-price-l1',
+        image: undefined,
+      },
+      { urgency: 'normal' },
+    );
   });
 });

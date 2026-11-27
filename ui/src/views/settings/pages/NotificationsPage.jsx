@@ -16,6 +16,7 @@ import { useActions, useSelector } from '../../../services/state/store';
 import { errorMessage } from '../../../services/xhr';
 import { sanitizeReturnTo } from '../../../services/routes/returnTo.js';
 import { useTranslation } from '../../../services/i18n/i18n.jsx';
+import PushDeviceSettings from './components/PushDeviceSettings.jsx';
 
 import './NotificationsPage.less';
 
@@ -152,6 +153,10 @@ export default function NotificationsPage() {
           />
         )}
       </SegmentPart>
+
+      {/* Push is switched on per device rather than per channel, so it sits beside the channels
+          instead of in the browser channel's form. */}
+      <PushDeviceSettings />
 
       {/* Choosing the type is its own step because it is the one decision that cannot be changed
           afterwards - the stored fields only make sense for one adapter. */}
