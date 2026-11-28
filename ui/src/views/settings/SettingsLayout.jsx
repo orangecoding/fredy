@@ -6,45 +6,44 @@
 import ScopeBadge from '../../components/scopeBadge/ScopeBadge.jsx';
 import SettingsShell from '../../components/settingsShell/SettingsShell.jsx';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
+import { SETTINGS_PAGE_ICONS } from './settingsPageIcons.js';
+import { USER_SETTINGS_PAGES } from './settingsPages.js';
 
 /**
  * Settings that belong to whoever is looking at the page.
  *
- * The tabs are the only place these pages are named. The sidebar used to list them as well,
- * directly above a tab strip saying the same words, so it carries a single "Settings" entry
- * now and the strip does the rest.
+ * The column beside the page is the only place these pages are named on a wide screen, the list at
+ * `/settings` on a phone. The sidebar used to list them as well, directly above a strip of tabs
+ * saying the same words, so it carries a single "Settings" entry.
  *
- * Each tab is still its own route, which is what keeps a settings page something you can link to,
+ * Each page is its own route, which is what keeps a settings page something you can link to,
  * bookmark and reload onto rather than a tab index that resets on every visit.
  *
- * Whose settings these are is said by a chip next to the heading rather than by a band above the
- * content. The absence of a band was the statement while this was one page; it stopped being one
- * when every tab became a route somebody can arrive on directly.
+ * Whose settings these are is said at the top of the column and by a chip next to the heading
+ * rather than by a band above the content. The chip is for somebody arriving on a page from a link,
+ * who starts reading at the heading.
  *
- * The tabs carry words only. They used to carry an icon each, which the strip no longer draws: six
- * pictograms in a row said nothing the six labels beside them did not.
+ * The pages, their names and their icons are defined in `settingsPages.js` and
+ * `settingsPageIcons.js`, which the phone's list reads as well.
  *
  * @returns {React.ReactElement}
  */
 export default function SettingsLayout() {
   const t = useTranslation();
 
-  const tabs = [
-    { path: '/settings/preferences', label: t('settings.tabPreferences') },
-    { path: '/settings/travel-time', label: t('settings.tabTravelTime') },
-    { path: '/settings/listings', label: t('settings.tabListingDetails') },
-    { path: '/settings/application', label: t('settings.tabApplication') },
-    { path: '/settings/notifications', label: t('settings.tabNotifications') },
-    { path: '/settings/connections', label: t('settings.tabConnections') },
-    { path: '/settings/mcp-server', label: t('settings.tabMcpServer') },
-  ];
+  const tabs = USER_SETTINGS_PAGES.map((page) => ({
+    path: page.path,
+    label: t(page.labelKey),
+    icon: SETTINGS_PAGE_ICONS[page.icon],
+  }));
 
   return (
     <SettingsShell
       title={t('settings.title')}
-      subtitle={t('settings.subtitle')}
+      hint={t('settings.scopeUser')}
       badge={<ScopeBadge scope="user" />}
       tabs={tabs}
+      crumbs={[{ path: '/settings', label: t('nav.settings') }]}
     />
   );
 }

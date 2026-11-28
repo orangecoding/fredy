@@ -10,6 +10,10 @@ import { useOutletContext } from 'react-router';
 import { SegmentPart } from '../../../components/segment/SegmentPart';
 import SettingsSaveBar from '../../../components/settingsShell/SettingsSaveBar.jsx';
 import { useUnsavedWarning } from '../../../hooks/useUnsavedWarning.js';
+// The `adminRow` rules this page lays its fields out with. It uses no AdminField, so nothing else
+// brings them along: the page only looked right when the bundler happened to put that stylesheet
+// into a chunk already loaded, and opened first it showed full-width fields with steppers.
+import '../components/AdminField.less';
 
 /**
  * The reverse-proxy sign-in inputs, rendered from one template: they share label, help and

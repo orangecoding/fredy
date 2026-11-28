@@ -65,6 +65,11 @@
     margin: -6px -6px 0 0;
   }
 
+  // A phone has no footer, but a tab bar along the bottom edge. MobileNav.less publishes its height.
+  @media (max-width: 768px) {
+    bottom: calc(var(--tabbar-height) + @space-3);
+  }
+
   @media (max-width: 560px) {
     right: @space-4;
   }

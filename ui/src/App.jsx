@@ -17,6 +17,9 @@ import TrackingModal from './components/tracking/TrackingModal.jsx';
 import { LocaleProvider } from '@douyinfe/semi-ui-19';
 import semiEnUS from '@douyinfe/semi-ui-19/lib/es/locale/source/en_US';
 import Navigation from './components/navigation/Navigation.jsx';
+import MobileAppBar from './components/navigation/MobileAppBar.jsx';
+import MobileTabBar from './components/navigation/MobileTabBar.jsx';
+import { usePhoneLayout } from './hooks/screenWidth.js';
 import { Layout } from '@douyinfe/semi-ui-19';
 import FredyFooter from './components/footer/FredyFooter.jsx';
 import NewsModal from './components/news/NewsModal.jsx';
@@ -39,6 +42,7 @@ const ListingDetail = lazy(() => import('./views/listings/ListingDetail.jsx'));
 const MapView = lazy(() => import('./views/listings/Map.jsx'));
 const FinanceCalculator = lazy(() => import('./views/finance/FinanceCalculator.jsx'));
 const SettingsLayout = lazy(() => import('./views/settings/SettingsLayout'));
+const SettingsIndex = lazy(() => import('./views/settings/SettingsIndex.jsx'));
 const PreferencesPage = lazy(() => import('./views/settings/pages/PreferencesPage'));
 const TravelTimePage = lazy(() => import('./views/settings/pages/TravelTimePage'));
 const ListingDetailsPage = lazy(() => import('./views/settings/pages/ListingDetailsPage'));
@@ -133,6 +137,11 @@ export default function FredyApp() {
    * the default, which is also what index.html ships on the body, so nothing repaints.
    */
   const theme = normalizeTheme(useSelector((state) => state.userSettings.settings.theme));
+  // On a phone the sidebar and the footer give way to an app bar, a tab bar and a menu over the page,
+  // and `/settings` and `/admin` show the list of their pages instead of redirecting to the first.
+  // Both shells keep the content at the same place in the tree, so turning a phone sideways across
+  // the breakpoint does not remount the page and lose what was typed on it.
+  const phone = usePhoneLayout();
 
   useBrowserNotifications();
 
@@ -235,11 +244,14 @@ export default function FredyApp() {
         ) : (
           <>
             {!settings.demoMode && <OnboardingTour isAdmin={isAdmin()} blocked={tourBlocked} />}
-            <Layout className="app">
-              <Sider>
-                <Navigation isAdmin={isAdmin()} />
-              </Sider>
+            <Layout className={`app${phone ? ' app--phone' : ''}`}>
+              {!phone && (
+                <Sider>
+                  <Navigation isAdmin={isAdmin()} />
+                </Sider>
+              )}
               <Layout className="app__main">
+                {phone && <MobileAppBar isAdmin={isAdmin()} />}
                 <Content className="app__content">
                   <DebugLoggingBanner />
                   {settings.demoMode && <DemoBanner />}
@@ -261,7 +273,10 @@ export default function FredyApp() {
                       One entry in the sidebar, and the tabs below the heading are the only place
                       these pages are named. */}
                       <Route path="/settings" element={<SettingsLayout />}>
-                        <Route index element={<Navigate to="/settings/preferences" replace />} />
+                        <Route
+                          index
+                          element={phone ? <SettingsIndex /> : <Navigate to="/settings/preferences" replace />}
+                        />
                         <Route path="preferences" element={<PreferencesPage />} />
                         <Route path="travel-time" element={<TravelTimePage />} />
                         <Route path="listings" element={<ListingDetailsPage />} />
@@ -281,7 +296,10 @@ export default function FredyApp() {
                           </PermissionAwareRoute>
                         }
                       >
-                        <Route index element={<Navigate to="/admin/system" replace />} />
+                        <Route
+                          index
+                          element={phone ? <SettingsIndex focus="instance" /> : <Navigate to="/admin/system" replace />}
+                        />
                         <Route path="system" element={<SystemPage />} />
                         <Route path="execution" element={<ExecutionPage />} />
                         <Route path="connectivity" element={<ConnectivityPage />} />
@@ -310,7 +328,7 @@ export default function FredyApp() {
                     </Routes>
                   </Suspense>
                 </Content>
-                <FredyFooter />
+                {phone ? <MobileTabBar isAdmin={isAdmin()} /> : <FredyFooter />}
               </Layout>
             </Layout>
           </>

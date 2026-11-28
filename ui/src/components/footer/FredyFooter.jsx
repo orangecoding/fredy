@@ -53,17 +53,20 @@ function Tick() {
 Tick.displayName = 'Tick';
 
 /**
- * The bar along the bottom: which version this is, and who wrote it.
+ * Which version this is, and whether it is the current one.
  *
- * The version number used to stand here on its own, which left the one question it gets looked up
- * for unanswered. It now says whether it is current, and when it is not, it is the control that
- * opens the release notes - a job a warning banner used to do from the top of every page.
+ * The version number used to stand on its own, which left the one question it gets looked up for
+ * unanswered. It now says whether it is current, and when it is not, it is the control that opens
+ * the release notes - a job a warning banner used to do from the top of every page.
  *
+ * Drawn by the footer on a wide screen and at the foot of the menu on a phone, which has no footer.
+ *
+ * @param {Object} props
+ * @param {() => void} props.onShowNotes Opens the notes of the available release.
  * @returns {React.ReactElement}
  */
-export default function FredyFooter() {
+export function VersionLine({ onShowNotes }) {
   const t = useTranslation();
-  const [notesVisible, setNotesVisible] = useState(false);
   const versionUpdate = useSelector((state) => state.versionUpdate.versionUpdate);
   const hasUpdate = Boolean(versionUpdate?.newVersion);
   // Only when GitHub actually answered. `newVersion: false` alone is also what an install that
@@ -71,27 +74,47 @@ export default function FredyFooter() {
   const upToDate = !hasUpdate && versionUpdate?.checked === true;
 
   return (
-    <footer className="fredyFooter" aria-label={t('footer.landmark')}>
-      <div className="fredyFooter__left">
-        <span className="fredyFooter__version">Fredy v{versionUpdate?.localFredyVersion || t('common.na')}</span>
-        {hasUpdate && (
-          <button type="button" className="fredyFooter__update" onClick={() => setNotesVisible(true)}>
-            <span className="fredyFooter__updateDot" />
-            {t('version.updateChip', { version: versionUpdate.version })}
-            <span className="fredyFooter__updateDivider" aria-hidden="true" />
-            <span className="fredyFooter__updateAction">
-              {t('version.whatsNew')}
-              <IconArrowRight aria-hidden="true" />
-            </span>
-          </button>
-        )}
-        {upToDate && (
-          <span className="fredyFooter__state">
-            <Tick />
-            {t('version.upToDate')}
+    <div className="fredyFooter__left">
+      <span className="fredyFooter__version">Fredy v{versionUpdate?.localFredyVersion || t('common.na')}</span>
+      {hasUpdate && (
+        <button type="button" className="fredyFooter__update" onClick={onShowNotes}>
+          <span className="fredyFooter__updateDot" />
+          {t('version.updateChip', { version: versionUpdate.version })}
+          <span className="fredyFooter__updateDivider" aria-hidden="true" />
+          <span className="fredyFooter__updateAction">
+            {t('version.whatsNew')}
+            <IconArrowRight aria-hidden="true" />
           </span>
-        )}
-      </div>
+        </button>
+      )}
+      {upToDate && (
+        <span className="fredyFooter__state">
+          <Tick />
+          {t('version.upToDate')}
+        </span>
+      )}
+    </div>
+  );
+}
+
+VersionLine.displayName = 'VersionLine';
+
+/**
+ * The bar along the bottom: which version this is, and who wrote it.
+ *
+ * Also where the release notes of an available update open from, and where the toast announcing it
+ * is mounted. On a phone the app bar takes over both.
+ *
+ * @returns {React.ReactElement}
+ */
+export default function FredyFooter() {
+  const t = useTranslation();
+  const [notesVisible, setNotesVisible] = useState(false);
+  const hasUpdate = useSelector((state) => Boolean(state.versionUpdate.versionUpdate?.newVersion));
+
+  return (
+    <footer className="fredyFooter" aria-label={t('footer.landmark')}>
+      <VersionLine onShowNotes={() => setNotesVisible(true)} />
       <span className="fredyFooter__credit">
         <Heart />
         <span>

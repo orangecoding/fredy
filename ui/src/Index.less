@@ -308,6 +308,17 @@ button:focus:not(:focus-visible),
   font-size: @text-base;
 }
 
+// Safari on iOS zooms the page in on a field whose text is smaller than 16px and does not zoom back
+// out, which left the page wider than the screen after typing into any field.
+// Two classes, so the large size above (`.semi-input-wrapper-large .semi-input-large`) gives way too.
+@media (max-width: 768px) {
+  .semi-input-wrapper .semi-input,
+  .semi-input-textarea-wrapper .semi-input-textarea,
+  .semi-select .semi-select-selection-text {
+    font-size: @text-md;
+  }
+}
+
 .semi-input::placeholder,
 .semi-input-textarea::placeholder,
 .semi-select-selection-placeholder {
@@ -389,8 +400,7 @@ button:focus:not(:focus-visible),
   }
 }
 
-// Tabs: muted labels, the current one in the text colour over a 2px rule. No red, and no icons
-// except one that reports a state (the debug tab while capture is running).
+// Tabs: muted labels, the current one in the text colour over a 2px rule. No red, and no icons.
 .semi-tabs-bar-line.semi-tabs-bar-top {
   border-bottom: 1px solid @color-border;
 }
@@ -409,7 +419,7 @@ button:focus:not(:focus-visible),
     color: @color-text !important;
   }
 
-  .semi-icon:not(.settingsShell__tabIcon--alert) {
+  .semi-icon {
     display: none;
   }
 }

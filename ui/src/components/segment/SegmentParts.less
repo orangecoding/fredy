@@ -120,6 +120,40 @@
     }
   }
 
+  /* On a phone the desktop inset took 48px of a 358px column, which left a port or a database path
+     very little width. The table that runs to the panel's edges follows the smaller inset. */
+  @media (max-width: 768px) {
+    .semi-card-header {
+      padding: @space-3 @space-4;
+    }
+
+    .semi-card-body {
+      padding: @space-4;
+    }
+
+    .semi-card-body > .semi-table-wrapper {
+      margin: 0 -@space-4;
+
+      &:first-child {
+        margin-top: -@space-4;
+      }
+
+      &:last-child {
+        margin-bottom: -@space-4;
+      }
+
+      .semi-table-thead > .semi-table-row > .semi-table-row-head:first-child,
+      .semi-table-tbody > .semi-table-row > .semi-table-row-cell:first-child {
+        padding-left: @space-4;
+      }
+
+      .semi-table-thead > .semi-table-row > .semi-table-row-head:last-child,
+      .semi-table-tbody > .semi-table-row > .semi-table-row-cell:last-child {
+        padding-right: @space-4;
+      }
+    }
+  }
+
   /* A section inside a section stays a chapter of it: a hairline above, no box of its own. A panel
      in a panel is a frame around a frame. */
   .segmentParts.semi-card {

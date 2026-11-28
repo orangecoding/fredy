@@ -262,12 +262,12 @@ describe('listing detail action bar', () => {
     expect(primary).toMatch(/\.semi-button-content-right \{[^}]*text-overflow: ellipsis;/);
   });
 
-  it('starts the bottom bar where the sidebar ends instead of covering its foot', () => {
-    // Fixed to the viewport, the bar ran under the sidebar as well and hid its toggle and the account
-    // menu. The sidebar is wide or a rail, so it publishes whichever width it currently has.
-    expect(phone).toMatch(/inset: auto 0 0 var\(--nav-width\);/);
-    const nav = fs.readFileSync(path.join(detailDir, '../../components/navigation/Navigate.less'), 'utf-8');
-    expect(nav).toMatch(/^\.app \{[^}]*--nav-width: @nav-wide;/m);
-    expect(nav).toMatch(/&:has\(\.navigate--collapsed\) \{\s*--nav-width: @nav-narrow;/);
+  it('sits the bottom bar on top of the tab bar instead of covering it', () => {
+    // A phone has no sidebar any more, but a tab bar along the same bottom edge. Its height includes
+    // the home indicator's strip, so the bar adds none of its own.
+    expect(phone).toMatch(/inset: auto 0 var\(--tabbar-height\) 0;/);
+    expect(phone).not.toMatch(/safe-area-inset-bottom|--nav-width/);
+    const nav = fs.readFileSync(path.join(detailDir, '../../components/navigation/MobileNav.less'), 'utf-8');
+    expect(nav).toMatch(/\.app--phone \{\s*--tabbar-height: calc\(@tabbar-height \+ env\(safe-area-inset-bottom\)\);/);
   });
 });

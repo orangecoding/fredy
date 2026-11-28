@@ -11,6 +11,7 @@ import { fileURLToPath } from 'url';
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const less = fs.readFileSync(path.join(root, 'ui/src/components/navigation/Navigate.less'), 'utf-8');
 const jsx = fs.readFileSync(path.join(root, 'ui/src/components/navigation/Navigation.jsx'), 'utf-8');
+const figures = fs.readFileSync(path.join(root, 'ui/src/components/navigation/useNavFigures.js'), 'utf-8');
 
 /**
  * Spacing values a rule is allowed to carry. Anything else is a number someone typed instead of
@@ -89,17 +90,19 @@ describe('Navigate.less', () => {
 
   // The listings count and the next-run line come with the overview's figures. Landing anywhere else
   // left them out until the overview had been opened, and after a sign-in the store could still hold
-  // the previous session's numbers - so the sidebar asks once per mount, except on the overview,
-  // which asks for the same answer itself.
+  // the previous session's numbers - so the navigation asks once per mount, except on the overview,
+  // which asks for the same answer itself. The phone's app bar shares the hook.
   it('asks for the overview figures itself, once per mount and never twice on the overview', () => {
-    expect(jsx).toMatch(
+    expect(jsx).toMatch(/useRunStatus\(\)/);
+    expect(figures).toMatch(
       /useEffect\(\(\) => \{\s*if \(!location\.pathname\.startsWith\('\/dashboard'\)\) actions\.dashboard\.getDashboard\(\);\s*\}, \[\]\);/,
     );
   });
 
   it('takes the counts from the store rather than counting on its own', () => {
-    expect(jsx).toMatch(/state\.jobsData\.jobs\?\.length/);
-    expect(jsx).toMatch(/state\.dashboard\.data\?\.kpis\?\.numberOfActiveListings/);
+    expect(jsx).toMatch(/useNavCounts\(\)/);
+    expect(figures).toMatch(/state\.jobsData\.jobs\?\.length/);
+    expect(figures).toMatch(/state\.dashboard\.data\?\.kpis\?\.numberOfActiveListings/);
   });
 
   it('scrolls instead of cutting off the account menu on a short window', () => {

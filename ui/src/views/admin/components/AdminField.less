@@ -125,6 +125,24 @@
     min-width: 0;
   }
 
+  // On a phone the fields of a row share its width instead of keeping their desktop 112px, which
+  // left three of them wrapping onto two lines with a gap at the end. A path or a URL takes a line
+  // of its own.
+  @media (max-width: 768px) {
+    &:not(.adminRow--stack) &__control {
+      flex: 1 1 0;
+      min-width: 0;
+
+      .semi-input-number {
+        width: 100%;
+      }
+    }
+
+    &:not(.adminRow--stack) &__control--grow {
+      flex-basis: 100%;
+    }
+  }
+
   // Checkboxes carry their own label and therefore stand under one another: side by side, two
   // labels read as one.
   &--stack {

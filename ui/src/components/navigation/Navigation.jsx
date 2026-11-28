@@ -27,24 +27,20 @@ import { normalizeTheme } from '../../services/theme/theme.js';
 
 import './Navigate.less';
 import { useScreenWidth } from '../../hooks/screenWidth.js';
-import { useActions, useSelector } from '../../services/state/store.js';
+import { useSelector } from '../../services/state/store.js';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
 // A pure function that already answers exactly this question for the dashboard's own rows. A copy
 // here would be a second set of rounding rules for the same clock.
 import { relativeTime } from '../../services/time/relativeTime.js';
 import { navTreeFor, resolveActiveKey, startsSection } from './navModel.js';
-
-/** How long after a promised run the status is asked for again: the run itself takes a moment. */
-const STATUS_REFRESH_GRACE_MS = 60 * 1000;
-
-/** `setTimeout` overflows past about 24.8 days and would fire at once. */
-const MAX_TIMER_MS = 2 ** 31 - 1;
+import { isRunOverdue, useNavCounts, useRunStatus } from './useNavFigures.js';
 
 /**
- * The icon each entry carries. Keyed by nav key so the tree itself stays free of JSX.
+ * The icon each entry carries. Keyed by nav key so the tree itself stays free of JSX. The phone's
+ * tab bar and menu draw the same ones.
  * @type {Record<string, React.ComponentType>}
  */
-const ICONS = {
+export const NAV_ICONS = {
   '/dashboard': IconOverview,
   '/listings': IconListings,
   '/map': IconMap,
@@ -65,7 +61,7 @@ const ICONS = {
  * @param {boolean} props.collapsed
  * @returns {React.ReactElement}
  */
-function Brand({ collapsed }) {
+export function Brand({ collapsed }) {
   // From the store, like App: the document attribute is only written in App's effect, after the
   // remount on a theme switch has already rendered this - which left the white cut on a light
   // sidebar until the next navigation.
@@ -109,36 +105,10 @@ export default function Navigation({ isAdmin }) {
   // so the sidebar asks nothing of its own.
   const username = useSelector((state) => state.user.currentUser?.username);
 
-  // The counts beside two entries. The jobs App fetches before the first render; the active listings
-  // come with the overview's figures, which the sidebar asks for itself (below) when someone lands
-  // on another page first. Until they are in, the listings entry shows no number rather than a guess.
-  const jobCount = useSelector((state) => state.jobsData.jobs?.length ?? null);
-  const listingCount = useSelector((state) => state.dashboard.data?.kpis?.numberOfActiveListings ?? null);
-  const counts = { '/jobs': jobCount, '/listings': listingCount };
-
-  // The next run, from the same answer. Until it is in, the row is simply not drawn - no
-  // placeholder, no dash, nothing that pretends to know. Once there is one, the sidebar asks again
-  // when it falls due (below).
-  const nextRun = useSelector((state) => state.dashboard.data?.general?.nextRun);
-  const actions = useActions();
-
-  // Landing on any page but the overview left the count and the status out until the overview had
-  // been opened once, so the sidebar looked different depending on where the session began. Asked
-  // once per mount - the sidebar mounts again after every sign-in, so a figure left in the store by
-  // the previous session is replaced - and not on the overview, which asks for the same answer.
-  useEffect(() => {
-    if (!location.pathname.startsWith('/dashboard')) actions.dashboard.getDashboard();
-  }, []);
-
-  // That answer goes stale the moment the promised run comes round, and nothing else refreshes it
-  // away from the dashboard. Asked again once the run is due, plus a minute for the run itself:
-  // amber then means a fresh answer still points into the past.
-  useEffect(() => {
-    if (nextRun == null || nextRun === 0) return undefined;
-    const delay = Math.min(Math.max(0, nextRun - Date.now()) + STATUS_REFRESH_GRACE_MS, MAX_TIMER_MS);
-    const timer = setTimeout(() => actions.dashboard.getDashboard(), delay);
-    return () => clearTimeout(timer);
-  }, [nextRun]);
+  // The counts beside two entries, and the next run from the overview's figures, which the sidebar
+  // keeps fresh itself. Until the run is in, the row is simply not drawn.
+  const counts = useNavCounts();
+  const nextRun = useRunStatus();
 
   const tree = navTreeFor(isAdmin);
   const activeKey = resolveActiveKey(tree, location.pathname);
@@ -167,9 +137,7 @@ export default function Navigation({ isAdmin }) {
       ? (() => {
           const label = t('nav.nextRun', { time: relativeTime(nextRun, t) });
           const dot = (
-            <span
-              className={`navigate__statusDot${nextRun + STATUS_REFRESH_GRACE_MS <= Date.now() ? ' navigate__statusDot--stale' : ''}`}
-            />
+            <span className={`navigate__statusDot${isRunOverdue(nextRun) ? ' navigate__statusDot--stale' : ''}`} />
           );
           // In the rail the dot is on its own, and a coloured dot with nothing beside it says only
           // that something has a state, not which one.
@@ -199,7 +167,7 @@ export default function Navigation({ isAdmin }) {
 
       <div className="navigate__list">
         {tree.map((node, index) => {
-          const Icon = ICONS[node.key];
+          const Icon = NAV_ICONS[node.key];
           const isActive = node.key === activeKey;
           const count = counts[node.key];
 

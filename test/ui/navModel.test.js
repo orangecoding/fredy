@@ -10,9 +10,12 @@ import { fileURLToPath } from 'url';
 
 import {
   NAV_TREE,
+  mobileMenuOf,
+  mobileTabsOf,
   navTreeFor,
   routeKeysOf,
   resolveActiveKey,
+  settingsListOf,
   startsSection,
 } from '../../ui/src/components/navigation/navModel.js';
 
@@ -134,5 +137,45 @@ describe('navModel', () => {
     ];
     expect(resolveActiveKey(tree, '/listings/saved')).toBe('/listings/saved');
     expect(resolveActiveKey(tree, '/listings/listing/1')).toBe('/listings');
+  });
+});
+
+describe('navModel on a phone', () => {
+  it('puts the four daily places in the tab bar, in the sidebar order', () => {
+    // Financing is only of use while buying, so it waits in the menu.
+    expect(routeKeysOf(mobileTabsOf(navTreeFor(true)))).toEqual(['/dashboard', '/jobs', '/listings', '/map']);
+    expect(routeKeysOf(mobileTabsOf(navTreeFor(false)))).toEqual(['/dashboard', '/jobs', '/listings', '/map']);
+  });
+
+  it('keeps everything else in the menu, administration only for admins', () => {
+    expect(routeKeysOf(mobileMenuOf(navTreeFor(true)))).toEqual(['/finance', '/settings', '/admin']);
+    expect(routeKeysOf(mobileMenuOf(navTreeFor(false)))).toEqual(['/finance', '/settings']);
+  });
+
+  it('loses no place between the tab bar and the menu', () => {
+    for (const isAdmin of [true, false]) {
+      const tree = navTreeFor(isAdmin);
+      const split = [...routeKeysOf(mobileTabsOf(tree)), ...routeKeysOf(mobileMenuOf(tree))];
+      expect(split.sort()).toEqual(routeKeysOf(tree).sort());
+    }
+  });
+
+  it('fits the tab bar into four slots', () => {
+    expect(mobileTabsOf(NAV_TREE).length).toBeLessThanOrEqual(4);
+  });
+
+  it.each([
+    ['/settings/preferences', '/settings'],
+    ['/settings/mcp-server', '/settings'],
+    // Back to /admin rather than /settings: only the administration layout keeps its shared form.
+    ['/admin/system', '/admin'],
+    ['/admin/users/edit/7', '/admin'],
+    ['/settings', null],
+    ['/settings/', null],
+    ['/admin', null],
+    ['/dashboard', null],
+    ['/settingsfoo', null],
+  ])('leads the back arrow on %s to %s', (pathname, expected) => {
+    expect(settingsListOf(pathname)).toBe(expected);
   });
 });

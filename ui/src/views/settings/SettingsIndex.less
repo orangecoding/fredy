@@ -1,0 +1,95 @@
+@import '../../tokens.less';
+
+.settingsIndex {
+  display: flex;
+  flex-direction: column;
+
+  &__section {
+    display: flex;
+    flex-direction: column;
+    /* Scrolled to from the menu's Administration entry; clear of the content area's top edge. */
+    scroll-margin-top: @space-4;
+
+    & + & {
+      margin-top: @space-5;
+      padding-top: @space-5;
+      border-top: 1px solid @color-border;
+    }
+  }
+
+  /* Whose settings the half below is, said where the badge beside a page's heading says it. */
+  &__header {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 0 0 @space-2;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: @text-md;
+    font-weight: @weight-strong;
+    color: @color-text;
+  }
+
+  &__scope {
+    font-size: @text-sm;
+    color: @color-muted;
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    gap: @space-3;
+    min-height: 48px;
+    padding: 0 @space-1;
+    border-radius: @radius-chip;
+    color: @color-text;
+    font-size: @text-md;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+
+    &:visited {
+      color: @color-text;
+    }
+
+    &:active {
+      background: @color-fill-1;
+    }
+  }
+
+  &__icon {
+    display: flex;
+    flex: none;
+    font-size: 20px;
+    color: @color-muted;
+  }
+
+  &__label {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__state {
+    flex: none;
+    max-width: 45%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: @text-sm;
+    color: @color-muted;
+
+    &--alert {
+      color: @color-error;
+    }
+  }
+
+  &__chevron {
+    flex: none;
+    font-size: 16px;
+    color: @color-faint;
+  }
+}

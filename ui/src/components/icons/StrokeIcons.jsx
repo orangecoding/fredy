@@ -187,3 +187,114 @@ export const IconHouse = (props) => (
     <path d="M5 9.5V21h14V9.5" />
   </Stroke>
 );
+
+export const IconArrowLeft = (props) => (
+  <Stroke {...props}>
+    <path d="M19 12H5M11 18l-6-6 6-6" />
+  </Stroke>
+);
+
+export const IconChevronRight = (props) => (
+  <Stroke {...props}>
+    <path d="M9 6l6 6-6 6" />
+  </Stroke>
+);
+
+/** The phone's menu button. */
+export const IconMenu = (props) => (
+  <Stroke {...props}>
+    <path d="M4 7h16M4 12h16M4 17h16" />
+  </Stroke>
+);
+
+/*
+ * One per settings page, for the list a phone shows instead of the tab strip. The strip carries
+ * words only; in a list of fourteen rows a shape beside each name is what the eye finds again.
+ */
+
+export const IconPalette = (props) => (
+  <Stroke {...props}>
+    <path d="M12 3a9 9 0 0 0 0 18c1.1 0 1.8-.8 1.8-1.7 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-.9.8-1.7 1.7-1.7H16a5 5 0 0 0 5-5c0-4-4-7.2-9-7.2z" />
+    <path d="M7.5 11.5h.01M10 7.5h.01M14.5 7.5h.01M17 11h.01" />
+  </Stroke>
+);
+
+export const IconClock = (props) => (
+  <Stroke {...props}>
+    <circle cx="12" cy="12" r="9" />
+    <path d="M12 7v5l3 2" />
+  </Stroke>
+);
+
+export const IconDocument = (props) => (
+  <Stroke {...props}>
+    <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
+    <path d="M14 3v5h5M9 13h6M9 17h6" />
+  </Stroke>
+);
+
+export const IconSend = (props) => (
+  <Stroke {...props}>
+    <path d="M21 3L10 14" />
+    <path d="M21 3l-7 18-4-7-7-4z" />
+  </Stroke>
+);
+
+export const IconPlug = (props) => (
+  <Stroke {...props}>
+    <path d="M9 3v5M15 3v5" />
+    <path d="M6 8h12v3a6 6 0 0 1-12 0z" />
+    <path d="M12 17v4" />
+  </Stroke>
+);
+
+export const IconChip = (props) => (
+  <Stroke {...props}>
+    <rect x="6" y="6" width="12" height="12" rx="1.5" />
+    <rect x="10" y="10" width="4" height="4" />
+    <path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4" />
+  </Stroke>
+);
+
+export const IconActivity = (props) => (
+  <Stroke {...props}>
+    <path d="M3 12h4l3-8 4 16 3-8h4" />
+  </Stroke>
+);
+
+export const IconRoute = (props) => (
+  <Stroke {...props}>
+    <circle cx="6" cy="18" r="2.5" />
+    <circle cx="18" cy="6" r="2.5" />
+    <path d="M8.5 18H16a3 3 0 0 0 0-6H8a3 3 0 0 1 0-6h7.5" />
+  </Stroke>
+);
+
+export const IconWifi = (props) => (
+  <Stroke {...props}>
+    <path d="M2 8.5a15 15 0 0 1 20 0M5 12a10 10 0 0 1 14 0M8.5 15.5a5 5 0 0 1 7 0" />
+    <path d="M12 19h.01" />
+  </Stroke>
+);
+
+export const IconUsers = (props) => (
+  <Stroke {...props}>
+    <circle cx="9" cy="8" r="3.5" />
+    <path d="M2.5 20a6.5 6.5 0 0 1 13 0" />
+    <path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14a6.5 6.5 0 0 1 3.5 6" />
+  </Stroke>
+);
+
+export const IconArchive = (props) => (
+  <Stroke {...props}>
+    <rect x="3" y="4" width="18" height="5" rx="1" />
+    <path d="M5 9v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9M10 13h4" />
+  </Stroke>
+);
+
+export const IconBug = (props) => (
+  <Stroke {...props}>
+    <rect x="7" y="8" width="10" height="12" rx="5" />
+    <path d="M9 8a3 3 0 0 1 6 0M12 12v8M3 13h4M17 13h4M4 8l3 2M20 8l-3 2M4 19l3-2M20 19l-3-2" />
+  </Stroke>
+);

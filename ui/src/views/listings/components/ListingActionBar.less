@@ -133,11 +133,11 @@
      back button goes entirely - the browser and the app both have one already. */
   @media (max-width: 768px) {
     position: fixed;
-    // From the sidebar's edge rather than the viewport's, or the bar covers the sidebar's foot,
-    // where its toggle and the account menu are. Navigate.less publishes the current width.
-    inset: auto 0 0 var(--nav-width);
+    // On top of the tab bar rather than on the viewport's edge, or the bar covers it. MobileNav.less
+    // publishes its height, which already includes the home indicator's strip.
+    inset: auto 0 var(--tabbar-height) 0;
     height: auto;
-    padding: @space-3 @space-4 calc(@space-3 + env(safe-area-inset-bottom));
+    padding: @space-3 @space-4;
     border-top: 1px solid @color-border;
     border-bottom: 0;
 
@@ -174,8 +174,8 @@
       width: @control-lg !important;
     }
 
-    // Whatever the row has left, which beside the rail on a small phone is less than the label
-    // needs. Shortened with an ellipsis rather than pushed past the right edge.
+    // Whatever the row has left, which on a small phone is less than a long label needs. Shortened
+    // with an ellipsis rather than pushed past the right edge.
     &__primary {
       flex: 1 1 auto;
       min-width: 0;

@@ -33,3 +33,16 @@ export function useScreenWidth() {
 
   return width;
 }
+
+/**
+ * Whether the app is laid out for a phone: an app bar along the top, a tab bar along the bottom and
+ * a menu over the page instead of the sidebar.
+ *
+ * Up to and including the breakpoint, like the stylesheets' `max-width: 768px`, so a page's own
+ * phone rules and the shell switch at the same width. Follows rotation and resizing.
+ *
+ * @returns {boolean}
+ */
+export function usePhoneLayout() {
+  return useScreenWidth() <= PHONE_BREAKPOINT;
+}

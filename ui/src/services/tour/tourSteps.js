@@ -48,6 +48,13 @@ const LISTING_PLACEHOLDER = ':listingId';
 const navTarget = (key) => [`[data-tour="${key}"]`];
 
 /**
+ * Selectors for an entry that a phone keeps in its menu rather than in the tab bar: the entry, and
+ * the menu button. Until the menu is open the button is all there is to point at; once it is, the
+ * entry is in the spotlight with it. A wide screen has no menu button, so only the entry matches.
+ */
+const menuNavTarget = (key) => [...navTarget(key), '[data-tour="menu"]'];
+
+/**
  * The whole tour, in order, before it is narrowed to one account.
  *
  * Info steps point at class names the pages already carry; action steps at `data-tour` attributes on
@@ -172,7 +179,7 @@ export const TOUR_STEPS = Object.freeze(
       id: 'goFinance',
       type: 'action',
       route: '/map',
-      targets: navTarget('/finance'),
+      targets: menuNavTarget('/finance'),
       expect: '/finance',
       labelKey: 'nav.finance',
     },
@@ -191,14 +198,15 @@ export const TOUR_STEPS = Object.freeze(
       interactive: true,
       route: '/settings/preferences',
       match: '/settings',
-      targets: ['.settingsShell__tabbar'],
+      // The column of pages on a wide screen; on a phone, the personal half of the settings list.
+      targets: ['.settingsShell__subnav', '.settingsIndex__section--user'],
     },
     {
       id: 'goAdmin',
       type: 'action',
       route: '/settings/preferences',
       match: '/settings',
-      targets: navTarget('/admin'),
+      targets: menuNavTarget('/admin'),
       expect: '/admin',
       labelKey: 'nav.administration',
       adminOnly: true,
@@ -209,7 +217,7 @@ export const TOUR_STEPS = Object.freeze(
       interactive: true,
       route: '/admin/system',
       match: '/admin',
-      targets: ['.settingsShell__tabbar'],
+      targets: ['.settingsShell__subnav', '.settingsIndex__section--instance'],
       adminOnly: true,
     },
     { id: 'finish', type: 'info', route: '/dashboard', targets: [] },

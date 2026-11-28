@@ -37,6 +37,8 @@
  * @property {NavSection} [section] Top-level entries only; children inherit their parent's.
  * @property {NavNode[]} [children]
  * @property {boolean} [adminOnly] Hidden from users without the admin bit.
+ * @property {boolean} [mobileTab] On a phone the entry sits in the tab bar along the bottom edge
+ *   instead of in the menu.
  */
 
 /**
@@ -54,13 +56,17 @@
  * carries its own sections, so a submenu here would name the same places twice - once in the
  * sidebar and again inside the page.
  *
+ * On a phone the four places people open daily, mostly right after a notification, are the tab bar.
+ * The financing is not among them: it is only of use while buying, so it goes into the menu with the
+ * settings.
+ *
  * @type {NavNode[]}
  */
 export const NAV_TREE = [
-  { key: '/dashboard', labelKey: 'nav.dashboard', section: 'work' },
-  { key: '/jobs', labelKey: 'nav.jobs', section: 'work' },
-  { key: '/listings', labelKey: 'nav.listings', section: 'work' },
-  { key: '/map', labelKey: 'nav.map', section: 'work' },
+  { key: '/dashboard', labelKey: 'nav.dashboard', section: 'work', mobileTab: true },
+  { key: '/jobs', labelKey: 'nav.jobs', section: 'work', mobileTab: true },
+  { key: '/listings', labelKey: 'nav.listings', section: 'work', mobileTab: true },
+  { key: '/map', labelKey: 'nav.map', section: 'work', mobileTab: true },
   { key: '/finance', labelKey: 'nav.finance', section: 'work' },
   { key: '/settings', labelKey: 'nav.settings', section: 'personal' },
   { key: '/admin', labelKey: 'nav.administration', section: 'instance', adminOnly: true },
@@ -74,6 +80,46 @@ export const NAV_TREE = [
  */
 export function navTreeFor(isAdmin) {
   return NAV_TREE.filter((node) => !node.adminOnly || isAdmin);
+}
+
+/**
+ * The entries of the phone's tab bar, in order.
+ *
+ * @param {NavNode[]} tree The tree as the user sees it, see `navTreeFor`.
+ * @returns {NavNode[]}
+ */
+export function mobileTabsOf(tree) {
+  return tree.filter((node) => node.mobileTab === true);
+}
+
+/**
+ * The entries of the phone's menu: everything the tab bar has no room for.
+ *
+ * @param {NavNode[]} tree The tree as the user sees it, see `navTreeFor`.
+ * @returns {NavNode[]}
+ */
+export function mobileMenuOf(tree) {
+  return tree.filter((node) => node.mobileTab !== true);
+}
+
+/**
+ * The settings list a settings page belongs to, which is where the back arrow in the phone's app bar
+ * leads. Null on the list itself and anywhere outside the settings.
+ *
+ * Administration pages go back to `/admin` rather than to `/settings`: both show the same list, but
+ * only `/admin` keeps the administration layout mounted, and with it the one form its pages share.
+ * Leaving a half-edited System page by the arrow must not drop the edit.
+ *
+ * @param {string} pathname
+ * @returns {'/settings'|'/admin'|null}
+ */
+export function settingsListOf(pathname) {
+  for (const root of ['/settings', '/admin']) {
+    if (pathname.startsWith(root + '/') && pathname.length > root.length + 1) {
+      return root;
+    }
+  }
+  return null;
 }
 
 /**

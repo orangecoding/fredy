@@ -1,0 +1,407 @@
+@import '../../tokens.less';
+
+/* The phone's shell: an app bar along the top, a tab bar along the bottom, a menu over the page.
+   Constants that are only true here live here, as the sidebar's live in Navigate.less. */
+@appbar-height: 56px;
+@tabbar-height: 56px;
+@tab-pill-width: 56px;
+@tab-pill-height: 28px;
+@nav-icon-size: 20px;
+
+/* The tab bar's height including the home indicator's strip, for whatever is fixed to the bottom
+   edge and has to sit on top of the bar instead: the listing detail's action bar, the update toast. */
+.app--phone {
+  --tabbar-height: calc(@tabbar-height + env(safe-area-inset-bottom));
+}
+
+/* Whether Fredy is still running: green while the promised run is ahead, amber once it is overdue. */
+.mobileNav__statusDot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: @radius-pill;
+  background: @color-success;
+
+  &--stale {
+    background: @color-warning;
+  }
+}
+
+/* An unread release. */
+.mobileNav__unread {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: @radius-pill;
+  background: @color-accent;
+}
+
+.mobileBar {
+  display: flex;
+  align-items: center;
+  gap: @space-1;
+  flex: none;
+  box-sizing: border-box;
+  /* The status bar's strip as well, which a home-screen app draws over. */
+  height: calc(@appbar-height + env(safe-area-inset-top));
+  padding: env(safe-area-inset-top) @space-2 0 @space-4;
+  background: @color-base;
+  border-bottom: 1px solid @color-border;
+
+  &__brand {
+    display: flex;
+    align-items: center;
+    flex: none;
+
+    .navigate__logo {
+      height: 28px;
+    }
+  }
+
+  &__back {
+    display: flex;
+    align-items: center;
+    gap: @space-2;
+    min-width: 0;
+    height: @control-lg;
+    padding: 0 @space-2 0 0;
+    border: none;
+    background: transparent;
+    color: @color-text;
+    font-family: @font-ui;
+    font-size: @text-md;
+    font-weight: @weight-medium;
+    cursor: pointer;
+
+    svg {
+      flex: none;
+      font-size: @nav-icon-size;
+    }
+
+    span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  &__spacer {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  &__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex: none;
+    padding: 0 @space-2;
+    font-size: @text-sm;
+    color: @color-muted;
+    white-space: nowrap;
+  }
+
+  /* A touch target each: 44px, square, quiet until it is where you are. */
+  &__action {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: @control-lg;
+    height: @control-lg;
+    padding: 0;
+    border: none;
+    border-radius: @radius-btn;
+    background: transparent;
+    color: @color-text;
+    font-size: @nav-icon-size;
+    cursor: pointer;
+    transition: background @transition-fast;
+
+    &--active {
+      background: @color-selected;
+    }
+  }
+
+  &__unread {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
+
+  /* A 360px phone cannot fit the status beside the wordmark and three buttons. The time stays, the
+     wordmark gives way to the heart's width. */
+  @media (max-width: 374px) {
+    padding-left: @space-3;
+
+    &__brand .navigate__logo {
+      height: 22px;
+    }
+
+    &__status {
+      padding: 0 @space-1;
+    }
+  }
+}
+
+.mobileTabs {
+  display: flex;
+  flex: none;
+  box-sizing: border-box;
+  height: var(--tabbar-height);
+  padding: 0 @space-1 env(safe-area-inset-bottom);
+  background: @color-base;
+  border-top: 1px solid @color-border;
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: @color-muted;
+    font-family: @font-ui;
+    font-size: @text-xs;
+    font-weight: @weight-medium;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+
+    /* The sidebar's signal: a filled pill in the text colour, nothing red. */
+    &--active {
+      color: @color-text;
+
+      .mobileTabs__icon {
+        background: @color-selected;
+      }
+    }
+  }
+
+  &__icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: @tab-pill-width;
+    height: @tab-pill-height;
+    border-radius: @radius-pill;
+    font-size: @nav-icon-size;
+    transition: background @transition-fast;
+  }
+
+  /* The sidebar's counts, as a badge on the icon. A side note, so in the solid grey rather than red,
+     which would read as something to act on. */
+  &__count {
+    position: absolute;
+    top: -3px;
+    right: 6px;
+    box-sizing: border-box;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    border-radius: @radius-pill;
+    background: @color-solid;
+    color: @color-text;
+    font-size: 10px;
+    font-weight: @weight-strong;
+    line-height: 16px;
+    text-align: center;
+  }
+
+  &__label {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.mobileMenu {
+  .semi-sidesheet-header {
+    padding: @space-4 @space-4 @space-4 @space-5;
+    border-bottom: 1px solid @color-border;
+  }
+
+  .semi-sidesheet-title {
+    font-size: @text-lg;
+    font-weight: @weight-strong;
+    color: @color-text;
+  }
+
+  .semi-sidesheet-body {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    color: @color-text;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 auto;
+    box-sizing: border-box;
+    padding: @space-4 @space-3 calc(@space-4 + env(safe-area-inset-bottom));
+  }
+
+  &__heading {
+    padding: 0 @space-3 @space-2;
+    font-size: @text-xs;
+    font-weight: @weight-medium;
+    color: @color-muted;
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    gap: @space-3;
+    width: 100%;
+    min-height: 48px;
+    padding: @space-2 @space-3;
+    border: none;
+    border-radius: @radius-chip;
+    background: transparent;
+    color: @color-text;
+    font-family: @font-ui;
+    font-size: @text-md;
+    text-align: left;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+
+    &--active {
+      background: @color-selected;
+    }
+  }
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: 24px;
+    font-size: @nav-icon-size;
+    color: @color-muted;
+  }
+
+  &__heart {
+    width: 18px;
+    height: 18px;
+  }
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-width: 0;
+    line-height: 1.3;
+  }
+
+  &__label {
+    font-weight: @weight-medium;
+  }
+
+  &__hint {
+    font-size: @text-sm;
+    color: @color-muted;
+  }
+
+  &__chevron {
+    flex: none;
+    font-size: 16px;
+    color: @color-faint;
+  }
+
+  &__separator {
+    height: 1px;
+    margin: @space-3;
+    background: @color-border;
+  }
+
+  &__status {
+    display: flex;
+    align-items: center;
+    gap: @space-3;
+    min-height: 48px;
+    padding: 0 @space-3;
+    font-size: @text-base;
+    color: @color-muted;
+  }
+
+  &__spacer {
+    flex: 1 1 auto;
+    min-height: @space-6;
+  }
+
+  &__account {
+    display: flex;
+    align-items: center;
+    gap: @space-3;
+    height: 60px;
+    padding: 0 @space-1 0 @space-3;
+    border: 1px solid @color-border;
+    border-radius: @radius-card;
+  }
+
+  &__avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: 36px;
+    height: 36px;
+    border-radius: @radius-pill;
+    background: @color-solid;
+    color: @color-text;
+    font-size: @text-base;
+    font-weight: @weight-strong;
+  }
+
+  &__accountText {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-width: 0;
+    line-height: 1.3;
+  }
+
+  &__accountName {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: @text-md;
+    font-weight: @weight-medium;
+  }
+
+  &__accountRole {
+    font-size: @text-xs;
+    color: @color-muted;
+  }
+
+  &__logout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: @control-lg;
+    height: @control-lg;
+    border: none;
+    border-radius: @radius-chip;
+    background: transparent;
+    color: @color-muted;
+    font-size: @nav-icon-size;
+    cursor: pointer;
+  }
+
+  /* The footer's version line, which a phone has no footer for. */
+  &__version {
+    padding: @space-3 @space-3 0;
+
+    .fredyFooter__left {
+      flex-wrap: wrap;
+    }
+  }
+}
