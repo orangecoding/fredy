@@ -45,7 +45,18 @@ export function normalizeTheme(value) {
 }
 
 /**
+ * The page background (`--f-base` in `ui/src/themes.less`) per theme, for the browser's own
+ * chrome: the status bar of the home-screen app and the toolbar of mobile browsers.
+ *
+ * @type {Record<Theme, string>}
+ */
+export const THEME_COLORS = { dark: '#11110f', light: '#f6f6f4' };
+
+/**
  * Paint the document in a theme.
+ *
+ * Also sets `<meta name="theme-color">`, which `index.html` ships dark to match the first frame.
+ * A media query cannot do it: the theme is a user setting, not the system's.
  *
  * @param {unknown} theme Anything; unknown values fall back to {@link DEFAULT_THEME}.
  * @returns {Theme} The theme that was actually applied.
@@ -53,5 +64,6 @@ export function normalizeTheme(value) {
 export function applyTheme(theme) {
   const next = normalizeTheme(theme);
   document.body.setAttribute('theme-mode', next);
+  document.querySelector?.('meta[name="theme-color"]')?.setAttribute('content', THEME_COLORS[next]);
   return next;
 }

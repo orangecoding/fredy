@@ -39,6 +39,9 @@ export default function NotificationsPage() {
   const channelsLoaded = useSelector((state) => state.notificationChannels.loaded);
   const adapters = useSelector((state) => state.notificationAdapter);
   const currentUser = useSelector((state) => state.user.currentUser);
+  // The push routes refuse non-admins in demo mode, where every visitor shares one account.
+  const demoMode = useSelector((state) => state.generalSettings.settings.demoMode);
+  const showPushDevices = !demoMode || currentUser?.isAdmin === true;
 
   const [editor, setEditor] = useState(null);
   const [pickingType, setPickingType] = useState(false);
@@ -154,9 +157,7 @@ export default function NotificationsPage() {
         )}
       </SegmentPart>
 
-      {/* Push is switched on per device rather than per channel, so it sits beside the channels
-          instead of in the browser channel's form. */}
-      <PushDeviceSettings />
+      {showPushDevices && <PushDeviceSettings />}
 
       {/* Choosing the type is its own step because it is the one decision that cannot be changed
           afterwards - the stored fields only make sense for one adapter. */}

@@ -8,25 +8,28 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-import { applyTheme, normalizeTheme, DEFAULT_THEME, THEMES } from '../../ui/src/services/theme/theme.js';
+import { applyTheme, normalizeTheme, DEFAULT_THEME, THEMES, THEME_COLORS } from '../../ui/src/services/theme/theme.js';
 
 const uiSrc = path.join(path.dirname(fileURLToPath(import.meta.url)), '../../ui/src');
 
 /**
  * The one global theme.js touches. The suite runs without a DOM, and this double covers the whole
- * of its contact with the browser: a single attribute on the body.
+ * of its contact with the browser: an attribute on the body and the `theme-color` meta tag.
  *
- * @returns {{attributes: Record<string, string>}}
+ * @returns {{attributes: Record<string, string>, meta: Record<string, string>}}
  */
 function stubBrowser() {
   const attributes = {};
+  const meta = {};
   globalThis.document = {
     body: {
       setAttribute: (name, value) => (attributes[name] = value),
       getAttribute: (name) => attributes[name] ?? null,
     },
+    querySelector: (selector) =>
+      selector === 'meta[name="theme-color"]' ? { setAttribute: (name, value) => (meta[name] = value) } : null,
   };
-  return { attributes };
+  return { attributes, meta };
 }
 
 describe('theme preference', () => {
@@ -59,6 +62,19 @@ describe('theme preference', () => {
 
     applyTheme('dark');
     expect(browser.attributes['theme-mode']).toBe('dark');
+  });
+
+  it('colours the status bar of the home-screen app in the page background of the theme', () => {
+    applyTheme('light');
+    expect(browser.meta.content).toBe(THEME_COLORS.light);
+    applyTheme('dark');
+    expect(browser.meta.content).toBe(THEME_COLORS.dark);
+
+    const less = fs.readFileSync(path.join(uiSrc, 'themes.less'), 'utf-8');
+    const bases = [...less.matchAll(/--f-base:\s*(#[0-9a-f]{6})/gi)].map((match) => match[1].toLowerCase());
+    expect(bases).toEqual([THEME_COLORS.dark, THEME_COLORS.light]);
+    const html = fs.readFileSync(path.join(uiSrc, '../../index.html'), 'utf-8');
+    expect(html).toContain(`<meta name="theme-color" content="${THEME_COLORS[DEFAULT_THEME]}" />`);
   });
 
   it('never paints a theme it has no palette for', () => {

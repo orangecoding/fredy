@@ -153,9 +153,21 @@ describe('sending', () => {
 
     expect(result).toEqual({ sent: 1, failed: 1, removed: 1 });
     expect(storage.dropPushSubscription).toHaveBeenCalledWith('s1');
-    expect(storage.markPushError).toHaveBeenCalledWith('s2', '500 try later');
+    expect(storage.markPushError).toHaveBeenCalledWith('s2', 'HTTP 500');
     expect(storage.dropPushSubscription).not.toHaveBeenCalledWith('s2');
     expect(storage.markPushSuccess).toHaveBeenCalledWith('s3');
+  });
+
+  it('keeps the endpoint’s answer out of the stored error, which the user can read back', async () => {
+    subscriptions = [device(1), device(2)];
+    webPush.sendNotification
+      .mockRejectedValueOnce(Object.assign(new Error('Bad'), { statusCode: 400, body: '<html>internal admin</html>' }))
+      .mockRejectedValueOnce(Object.assign(new Error('connect ETIMEDOUT 10.0.0.1:443'), { code: 'ETIMEDOUT' }));
+
+    await sendPushToUser('u1', message);
+
+    expect(storage.markPushError).toHaveBeenCalledWith('s1', 'HTTP 400');
+    expect(storage.markPushError).toHaveBeenCalledWith('s2', 'ETIMEDOUT');
   });
 
   it('does nothing for a user without devices', async () => {

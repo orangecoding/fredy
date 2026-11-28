@@ -142,7 +142,7 @@ describe('browser notification adapter', () => {
       baseUrl: 'http://localhost:9998',
     });
 
-    expect(mockSendPush).toHaveBeenCalledTimes(2);
+    await vi.waitFor(() => expect(mockSendPush).toHaveBeenCalledTimes(2));
     expect(mockSendPush).toHaveBeenNthCalledWith(
       1,
       'user_123',
@@ -163,6 +163,42 @@ describe('browser notification adapter', () => {
       send({ serviceName: 'immoscout', newListings: [{ id: 'l1' }], jobKey: 'Job_Berlin', baseUrl: '' }),
     ).resolves.toBeUndefined();
     expect(mockSendToUser).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not hold up the job run while the push service is slow', async () => {
+    let finishPush;
+    mockSendPush.mockImplementationOnce(() => new Promise((resolve) => (finishPush = resolve)));
+
+    await send({
+      serviceName: 'immoscout',
+      newListings: [{ id: 'l1' }, { id: 'l2' }],
+      jobKey: 'Job_Berlin',
+      baseUrl: '',
+    });
+
+    // `send` is done although the first push has not answered, and the second waits its turn.
+    expect(mockSendToUser).toHaveBeenCalledTimes(2);
+    expect(mockSendPush).toHaveBeenCalledTimes(1);
+
+    finishPush({ sent: 1, failed: 0, removed: 0 });
+    await vi.waitFor(() => expect(mockSendPush).toHaveBeenCalledTimes(2));
+  });
+
+  it('opens the notification settings from the push of a channel test, not the sample listing', async () => {
+    await send({
+      serviceName: 'TestCall',
+      newListings: [{ id: '1', title: 'Sample' }],
+      jobKey: 'TestJob',
+      baseUrl: '',
+      userId: 'test_user_override',
+      isTest: true,
+    });
+
+    expect(mockSendPush).toHaveBeenCalledWith(
+      'test_user_override',
+      expect.objectContaining({ url: '/#/settings/notifications', tag: 'fredy-listing-1' }),
+      { urgency: 'high' },
+    );
   });
 
   it('pushes price changes with their own tag', async () => {
