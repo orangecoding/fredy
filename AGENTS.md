@@ -7,7 +7,7 @@ as the single copy so the two cannot drift.
 
 Fredy is a self-hosted real estate finder for Germany. It scrapes German real estate portals (ImmoScout24, Immowelt, Immonet, Kleinanzeigen, WG-Gesucht, etc.), deduplicates results across providers, and sends notifications via Slack, Telegram, Email, Discord, ntfy, etc. It includes a React web UI and a built-in MCP server for LLM access to listings data.
 
-- Node.js >= 22, ESM-only (`"type": "module"`)
+- Node.js >= 24.5 (the built-in proxy support for `http`/`https` agents, `proxyEnv`, arrived there), ESM-only (`"type": "module"`)
 - Default port: 9998, default login: admin / admin
 - SQLite via `better-sqlite3` (synchronous - all DB ops are sync; only network I/O is async)
 

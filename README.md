@@ -92,7 +92,7 @@ master yet. Use it to try upcoming features or to verify a fix, not for an insta
 
 ### Node.js
 
-Requires **Node.js 22.22.0 or higher**.
+Requires **Node.js 24.5.0 or higher**.
 
 ``` bash
 yarn

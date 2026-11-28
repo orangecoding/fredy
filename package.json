@@ -57,7 +57,7 @@
   },
   "license": "Apache-2.0",
   "engines": {
-    "node": ">=22.22.0",
+    "node": ">=24.5.0",
     "npm": ">=7.0.0"
   },
   "dependencies": {

@@ -2,7 +2,7 @@
 # build machine's own platform and copied into each image. Built inside the arm64 image instead,
 # Vite ran under QEMU emulation in CI and now and then hung in "rendering chunks..." until GitHub
 # cancelled the job after 6 hours.
-FROM --platform=$BUILDPLATFORM node:22-trixie-slim AS frontend
+FROM --platform=$BUILDPLATFORM node:24-trixie-slim AS frontend
 
 WORKDIR /fredy
 
@@ -28,7 +28,7 @@ RUN yarn build:frontend
 # against GLIBC_2.38. Debian 12 (bookworm) only has glibc 2.36, so arm64
 # containers crashed on startup with
 # "libm.so.6: version `GLIBC_2.38' not found".
-FROM node:22-trixie-slim
+FROM node:24-trixie-slim
 
 # System deps for the stealth Chromium + build tools for native modules (better-sqlite3).
 # xz-utils lets tar unpack Clearcote's .tar.xz build.

@@ -15,7 +15,7 @@ import { copyToClipboard } from '../../ui/src/services/clipboard.js';
 function stubBrowser({ asyncApi = true, asyncFails = false, execFails = false } = {}) {
   const state = { written: null, appended: [], removed: [], selected: 0, execCommands: [] };
 
-  // `globalThis.navigator` is a getter-only property on Node 22, so it has to be stubbed rather
+  // `globalThis.navigator` is a getter-only property in Node (since 21), so it has to be stubbed rather
   // than assigned.
   vi.stubGlobal(
     'navigator',

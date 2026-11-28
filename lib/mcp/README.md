@@ -286,7 +286,7 @@ The LLM will automatically call the appropriate Fredy MCP tools and present the 
    {
      "mcpServers": {
        "fredy": {
-         "command": "/opt/homebrew/opt/node@22/bin/node",
+         "command": "/opt/homebrew/opt/node@24/bin/node",
          "args": ["/absolute/path/to/fredy/lib/mcp/stdio.js"],
          "env": {
            "MCP_TOKEN": "fredy_<your-token>"
@@ -300,7 +300,7 @@ The LLM will automatically call the appropriate Fredy MCP tools and present the 
 
    > **Important:** Claude Desktop launches with a restricted `PATH` and often cannot find `node` by name. Always use the **full absolute path** to the node binary. Find yours by running `which node` in a terminal. Common locations:
    > - Homebrew (default): `/opt/homebrew/bin/node`
-   > - Homebrew (versioned, e.g. node@22): `/opt/homebrew/opt/node@22/bin/node`
+   > - Homebrew (versioned, e.g. node@24): `/opt/homebrew/opt/node@24/bin/node`
    > - nvm: `/Users/<you>/.nvm/versions/node/<version>/bin/node`
 
 4. Save the file and **restart Claude Desktop**

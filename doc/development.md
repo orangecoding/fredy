@@ -1,6 +1,6 @@
 # 🛠️ Development
 
-Requirement: **Node.js 22.22.0 or higher** (see `engines` in `package.json`).
+Requirement: **Node.js 24.5.0 or higher** (see `engines` in `package.json`).
 
 ## Development mode
 
