@@ -5355,6 +5355,11 @@ unist-util-visit@^5.0.0:
     unist-util-is "^6.0.0"
     unist-util-visit-parents "^6.0.0"
 
+unpdf@2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/unpdf/-/unpdf-2.2.1.tgz#390ca3fe522aa183fc867acf0e6b85dc669e7a28"
+  integrity sha512-tstQpe/fhxkDGY1ZtpejwnU14QZ9w0SYLo9lIZooB1zQ7QXVE4t+SBQUN/2a9+EBg9UrrO2bWlqdzV+UtoebHw==
+
 unpipe@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/unpipe/-/unpipe-1.0.0.tgz#b2bf4ee8514aae6165b4817829d21b2ef49904ec"

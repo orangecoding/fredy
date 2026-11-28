@@ -34,9 +34,12 @@ Manually issued MCP tokens keep working alongside OAuth.
 | `list_jobs` | List real estate search jobs with pagination and text filtering                |
 | `get_job` | Get detailed information about a specific job                                  |
 | `list_listings` | Search and list real estate listings with pagination, text search, and filters |
-| `get_listing` | Get full details of a single listing                                           |
+| `get_listing` | Get full details of a single listing, including its notes and a list of its documents |
+| `get_listing_document` | Read one document attached to a listing: a PDF as its text, an image shrunk to 1600px |
 | `calculate_financing` | Work out whether a property is affordable, using a German mortgage model       |
 | `get_current_date_time` | Gets the current date/time for the llm to be used                              |
+
+Documents never go out as stored. MCP clients do not reliably pass a binary PDF on to the model (Claude Desktop drops embedded resources, Claude Code writes them to disk), so `get_listing_document` reads a PDF's text on Fredy's side and sends that, at most about 40,000 characters per call; a longer document is read in parts with `fromPage`, and each answer names the page to continue from. Scanned PDFs carry no text, and the answer says so. Images are scaled to 1600px on their longer edge and sent as WebP, because an upload can be far larger than the 5 MB the Claude API accepts per image. Whatever cannot be sent points the user to the document in the web UI.
 
 ### Write tools
 

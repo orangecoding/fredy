@@ -125,6 +125,14 @@ describe('compressPreview', () => {
     expect(content.length).toBeLessThan(original.length);
   });
 
+  it('takes a larger edge where a caller needs one', async () => {
+    const { content } = await compressPreview(await photo(4000, 2000, 'png'), 'image/png', { maxEdge: 1600 });
+
+    const meta = await sharp(content).metadata();
+    expect(meta.width).toBe(1600);
+    expect(meta.height).toBe(800);
+  });
+
   it('never enlarges a small picture', async () => {
     const { content } = await compressPreview(await photo(320, 240, 'png'), 'image/png');
 
