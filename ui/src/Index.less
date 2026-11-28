@@ -244,6 +244,17 @@ button:focus:not(:focus-visible),
   border-color: @color-error !important;
 }
 
+// A select with `filter` types its search into an input Semi lays over the selection
+// (`.semi-select-input`). That input is a `.semi-input-wrapper` as well, so the field rule above drew
+// a second box with its own edge inside the select as soon as it opened. The select is the field;
+// the search inside it has no edge and no fill of its own. Four classes, so the card rule that sinks
+// every field in a settings section (SegmentParts.less) does not paint it back.
+.semi-select .semi-select-content-wrapper .semi-select-input.semi-input-wrapper {
+  height: 100%;
+  background-color: transparent !important;
+  border: 0 !important;
+}
+
 // No steppers on number fields, anywhere. Semi draws them as a second box beside the field, which
 // made every number input two boxes; the figures here are typed, the arrow keys still step them, and
 // `min`/`max` still hold the limits. The admin pages had already dropped them for the same reason.
