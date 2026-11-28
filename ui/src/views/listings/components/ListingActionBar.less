@@ -133,9 +133,11 @@
      back button goes entirely - the browser and the app both have one already. */
   @media (max-width: 768px) {
     position: fixed;
-    // From the sidebar's edge rather than the viewport's, or the bar covers the sidebar's foot,
-    // where its toggle and the account menu are. Navigate.less publishes the current width.
-    inset: auto 0 0 var(--nav-width);
+    // Above the phone's tab bar, which MobileNav.less publishes as `--tabbar-height` and which also
+    // takes the home indicator's safe area. Between 768px and the phone breakpoint the sidebar is
+    // still there, so the bar starts at its edge instead (Navigate.less publishes `--nav-width`) and
+    // keeps the safe area itself; each variable is unset in the other shell.
+    inset: auto 0 var(--tabbar-height, 0px) var(--nav-width, 0px);
     height: auto;
     padding: @space-3 @space-4 calc(@space-3 + env(safe-area-inset-bottom));
     border-top: 1px solid @color-border;

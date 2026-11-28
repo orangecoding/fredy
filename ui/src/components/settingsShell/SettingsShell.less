@@ -14,6 +14,20 @@
     display: flex;
     flex-direction: column;
     gap: 0;
+
+    /* The phone's list of settings pages brings its own heading, so nothing sits above it. */
+    &--list {
+      padding-top: 0;
+    }
+  }
+
+  /* No tab strip on a phone: the heading names the page, so the content follows it closely. */
+  &--phone &__content {
+    padding-top: @space-4;
+  }
+
+  &--phone &__content--list {
+    padding-top: 0;
   }
 
   // Keeping the column narrow means the name, the help text and the control stay within one eye

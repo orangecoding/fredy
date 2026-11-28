@@ -1,0 +1,108 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../tokens.less';
+
+.settingsIndex {
+  display: flex;
+  flex-direction: column;
+
+  &__area + &__area {
+    margin-top: @space-8;
+  }
+
+  /* The area's name, and whose settings it holds in the scope badge's words beside it. */
+  &__heading {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: @space-2;
+    margin: 0 0 @space-2;
+    /* Lands below the app bar, not under it, when the administration is scrolled into view. */
+    scroll-margin-top: @space-4;
+    font-size: @text-md;
+    font-weight: @weight-strong;
+    color: @color-text;
+  }
+
+  &__scope {
+    font-size: @text-xs;
+    font-weight: 400;
+    color: @color-muted;
+  }
+
+  /* One card per area, a hairline between its rows. */
+  &__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border: 1px solid @color-border;
+    border-radius: @radius-card;
+    background: @color-surface;
+    overflow: hidden;
+
+    li + li {
+      border-top: 1px solid @color-border;
+    }
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    gap: @space-3;
+    width: 100%;
+    min-height: 52px;
+    padding: 0 @space-3 0 @space-4;
+    border: none;
+    background: transparent;
+    color: @color-text;
+    font-family: @font-ui;
+    font-size: @text-base;
+    text-align: left;
+    cursor: pointer;
+
+    &:active {
+      background: @color-fill-1;
+    }
+  }
+
+  &__icon {
+    display: flex;
+    flex: none;
+    color: @color-muted;
+    font-size: 18px;
+  }
+
+  &__label {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-weight: @weight-medium;
+  }
+
+  &__state {
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: @text-sm;
+    color: @color-muted;
+  }
+
+  /* A state that matters, such as debug capture running: the dot carries the colour, the words stay
+     in the text colour, as on the settings cards. */
+  &__flag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: @color-text;
+  }
+
+  &__chevron {
+    flex: none;
+    color: @color-faint;
+    font-size: 16px;
+  }
+}

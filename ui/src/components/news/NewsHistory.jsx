@@ -23,9 +23,12 @@ import './NewsModal.less';
  *
  * @param {Object} props
  * @param {boolean} props.collapsed Whether the sidebar is showing icons only.
+ * @param {(trigger: {open: () => void, hasUnread: boolean}) => React.ReactNode} [props.renderTrigger]
+ *   Draws the control that opens the history instead of the sidebar row - the phone's app bar has a
+ *   bell of its own.
  * @returns {React.ReactElement|null}
  */
-export default function NewsHistory({ collapsed }) {
+export default function NewsHistory({ collapsed, renderTrigger }) {
   const t = useTranslation();
   const locale = useLocale();
   const [visible, setVisible] = useState(false);
@@ -43,11 +46,14 @@ export default function NewsHistory({ collapsed }) {
 
   // A row among the sidebar's quiet utilities, labelled like the entries above it. In the rail the
   // label is gone and the tooltip names it instead.
-  const trigger = (
+  const open = () => setVisible(true);
+  const trigger = renderTrigger ? (
+    renderTrigger({ open, hasUnread })
+  ) : (
     <button
       type="button"
       className="navigate__utility"
-      onClick={() => setVisible(true)}
+      onClick={open}
       aria-label={collapsed ? t('nav.news') : undefined}
     >
       <span className="navigate__utilityIcon">
@@ -65,7 +71,7 @@ export default function NewsHistory({ collapsed }) {
           trigger="custom" when expanded - where it never fired, but its wrapper is inline, so the
           button's `width: 100%` resolved against its own text and came out narrower than the
           Support button below it. */}
-      {collapsed ? (
+      {collapsed && !renderTrigger ? (
         <Tooltip content={t('news.historyTitle')} position="right">
           {trigger}
         </Tooltip>

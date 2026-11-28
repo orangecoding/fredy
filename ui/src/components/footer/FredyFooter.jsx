@@ -59,9 +59,16 @@ Tick.displayName = 'Tick';
  * for unanswered. It now says whether it is current, and when it is not, it is the control that
  * opens the release notes - a job a warning banner used to do from the top of every page.
  *
+ * On a phone there is no bar along the bottom - the tab bar is there - and the same two lines sit
+ * at the foot of the menu instead, stacked. The update toast is the shell's business there, because
+ * the menu is closed most of the time.
+ *
+ * @param {Object} props
+ * @param {'bar'|'menu'} [props.variant] The bar along the bottom of the page, or the foot of the
+ *   phone's menu.
  * @returns {React.ReactElement}
  */
-export default function FredyFooter() {
+export default function FredyFooter({ variant = 'bar' }) {
   const t = useTranslation();
   const [notesVisible, setNotesVisible] = useState(false);
   const versionUpdate = useSelector((state) => state.versionUpdate.versionUpdate);
@@ -71,7 +78,10 @@ export default function FredyFooter() {
   const upToDate = !hasUpdate && versionUpdate?.checked === true;
 
   return (
-    <footer className="fredyFooter" aria-label={t('footer.landmark')}>
+    <footer
+      className={`fredyFooter${variant === 'menu' ? ' fredyFooter--menu' : ''}`}
+      aria-label={t('footer.landmark')}
+    >
       <div className="fredyFooter__left">
         <span className="fredyFooter__version">Fredy v{versionUpdate?.localFredyVersion || t('common.na')}</span>
         {hasUpdate && (
@@ -102,7 +112,7 @@ export default function FredyFooter() {
         </span>
       </span>
       {hasUpdate && <VersionModal visible={notesVisible} onClose={() => setNotesVisible(false)} />}
-      {hasUpdate && <UpdateToast onShowNotes={() => setNotesVisible(true)} />}
+      {hasUpdate && variant === 'bar' && <UpdateToast onShowNotes={() => setNotesVisible(true)} />}
     </footer>
   );
 }

@@ -5,6 +5,7 @@
 
 import ScopeBadge from '../../components/scopeBadge/ScopeBadge.jsx';
 import SettingsShell from '../../components/settingsShell/SettingsShell.jsx';
+import { PERSONAL_SETTINGS } from '../../components/settingsShell/settingsPages.js';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
 
 /**
@@ -24,20 +25,14 @@ import { useTranslation } from '../../services/i18n/i18n.jsx';
  * The tabs carry words only. They used to carry an icon each, which the strip no longer draws: six
  * pictograms in a row said nothing the six labels beside them did not.
  *
+ * Which pages there are is `settingsPages.js`'s list, which the phone's settings list reads too.
+ *
  * @returns {React.ReactElement}
  */
 export default function SettingsLayout() {
   const t = useTranslation();
 
-  const tabs = [
-    { path: '/settings/preferences', label: t('settings.tabPreferences') },
-    { path: '/settings/travel-time', label: t('settings.tabTravelTime') },
-    { path: '/settings/listings', label: t('settings.tabListingDetails') },
-    { path: '/settings/application', label: t('settings.tabApplication') },
-    { path: '/settings/notifications', label: t('settings.tabNotifications') },
-    { path: '/settings/connections', label: t('settings.tabConnections') },
-    { path: '/settings/mcp-server', label: t('settings.tabMcpServer') },
-  ];
+  const tabs = PERSONAL_SETTINGS.pages.map((page) => ({ path: page.path, label: t(page.labelKey) }));
 
   return (
     <SettingsShell

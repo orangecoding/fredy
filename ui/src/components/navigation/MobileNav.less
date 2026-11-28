@@ -1,0 +1,247 @@
+/*
+ * Copyright (c) 2026 by Christian Kellner.
+ * Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+ */
+
+@import '../../tokens.less';
+
+/* Constants that are only true for the phone's shell. */
+@appbar-height: 56px;
+@tabbar-height: 56px;
+@tab-icon: 20px;
+
+/* The height the tab bar takes right now, safe area included, for whatever is fixed to the viewport
+   and has to stop above it: the listing detail's action bar. The phone's counterpart of
+   `--nav-width`. */
+.app--phone {
+  --tabbar-height: calc(@tabbar-height + env(safe-area-inset-bottom));
+
+  /* The dynamic viewport height, so the tab bar is not pushed under Safari's own toolbar: `100vh` is
+     the height with that toolbar hidden, which is taller than the screen while it shows. */
+  height: 100dvh;
+
+  .app__main {
+    height: 100dvh;
+  }
+
+  /* The listing detail's action bar sits on top of the tab bar, which already keeps clear of the
+     home indicator; the bar's own safe-area padding would only leave a gap. */
+  .listing-actionbar {
+    padding-bottom: @space-3;
+  }
+
+  /* The update toast stands above the tab bar instead of above the footer the phone does not have. */
+  .updateToast {
+    right: @space-4;
+    bottom: calc(var(--tabbar-height) + @space-3);
+  }
+}
+
+.mobileAppBar {
+  display: flex;
+  align-items: center;
+  gap: @space-1;
+  flex: none;
+  box-sizing: content-box;
+  height: @appbar-height;
+  padding: env(safe-area-inset-top) @space-2 0 @space-3;
+  background: @color-base;
+  border-bottom: 1px solid @color-border;
+
+  &__brand,
+  &__back {
+    display: flex;
+    align-items: center;
+    gap: @space-2;
+    min-width: 0;
+    height: @control-lg;
+    padding: 0 @space-2;
+    border: none;
+    border-radius: @radius-chip;
+    background: transparent;
+    color: @color-text;
+    font-family: @font-ui;
+    font-size: @text-md;
+    font-weight: @weight-strong;
+    cursor: pointer;
+
+    img {
+      width: 24px;
+      height: 24px;
+    }
+
+    svg {
+      flex: none;
+      font-size: 20px;
+    }
+
+    span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  &__spacer {
+    flex: 1 1 auto;
+  }
+
+  /* The run status, shrunk to a pill: the dot and "in 14 min". */
+  &__status {
+    display: inline-flex;
+    align-items: center;
+    gap: @space-1;
+    flex: none;
+    height: 28px;
+    padding: 0 @space-3 0 @space-1;
+    border: 1px solid @color-border-bright;
+    border-radius: @radius-pill;
+    font-size: @text-xs;
+    color: @color-muted;
+    white-space: nowrap;
+  }
+
+  /* Icon buttons with a 44px target, the size a thumb hits without aiming. */
+  &__action {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: @control-lg;
+    height: @control-lg;
+    border: none;
+    border-radius: @radius-chip;
+    background: transparent;
+    color: @color-muted;
+    font-size: 20px;
+    cursor: pointer;
+
+    &--active {
+      background: @color-selected;
+      color: @color-text;
+    }
+  }
+
+  /* An unread release, on the bell. */
+  &__dot {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 7px;
+    height: 7px;
+    border-radius: @radius-pill;
+    background: @color-accent;
+  }
+}
+
+.mobileTabBar {
+  display: flex;
+  flex: none;
+  box-sizing: content-box;
+  height: @tabbar-height;
+  padding: 0 @space-2 env(safe-area-inset-bottom);
+  background: @color-base;
+  border-top: 1px solid @color-border;
+
+  &__tab {
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    min-width: 0;
+    border: none;
+    background: transparent;
+    color: @color-muted;
+    font-family: @font-ui;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* The pill sits behind the icon only, as in the native tab bars: a filled pill in the text colour,
+     the sidebar's one signal for "you are here". Nothing red. */
+  &__icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 28px;
+    border-radius: @radius-pill;
+    font-size: @tab-icon;
+    transition: background @transition-fast;
+  }
+
+  &__label {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: @text-xs;
+    font-weight: @weight-medium;
+  }
+
+  &__tab--active {
+    color: @color-text;
+
+    .mobileTabBar__icon {
+      background: @color-selected;
+    }
+  }
+
+  &__count {
+    position: absolute;
+    top: -4px;
+    left: 32px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 @space-1;
+    box-sizing: border-box;
+    border-radius: @radius-pill;
+    background: @color-solid;
+    color: @color-text;
+    font-size: 10px;
+    font-weight: @weight-strong;
+    line-height: 16px;
+    text-align: center;
+  }
+}
+
+/* The menu reuses the sidebar's rows; only the frame differs: no fixed width, no edge, and room for
+   the home indicator at the bottom. */
+.mobileMenu {
+  .semi-sidesheet-body {
+    padding: 0;
+  }
+
+  &__nav.navigate {
+    width: 100%;
+    height: auto;
+    min-height: 100%;
+    padding: calc(@space-5 + env(safe-area-inset-top)) @space-3 calc(@space-4 + env(safe-area-inset-bottom));
+    border-right: none;
+    overflow: visible;
+  }
+
+  .navigate__item {
+    height: @control-lg;
+  }
+
+  .navigate__utility {
+    height: @control-lg;
+  }
+
+  /* Whose settings an entry holds: the words of the scope badge, quietly beside the name. */
+  &__scope {
+    flex: none;
+    font-size: @text-xs;
+    font-weight: 400;
+    color: @color-muted;
+  }
+
+  .fredyFooter {
+    padding-left: 10px;
+  }
+}

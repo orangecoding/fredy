@@ -156,6 +156,25 @@ export const IconChevronDown = (props) => (
   </Stroke>
 );
 
+export const IconChevronRight = (props) => (
+  <Stroke {...props}>
+    <path d="M9 6l6 6-6 6" />
+  </Stroke>
+);
+
+export const IconArrowLeft = (props) => (
+  <Stroke {...props}>
+    <path d="M19 12H5M11 6l-6 6 6 6" />
+  </Stroke>
+);
+
+/** The phone's menu button: three lines, the shape every mobile app uses for "everything else". */
+export const IconMenu = (props) => (
+  <Stroke {...props}>
+    <path d="M4 7h16M4 12h16M4 17h16" />
+  </Stroke>
+);
+
 export const IconChevronUpDown = (props) => (
   <Stroke {...props}>
     <path d="M7 15l5 5 5-5M7 9l5-5 5 5" />

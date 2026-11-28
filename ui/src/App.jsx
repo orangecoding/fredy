@@ -19,6 +19,11 @@ import semiEnUS from '@douyinfe/semi-ui-19/lib/es/locale/source/en_US';
 import Navigation from './components/navigation/Navigation.jsx';
 import { Layout } from '@douyinfe/semi-ui-19';
 import FredyFooter from './components/footer/FredyFooter.jsx';
+import MobileAppBar from './components/navigation/MobileAppBar.jsx';
+import MobileTabBar from './components/navigation/MobileTabBar.jsx';
+import { useNavStatus } from './components/navigation/useNavStatus.js';
+import PhoneUpdateNotice from './components/version/PhoneUpdateNotice.jsx';
+import { useIsPhone } from './hooks/screenWidth.js';
 import NewsModal from './components/news/NewsModal.jsx';
 import OnboardingTour from './components/tour/OnboardingTour.jsx';
 import inDevelopment from './services/developmentMode.js';
@@ -39,6 +44,7 @@ const ListingDetail = lazy(() => import('./views/listings/ListingDetail.jsx'));
 const MapView = lazy(() => import('./views/listings/Map.jsx'));
 const FinanceCalculator = lazy(() => import('./views/finance/FinanceCalculator.jsx'));
 const SettingsLayout = lazy(() => import('./views/settings/SettingsLayout'));
+const SettingsIndexRoute = lazy(() => import('./components/settingsShell/SettingsIndex.jsx'));
 const PreferencesPage = lazy(() => import('./views/settings/pages/PreferencesPage'));
 const TravelTimePage = lazy(() => import('./views/settings/pages/TravelTimePage'));
 const ListingDetailsPage = lazy(() => import('./views/settings/pages/ListingDetailsPage'));
@@ -107,6 +113,45 @@ function LegacyUserEditRedirect() {
 
 LegacyUserEditRedirect.displayName = 'LegacyUserEditRedirect';
 
+/**
+ * The frame around every page once someone is signed in.
+ *
+ * On a wide screen the sidebar and the footer, on a phone an app bar at the top and a tab bar at the
+ * bottom. The page area keeps its place in the tree either way, so turning a phone on its side -
+ * which crosses the breakpoint on most of them - swaps the navigation around the page without
+ * remounting the page and throwing away whatever was typed into it.
+ *
+ * Its own component, so the navigation's status is only asked for while someone is signed in and
+ * asked for again after every sign-in, as the sidebar always did.
+ *
+ * @param {Object} props
+ * @param {boolean} props.isAdmin
+ * @param {boolean} props.isPhone
+ * @param {React.ReactNode} props.children The page area (`.app__content`).
+ * @returns {React.ReactElement}
+ */
+function AppShell({ isAdmin, isPhone, children }) {
+  const status = useNavStatus();
+  const { Sider } = Layout;
+  return (
+    <Layout className={`app${isPhone ? ' app--phone' : ''}`}>
+      {!isPhone && (
+        <Sider>
+          <Navigation isAdmin={isAdmin} status={status} />
+        </Sider>
+      )}
+      <Layout className="app__main">
+        {isPhone && <MobileAppBar isAdmin={isAdmin} status={status} />}
+        {children}
+        {isPhone ? <MobileTabBar isAdmin={isAdmin} counts={status.counts} /> : <FredyFooter />}
+        {isPhone && <PhoneUpdateNotice />}
+      </Layout>
+    </Layout>
+  );
+}
+
+AppShell.displayName = 'AppShell';
+
 export default function FredyApp() {
   const location = useLocation();
   const actions = useActions();
@@ -133,6 +178,8 @@ export default function FredyApp() {
    * the default, which is also what index.html ships on the body, so nothing repaints.
    */
   const theme = normalizeTheme(useSelector((state) => state.userSettings.settings.theme));
+  // On a phone the sidebar gives way to an app bar and a tab bar. Follows rotation and resizing.
+  const isPhone = useIsPhone();
 
   useBrowserNotifications();
 
@@ -220,9 +267,84 @@ export default function FredyApp() {
   };
 
   const isAdmin = () => currentUser != null && currentUser.isAdmin;
-  const { Sider, Content } = Layout;
+  const { Content } = Layout;
   // Never on a demo instance, and held back while the analytics question is still on screen.
   const tourBlocked = settings.analyticsEnabled === null && !inDevelopment();
+
+  // The page itself, the same in both shells.
+  const pageArea = (
+    <Content className="app__content">
+      <DebugLoggingBanner />
+      {settings.demoMode && <DemoBanner />}
+      {settings.analyticsEnabled === null && !settings.demoMode && <TrackingModal />}
+      {!settings.demoMode && <NewsModal />}
+      <Suspense fallback={null}>
+        <Routes>
+          <Route path="/403" element={<InsufficientPermission />} />
+          <Route path="/jobs/new" element={<JobMutation />} />
+          <Route path="/jobs/edit/:jobId" element={<JobMutation />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/jobs" element={<Jobs />} />
+          <Route path="/listings" element={<Listings />} />
+          <Route path="/listings/listing/:listingId" element={<ListingDetail />} />
+          <Route path="/map" element={<MapView />} />
+          <Route path="/finance" element={<FinanceCalculator />} />
+
+          {/* Settings that belong to whoever is signed in. No guard: they are theirs.
+          One entry in the sidebar, and the tabs below the heading name the pages. On a
+          phone the index is a list of every settings page instead of a redirect to the
+          first tab (SettingsIndex). */}
+          <Route path="/settings" element={<SettingsLayout />}>
+            <Route index element={<SettingsIndexRoute scope="user" />} />
+            <Route path="preferences" element={<PreferencesPage />} />
+            <Route path="travel-time" element={<TravelTimePage />} />
+            <Route path="listings" element={<ListingDetailsPage />} />
+            <Route path="application" element={<ApplicationPage />} />
+            <Route path="notifications" element={<NotificationsPage />} />
+            <Route path="connections" element={<ConnectionsPage />} />
+            <Route path="mcp-server" element={<McpServerPage />} />
+          </Route>
+
+          {/* Settings that belong to the instance. Guarded once, at the parent, so a new
+          page cannot be added without inheriting the check. */}
+          <Route
+            path="/admin"
+            element={
+              <PermissionAwareRoute currentUser={currentUser}>
+                <AdminLayout />
+              </PermissionAwareRoute>
+            }
+          >
+            <Route index element={<SettingsIndexRoute scope="instance" />} />
+            <Route path="system" element={<SystemPage />} />
+            <Route path="execution" element={<ExecutionPage />} />
+            <Route path="connectivity" element={<ConnectivityPage />} />
+            <Route path="routing" element={<RoutingPage />} />
+            <Route path="users" element={<Users />} />
+            <Route path="users/new" element={<UserMutator />} />
+            <Route path="users/edit/:userId" element={<UserMutator />} />
+            <Route path="backup" element={<BackupPage />} />
+            <Route path="debug" element={<DebugPage />} />
+          </Route>
+
+          {/* The addresses these things used to live at, kept so existing bookmarks and the
+          links in older notification emails still land somewhere sensible. The table
+          lives in legacyRedirects.js so a test can check every entry still resolves. */}
+          {Object.entries(LEGACY_REDIRECTS).map(([from, to]) => (
+            <Route key={from} path={from} element={<Navigate to={to} replace />} />
+          ))}
+          {/* Carries a parameter, so it needs a component rather than a table entry. */}
+          <Route path="/users/edit/:userId" element={<LegacyUserEditRedirect />} />
+
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          {/* Catch-all: an authenticated user landing on an unknown path (e.g. still on
+          /login during the post-login transition) is sent to the dashboard instead
+          of matching no route. */}
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        </Routes>
+      </Suspense>
+    </Content>
+  );
 
   return loading ? null : (
     <I18nProvider language={language ?? 'en'}>
@@ -235,84 +357,9 @@ export default function FredyApp() {
         ) : (
           <>
             {!settings.demoMode && <OnboardingTour isAdmin={isAdmin()} blocked={tourBlocked} />}
-            <Layout className="app">
-              <Sider>
-                <Navigation isAdmin={isAdmin()} />
-              </Sider>
-              <Layout className="app__main">
-                <Content className="app__content">
-                  <DebugLoggingBanner />
-                  {settings.demoMode && <DemoBanner />}
-                  {settings.analyticsEnabled === null && !settings.demoMode && <TrackingModal />}
-                  {!settings.demoMode && <NewsModal />}
-                  <Suspense fallback={null}>
-                    <Routes>
-                      <Route path="/403" element={<InsufficientPermission />} />
-                      <Route path="/jobs/new" element={<JobMutation />} />
-                      <Route path="/jobs/edit/:jobId" element={<JobMutation />} />
-                      <Route path="/dashboard" element={<Dashboard />} />
-                      <Route path="/jobs" element={<Jobs />} />
-                      <Route path="/listings" element={<Listings />} />
-                      <Route path="/listings/listing/:listingId" element={<ListingDetail />} />
-                      <Route path="/map" element={<MapView />} />
-                      <Route path="/finance" element={<FinanceCalculator />} />
-
-                      {/* Settings that belong to whoever is signed in. No guard: they are theirs.
-                      One entry in the sidebar, and the tabs below the heading are the only place
-                      these pages are named. */}
-                      <Route path="/settings" element={<SettingsLayout />}>
-                        <Route index element={<Navigate to="/settings/preferences" replace />} />
-                        <Route path="preferences" element={<PreferencesPage />} />
-                        <Route path="travel-time" element={<TravelTimePage />} />
-                        <Route path="listings" element={<ListingDetailsPage />} />
-                        <Route path="application" element={<ApplicationPage />} />
-                        <Route path="notifications" element={<NotificationsPage />} />
-                        <Route path="connections" element={<ConnectionsPage />} />
-                        <Route path="mcp-server" element={<McpServerPage />} />
-                      </Route>
-
-                      {/* Settings that belong to the instance. Guarded once, at the parent, so a new
-                      page cannot be added without inheriting the check. */}
-                      <Route
-                        path="/admin"
-                        element={
-                          <PermissionAwareRoute currentUser={currentUser}>
-                            <AdminLayout />
-                          </PermissionAwareRoute>
-                        }
-                      >
-                        <Route index element={<Navigate to="/admin/system" replace />} />
-                        <Route path="system" element={<SystemPage />} />
-                        <Route path="execution" element={<ExecutionPage />} />
-                        <Route path="connectivity" element={<ConnectivityPage />} />
-                        <Route path="routing" element={<RoutingPage />} />
-                        <Route path="users" element={<Users />} />
-                        <Route path="users/new" element={<UserMutator />} />
-                        <Route path="users/edit/:userId" element={<UserMutator />} />
-                        <Route path="backup" element={<BackupPage />} />
-                        <Route path="debug" element={<DebugPage />} />
-                      </Route>
-
-                      {/* The addresses these things used to live at, kept so existing bookmarks and the
-                      links in older notification emails still land somewhere sensible. The table
-                      lives in legacyRedirects.js so a test can check every entry still resolves. */}
-                      {Object.entries(LEGACY_REDIRECTS).map(([from, to]) => (
-                        <Route key={from} path={from} element={<Navigate to={to} replace />} />
-                      ))}
-                      {/* Carries a parameter, so it needs a component rather than a table entry. */}
-                      <Route path="/users/edit/:userId" element={<LegacyUserEditRedirect />} />
-
-                      <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                      {/* Catch-all: an authenticated user landing on an unknown path (e.g. still on
-                      /login during the post-login transition) is sent to the dashboard instead
-                      of matching no route. */}
-                      <Route path="*" element={<Navigate to="/dashboard" replace />} />
-                    </Routes>
-                  </Suspense>
-                </Content>
-                <FredyFooter />
-              </Layout>
-            </Layout>
+            <AppShell isAdmin={isAdmin()} isPhone={isPhone}>
+              {pageArea}
+            </AppShell>
           </>
         )}
       </LocaleProvider>

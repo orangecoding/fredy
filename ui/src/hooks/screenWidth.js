@@ -33,3 +33,16 @@ export function useScreenWidth() {
 
   return width;
 }
+
+/**
+ * Whether the window is a phone's: narrower than `PHONE_BREAKPOINT`, the same test the listing
+ * detail and the map make.
+ *
+ * Decides which shell the app renders - the sidebar, or the app bar with a tab bar along the bottom -
+ * so it follows rotation and resizing like `useScreenWidth` does.
+ *
+ * @returns {boolean}
+ */
+export function useIsPhone() {
+  return useScreenWidth() < PHONE_BREAKPOINT;
+}

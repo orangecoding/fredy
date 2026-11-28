@@ -439,6 +439,23 @@ button:focus:not(:focus-visible),
   }
 }
 
+// iOS Safari zooms the page in on any field whose text is smaller than 16px when it gets focus,
+// and does not zoom back out. On a phone every field types at 16px.
+@media (max-width: 768px) {
+  input:not([type='checkbox']):not([type='radio']):not([type='range']),
+  textarea,
+  select {
+    font-size: @text-md;
+  }
+
+  // Semi gives a dialog a fixed width (448px by default, more where a page asks for it), which is
+  // wider than a phone: the dialog ran off the right edge and the page scrolled sideways. On a
+  // phone a dialog is at most the screen minus the page gutter on both sides.
+  .semi-modal {
+    max-width: calc(100vw - 2 * @space-4);
+  }
+}
+
 // Tables: no zebra, no filled header, no capitals. A hairline under every row is the structure.
 .semi-table-wrapper,
 .semi-table-container,

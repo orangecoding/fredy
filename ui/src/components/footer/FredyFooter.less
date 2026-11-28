@@ -146,4 +146,23 @@
       display: none;
     }
   }
+
+  /* At the foot of the phone's menu: no bar, the two lines stacked, and the credit kept - the menu
+     is as wide as the phone and has the room the bar did not. */
+  &--menu {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: @space-2;
+    height: auto;
+    padding: @space-4 0 0;
+    background: transparent;
+
+    .fredyFooter__left {
+      flex-wrap: wrap;
+    }
+
+    .fredyFooter__credit span {
+      display: inline;
+    }
+  }
 }

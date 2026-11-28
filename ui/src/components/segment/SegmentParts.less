@@ -71,6 +71,40 @@
     padding: @space-5 @space-6 @space-6;
   }
 
+  /* On a phone the desktop padding left a port or a path field a third of the screen. 16px on all
+     sides, and a table straight in the body runs to the edges by the same amount. */
+  @media (max-width: 768px) {
+    .semi-card-header {
+      padding: @space-3 @space-4;
+    }
+
+    .semi-card-body {
+      padding: @space-4;
+    }
+
+    .semi-card-body > .semi-table-wrapper {
+      margin: 0 -@space-4;
+
+      &:first-child {
+        margin-top: -@space-4;
+      }
+
+      &:last-child {
+        margin-bottom: -@space-4;
+      }
+
+      .semi-table-thead > .semi-table-row > .semi-table-row-head:first-child,
+      .semi-table-tbody > .semi-table-row > .semi-table-row-cell:first-child {
+        padding-left: @space-4;
+      }
+
+      .semi-table-thead > .semi-table-row > .semi-table-row-head:last-child,
+      .semi-table-tbody > .semi-table-row > .semi-table-row-cell:last-child {
+        padding-right: @space-4;
+      }
+    }
+  }
+
   /* Sunk back to the page's tone: the panel is the step above the page, and a field in the input
      colour was the panel's own colour in the dark theme. Index.less draws every field with
      !important, so this has to as well. */

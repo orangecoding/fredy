@@ -37,6 +37,8 @@
  * @property {NavSection} [section] Top-level entries only; children inherit their parent's.
  * @property {NavNode[]} [children]
  * @property {boolean} [adminOnly] Hidden from users without the admin bit.
+ * @property {boolean} [mobileTab] On a phone, one of the tabs along the bottom edge. Everything else
+ *   is reached through the menu.
  */
 
 /**
@@ -57,10 +59,10 @@
  * @type {NavNode[]}
  */
 export const NAV_TREE = [
-  { key: '/dashboard', labelKey: 'nav.dashboard', section: 'work' },
-  { key: '/jobs', labelKey: 'nav.jobs', section: 'work' },
-  { key: '/listings', labelKey: 'nav.listings', section: 'work' },
-  { key: '/map', labelKey: 'nav.map', section: 'work' },
+  { key: '/dashboard', labelKey: 'nav.dashboard', section: 'work', mobileTab: true },
+  { key: '/jobs', labelKey: 'nav.jobs', section: 'work', mobileTab: true },
+  { key: '/listings', labelKey: 'nav.listings', section: 'work', mobileTab: true },
+  { key: '/map', labelKey: 'nav.map', section: 'work', mobileTab: true },
   { key: '/finance', labelKey: 'nav.finance', section: 'work' },
   { key: '/settings', labelKey: 'nav.settings', section: 'personal' },
   { key: '/admin', labelKey: 'nav.administration', section: 'instance', adminOnly: true },
@@ -74,6 +76,33 @@ export const NAV_TREE = [
  */
 export function navTreeFor(isAdmin) {
   return NAV_TREE.filter((node) => !node.adminOnly || isAdmin);
+}
+
+/**
+ * The tabs along the bottom of a phone screen, in order.
+ *
+ * The four places used every day, the ones a notification sends people to. Financing is only of use
+ * when buying, and the two settings areas are reached from the app bar, so all three live in the
+ * menu instead. Four rather than five, so each tab keeps a label a thumb can hit on a 360px screen.
+ *
+ * @param {boolean} isAdmin
+ * @returns {NavNode[]}
+ */
+export function mobileTabsFor(isAdmin) {
+  return navTreeFor(isAdmin).filter((node) => node.mobileTab === true);
+}
+
+/**
+ * The entries the phone's menu lists: every destination that is not a tab, in sidebar order.
+ *
+ * Derived from the same tree as the tabs, so a page added to the sidebar shows up in one of the two
+ * on a phone without anyone having to remember the second place.
+ *
+ * @param {boolean} isAdmin
+ * @returns {NavNode[]}
+ */
+export function mobileMenuFor(isAdmin) {
+  return navTreeFor(isAdmin).filter((node) => node.mobileTab !== true);
 }
 
 /**

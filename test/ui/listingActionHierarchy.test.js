@@ -265,9 +265,17 @@ describe('listing detail action bar', () => {
   it('starts the bottom bar where the sidebar ends instead of covering its foot', () => {
     // Fixed to the viewport, the bar ran under the sidebar as well and hid its toggle and the account
     // menu. The sidebar is wide or a rail, so it publishes whichever width it currently has.
-    expect(phone).toMatch(/inset: auto 0 0 var\(--nav-width\);/);
+    expect(phone).toMatch(/inset: auto 0 var\(--tabbar-height, 0px\) var\(--nav-width, 0px\);/);
     const nav = fs.readFileSync(path.join(detailDir, '../../components/navigation/Navigate.less'), 'utf-8');
     expect(nav).toMatch(/^\.app \{[^}]*--nav-width: @nav-wide;/m);
     expect(nav).toMatch(/&:has\(\.navigate--collapsed\) \{\s*--nav-width: @nav-narrow;/);
+  });
+
+  it('stands on the phone tab bar instead of sliding under it', () => {
+    // On a phone there is no sidebar; the tab bar along the bottom publishes its height instead,
+    // safe area included, so the bar sits on top of it and drops its own safe-area padding.
+    const mobile = fs.readFileSync(path.join(detailDir, '../../components/navigation/MobileNav.less'), 'utf-8');
+    expect(mobile).toMatch(/--tabbar-height: calc\(@tabbar-height \+ env\(safe-area-inset-bottom\)\);/);
+    expect(mobile).toMatch(/\.listing-actionbar \{\s*padding-bottom: @space-3;/);
   });
 });

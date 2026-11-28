@@ -47,9 +47,11 @@ const DONATION_TARGETS = [
  *
  * @param {object} props
  * @param {boolean} props.collapsed Whether the sidebar is collapsed to its icon rail.
+ * @param {(trigger: {open: () => void}) => React.ReactNode} [props.renderTrigger] Draws the control
+ *   that opens the dialog instead of the sidebar row.
  * @returns {import('react').ReactElement}
  */
-export default function Donate({ collapsed }) {
+export default function Donate({ collapsed, renderTrigger }) {
   const t = useTranslation();
   const actions = useActions();
   const pois = useSelector((state) => state.tracking.pois);
@@ -62,7 +64,9 @@ export default function Donate({ collapsed }) {
 
   // One of the sidebar's quiet utility rows. The heart out of the logo rather than a drawn outline,
   // so the one red thing in the sidebar is the same heart the brand is.
-  const trigger = (
+  const trigger = renderTrigger ? (
+    renderTrigger({ open })
+  ) : (
     <button
       type="button"
       className="navigate__utility"
@@ -80,7 +84,7 @@ export default function Donate({ collapsed }) {
     <>
       {/* In the rail the label is gone and a bare heart could mean anything, so it says what it is
           on hover, like every other icon there. */}
-      {collapsed ? (
+      {collapsed && !renderTrigger ? (
         <Tooltip content={t('donate.button')} position="right">
           {trigger}
         </Tooltip>

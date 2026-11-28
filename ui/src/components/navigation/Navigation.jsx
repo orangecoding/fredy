@@ -11,48 +11,19 @@ import heart from '../../assets/heart.png';
 import logout from '../logout/Logout.jsx';
 import Donate from '../donate/Donate.jsx';
 import NewsHistory from '../news/NewsHistory.jsx';
-import {
-  IconAdmin,
-  IconFinance,
-  IconListings,
-  IconLogout,
-  IconMap,
-  IconOverview,
-  IconSearches,
-  IconSidebar,
-  IconSliders,
-} from '../icons/StrokeIcons.jsx';
+import { IconLogout, IconSidebar } from '../icons/StrokeIcons.jsx';
+import { NAV_ICONS } from './navIcons.js';
 import { useLocation, useNavigate } from 'react-router';
 import { normalizeTheme } from '../../services/theme/theme.js';
 
 import './Navigate.less';
 import { useScreenWidth } from '../../hooks/screenWidth.js';
-import { useActions, useSelector } from '../../services/state/store.js';
+import { useSelector } from '../../services/state/store.js';
 import { useTranslation } from '../../services/i18n/i18n.jsx';
 // A pure function that already answers exactly this question for the dashboard's own rows. A copy
 // here would be a second set of rounding rules for the same clock.
 import { relativeTime } from '../../services/time/relativeTime.js';
 import { navTreeFor, resolveActiveKey, startsSection } from './navModel.js';
-
-/** How long after a promised run the status is asked for again: the run itself takes a moment. */
-const STATUS_REFRESH_GRACE_MS = 60 * 1000;
-
-/** `setTimeout` overflows past about 24.8 days and would fire at once. */
-const MAX_TIMER_MS = 2 ** 31 - 1;
-
-/**
- * The icon each entry carries. Keyed by nav key so the tree itself stays free of JSX.
- * @type {Record<string, React.ComponentType>}
- */
-const ICONS = {
-  '/dashboard': IconOverview,
-  '/listings': IconListings,
-  '/map': IconMap,
-  '/jobs': IconSearches,
-  '/finance': IconFinance,
-  '/settings': IconSliders,
-  '/admin': IconAdmin,
-};
 
 /**
  * The brand: the wordmark when there is room for it, the heart alone when there is not.
@@ -89,9 +60,10 @@ Brand.displayName = 'Brand';
  *
  * @param {Object} props
  * @param {boolean} props.isAdmin Whether administration is among the entries.
+ * @param {import('./useNavStatus.js').NavStatus} props.status The counts and the run status.
  * @returns {React.ReactElement}
  */
-export default function Navigation({ isAdmin }) {
+export default function Navigation({ isAdmin, status }) {
   const t = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
@@ -109,36 +81,9 @@ export default function Navigation({ isAdmin }) {
   // so the sidebar asks nothing of its own.
   const username = useSelector((state) => state.user.currentUser?.username);
 
-  // The counts beside two entries. The jobs App fetches before the first render; the active listings
-  // come with the overview's figures, which the sidebar asks for itself (below) when someone lands
-  // on another page first. Until they are in, the listings entry shows no number rather than a guess.
-  const jobCount = useSelector((state) => state.jobsData.jobs?.length ?? null);
-  const listingCount = useSelector((state) => state.dashboard.data?.kpis?.numberOfActiveListings ?? null);
-  const counts = { '/jobs': jobCount, '/listings': listingCount };
-
-  // The next run, from the same answer. Until it is in, the row is simply not drawn - no
-  // placeholder, no dash, nothing that pretends to know. Once there is one, the sidebar asks again
-  // when it falls due (below).
-  const nextRun = useSelector((state) => state.dashboard.data?.general?.nextRun);
-  const actions = useActions();
-
-  // Landing on any page but the overview left the count and the status out until the overview had
-  // been opened once, so the sidebar looked different depending on where the session began. Asked
-  // once per mount - the sidebar mounts again after every sign-in, so a figure left in the store by
-  // the previous session is replaced - and not on the overview, which asks for the same answer.
-  useEffect(() => {
-    if (!location.pathname.startsWith('/dashboard')) actions.dashboard.getDashboard();
-  }, []);
-
-  // That answer goes stale the moment the promised run comes round, and nothing else refreshes it
-  // away from the dashboard. Asked again once the run is due, plus a minute for the run itself:
-  // amber then means a fresh answer still points into the past.
-  useEffect(() => {
-    if (nextRun == null || nextRun === 0) return undefined;
-    const delay = Math.min(Math.max(0, nextRun - Date.now()) + STATUS_REFRESH_GRACE_MS, MAX_TIMER_MS);
-    const timer = setTimeout(() => actions.dashboard.getDashboard(), delay);
-    return () => clearTimeout(timer);
-  }, [nextRun]);
+  // The counts beside two entries and whether Fredy is still running. Asked for by the shell, which
+  // shares the answer with the phone's app bar.
+  const { counts, nextRun, stale } = status;
 
   const tree = navTreeFor(isAdmin);
   const activeKey = resolveActiveKey(tree, location.pathname);
@@ -163,14 +108,10 @@ export default function Navigation({ isAdmin }) {
   const initial = (username ?? '').charAt(0).toUpperCase();
 
   const statusRow =
-    nextRun != null && nextRun !== 0
+    nextRun != null
       ? (() => {
           const label = t('nav.nextRun', { time: relativeTime(nextRun, t) });
-          const dot = (
-            <span
-              className={`navigate__statusDot${nextRun + STATUS_REFRESH_GRACE_MS <= Date.now() ? ' navigate__statusDot--stale' : ''}`}
-            />
-          );
+          const dot = <span className={`navigate__statusDot${stale ? ' navigate__statusDot--stale' : ''}`} />;
           // In the rail the dot is on its own, and a coloured dot with nothing beside it says only
           // that something has a state, not which one.
           return (
@@ -199,7 +140,7 @@ export default function Navigation({ isAdmin }) {
 
       <div className="navigate__list">
         {tree.map((node, index) => {
-          const Icon = ICONS[node.key];
+          const Icon = NAV_ICONS[node.key];
           const isActive = node.key === activeKey;
           const count = counts[node.key];
 

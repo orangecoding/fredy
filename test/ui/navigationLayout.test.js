@@ -11,6 +11,8 @@ import { fileURLToPath } from 'url';
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const less = fs.readFileSync(path.join(root, 'ui/src/components/navigation/Navigate.less'), 'utf-8');
 const jsx = fs.readFileSync(path.join(root, 'ui/src/components/navigation/Navigation.jsx'), 'utf-8');
+// The counts and the run status, shared by the sidebar and the phone's app bar since #543.
+const status = fs.readFileSync(path.join(root, 'ui/src/components/navigation/useNavStatus.js'), 'utf-8');
 
 /**
  * Spacing values a rule is allowed to carry. Anything else is a number someone typed instead of
@@ -92,14 +94,21 @@ describe('Navigate.less', () => {
   // the previous session's numbers - so the sidebar asks once per mount, except on the overview,
   // which asks for the same answer itself.
   it('asks for the overview figures itself, once per mount and never twice on the overview', () => {
-    expect(jsx).toMatch(
+    expect(status).toMatch(
       /useEffect\(\(\) => \{\s*if \(!location\.pathname\.startsWith\('\/dashboard'\)\) actions\.dashboard\.getDashboard\(\);\s*\}, \[\]\);/,
     );
   });
 
   it('takes the counts from the store rather than counting on its own', () => {
-    expect(jsx).toMatch(/state\.jobsData\.jobs\?\.length/);
-    expect(jsx).toMatch(/state\.dashboard\.data\?\.kpis\?\.numberOfActiveListings/);
+    expect(status).toMatch(/state\.jobsData\.jobs\?\.length/);
+    expect(status).toMatch(/state\.dashboard\.data\?\.kpis\?\.numberOfActiveListings/);
+  });
+
+  it('is handed its status by the shell instead of asking a second time', () => {
+    // The shell runs useNavStatus once and shares it with the phone's app bar, so the sidebar must
+    // not run it again: that would send the overview request twice on every mount.
+    expect(jsx).toMatch(/const \{ counts, nextRun, stale \} = status;/);
+    expect(jsx).not.toMatch(/useNavStatus\(\)/);
   });
 
   it('scrolls instead of cutting off the account menu on a short window', () => {
