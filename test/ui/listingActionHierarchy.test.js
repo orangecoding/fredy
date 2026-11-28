@@ -267,8 +267,17 @@ describe('listing detail action bar', () => {
     // menu. The sidebar is wide or a rail, so it publishes whichever width it currently has.
     expect(phone).toMatch(/inset: auto 0 var\(--tabbar-height, 0px\) var\(--nav-width, 0px\);/);
     const nav = fs.readFileSync(path.join(detailDir, '../../components/navigation/Navigate.less'), 'utf-8');
-    expect(nav).toMatch(/^\.app \{[^}]*--nav-width: @nav-wide;/m);
+    expect(nav).toMatch(/^\.app:has\(\.navigate\) \{[^}]*--nav-width: @nav-wide;/m);
     expect(nav).toMatch(/&:has\(\.navigate--collapsed\) \{\s*--nav-width: @nav-narrow;/);
+  });
+
+  it('leaves no sidebar width behind on the phone, which has no sidebar', () => {
+    // Set on every `.app`, the width was still 224px in the phone shell, so the bar started there
+    // and its primary button ran off the right edge. Unset, `var(--nav-width, 0px)` falls back to 0.
+    const nav = fs.readFileSync(path.join(detailDir, '../../components/navigation/Navigate.less'), 'utf-8');
+    expect(nav).not.toMatch(/^\.app \{/m);
+    const mobile = fs.readFileSync(path.join(detailDir, '../../components/navigation/MobileNav.less'), 'utf-8');
+    expect(mobile).not.toMatch(/--nav-width:/);
   });
 
   it('stands on the phone tab bar instead of sliding under it', () => {

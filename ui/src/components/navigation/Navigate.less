@@ -11,8 +11,10 @@
 @nav-logo: 34px;
 
 /* The width the sidebar takes right now, for whatever is fixed to the viewport beside it and has to
-   stop at its edge: the listing detail's action bar, which sits on the bottom edge on a phone. */
-.app {
+   stop at its edge: the listing detail's action bar, which sits on the bottom edge on a phone.
+   Only where the sidebar is rendered: the phone shell has none, and a width left on `.app` there
+   pushed that bar 224px off the right edge. */
+.app:has(.navigate) {
   --nav-width: @nav-wide;
 
   &:has(.navigate--collapsed) {
