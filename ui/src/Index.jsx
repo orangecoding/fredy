@@ -8,6 +8,7 @@ import { createRoot } from 'react-dom/client';
 import en_US from '@douyinfe/semi-ui-19/lib/es/locale/source/en_US';
 import { LocaleProvider, semiGlobal } from '@douyinfe/semi-ui-19';
 import App from './App';
+import { registerServiceWorker } from './services/push/webPushClient.js';
 import './Index.less';
 
 // Semi UI uses react-dom (not react-dom/client) internally for imperative renders
@@ -17,6 +18,10 @@ semiGlobal.config.createRoot = createRoot;
 
 const container = document.getElementById('fredy');
 const root = createRoot(container);
+
+// The service worker only handles Web Push (#542). Registered on every start so the browser picks up
+// a new version of it after an update; it caches nothing, so it cannot hold back the app itself.
+registerServiceWorker();
 
 root.render(
   <HashRouter>

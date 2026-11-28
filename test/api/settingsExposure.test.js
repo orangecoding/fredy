@@ -22,6 +22,7 @@ const STORED_SETTINGS = {
   workingHours: { from: '08:00', to: '20:00' },
   session_secret: 'super-secret-signing-key',
   proxyAuthSecret: 'shared-with-the-proxy',
+  web_push_vapid: { publicKey: 'public-vapid-key', privateKey: 'private-vapid-key' },
 };
 
 const settingsRows = Object.entries(STORED_SETTINGS).map(([name, value]) => ({
@@ -47,10 +48,15 @@ describe('settings exposure', () => {
       expect(published).not.toHaveProperty('proxyAuthSecret');
     });
 
+    it('drops the VAPID key pair, whose private half signs every push', async () => {
+      const published = await getPublicSettings();
+      expect(published).not.toHaveProperty('web_push_vapid');
+    });
+
     it('keeps every non-secret setting', async () => {
       const published = await getPublicSettings();
       for (const name of Object.keys(STORED_SETTINGS)) {
-        if (name === 'session_secret' || name === 'proxyAuthSecret') continue;
+        if (['session_secret', 'proxyAuthSecret', 'web_push_vapid'].includes(name)) continue;
         expect(published[name]).toEqual(STORED_SETTINGS[name]);
       }
     });
